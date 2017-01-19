@@ -1,0 +1,191 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:fn="http://java.sun.com/jsp/jstl/functions" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui"
+  xmlns:composite="http://java.sun.com/jsf/composite" xmlns:c="http://java.sun.com/jstl/core">
+
+<h:head>
+  <title>Orientamento all'istruzione / formazione</title>
+</h:head>
+<h:body>
+  <composite:interface componentType="pnlOrientamentoIstruzione">
+    <composite:attribute name="iStranieri" type="it.webred.cs.json.stranieri.IStranieri" required="true" />
+    <composite:attribute name="iOrientamentoIstruzione" type="it.webred.cs.json.orientamentoistruzione.IOrientamentoIstruzione" required="true" />
+    <composite:attribute name="soloLettura" default="false" />
+  </composite:interface>
+  <composite:implementation xmlns:webred="http://java.sun.com/jsf/composite/webred" xmlns:webredcs="http://java.sun.com/jsf/composite/webredcs">
+
+    <p:outputPanel rendered="#{cc.attrs.iOrientamentoIstruzione.versionLowerCase eq '1'}">
+
+      <h:panelGrid columns="1">
+
+        <h:panelGrid columns="2" style="display: inline-block; vertical-align: top;">
+          <p:outputLabel value="Titolo di studio *" />
+          <p:selectOneMenu value="#{cc.attrs.iOrientamentoIstruzione.jsonCurrent.idTitoloStudio}" 
+                           disabled="#{cc.attrs.iOrientamentoIstruzione.jsonCurrent.idTitoloStudio!=NULL or cc.attrs.soloLettura}" style="width:300px;">
+            <f:selectItems value="#{cc.attrs.iOrientamentoIstruzione.jsonCurrent.lstTitoliStudio}" />
+          </p:selectOneMenu>
+         
+          <p:outputLabel value="Conoscenze informatiche" />
+	      <h:panelGrid columns="3" styleClass="tableNoBg">
+		      <p:selectBooleanButton id="conoscenzeInformatiche" value="#{cc.attrs.iOrientamentoIstruzione.jsonCurrent.conoscenzeInformatiche}" 
+		                                 onLabel="Sì" offLabel="No" disabled="#{cc.attrs.soloLettura}"/>    
+	          <p:outputLabel value="Livello" />
+	          <p:inputText value="#{cc.attrs.iOrientamentoIstruzione.jsonCurrent.livelloConoscenzeInformatiche}" disabled="#{cc.attrs.soloLettura}" />  
+          </h:panelGrid>
+          <p:outputLabel value="Ha frequentato corsi di formazione/qualifica/specializzazione?" style="display: block; width: 200px;" />
+          <p:selectBooleanButton id="frequentatoCorsi" value="#{cc.attrs.iOrientamentoIstruzione.jsonCurrent.frequentatoCorsi}" 
+                                 onLabel="Sì" offLabel="No" disabled="#{cc.attrs.soloLettura}"/>
+         
+        </h:panelGrid>
+
+        <p:dataList value="#{cc.attrs.iOrientamentoIstruzione.jsonCurrent.corsiFrequentati}" var="item" itemType="none" id="elencoCorsi"
+          emptyMessage="nessun corso">
+          <f:facet name="header">
+            Elenco dei corsi frequentati
+          </f:facet>
+          <p:commandLink id="corsoBtn">
+            <h:outputText value="#{item.title}" style="#{empty item.descrizione? 'font-weight:bold;color:red;': ''}" />
+          </p:commandLink>
+          <p:overlayPanel id="corsoPanel" for="corsoBtn" hideEffect="fold" my="left top" at="right top">
+            <p:outputPanel>
+              <h:panelGrid columns="2" style="display: inline-block; vertical-align: top;">
+                <p:outputLabel value="Corso di *" />
+                <p:inputText value="#{item.descrizione}" disabled="#{cc.attrs.soloLettura}" />
+                <p:outputLabel value="Svolto *" for="svoltoInItalia" />
+                <p:selectOneRadio id="svoltoInItalia" value="#{item.svoltoInItalia}" columns="2" disabled="#{cc.attrs.soloLettura}">
+                  <f:selectItem itemValue="#{true}" itemLabel="Italia" />
+                  <f:selectItem itemValue="#{false}" itemLabel="Estero" />
+                </p:selectOneRadio>
+              </h:panelGrid>
+            </p:outputPanel>
+            <p:outputPanel>
+              <h:panelGrid columns="1" style="display: inline-block; vertical-align: top;">
+                <p:outputLabel value="Principali tematiche/competenze professionali acquisite" />
+                <p:inputTextarea value="#{item.principaliTematiche}" disabled="#{cc.attrs.soloLettura}" rows="3" cols="44" autoResize="false" />
+              </h:panelGrid>
+            </p:outputPanel>
+            <p:outputPanel>
+              <h:panelGrid columns="2" style="display: inline-block; vertical-align: top;">
+                <p:outputLabel value="Durata in ore" />
+                <p:spinner id="durataOre" value="#{item.durataOre}" min="0"  size="4"  disabled="#{cc.attrs.soloLettura}"/>
+	                 
+                <p:outputLabel value="Attestato" for="attestato" />
+                <p:selectBooleanButton id="attestato" value="#{item.attestato}" 
+                                 onLabel="Sì" offLabel="No" disabled="#{cc.attrs.soloLettura}"/>
+              
+              	<p:outputLabel value="Eventuale qualifica riconosciuta" style="display: block; width: 100px;" />
+              	<p:inputText value="#{item.qualifica}" disabled="#{cc.attrs.soloLettura}" />
+              </h:panelGrid>
+            </p:outputPanel>
+            <p:outputPanel rendered="#{!cc.attrs.soloLettura}">
+              <p:commandButton value="Salva" style="font-size:80%" update="elencoCorsi" />
+              <p:commandButton value="Elimina" action="#{cc.attrs.iOrientamentoIstruzione.jsonCurrent.deleteCorsoFrequentato(item)}" style="font-size:80%;"
+                update="elencoCorsi" />
+            </p:outputPanel>
+          </p:overlayPanel>
+          <f:facet name="footer">
+            <p:commandButton value="Aggiungi un corso" action="#{cc.attrs.iOrientamentoIstruzione.jsonCurrent.addCorsoFrequentato()}"
+              rendered="#{!cc.attrs.soloLettura}" update="elencoCorsi" style="font-size:80%" />
+          </f:facet>
+        </p:dataList>
+
+      </h:panelGrid>
+
+      <p:tabView>
+
+        <p:tab title="Richiesta *">
+          <h:panelGrid columns="1">
+            <p:outputLabel value="Tipologia di corso richiesta *" />
+            <h:panelGrid columns="4" styleClass="tableNoBg">
+               <!-- Corso di Lingua -->
+               <p:selectBooleanCheckbox itemLabel="Lingua" value="#{cc.attrs.iOrientamentoIstruzione.jsonCurrent.richiestaCorsoLingua}" disabled="#{cc.attrs.soloLettura}" />
+                
+                <h:panelGrid columns="1" styleClass="tableNoBg">
+					<p:selectOneRadio id="richiestaCorsoLinguaAltra" layout="grid"  value="#{cc.attrs.iOrientamentoIstruzione.jsonCurrent.richiestaCorsoLinguaAltra}"
+					  columns="2" disabled="#{cc.attrs.soloLettura}">
+					  <f:selectItem itemValue="#{false}" itemLabel="Italiana" />
+					  <f:selectItem itemValue="#{true}" itemLabel="Altra lingua" />
+					  <p:ajax event="change" process="@this" update="txtAltraLingua"/>
+					</p:selectOneRadio>
+					<h:panelGrid columns="2" styleClass="tableNoBg">
+						<p:outputLabel value="Specificare:" style="font-size:10px;" />
+						<p:inputText id="txtAltraLingua" value="#{cc.attrs.iOrientamentoIstruzione.jsonCurrent.richiestaCorsoLinguaSpecifica}" disabled="#{cc.attrs.soloLettura or !cc.attrs.iOrientamentoIstruzione.jsonCurrent.richiestaCorsoLinguaAltra}" />
+					</h:panelGrid>
+				</h:panelGrid>
+				
+                <p:outputLabel value="Motivo" />
+                <p:inputText value="#{cc.attrs.iOrientamentoIstruzione.jsonCurrent.motivoRichiestaLingua}" disabled="#{cc.attrs.soloLettura}" />
+                
+                <!-- Formazione Professionale -->
+				<p:selectBooleanCheckbox itemLabel="Formazione professionale"  value="#{cc.attrs.iOrientamentoIstruzione.jsonCurrent.richiestaCorsoFormazioneProfessionale}"
+				  disabled="#{cc.attrs.soloLettura}" />
+				<p:spacer width="10"/>
+				<p:outputLabel value="Motivo" />
+				<p:inputText value="#{cc.attrs.iOrientamentoIstruzione.jsonCurrent.motivoRichiestaFormazioneProfessionale}" disabled="#{cc.attrs.soloLettura}" />
+				
+				<!-- Informatica -->
+				<p:selectBooleanCheckbox itemLabel="Informatica" value="#{cc.attrs.iOrientamentoIstruzione.jsonCurrent.richiestaCorsoInformatica}" 
+				  disabled="#{cc.attrs.soloLettura}" />
+				<p:spacer width="10"/>
+				<p:outputLabel value="Motivo" />
+				<p:inputText value="#{cc.attrs.iOrientamentoIstruzione.jsonCurrent.motivoRichiestaInformatica}" disabled="#{cc.attrs.soloLettura}" />
+             
+             	<!-- Altro corso -->
+                <p:selectBooleanCheckbox itemLabel="Altro" value="#{cc.attrs.iOrientamentoIstruzione.jsonCurrent.richiestaCorsoAltro}" 
+                  disabled="#{cc.attrs.soloLettura}" />
+               	<h:panelGroup>
+               	 <p:outputLabel value="Specificare:" style="font-size:10px;"/>
+               	 <p:inputText value="#{cc.attrs.iOrientamentoIstruzione.jsonCurrent.richiestaCorsoAltroSpecifica}" disabled="#{cc.attrs.soloLettura}" />
+                </h:panelGroup>
+                <p:outputLabel value="Motivo" />
+                <p:inputText value="#{cc.attrs.iOrientamentoIstruzione.jsonCurrent.motivoRichiestaAltro}" disabled="#{cc.attrs.soloLettura}" />
+              </h:panelGrid>
+          
+          </h:panelGrid>
+        </p:tab>
+
+        <p:tab title="Disponibilità">
+            <h:panelGrid columns="2" style="display: inline-block; vertical-align: top;" >
+              <p:outputLabel value="Giorni" />
+              <h:panelGrid  columns="3" styleClass="tableNoBg">
+	              <p:selectOneRadio id="alcuniGiorni" layout="grid" value="#{cc.attrs.iOrientamentoIstruzione.jsonCurrent.alcuniGiorni}" columns="2"
+	                 disabled="#{cc.attrs.soloLettura}">
+	                 <f:selectItem itemValue="#{false}" itemLabel="Tutti" />
+	                 <f:selectItem itemValue="#{true}" itemLabel="Alcuni" />
+	                 <p:ajax event="change" process="@this" update="txtGiorni"/>
+	              </p:selectOneRadio>
+                  <p:outputLabel value="Specificare:" style="font-size:10px;"/>
+                  <p:inputText id="txtGiorni" value="#{cc.attrs.iOrientamentoIstruzione.jsonCurrent.alcuniGiorniSpecifica}" disabled="#{cc.attrs.soloLettura or !cc.attrs.iOrientamentoIstruzione.jsonCurrent.alcuniGiorni}" />
+              </h:panelGrid>
+              
+              <p:outputLabel value="Fascia oraria preferita" />
+              <h:panelGrid columns="3" styleClass="tableNoBg">
+                <p:selectBooleanCheckbox itemLabel="Mattina" value="#{cc.attrs.iOrientamentoIstruzione.jsonCurrent.fasciaMattina}" disabled="#{cc.attrs.soloLettura}" />
+               	<p:selectBooleanCheckbox itemLabel="Pomeriggio" value="#{cc.attrs.iOrientamentoIstruzione.jsonCurrent.fasciaPomeriggio}" disabled="#{cc.attrs.soloLettura}" />
+                <p:selectBooleanCheckbox itemLabel="Sera" value="#{cc.attrs.iOrientamentoIstruzione.jsonCurrent.fasciaSera}" disabled="#{cc.attrs.soloLettura}" />
+              </h:panelGrid>
+              
+              <p:outputLabel value="Disponibilità a spostarsi" for="disponibileSpostarsi" />
+           	  <p:selectBooleanButton id="disponibileSpostarsi" value="#{cc.attrs.iOrientamentoIstruzione.jsonCurrent.disponibileSpostarsi}" 
+                                   onLabel="Sì" offLabel="No" disabled="#{cc.attrs.soloLettura}"/>
+          </h:panelGrid>
+        </p:tab>
+
+        <p:tab title="Segnalazioni">
+          <h:panelGrid columns="1" style="display: inline-block; vertical-align: top;">
+            <p:outputLabel value="Eventuali segnalazioni o note per il corso" for="segnalazioni" />
+            <p:inputTextarea id="segnalazioni" value="#{cc.attrs.iOrientamentoIstruzione.jsonCurrent.segnalazioni}" disabled="#{cc.attrs.soloLettura}" rows="4"
+              cols="65" autoResize="false" title="Eventuali segnalazioni o note per il corso" />
+          </h:panelGrid>
+        </p:tab>
+
+      </p:tabView>
+
+      <h:panelGrid columns="1">
+        <h:outputText value="* Campi obbligatori" />
+      </h:panelGrid>
+    </p:outputPanel>
+  </composite:implementation>
+</h:body>
+
+</html>

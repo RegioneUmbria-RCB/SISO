@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<field name="tmCivile" class="java.lang.String"/>
+	<field name="tmAmm" class="java.lang.String"/>
+	<field name="penaleMin" class="java.lang.String"/>
+	<field name="to" class="java.lang.String"/>
+	<field name="nis" class="java.lang.String"/>
+	<field name="macroSegnal" class="java.lang.String"/>
+	<field name="microSegnal" class="java.lang.String"/>
+	<field name="motivoSegnal" class="java.lang.String"/>
+	<field name="procuraMin" class="java.lang.String"/>
+	<field name="numProtocollo" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="177" splitType="Immediate">
+			<staticText>
+				<reportElement x="0" y="101" width="120" height="20"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Macro segnalazione]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="126" width="120" height="20"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Micro segnalazione]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="130" y="101" width="418" height="20"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{macroSegnal}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="130" y="126" width="418" height="20"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{microSegnal}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="0" width="555" height="20" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="html">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Tribunale]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="130" y="151" width="418" height="20"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{motivoSegnal}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="151" width="120" height="20"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Motivo segnalazione]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="35" width="55" height="20"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[TM Civile]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="55" y="35" width="41" height="20"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{tmCivile}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="198" y="35" width="94" height="20"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[TM Amministrativo]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="292" y="35" width="41" height="20"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{tmAmm}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="428" y="35" width="77" height="20"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Penale minorile]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="505" y="35" width="41" height="20"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{penaleMin}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="28" y="56" width="27" height="20"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[TO]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="55" y="56" width="41" height="20"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{to}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="292" y="56" width="31" height="20"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{nis}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="264" y="56" width="28" height="20"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[NIS]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="505" y="56" width="41" height="20"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{procuraMin}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="428" y="56" width="77" height="20"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Procura minorile]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="1" y="80" width="120" height="20"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Num. protocollo]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="130" y="80" width="418" height="20"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{numProtocollo}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+</jasperReport>

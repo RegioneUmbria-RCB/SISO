@@ -1,0 +1,83 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+     	xmlns:h="http://java.sun.com/jsf/html"
+		xmlns:f="http://java.sun.com/jsf/core"
+		xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+		xmlns:ui="http://java.sun.com/jsf/facelets"
+		xmlns:p="http://primefaces.org/ui"
+	  	xmlns:composite="http://java.sun.com/jsf/composite">
+      
+	<h:head>
+		<title>Abitazione</title>
+	</h:head>
+	<h:body>
+		<composite:interface componentType="pnlAbitazione">
+			<composite:attribute name="iAbitazione" type="it.webred.cs.json.abitazione.IAbitazione" required="true"/>
+			<composite:attribute name="soloLettura" default="false"/>
+			<composite:attribute name="numColonne" default="4"/>
+		</composite:interface>
+		<composite:implementation 
+			xmlns:webred="http://java.sun.com/jsf/composite/webred"
+			xmlns:webredcs="http://java.sun.com/jsf/composite/webredcs">
+			
+		   <p:outputPanel rendered="#{cc.attrs.iAbitazione.versionLowerCase eq '1'}">
+		       
+				 <h:panelGrid columns="#{cc.attrs.numColonne}" >
+				     <h:outputText value="Tipologia di abitazione " for="tipo_abitazione" />
+                  	  
+                  	  <p:selectOneMenu label="Tipologia di abitazione" id="tipo_abitazione" disabled="#{cc.attrs.soloLettura}"
+                  	                   value="#{cc.attrs.iAbitazione.jsonCurrent.tipoAbitazione}" 
+                  	                   effect="fold" editable="false"  >  
+     					<f:selectItem itemLabel="- seleziona -" itemValue=""/>  
+            			<f:selectItem itemLabel="condominio" itemValue="condominio" />
+            			<f:selectItem itemLabel="indipendente"  itemValue="indipendente" />
+            			<f:selectItem itemLabel="rurale" itemValue="rurale" />
+            			<f:selectItem itemLabel="popolare" itemValue="popolare" />
+            			<f:selectItem itemLabel="struttura d'accoglienza" itemValue="struttura d'accoglienza" />
+            			<f:selectItem itemLabel="albergo/ostello" itemValue="albergo/ostello" />
+            			<f:selectItem itemLabel="senza alloggio" itemValue="senza alloggio" />
+            			<f:selectItem itemLabel="alloggio di fortuna" itemValue="alloggio di fortuna" />
+        			 </p:selectOneMenu>
+        			 
+        			  <h:outputText value="Num. vani " for="composizione" />
+        			  <p:spinner id="composizione" value="#{cc.attrs.iAbitazione.jsonCurrent.numVani}" min="0"  size="3"  disabled="#{cc.attrs.soloLettura}"/>
+		         
+        			  <h:outputText value="Titolo di godimento " for="titolo" />
+                  	  <p:selectOneMenu label="Titolo di godimento" id="titolo" disabled="#{cc.attrs.soloLettura}"
+                  	                   value="#{cc.attrs.iAbitazione.jsonCurrent.titoloGodimento }" 
+                  	                   effect="fold" editable="false"  >  
+     					<f:selectItem itemLabel="- seleziona -" itemValue=""/>  
+            			<f:selectItem itemLabel="affitto" itemValue="affitto" />
+            			<f:selectItem itemLabel="proprietà con mutuo" itemValue="proprieta con mutuo" />
+            			<f:selectItem itemLabel="proprietà" itemValue="proprieta" />
+            			<f:selectItem itemLabel="comodato d'uso" itemValue="comodato d'uso" />
+            			<f:selectItem itemLabel="usufrutto" itemValue="usufrutto" />
+            			<f:selectItem itemLabel="alla pari" itemValue="alla pari" />
+            			<f:selectItem itemLabel="altri onerosi" itemValue="altri onerosi" />
+            			<f:selectItem itemLabel="altri non onerosi" itemValue="altri non onerosi" />
+        			 </p:selectOneMenu>
+        			 
+        			  <h:outputText value="Proprietario e/o Gestore abitazione " for="proprietario" style="display: block; width: 150px;"/>
+                  	  <p:selectOneMenu label="Proprietario/Gestore abitazione" id="proprietario" disabled="#{cc.attrs.soloLettura}"
+                  	                   value="#{cc.attrs.iAbitazione.jsonCurrent.proprietarioGestore}" 
+                  	                   effect="fold" editable="false"  >  
+     					<f:selectItem itemLabel="- seleziona -" itemValue=""/>  
+            			<f:selectItem itemLabel="datore di lavoro" itemValue="datore di lavoro" />
+            			<f:selectItem itemLabel="azienda" itemValue="azienda" />
+            			<f:selectItem itemLabel="ente religioso" itemValue="ente religioso" />
+            			<f:selectItem itemLabel="privato" itemValue="privato" />
+            			<f:selectItem itemLabel="coop/onlus" itemValue="coop/onlus" />
+        			 </p:selectOneMenu>
+        		</h:panelGrid>
+        		<h:panelGrid >
+	        	    <h:outputText value="Note " for="note" />
+	        	    <p:inputTextarea value="#{cc.attrs.iAbitazione.jsonCurrent.note}" rendered="#{!cc.attrs.soloLettura}" rows="2" cols="50"/>
+	        		<h:outputText value="#{cc.attrs.iAbitazione.jsonCurrent.note}" rendered="#{cc.attrs.soloLettura}" />	 
+        		</h:panelGrid>
+				
+           </p:outputPanel>
+   
+		</composite:implementation>
+	</h:body>
+		
+</html>

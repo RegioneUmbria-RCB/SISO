@@ -1,0 +1,115 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+     	xmlns:h="http://java.sun.com/jsf/html"
+		xmlns:f="http://java.sun.com/jsf/core"
+		xmlns:ui="http://java.sun.com/jsf/facelets"
+		xmlns:p="http://primefaces.org/ui"
+	  	xmlns:composite="http://java.sun.com/jsf/composite"
+	  	xmlns:webredcs="http://java.sun.com/jsf/composite/webredcs"
+	  	xmlns:webred="http://java.sun.com/jsf/composite/webred">
+      
+	<h:head>
+		<title>Dati Disabilita</title>
+	</h:head>
+	<h:body>
+		<composite:interface componentType="pnlDatiDisabilita">
+			<composite:attribute name="iDatiDisabilita" type="it.webred.cs.jsf.interfaces.IDatiDisabilita"/>
+		</composite:interface>
+		<composite:implementation>			
+			
+			<table border="0" width="100%">
+				<tr>
+					<td>
+						<h:outputText value="Gravità *" />
+					</td>
+					<td colspan="5">
+						<p:selectOneMenu value="#{cc.attrs.iDatiDisabilita.idGravita}">
+	            			<f:selectItems value="#{cc.attrs.iDatiDisabilita.lstGravita}"/>
+	            		</p:selectOneMenu>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<h:outputText value="Tipologia disabilità *" />
+					</td>
+					<td>
+						<h:panelGrid columns="3" cellpadding="0" cellspacing="0">
+							<p:selectOneRadio value="#{cc.attrs.iDatiDisabilita.idTipologia}">
+		            			<f:selectItems value="#{cc.attrs.iDatiDisabilita.lstTipologia}"/>
+		            		</p:selectOneRadio>
+		            		<p:spacer width="12" />
+		            		<webredcs:tooltipInfo title="Tipo disabilità: che cosa si intende" 
+		            			valueList="#{cc.attrs.iDatiDisabilita.lstCsTbDisabTipologia}"/>
+						</h:panelGrid>
+					</td>
+					<td>
+						<h:outputText value="PDF" />
+					</td>
+					<td>
+						<p:selectBooleanCheckbox value="#{cc.attrs.iDatiDisabilita.PDF}" />
+						<p:spacer width="15"/>
+						<p:inputText value="#{cc.attrs.iDatiDisabilita.anno}"/>
+						<p:spacer width="15"/>
+						<p:outputLabel value="(solo anno)"/>
+					</td>
+					<td>
+						<h:outputText value="DF" />
+					</td>
+					<td>
+						<p:selectBooleanCheckbox value="#{cc.attrs.iDatiDisabilita.DF}" />
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<h:outputText value="Ente certificatore" />
+					</td>
+					<td>
+						<p:selectOneMenu value="#{cc.attrs.iDatiDisabilita.idEnte}">
+	            			<f:selectItems value="#{cc.attrs.iDatiDisabilita.lstEnte}"/>
+	            		</p:selectOneMenu>
+					</td>
+					<td>
+						<h:outputText value="Certificatore" />
+					</td>
+					<td colspan="3">
+						<p:inputText value="#{cc.attrs.iDatiDisabilita.certificatore}" size="50"/>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<h:outputText value="Terapie" />
+					</td>
+					<td colspan="5">
+						<p:inputText value="#{cc.attrs.iDatiDisabilita.terapie}" size="100"/>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<h:outputText value="Percorso NIS" />
+					</td>
+					<td colspan="3">
+						<p:selectBooleanCheckbox value="#{cc.attrs.iDatiDisabilita.nisValutazione}" />
+						<p:spacer width="15"/>
+						<h:outputText value="Valutazione" />
+						<p:spacer width="15"/>
+						<p:selectBooleanCheckbox value="#{cc.attrs.iDatiDisabilita.nisConsulenza}" />
+						<p:spacer width="15"/>
+						<h:outputText value="Consulenza" />
+						<p:spacer width="15"/>
+						<p:selectBooleanCheckbox value="#{cc.attrs.iDatiDisabilita.nisOrientamento}" />
+						<p:spacer width="15"/>
+						<h:outputText value="Orientamento" />
+					</td>
+					<td>
+						<h:outputText value="Consulenza COP" />
+					</td>
+					<td colspan="3">
+						<p:selectBooleanCheckbox value="#{cc.attrs.iDatiDisabilita.consulenzaCOP}" />
+					</td>
+				</tr>
+			</table>
+
+		</composite:implementation>
+	</h:body>
+	
+</html>

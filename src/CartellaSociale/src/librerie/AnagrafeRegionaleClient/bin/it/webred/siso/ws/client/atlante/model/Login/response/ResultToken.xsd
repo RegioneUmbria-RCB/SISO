@@ -1,0 +1,6 @@
+<xs:schema targetNamespace="http://sistematlante.it/AtlanteWebServices.ObjectModel.Messages" xmlns:mstns="http://sistematlante.it/gestioneServizi" xmlns="http://sistematlante.it/AtlanteWebServices.ObjectModel.Messages" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" attributeFormDefault="qualified" elementFormDefault="qualified" xmlns:app2="http://sistematlante.it/AtlanteWebServices.ObjectModel.Messages" xmlns:app1="http://schemas.datacontract.org/2004/07/AtlanteWebServices.ObjectModel.Messages">
+  <xs:import namespace="http://sistematlante.it/gestioneServizi" />
+  <xs:import namespace="http://schemas.datacontract.org/2004/07/AtlanteWebServices.ObjectModel.Messages" />
+  <xs:element name="Result" msdata:Prefix="a" type="xs:string" />
+  <xs:element name="Token" msdata:Prefix="a" type="xs:string" />
+</xs:schema>

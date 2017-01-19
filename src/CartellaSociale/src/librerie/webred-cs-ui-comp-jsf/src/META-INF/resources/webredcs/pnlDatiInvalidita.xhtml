@@ -1,0 +1,178 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+     	xmlns:h="http://java.sun.com/jsf/html"
+		xmlns:f="http://java.sun.com/jsf/core"
+		xmlns:ui="http://java.sun.com/jsf/facelets"
+		xmlns:p="http://primefaces.org/ui"
+	  	xmlns:composite="http://java.sun.com/jsf/composite"
+	  	xmlns:webredcs="http://java.sun.com/jsf/composite/webredcs"
+	  	xmlns:webred="http://java.sun.com/jsf/composite/webred">
+      
+	<h:head>
+		<title>Dati Invalidita</title>
+	</h:head>
+	<h:body>
+		<composite:interface componentType="pnlDatiInvalidita">
+			<composite:attribute name="iDatiInvalidita" type="it.webred.cs.jsf.interfaces.IDatiInvalidita"/>
+			<composite:attribute name="disableModifica" default="false"/>
+		</composite:interface>
+		<composite:implementation>			
+			
+			<style type="text/css">
+				.datalist-noborder .ui-widget-content {
+					border: none;
+				}
+			</style>
+
+		<table border="0" width="100%">
+			<tr>
+				<td>
+					<h:outputText value="Invalidità civile (in corso)" />
+				</td>
+				<td>
+					<p:selectBooleanCheckbox value="#{cc.attrs.iDatiInvalidita.invaliditaInCorso}" /> 
+				</td>
+			</tr>
+			<tr>
+				<td width="15%">
+					<h:outputText value="Invalidità civile" />
+				</td>
+				<td width="8%">
+					<p:selectBooleanCheckbox value="#{cc.attrs.iDatiInvalidita.invalidita}" /> 
+				</td>
+				<td width="11%">
+					<h:outputText value="Data invalidità" />
+				</td>
+				<td width="25%">
+					<webred:pnlData id="dataInvalidita" dataValue="#{cc.attrs.iDatiInvalidita.dataInvalidita}" dataPattern="dd/MM/yyyy" dataReq="false" 
+            			dataValMes="Data di invalidità non valida" dataConMes="Data di invalidità non valida"
+            			dataPatternLabel="(gg/mm/aaaa)"/>
+				</td>
+				<td width="16%">
+					<h:outputText value="Data scadenza invalidità" />
+				</td>
+				<td width="25%">
+					<webred:pnlData id="dataScInvalidita" dataValue="#{cc.attrs.iDatiInvalidita.dataInvaliditaScadenza}" dataPattern="dd/MM/yyyy" dataReq="false" 
+            			dataValMes="Data di scadenza invalidità non valida" dataConMes="Data di scadenza invalidità non valida"
+            			dataPatternLabel="(gg/mm/aaaa)"/>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<h:outputText value="ICD10 (diagnosi 1)" />
+				</td>
+				<td colspan="5">
+					<webred:pnlDoppioComboBox doppioCmbBoxBean="#{cc.attrs.iDatiInvalidita.icd10D1Bean}"
+						disableModifica="#{cc.attrs.disableModifica}"/>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<h:outputText value="ICD10 (diagnosi 2)" />
+				</td>
+				<td colspan="5">
+					<webred:pnlDoppioComboBox doppioCmbBoxBean="#{cc.attrs.iDatiInvalidita.icd10D2Bean}"
+						disableModifica="#{cc.attrs.disableModifica}"/>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<h:outputText value="ICD9 (diagnosi 1)" />
+				</td>
+				<td colspan="5">
+					<webred:pnlDoppioComboBox doppioCmbBoxBean="#{cc.attrs.iDatiInvalidita.icd9D1Bean}"
+						disableModifica="#{cc.attrs.disableModifica}"/> 
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<h:outputText value="ICD9 (diagnosi 2)" />
+				</td>
+				<td colspan="5">
+					<webred:pnlDoppioComboBox doppioCmbBoxBean="#{cc.attrs.iDatiInvalidita.icd9D2Bean}"
+						disableModifica="#{cc.attrs.disableModifica}"/> 
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<h:outputText value="Note sanitarie" />
+				</td>
+				<td colspan="5">
+					<p:inputTextarea value="#{cc.attrs.iDatiInvalidita.note}" style="width: 400px;"/> 
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<h:outputText value="Certificazione H" />
+				</td>
+				<td>
+					<p:selectBooleanCheckbox value="#{cc.attrs.iDatiInvalidita.certificazioneH}" /> 
+				</td>
+				<td>
+					<h:outputText value="Data certificazione" />
+				</td>
+				<td>
+					<webred:pnlData id="dataCertificazione" dataValue="#{cc.attrs.iDatiInvalidita.dataCertificazione}" dataPattern="dd/MM/yyyy" dataReq="false" 
+            			dataValMes="Data di certificazione non valida" dataConMes="Data di certificazione non valida"
+            			dataPatternLabel="(gg/mm/aaaa)"/>
+				</td>
+				<td>
+					<h:outputText value="Data scadenza certificazione" />
+				</td>
+				<td>
+					<webred:pnlData id="dataScCertificazione" dataValue="#{cc.attrs.iDatiInvalidita.dataCertificazioneScadenza}" dataPattern="dd/MM/yyyy" dataReq="false" 
+            			dataValMes="Data di scadenza certificazione non valida" dataConMes="Data di scadenza certificazione non valida"
+            			dataPatternLabel="(gg/mm/aaaa)"/>
+				</td>
+			</tr>
+			
+			<tr>
+				<td>
+				</td>
+				<td>
+				</td>
+				<td>
+					<h:outputText value="In valutazione" />
+				</td>
+				<td>
+					<p:selectBooleanCheckbox value="#{cc.attrs.iDatiInvalidita.inValutazione}" /> 
+				</td>
+						
+				<td>
+					<h:outputText value="Indennità di frequenza" />
+				</td>
+				<td>
+					<p:selectBooleanCheckbox value="#{cc.attrs.iDatiInvalidita.indennitaFrequenza}" /> 
+				</td>
+			</tr>
+				
+			<tr>
+				<td>
+					<h:outputText value="% Invalidità" />
+				</td>
+				<td colspan="5">
+					<p:spinner value="#{cc.attrs.iDatiInvalidita.invaliditaPerc}" min="0" max="100"/> 
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<h:outputText value="Accompagnamento" />
+				</td>
+				<td>
+					<p:selectBooleanCheckbox value="#{cc.attrs.iDatiInvalidita.accompagnamento}" /> 
+				</td>
+				<td>
+					<h:outputText value="Legge 104" />
+				</td>
+				<td>
+					<p:selectBooleanCheckbox value="#{cc.attrs.iDatiInvalidita.legge104}" /> 
+				</td>
+			</tr>
+			
+			
+		</table>
+
+		</composite:implementation>
+	</h:body>
+	
+</html>

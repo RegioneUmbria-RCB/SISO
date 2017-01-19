@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" columnWidth="595" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<field name="aumentoOre" class="java.lang.String"/>
+	<field name="diminuzioneOre" class="java.lang.String"/>
+	<field name="dal" class="java.lang.String"/>
+	<field name="orePreviste" class="java.lang.String"/>
+	<field name="nAccessi" class="java.lang.String"/>
+	<field name="contributoUtente" class="java.lang.String"/>
+	<field name="tipoOre" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="42" splitType="Immediate">
+			<staticText>
+				<reportElement x="0" y="0" width="133" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Aumento ore n.]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="133" y="0" width="47" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{aumentoOre}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="307" y="0" width="50" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{diminuzioneOre}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="202" y="0" width="105" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Diminuzione ore n.]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="462" y="0" width="93" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{dal}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="368" y="0" width="94" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Dal]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="368" y="19" width="94" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Contributo utente]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="462" y="19" width="93" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{contributoUtente}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="133" y="19" width="47" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{orePreviste}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="202" y="19" width="105" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[N° accessi]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="307" y="19" width="50" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{nAccessi}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="0" y="19" width="133" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{tipoOre}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+</jasperReport>

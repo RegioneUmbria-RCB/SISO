@@ -1,0 +1,28 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+     	xmlns:h="http://java.sun.com/jsf/html"
+		xmlns:f="http://java.sun.com/jsf/core"
+		xmlns:ui="http://java.sun.com/jsf/facelets"
+		xmlns:p="http://primefaces.org/ui"
+	  	xmlns:composite="http://java.sun.com/jsf/composite">
+      
+	<h:head>
+		<title>Componente casella di testo ricerca utente</title>
+	</h:head>
+	<h:body>
+		<composite:interface componentType="pnlUserSearch">
+			<composite:attribute name="userManBean" type="it.webred.cs.jsf.interfaces.IUserSearch" />
+			<composite:attribute name="styleClass"/>
+			<composite:attribute name="componentsToUpdate" default=""/>
+		</composite:interface>
+		<composite:implementation>
+	     		<p:autoComplete  id="autoCompUserSearchId" styleClass="#{cc.attrs.styleClass}" widgetVar="#{cc.attrs.userManBean.widgetVar}" value="#{cc.attrs.userManBean.selSoggetto}"
+           			title="Inserire almeno 3 caratteri e attendere la ricerca" minQueryLength="3" completeMethod="#{cc.attrs.userManBean.getLstSoggetti}"
+           			var="userVar"  itemLabel="#{userVar.itemLabel}" itemValue="#{userVar}" forceSelection="true" converter="userSearchConverter"
+           			queryDelay="2000"  size="50" maxResults="#{cc.attrs.userManBean.maxResult}">
+           			<p:ajax event="itemSelect" listener="#{cc.attrs.userManBean.handleChangeUser}" update="#{cc.attrs.componentsToUpdate}" />
+           		</p:autoComplete>
+		</composite:implementation>
+	</h:body>
+		
+</html>

@@ -1,0 +1,201 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+     	xmlns:h="http://java.sun.com/jsf/html"
+		xmlns:f="http://java.sun.com/jsf/core"
+		xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+		xmlns:ui="http://java.sun.com/jsf/facelets"
+		xmlns:p="http://primefaces.org/ui"
+	  	xmlns:composite="http://java.sun.com/jsf/composite">
+      
+	<h:head>
+		<title>Gestione Colloqui</title>
+	</h:head>
+	<h:body>
+		<composite:interface componentType="pnlColloquio">
+			<composite:attribute name="iColloquio" type="it.webred.cs.jsf.interfaces.IColloquio" required="true"/>
+			<composite:attribute name="var"  type="java.lang.String" required="false" default="1"/>
+		</composite:interface>
+		<composite:implementation xmlns:webredcs="http://java.sun.com/jsf/composite/webredcs"
+								  xmlns:webred="http://java.sun.com/jsf/composite/webred">
+		
+			<p:outputPanel id="pnlColloqui" >
+				<h:panelGrid columns="1" cellpadding="0" cellspacing="0">
+					<p:commandButton action="#{cc.attrs.iColloquio.OnNewColloquio}" 
+						disabled="#{cc.attrs.iColloquio.soggetto || cc.attrs.iColloquio.readOnly}"
+						oncomplete="colloquioDialog#{cc.attrs.var}.show()"
+						title="Dettaglio Diario" value="Nuovo" icon="ui-icon-document-b"
+						update=":#{p:component('dlgColloquio')}" process="@this">	
+					</p:commandButton>
+					<p:spacer height="2"/>
+				</h:panelGrid>
+			
+				<p:dataTable id="dataTableColloqui" var="dati" emptyMessage="Nessun elemento presente"
+					value="#{cc.attrs.iColloquio.listaColloquios}"
+					paginator="true" rowsPerPageTemplate="10,20,30"
+					paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}">
+					
+					<f:facet name="header">  
+			            <p:outputLabel value="Lista diari"/>
+			        </f:facet>
+					
+					<p:column headerText="Data" width="20">	
+						<h:outputLabel value="#{dati.dtAmministrativa}">
+							<f:convertDateTime type="date" pattern="dd/MM/yyyy" timeZone="Europe/Berlin" />
+						</h:outputLabel>
+					</p:column>
+					
+					<p:column headerText="Cognome e nome">	
+						<h:outputLabel value="#{dati.cognome} #{dati.nome}" />
+					</p:column>
+					
+					<p:column headerText="Tipo">	
+						<h:outputLabel value="#{dati.descrizioneTipoColloquio}" />
+					</p:column>
+					
+					<p:column headerText="Dove">	
+						<h:outputLabel value="#{dati.descrizioneDiarioDove}" />
+					</p:column>
+					
+					<p:column headerText="Con chi">	
+						<h:outputLabel value="#{dati.descrizioneDiarioConChi}" />
+						<h:outputLabel value=": #{dati.diarioConChiAltro}" rendered="#{dati.diarioConChiAltro != null}" />
+					</p:column>
+					
+					<p:column headerText="Da chi">	
+						<h:outputLabel value="#{dati.cognomeDaChi} #{dati.nomeDaChi}" />
+					</p:column>
+					
+					<p:column headerText="Anteprima diario">	
+						<h:outputText value="#{dati.abilitato4riservato ? dati.campoTestoRid : 'RISERVATO'}" escape="false" />
+					</p:column>
+					<p:column headerText="Data Modifica" width="60">	
+						<h:outputLabel value="#{dati.dtModifica}">
+							<f:convertDateTime type="date" pattern="dd/MM/yyyy HH:mm:ss" timeZone="Europe/Berlin" />
+						</h:outputLabel>
+					</p:column>
+					<p:column headerText="" width="20">	
+						<p:commandButton oncomplete="colloquioDialog#{cc.attrs.var}.show()"
+							title="Dettaglio Diario" icon="ui-icon-search" value="Apri"
+							update=":#{p:component('dlgColloquio')}" process="@this">
+							<f:setPropertyActionListener value="#{dati}"
+								target="#{cc.attrs.iColloquio.selectedRow}" />
+						</p:commandButton>
+					</p:column>
+	
+				</p:dataTable>
+						
+				<!-- INIZIO DIALOG -->
+				<p:dialog id="dlgColloquio" styleClass="dialog" header="Dettaglio Diario" widgetVar="colloquioDialog#{cc.attrs.var}" modal="true" resizable="false">
+					<div class="ui-grid">
+						<div class="ui-grid-row">
+							<div class="span-2 cellSpacer">
+								<p:outputLabel for="username" value="Operatore: " styleClass="maxWidth" />
+							</div>
+							<div class="span-4 cellSpacer">
+								<h:outputText id="username" styleClass="maxWidth" value="#{cc.attrs.iColloquio.datiColloquio.opAnagrafica.cognome} #{cc.attrs.iColloquio.datiColloquio.opAnagrafica.nome}" />
+							</div>
+							
+							<div class="span-2 cellSpacer">
+								<p:outputLabel for="tipoColloquio" styleClass="maxWidth" value="Tipo Colloquio:" />
+							</div>
+							<div class="span-6 cellSpacer">
+								<p:selectOneMenu id="tipoColloquio" styleClass="maxWidth"
+									value="#{cc.attrs.iColloquio.datiColloquio.diarioTipoSelected}"
+									required="true"	requiredMessage="Il tipo del colloquio è obbligatorio">
+									<f:selectItems value="#{cc.attrs.iColloquio.nameTipoColloquios}"
+										var="itm" itemLabel="#{itm.value}" itemValue="#{itm.key}" />
+								</p:selectOneMenu>
+							</div>
+							
+							<div class="span-2 cellSpacer">
+								<p:outputLabel styleClass="maxWidth" value="Data Colloquio: *"/>
+							</div>
+							<div class="span-4 cellSpacer">
+							    <webred:pnlData 
+							            dataValue="#{cc.attrs.iColloquio.datiColloquio.colloquio.csDDiario.dtAmministrativa}" 
+							            dataPattern="dd/MM/yyyy"  dataPatternLabel="(gg/mm/aaaa)"
+							            dataReq="true" dataReqMes="La data del Colloquio è obbligatoria" minDate="1/1/12"/>
+							</div>
+						</div>
+						
+						<div class="ui-grid-row">
+							<div class="span-2 cellSpacer">
+								<p:outputLabel for="diarioDove" styleClass="maxWidth" value="Dove:" />
+							</div>
+							<div class="span-4 cellSpacer">
+								<p:selectOneMenu id="diarioDove" styleClass="maxWidth"
+									value="#{cc.attrs.iColloquio.datiColloquio.diarioDoveSelected}">
+									<f:selectItem itemLabel="- seleziona -" itemValue="" />
+									<f:selectItems value="#{cc.attrs.iColloquio.nameDiarioDoves}"
+										var="itm" itemLabel="#{itm.value}" itemValue="#{itm.key}" />
+								</p:selectOneMenu>
+							</div>
+							
+							<div class="span-2 cellSpacer">
+								<p:outputLabel for="diarioConchi" styleClass="maxWidth" value="Con Chi:" />
+							</div>
+							<div class="span-6 cellSpacer">
+							   <h:panelGrid columns="2" styleClass="maxWidth">
+								<p:selectOneMenu id="diarioConchi" styleClass="maxWidth"
+									value="#{cc.attrs.iColloquio.datiColloquio.diarioConChiSelected}"
+									required="true"
+									requiredMessage="Il campo con chi è obbligatorio">
+									<f:selectItems value="#{cc.attrs.iColloquio.nameDiarioConchis}"
+										var="itm" itemLabel="#{itm.value}" itemValue="#{itm.key}" />
+								    <p:ajax event="change" update="altroConChi" process="@this" listener="#{cc.attrs.iColloquio.onChangeDiarioConChi}"/>
+								</p:selectOneMenu>
+								 <p:inputText id="altroConChi" styleClass="maxWidth"
+								             value="#{cc.attrs.iColloquio.datiColloquio.colloquio.diarioConChiAltro}" 
+							                 disabled="#{cc.attrs.iColloquio.datiColloquio.diarioConChiSelected ne 9999}" />
+							    </h:panelGrid>
+							</div>
+							
+	    					<div class="span-2 cellSpacer">
+								<p:selectBooleanCheckbox value="#{cc.attrs.iColloquio.datiColloquio.riservato}" styleClass="maxWidth" itemLabel="Riservato"
+							  	disabled="#{!cc.attrs.iColloquio.datiColloquio.abilitato4riservato}" /> 
+							</div>
+						</div>
+						<div class="ui-grid-row">
+						
+						</div>
+						
+						<p:outputPanel styleClass="ui-grid-row" style="color:red;" rendered="#{!cc.attrs.iColloquio.datiColloquio.abilitato4riservato}" >
+							<div class="span-5">
+			                    <p:outputLabel styleClass="maxWidth" value="Il diario è RISERVATO. Il contenuto è visibile solo a:" />
+							</div>
+							<div class="span-15">
+								<ul>
+								  <li>Gestore del diario (inserimento/modifica)</li>
+								  <li>Responsabile del Caso</li>
+								  <li>Responsabile del Settore</li>
+								</ul>
+							</div>
+						</p:outputPanel>
+						
+						<p:outputPanel styleClass="ui-grid-row" rendered="#{cc.attrs.iColloquio.datiColloquio.abilitato4riservato}" >
+							<div class="span-20 cellSpacer">
+			                    <p:outputLabel for="diarioTesto" value="Diario:"/>
+							</div>
+						</p:outputPanel>
+						
+						<p:outputPanel styleClass="ui-grid-row" rendered="#{cc.attrs.iColloquio.datiColloquio.abilitato4riservato}" >
+							<div class="span-20">
+			                	<p:editor id="diarioTesto" styleClass="editor" value="#{cc.attrs.iColloquio.datiColloquio.colloquio.testoDiario}" required="true"
+									requiredMessage="Inserire il testo nel diario è obbligatorio" />
+							</div>
+						</p:outputPanel>
+						
+						<div class="ui-grid-row">
+							<div class="span-20">
+								<webred:pnlSalvaEsci dialogToHide="colloquioDialog#{cc.attrs.var}" 
+									disabled="#{cc.attrs.iColloquio.readOnly or !cc.attrs.iColloquio.datiColloquio.abilitato4riservato}"
+									pnlToUpdate=":#{p:component('pnlColloqui')}" salvaAction="#{cc.attrs.iColloquio.saveColloquio()}" />
+							</div>
+						</div>
+					</div>
+				</p:dialog>
+			</p:outputPanel>
+		</composite:implementation>
+	</h:body>
+		
+</html>

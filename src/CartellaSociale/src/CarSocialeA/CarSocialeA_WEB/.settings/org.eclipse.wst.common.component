@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?><project-modules id="moduleCoreId" project-version="1.5.0">
+    <wb-module deploy-name="CarSocialeA_WEB">
+        <wb-resource deploy-path="/" source-path="/WebContent" tag="defaultRootSource"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/src"/>
+        <dependent-module archiveName="WebredEJBUtility.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/WebredEJBUtility/WebredEJBUtility">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="CarSocialeA_EJBClient.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/CarSocialeA_EJBClient/CarSocialeA_EJBClient">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="CarSocialeA_WEB_ManBeans.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/CarSocialeA_WEB_ManBeans/CarSocialeA_WEB_ManBeans">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="webred-ui-comp-jsf.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/webred-ui-comp-jsf/webred-ui-comp-jsf">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="webred-cs-ui-comp-jsf.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/webred-cs-ui-comp-jsf/webred-cs-ui-comp-jsf">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="cetsecutil.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/CT-LIBS/cet-lib/cetsecutil.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="CarSocialeA_DataModel.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/CarSocialeA_DataModel/CarSocialeA_DataModel">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="datarouter.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/CT-LIBS/cet-lib/datarouter.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="commons-fileupload-1.3.1.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/CT-LIBS/apache-commons/main/commons-fileupload-1.3.1.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="jackson-core-2.2.3.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/CT-LIBS/json/jackson-core-2.2.3.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="jackson-databind-2.2.3.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/CT-LIBS/json/jackson-databind-2.2.3.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="jackson-annotations-2.2.3.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/CT-LIBS/json/jackson-annotations-2.2.3.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="SegretariatoSoc_DataModel.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/SegretariatoSoc_DataModel/SegretariatoSoc_DataModel">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="SegretariatoSoc_EJBClient.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/SegretariatoSoc_EJBClient/SegretariatoSoc_EJBClient">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="iText-2.1.7.js2.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/CT-LIBS/jasper/iText-2.1.7.js2.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="commons-beanutils-1.8.2.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/CT-LIBS/jasper/commons-beanutils-1.8.2.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="commons-digester-2.1.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/CT-LIBS/jasper/commons-digester-2.1.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="commons-logging-1.1.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/CT-LIBS/jasper/commons-logging-1.1.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="jasperreports-5.6.0.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/CT-LIBS/jasper/jasperreports-5.6.0.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="xml-apis.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/CT-LIBS/jasper/xml-apis.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="commons-collections-3.2.1.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/CT-LIBS/jasper/commons-collections-3.2.1.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="servlet-api-2.4.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/CT-LIBS/jasper/servlet-api-2.4.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="groovy-all-2.0.1.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/CT-LIBS/jasper/groovy-all-2.0.1.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="jasperreports-fonts-4.0.0.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/CT-LIBS/jasper/jasperreports-fonts-4.0.0.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="webredutils.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/CT-LIBS/cet-lib/webredutils.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="SocioSanitario_EJBClient.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/SocioSanitario_EJBClient/SocioSanitario_EJBClient">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="FlussoINPS.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/FlussoINPS/FlussoINPS">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <property name="context-root" value="CarSocialeA_WEB"/>
+        <property name="java-output-path" value="/CarSocialeA_WEB/build/classes"/>
+    </wb-module>
+</project-modules>

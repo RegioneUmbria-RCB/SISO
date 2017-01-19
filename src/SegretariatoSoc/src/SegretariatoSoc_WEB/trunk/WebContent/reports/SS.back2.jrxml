@@ -1,0 +1,688 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="SS" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="511" leftMargin="42" rightMargin="42" topMargin="20" bottomMargin="20" isFloatColumnFooter="true">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="bordo" isDefault="false">
+		<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+			<topPen lineWidth="1.0" lineStyle="Solid"/>
+			<leftPen lineWidth="1.0"/>
+			<bottomPen lineWidth="1.0"/>
+			<rightPen lineWidth="1.0" lineStyle="Solid"/>
+		</box>
+	</style>
+	<style name="table" isDefault="false">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TH" isDefault="false" mode="Opaque" backcolor="#F6D981">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_CH" isDefault="false" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TD" isDefault="false" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1" isDefault="false">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1_TH" isDefault="false" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1_CH" isDefault="false" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1_TD" isDefault="false" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="settore" isDefault="false" style="table_TH" fontSize="10" isItalic="false" isUnderline="false" isStrikeThrough="false"/>
+	<parameter name="dirbase" class="java.lang.String">
+		<defaultValueExpression><![CDATA["C:\\Sviluppo\\eclipse-workspaces\\kepler-workspaces\\SmartW-Trunk\\SegretariatoSoc_WEB\\WebContent\\reports"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="l_id" class="java.lang.Long"/>
+	<parameter name="data_colloquio" class="java.lang.String"/>
+	<parameter name="operatore" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="sede" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="modalita" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="cognome_segnalante" class="java.lang.String"/>
+	<parameter name="nome_segnalante" class="java.lang.String"/>
+	<parameter name="indirizzo_segnalante" class="java.lang.String"/>
+	<parameter name="tel_segnalante" class="java.lang.String"/>
+	<parameter name="cel_segnalante" class="java.lang.String"/>
+	<parameter name="relazione" class="java.lang.String"/>
+	<parameter name="cognome" class="java.lang.String"/>
+	<parameter name="nome" class="java.lang.String"/>
+	<parameter name="accesso" class="java.lang.String"/>
+	<parameter name="inviante" class="java.lang.String"/>
+	<parameter name="sesso" class="java.lang.String"/>
+	<parameter name="luogo_nascita" class="java.lang.String"/>
+	<parameter name="data_nascita" class="java.lang.String"/>
+	<parameter name="residenza" class="java.lang.String"/>
+	<parameter name="tel" class="java.lang.String"/>
+	<parameter name="cel" class="java.lang.String"/>
+	<parameter name="cf" class="java.lang.String"/>
+	<parameter name="cittadinanza" class="java.lang.String"/>
+	<parameter name="tipologia" class="java.lang.String"/>
+	<parameter name="invalido" class="java.lang.String"/>
+	<parameter name="tipo_famiglia" class="java.lang.String"/>
+	<parameter name="vive_solo" class="java.lang.String"/>
+	<parameter name="conosciuto" class="java.lang.String"/>
+	<parameter name="in_carico" class="java.lang.String"/>
+	<parameter name="professione" class="java.lang.String"/>
+	<parameter name="medico" class="java.lang.String"/>
+	<parameter name="cognome_rif" class="java.lang.String"/>
+	<parameter name="nome_rif" class="java.lang.String"/>
+	<parameter name="parentela_rif" class="java.lang.String"/>
+	<parameter name="problemi_rif" class="java.lang.String"/>
+	<parameter name="motivo_altro" class="java.lang.String"/>
+	<parameter name="intervento_altro" class="java.lang.String"/>
+	<parameter name="diario" class="java.lang.String">
+		<defaultValueExpression><![CDATA[" "]]></defaultValueExpression>
+	</parameter>
+	<parameter name="motivi" class="java.lang.String">
+		<defaultValueExpression><![CDATA[""]]></defaultValueExpression>
+	</parameter>
+	<parameter name="interventi" class="java.lang.String">
+		<defaultValueExpression><![CDATA[""]]></defaultValueExpression>
+	</parameter>
+	<parameter name="tipi" class="java.lang.String">
+		<defaultValueExpression><![CDATA[""]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT SC.ID,SG.ACCESSO,SS.NOME,SS.COGNOME,SS.VIA,SS.COMUNE,SS.TELEFONO,SS.RELAZIONE,
+RIFERIMENTO,MOTIVAZIONE,INTERVENTI,COMPLETA,
+TIPO,ELIMINATA,ESTERNA ,
+SG.TELEFONO,SG.CEL,SG.RESIDENZA
+FROM SS_SCHEDA SC, SS_SCHEDA_SEGNALANTE SS,SS_SCHEDA_SEGNALATO SG
+WHERE SC.ID=$P{l_id}
+AND SC.SEGNALATO=SS.ID
+AND SC.SEGNALATO=SG.ID]]>
+	</queryString>
+	<field name="ID" class="java.math.BigDecimal"/>
+	<field name="ACCESSO" class="java.lang.String"/>
+	<field name="NOME" class="java.lang.String"/>
+	<field name="COGNOME" class="java.lang.String"/>
+	<field name="VIA" class="java.lang.String"/>
+	<field name="COMUNE" class="java.lang.String"/>
+	<field name="TELEFONO" class="java.lang.String"/>
+	<field name="RELAZIONE" class="java.lang.String"/>
+	<field name="RIFERIMENTO" class="java.math.BigDecimal"/>
+	<field name="MOTIVAZIONE" class="java.math.BigDecimal"/>
+	<field name="INTERVENTI" class="java.math.BigDecimal"/>
+	<field name="COMPLETA" class="java.math.BigDecimal"/>
+	<field name="TIPO" class="java.lang.String"/>
+	<field name="ELIMINATA" class="java.math.BigDecimal"/>
+	<field name="ESTERNA" class="java.math.BigDecimal"/>
+	<field name="CEL" class="java.lang.String"/>
+	<field name="RESIDENZA" class="java.math.BigDecimal"/>
+	<title>
+		<band height="85">
+			<image hAlign="Left">
+				<reportElement mode="Transparent" x="0" y="0" width="419" height="53" forecolor="#CCCCCC"/>
+				<imageExpression class="java.lang.String"><![CDATA[$P{dirbase} + "/img/logo.png"]]></imageExpression>
+			</image>
+		</band>
+	</title>
+	<detail>
+		<band height="144" splitType="Prevent">
+			<textField isBlankWhenNull="true">
+				<reportElement style="bordo" mode="Transparent" x="176" y="38" width="335" height="19" forecolor="#000000" backcolor="#FFFFFF"/>
+				<textElement verticalAlignment="Middle">
+					<font size="11" isBold="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{data_colloquio}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement style="bordo" mode="Opaque" x="0" y="1" width="511" height="25" backcolor="#DEE0E0"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle" markup="html">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[DATI SCHEDA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="0" y="38" width="166" height="19" forecolor="#000000" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle" markup="none">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Data colloquio]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="0" y="57" width="166" height="19" forecolor="#000000" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle" markup="none">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Operatore di Sportello]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="0" y="76" width="166" height="19" forecolor="#000000" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle" markup="none">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Sede del colloquio]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="0" y="95" width="166" height="19" forecolor="#000000" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle" markup="none">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Modalità di accesso]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement style="bordo" mode="Transparent" x="176" y="76" width="335" height="19" forecolor="#000000" backcolor="#FFFFFF"/>
+				<textElement verticalAlignment="Middle">
+					<font size="11" isBold="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{sede}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="bordo" mode="Transparent" x="176" y="57" width="335" height="19" forecolor="#000000" backcolor="#FFFFFF"/>
+				<textElement verticalAlignment="Middle">
+					<font size="11" isBold="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{operatore}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="bordo" mode="Transparent" x="176" y="95" width="335" height="19" forecolor="#000000" backcolor="#FFFFFF"/>
+				<textElement verticalAlignment="Middle">
+					<font size="11" isBold="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{modalita}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Transparent" x="1" y="114" width="166" height="19" forecolor="#000000" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle" markup="none">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Motivo di accesso]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement style="bordo" mode="Transparent" x="176" y="114" width="334" height="19" forecolor="#000000" backcolor="#FFFFFF"/>
+				<textElement verticalAlignment="Middle">
+					<font size="11" isBold="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{accesso}]]></textFieldExpression>
+			</textField>
+		</band>
+		<band height="124">
+			<staticText>
+				<reportElement mode="Transparent" x="1" y="37" width="166" height="19" forecolor="#000000" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle" markup="none">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Cognome e Nome]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="1" y="56" width="166" height="19" forecolor="#000000" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle" markup="none">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Indirizzo Interlocutore]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="1" y="94" width="166" height="19" forecolor="#000000" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle" markup="none">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Relazione]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="bordo" mode="Opaque" x="0" y="0" width="511" height="25" backcolor="#DEE0E0"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle" markup="html">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[SEGNALANTE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="1" y="75" width="166" height="19" forecolor="#000000" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle" markup="none">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Telefono /  Cellulare]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement style="bordo" mode="Transparent" x="177" y="37" width="335" height="19" forecolor="#000000" backcolor="#FFFFFF"/>
+				<textElement verticalAlignment="Middle">
+					<font size="11" isBold="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{cognome_segnalante}+" "+$P{nome_segnalante}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="bordo" mode="Transparent" x="177" y="56" width="335" height="19" forecolor="#000000" backcolor="#FFFFFF"/>
+				<textElement verticalAlignment="Middle">
+					<font size="11" isBold="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{indirizzo_segnalante}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="bordo" mode="Transparent" x="177" y="75" width="335" height="19" forecolor="#000000" backcolor="#FFFFFF"/>
+				<textElement verticalAlignment="Middle">
+					<font size="11" isBold="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{tel_segnalante}+" / "+$P{cel_segnalante}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="bordo" mode="Transparent" x="177" y="94" width="335" height="19" forecolor="#000000" backcolor="#FFFFFF"/>
+				<textElement verticalAlignment="Middle">
+					<font size="11" isBold="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{relazione}]]></textFieldExpression>
+			</textField>
+		</band>
+		<band height="356">
+			<textField isBlankWhenNull="true">
+				<reportElement style="bordo" mode="Transparent" x="177" y="57" width="334" height="19" forecolor="#000000" backcolor="#FFFFFF"/>
+				<textElement verticalAlignment="Middle">
+					<font size="11" isBold="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{inviante}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Transparent" x="1" y="76" width="166" height="19" forecolor="#000000" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle" markup="none">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Sesso]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="bordo" mode="Opaque" x="0" y="0" width="511" height="25" backcolor="#DEE0E0"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle" markup="html">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PERSONA INTERESSATA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="1" y="57" width="166" height="19" forecolor="#000000" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle" markup="none">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Inviato da]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="1" y="37" width="166" height="19" forecolor="#000000" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle" markup="none">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Cognome e Nome]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement style="bordo" mode="Transparent" x="177" y="76" width="334" height="19" forecolor="#000000" backcolor="#FFFFFF"/>
+				<textElement verticalAlignment="Middle">
+					<font size="11" isBold="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{sesso}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="bordo" mode="Transparent" x="177" y="37" width="334" height="19" forecolor="#000000" backcolor="#FFFFFF"/>
+				<textElement verticalAlignment="Middle">
+					<font size="11" isBold="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{cognome}+" "+$P{nome}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Transparent" x="1" y="152" width="166" height="19" forecolor="#000000" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle" markup="none">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Codice Fiscale]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="1" y="95" width="166" height="19" forecolor="#000000" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle" markup="none">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Luogo e data di nascita]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement style="bordo" mode="Transparent" x="177" y="152" width="334" height="19" forecolor="#000000" backcolor="#FFFFFF"/>
+				<textElement verticalAlignment="Middle">
+					<font size="11" isBold="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{cf}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Transparent" x="1" y="133" width="166" height="19" forecolor="#000000" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle" markup="none">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Telefono/Cellulare]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="1" y="114" width="166" height="19" forecolor="#000000" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle" markup="none">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Residenza]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement style="bordo" mode="Transparent" x="177" y="95" width="334" height="19" forecolor="#000000" backcolor="#FFFFFF"/>
+				<textElement verticalAlignment="Middle">
+					<font size="11" isBold="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{luogo_nascita}+", "+$P{data_nascita}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Transparent" x="1" y="190" width="166" height="19" forecolor="#000000" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle" markup="none">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Status]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement style="bordo" mode="Transparent" x="177" y="190" width="334" height="19" forecolor="#000000" backcolor="#FFFFFF"/>
+				<textElement verticalAlignment="Middle">
+					<font size="11" isBold="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{tipologia}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Transparent" x="1" y="171" width="166" height="19" forecolor="#000000" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle" markup="none">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Cittadinanza	]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement style="bordo" mode="Transparent" x="177" y="171" width="334" height="19" forecolor="#000000" backcolor="#FFFFFF"/>
+				<textElement verticalAlignment="Middle">
+					<font size="11" isBold="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{cittadinanza}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Transparent" x="1" y="228" width="166" height="19" forecolor="#000000" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle" markup="none">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Straniero non accompagnato?]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement style="bordo" mode="Transparent" x="177" y="228" width="334" height="19" forecolor="#000000" backcolor="#FFFFFF"/>
+				<textElement verticalAlignment="Middle">
+					<font size="11" isBold="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{vive_solo}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Transparent" x="1" y="247" width="166" height="19" forecolor="#000000" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle" markup="none">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Utente Conosciuto?]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement style="bordo" mode="Transparent" x="177" y="247" width="334" height="19" forecolor="#000000" backcolor="#FFFFFF"/>
+				<textElement verticalAlignment="Middle">
+					<font size="11" isBold="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{conosciuto}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Transparent" x="1" y="209" width="166" height="19" forecolor="#000000" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle" markup="none">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Tipologia Famigliare]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement style="bordo" mode="Transparent" x="177" y="209" width="334" height="19" forecolor="#000000" backcolor="#FFFFFF"/>
+				<textElement verticalAlignment="Middle">
+					<font size="11" isBold="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{tipo_famiglia}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Transparent" x="0" y="306" width="166" height="19" forecolor="#000000" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle" markup="none">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Professione]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement style="bordo" mode="Transparent" x="177" y="306" width="334" height="19" forecolor="#000000" backcolor="#FFFFFF"/>
+				<textElement verticalAlignment="Middle">
+					<font size="11" isBold="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{professione}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Transparent" x="0" y="325" width="166" height="19" forecolor="#000000" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle" markup="none">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Medico di base]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement style="bordo" mode="Transparent" x="177" y="325" width="334" height="19" forecolor="#000000" backcolor="#FFFFFF"/>
+				<textElement verticalAlignment="Middle">
+					<font size="11" isBold="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{medico}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Transparent" x="0" y="266" width="166" height="19" forecolor="#000000" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle" markup="none">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[In carico ad Altri servizi]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement style="bordo" mode="Transparent" x="177" y="266" width="334" height="19" forecolor="#000000" backcolor="#FFFFFF"/>
+				<textElement verticalAlignment="Middle">
+					<font size="11" isBold="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{in_carico}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="bordo" mode="Transparent" x="177" y="133" width="334" height="19" forecolor="#000000" backcolor="#FFFFFF"/>
+				<textElement verticalAlignment="Middle">
+					<font size="11" isBold="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{tel}+" / "+$P{cel}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="bordo" mode="Transparent" x="177" y="114" width="334" height="19" forecolor="#000000" backcolor="#FFFFFF"/>
+				<textElement verticalAlignment="Middle">
+					<font size="11" isBold="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{residenza}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Transparent" x="0" y="286" width="166" height="19" forecolor="#000000" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle" markup="none">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Condizione Lavorativa]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement style="bordo" mode="Transparent" x="177" y="286" width="334" height="19" forecolor="#000000" backcolor="#FFFFFF"/>
+				<textElement verticalAlignment="Middle">
+					<font size="11" isBold="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{condLavoro}]]></textFieldExpression>
+			</textField>
+		</band>
+		<band height="104">
+			<staticText>
+				<reportElement style="bordo" mode="Opaque" x="0" y="0" width="511" height="25" backcolor="#DEE0E0"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle" markup="html">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PERSONA DI RIFERIMENTO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="1" y="37" width="166" height="19" forecolor="#000000" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle" markup="none">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Cognome e Nome]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="1" y="56" width="166" height="19" forecolor="#000000" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle" markup="none">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Parentela]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="1" y="75" width="166" height="19" forecolor="#000000" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle" markup="none">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Eventuali problemi]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement style="bordo" mode="Transparent" x="177" y="37" width="334" height="19" forecolor="#000000" backcolor="#FFFFFF"/>
+				<textElement verticalAlignment="Middle">
+					<font size="11" isBold="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{cognome_rif}+" "+$P{nome_rif}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="bordo" mode="Transparent" x="177" y="56" width="334" height="19" forecolor="#000000" backcolor="#FFFFFF"/>
+				<textElement verticalAlignment="Middle">
+					<font size="11" isBold="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{parentela_rif}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="bordo" mode="Transparent" x="177" y="75" width="334" height="19" forecolor="#000000" backcolor="#FFFFFF"/>
+				<textElement verticalAlignment="Middle">
+					<font size="11" isBold="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{problemi_rif}]]></textFieldExpression>
+			</textField>
+		</band>
+		<band height="94">
+			<staticText>
+				<reportElement style="bordo" mode="Opaque" x="1" y="0" width="511" height="25" backcolor="#DEE0E0"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle" markup="html">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[MOTIVAZIONE DELLA SEGNALAZIONE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="0" y="65" width="36" height="19" forecolor="#000000" backcolor="#FFFFFF"/>
+				<textElement verticalAlignment="Middle" markup="none">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Altro]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement style="bordo" mode="Transparent" x="39" y="65" width="472" height="19" forecolor="#000000" backcolor="#FFFFFF"/>
+				<textElement verticalAlignment="Middle">
+					<font size="11" isBold="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{motivo_altro}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement style="bordo" positionType="Float" stretchType="RelativeToBandHeight" mode="Transparent" x="0" y="35" width="511" height="30" forecolor="#000000" backcolor="#FFFFFF"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{motivi}]]></textFieldExpression>
+			</textField>
+		</band>
+		<band height="99">
+			<staticText>
+				<reportElement style="bordo" mode="Opaque" x="0" y="0" width="511" height="25" backcolor="#DEE0E0"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle" markup="html">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[SERVIZI RICHIESTI]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="1" y="67" width="36" height="19" forecolor="#000000" backcolor="#FFFFFF"/>
+				<textElement verticalAlignment="Middle" markup="none">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Altro]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement style="bordo" mode="Transparent" x="40" y="67" width="472" height="19" forecolor="#000000" backcolor="#FFFFFF"/>
+				<textElement verticalAlignment="Middle">
+					<font size="11" isBold="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{intervento_altro}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement style="bordo" positionType="Float" stretchType="RelativeToBandHeight" mode="Transparent" x="1" y="37" width="511" height="30" forecolor="#000000" backcolor="#FFFFFF"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{interventi}]]></textFieldExpression>
+			</textField>
+		</band>
+		<band height="87">
+			<staticText>
+				<reportElement style="bordo" mode="Opaque" x="0" y="0" width="511" height="25" backcolor="#DEE0E0"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle" markup="html">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[INTERVENTI PREVISTI]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement style="bordo" positionType="Float" stretchType="RelativeToBandHeight" mode="Transparent" x="0" y="37" width="511" height="30" forecolor="#000000" backcolor="#FFFFFF"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{tipi}]]></textFieldExpression>
+			</textField>
+		</band>
+		<band height="171">
+			<staticText>
+				<reportElement style="bordo" mode="Opaque" x="0" y="0" width="511" height="25" backcolor="#DEE0E0"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle" markup="html">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[DIARIO SOCIALE]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement style="bordo" positionType="Float" stretchType="RelativeToBandHeight" mode="Transparent" x="0" y="37" width="510" height="130" forecolor="#000000" backcolor="#FFFFFF"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{diario}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="24">
+			<textField>
+				<reportElement mode="Transparent" x="1" y="0" width="511" height="19" backcolor="#DEE0E0"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA["Scheda di Segretariato Sociale -  Pag. " +$V{PAGE_NUMBER}+"\n"+
+"Settore "+ "- Servizio "+"\n"+
+"Via "+"\n"+
+"Orari: "+"\n"+
+"Email:"+ "TEL.:"]]></textFieldExpression>
+			</textField>
+			<break>
+				<reportElement x="0" y="0" width="100" height="1"/>
+			</break>
+		</band>
+	</pageFooter>
+</jasperReport>

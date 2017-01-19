@@ -1,0 +1,81 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition 
+      xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" 
+      xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui"
+	  xmlns:webredcs="http://java.sun.com/jsf/composite/webredcs"
+	  xmlns:webred="http://java.sun.com/jsf/composite/webred">
+
+      <h:form id="fromDialogProvvTribunale">
+      <p:outputPanel id="pnlDialogProvvTribunale">
+	  <p:tabView  id="ProvedimentoMinTabView" style="padding:0;" effect="fade">
+		
+			<p:tab id="DatiProvedimentoTab" title="#{provMinoriTabManBean.datiProv.tabName}" 
+			       rendered="true" titletip="#{provMinoriTabManBean.datiProv.tabName}">
+				<f:facet name="title">
+					<h:outputText value="#{provMinoriTabManBean.datiProv.tabName}" style="vertical-align: bottom;" />
+				</f:facet>
+				
+				<ui:include src="/jsp/protected/provvedimentiMinori/tabDatiProvvedimento.xhtml">
+					<ui:param name="dataBean" value="#{provMinoriTabManBean.datiProv}" />
+					
+				</ui:include>
+			</p:tab>
+			<p:tab id="prescSpecTab" title="#{provMinoriTabManBean.prescSpec.tabName}" 
+			       rendered="true" titletip="#{provMinoriTabManBean.prescSpec.tabName}">
+
+				<f:facet name="title">
+					<h:outputText value="#{provMinoriTabManBean.prescSpec.tabName}" style="vertical-align: bottom;" />
+				</f:facet>
+				<f:metadata>
+					<ui:param name="dataBean" value="#{provMinoriTabManBean.prescSpec}" />
+				</f:metadata>
+				<ui:include src="/jsp/protected/provvedimentiMinori/tabPrescrizioniSpecialistiche.xhtml">
+					<ui:param name="dataBeanParam" value="#{provMinoriTabManBean.prescSpec}" />	
+				</ui:include>
+
+			</p:tab>
+			<p:tab id="prescSocEdTab" title="#{provMinoriTabManBean.prescSocEd.tabName}" 
+			       rendered="true" titletip="#{provMinoriTabManBean.prescSocEd.tabName}">
+				<f:facet name="title">
+					<h:outputText value="#{provMinoriTabManBean.prescSocEd.tabName}" style="vertical-align: bottom;" />
+				</f:facet>
+				
+				<ui:include src="/jsp/protected/provvedimentiMinori/tabPrescrizioniSocioEducativaxhtml.xhtml">
+					<ui:param name="dataBean" value="#{provMinoriTabManBean.prescSocEd}" />
+				</ui:include>
+
+			</p:tab>
+			<p:tab id="interTutelaTab" title="#{provMinoriTabManBean.interTutela.tabName}" 
+			       rendered="true" titletip="#{provMinoriTabManBean.interTutela.tabName}">
+
+				<f:facet name="title">
+					<h:outputText value="#{provMinoriTabManBean.interTutela.tabName}" style="vertical-align: bottom;" />
+				</f:facet>
+				<ui:include src="/jsp/protected/provvedimentiMinori/tabInterventiTutela.xhtml">
+					<ui:param name="dataBean" value="#{provMinoriTabManBean.interTutela}" />
+				</ui:include>
+
+			</p:tab>
+	
+			<p:tab id="intSpecTempTab" title="#{provMinoriTabManBean.intSpecTemp.tabName}" 
+			       rendered="true" titletip="#{provMinoriTabManBean.prescSocEd.tabName}">
+				<f:facet name="title">
+					<h:outputText value="#{provMinoriTabManBean.intSpecTemp.tabName}" style="vertical-align: bottom;" />
+				</f:facet>
+				<ui:include src="/jsp/protected/provvedimentiMinori/tabIntSpecTempiChiusure.xhtml">
+					<ui:param name="dataBean" value="#{provMinoriTabManBean.intSpecTemp}" />
+				</ui:include>
+			</p:tab>
+			
+
+		</p:tabView>
+
+		<h:panelGrid width="100%">
+			<h:outputLabel id="nota" value="Note al provvedimento" for="general_nota" styleClass="bold"/>
+			<p:inputTextarea id="general_nota" value="#{provMinoriTabManBean.jsonCurrent.nota}" styleClass="span-20" rows="4" autoResize="false" />
+	    </h:panelGrid>
+	    </p:outputPanel>
+	    <webred:pnlSalvaEsci dialogToHide="ProvMinoriDialog" pnlToUpdate=":#{p:component('listaProvvedimenti')}" disabled="false" salvaAction="#{bugFixProvv.salva()}"/>
+	    
+		</h:form>
+	</ui:composition>

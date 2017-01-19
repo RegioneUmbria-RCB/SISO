@@ -1,0 +1,452 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:webred="http://java.sun.com/jsf/composite/webred"
+	xmlns:webredcs="http://java.sun.com/jsf/composite/webredcs">
+<ui:composition template="/jsp/protected/layout/layout.xhtml">
+
+	<ui:define name="content">
+		<p:ajaxStatus onstart="PF('statusDialog').show();" onsuccess="PF('statusDialog').hide();"/>  
+		<p:dialog modal="true" widgetVar="statusDialog" header="Caricamento"   
+		       draggable="false" closable="false" resizable="false" >  
+		   	<p:graphicImage value="/images/loadingbar.gif" />  
+		</p:dialog>
+		
+		<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+		       <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>  
+		       <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>       
+		   </p:confirmDialog>
+		   
+	  <h:form id="formUffici">
+	  	<h:panelGrid columns="1" style="min-width:50px; margin: auto;" columnClasses="label, value" styleClass="grid">
+		   <h:outputLabel value="Non ci sono uffici abilitati in questa organizzazione" style="font-color:red;"
+		                  rendered="#{!empty userBean.listaOrganizzazioni and empty ufficiTableBean.listaUffici}"/>
+	       <p:selectOneRadio  id="uffSe" value="#{preselPuntoContatto.puntoContatto.ufficio.id}" columns="1" layout="grid" 
+	                       rendered="#{preselPuntoContatto.puntoContatto.ufficio.id==null}" 
+	                       style="min-width:200px; margin: auto;">
+	          <f:selectItems value="#{ufficiTableBean.listaUffici}" /> 
+			   <p:ajax update=":panelHome,@form" event="change"  listener="#{ufficiTableBean.populateFiltroUffici}" oncomplete="location.reload()"/>
+	       </p:selectOneRadio>
+	       
+	       <h:panelGrid columns="5" rendered="#{preselPuntoContatto.puntoContatto.ufficio.id!=null}">
+	           <h:outputLabel value="Ufficio: " style="font-weight:bold;" />
+	           <h:panelGroup>
+		      	   <h:outputLabel value="#{ufficiTableBean.preselectedPContatto.ufficio.nome}"/>
+	               <p:spacer width="10px;"/>
+		      	   <p:commandButton title="Cambia Ufficio" action="#{ufficiTableBean.resetPreselectedUfficio}" 
+		      	               update=":panelHome,@form" partialSubmit="true" icon="ui-icon-wrench"/>
+	      	   </h:panelGroup>
+	      	   <p:spacer width="50px;" height="1px;"/>
+	      	   <h:outputLabel value="Luogo: " style="font-weight:bold;" />
+	      	   
+	           <p:selectOneMenu  id="panelPContatto" 
+	                             value="#{preselPuntoContatto.puntoContatto.idPContatto}" >
+		          <f:selectItem noSelectionOption="true" itemLabel=""  /> 
+		          <f:selectItems value="#{preselPuntoContatto.puntoContatto.ufficio.listaPContatto}" /> 
+				   <p:ajax event="change" partialSubmit="true" listener="#{preselPuntoContatto.onChangePuntoContatto}"/>
+		       </p:selectOneMenu>
+		    </h:panelGrid>
+	     </h:panelGrid>
+      </h:form>
+     
+	 <p:spacer height="5px;"/>
+	 
+	<p:outputPanel id="panelHome" width="100%">
+	<p:outputPanel rendered="#{preselPuntoContatto.puntoContatto.ufficio.id!=null}"> 
+    		<p:panel header="Ricerca cittadino in anagrafe" toggleable="true" id="search_panel">  
+        	 	<h:form id="search_form">
+        	 	<h:panelGroup>
+        	 	
+        			<h:outputLabel value="Cognome " for="ricerca_cognome" /><p:spacer width="5px"/>  
+            		<p:inputText id="ricerca_cognome" style="text-transform: uppercase" value="#{searchBean.cognome}"/>
+            	
+					<p:spacer width="10px"/>
+            		<h:outputLabel value="Nome" for="ricerca_nome" /><p:spacer width="5px"/>   
+            		<p:inputText id="ricerca_nome" style="text-transform: uppercase" value="#{searchBean.nome}"/>
+ 					<p:spacer width="10px"/>       
+                    <h:outputLabel value="Codice fiscale " for="ricerca_cf" /><p:spacer width="5px"/>  
+            		<p:inputText id="ricerca_cf" style="text-transform: uppercase" value="#{searchBean.cf}" />
+             		
+             		<p:spacer width="5px"/>
+             		<p:selectBooleanCheckbox value="#{searchBean.searchAnagSanitaria}" 
+             		                         itemLabel="Estendi ricerca ad anagrafe sanitaria"
+             		                         rendered="#{searchBean.abilitaSearchAnagSanitaria}">
+             		</p:selectBooleanCheckbox>
+             	    <p:spacer width="10px"/>
+             	   		
+            		<p:commandButton id="submitButton" value="Cerca" actionListener="#{searchBean.searchSoggetto}" 
+            		                 process="@form"
+            		                 update=":table_search_form,:table_search_nucleo_form" />
+              	</h:panelGroup>    
+        	
+        		</h:form>
+        		
+        		
+        		<h:form id="table_search_form"> 
+        		<p:spacer width="20px" rendered="#{searchBean.searchButtonPressed}" />
+        		<p:dataTable id="table_search" rendered="#{searchBean.searchButtonPressed}" rowIndexVar="rowId"
+        			var="soggetto" value="#{searchBean.soggettiDataModel}" paginator="true" rows="10"  
+                 	emptyMessage="Nominativo non trovato"
+                 	selection="#{searchBean.selectedSoggetto}" selectionMode="single" sortBy="cognome" disabledSelection="#{soggetto.cf==null}" >  
+  
+  					<f:facet name="header">Risultati della ricerca</f:facet>
+        			 
+        			 <p:column>  
+			           <p:graphicImage value="/images/heartMonitor.png" height="20" title="Ricavato da anagrafe sanitaria regionale" rendered="#{soggetto.anagSanitaria}"/>
+			        </p:column>
+			        <p:column headerText="Cognome" style="vertical-align:middle;width:15%" sortBy="cognome" >  
+			            #{soggetto.cognome}  
+			        </p:column>
+			        
+			        <p:column headerText="Nome" style="vertical-align:middle;width:15%" sortBy="nome" >  
+			            #{soggetto.nome}  
+			        </p:column>
+			        
+			        <p:column headerText="Codice fiscale" style="vertical-align:middle;width:10%" sortBy="cf" >  
+			            #{soggetto.cf}
+			        </p:column>
+			        
+			        
+			        <p:column headerText="Data di Nascita" style="vertical-align:middle;width:8%" sortBy="dataNascita" >  
+			            <h:outputText value="#{soggetto.dataNascita}" >
+                			<f:convertDateTime pattern="dd/MM/yyyy"  />
+            			</h:outputText>
+            			<p:spacer width="10px"/>
+            			<p:graphicImage id="imgDefunto" value="/images/morte.png" height="20" rendered="#{soggetto.dataMorte!=null}"/>
+			            <p:tooltip  for="imgDefunto" rendered="#{soggetto.dataNascita!=null}">
+			            	<h:outputText value="Soggetto defunto in data " />
+			            	<h:outputText value="#{soggetto.dataMorte}" >
+                				<f:convertDateTime pattern="dd/MM/yyyy"  />
+            				</h:outputText>  
+			            </p:tooltip>
+			        </p:column>
+			        
+			        <p:column headerText="Sesso" style="text-align:center;vertical-align:middle;width:20px">
+			            <h:outputText value="#{soggetto.sesso}" rendered="#{soggetto.sesso ne 'F' and soggetto.sesso ne 'M'}" />
+			            <p:graphicImage rendered="#{soggetto.sesso eq 'F'}" title="Donna" value="/images/female.png" height="20"/>
+			            <p:graphicImage rendered="#{soggetto.sesso eq 'M'}" title="Uomo" value="/images/male.png" height="20"/>
+			        </p:column>
+			        
+			        <p:column headerText="Residenza" style="vertical-align:middle;width:20%">
+			        	 <h:outputText value="#{soggetto.indirizzo.indirizzoCompleto}"  />
+			        </p:column>
+			        
+			        <p:column headerText="Cartella sociale" style="text-align:center;vertical-align:middle;width:5%">  
+			            <p:graphicImage rendered="#{soggetto.cs}" value="/images/check.png"/>
+			            <p:graphicImage rendered="#{!soggetto.cs}" value="/images/close.png"/>
+			        </p:column>
+			        
+			        <p:column headerText="#{userBean.labelSegrSociale}" style="text-align:center;vertical-align:middle;width:5%">  
+			           	<h:panelGroup>
+			           	   <p:graphicImage id="lblSsComplete" rendered="#{not empty soggetto.ssComplete}" value="/images/check.png" height="20"  /> 
+				           <p:tooltip for="lblSsComplete" styleClass="tooltip" rendered="#{soggetto.ssComplete.size()>0}">
+				                  <h:outputLabel value="n° Schede Complete" styleClass="h4"/><br/><br/>
+			           			  <ui:repeat value="#{soggetto.ssComplete}" var="ss" style="font-size:0.6em;" >
+			           			    <h:outputText value=" #{ss.key}: #{ss.value}"/><br/>
+			          			  </ui:repeat>
+			           		</p:tooltip>
+			           		<p:spacer width="10px" rendered="#{not empty soggetto.ssIncomplete and not empty soggetto.ssComplete}"/>
+			           	   <p:graphicImage id="lblSsIncomplete" rendered="#{not empty soggetto.ssIncomplete}" value="/images/incomplete.png" height="20"  /> 
+				           <p:tooltip for="lblSsIncomplete" styleClass="tooltip" rendered="#{soggetto.ssIncomplete.size()>0}">
+			           			  <h:outputLabel value="n° Schede Incomplete" styleClass="h4"/><br/><br/>
+			           			  <ui:repeat value="#{soggetto.ssIncomplete}" var="ss" style="font-size:0.6em;" >
+			           			   <h:outputText value=" #{ss.key}: #{ss.value}"/><br/>
+			          			  </ui:repeat>
+			           		</p:tooltip>
+		           		</h:panelGroup> 
+			           
+			            <p:graphicImage rendered="#{empty soggetto.ssIncomplete and empty soggetto.ssComplete}" value="/images/close.png"/> 
+			         
+			        </p:column>
+			        
+			        <p:column headerText="Interventi/servizi erogati"  style="text-align:center;vertical-align:middle;width:5%">  
+			            <p:graphicImage rendered="#{soggetto.intErogati}" value="/images/check.png"/>
+			            <p:graphicImage rendered="#{!soggetto.intErogati}" value="/images/close.png"/>
+			        </p:column>
+			        
+			        <p:column headerText="Enti di volontariato" style="text-align:center;vertical-align:middle;width:5%">  
+			            <p:graphicImage rendered="#{soggetto.ev}" value="/images/check.png"/> 
+			            <p:graphicImage rendered="#{!soggetto.ev}" value="/images/close.png"/> 
+			        </p:column>
+			  
+			        <f:facet name="footer" >
+			        	<p:commandButton id="famButton" action="#{searchBean.onNucleoFamiliareClick}"
+			            	value="Nucleo Familiare" icon="ui-icon-home" update=":table_search_nucleo_form" />
+			            <p:spacer width="5px" />
+			            
+			            <p:commandButton id="viewButton" action="#{searchBean.onViewSchedeClick}"
+			            	value="Vedi schede" icon="ui-icon-search" />
+			            <p:spacer width="5px" />
+			            <p:commandButton id="newButton" action="#{searchBean.onNewSchedaClick}"
+			            	 value="Nuova scheda" icon="ui-icon-circle-plus" disabled="#{schedeTableBean.disableComponent(schedeTableBean.canWrite())}" >
+			            	 <f:param name="currentLocation" value="Risultati della ricerca" />
+			           	</p:commandButton>
+			        </f:facet>
+			        
+			    </p:dataTable>
+			    </h:form>
+			    
+        		
+        		<h:form id="table_search_nucleo_form">
+        		<p:spacer width="20px" rendered="#{searchBean.searchNucleoButtonPressed}" />
+        		<p:dataTable id="table_search_nucleo" rendered="#{searchBean.searchNucleoButtonPressed}" 
+        		    emptyMessage="Nucleo familiare non trovato"
+        		    var="soggettoNucleo" value="#{searchBean.nucleoDataModel}" paginator="true" rows="5"  
+                 	selection="#{searchBean.selectedSoggettoNucleo}" selectionMode="single" sortBy="cognome" >  
+  
+  					<f:facet name="header">  
+            			Nucleo familiare.  
+        			</f:facet>
+        
+			        <p:column headerText="Cognome" style="vertical-align:middle;width:15%" sortBy="cognome" >  
+			            #{soggettoNucleo.cognome}  
+			        </p:column>
+			        
+			        <p:column headerText="Nome" style="vertical-align:middle;width:15%" sortBy="nome" >  
+			            #{soggettoNucleo.nome}  
+			        </p:column>
+			        
+			        <p:column headerText="Codice fiscale" style="vertical-align:middle;width:15%" sortBy="cf" >  
+			            #{soggettoNucleo.cf}  
+			        </p:column>
+			        
+			        
+			        <p:column headerText="Data di nascita" style="vertical-align:middle;width:8%" sortBy="dataNascita" >  
+			            <h:outputText value="#{soggettoNucleo.dataNascita}" >
+                			<f:convertDateTime pattern="dd/MM/yyyy"  />
+            			</h:outputText>  
+			        </p:column>
+			        
+			        <p:column style="text-align:center;vertical-align:middle;width:20px" >
+			             <h:outputText value="#{soggettoNucleo.sesso}" rendered="#{soggettoNucleo.sesso ne 'F' and soggettoNucleo.sesso ne 'M'}" />  
+			            <p:graphicImage rendered="#{soggettoNucleo.sesso  eq 'F'}" title="Donna" value="/images/female.png" height="20"/>
+			            <p:graphicImage rendered="#{soggettoNucleo.sesso  eq 'M'}" title="Uomo" value="/images/male.png" height="20"/>
+			        </p:column>
+			        
+			        <p:column headerText="Relazione" style="vertical-align:middle;"  sortBy="parentela" >  
+			            #{soggettoNucleo.parentela}
+			        </p:column>
+			        
+			        <p:column headerText="Cartella sociale" style="text-align:center;vertical-align:middle;width:5%">  
+			            <p:graphicImage rendered="#{soggettoNucleo.cs}" value="/images/check.png"/>
+			            <p:graphicImage rendered="#{!soggettoNucleo.cs}" value="/images/close.png"/>
+			        </p:column>
+			        
+			        <p:column headerText="#{userBean.labelSegrSociale}" style="text-align:center;vertical-align:middle;width:5%">  
+			          <h:panelGroup>
+			            
+			           	   <p:graphicImage id="lblSsNComplete" rendered="#{not empty soggettoNucleo.ssComplete}" title="Schede Complete: #{soggettoNucleo.ssComplete}"  value="/images/check.png" height="20"  /> 
+				           <p:tooltip for="lblSsNComplete" styleClass="tooltip" rendered="#{soggettoNucleo.ssComplete.size()>0}">
+			           			  <h:outputLabel value="n° Schede Complete" styleClass="h4"/><br/><br/>
+			           			  <ui:repeat value="#{soggettoNucleo.ssComplete}" var="ss" style="font-size:0.6em;">
+			           			  	<h:outputText value=" #{ss.key}: #{ss.value}"/><br/>
+			          			  </ui:repeat>
+			           		</p:tooltip>
+			           		<p:spacer width="10px" rendered="#{not empty soggettoNucleo.ssIncomplete and not empty soggettoNucleo.ssComplete}"/>
+			           	   <p:graphicImage id="lblSsNIncomplete" rendered="#{not empty soggettoNucleo.ssIncomplete}" value="/images/incomplete.png" height="20"  /> 
+				           <p:tooltip for="lblSsNIncomplete" styleClass="tooltip" rendered="#{soggettoNucleo.ssIncomplete.size()>0}">
+			           			  
+			           			  <h:outputLabel value="n° Schede Incomplete" styleClass="h4"/><br/><br/>
+			           			  <ui:repeat value="#{soggettoNucleo.ssIncomplete}" var="ss" style="font-size:0.6em;">
+			           			  	<h:outputText value=" #{ss.key}: #{ss.value}"/><br/>
+			          			  </ui:repeat>
+			           		</p:tooltip>
+		 
+		           		</h:panelGroup> 
+			            <p:graphicImage rendered="#{empty soggettoNucleo.ssIncomplete and empty soggettoNucleo.ssComplete}" value="/images/close.png"/> 
+			         
+			       
+			        </p:column>
+			        
+			        <p:column headerText="Enti di volontariato" style="text-align:center;vertical-align:middle;width:5%">  
+			            <p:graphicImage rendered="#{soggettoNucleo.ev}" value="/images/check.png"/> 
+			            <p:graphicImage rendered="#{!soggettoNucleo.ev}" value="/images/close.png"/> 
+			        </p:column>
+			  
+			        <f:facet name="footer" >
+			        	<p:commandButton id="viewButton" action="#{searchBean.onViewSchedeNucleoClick}" partialSubmit="true"
+			            	value="Vedi schede" icon="ui-icon-search" />
+			            	 
+			        </f:facet>
+			        
+			    </p:dataTable>
+        		</h:form>
+        		
+    		</p:panel>
+    	
+    	<p:spacer height="20px"/>
+    	
+		<h:form id="table_uffici_form">
+		<p:panel header="Tabella riassuntiva uffici" toggleable="true" >
+		<h:panelGrid columns="1" cellpadding="5" style="width:100%">
+		
+			<p:dataTable id="uffici" var="ufficio" value="#{ufficiTableBean.filtroUffici}">  
+	  
+		        <p:column headerText="Ufficio" style="width:17%">  
+		            <h:outputText value="#{ufficio.nome}" />  
+		        </p:column>  
+		  
+		        <p:column headerText="Totale schede" style="width:17%; text-align:center;">  
+		            <h:outputText value="#{ufficio.totaleSchede}" />  
+		        </p:column>  
+		  
+		        <p:column headerText="Schede in sospeso" style="width:17%; text-align:center;">  
+		            <h:outputText value="#{ufficio.schedeInSospeso}" /> 
+		        </p:column>  
+		  
+		        <p:column headerText="Proposta PIC" style="width:17%; text-align:center;">  
+		            <h:outputText value="#{ufficio.schedeInCarico}" />  
+		        </p:column>  
+		        
+		        <p:column headerText="Schede eliminate" style="width:17%; text-align:center;">  
+		            <h:outputText value="#{ufficio.schedeEliminate}" />  
+		        </p:column>
+		  
+		        <p:column headerText="Vedi schede" style="text-align:center;width:10%">  
+                	<p:commandButton id="goButton" action="#{ufficiTableBean.vaiAUfficio(ufficio)}" partialSubmit="true" ajax="true"
+                	    icon="ui-icon-search" title="Mostra schede #{ufficio.nome}" 
+                		disabled="#{ufficiTableBean.disableComponent(ufficiTableBean.canAccessUfficio(ufficio.id))}" >  
+            		</p:commandButton>
+            	</p:column>
+	  
+	    	</p:dataTable>
+    	</h:panelGrid>
+   	<h:panelGrid columns="2" style="width:100%;">
+    	<h:panelGrid columns="5" cellpadding="5" >
+	     	<h:outputLabel value="Stampa moduli"  />
+	     	<p:commandButton  ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);"
+	            value="privacy" icon="ui-icon-key" >
+	            <p:fileDownload value="#{searchBean.privacy}" />
+	        </p:commandButton>
+	        <p:commandButton ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);"
+	            value="scheda" icon="ui-icon-document" >
+	            <p:fileDownload value="#{searchBean.report}"/>
+	        </p:commandButton>
+	     </h:panelGrid>
+	      
+	      <p:commandButton value="Nuova scheda" style="float:right;" action="#{ufficiTableBean.addInUfficio}" ajax="false"
+	                       disabled="#{schedeTableBean.disableComponent(schedeTableBean.canWrite())}">
+	      		<f:param name="currentLocation" value="Tabella riassuntiva uffici" />
+	      </p:commandButton>
+	      
+       	</h:panelGrid>
+    	
+    	</p:panel>
+    	
+    	</h:form >
+    	
+    	<p:spacer height="20px"/>
+
+
+		<p:tabView>
+	        <p:tab title="News">
+			  <p:layoutUnit position="west" size="250" style="border: none;"> 
+					<iframe  src="https://docs.google.com/presentation/d/1-szS_d9VaN9d6MVCvvxVn6Fcz7m2tGKDWDChMX2zyCY/embed?start=false&amp;loop=false&amp;delayms=60000" frameborder="0" width="960" height="569" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
+		      </p:layoutUnit>    
+	        </p:tab>
+	        <p:tab title="Schede Incomplete">
+				<h:form id="schede_incomplete_form" >
+				<p:dataTable id="schede" 
+				            var="scheda" value="#{schedeIncompleteBean.dataModel}"
+				            rowIndexVar="rowIndex" rowKey="#{scheda.id}" 
+				            selection="#{schedeIncompleteBean.selectedScheda}" selectionMode="single"  
+				            emptyMessage="Nessun risultato per i parametri impostati"   
+				            paginator="true" paginatorPosition="bottom" rows="10"  lazy="true"
+				            filterEvent="enter" >  
+		 					
+		 				<f:facet name="header">Schede Incomplete <h:outputText value=" - Ufficio: #{preselPuntoContatto.puntoContatto.ufficio.nome}" rendered="#{preselPuntoContatto.puntoContatto.ufficio!=null}" />
+		 				</f:facet>
+		 				
+		 				<p:column  width="10" style="text-align:center;font-size:0.8em;">       
+							<f:facet name="header">
+				                <h:outputText value="ID" />
+				            </f:facet>  
+				            <h:outputText value="#{scheda.identificativo}" />
+			        	</p:column>  
+		 				
+		 			    <p:column  width="125">       
+								<f:facet name="header">
+					                <h:outputText value="Data ultima modifica" />
+					            </f:facet>  
+					            <h:outputText value="#{scheda.dataModifica}" >
+		                			<f:convertDateTime pattern="dd/MM/yyyy  HH:mm"  />
+		            			</h:outputText> 
+					    </p:column>  	
+				        		        		        
+				        <p:column headerText="Utente (cognome e nome)" filterBy="segnalato" filterMatchMode="contains">  
+				            <h:outputText value="#{scheda.denominazione}" style="text-transform: uppercase" />
+				        </p:column>
+			            <p:column  width="40" headerText="Data di nascita">  
+				            <h:outputText value="#{scheda.dataNascita}" >
+		               			<f:convertDateTime pattern="dd/MM/yyyy"   />
+		           			</h:outputText>  
+				        </p:column>  
+					  
+		
+				  	    <p:column headerText="Ufficio"  >  
+				            #{scheda.ufficio}  
+				        </p:column>
+				        
+				        <p:column headerText="Punto di Contatto" filterBy="puntoContatto" filterOptions="#{schedeIncompleteBean.ptoContt}" > 
+				            #{scheda.puntoContatto}  
+				        </p:column>
+				  	    
+				  	    <p:column headerText="Data di accesso" width="40">  
+				            <h:outputText value="#{scheda.dataAccesso}" >
+		               			<f:convertDateTime pattern="dd/MM/yyyy"  />
+		           			</h:outputText>  
+				        </p:column>
+				        
+				  		<p:column headerText="Operatore"  filterBy="operatore" filterOptions="#{schedeIncompleteBean.lstOperatori}"> 
+				        	<h:outputLabel value="#{scheda.operatore} "/>      
+				        </p:column>
+				        
+				        <p:column headerText="Tipo intervento"  filterBy="intervento" filterOptions="#{schedeIncompleteBean.tipiIntervento}">  
+				            <h:outputText value="#{scheda.intervento}"  />
+				        </p:column>
+				        <p:column headerText="Privacy" style="text-align:center;vertical-align:middle;">  
+					          <p:graphicImage rendered="#{scheda.privacy!=null}" value="/images/signature-ok.png" width="20px" title="#{scheda.privacy}"/> 
+					          <p:graphicImage rendered="#{scheda.privacy==null}" value="/images/signature-no.png" width="20px" title="Modulo privacy non sottoscritto"/> 
+					    </p:column>
+				        
+				  	    
+				  
+				        <f:facet name="footer" >
+				            <p:commandButton id="editButton" action="#{schedeIncompleteBean.onEditClick}"
+				            	value="Modifica" icon="ui-icon-pencil" disabled="#{schedeTableBean.disableComponent(schedeTableBean.canEdit())}">
+				            	<f:param name="currentLocation" value="Schede Incomplete" />
+				            </p:commandButton>
+				            <p:spacer width="5px" />
+				            
+				            <p:spacer width="5px" />
+				            <p:commandButton id="deleteButton" action="#{schedeIncompleteBean.onDeleteClick}"
+				            	 value="Elimina" icon="ui-icon-trash" update="schede" disabled="#{schedeTableBean.disableComponent(schedeTableBean.canDelete())}" >
+				            	 <p:confirm header="Conferma" message="Sei sicuro?" icon="ui-icon-alert" />
+				            </p:commandButton>
+				            <p:spacer width="5px" />
+				            
+				            <p:spacer width="5px" />
+				            <p:commandButton id="createButton" action="#{schedeIncompleteBean.onNewClick}"
+					            	value="Nuova Scheda" icon="ui-icon-circle-plus" disabled="#{schedeTableBean.disableComponent(schedeTableBean.canWrite())}">
+			            		<f:param name="currentLocation" value="Schede Incomplete" />
+				           	</p:commandButton>
+				        </f:facet>
+				        
+				    </p:dataTable>
+    		</h:form>
+		        </p:tab>
+		    </p:tabView>
+    
+	
+  
+
+		
+		</p:outputPanel>
+		</p:outputPanel>
+	</ui:define>
+
+</ui:composition>
+</html>

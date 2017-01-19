@@ -1,0 +1,61 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:webred="http://java.sun.com/jsf/composite/webred">
+
+<h:head>
+	<title>Dati sociali essenziali apertura</title>
+</h:head>
+<h:body>
+	<composite:interface componentType="pnlDatSocApe">
+		<composite:attribute name="iDatiSocApe"
+			type="it.webred.cs.jsf.interfaces.IDatiSocApe" />
+		<composite:attribute name="styleClass" />
+	</composite:interface>
+	<composite:implementation>
+		<p:panel id="pnlDatSocApe" header="Dati sociali essenziali apertura"
+			styleClass="#{cc.attrs.styleClass}">
+
+			<table border="0">
+				<tr>
+					<td><h:outputText value="Ufficio *:" /></td>
+					<td><p:selectOneMenu style="width: 95%;"
+							value="#{cc.attrs.iDatiSocApe.datiSocApeBean.ufficio}"
+							required="true" requiredMessage="Ufficio è un campo obbligatorio">
+							<f:selectItems value="#{cc.attrs.iDatiSocApe.lstUffici}"
+								var="ufficio" itemLabel="#{ufficio.descrizione}"
+								itemValue="#{ufficio}" />
+						</p:selectOneMenu></td>
+				</tr>
+				<tr>
+					<td><h:outputText value="Data PIC *:" /></td>
+					<td><webred:pnlData id="dataPic"
+							dataValue="#{cc.attrs.iDatiSocApe.datiSocApeBean.dataPic}"
+							dataPattern="dd/MM/yyyy" dataReq="true"
+							dataReqMes="Data PIC è un campo obbligatorio"
+							dataValMes="Data PIC non valida" dataConMes="Data PIC non valida"
+							dataPatternLabel="(gg/mm/aaaa)" /></td>
+				</tr>
+				<tr>
+					<td><h:outputText value="Assistente sociale *:" /></td>
+					<td><p:selectOneMenu style="width: 95%;"
+							value="#{cc.attrs.iDatiSocApe.datiSocApeBean.assistenteSociale}"
+							required="true"
+							requiredMessage="Assistente sociale è un campo obbligatorio">
+							<f:selectItems
+								value="#{cc.attrs.iDatiSocApe.lstAssistentiSociali}"
+								var="assistenteSociale"
+								itemLabel="#{assistenteSociale.descrizione}"
+								itemValue="#{assistenteSociale}" />
+						</p:selectOneMenu></td>
+				</tr>
+			</table>
+		</p:panel>
+	</composite:implementation>
+</h:body>
+
+</html>

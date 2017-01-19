@@ -1,0 +1,749 @@
+html{
+	font-size: 100%;
+}
+
+.top-aligned-columns td{
+    vertical-align: top;
+    padding: 0px;
+}
+
+label{
+	font-size: 0.8rem;
+}
+
+.ui-widget{
+	font-size: 0.8rem!important;
+}
+
+.ui-datatable-hor-scroll .ui-datatable-tablewrapper,.scrolling-div .ui-datatable-tablewrapper{
+     overflow: auto;
+     width: 100%;
+     padding-bottom: 5px;
+}
+     
+a{
+	font-size: 0.8rem;
+}
+
+body {
+	font-family: Arial, Verdana, sans-serif;
+	margin: 0;
+    overflow-x: hidden;
+    padding: 0.1rem 0.5rem;
+}
+
+.logo{
+	width:15rem;
+}
+
+.logout, .setting{
+	cursor: pointer;
+	width: 1.7rem;
+}
+
+.infoSmall{
+	cursor: pointer;
+	width: 1.3rem;
+}
+
+.info{
+	cursor: pointer;
+	width: 1rem;
+	padding: 1%;	
+}
+
+.person{
+	width: 1.5rem;
+}
+
+.ui-state-disabled, .ui-widget-content .ui-state-disabled, .ui-widget-header .ui-state-disabled {
+	opacity: .55;
+	filter: Alpha(Opacity=55);
+}
+
+.ui-selectonemenu label.ui-selectonemenu-label {
+    padding-right: 28px;
+    text-align: left;
+}
+
+/* GROWL MESSAGES */
+.ui-growl {
+	width: 550px;
+	right: 28%;
+	left: 28%;
+}
+
+.ui-growl-message {
+	width: 450px;
+}
+
+.ui-state-highlight, .ui-widget-content .ui-state-highlight, .ui-widget-header .ui-state-highlight {
+	background: #D3E9F5;
+}
+
+.ui-growl-item-container {
+	opacity: 1;
+}
+/* FINE GROWL MESSAGES */
+
+/* Start Tooltip*/
+.tooltip{
+	width: 20rem;
+	font-size: 0.6em;
+}
+
+.tooltip .title{
+	font-weight: bold;
+	margin-bottom: 1rem;
+}
+
+.datalist-noborder .ui-widget-content {
+	border: none !important;
+	background: none !important;
+}
+
+.tooltip .datalist-noborder .ui-widget-content {
+	border: none;
+}
+
+.tooltip .datalist-noborder .dataList .ui-datalist-item{
+	padding: 0.2rem 0;
+}
+
+/* End Tooltip*/
+
+.ui-panel {
+	font-size: 12px;
+	font-family: Arial, Verdana, sans-serif;
+	padding: 0;
+}
+
+
+
+.ui-panelgrid td, .ui-panelgrid tr
+{
+    border-style: none;
+}
+
+.ui-tabs .ui-tabs-panel 
+{
+	/*padding-left: 0;
+	padding-right: 0;*/
+}
+
+.ui-panel .ui-panel-titlebar
+{
+	text-align: center;
+}
+
+.ui-dialog .ui-dialog-buttonpane
+{
+	background-image: inherit;
+}
+
+.panelPadding
+{
+	padding: 0.5em 1em 0.3em;
+}
+
+.noBorder
+{
+	border: none !important;
+	vertical-align: top;
+}
+
+.noBorderBackground
+{
+	border: none !important;
+	background: none !important;
+}
+
+.topVertical>tbody>tr>td {
+    vertical-align: top;
+}
+
+/*td
+{
+	padding-top: 3px;
+	padding-bottom: 3px;	
+}*/
+
+.home_icon {
+	background: url("../images/home.png") no-repeat scroll 0 0 rgba(0, 0, 0, 0) !important;
+    height: 2rem;
+    margin-top: -5px;
+    width: 2.3rem;
+}
+.servizisanitari_icon {
+            background: url("../images/icon-heartchart.png") no-repeat scroll 0 0 rgba(0, 0, 0, 0) !important;
+        }
+
+.loggedTable td
+{
+	padding-top: 0;
+	padding-bottom: 0;	
+}
+
+.myAutoComplete .ui-autocomplete-input::-ms-clear {
+	display: none;
+}
+
+.inattivo {
+	background-color: #CCC;
+    background-image: none;
+    color: grey;
+}
+
+.leftAlign {
+	text-align: left;
+	/*float: left;*/
+}
+
+.rightAlign {
+	text-align: right;
+	float: right;
+}
+
+.centerAlign {
+	margin: 0 auto;
+	text-align: center;
+}
+
+.bold {
+	font-weight:bold;
+}
+
+.h1 { font-weight:bold; font-size: 2em; }
+.h2 { font-weight:bold; font-size: 1.5em; }
+.h3 { font-weight:bold; font-size: 1.17em; }
+.h4 { font-weight:bold; font-size: 1.00em; }
+.h5 {  font-weight:bold; font-size: .83em; }
+.h6 { font-weight:bold; font-size: .75em; }
+
+/* Start Andrea's Framework Don't touch because is necessary for responsive resolution*/
+.ui-grid {
+    clear: both;
+    margin: 0;
+    padding: 0;
+}
+.ui-grid::before, .ui-grid::after {
+    content: "";
+    display: table;
+}
+.ui-grid::after {
+    clear: both;
+}
+.ui-grid .ui-grid-row {
+    clear: both;
+    display: flex;
+}
+.ui-grid-row::after {
+    clear: both;
+    content: "";
+    display: table;
+}
+
+.ui-grid .span-1, .ui-grid .span-2, .ui-grid .span-3, .ui-grid .span-4, .ui-grid .span-5, .ui-grid .span-6, .ui-grid .span-7, .ui-grid .span-8, .ui-grid .span-9, .ui-grid .span-10, .ui-grid .span-11, .ui-grid .span-12, .ui-grid .span-13, .ui-grid .span-14, .ui-grid .span-15, .ui-grid .span-16, .ui-grid .span-17, .ui-grid .span-18, .ui-grid .span-19, .ui-grid .span-20 {
+    box-sizing: border-box;
+    float: left;
+}
+
+.ui-grid .cellSpacer{
+	padding: 1%;
+}
+
+.maxWidth{
+	width: 100%!important;
+}
+
+/* End Andrea's Framework */
+
+.block		{ }
+.column		{float: left;}
+.last 		{float: right; margin-right: 0!important; }
+
+.span-1		{ width: 5%; }
+.span-2		{ width: 10%; }
+.span-3		{ width: 15%; }
+.span-4		{ width: 20%; }
+.span-5		{ width: 25%; }
+.span-6		{ width: 30%; }
+.span-7		{ width: 35%; }
+.span-8		{ width: 40%; }
+.span-9		{ width: 45%; }
+.span-10	{ width: 50%; }
+.span-11	{ width: 55%; }
+.span-12	{ width: 60%; }
+.span-13	{ width: 65%; }
+.span-14	{ width: 70%; }
+.span-15	{ width: 75%; }
+.span-16	{ width: 80%; }
+.span-17	{ width: 85%; }
+.span-18	{ width: 90%; }
+.span-19	{ width: 95%; }
+.span-20	{ width: 100%; }
+
+/* Component Iter Info Stato */
+.label{
+	font-weight: bold;
+	font-size: 1.2em;
+}
+
+.headerBotton{
+	float: right;
+	margin-top: -0.2em;
+	margin-bottom: -0.1em;
+	width: 18px;
+	height: 18px;
+}
+
+.aperto > div:first-child{
+	background: #76FF7A;
+	border-color: #76FF7A;
+}
+
+.chiuso > div:first-child{
+	background: #FF5349;
+	border-color: #FF5349;
+}
+
+.presaInCarico > div:first-child{
+	background: #1CAC78;
+	border-color: #1CAC78;
+}
+
+.respinto > div:first-child{
+	background: #CD4A4A;
+	border-color: #CD4A4A;
+}
+
+.riaperto > div:first-child{
+	background: #FFCF48;
+	border-color: #FFCF48;
+}
+
+.pausa > div:first-child{
+	background: #F664AF;
+	border-color: #F664AF;
+}
+
+.insoluto > div:first-child{
+	background: #dbdbdb;
+	border-color: #dbdbdb;
+}
+
+.risolto > div:first-child{
+	background: #14ff5b;
+	border-color: #14ff5b;
+}
+
+.segnalaVersoOperatore > div:first-child{
+	background: #5D76CB;
+	border-color: #5D76CB;
+}
+
+.segnalato > div:first-child{
+	background: #1DACD6;
+	border-color: #1DACD6;
+}
+
+.segnalaVersoEnte > div:first-child{
+	background: #1FCECB;
+	border-color: #1FCECB;
+}
+
+.pnlIterInfoStato  div:nth-child(2){
+	padding:0;
+}
+
+.pnlIterInfoStato{
+	margin-top: 3px;
+	margin-bottom: 3px;
+}
+
+.itertDialogTab .ui-widget-content{
+	border: none!important;
+}
+
+.itertDialogTab .ui-tabs-panels div:first-child{
+	padding: 3px;
+}
+
+/*.itertDialogTab .ui-tabs-panels{
+	overflow: auto;
+	height: 350px;
+}*/
+
+#iterDialogForm{
+	margin: -1.5em;
+}
+
+.segnalatoLabel{
+	text-align: center!important;
+	font-weight: bold!important;
+	font-size: 1.2em!important;
+	border-bottom: 1px #B4B2B2 solid!important;
+	padding-top: 20px!important;
+}
+
+.operatore{
+	border-bottom: 1px #B4B2B2 solid!important;
+}
+
+.fieldsetStep{
+	border: 1px #CCC solid;
+	margin: 18px 0;
+}
+
+.fieldsetStep legend{
+	font-weight: bold;
+}
+
+.noStyleTable{
+	border: none!important;
+}
+
+.noStyleTable th{
+	border: none!important;
+}
+
+.noStyleTable td{
+	border: none!important;
+}
+
+.noStyleTable tbody{
+	border: none!important;
+	text-align: center;
+}
+
+.iterStatoRow{
+	padding-top: 0.8em!important;
+	padding-bottom: 0.8em!important;
+}
+
+/* All Accordion Style */
+.ui-accordion .ui-accordion-content {
+	margin-top: 0px;
+	border-left: 1px solid #C4C4C4;
+	border-right: 1px solid #C4C4C4;
+	border-bottom: 1px solid #C4C4C4;
+}
+
+.ui-accordion .ui-accordion-content {
+	padding-left: 0;
+	padding-right: 0;
+	padding-bottom: 0;
+}
+
+.accordionFooter {
+	background: #C4C4C4;
+	border-radius: 0.3rem;
+	padding: 0.3rem 0.5rem;
+}
+
+.buttonFooter .ui-button.ui-state-default {
+	background: #C4C4C4;
+}
+
+/* Component Cambio Stato */
+.pnlIterDialog div:nth-child(2){
+	padding:0;
+}
+
+.itertDialogTab .ui-tabs-panels div:nth-child(2){
+	padding: 3px;
+}
+
+.footerPanel{
+	width: 100%;
+	margin: 18px 0;
+}
+
+/* Notification Component */
+
+a, img {
+    border:none;
+}
+
+.notificaButton{
+	margin-left: 1rem;
+    margin-top: -1.1rem;
+    position: relative;
+    width: 3rem;
+}
+
+.notificaButton img{
+	cursor: pointer;
+	width: 2.5rem;
+}
+
+.notificaButton > label{
+	color: #fff;
+    font-size: 1rem;
+    font-weight: bold;
+    left: 1.75rem;
+    position: absolute;
+    text-align: center;
+    top: 0.45rem;
+    width: 1rem;
+}
+
+.alertMenu{
+	max-height: 20rem;
+    overflow: auto;
+    padding-bottom: 1.1rem;
+    width: 13rem;
+}
+
+.alertMenu .ui-menuitem-link{
+	text-align: center!important;
+}
+
+.alertMenu .ui-menuitem-text{
+	float: none!important;
+}
+
+.noMessages{
+	text-align: center;
+}
+
+.isNotLetto span{
+	font-weight: bold;
+}
+
+.buttonNotificaFooter span{
+	font-size: 1rem;
+}
+
+.buttonNotificaFooter{
+	padding: 0.6rem 0.3rem 0rem !important;
+}
+
+.editor{
+	width:100%; 
+	height:38rem;
+}
+
+.editor .ui-editor{
+	height: 100%!important;
+}
+
+.editor iframe{
+	height: 100%!important;
+}
+
+/* Dialog */
+.dialog{
+	width: 80%!important;
+	height: 90%!important;
+	overflow: auto!important;	
+}
+
+.dialog .ui-dialog-content{
+	padding: 0.5rem!important;
+}
+
+.dialogClose {
+	background-position: 0 -176px;
+}
+
+.buttonClose{
+	margin-top: -17px;
+	margin-right: -10px;
+	margin-bottom: -12px;
+}
+
+/* Pannello di Controllo*/
+#panelloControllo_footer{
+	padding: 0 1em;
+	margin:0;
+}
+
+/* Fascicolo Cartella Utente */
+div[id="fCU:fascicoloTab:colloquio"]{
+	padding:0!important;
+}
+
+.outputSpace{
+	padding: 2px 10px;
+}
+
+.tableNoBg tr{
+	background: transparent;
+	padding: 0px;
+}
+
+.fascCartellaUtenteDialog .ui-dialog-content {
+	padding: .5em 0;
+}
+
+.anagCorrente .ui-dialog-titlebar {
+	cursor: pointer;
+}
+
+.valFamRating .ui-rating-star{
+	margin: 10px 24px
+}
+
+.adAbitRating .ui-rating-star{
+	margin: 10px 30px
+}
+
+.valEconRating .ui-rating-star{
+	margin: 10px 30px
+}
+
+.mapRisCenter label{
+	display: none;
+}
+
+.mapRisCenter td, .mapRisleft td{ 
+	padding: 10px;
+}
+
+.mapRisTop td{
+	padding: 0 10px;
+}
+
+.noBorder td
+{
+	border: none !important;
+	padding: 2px !important;
+	vertical-align: top;
+}
+
+.noBorder th
+{
+	border: none !important;
+	padding-left:0px !important;
+	text-align:left !important;
+}
+
+.giallo td{
+	 background-color: #F3F6CB !important;
+}
+
+.verde td{
+ 	background-color: #C8FFDB !important;
+}
+			 
+.rosso td{
+	background-color: #FACDCF !important;
+}
+			        
+			        
+.arancione td{
+	background-color: #F8E0C9 !important;
+}
+			        
+.grigio td{
+	background-color: white !important;
+}
+
+/* Start Media Queries */
+@media (min-width: 641px) 
+{ 
+	html{
+		font-size: 80%;
+		/*background:gold;*/
+	}
+} 
+ 
+@media (min-width:960px) 
+{ 
+	html{
+		font-size: 90%;
+		/*background:red;*/
+	}
+	
+	.editor{
+		height: 27rem;
+	}
+} 
+
+@media (min-width:1100px) 
+{ 
+	html{
+		font-size: 100%;
+		/*background:violet;*/
+	}
+}
+
+/* End Media Queries */
+.align-right {
+    position: absolute;
+    right: 6%;
+    width: 40%;
+    padding: 1%;
+}
+.ui-tabs-scrollable .ui-tabs-nav {
+    width: 100%;
+}
+.top-bottom-padding {
+	padding-top: 0.5%;
+    padding-bottom: 0.5%;
+
+}
+.defaul-left-padding {
+	padding-left: 10%;
+  
+}
+.defaul-rigth-padding {
+	padding-rigth: 10%;
+  
+}
+.bottom-padding {
+    padding-bottom: 0.5%;
+}
+.top-padding {
+	padding-top: 0.5%;
+}
+
+.tabviewWithoutOrangeHeader .ui-widget-header{
+	background: none !important;
+}
+
+.tabDettaglioWhite{
+	background: white !important;
+}
+
+.centered {
+	text-align: center !important;
+	margin-left: 50% !important;
+}
+
+
+/* inizio evoluzione-pai */
+.paiDetailTabLeft{
+	color:red;
+}
+
+.paiDetailTabLeft > ul { 
+    width:16% !important;
+}
+
+
+.paiDetailTabLeft > div { 
+    width:83% !important;
+}
+/* fine evoluzione-pai */
+
+
+/* inizio residuo-evoluzione-pai */
+
+.interventi-pai thead th, .interventi-pai tbody td, .interventi-pai tfoot td{
+	border-width: 0px;
+	font-size: 80%;
+	padding: 1px;
+}
+.overlay-panel {
+		background: #666666 url(/CarSocialeA_WEB/javax.faces.resource/images/ui-bg_diagonals-thick_20_666666_40x40.png.faces?ln=primefaces-ui-lightness) 50% 50% repeat;
+		opacity: .50;
+		filter: Alpha(Opacity=50);
+		position: absolute;
+		left: 0px;
+		top: 0px;
+		z-index: 1000; 
+} 
+/* fine residuo-evoluzione-pai */
+

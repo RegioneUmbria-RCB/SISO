@@ -1,0 +1,96 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui"
+	xmlns:webred="http://java.sun.com/jsf/composite/webred" xmlns:webredcs="http://java.sun.com/jsf/composite/webredcs">
+<ui:fragment>
+	<h:panelGrid id="pnlGIntChiusure" columns="2" styleClass="top-aligned-columns"  width="100%">			
+				<p:fieldset legend="Interventi Specialisti">
+					<h:panelGrid columns="1">
+					<p:selectBooleanCheckbox itemLabel="Servizi sociali comunali" id="servSocCom" value="#{provMinoriTabManBean.jsonCurrent.interventiTempiChiusure.servSocialiComunali}" />
+					
+					<p:selectBooleanCheckbox id="cps" itemLabel="CPS" value="#{provMinoriTabManBean.jsonCurrent.interventiTempiChiusure.cps}" />
+					<p:selectBooleanCheckbox id="uonpia" itemLabel="UONPA" value="#{provMinoriTabManBean.jsonCurrent.interventiTempiChiusure.uonpia}" />
+					<p:selectBooleanCheckbox id="consultorio" itemLabel="Consultorio" value="#{provMinoriTabManBean.jsonCurrent.interventiTempiChiusure.consultorio}" />
+					<p:selectBooleanCheckbox itemLabel="Ser. D." id="serD" value="#{provMinoriTabManBean.jsonCurrent.interventiTempiChiusure.serD}" />
+					<p:selectBooleanCheckbox itemLabel="Privati indicati dal decreto" id="privatiIndDecreto" value="#{provMinoriTabManBean.jsonCurrent.interventiTempiChiusure.privatiIndDecreto}" />
+					<p:selectBooleanCheckbox itemLabel="CTU" id="ctu" value="#{provMinoriTabManBean.jsonCurrent.interventiTempiChiusure.ctu}" />
+					
+					<h:panelGroup>
+						<p:selectBooleanCheckbox itemLabel="Altro" id="altro" value="#{provMinoriTabManBean.jsonCurrent.interventiTempiChiusure.altro}" />
+						<p:spacer width="5px"/>
+						<h:inputText id="altroDescrizione" value="#{provMinoriTabManBean.jsonCurrent.interventiTempiChiusure.altroDescrizione}" />
+					</h:panelGroup>
+					
+				    <p:separator />
+					<h:outputLabel id="noteProvv" escape="false" value="#{dataBean.noteprovv}" styleClass="h5"></h:outputLabel>
+					</h:panelGrid>
+				</p:fieldset>
+				
+				<p:outputPanel>
+				<p:fieldset legend="Tempi Adempimento">
+					<h:panelGrid id="pnlGTempiAD" columns="5" width="100%">
+						<h:outputLabel value="Tempi previsti" />
+						<p:spinner id="tempiPrevSp" value="#{provMinoriTabManBean.jsonCurrent.interventiTempiChiusure.tempiAdempimento}" min="0" size="3"/>
+				   	    <p:selectOneMenu value="#{provMinoriTabManBean.jsonCurrent.interventiTempiChiusure.tempiAdempimentoUM}" >
+				   	    	<f:selectItem itemLabel="Giorni" itemValue="Giorni" />
+				   	    	<f:selectItem itemLabel="Settimane" itemValue="Settimane"/>
+				   	    	<f:selectItem itemLabel="Mesi" itemValue="Mesi"/>
+				   	    	<f:selectItem itemLabel="Anni" itemValue="Anni"/>
+						</p:selectOneMenu>
+						<h:outputLabel value="Scadenza" />
+						<webred:pnlData id="tempiScadCalendar" dataValue="#{provMinoriTabManBean.jsonCurrent.interventiTempiChiusure.scadenzaAdempimento}" 
+							            dataPattern="dd/MM/yyyy"  dataPatternLabel="(gg/mm/aaaa)" dataReq="false" />
+					</h:panelGrid>
+				</p:fieldset>
+				<p:fieldset legend="Tempi Aggiornamento">
+					<h:panelGrid id="pnlGTempiAG" columns="5" width="100%">
+					    <h:outputLabel value="Tempi previsti" />
+						<p:spinner id="tempiPrevAggSp" value="#{provMinoriTabManBean.jsonCurrent.interventiTempiChiusure.tempiAggiornamento}" min="0" size="3"/>
+				   	    <p:selectOneMenu value="#{provMinoriTabManBean.jsonCurrent.interventiTempiChiusure.tempiAggiornamentoUM}" >
+				   	    	<f:selectItem itemLabel="Giorni" itemValue="Giorni" />
+				   	    	<f:selectItem itemLabel="Settimane" itemValue="Settimane"/>
+				   	    	<f:selectItem itemLabel="Mesi" itemValue="Mesi"/>
+				   	    	<f:selectItem itemLabel="Anni" itemValue="Anni"/>
+						</p:selectOneMenu>
+						
+						<h:outputLabel value="Scadenza" />
+						<webred:pnlData dataValue="#{provMinoriTabManBean.jsonCurrent.interventiTempiChiusure.scadenzaAggiornamento}" 
+							            dataPattern="dd/MM/yyyy"  dataPatternLabel="(gg/mm/aaaa)" dataReq="false" />
+					</h:panelGrid>
+				</p:fieldset>
+				
+				<h:panelGrid columns="1">
+					<h:panelGrid id="pnlG_row2" columns="2">
+						<h:outputLabel id="propChiusura" for="propChiusuraTxt" value="Proposta Chiusura" />
+						<h:inputText id="propChiusuraTxt" value="#{provMinoriTabManBean.jsonCurrent.interventiTempiChiusure.propostaChiusura}" />
+						
+						<h:outputLabel id="propChiusuraProvv" for="propChiusuraProvvTxt" value="Chiusura provvedimento" />
+						<h:inputText id="propChiusuraProvvTxt" value="#{provMinoriTabManBean.jsonCurrent.interventiTempiChiusure.chiusuraProvv}" />
+						
+					</h:panelGrid>
+					
+					<p:selectBooleanCheckbox id="minAd" itemLabel="Il minore è stato adottato" value="#{provMinoriTabManBean.jsonCurrent.interventiTempiChiusure.minoreAdottato}" />
+					<p:selectBooleanCheckbox id="atr330" itemLabel="Non luogo a provvedere ex.Art. 330" value="#{provMinoriTabManBean.jsonCurrent.interventiTempiChiusure.nonProvvExArt330}" />
+					<p:selectBooleanCheckbox id="nonAd" itemLabel="Non luogo a provedere adottabilità" value="#{provMinoriTabManBean.jsonCurrent.interventiTempiChiusure.nonProvvAdottabilita}" />
+				</h:panelGrid>
+				<p:spacer height="10px;"/>
+				<p:fieldset legend="Invio relazione servizio">
+					<h:panelGrid id="relazioneSer" columns="4" width="100%">
+						<h:outputLabel value="Data relazione" />
+						<webred:pnlData dataValue="#{provMinoriTabManBean.jsonCurrent.interventiTempiChiusure.relazioneServizio}" 
+							            dataPattern="dd/MM/yyyy"  dataPatternLabel="(gg/mm/aaaa)" dataReq="false" />
+						
+						<h:outputLabel id="contenutoRel" for="contenutoRelCmbx" value="Contenuto" />
+						<p:selectOneMenu id="contenutoRelCmbx" value="#{provMinoriTabManBean.jsonCurrent.interventiTempiChiusure.selContenutoRelazione}" 
+						                 styleClass="bottom-padding" style="width:150px;">
+							<f:selectItems value="#{dataBean.lstContenutoRelazione}"></f:selectItems>
+						</p:selectOneMenu>
+						<h:outputLabel value="Data risposta TM" />
+						<webred:pnlData id="dataRispostaTM" dataValue="#{provMinoriTabManBean.jsonCurrent.interventiTempiChiusure.dataRispostaTM}" 
+						            dataPattern="dd/MM/yyyy"  dataPatternLabel="(gg/mm/aaaa)" dataReq="false" />
+				    
+					</h:panelGrid>
+				</p:fieldset>
+		    </p:outputPanel>
+		 </h:panelGrid>
+</ui:fragment>
+</html>

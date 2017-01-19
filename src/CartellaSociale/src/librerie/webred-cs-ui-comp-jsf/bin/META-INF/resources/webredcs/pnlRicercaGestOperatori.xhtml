@@ -1,0 +1,204 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+     	xmlns:h="http://java.sun.com/jsf/html"
+		xmlns:f="http://java.sun.com/jsf/core"
+		xmlns:ui="http://java.sun.com/jsf/facelets"
+		xmlns:p="http://primefaces.org/ui"
+	  	xmlns:composite="http://java.sun.com/jsf/composite"
+	  	xmlns:webred="http://java.sun.com/jsf/composite/webred">
+      
+	<h:head>
+		<title>Ricerca per Gestione Operatori</title>
+	</h:head>
+	<h:body>
+		<composite:interface componentType="pnlRicercaGestOperatori">
+			<composite:attribute name="gestioneOperatoriManBean" type="it.webred.cs.jsf.interfaces.IGestioneOperatori" />
+		</composite:interface>
+		<composite:implementation>
+			<p:outputPanel id="pnlRicercaOperatore" layout="none">
+				<p:dataTable id="dtOperatori" var="op" 
+					value="#{cc.attrs.gestioneOperatoriManBean.lstOperatori}"
+					filteredValue="#{cc.attrs.gestioneOperatoriManBean.lstOperatoriFiltrati}"
+			    	rowKey="#{op.idOperatore}" rowIndexVar="rowKeyInd"
+			    	emptyMessage="Nessun elemento trovato"
+			    	rows="10" paginator="true"
+                    paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                    rowsPerPageTemplate="5,10,20">
+			        			        			        
+			        <p:column headerText="Codice fiscale" filterBy="#{op.codiceFiscale}" filterMatchMode="startsWith">
+			            <h:outputText value="#{op.codiceFiscale}" />
+			        </p:column>
+			        
+			        <p:column headerText="Cognome" filterBy="#{op.cognome}" filterMatchMode="startsWith">
+			            <h:outputText value="#{op.cognome}" />
+			        </p:column>
+			        
+			        <p:column headerText="Nome" filterBy="#{op.nome}" filterMatchMode="startsWith">
+			            <h:outputText value="#{op.nome}" />
+			        </p:column>
+			        
+			        <p:column headerText="Attivo" style="text-align:center">
+			            <h:outputText value="#{op.abilitato? 'SI' : 'NO'}" />
+			        </p:column>
+			        
+			        <p:column headerText="" style="text-align:center;">
+			            <p:commandButton value="Carica" process="@this" icon="ui-icon-search" 
+							update="@form" action="#{cc.attrs.gestioneOperatoriManBean.dettagliOperatore}">
+							<f:setPropertyActionListener value="#{rowKeyInd}" target="#{cc.attrs.gestioneOperatoriManBean.idxSelected}" />
+						</p:commandButton>
+			        </p:column>
+	
+			    </p:dataTable>
+
+				<table class="span-20">
+					<tr><td colspan="7">
+						<p:spacer height="10"/>
+					</td></tr>
+					<tr><td colspan="7">
+						<p:outputLabel style="font-weight:bold;"
+							value="Ricerca nell'archivio utenti della piattaforma per inserire un utente come operatore della cartella" />
+					</td></tr>
+					<tr>
+						<td class="span-2" style="text-align: right; padding-right: 5px;">
+							<p:outputLabel value="Codice Fiscale" />
+						</td>
+						<td class="span-3">
+							<p:inputText id="codFiscRic" value="#{cc.attrs.gestioneOperatoriManBean.ricercaGestOperatoriBean.codiceFiscaleRic}" maxlength="16" styleClass="span-19"></p:inputText>
+						</td>
+						<td class="span-3" style="text-align: right; padding-right: 5px;">
+							<p:outputLabel value="Cognome" />
+						</td>
+						<td class="span-3">
+							<p:inputText id="cognomeRic" value="#{cc.attrs.gestioneOperatoriManBean.ricercaGestOperatoriBean.cognomeRic}" maxlength="64" styleClass="span-19"></p:inputText>
+						</td>
+						<td class="span-1" style="text-align: right; padding-right: 5px;">
+							<p:outputLabel value="Nome" />
+						</td>
+						<td class="span-3">
+							<p:inputText id="nomeRic" value="#{cc.attrs.gestioneOperatoriManBean.ricercaGestOperatoriBean.nomeRic}" maxlength="64" styleClass="span-19"></p:inputText>
+						</td>
+						<td class="span-5" style="padding-left: 10px;">
+							<p:commandButton value="Cerca" process="@form" update="@form" action="#{cc.attrs.gestioneOperatoriManBean.ricercaOperatore}" />
+						</td>
+					</tr>					
+				</table>
+
+				<h:panelGroup rendered="#{not empty cc.attrs.gestioneOperatoriManBean.ricercaGestOperatoriBean.operatore}">
+					<p:spacer height="20"/>
+					
+					<table class="span-20">
+						<tr>
+							<td class="span-2">
+								<p:outputLabel value="Codice Fiscale" />
+							</td>
+							<td class="span-3">
+								<p:outputLabel styleClass="bold" value="#{cc.attrs.gestioneOperatoriManBean.ricercaGestOperatoriBean.operatore.codiceFiscale}" />
+							</td>
+							<td class="span-3">
+								<p:outputLabel value="Cognome" />
+							</td>
+							<td class="span-3">
+								<p:outputLabel styleClass="bold" value="#{cc.attrs.gestioneOperatoriManBean.ricercaGestOperatoriBean.operatore.cognome}" />
+							</td>
+							<td class="span-1">
+								<p:outputLabel value="Nome" />
+							</td>
+							<td class="span-8">
+								<p:outputLabel styleClass="bold" value="#{cc.attrs.gestioneOperatoriManBean.ricercaGestOperatoriBean.operatore.nome}" />
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<p:outputLabel value="Data Nascita" />
+							</td>
+							<td>
+								<p:outputLabel styleClass="bold" value="#{cc.attrs.gestioneOperatoriManBean.ricercaGestOperatoriBean.operatore.dataNascitaToString}" />
+							</td>
+							<td>
+								<p:outputLabel value="Comune Nascita" />
+							</td>
+							<td colspan="3">
+								<p:outputLabel styleClass="bold" value="#{cc.attrs.gestioneOperatoriManBean.ricercaGestOperatoriBean.operatore.comuneProvNascita}" />
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<p:outputLabel value="Indirizzo" />
+							</td>
+							<td>
+								<p:outputLabel styleClass="bold" value="#{cc.attrs.gestioneOperatoriManBean.ricercaGestOperatoriBean.operatore.indirizzoResidenza}" />
+							</td>
+							<td>
+								<p:outputLabel value="Comune Residenza" />
+							</td>
+							<td colspan="3">
+								<p:outputLabel styleClass="bold" value="#{cc.attrs.gestioneOperatoriManBean.ricercaGestOperatoriBean.operatore.comuneProvResidenza}" />
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<p:outputLabel value="Tel." />
+							</td>
+							<td>
+								<p:outputLabel styleClass="bold" value="#{cc.attrs.gestioneOperatoriManBean.ricercaGestOperatoriBean.operatore.telefonoResidenza}" />
+							</td>
+							<td>
+								<p:outputLabel value="Cell." />
+							</td>
+							<td colspan="3">
+								<p:outputLabel styleClass="bold" value="#{cc.attrs.gestioneOperatoriManBean.ricercaGestOperatoriBean.operatore.cellulareResidenza}" />
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<p:outputLabel value="Direzione" />
+							</td>
+							<td>
+								<p:outputLabel styleClass="bold" value="#{cc.attrs.gestioneOperatoriManBean.ricercaGestOperatoriBean.operatore.ufficio.direzione}" />
+							</td>
+							<td>
+								<p:outputLabel value="Settore" />
+							</td>
+							<td colspan="2">
+								<p:outputLabel styleClass="bold" value="#{cc.attrs.gestioneOperatoriManBean.ricercaGestOperatoriBean.operatore.ufficio.settore}" />
+							</td>
+							<td>
+								<p:selectBooleanCheckbox id="abilOpe" value="#{cc.attrs.gestioneOperatoriManBean.ricercaGestOperatoriBean.operatore.abilitato}"></p:selectBooleanCheckbox>
+								<p:outputLabel value="Abilitato" style="padding-left: 5px;"/>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<p:outputLabel value="Mail Ufficio" />
+							</td>
+							<td>
+								<p:outputLabel styleClass="bold" value="#{cc.attrs.gestioneOperatoriManBean.ricercaGestOperatoriBean.operatore.ufficio.email}" />
+							</td>
+							<td>
+								<p:outputLabel value="Tel. Ufficio" />
+							</td>
+							<td colspan="2">
+								<p:outputLabel styleClass="bold" value="#{cc.attrs.gestioneOperatoriManBean.ricercaGestOperatoriBean.operatore.ufficio.telefono}" />
+							</td>
+							<td>
+								<p:commandButton value="#{cc.attrs.gestioneOperatoriManBean.ricercaGestOperatoriBean.csOperatore ? 'Modifica' : 'Inserisci'}" 
+									process="@form" update="@form" action="#{cc.attrs.gestioneOperatoriManBean.salvaOperatore}">
+									<p:confirm header="Conferma" message="Procedere con il salvataggio?" icon="ui-icon-alert"/>
+								</p:commandButton>
+								
+								<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+									<h:panelGrid columns="2" styleClass="centerAlign">
+							        <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>
+							        <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>
+							        </h:panelGrid>     
+							    </p:confirmDialog>
+							</td>
+						</tr>
+					</table>
+				</h:panelGroup>
+			</p:outputPanel>
+											
+		</composite:implementation>
+	</h:body>
+	
+</html>

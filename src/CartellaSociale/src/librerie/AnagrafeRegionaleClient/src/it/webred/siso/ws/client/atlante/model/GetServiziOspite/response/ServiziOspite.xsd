@@ -1,0 +1,21 @@
+<xs:schema targetNamespace="http://schemas.datacontract.org/2004/07/AtlanteWebServices.ObjectModel.Messages.GestioneServizi" xmlns:mstns="http://sistematlante.it/gestioneServizi" xmlns="http://schemas.datacontract.org/2004/07/AtlanteWebServices.ObjectModel.Messages.GestioneServizi" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" attributeFormDefault="qualified" elementFormDefault="qualified" xmlns:app1="http://schemas.datacontract.org/2004/07/AtlanteWebServices.ObjectModel.Messages.GestioneServizi">
+  <xs:import namespace="http://sistematlante.it/gestioneServizi" />
+  <xs:element name="ServiziOspite" msdata:Prefix="a" >
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="ServizioOspiteResponse" msdata:Prefix="a" minOccurs="0" maxOccurs="unbounded">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="DataFine" msdata:Prefix="a" type="xs:string" minOccurs="0" />
+              <xs:element name="DataInizio" msdata:Prefix="a" type="xs:string" minOccurs="0" />
+              <xs:element name="IGUCausFineServ" msdata:Prefix="a" type="xs:string" minOccurs="0" />
+              <xs:element name="IdEntitaDes" msdata:Prefix="a" type="xs:string" minOccurs="0" />
+              <xs:element name="IdEntitaProp" msdata:Prefix="a" type="xs:string" minOccurs="0" />
+              <xs:element name="IdMessaggio" msdata:Prefix="a" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

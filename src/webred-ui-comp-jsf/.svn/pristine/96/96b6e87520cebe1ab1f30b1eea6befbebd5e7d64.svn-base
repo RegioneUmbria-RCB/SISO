@@ -1,0 +1,31 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+     	xmlns:h="http://java.sun.com/jsf/html"
+		xmlns:f="http://java.sun.com/jsf/core"
+		xmlns:ui="http://java.sun.com/jsf/facelets"
+		xmlns:p="http://primefaces.org/ui"
+	  	xmlns:composite="http://java.sun.com/jsf/composite">
+      
+	<h:head>
+		<title>Componente Sesso</title>		
+	</h:head>
+	<h:body>
+		<composite:interface componentType="pnlSesso" >
+			<composite:attribute name="value" type="it.webred.jsf.bean.SessoBean"/>
+			<composite:attribute name="disabled" required="false" default="false" />
+			<composite:attribute name="rquired" required="false" default="false" />
+		</composite:interface>
+		<composite:implementation>
+			<span id="#{cc.clientId}">
+			   <p:selectOneButton value="#{cc.attrs.value.sesso}" disabled="#{cc.attrs.disabled}"
+								  required="#{cc.attrs.required}" requiredMessage="Sesso è un campo obbligatorio">
+	            	<f:selectItem itemLabel="Maschio" itemValue="M"/>
+	            	<f:selectItem itemLabel="Femmina" itemValue="F"/>
+	            </p:selectOneButton>
+	            <p:spacer width="5px"/>
+	        	<p:selectBooleanCheckbox itemLabel="transessuale" value="#{cc.attrs.value.transessuale}" />			
+			</span>
+		</composite:implementation>
+	</h:body>
+	
+</html>

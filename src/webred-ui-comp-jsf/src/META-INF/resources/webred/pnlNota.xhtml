@@ -1,0 +1,33 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+     	xmlns:h="http://java.sun.com/jsf/html"
+		xmlns:f="http://java.sun.com/jsf/core"
+		xmlns:ui="http://java.sun.com/jsf/facelets"
+		xmlns:p="http://primefaces.org/ui"
+	  	xmlns:composite="http://java.sun.com/jsf/composite">
+      
+	<h:head>
+		<title>Componente note</title>		
+	</h:head>
+	<h:body>
+		<composite:interface componentType="pnlNota" >
+			<composite:attribute name="notaValue" required="true" />
+			<composite:attribute name="notaLabel" />
+			<composite:attribute name="id" required="true"/>
+			<composite:attribute name="disabled" required="false" default="false" />
+		</composite:interface>
+		<composite:implementation>
+			<span id="#{cc.clientId}">
+				    <h:panelGrid columns="1">
+            		<h:outputText value="#{cc.attrs.notaLabel}" for="#{cc.attrs.id}" rendered="#{cc.attrs.notaLabel!=null}"/>
+ 					<p:inputTextarea id="#{cc.attrs.id}" value="#{cc.attrs.notaValue}" rows="8" cols="100" counter="counter" maxlength="5000"       
+    					counterTemplate="{0} caratteri disponibili." autoResize="false" disabled="#{cc.attrs.disabled}" >
+    					<p:ajax event="change" update="#{cc.attrs.id}" />
+    				</p:inputTextarea>
+    				<h:outputText id="counter" style="font-size:10px;"/>
+    			</h:panelGrid>
+			</span>
+		</composite:implementation>
+	</h:body>
+	
+</html>

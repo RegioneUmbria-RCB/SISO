@@ -1,0 +1,39 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+     	xmlns:h="http://java.sun.com/jsf/html"
+		xmlns:f="http://java.sun.com/jsf/core"
+		xmlns:ui="http://java.sun.com/jsf/facelets"
+		xmlns:p="http://primefaces.org/ui"
+	  	xmlns:composite="http://java.sun.com/jsf/composite">
+      
+	<h:head>
+		<title>Componente casella di testo data</title>		
+	</h:head>
+	<h:body>
+		<composite:interface componentType="pnlData" >
+			<composite:attribute name="dataValue" />
+			<composite:attribute name="dataPattern" />
+			<composite:attribute name="dataReq" />
+			<composite:attribute name="dataReqMes" />
+			<composite:attribute name="dataValMes" />
+			<composite:attribute name="dataConMes" />
+			<composite:attribute name="dataPatternLabel" />
+			<composite:attribute name="maxDate" />
+			<composite:attribute name="minDate" />
+			<composite:attribute name="yearRange" default="c-100:c+100"/>
+			<composite:attribute name="disabled" required="false" default="false" />
+		</composite:interface>
+		<composite:implementation>
+			<span id="#{cc.clientId}">
+				<p:calendar value="#{cc.attrs.dataValue}" pattern="#{cc.attrs.dataPattern}" required="#{cc.attrs.dataReq}" requiredMessage="#{cc.attrs.dataReqMes}" size="11"
+	     			validatorMessage="#{cc.attrs.dataValMes}" navigator="true" yearRange="#{cc.attrs.yearRange}" converterMessage="#{cc.attrs.dataConMes}"
+	     			disabled="#{cc.attrs.disabled}" maxdate="#{cc.attrs.maxDate}" mindate="#{cc.attrs.minDate}">
+        				<f:validator validatorId="dateValidator"/>
+        		</p:calendar>
+        		<p:spacer width="5px"/>
+	            <h:outputText  value="#{cc.attrs.dataPatternLabel}" style="font-size: 11px;"  />
+			</span>			
+		</composite:implementation>
+	</h:body>
+	
+</html>

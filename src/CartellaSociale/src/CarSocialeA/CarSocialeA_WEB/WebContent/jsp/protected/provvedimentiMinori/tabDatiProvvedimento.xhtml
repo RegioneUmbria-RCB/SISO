@@ -1,0 +1,84 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui"
+	xmlns:webred="http://java.sun.com/jsf/composite/webred" xmlns:webredcs="http://java.sun.com/jsf/composite/webredcs">
+<ui:fragment>
+
+	<p:outputPanel>
+		<h:panelGrid id="pnldatiProvvedimento" columns="3" width="100%" styleClass="top-aligned-columns">
+		   <p:fieldset legend="Dati Provvedimento">
+		   		<p:outputPanel>
+					<p:selectOneRadio id="datiProvvRadio" value="#{provMinoriTabManBean.jsonCurrent.datiProvvedimenti.selDatiProvv}"  layout="grid" columns="2">
+						<f:selectItems value="#{dataBean.lstDatiProvvedimento}"/>
+					</p:selectOneRadio>
+					<p:spacer height="10px;"/>
+					<p:selectManyCheckbox id="affidamento" value="#{provMinoriTabManBean.jsonCurrent.datiProvvedimenti.selTipoAffidamento}" 
+					                      styleClass="column" layout="grid" columns="1" >
+						<f:selectItems value="#{dataBean.lstTipoAffidamento}"/>
+					</p:selectManyCheckbox>
+				</p:outputPanel>
+		   </p:fieldset>
+		   <p:fieldset legend="Tipo Provvedimento">
+		   		<p:selectOneRadio id="tipoProvvRadio" value="#{provMinoriTabManBean.jsonCurrent.datiProvvedimenti.selTipoProvv}" layout="grid" columns="1">
+						<f:selectItems value="#{dataBean.lstTipoProvvedimento}"/>
+				</p:selectOneRadio>
+		   </p:fieldset>
+		   <p:fieldset legend="Natura Provvedimento">
+		   		<p:selectOneRadio id="naturaProvvRadio" value="#{provMinoriTabManBean.jsonCurrent.datiProvvedimenti.selNaturaProvv}" layout="grid" columns="1">
+					<f:selectItems value="#{dataBean.lstNaturaProvvedimento}"></f:selectItems>
+				</p:selectOneRadio>
+		   </p:fieldset>
+	
+		</h:panelGrid>
+		<p:spacer height="5px" />
+		<p:fieldset legend="Potestà genitoriale" toggleable="false">
+		     <h:panelGrid columns="2" width="100%">
+					<p:selectManyCheckbox id="cessazioneGen" value="#{provMinoriTabManBean.jsonCurrent.datiProvvedimenti.selCessazionePotesta}" 
+					                      styleClass="column" layout="grid" columns="3" >
+						<f:selectItems value="#{dataBean.lstCessazionePotesta}"></f:selectItems>
+					</p:selectManyCheckbox>
+				
+					<p:selectOneRadio id="potestaA" value="#{provMinoriTabManBean.jsonCurrent.datiProvvedimenti.selAffidatoA}" layout="grid" columns="3">
+						<f:selectItems value="#{dataBean.lstAffidatoA}"></f:selectItems>
+					</p:selectOneRadio>
+			</h:panelGrid>
+			<p:separator/>
+			<h:panelGrid columns="4" width="100%">
+			    <f:facet name="header">  
+     						<h:outputLabel id="lblProvvedimento" value="Provvedimento" styleClass="bold" />
+ 				 		</f:facet> 
+				<h:outputLabel id="lblNumProvv" value="Num." for="NumProvv" styleClass="" />
+				<h:inputText id="NumProvv" value="#{provMinoriTabManBean.jsonCurrent.datiProvvedimenti.numProvv}"></h:inputText>
+				
+				<h:outputLabel id="lblDataProtocolloCanc" value="Data deposito in cancelleria" style="display: block; width: 150px;"/>
+				<webred:pnlData dataValue="#{provMinoriTabManBean.jsonCurrent.datiProvvedimenti.dataProvvCancelleria}" 
+					            dataPattern="dd/MM/yyyy"  dataPatternLabel="(gg/mm/aaaa)" dataReq="false" />
+				
+				<h:outputLabel id="lblDataProtocollo" value="Data Protocollo" for="dataProtocollo" styleClass="" />
+				<webred:pnlData id="dataProtocollo" dataValue="#{provMinoriTabManBean.jsonCurrent.datiProvvedimenti.dataProtocolloProvv}" 
+					            dataPattern="dd/MM/yyyy"  dataPatternLabel="(gg/mm/aaaa)" dataReq="false" />
+				
+				<h:outputLabel id="lblCuratore" value="Curatore" for="curatore" styleClass="" />
+				<h:panelGroup>
+					<h:inputText id="curatore" value="#{provMinoriTabManBean.jsonCurrent.datiProvvedimenti.curatore}"></h:inputText>
+					<p:spacer width="5px;"/>
+					<p:selectBooleanCheckbox itemLabel="Legale famiglia" id="legaleFamiglia" value="#{provMinoriTabManBean.jsonCurrent.datiProvvedimenti.legaleFamiglia}" />
+				</h:panelGroup>
+			</h:panelGrid>
+			
+			<p:separator/>
+			<webredcs:pnlComponenteOAltro header="Tutore" iComponenteOAltro="#{provMinoriTabManBean.datiProv.tutore}" />
+						
+		</p:fieldset>
+		<p:spacer height="10px" />
+		<p:fieldset id="legnetContProvv" legend="Contenuto Provvedimento" toggleable="false">
+				<p:selectManyCheckbox id="indaginePsiSoc" value="#{provMinoriTabManBean.jsonCurrent.datiProvvedimenti.selIndagine}" >
+					<f:selectItems value="#{dataBean.lstIndagine}"/>
+				</p:selectManyCheckbox>
+			
+				<p:inputTextarea id="indagineNote" style="width:90%" value="#{provMinoriTabManBean.jsonCurrent.datiProvvedimenti.note}" 
+				                 rows="2" autoResize="false" />
+			
+		</p:fieldset>
+	</p:outputPanel>
+</ui:fragment>
+</html>

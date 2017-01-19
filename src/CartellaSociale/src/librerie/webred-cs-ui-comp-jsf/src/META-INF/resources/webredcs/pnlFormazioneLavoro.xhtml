@@ -1,0 +1,69 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui" xmlns:composite="http://java.sun.com/jsf/composite"
+  xmlns:webred="http://java.sun.com/jsf/composite/webred">
+
+<h:head>
+  <title>Formazione Lavoro</title>
+</h:head>
+<h:body>
+  <composite:interface componentType="pnlFormazioneLavoro">
+    <composite:attribute name="iFormazioneLavoro" type="it.webred.cs.jsf.interfaces.IFormazioneLavoro" />
+    <composite:attribute name="onChangeCondLavoro" method-signature="void listener()" />
+    <composite:attribute name="onChangeTitoloStudio" method-signature="void listener()" />
+    <composite:attribute name="disableModifica" default="false" />
+    <composite:attribute name="soloLettura" default="false" />
+    <composite:attribute name="numColonne" default="4" />
+    <composite:attribute name="padding" default="0" />
+  </composite:interface>
+  <composite:implementation>
+
+    <h:panelGrid columns="#{cc.attrs.numColonne}" width="100%" rendered="#{!cc.attrs.soloLettura}">
+
+      <h:outputText value="Titolo di studio *" />
+      <p:selectOneMenu value="#{cc.attrs.iFormazioneLavoro.idTitoloStudio}" style="width:300px" filter="true" filterMatchMode="startsWith">
+        <f:selectItems value="#{cc.attrs.iFormazioneLavoro.lstTitoliStudio}" />
+        <p:ajax event="change" listener="#{cc.attrs.onChangeTitoloStudio}" />
+      </p:selectOneMenu>
+
+      <h:outputText value="Condizione Lavorativa * " style="display: block; width: 100px;" />
+      <p:selectOneMenu label="Condizione Lavorativa" id="cond_lav_datiutente" value="#{cc.attrs.iFormazioneLavoro.idCondLavorativa}" effect="fold"
+        editable="false" style="width:300px" filter="true" filterMatchMode="startsWith">
+        <f:selectItems value="#{cc.attrs.iFormazioneLavoro.lstConLavorativa}" var="cl" itemLabel="#{cl.descrizione}" itemValue="#{cl}" />
+        <p:ajax event="change" listener="#{cc.attrs.onChangeCondLavoro}" />
+      </p:selectOneMenu>
+
+      <h:outputText value="Professione " />
+      <p:selectOneMenu value="#{cc.attrs.iFormazioneLavoro.idProfessione}" style="width:300px" filter="true" filterMatchMode="startsWith">
+        <f:selectItems value="#{cc.attrs.iFormazioneLavoro.lstProfessioni}" />
+        <p:ajax update="somSettImpiego" event="change" listener="#{cc.attrs.iFormazioneLavoro.onChangeProfessione()}" />
+      </p:selectOneMenu>
+
+      <h:outputText value="Settore Impiego" />
+      <p:selectOneMenu id="somSettImpiego" value="#{cc.attrs.iFormazioneLavoro.idSettoreImpiego}"
+        disabled="#{cc.attrs.iFormazioneLavoro.idProfessione==null or cc.attrs.iFormazioneLavoro.idProfessione eq ''}" style="width:300px" filter="true"
+        filterMatchMode="startsWith">
+        <f:selectItems value="#{cc.attrs.iFormazioneLavoro.lstSettoreImpiego}" />
+      </p:selectOneMenu>
+
+    </h:panelGrid>
+    <h:panelGrid columns="#{cc.attrs.numColonne}" rendered="#{cc.attrs.soloLettura}" cellpadding="#{cc.attrs.padding}">
+
+      <h:outputText value="Titolo di Studio " style="font-weight:bold" />
+      <h:outputText value="#{cc.attrs.iFormazioneLavoro.titoloStudio}" />
+
+      <h:outputText value="Condizione Lavorativa " style="font-weight:bold" />
+      <h:outputText value="#{cc.attrs.iFormazioneLavoro.lavoro}" />
+
+      <h:outputText value="Professione " style="font-weight:bold" />
+      <h:outputText value="#{cc.attrs.iFormazioneLavoro.professione}" />
+
+      <h:outputText value="Settore Impiego " style="font-weight:bold" />
+      <h:outputText value="#{cc.attrs.iFormazioneLavoro.settImpiego}" />
+
+    </h:panelGrid>
+
+  </composite:implementation>
+</h:body>
+
+</html>

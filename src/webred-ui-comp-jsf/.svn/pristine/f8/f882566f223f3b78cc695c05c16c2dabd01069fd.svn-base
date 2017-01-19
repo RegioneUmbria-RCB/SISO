@@ -1,0 +1,43 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+     	xmlns:h="http://java.sun.com/jsf/html"
+		xmlns:f="http://java.sun.com/jsf/core"
+		xmlns:ui="http://java.sun.com/jsf/facelets"
+		xmlns:p="http://primefaces.org/ui"
+	  	xmlns:composite="http://java.sun.com/jsf/composite">
+      
+	<h:head>
+		<title>Componente casella di testo comune</title>
+	</h:head>
+	<h:body>
+		<composite:interface componentType="pnlComune">
+			<composite:attribute name="comuneManBean" type="it.webred.jsf.interfaces.IComune"/>
+			<composite:attribute name="disabled" default="false"/>
+		</composite:interface>
+		<composite:implementation>
+			<span id="#{cc.clientId}">
+	     		<p:autoComplete  id="autoCompComuneId" styleClass="myAutoComplete" widgetVar="#{cc.attrs.comuneManBean.widgetVar}" value="#{cc.attrs.comuneManBean.comune}"
+           			title="Inserire almeno 3 caratteri e attendere la ricerca" minQueryLength="3" completeMethod="#{cc.attrs.comuneManBean.getLstComuni}"
+           			var="comuneVar" itemLabel="#{comuneVar.denominazione}" itemValue="#{comuneVar}" disabled="#{cc.attrs.disabled}"
+           			forceSelection="true" converter="#{cc.attrs.comuneManBean.comuneConverter}" queryDelay="1300" validatorMessage="#{cc.attrs.comuneManBean.validatorMessage}">
+           			
+		           			<p:column>  
+			                    #{comuneVar.denominazione}
+			                </p:column>  
+			                <p:column style="width: 20px;">
+			                    #{comuneVar.siglaProv}
+			                </p:column>
+
+							<f:validator validatorId="comuneValidator"/>
+
+			                <p:ajax event="itemSelect" process="@this" update="out2" listener="#{cc.attrs.comuneManBean.handleChangeComune}"/> 	                
+			                 
+           			</p:autoComplete>
+           			<p:spacer width="10px"/>
+					<h:outputText id="out2" value="#{cc.attrs.comuneManBean.comune.siglaProv}" />
+			</span>
+					
+		</composite:implementation>
+	</h:body>
+		
+</html>

@@ -1,0 +1,49 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:webred="http://java.sun.com/jsf/composite/webred"
+	xmlns:webredcs="http://java.sun.com/jsf/composite/webredcs">
+<ui:composition template="/jsp/protected/layout/layout.xhtml">
+
+	<ui:define name="content">
+	
+		<p:tabView id="tabConfig" rendered="#{navigationBean.autorizzatoConfigurazione}">
+
+			<p:tab id="tabSettori" title="Settori">
+				<h:form id="frmGestioneSettori">
+					<webredcs:pnlGestSettori iGestioneSettori="#{gestioneSettoriBean}" />			
+				</h:form>
+			</p:tab>
+
+			<p:tab id="tabOperatori" title="Operatori">
+				<h:form id="frmGestioneOperatori">
+					<h:panelGrid columns="1">
+						<h:outputText value="Ricerca" styleClass="bold"/>
+						<p:spacer height="10" />	
+					</h:panelGrid>
+					
+					<webredcs:pnlRicercaGestOperatori id="wbrdRicercaGestOperatori" gestioneOperatoriManBean="#{gestioneOperatoriBean}" />
+					
+					<h:panelGrid columns="1" rendered="#{gestioneOperatoriBean.pnlGestioneRendered}">
+						<p:spacer height="20" />
+						<h:outputText value="Gestione" styleClass="bold"/>	
+						<p:spacer height="10" />
+					</h:panelGrid>
+					
+					<webredcs:pnlInsUpdDelGestOperatori id="wbrdInsUpdDelGestOperatori" gestioneOperatoriManBean="#{gestioneOperatoriBean}" />			
+				</h:form>
+			</p:tab>
+			
+			<p:tab id="tabCatSociale" title="Categorie sociali">
+				<h:form id="frmGestioneCatSociali">
+					<webredcs:pnlGestCatSociale iGestioneCatSociale="#{gestioneCatSocialeBean}" />			
+				</h:form>
+			</p:tab>
+			
+		</p:tabView>
+	</ui:define>
+</ui:composition>
+</html>

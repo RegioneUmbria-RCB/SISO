@@ -1,0 +1,56 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:webredcs="http://java.sun.com/jsf/composite/webredcs">
+
+<ui:composition template="/jsp/protected/layout/layout.xhtml">
+	<ui:define name="content">
+		<h:form id="testPage">
+			<f:event listener="#{manTestPageBean.onPreRenderView}" type="preRenderView" />
+
+			<h1>Test Page</h1>
+			
+			
+				
+			<webredcs:pnlIterDialog id="pnlIterDialog" iIterDialog="#{iterDialogMan}" widgetVar="dlg" />
+			
+			<table width="100%">
+				<tbody>
+					<tr>
+						<td width="20%">
+							<p:panel header="Lista dei casi" >
+								<p:dataTable var="entry" value="#{manTestPageBean.listaCasoIter}" rowIndexVar="rowIndex">
+									
+									<p:column>
+										<h:outputLabel value="#{entry.key.id}" styleClass="label" />
+									</p:column>
+				
+									<p:column>
+										<webredcs:pnlIterInfoStato iIterInfoStato="#{entry.value}" widgetDialog="dlg" openDialogListener="#{iterDialogMan.openDialog(entry.value.idCaso)}" />
+									</p:column>
+								</p:dataTable>
+				
+								<table width="100%">
+									<tbody>
+										<tr>
+											<td>
+												<h:outputLabel id="nomeCasoLabel" styleClass="label" value="Nuovo Caso"/>
+											</td>
+											<td>
+												<p:commandButton value="Nuovo Caso" actionListener="#{manTestPageBean.newCaso}" />
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</p:panel>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</h:form>
+	</ui:define>
+</ui:composition>
+</html>

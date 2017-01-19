@@ -1,0 +1,321 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings
+  xmlns="http://java.sun.com/xml/ns/persistence/orm"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
+  version="2.0">
+
+	<named-query name="SsTest.findTestByDescrizione">
+		<query>
+			<![CDATA[
+				select it from SsTest it
+				where it.descrizione = :descrizione
+			]]>
+		</query>
+	</named-query>
+	
+   <named-query name="SsScheda.readSchedeByCF">
+		<query>
+			<![CDATA[
+				select scheda
+				from SsScheda scheda left join scheda.accesso accesso,  SsSchedaSegnalato segnalato
+				where segnalato.id = scheda.segnalato and scheda.eliminata = false
+				and upper(segnalato.anagrafica.cf)= upper(:codfiscale)
+				order by accesso.data desc, scheda.dtIns desc
+			]]>
+		</query>
+	</named-query>
+		
+	<named-query name="SsSchedaSegnalato.readSchedeSegnalatoByCF">
+		<query>
+			<![CDATA[
+				select segnalato
+				from SsScheda scheda, SsSchedaSegnalato segnalato
+				where segnalato.id = scheda.segnalato and scheda.eliminata = false
+				and upper(segnalato.anagrafica.cf)= upper(:codfiscale)
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SsSchedaSegnalato.readSchedeByDenominazione">
+		<query>
+			<![CDATA[
+				select segnalato
+				from SsScheda scheda, SsSchedaSegnalato segnalato
+				where segnalato.id = scheda.segnalato and scheda.eliminata = false
+				and upper(segnalato.anagrafica.nome) like :nome and upper(segnalato.anagrafica.cognome) like :cognome
+			]]>
+		</query>
+	</named-query>
+	
+	
+	<named-query name="SsScheda.readMotivazione">
+		<query>
+			<![CDATA[
+				select motivazione
+				from SsMotivazione motivazione 
+				where motivazione.id = :id
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SsScheda.readInterventoEconomicoTipoByTipo">
+		<query>
+			<![CDATA[
+				select t
+				from SsInterventoEconomicoTipo t 
+				where t.tipo = :tipo
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SsScheda.readIntervento">
+		<query>
+			<![CDATA[
+				select intervento
+				from SsIntervento intervento 
+				where intervento.id = :id
+			]]>
+		</query>
+	</named-query>
+		
+	<named-query name="SsScheda.readSchedeIn">
+		<query>
+			<![CDATA[
+				select scheda
+				from SsScheda scheda 
+				where scheda.id IN (:idList)
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SsScheda.readUfficio">
+		<query>
+			<![CDATA[
+				select ufficio
+				from SsUfficio ufficio 
+				where ufficio.id = :id
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SsScheda.readDiarioSociale">
+		<query>
+			<![CDATA[
+				select diario
+				from SsDiario diario 
+				where diario.soggetto = :anagrafica
+				order by diario.data desc
+			]]>
+		</query>
+	</named-query>
+	
+
+
+	<named-query name="SsScheda.deleteMotivazioniScheda">
+		<query>
+			<![CDATA[
+				delete
+				from SsMotivazioniSchede motivoScheda 
+				where motivoScheda.scheda = :scheda
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SsScheda.deleteInterventiScheda">
+		<query>
+			<![CDATA[
+				delete
+				from SsInterventiSchede interventoScheda 
+				where interventoScheda.scheda = :scheda
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SsScheda.readMotivazioniScheda">
+		<query>
+			<![CDATA[
+				select motivoScheda
+				from SsMotivazioniSchede motivoScheda 
+				where motivoScheda.scheda = :scheda
+				order by motivoScheda.motivazione.classificazione.id
+			]]>
+		</query>
+	</named-query>
+	
+	
+	<named-query name="SsScheda.readMotivazioniSchedaById">
+		<query>
+			<![CDATA[
+				select motivoScheda.scheda
+				from SsMotivazioniSchede motivoScheda 
+				where motivoScheda.motivazione = :idM
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SsScheda.readInterventiScheda">
+		<query>
+			<![CDATA[
+				select interventoScheda
+				from SsInterventiSchede interventoScheda 
+				where interventoScheda.scheda = :scheda
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SsScheda.readAnagraficaById">
+		<query>
+			<![CDATA[
+				select anagrafica
+				from SsAnagrafica anagrafica
+				where anagrafica.id = :id
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SsScheda.readAnagraficaByCf">
+		<query>
+			<![CDATA[
+				select anagrafica
+				from SsAnagrafica anagrafica
+				where upper(anagrafica.cf) = upper(:cf)
+				order by anagrafica.id desc
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SsScheda.readIdSegnalatoByCf">
+		<query>
+			<![CDATA[
+				select segnalato.id
+				from SsSchedaSegnalato segnalato join segnalato.anagrafica anagrafica
+				where upper(anagrafica.cf) = upper(:cf)
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SsScheda.readSchedaCompletaBySegnalatoId">
+		<query>
+			<![CDATA[
+				select distinct scheda
+				from SsScheda scheda
+				where scheda.segnalato = :segnalato and scheda.eliminata = false and scheda.completa = true
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SsScheda.readSchedaBySegnalatoId">
+		<query>
+			<![CDATA[
+				select distinct scheda
+				from SsScheda scheda
+				where scheda.segnalato = :segnalato and scheda.eliminata = false
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SsScheda.readTipoSchedaByTipo">
+		<query>
+			<![CDATA[
+				select t
+				from SsTipoScheda t
+				where t.tipo = :tipo
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SsScheda.readTipoSchedaById">
+		<query>
+			<![CDATA[
+				select t
+				from SsTipoScheda t
+				where t.id = :id
+			]]>
+		</query>
+	</named-query>
+ 	
+	<named-query name="SsScheda.readSchedeWithSegnalato">
+		<query>
+			<![CDATA[
+				select scheda
+				from SsScheda scheda 
+				where scheda.segnalato is not null
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SsScheda.readSegnalati">
+		<query>
+			<![CDATA[
+				select segnalato
+				from SsSchedaSegnalato segnalato
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SsScheda.readSegnalatoById">
+		<query>
+			<![CDATA[
+				select segnalato
+				from SsSchedaSegnalato segnalato
+				where segnalato.id = :id
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SsScheda.readSegnalanteById">
+		<query>
+			<![CDATA[
+				select segnalante
+				from SsSchedaSegnalante segnalante
+				where segnalante.id = :id
+			]]>
+		</query>
+	</named-query>
+		
+	<named-query name="SsScheda.readInterventoEconomicoTipoById">
+		<query>
+			<![CDATA[
+				select intervento
+				from SsInterventoEconomicoTipo intervento
+				where intervento.id = :id
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SsScheda.readInterventoEconomicoByAnagrafica">
+		<query>
+			<![CDATA[
+				select intervento
+				from SsInterventoEconomico intervento
+				where intervento.soggetto = :anagrafica and intervento.data >= :data
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SsRelUffPcontOrg.listaByOrganizzazione">
+		<query>
+			<![CDATA[
+				select rel
+				from SsRelUffPcontOrg rel
+				where rel.id.organizzazioneId= :organizzazione 
+				and rel.abilitato=true and rel.ssUfficio.abilitato=true 
+				and rel.ssPuntoContatto.abilitato=true
+				order by rel.ssUfficio.nOrd, rel.ssUfficio.nome, rel.ssPuntoContatto.nome
+			]]>
+		</query>
+	</named-query>
+
+	<named-query name="SsMotivazione.motivazioniByIdClassificazioni">
+		<query>
+			<![CDATA[
+				select m
+				from SsMotivazione m
+				where m.classificazione.id= :classificazioneId
+				order by m.motivo
+			]]>
+		</query>
+	</named-query>
+
+</entity-mappings>

@@ -1,0 +1,230 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+     	xmlns:h="http://java.sun.com/jsf/html"
+		xmlns:f="http://java.sun.com/jsf/core"
+		xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+		xmlns:ui="http://java.sun.com/jsf/facelets"
+		xmlns:p="http://primefaces.org/ui"
+	  	xmlns:composite="http://java.sun.com/jsf/composite">
+      
+	<h:head>
+		<title>Presenza in Italia (per persone di origine straniera)</title>
+	</h:head>
+	<h:body>
+		<composite:interface componentType="pnlStranieri">
+			<composite:attribute name="iStranieri" type="it.webred.cs.json.stranieri.IStranieri" required="true"/>
+			<composite:attribute name="soloLettura" default="false"/>
+		</composite:interface>
+		<composite:implementation 
+			xmlns:webred="http://java.sun.com/jsf/composite/webred"
+			xmlns:webredcs="http://java.sun.com/jsf/composite/webredcs">
+		
+		 <p:outputPanel rendered="#{cc.attrs.iStranieri.versionLowerCase eq '1'}">	
+		      <p:outputPanel style="display: inline-block; vertical-align: top;">
+	   		   <h:panelGrid columns="2">
+		   		    <h:outputText value="Paese di Origine Nucleo Familiare * " for="paese_origine"  style="display: block; width: 150px;"/>  
+	                <p:selectOneMenu label="Paese di Origine Nucleo Familiare"  id="paese_origine" value="#{cc.attrs.iStranieri.jsonCurrent.nazioneOrigine.codice}" 
+	                       effect="fold" editable="false" filter="true" filterMatchMode="startsWith"  disabled="#{cc.attrs.soloLettura}">  
+	           			<f:selectItem itemLabel="- seleziona -" itemValue="" />  
+	           			<f:selectItems value="#{cc.attrs.iStranieri.listaNazioni}" />
+	           			<p:ajax event="change" process="@this" listener="#{cc.attrs.iStranieri.changeNazioneOrigine}"/>    
+	       			</p:selectOneMenu>
+	       	   </h:panelGrid>
+	       	   <br/>
+	       	   <p:selectBooleanCheckbox label="minore straniero non accompagnato" itemLabel="Minore straniero non accompagnato" disabled="#{cc.attrs.soloLettura}"  
+	       			                         id="straniero_non_accompagnato" value="#{cc.attrs.iStranieri.jsonCurrent.minoreNonAccompagnato}">
+	       			        <p:ajax event="change" process="@this" update=":#{p:component('struttura_accoglienza')}" listener="#{cc.attrs.iStranieri.changeMinoreNonAccompagnato}"/>
+	       	   </p:selectBooleanCheckbox>
+	       	    <br/><br/>
+	       	   <h:outputText value="Conoscenza della lingua italiana" style="font-weight:bold" /><br/>
+	       	   <h:outputLabel value="Attestato o certificato di conoscenza " for="ita_attestato" />
+	           <p:selectBooleanButton id="ita_attestato" value="#{cc.attrs.iStranieri.jsonCurrent.linguaItaAttestato}" disabled="#{cc.attrs.soloLettura}"
+	                        		  onLabel="Si" offLabel="No" onIcon="ui-icon-check" offIcon="ui-icon-close" >
+	                   <p:ajax event="change" process="@this" update="pnlLinguaValutazione" listener="#{cc.attrs.iStranieri.changeLinguaItaAttestato}"/>
+	           </p:selectBooleanButton>
+	           
+	           <br/>
+	       	   <p:outputPanel id="pnlLinguaValutazione">
+		       	   <h:panelGrid  rendered="#{cc.attrs.iStranieri.jsonCurrent.linguaItaAttestato}" columns="2">
+		       	   	  <h:outputText value="Livello* " />
+		       	   	  <p:selectOneRadio value="#{cc.attrs.iStranieri.jsonCurrent.liguaItaLivello}" layout="grid" columns="3" disabled="#{cc.attrs.soloLettura}">
+		       	   	  		<f:selectItem itemLabel="A1" itemValue="A1" />
+		       	   	  		<f:selectItem itemLabel="A2" itemValue="A2" />
+		       	   	  		<f:selectItem itemLabel="A2+" itemValue="A2+" />
+		       	   	  		<f:selectItem itemLabel="B1" itemValue="B1" />
+		       	   	  		<f:selectItem itemLabel="B2" itemValue="B2" />
+		       	   	  		<f:selectItem itemLabel="B2+" itemValue="B2+" />
+		       	   	  		<f:selectItem itemLabel="C1" itemValue="C1" />
+		       	   	  		<f:selectItem itemLabel="C2" itemValue="C2" />
+		       	   	  		<f:selectItem itemLabel="Altro" itemValue="Altro" />
+		       	   	  </p:selectOneRadio>
+		       	  </h:panelGrid>
+		       	   <h:panelGrid  rendered="#{!cc.attrs.iStranieri.jsonCurrent.linguaItaAttestato}"  columns="2">
+	       		    <h:outputText value="Autovalutazione *: " />
+	   	            <h:outputText value="1 - nessuna, 2 - scarsa, 3 - sufficiente, 4 - buona, 5 - ottima" style="font-size:10px;font-style: italic;" />
+	                <p:spacer width="10px;"/>
+	                <h:panelGrid columns="2">
+				        <h:outputText value="Comprensione" />
+				        <p:rating value="#{cc.attrs.iStranieri.jsonCurrent.linguaItaComprensione}"  stars="5" disabled="#{cc.attrs.soloLettura}"/>
+				        <h:outputText value="Parlato" />
+				        <p:rating value="#{cc.attrs.iStranieri.jsonCurrent.linguaItaParlato}"  stars="5" disabled="#{cc.attrs.soloLettura}"/>
+				        <h:outputText value="Lettura" />
+				        <p:rating value="#{cc.attrs.iStranieri.jsonCurrent.linguaItaLettura}"  stars="5" disabled="#{cc.attrs.soloLettura}"/>
+				        <h:outputText value="Scrittura" />
+				        <p:rating value="#{cc.attrs.iStranieri.jsonCurrent.linguaItaScrittura}"  stars="5" disabled="#{cc.attrs.soloLettura}"/>
+			        </h:panelGrid >
+				  </h:panelGrid>
+				   <h:panelGrid columns="2">
+				   <h:outputLabel value="Altre lingue conosciute" for="altre_lingue" style="display: block; width: 100px;"/>
+				   <p:inputText id="altre_lingue" value="#{cc.attrs.iStranieri.jsonCurrent.altreLingue}" disabled="#{cc.attrs.soloLettura}"/>
+				   <h:outputLabel value="Rilasciato da" for="rilasciato_da" rendered="#{cc.attrs.iStranieri.jsonCurrent.linguaItaAttestato}"/>
+				   <p:inputText id="rilasciato_da" value="#{cc.attrs.iStranieri.jsonCurrent.istitutoRilascio}" disabled="#{cc.attrs.soloLettura}" 
+				                rendered="#{cc.attrs.iStranieri.jsonCurrent.linguaItaAttestato}"/>
+				   <h:outputLabel value="Comune" for="rilasciato_da_comune" rendered="#{cc.attrs.iStranieri.jsonCurrent.linguaItaAttestato}"/>
+				   <webred:pnlComune id="rilasciato_da_comune" comuneManBean="#{cc.attrs.iStranieri.comuneManRilascio}"  disabled="#{cc.attrs.soloLettura}"  
+				                     rendered="#{cc.attrs.iStranieri.jsonCurrent.linguaItaAttestato}"/>
+				   </h:panelGrid>
+			   </p:outputPanel>
+			   </p:outputPanel>
+			   
+    			<p:tabView id="tabPanelStranieri" style="display: inline-block; vertical-align: top;" >
+    			    <p:ajax event="tabChange" update="#{!cc.attrs.soloLettura ? '@this' : ''}"/>
+    			    <p:tab  id="tabGiuri" title="Condizione Giuridica" titletip="Condizione Giuridica" >
+					   <h:panelGrid columns="2" id="pnlCondGiuridica" >
+						  <h:outputText value="Status * " for="status_segnalato" />
+	                  	  <p:selectOneMenu label="Status" id="status_straniero" value="#{cc.attrs.iStranieri.jsonCurrent.status.codice}" disabled="#{cc.attrs.soloLettura}"
+	                  	                   effect="fold" editable="false" >  
+	     					<f:selectItem itemLabel="- seleziona -" itemValue=""/>  
+	            			<f:selectItems value="#{cc.attrs.iStranieri.listaStatus}" />
+	            			<p:ajax event="change" process="@this" listener="#{cc.attrs.iStranieri.changeStatus}"  update="pnlCondGiuridica"/>  
+	        			 </p:selectOneMenu>
+	        			 <p:spacer width="5px"/>
+        			     <p:selectBooleanCheckbox itemLabel="Presente da oltre 3 mesi" disabled="#{cc.attrs.iStranieri.jsonCurrent.status.codice ne '9'}"
+        			                             value="#{cc.attrs.iStranieri.jsonCurrent.presenteDaOltre3Mesi}">
+        			         <p:ajax event="change" listener="#{cc.attrs.iStranieri.onChangePresente}" update="pnlCondGiuridica"/>
+        			     </p:selectBooleanCheckbox>
+        			     <p:spacer width="5px"/>
+	       			    <p:selectOneRadio id="customPermesso" value="#{cc.attrs.iStranieri.jsonCurrent.statoPermessoSogg}" layout="grid" columns="1" 
+	       			                      disabled="#{cc.attrs.soloLettura or cc.attrs.iStranieri.disablePnlStatoPermesso}">
+				            <f:selectItem itemLabel="in attesa di permesso" itemValue="in attesa di permesso" />
+				            <f:selectItem itemLabel="in attesa di rinnovo" itemValue="in attesa di rinnovo" />
+				            <f:selectItem itemLabel="in possesso di permesso" itemValue="in possesso di permesso" />
+				            <f:selectItem itemLabel="in attesa di regolarizzazione per sanatoria" itemValue="in attesa di regolarizzazione per sanatoria" />
+						    <f:selectItem itemLabel="nessun titolo di soggiorno" itemValue="nessun titolo di soggiorno" />
+						    <p:ajax event="change" update="pnlInPossesso,permesso_straniero" process="@this" listener="#{cc.attrs.iStranieri.changeStatoPermesso}"/>
+				        </p:selectOneRadio>
+				        <h:outputText value="Tipo Permesso *" for="tipo_permesso" />
+			            <p:selectOneMenu id="permesso_straniero" label="Tipo permesso" value="#{cc.attrs.iStranieri.jsonCurrent.permesso.codice}" 
+	                                     style="width:300px"  
+	                                     disabled="#{cc.attrs.soloLettura or cc.attrs.iStranieri.disableTipoPermesso}" 
+	                                     effect="fold" editable="false" filter="true" filterMatchMode="startsWith">  
+	     					<f:selectItem itemLabel="- seleziona -" itemValue=""/>  
+	            			<f:selectItems value="#{cc.attrs.iStranieri.listaPermessi}" />
+	            			<p:ajax event="change" process="@this" listener="#{cc.attrs.iStranieri.changePermesso}"/>    
+	        			</p:selectOneMenu>
+	        			<h:outputLabel value="Num.Id." />
+			            <h:panelGrid id="pnlInPossesso" columns="3" >
+		        			<p:inputText value="#{cc.attrs.iStranieri.jsonCurrent.idPraticaPermesso}" 
+		        			             disabled="#{cc.attrs.soloLettura or cc.attrs.iStranieri.disableDatiPermesso}"/>
+			           	    <h:outputLabel value="Scadenza" />
+			           	    <webred:pnlData id="dataScadenzaPermesso" 
+			           	                    dataValue="#{cc.attrs.iStranieri.jsonCurrent.scadPermessoSogg}" 
+			           	                    dataPattern="dd/MM/yyyy" 
+			           	                    dataPatternLabel="(gg/mm/aaaa)" 
+			           	                    dataReq="false" 
+			           	                    dataReqMes="Data Scadenza Permesso obbligatoria" 
+			           	                    dataConMes="Data di scadenza non valida"
+			           	                    dataValMes="Data di scadenza non valida" 
+			            	                disabled="#{cc.attrs.soloLettura or cc.attrs.iStranieri.disableDatiPermesso}"/>
+
+			            </h:panelGrid>
+			            
+					  </h:panelGrid> 
+
+					</p:tab>    			    
+    				<p:tab  id="tabIta" title="Arrivo in Italia" titletip="Arrivo in Italia" >
+						<p:selectOneRadio value="#{cc.attrs.iStranieri.jsonCurrent.arrivoItalia}"  disabled="#{cc.attrs.soloLettura}" >
+				            <f:selectItem itemLabel="dalla Nascita" itemValue="dalla nascita" />
+				            <f:selectItem itemLabel="Migrante" itemValue="migrante" />
+				            <f:selectItem itemLabel="Comunitario" itemValue="comunitario" />
+				        </p:selectOneRadio>
+				        <p:spacer height="10px"/>
+				        <h:panelGrid columns="2">
+	
+		        				 
+				        	<h:outputText value="Anno primo arrivo " for="anno_primo_arrivo_ita" />
+				        	<h:panelGroup>
+					        	<p:selectOneMenu id="anno_primo_arrivo_ita" value="#{cc.attrs.iStranieri.jsonCurrent.annoPrimoArrivoITA}" disabled="#{cc.attrs.soloLettura}" 
+					        	                 editable="false" style="width:80px;"   >  
+		            				<f:selectItem itemLabel=" " itemValue="" />  
+		            				<f:selectItems value="#{cc.attrs.iStranieri.listaAnni}" />  
+		        				</p:selectOneMenu>
+		        				 <p:spacer width="10px"/> 
+					        	<p:selectBooleanCheckbox value="#{cc.attrs.iStranieri.jsonCurrent.daSoloPrimoArrivoITA}" itemLabel="da solo" disabled="#{cc.attrs.soloLettura}"  />  
+					        </h:panelGroup> 
+					        <h:outputText value="Anno primo permesso di soggiorno " for="anno_permesso" />
+				        	<p:selectOneMenu id="anno_permesso" value="#{cc.attrs.iStranieri.jsonCurrent.annoPrimoPermSogg}" 
+					        	                 editable="false" style="width:80px;" disabled="#{cc.attrs.soloLettura}"  >  
+		            				<f:selectItem itemLabel=" " itemValue="" />  
+		            				<f:selectItems value="#{cc.attrs.iStranieri.listaAnni}" />  
+		        			</p:selectOneMenu>
+				        
+				       		<h:outputText value="Valico di frontiera" for="comune_ultimo_arrivo" />
+				        	<webred:pnlComune id="comune_ultimo_arrivo" comuneManBean="#{cc.attrs.iStranieri.comuneManITA}"  disabled="#{cc.attrs.soloLettura}" />
+	            			
+	            			<h:outputText value="Ultimo paese di provenienza " for="ultimo_paese" />
+	            			<p:selectOneMenu label="Ultimo paese di provenienza"  id="ultimo_paese" value="#{cc.attrs.iStranieri.jsonCurrent.ultimaNazioneProvenienza.codice}" 
+		                        effect="fold" editable="false"  filter="true" filterMatchMode="startsWith" disabled="#{cc.attrs.soloLettura}" >  
+		            			<f:selectItem itemLabel="- seleziona -" itemValue="" />  
+		            			<f:selectItems value="#{cc.attrs.iStranieri.listaNazioni}" />
+		            			<p:ajax event="change" process="@this" listener="#{cc.attrs.iStranieri.changeNazioneProvenienza}"/>    
+	        				</p:selectOneMenu>
+	            		</h:panelGrid>
+					</p:tab>
+					<p:tab id="tabRegione" title="In Regione" titletip="Arrivo in Regione" >
+					   
+				    	<p:selectOneRadio  value="#{cc.attrs.iStranieri.jsonCurrent.arrivoRegione}" disabled="#{cc.attrs.soloLettura}"  >
+			           		 <f:selectItem itemLabel="nato in regione" itemValue="nato in regione" />
+			            	 <f:selectItem itemLabel="immigrato" itemValue="immigrato" />
+			            </p:selectOneRadio>
+					       
+					   <h:panelGrid columns="2">
+						   <h:outputText value="Anno  primo arrivo " for="anno_first_arrivo_reg" />
+						 
+						   	<p:selectOneMenu id="anno_first_arrivo_reg" value="#{cc.attrs.iStranieri.jsonCurrent.annoPrimoArrivoREG}" disabled="#{cc.attrs.soloLettura}" 
+						   	                 editable="false" style="width:80px;"   >  
+	            				<f:selectItem itemLabel=" " itemValue="" />  
+	            				<f:selectItems value="#{cc.attrs.iStranieri.listaAnni}" />  
+	        				</p:selectOneMenu> 
+		        				
+	        				 <h:outputLabel value="Richiedente o titolare protezione internazionale" for="rich_protezione" style="display: block; width: 150px;"/>
+	        				 <p:selectBooleanButton id="rich_protezione" value="#{cc.attrs.iStranieri.jsonCurrent.protezioneInternazionale}" disabled="#{cc.attrs.soloLettura}"
+	        				                        onLabel="Si" offLabel="No" onIcon="ui-icon-check" offIcon="ui-icon-close" >
+	        				 	<p:ajax event="change" process="@this" update="comune_ultimo_arrivo_reg, struttura_accoglienza"  listener="#{cc.attrs.iStranieri.changeProtezioneInternazionale}"/>
+	        				 </p:selectBooleanButton>
+		        			<h:outputText value="Comune titolare SPRAR " for="comune_ultimo_arrivo_reg" style="display: block; width: 150px;"/>
+							<webred:pnlComune id="comune_ultimo_arrivo_reg" comuneManBean="#{cc.attrs.iStranieri.comuneManREG}" 
+			        			                  disabled="#{cc.attrs.soloLettura or !cc.attrs.iStranieri.jsonCurrent.protezioneInternazionale}" />
+		        		 
+		        			<h:outputText value="Struttura residenziale di accoglienza" style="display: block; width: 150px;"/>
+		        			<h:panelGrid id="struttura_accoglienza" columns="5">
+		        			    <p:graphicImage id="imgTooltipStrutturaResidenziale" value="/webredcs/img/info.png" styleClass="info" width="15px" />
+								<p:tooltip for="imgTooltipStrutturaResidenziale" styleClass="tooltip">
+									<h:outputText value="solo per minori stranieri non accompagnati" />
+								</p:tooltip>
+		        				<p:inputText  value="#{cc.attrs.iStranieri.jsonCurrent.nomeStruttAccoglienza}"      disabled="#{cc.attrs.soloLettura or !(cc.attrs.iStranieri.jsonCurrent.protezioneInternazionale or cc.attrs.iStranieri.jsonCurrent.minoreNonAccompagnato)}"/>
+		        				<h:outputText value="Indirizzo"/>
+		        				<p:inputText  value="#{cc.attrs.iStranieri.jsonCurrent.indirizzoStruttAccoglienza}" disabled="#{cc.attrs.soloLettura or !(cc.attrs.iStranieri.jsonCurrent.protezioneInternazionale or cc.attrs.iStranieri.jsonCurrent.minoreNonAccompagnato)}"/>
+
+									
+		        			</h:panelGrid>
+		        	   </h:panelGrid>
+					</p:tab>
+
+		   </p:tabView>
+		</p:outputPanel>
+	
+		</composite:implementation>
+	</h:body>
+		
+</html>

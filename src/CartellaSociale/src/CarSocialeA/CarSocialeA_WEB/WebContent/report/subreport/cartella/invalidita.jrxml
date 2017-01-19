@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="a460accf-792f-423b-b8ac-286475f1925a">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<field name="invInCorso" class="java.lang.String"/>
+	<field name="invInizio" class="java.lang.String"/>
+	<field name="invFine" class="java.lang.String"/>
+	<field name="certH" class="java.lang.String"/>
+	<field name="certHInizio" class="java.lang.String"/>
+	<field name="certHFine" class="java.lang.String"/>
+	<field name="invPerc" class="java.lang.String"/>
+	<field name="accompagnamento" class="java.lang.String"/>
+	<field name="legge104" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="257" splitType="Immediate">
+			<staticText>
+				<reportElement x="0" y="35" width="138" height="20" uuid="dc20d0b5-d15c-4bee-aa04-c35f16ccd03d"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Invalidità in corso]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="60" width="138" height="20" uuid="c9991cf7-605c-4aa8-8d5a-728c61572f67"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Data inizio invalidità]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="150" y="35" width="398" height="20" uuid="c17b39c2-a85a-4f09-9897-77a0e1131180"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{invInCorso}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="150" y="60" width="398" height="20" uuid="ed53c2b5-18b4-44b8-940a-1576c7df9546"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{invInizio}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="150" y="85" width="398" height="20" uuid="3e9631a1-4593-4475-8bd0-e26e562f432e"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{invFine}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="85" width="138" height="20" uuid="2151b7c1-7d36-4240-b5f1-06e8731552bf"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Data fine invalidità]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="150" y="110" width="398" height="20" uuid="3e78b8ae-6994-40d9-912c-2c3cba0d7ef4"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{certH}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="110" width="138" height="20" uuid="9b81f428-d242-40c1-bb30-f7a5c25ffa05"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Certificazione H]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="0" width="555" height="20" backcolor="#CCCCCC" uuid="b208f530-d7c1-4e3c-8d78-0e6c395942f0"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="html">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Invalidità]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="150" y="160" width="398" height="20" uuid="d6f8a400-434c-41c1-b32d-889c0358dbad"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{certHFine}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="135" width="138" height="20" uuid="c5e4baa0-5364-40a5-b193-f3767908a21b"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Data certificazione]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="150" y="135" width="398" height="20" uuid="3a3a2f2e-766b-484c-9c54-09a2fe3cb1a5"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{certHInizio}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="160" width="138" height="20" uuid="7e6350e0-3267-4891-bc4c-2b7a3c34177e"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Data scadenza certificazione]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="185" width="138" height="20" uuid="f4664d80-f789-4967-9f2a-9438b88043a5"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[% invalidità]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="150" y="210" width="398" height="20" uuid="ceb1a132-723d-4fbb-91aa-b427092371ef"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{accompagnamento}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="235" width="138" height="20" uuid="9fba38a8-5fa0-4a5b-9574-fa04ed262657"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Legge 104]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="210" width="138" height="20" uuid="c0d4d2a6-4ccd-4f4c-880c-1a7389cd6c85"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Accompagnamento]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="150" y="235" width="398" height="20" uuid="2f86a6ab-dbdc-444d-a8ac-46a59d3b3849"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{legge104}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="150" y="185" width="398" height="20" uuid="f5f619f3-239d-43d9-b857-49261cdcb6fb"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{invPerc}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+</jasperReport>

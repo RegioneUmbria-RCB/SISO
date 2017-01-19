@@ -1,0 +1,27 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+     	xmlns:h="http://java.sun.com/jsf/html"
+		xmlns:f="http://java.sun.com/jsf/core"
+		xmlns:ui="http://java.sun.com/jsf/facelets"
+		xmlns:p="http://primefaces.org/ui"
+	  	xmlns:composite="http://java.sun.com/jsf/composite"
+	  	xmlns:webred="http://java.sun.com/jsf/composite/webred">
+      
+	<h:head>
+		<title>Scelta Comunità</title>
+	</h:head>
+	<h:body> 
+		<composite:interface componentType="pnlListaComunita">
+			<composite:attribute name="iComunita" type="it.webred.cs.jsf.interfaces.IListaComunita"/>
+		</composite:interface>
+		<composite:implementation>			
+			
+				<p:selectOneMenu  value="#{cc.attrs.iComunita.idComunita}" >
+					<f:selectItems value="#{cc.attrs.iComunita.lstComunita}" var="tipo" itemLabel="#{tipo.descrizione}" itemValue="#{tipo}"/>
+					<p:ajax event="change" listener="#{cc.attrs.iComunita.aggiorna}"/>
+				</p:selectOneMenu>
+       
+		</composite:implementation>
+	</h:body>
+	
+</html>

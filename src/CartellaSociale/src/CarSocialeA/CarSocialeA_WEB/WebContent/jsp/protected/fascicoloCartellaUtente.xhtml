@@ -1,0 +1,361 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui"
+	xmlns:webred="http://java.sun.com/jsf/composite/webred" xmlns:webredcs="http://java.sun.com/jsf/composite/webredcs">
+
+<ui:composition template="/jsp/protected/layout/layout.xhtml">
+  <ui:define name="content">
+
+    <p:tabView id="fascicoloTab" style="padding:0;" orientation="top" scrollable="true" dynamic="true" cache="true" effect="fade" >
+
+      <p:ajax event="tabChange" listener="#{fascicoloBean.onTabChange}" />
+
+      <p:tab id="#{fascicoloBean.datiPresaCaricoName}Tab" rendered="#{fascicoloBean.datiPresaCarico}" titletip="Dati Di Presa In Carico">
+        <f:facet name="title">
+          <p:graphicImage value="/images/datiPresaCarico.png" height="20" />
+          <p:spacer width="2" />
+          <h:outputText value="Dati PIC" style="vertical-align: bottom;" />
+        </f:facet>
+
+        <h:form id="#{fascicoloBean.datiPresaCaricoName}Form">
+          <h:outputLabel value="Dati Di Presa In Carico" styleClass="h3" />
+          <webredcs:pnlPresaInCarico iPresaInCarico="#{fascicoloBean.presaInCaricoBean}" />
+        </h:form>
+
+      </p:tab>
+      <p:tab id="#{fascicoloBean.fogliAmmName}Tab" rendered="#{fascicoloBean.fogliAmm}" titletip="Fogli Amministrativi">
+        <f:facet name="title">
+          <p:graphicImage value="/images/fogliAmm.png" height="20" />
+          <p:spacer width="2" />
+          <h:outputText value="Interventi" style="vertical-align: bottom;" />
+        </f:facet>
+        <p:outputPanel deferred="true">
+        <h:form id="#{fascicoloBean.fogliAmmName}Form">
+
+				<webredcs:pnlFglIntervento id="dlgFglIntervento" styleClass="noBorder" 
+						widgetVar="#{fglInterventoBean.widgetVar}"
+            			salvaActionUpdate=":#{p:component('panelListaErogazioni')}, :@form:@form:panelSearchTipoIntervento"
+            			esciActionUpdate=":@form:@form:panelSearchTipoIntervento" />
+
+          <h:panelGrid columns="2" columnClasses="leftAlign, rightAlign" width="100%" cellpadding="0" cellspacing="0">
+            <h:outputLabel value="Fogli Amministrativi" styleClass="h3" />
+
+            <webredcs:pnlAltriSoggetti iAltriSoggetti="#{fascicoloBean.altriSoggettiBean}" sessionAnagraficaId="#{soggetto.anagraficaId}"
+              caricaSoggettoListener="#{fascicoloBean.initializeFogliAmmTab(sogg)}" />
+          </h:panelGrid>
+
+          <h:panelGrid columns="4" width="100%">
+            <h:panelGroup>
+              <h:outputLabel value="Cognome " style="font-weight:bold;" />
+              <p:spacer width="5" />
+              <h:outputLabel value="#{fascicoloBean.interventiBean.csASoggetto.csAAnagrafica.cognome}" />
+            </h:panelGroup>
+            <h:panelGroup>
+              <h:outputLabel value="Nome" style="font-weight:bold;" />
+              <p:spacer width="5" />
+              <h:outputLabel value="#{fascicoloBean.interventiBean.csASoggetto.csAAnagrafica.nome}" />
+            </h:panelGroup>
+            <h:panelGroup>
+              <h:outputLabel value="Data nascita" style="font-weight:bold;" />
+              <p:spacer width="5" />
+              <h:outputLabel value="#{fascicoloBean.interventiBean.csASoggetto.csAAnagrafica.dataNascita}">
+                <f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+              </h:outputLabel>
+            </h:panelGroup>
+            <h:panelGroup>
+              <h:outputLabel value="Cod.fiscale" style="font-weight:bold;" />
+              <p:spacer width="5" />
+              <h:outputLabel value="#{fascicoloBean.interventiBean.csASoggetto.csAAnagrafica.cf}" />
+            </h:panelGroup>
+            <h:panelGroup>
+              <h:outputLabel value="Cat. sociali attuali" style="font-weight:bold;" />
+              <p:spacer width="5" />
+              <h:outputLabel value="#{fascicoloBean.interventiBean.descCatSocialiCorrenti}" />
+            </h:panelGroup>
+          </h:panelGrid>
+          <p:spacer height="5" />
+
+          <!-- START Gestione scelta tipi intervento   -->
+          <f:metadata>
+            <ui:param name="tipoIntTreeView" value="#{fascicoloBean.interventiBean.tipoIntTreeView}" />
+          </f:metadata>
+          <ui:include src="/jsp/protected/treeTipoIntervento/tipoInterventoTree.xhtml">
+            <ui:param name="id" value="panelSearchTipoIntervento" />
+            <ui:param name="tree_modal_dlg" value="true" />
+            <ui:param name="tipoIntTreeView" value="#{fascicoloBean.interventiBean.tipoIntTreeView}" />
+            <ui:param name="esciActionUpdate" value="@form:panelSearchTipoIntervento" />
+          </ui:include>
+         <!-- END END scelta tipi intervento  -->
+
+          <p:spacer height="5" />
+          <p:accordionPanel dynamic="true" cache="true">
+            <p:tab title="Lista Interventi" id="tabListaInterventi">
+              <p:outputPanel id="panelListaInterventi">
+				<webredcs:pnlInterventi id="idPnlInterventi"
+				  iDatiInterventi="#{fascicoloBean.interventiBean}" styleClass="noBorder" 
+                  esciActionUpdate=":@form:@form:panelSearchTipoIntervento"
+                  salvaActionUpdate=":#{p:component('panelListaErogazioni')}, :#{p:component('panelSearchTipoIntervento')}"
+                  initializeStampaListener="#{reportBean.esportaFoglioAmm(fog.diarioId, int.idIntervento)}" />
+              </p:outputPanel>
+            </p:tab>
+            <p:tab title="Lista Erogazioni" id="tabListaErogazioni">
+              <p:outputPanel id="panelListaErogazioni">
+
+                <h:panelGrid columns="3">
+
+                  <p:commandButton id="idBtnNuovaErogazione" process="@this" value="Nuova Erogazione" title="Nuova Erogazione"
+                    action="#{fascicoloBean.interventiBean.inizializzaNuovaErogazione()}"
+                    oncomplete="if(args &amp;&amp; args.isShowDialog){updateDialogErogazioniContent(); PF('#{fglInterventoBean.widgetVar}').show()}"
+                    icon="ui-icon-document-b">
+                  </p:commandButton>
+				  <p:remoteCommand id="rmtBtnNuovaErogazione" name="updateDialogErogazioniContent" process="@this" update=":@form:dlgFglIntervento:frmDlgFglInterventi" />
+
+                </h:panelGrid>
+                <p:spacer height="2" />
+                <!-- Alessandro Feriani
+										A causa di un problema primefaces Ajax il parametro "dataBean"
+										 viene risolto a null durante un update nel file include. Risolto con questo magheggio
+										"Facelet composition parameter not resolved by p:ajax"
+										https://code.google.com/p/primefaces/issues/detail?id=4075
+									 -->
+                <f:metadata>
+                  <ui:param name="bugFixBean" value="#{fascicoloBean.interventiBean.erogazioniInterventiBean}" />
+                </f:metadata>
+                <ui:include src="/jsp/protected/erogazioneInterventi/listaErogazioneInterventi.xhtml">
+                  <ui:param name="dataBean" value="#{fascicoloBean.interventiBean.erogazioniInterventiBean}" />
+                  <ui:param name="apriActionUpdate" value=":@form:dlgFglIntervento:frmDlgFglInterventi" />
+                </ui:include>
+              </p:outputPanel>
+            </p:tab>
+          </p:accordionPanel>
+        </h:form>
+        </p:outputPanel>
+      </p:tab>
+      
+      <p:tab id="#{fascicoloBean.colloquioName}Tab" rendered="#{fascicoloBean.colloquio}" titletip="Diario">
+        <f:facet name="title">
+          <p:graphicImage value="/images/diario.png" height="20" />
+          <p:spacer width="2" />
+          <h:outputText value="Diario" style="vertical-align: bottom;" />
+        </f:facet>
+        <p:outputPanel deferred="true">
+        <h:form id="#{fascicoloBean.colloquioName}Form">
+          <h:panelGrid columns="2" columnClasses="leftAlign, rightAlign" width="100%" cellpadding="0" cellspacing="0">
+            <h:outputLabel value="Colloqui" styleClass="h3" />
+
+            <webredcs:pnlAltriSoggetti iAltriSoggetti="#{fascicoloBean.altriSoggettiBean}" sessionAnagraficaId="#{soggetto.anagraficaId}"
+              caricaSoggettoListener="#{fascicoloBean.initializeColloquioTab(sogg)}" />
+            <p:spacer height="5" />
+          </h:panelGrid>
+
+          <webredcs:pnlColloquio iColloquio="#{fascicoloBean.colloquioBean}" />
+        </h:form>
+        </p:outputPanel>
+      </p:tab>
+      
+      <p:tab id="#{fascicoloBean.relazName}Tab" rendered="#{fascicoloBean.relaz}" titletip="Attività Professionali">
+        <f:facet name="title">
+          <p:graphicImage value="/images/relazioni.png" height="20" />
+          <p:spacer width="2" />
+          <h:outputText value="Attività Professionali" style="vertical-align: bottom;" />
+        </f:facet>
+		<p:outputPanel deferred="true">
+        <h:form id="#{fascicoloBean.relazName}Form">
+
+          <h:panelGrid columns="2" columnClasses="leftAlign, rightAlign" width="100%" cellpadding="0" cellspacing="0">
+            <h:outputLabel value="Attività Professionali" styleClass="h3" />
+
+            <webredcs:pnlAltriSoggetti iAltriSoggetti="#{fascicoloBean.altriSoggettiBean}" sessionAnagraficaId="#{soggetto.anagraficaId}"
+              caricaSoggettoListener="#{fascicoloBean.initializeRelazioniTab(sogg)}" />
+
+            <p:spacer height="5" />
+          </h:panelGrid>
+
+          <webredcs:pnlRelazioni iRelazioni="#{fascicoloBean.relazioniBean}" iDiarioDocs="#{diarioDocsMan}" styleClass="noBorder" />
+        </h:form>
+        </p:outputPanel>
+      </p:tab>
+      
+      <p:tab id="#{fascicoloBean.paiName}Tab" rendered="#{fascicoloBean.pai}" titletip="PAI">
+        <f:facet name="title">
+          <p:graphicImage value="/images/pai.png" height="20" />
+          <p:spacer width="2" />
+          <h:outputText value="PAI" style="vertical-align: bottom;" />
+        </f:facet>
+        <p:outputPanel deferred="true">
+        <h:form id="#{fascicoloBean.paiName}Form">
+
+          <h:panelGrid columns="2" columnClasses="leftAlign, rightAlign" width="100%" cellpadding="0" cellspacing="0">
+            <h:outputLabel value="PAI" styleClass="h3" />
+
+            <webredcs:pnlAltriSoggetti iAltriSoggetti="#{fascicoloBean.altriSoggettiBean}" sessionAnagraficaId="#{soggetto.anagraficaId}"
+              caricaSoggettoListener="#{fascicoloBean.initializePaiTab(sogg)}" />
+
+            <p:spacer height="5" />
+          </h:panelGrid>
+
+          <webredcs:pnlListaPai iPai="#{fascicoloBean.paiBean}" styleClass="noBorder" id="#{fascicoloBean.paiName}Component" />
+        </h:form>
+        </p:outputPanel>
+      </p:tab>
+      
+      <p:tab id="#{fascicoloBean.iseeName}Tab" rendered="#{fascicoloBean.isee}" titletip="ISEE">
+        <f:facet name="title">
+          <p:graphicImage value="/images/isee.png" height="20" />
+          <p:spacer width="2" />
+          <h:outputText value="ISEE" style="vertical-align: bottom;" />
+        </f:facet>
+        <p:outputPanel deferred="true">
+        <h:form id="#{fascicoloBean.iseeName}Form">
+
+          <h:panelGrid columns="2" columnClasses="leftAlign, rightAlign" width="100%" cellpadding="0" cellspacing="0">
+            <h:outputLabel value="ISEE" styleClass="h3" />
+
+			<webredcs:pnlAltriSoggetti iAltriSoggetti="#{fascicoloBean.altriSoggettiBean}" sessionAnagraficaId="#{soggetto.anagraficaId}" 
+						caricaSoggettoListener="#{fascicoloBean.initializeIseeTab(sogg)}" />
+
+            <p:spacer height="5" />
+          </h:panelGrid>
+
+          <webredcs:pnlIsee iIsee="#{fascicoloBean.iseeBean}" />
+
+        </h:form>
+        </p:outputPanel>
+      </p:tab>
+      <p:tab id="#{fascicoloBean.schedeSegrName}Tab" rendered="#{fascicoloBean.schedeSegr}" titletip="Schede #{navigationBean.labelSegrSociale}">
+        <f:facet name="title">
+          <p:graphicImage value="/images/schedeSegr.png" height="20" />
+          <p:spacer width="5" />
+          <h:outputText value="Sch. segr." style="vertical-align: bottom;" />
+        </f:facet>
+            <p:outputPanel deferred="true">
+			<h:form id="#{fascicoloBean.schedeSegrName}Form">
+			
+				<h:panelGrid columns="2" columnClasses="leftAlign, rightAlign" width="100%" cellpadding="0" cellspacing="0">
+					<h:outputLabel value="Schede #{navigationBean.labelSegrSociale}" styleClass="h3" />
+					
+					<webredcs:pnlAltriSoggetti iAltriSoggetti="#{fascicoloBean.altriSoggettiBean}" sessionAnagraficaId="#{soggetto.anagraficaId}" 
+											   caricaSoggettoListener="#{fascicoloBean.initializeSchedeSegrTab(sogg)}" />
+					<p:spacer height="5" />
+					
+				</h:panelGrid>
+				<webredcs:pnlListaSchedeSegr listaSchedeSegrBean="#{fascicoloBean.schedeSegrBean}" schedaSegrBean="#{schedaSegrBean}" />
+			</h:form>
+			</p:outputPanel>
+		</p:tab>
+			<p:tab id="#{fascicoloBean.docIndivName}Tab" rendered="#{fascicoloBean.docIndiv}" titletip="Documenti Individuali">
+				<f:facet name="title">
+					<p:graphicImage value="/images/docIndiv.png" height="20" />
+					<p:spacer width="2" />
+					<h:outputText value="Doc. individuali" style="vertical-align: bottom;" />
+				</f:facet>
+				<p:outputPanel deferred="true">
+				<h:form id="#{fascicoloBean.docIndivName}Form">
+					<h:panelGrid columns="2" columnClasses="leftAlign, rightAlign" width="100%" cellpadding="0" cellspacing="0">
+						<h:outputLabel value="Documenti Individuali" styleClass="h3" />
+						
+						<webredcs:pnlAltriSoggetti iAltriSoggetti="#{fascicoloBean.altriSoggettiBean}" sessionAnagraficaId="#{soggetto.anagraficaId}" 
+											       caricaSoggettoListener="#{fascicoloBean.initializeDocIndividualiTab(sogg)}" />
+				
+						<p:spacer height="5" />
+					</h:panelGrid>
+						
+					<webredcs:pnlDocIndividuali iDocIndividuali="#{fascicoloBean.docIndividualiBean}" />
+				</h:form>
+				</p:outputPanel>
+			</p:tab>
+			<p:tab id="#{fascicoloBean.schedaMultidimAnzName}Tab" rendered="#{fascicoloBean.schedaMultidimAnz}" titletip="Schede valutazione multidimensionali">
+				<f:facet name="title">
+					<p:graphicImage value="/images/schedaMultidim.png" height="20" />
+					<p:spacer width="2" />
+					<h:outputText value="Sch. multidim." style="vertical-align: bottom;" />
+				</f:facet>
+		<p:outputPanel deferred="true">
+        <h:form id="#{fascicoloBean.schedaMultidimAnzName}Form">
+          <h:panelGrid columns="2" columnClasses="leftAlign, rightAlign" width="100%" cellpadding="0" cellspacing="0">
+            <h:outputLabel value="Schede Valutazione Multidimensionali" styleClass="h3" />
+            <webredcs:pnlAltriSoggetti iAltriSoggetti="#{fascicoloBean.altriSoggettiBean}" sessionAnagraficaId="#{soggetto.anagraficaId}"
+              caricaSoggettoListener="#{fascicoloBean.initializeSchedaMultidimAnzTab(sogg)}" />
+
+            <p:spacer height="5" />
+          </h:panelGrid>
+
+					<webredcs:pnlSchedaMultidimAnz iSchedaMultidimAnz="#{fascicoloBean.schedaMultidimAnzBean}" 
+												   listaIsee="#{fascicoloBean.iseeBean.listaIsee}"
+            initializeStampaListener="#{reportBean.esportaSchedaMultidimensionale(scheda.csDDiario.id)}" />
+
+          <ui:include src="/jsp/protected/fascicoloCartella/schedaBarthel.xhtml">
+            <ui:param name="managedBean" value="#{fascicoloBean.schedaMultidimAnzBean.manSchedaBarthelBean}" />
+          </ui:include>
+
+        </h:form>
+        </p:outputPanel>
+      </p:tab>
+      <p:tab id="#{fascicoloBean.datiScuolaName}Tab" rendered="#{fascicoloBean.datiScuola}" titletip="Dati scuola">
+        <f:facet name="title">
+          <p:graphicImage value="/images/datiScuola.png" height="20" />
+          <p:spacer width="2" />
+          <h:outputText value="Dati Scuola" style="vertical-align: bottom;" />
+        </f:facet>
+		<p:outputPanel deferred="true">
+        <h:form id="#{fascicoloBean.datiScuolaName}Form">
+          <h:panelGrid columns="2" columnClasses="leftAlign, rightAlign" width="100%" cellpadding="0" cellspacing="0">
+
+            <h:outputLabel value="Dati Scuola" styleClass="h3" />
+
+            <webredcs:pnlAltriSoggetti iAltriSoggetti="#{fascicoloBean.altriSoggettiBean}" sessionAnagraficaId="#{soggetto.anagraficaId}"
+              caricaSoggettoListener="#{fascicoloBean.initializeDatiScuolaTab(sogg)}" />
+
+            <p:spacer height="5" />
+          </h:panelGrid>
+
+          <webredcs:pnlDatiScuola iDatiScuola="#{fascicoloBean.datiScuolaBean}" />
+        </h:form>
+        </p:outputPanel>
+      </p:tab>
+
+      <p:tab id="#{fascicoloBean.provvTribName}Tab" rendered="#{fascicoloBean.provvedimentiMinori}" titletip="Provvedimenti Minori">
+        <f:facet name="title">
+          <p:graphicImage value="/images/tribunale.png" height="20" />
+          <p:spacer width="2" />
+          <h:outputText value="Provvedimenti Tribunale" style="vertical-align: bottom;" />
+        </f:facet>	
+        <p:outputPanel deferred="true">
+			<h:form id="#{fascicoloBean.provvTribName}Form">
+			<h:panelGrid columns="2" columnClasses="leftAlign, rightAlign" width="100%" cellpadding="0" cellspacing="0">
+
+				<h:outputLabel value="Provvedimenti tribunale" styleClass="h3" />
+				
+				<webredcs:pnlAltriSoggetti iAltriSoggetti="#{fascicoloBean.altriSoggettiBean}" sessionAnagraficaId="#{soggetto.anagraficaId}"
+						caricaSoggettoListener="#{fascicoloBean.initializeProvvMinoriTab(sogg)}" />
+				
+				<p:spacer height="5" />
+			</h:panelGrid>
+			
+				<f:metadata>
+					<ui:param name="bugFixProvv" value="#{fascicoloBean.listaProvvedimentiBean}" />
+				</f:metadata>
+				<ui:include src="/jsp/protected/provvedimentiMinori/listaProvedimentiTribunale.xhtml">
+					<ui:param name="dataBean" value="#{fascicoloBean.listaProvvedimentiBean}" />
+				</ui:include>
+			</h:form>
+			
+			<p:dialog id="provMinoriDialog" widgetVar="ProvMinoriDialog" closable="true"
+            		  header="Provvedimenti Tribunale" modal="true" 
+          			  resizable="true" dynamic="true" position="center" draggable="true"
+          			  onShow="var scrollPanel = jQuery(PF('ProvMinoriScrollPanel').jqId);
+          			  							scrollPanel.width(scrollPanel.width()+25);
+          			  							scrollPanel.height(jQuery(window).height()*0.85);">
+          		
+          		<p:scrollPanel mode="native" widgetVar="ProvMinoriScrollPanel">
+	          		<ui:include src="/jsp/protected/provvedimentiMinori/dialogProvvedimentiMinori.xhtml">
+						<ui:param name="provMinoriTabManBean" value="#{fascicoloBean.listaProvvedimentiBean.currProvvedimentiMinoriManBean}" />
+					</ui:include>
+				</p:scrollPanel>
+			</p:dialog>
+		</p:outputPanel>
+		</p:tab>
+
+    </p:tabView>
+  </ui:define>
+</ui:composition>
+</html>

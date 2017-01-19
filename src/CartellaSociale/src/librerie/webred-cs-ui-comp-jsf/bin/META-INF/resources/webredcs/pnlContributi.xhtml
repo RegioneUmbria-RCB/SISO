@@ -1,0 +1,118 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+     	xmlns:h="http://java.sun.com/jsf/html"
+		xmlns:f="http://java.sun.com/jsf/core"
+		xmlns:ui="http://java.sun.com/jsf/facelets"
+		xmlns:p="http://primefaces.org/ui"
+	  	xmlns:composite="http://java.sun.com/jsf/composite">
+      
+	<h:head>
+		<title>Contributi</title>
+	</h:head>
+	<h:body>
+		<composite:interface componentType="pnlContributi">
+			<composite:attribute name="iContributi" type="it.webred.cs.jsf.interfaces.IContributi"/>
+		</composite:interface>
+		<composite:implementation 
+			xmlns:webredcs="http://java.sun.com/jsf/composite/webredcs"
+	  		xmlns:webred="http://java.sun.com/jsf/composite/webred">			
+			
+			<table border="0" width="100%">
+				<tr>
+					<td colspan="6">
+						<h:panelGrid columns="1" cellpadding="0" cellspacing="0">
+						<h:outputText value="Buoni" style="font-weight: bold;"/>
+						<p:spacer height="10"/>
+						</h:panelGrid>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<h:outputText value="Buono"/>
+					</td>
+					<td>
+						<p:selectOneMenu value="#{cc.attrs.iContributi.idBuono}">
+	            			<f:selectItems value="#{cc.attrs.iContributi.lstBuoni}"/>
+	            		</p:selectOneMenu>
+					</td>
+				</tr>
+			</table>
+			
+			<table border="0" width="100%">
+				<tr>
+					<td>
+						<h:panelGrid columns="1" cellpadding="0" cellspacing="0">
+						<p:spacer height="20"/>
+						<h:outputText value="Tipologia richiesta" style="font-weight: bold;"/>
+						<p:spacer height="10"/>
+						</h:panelGrid>
+						</td>
+					</tr>
+				<tr>
+					<td>
+						<h:outputText value="Prima erogazione"/>
+					</td>
+					<td>
+						<p:selectBooleanCheckbox value="#{cc.attrs.iContributi.primaErogazione}" />
+					</td>
+					<td>
+						<h:outputText value="Intervento pregresso"/>
+					</td>
+					<td>
+						<p:selectBooleanCheckbox value="#{cc.attrs.iContributi.interventoPre}" />
+					</td>
+					<td>
+						<h:outputText value="Rinnovo"/>
+					</td>
+					<td>
+						<p:selectBooleanCheckbox value="#{cc.attrs.iContributi.rinnovo}" />
+					</td>
+					<td>
+						<h:outputText value="Richiesta respinta"/>
+					</td>
+					<td>
+						<p:selectBooleanCheckbox value="#{cc.attrs.iContributi.richRespinta}" />
+					</td>
+					<td>
+						<h:outputText value="Sospensione"/>
+					</td>
+					<td>
+						<p:selectBooleanCheckbox value="#{cc.attrs.iContributi.sospensione}" />
+					</td>
+				</tr>
+			</table>
+			
+			<table border="0" width="100%">
+				<tr>
+					<td>
+						<h:panelGrid columns="1" cellpadding="0" cellspacing="0">
+						<p:spacer height="20"/>
+						<h:outputText value="Esenzione / Riduzione" style="font-weight: bold;"/>
+						<p:spacer height="10"/>
+						</h:panelGrid>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<h:outputText value="Esenzione"/>
+					</td>
+					<td>
+						<p:selectOneMenu value="#{cc.attrs.iContributi.idEsenzione}">
+	            			<f:selectItems value="#{cc.attrs.iContributi.lstEsenzioniRiduzioni}"/>
+	            		</p:selectOneMenu>
+					</td>
+					<td>
+						<h:outputText value="Riduzione"/>
+					</td>
+					<td>
+						<p:selectOneMenu value="#{cc.attrs.iContributi.idRiduzione}">
+	            			<f:selectItems value="#{cc.attrs.iContributi.lstEsenzioniRiduzioni}"/>
+	            		</p:selectOneMenu>
+					</td>
+				</tr>
+			</table>
+
+		</composite:implementation>
+	</h:body>
+	
+</html>

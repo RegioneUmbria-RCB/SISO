@@ -1,0 +1,55 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:webred="http://java.sun.com/jsf/composite/webred"
+	xmlns:webredcs="http://java.sun.com/jsf/composite/webredcs">
+<ui:composition template="/jsp/protected/layout/layout.xhtml">
+
+	<ui:define name="content">
+		<h:form id="frmNuovaCartella">
+			<h:panelGroup rendered="#{schedaBean.renderNuovaCartella}">
+				<p:panel header="Nuova cartella">
+											
+					<h:panelGrid columns="1">
+						<h:outputText value="Ricerca in anagrafe popolazione" styleClass="bold"/>	
+					</h:panelGrid>
+				
+					<h:panelGrid styleClass="span-20" columns="2" columnClasses="span-2, span-10">
+						<h:outputLabel value="Cognome e nome" />
+						<h:panelGrid columns="3">
+							<webredcs:pnlUserSearch id="wbrdUserSearch" styleClass="myAutoComplete" userManBean="#{userSearchBean}" />
+							<p:commandButton value="Nuova cartella"	action="#{schedaBean.nuovaDaAnagrafeWrapper(userSearchBean.selSoggetto.id)}"/>
+							<p:commandButton value="Nuova cartella vuota" action="#{schedaBean.nuova}"/>
+						</h:panelGrid>		
+					</h:panelGrid>
+				</p:panel>
+				
+				<p:spacer height="20"/>
+			</h:panelGroup>
+		</h:form>
+			
+		<h:form id="frmListaCasis">
+		     
+			<h:panelGroup rendered="#{listaCasiBean.renderListaCasi}">	
+				<p:outputPanel id="outputPanelListaCasi">
+					<webredcs:pnlListaCasi id="wbrdListaCasi" listaCasiManBean="#{listaCasiBean}"
+						renderVisualizzaFascicolo="#{fascicoloBean.renderVisualizzaFascicolo}"
+						renderVisualizzaDocIndividuali="#{!fascicoloBean.renderVisualizzaFascicolo and docIndividualiBean.renderVisualizzaDocIndividuali}"
+						modificaSchedaListener="#{schedaBean.carica(listaCasiBean.selectedCaso)}"
+						initializeCatSocialeListener="#{soggCatSocialeBean.carica(listaCasiBean.selectedCaso.soggetto)}" 
+						dialogCatSocialeToUpdate="#{p:component('mdlSoggCatSocDialog')}"
+						initializeFascicoloListener="#{fascicoloBean.carica(listaCasiBean.selectedCaso.soggetto)}"
+						initializeDocIndividualiListener="#{docIndividualiBean.initializeDocIndividuali(listaCasiBean.selectedCaso.soggetto)}"
+						initializeStampaListener="#{reportBean.initializeStampaCartella(listaCasiBean.selectedCaso.soggetto)}"
+						/>
+				</p:outputPanel>		
+			</h:panelGroup>
+			<webredcs:pnlSoggCatSociale idModalDialog="mdlSoggCatSocDialog" iSoggCatSociale="#{soggCatSocialeBean}" readOnly="#{soggCatSocialeBean.readOnly}" salvaActionUpdate="@form"/>
+		
+		</h:form>
+	</ui:define>
+</ui:composition>
+</html>

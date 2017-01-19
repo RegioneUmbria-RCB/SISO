@@ -1,0 +1,300 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+     	xmlns:h="http://java.sun.com/jsf/html"
+		xmlns:f="http://java.sun.com/jsf/core"
+		xmlns:ui="http://java.sun.com/jsf/facelets"
+		xmlns:p="http://primefaces.org/ui"
+	  	xmlns:composite="http://java.sun.com/jsf/composite">
+      
+	<h:head>
+		<title>Servizi</title>
+	</h:head>
+	<h:body>
+		<composite:interface componentType="pnlServizi">
+			<composite:attribute name="iServizi" type="it.webred.cs.jsf.interfaces.IServizi"/>
+		</composite:interface>
+		<composite:implementation>			
+			
+			<table border="0" width="100%">
+				<tr>
+					<td colspan="10">
+						<h:panelGrid columns="1" cellpadding="0" cellspacing="0">
+						<h:outputText value="Servizi domiciliari" style="font-weight: bold;"/>
+						<p:spacer height="10"/>
+						</h:panelGrid>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<h:outputText value="ADH"/>
+					</td>
+					<td>
+						<p:selectBooleanCheckbox value="#{cc.attrs.iServizi.ADH}" />
+					</td>
+					<td>
+						<h:outputText value="ADI"/>
+					</td>
+					<td>
+						<p:selectBooleanCheckbox value="#{cc.attrs.iServizi.ADI}" />
+					</td>
+					<td>
+						<h:outputText value="ADIP"/>
+					</td>
+					<td>
+						<p:selectBooleanCheckbox value="#{cc.attrs.iServizi.ADIP}" />
+					</td>
+					<td>
+						<h:outputText value="Pasti"/>
+					</td>
+					<td>
+						<p:selectBooleanCheckbox value="#{cc.attrs.iServizi.pasti}" />
+					</td>
+					<td>
+						<h:outputText value="SAD"/>
+					</td>
+					<td>
+						<p:selectBooleanCheckbox value="#{cc.attrs.iServizi.SAD}" />
+					</td>
+				</tr>
+				<tr>
+					<td colspan="10">
+						<h:panelGrid columns="1" cellpadding="0" cellspacing="0">
+						<p:spacer height="20"/>
+						<h:outputText value="Servizi educativi e scolastici" style="font-weight: bold;"/>
+						<p:spacer height="10"/>
+						</h:panelGrid>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<h:outputText value="Assistenza alla comunicazione"/>
+					</td>
+					<td>
+						<p:selectBooleanCheckbox value="#{cc.attrs.iServizi.assistenzaComunicazione}" />
+					</td>
+					<td>
+						<h:outputText value="CSE piccoli"/>
+					</td>
+					<td>
+						<p:selectBooleanCheckbox value="#{cc.attrs.iServizi.CSE}" />
+					</td>
+					<td>
+						<h:outputText value="Educatore individuale"/>
+					</td>
+					<td>
+						<p:selectBooleanCheckbox value="#{cc.attrs.iServizi.eduIndividuale}" />
+					</td>
+					<td>
+						<h:outputText value="Educatore su progetto"/>
+					</td>
+					<td>
+						<p:selectBooleanCheckbox value="#{cc.attrs.iServizi.eduProgetto}" />
+					</td>
+					<td>
+						<h:outputText value="Sostegno scolastico"/>
+					</td>
+					<td>
+						<p:selectBooleanCheckbox value="#{cc.attrs.iServizi.sostegnoScolastico}" />
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<h:outputText value="Integrazione scolastica"/>
+					</td>
+					<td>
+						<p:selectBooleanCheckbox value="#{cc.attrs.iServizi.integrScolastica}" />
+					</td>
+					<td>
+						<h:outputText value="Polo H"/>
+					</td>
+					<td>
+						<p:selectBooleanCheckbox value="#{cc.attrs.iServizi.poloH}" />
+					</td>
+					<td>
+						<h:outputText value="Progetto ADO"/>
+					</td>
+					<td>
+						<p:selectBooleanCheckbox value="#{cc.attrs.iServizi.ADO}" />
+					</td>
+					<td>
+						<h:outputText value="Altro"/>
+					</td>
+					<td colspan="3">
+						<p:inputText value="#{cc.attrs.iServizi.altro}" />
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<h:outputText value="Integrazione scolastica provinciale"/>
+					</td>
+					<td colspan="9">
+						<p:selectBooleanCheckbox value="#{cc.attrs.iServizi.integrScolasticaProv}" />
+					</td>
+				</tr>
+				<tr>
+					<td colspan="10">
+						<h:panelGrid columns="1" cellpadding="0" cellspacing="0">
+						<p:spacer height="20"/>
+						<h:outputText value="Servizi semiresidenziali" style="font-weight: bold;"/>
+						<p:spacer height="10"/>
+						</h:panelGrid>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<h:outputText value="Centro diurno riabilitativo"/>
+					</td>
+					<td>
+						<p:selectBooleanCheckbox value="#{cc.attrs.iServizi.centroDiurno}" />
+					</td>
+					<td>
+						<h:outputText value="Altro"/>
+					</td>
+					<td colspan="7">
+						<p:selectBooleanCheckbox value="#{cc.attrs.iServizi.altroSemires}" />
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<h:outputText value="Nome e indirizzo struttura"/>
+					</td>
+					<td colspan="3">
+						<p:inputText value="#{cc.attrs.iServizi.nomeIndirizzoStrSemires}" size="50"/>
+					</td>
+					<td>
+						<h:outputText value="Luogo struttura"/>
+					</td>
+					<td colspan="5">
+						<h:panelGrid columns="3" cellpadding="0" cellspacing="0">
+						<p:selectOneMenu value="#{cc.attrs.iServizi.idLuogoStrSemires}">
+	            			<f:selectItems value="#{cc.attrs.iServizi.lstLuogoStr}"/>
+	            		</p:selectOneMenu>
+	            		<p:spacer height="10"/>
+	            		<h:outputText value="(in zona si intende territorio ASL)" style="font-size: 12px;"/>
+	            		</h:panelGrid>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<h:outputText value="Retta a carico"/>
+					</td>
+					<td colspan="9">
+						<p:selectOneMenu value="#{cc.attrs.iServizi.idRettaSemires}">
+	            			<f:selectItems value="#{cc.attrs.iServizi.lstRettaSemires}"/>
+	            		</p:selectOneMenu>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="10">
+						<h:panelGrid columns="1" cellpadding="0" cellspacing="0">
+						<p:spacer height="20"/>
+						<h:outputText value="Servizi residenziali" style="font-weight: bold;"/>
+						<p:spacer height="10"/>
+						</h:panelGrid>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<h:outputText value="Comunità minori"/>
+					</td>
+					<td>
+						<p:selectBooleanCheckbox value="#{cc.attrs.iServizi.comunitaMin}" />
+					</td>
+					<td>
+						<h:outputText value="Tipo comunità"/>
+					</td>
+					<td>
+						<p:selectOneMenu value="#{cc.attrs.iServizi.idComunitaTipo}">
+	            			<f:selectItems value="#{cc.attrs.iServizi.lstComunitaTipo}"/>
+	            		</p:selectOneMenu>
+					</td>
+					<td>
+						<h:outputText value="Affido familiare"/>
+					</td>
+					<td>
+						<p:selectBooleanCheckbox value="#{cc.attrs.iServizi.affidoFam}" />
+					</td>
+					<td>
+						<h:outputText value="Comunità terapeutica"/>
+					</td>
+					<td>
+						<p:selectBooleanCheckbox value="#{cc.attrs.iServizi.comunitaTer}" />
+					</td>
+					<td>
+						<h:outputText value="RSA"/>
+					</td>
+					<td>
+						<p:selectBooleanCheckbox value="#{cc.attrs.iServizi.RSA}" />
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<h:outputText value="Nome e indirizzo struttura"/>
+					</td>
+					<td colspan="3">
+						<p:inputText value="#{cc.attrs.iServizi.nomeIndirizzoStrRes}" size="50"/>
+					</td>
+					<td>
+						<h:outputText value="Luogo struttura"/>
+					</td>
+					<td colspan="5">
+						<h:panelGrid columns="3" cellpadding="0" cellspacing="0">
+						<p:selectOneMenu value="#{cc.attrs.iServizi.idLuogoStrRes}">
+	            			<f:selectItems value="#{cc.attrs.iServizi.lstLuogoStr}"/>
+	            		</p:selectOneMenu>
+	            		<p:spacer height="10"/>
+	            		<h:outputText value="(in zona si intende territorio ASL)" style="font-size: 12px;"/>
+	            		</h:panelGrid>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<h:outputText value="Retta a carico"/>
+					</td>
+					<td colspan="9">
+						<p:selectOneMenu value="#{cc.attrs.iServizi.idRettaRes}">
+	            			<f:selectItems value="#{cc.attrs.iServizi.lstRettaRes}"/>
+	            		</p:selectOneMenu>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="10">
+						<h:panelGrid columns="1" cellpadding="0" cellspacing="0">
+						<p:spacer height="20"/>
+						<h:outputText value="Attivazione di ..." style="font-weight: bold;"/>
+						<p:spacer height="10"/>
+						</h:panelGrid>
+					</td>
+				</tr>
+					<tr>
+					<td>
+						<h:outputText value="Sost. genitorialità"/>
+					</td>
+					<td>
+						<p:selectBooleanCheckbox value="#{cc.attrs.iServizi.sostGenitore}" />
+					</td>
+					<td>
+						<h:outputText value="Trasporto Ufficio istruzione"/>
+					</td>
+					<td>
+						<p:selectBooleanCheckbox value="#{cc.attrs.iServizi.trasportoUfficio}" />
+					</td>
+					<td>
+						<h:outputText value="Trasporto Sociale"/>
+					</td>
+					<td>
+						<p:selectBooleanCheckbox value="#{cc.attrs.iServizi.trasportoSociale}" />
+					</td>
+					<td>
+						<h:outputText value="Chi effettua il servizio"/>
+					</td>
+					<td colspan="3">
+						<p:inputText value="#{cc.attrs.iServizi.effettuaServizio}" />
+					</td>
+				</tr>
+			</table>
+
+		</composite:implementation>
+	</h:body>
+	
+</html>

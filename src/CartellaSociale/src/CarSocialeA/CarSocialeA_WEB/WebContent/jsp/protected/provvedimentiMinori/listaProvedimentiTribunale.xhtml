@@ -1,0 +1,71 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui"
+	xmlns:webred="http://java.sun.com/jsf/composite/webred" xmlns:webredcs="http://java.sun.com/jsf/composite/webredcs">
+
+<ui:fragment>
+	
+	
+	<h:panelGrid columns="1" cellpadding="0" cellspacing="0" width="100%">
+		<p:commandButton id="nuovo" value="Nuovo" process="@this" 
+		                 actionListener="#{bugFixProvv.openDialogOnNew}" 
+		                 oncomplete="if(args &amp;&amp; args.isShowDialog){updateProvvedimentoContent(); ProvMinoriDialog.show()}" 
+		                 icon="ui-icon-document-b" >
+		</p:commandButton>
+		<p:remoteCommand id="rmtBtnNuovoProvvedimento" name="updateProvvedimentoContent" process="@this" update=":#{p:component('fromDialogProvvTribunale')}" />
+		
+		
+		<p:spacer height="2"/>
+		
+		<!-- 	dataBean è la lista provedimentibean-->
+		<p:dataTable id="listaProvvedimenti" var="rowBean" value="#{dataBean.lazyListaProvvedimentiModel}" rowIndexVar="rowIndex" rowKey="#{rowBean.idRow}" emptyMessage="Nessun provvedimento presente"
+			widgetVar="listaProvvedimentiWidget" filterDelay="2000"  paginator="true" 
+			paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+			rows="10" rowsPerPageTemplate="10,20,40" lazy="true" selectionMode="single" styleClass="ui-datatable-hor-scroll">
+
+			<p:column headerText="Data Provvedimento" style="text-align:center;">
+				<h:outputText value="#{rowBean.dataProvv}">
+					<f:convertDateTime pattern="dd/MM/yyyy" />
+				</h:outputText>
+			</p:column>
+			<p:column headerText="num.Provvedimento">
+				<h:outputText value="#{rowBean.nProvvedimento}" />
+			</p:column>
+			<p:column headerText="Tipo Provvedimento">
+				<h:outputText value="#{rowBean.tipoProvv}" />
+			</p:column>
+			<p:column headerText="Affido al Comune">
+				<center>
+					<p:selectBooleanCheckbox id="affidoComune" value="#{rowBean.affidoComune}" disabled="true" />
+				</center>
+			</p:column>
+			<p:column headerText="Scadenza Adempimento" style="text-align:center;">
+				<h:outputText value="#{rowBean.scadenzaAdempimento}" >
+				 	<f:convertDateTime pattern="dd/MM/yyyy"/>
+				</h:outputText>
+			</p:column>
+
+			<p:column headerText="">
+		
+				<p:commandButton value="Modifica" icon="ui-icon-pencil" process="@this" action="#{bugFixProvv.setOnModificaProvv(rowBean.idRow)}"
+				                 oncomplete="if(args &amp;&amp; args.isShowDialog){updateProvvedimentoContent(); ProvMinoriDialog.show()}" />
+				                 
+				<p:commandButton value="Rimuovi" actionListener="#{bugFixProvv.beforElimina(rowBean.idRow)}"  onclick="ConfermaElimina.show()" />
+			</p:column>
+		</p:dataTable>
+
+		<p:confirmDialog id="EliminaRiga" global="false" header="Elimina" widgetVar="ConfermaElimina"  severity="alert" closable="false" message="Procedere con l'eliminazione?">
+			<p:panelGrid>
+				<p:row>
+					<p:column style="text-align: center;">
+						<p:commandButton value="SI" onclick="ConfermaElimina.hide()" actionListener="#{bugFixProvv.elimina()}" process="@this" update="listaProvvedimenti" />
+						<p:commandButton value="NO" onclick="ConfermaElimina.hide()" type="button" />
+					</p:column>
+				</p:row>
+			</p:panelGrid>
+		</p:confirmDialog>
+
+		</h:panelGrid>
+	
+</ui:fragment>
+
+</html>

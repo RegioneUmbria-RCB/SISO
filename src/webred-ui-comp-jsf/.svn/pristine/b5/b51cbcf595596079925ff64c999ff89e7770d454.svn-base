@@ -1,0 +1,33 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+     	xmlns:h="http://java.sun.com/jsf/html"
+		xmlns:f="http://java.sun.com/jsf/core"
+		xmlns:ui="http://java.sun.com/jsf/facelets"
+		xmlns:p="http://primefaces.org/ui"
+	  	xmlns:composite="http://java.sun.com/jsf/composite">
+      
+	<h:head>
+		<title>Componente casella di testo codice fiscale</title>		
+	</h:head>
+	<h:body>
+		<composite:interface componentType="pnlCodFisc" >
+			<composite:attribute name="codFiscValue" />
+			<composite:attribute name="codFiscValMes" />
+			<composite:attribute name="codFiscReq" />
+			<composite:attribute name="codFiscReqMes" />
+			<composite:attribute name="disabled" required="false" default="false" />
+		</composite:interface>
+		<composite:implementation>
+			<span id="#{cc.clientId}">
+				<p:inputText id="txtCodFisc" widgetVar="txtCodFisc" style="width: 50%; text-transform: uppercase;"
+					value="#{cc.attrs.codFiscValue}" validatorMessage="#{cc.attrs.codFiscValMes}"
+					required="#{cc.attrs.codFiscReq}" requiredMessage="#{cc.attrs.codFiscReqMes}"
+					maxlength="16" disabled="#{cc.attrs.disabled}">
+	    			<f:validator validatorId="codFiscValidator"/>	    			
+	    			<p:ajax event="blur" partialSubmit="true" process="txtCodFisc" />
+	     		</p:inputText>
+			</span>
+		</composite:implementation>
+	</h:body>
+	
+</html>

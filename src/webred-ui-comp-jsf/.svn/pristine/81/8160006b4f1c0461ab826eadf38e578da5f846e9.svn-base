@@ -1,0 +1,26 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+     	xmlns:h="http://java.sun.com/jsf/html"
+		xmlns:f="http://java.sun.com/jsf/core"
+		xmlns:ui="http://java.sun.com/jsf/facelets"
+		xmlns:p="http://primefaces.org/ui"
+	  	xmlns:composite="http://java.sun.com/jsf/composite">
+      
+	<h:head>
+		<title>Panel Salva con dati obbligatori</title>		
+	</h:head>
+	<h:body>
+		<composite:interface componentType="pnlRequiredSalva" >
+			<composite:attribute name="disabled" type="boolean" default="false"/>
+			<composite:attribute name="salvaAction" method-signature="void action(java.lang.Object)"/>
+		</composite:interface>
+		<composite:implementation>
+			<h:panelGrid columns="2" cellpadding="5" width="100%" columnClasses="leftAlign, rightAlign">
+				<h:outputText value="* Campi obbligatori" />
+
+				<p:commandButton value="Registra" icon="ui-icon-disk" actionListener="#{cc.attrs.salvaAction}" disabled="#{cc.attrs.disabled}" />
+			</h:panelGrid>
+		</composite:implementation>
+	</h:body>
+	
+</html>

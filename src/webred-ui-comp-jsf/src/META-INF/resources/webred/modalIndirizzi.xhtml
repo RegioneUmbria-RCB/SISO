@@ -1,0 +1,432 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:webred="http://java.sun.com/jsf/composite/webred">
+
+<h:head>
+	<title>Componente finestra modale gestione indirizzi</title>
+</h:head>
+<h:body>
+	<composite:interface componentType="modalIndirizzi">
+		<composite:attribute name="residenzaManBean"
+			type="it.webred.jsf.interfaces.IResidenza" />
+		<composite:attribute name="pnlToUpdate" />
+		<composite:attribute name="panelStyleClass"/>
+	</composite:interface>
+	<composite:implementation>
+		<p:dialog id="dlgModalIndirizzi" dynamic="true" 
+			widgetVar="#{cc.attrs.residenzaManBean.widgetVar}" modal="true"
+			closable="false" header="#{cc.attrs.residenzaManBean.dialogHeader}"
+			width="950" height="650">
+          	
+			<h:panelGroup id="pnlModalIndirizzi">
+				<table border="0">
+					<tr>
+						<td style="width: 150px;">
+							<h:outputText value="Tipo Indirizzo *:" />
+						</td>
+						<td>
+							<p:selectOneMenu id="tipoIndirizzo"
+								value="#{cc.attrs.residenzaManBean.tipoIndirizzo}">
+								<f:selectItems
+									value="#{cc.attrs.residenzaManBean.lstTipiIndirizzo}"
+									var="tipoIndirizzo" itemLabel="#{tipoIndirizzo.descrizione}"
+									itemValue="#{tipoIndirizzo}" />
+	
+								<p:ajax event="change" process="@this"
+									update="pnlResidenzaAnagrafe" />
+							</p:selectOneMenu>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<h:outputText value="Comune:" />
+						</td>
+						<td>
+							<p:selectOneButton id="tipoComune"
+								value="#{cc.attrs.residenzaManBean.tipoComune}">
+								<f:selectItem itemLabel="#{cc.attrs.residenzaManBean.enteLabel}"
+									itemValue="#{cc.attrs.residenzaManBean.enteValue}" />
+								<f:selectItem itemLabel="Altro"
+									itemValue="#{cc.attrs.residenzaManBean.altroValue}" />
+	
+								<p:ajax event="change" process="@this"
+									update="pnlResidenzaAnagrafe, pnlResidenzaComune, pnlResidenzaNoComune" />
+							</p:selectOneButton>
+						</td>
+					</tr>
+				</table>
+			</h:panelGroup>
+			<p:spacer height="5px;" width="100%" />
+			<p:outputPanel id="pnlResidenzaAnagrafe">
+			<p:outputPanel rendered="#{cc.attrs.residenzaManBean.residenzaAnagrafeRendered}">
+				<table border="0">
+					<tr>
+						<td style="width: 150px;">
+							<h:outputText value="Codice fiscale inserito:" />
+						</td>
+						<td>
+							<h:outputText value="#{cc.attrs.residenzaManBean.codiceFiscale}" />
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<h:outputText value="Residenza da Anagrafe:" />
+						</td>
+						<td>
+							<p:outputPanel
+								rendered="#{cc.attrs.residenzaManBean.indirizzoAnagrafe != null and cc.attrs.residenzaManBean.indirizzoAnagrafe.csAAnaIndirizzo.codiceVia != null}">
+								<h:outputText
+									value="#{cc.attrs.residenzaManBean.getLabelIndirizzo(cc.attrs.residenzaManBean.indirizzoAnagrafe.csAAnaIndirizzo.indirizzo, cc.attrs.residenzaManBean.indirizzoAnagrafe.csAAnaIndirizzo.civicoNumero, cc.attrs.residenzaManBean.indirizzoAnagrafe.csAAnaIndirizzo.civicoAltro)}" />
+								<p:spacer width="20px;" />
+								<p:commandButton value="Accetta" process="@this">
+									<p:ajax update="pnlTableIndirizzi"
+										listener="#{cc.attrs.residenzaManBean.accettaIndirizzoAnagrafe}" />
+								</p:commandButton>
+							</p:outputPanel>
+							<p:outputPanel
+								rendered="#{cc.attrs.residenzaManBean.indirizzoAnagrafe == null || cc.attrs.residenzaManBean.indirizzoAnagrafe.csAAnaIndirizzo.codiceVia == null}">
+								<h:outputText
+									value="NESSUN INDIRIZZO DI RESIDENZA TROVATO IN ANAGRAFE" />
+							</p:outputPanel>
+						</td>
+					</tr>
+					<tr>
+						<td style="width: 150px;">
+							<h:outputText value="Dalla data:" 
+							rendered="#{cc.attrs.residenzaManBean.indirizzoAnagrafe.csAAnaIndirizzo.codiceVia != null and cc.attrs.residenzaManBean.indirizzoAnagrafe.csAAnaIndirizzo.codiceVia != ''}"/>
+						</td>
+						<td>
+							<h:outputText rendered="#{cc.attrs.residenzaManBean.indirizzoAnagrafe.csAAnaIndirizzo.codiceVia != null and cc.attrs.residenzaManBean.indirizzoAnagrafe.csAAnaIndirizzo.codiceVia != ''}"
+								value="#{cc.attrs.residenzaManBean.indirizzoAnagrafe.dataInizioApp}">
+								<f:convertDateTime pattern="dd/MM/yyyy" locale="it_IT"
+									timeZone="GMT+1" />
+							</h:outputText>
+						</td>
+					</tr>
+				</table>
+			</p:outputPanel>
+			</p:outputPanel>
+			<h:panelGroup rendered="#{cc.attrs.residenzaManBean.codiceFiscale == null || cc.attrs.residenzaManBean.codiceFiscale == ''}">
+				<table border="0">
+					<tr>
+						<td>
+							<h:outputText
+								value="NESSUN CODICE FISCALE INSERITO - residenza da anagrafe non reperibile" />
+						</td>
+					</tr>
+				</table>
+			</h:panelGroup>
+			<p:spacer height="5px;" width="100%" />
+			
+			<p:outputPanel id="pnlResidenzaComune">
+			<p:panel header="Nuovo indirizzo" rendered="#{cc.attrs.residenzaManBean.residenzaComuneRendered}" styleClass="#{cc.attrs.panelStyleClass}">
+				<table border="0">
+					<tr>
+						<td style="width: 150px;">
+							<h:outputText value="Indirizzo *:" />
+						</td>
+						<td>
+							<webred:pnlIndirizzo id="wbrdIndirizzo" styleClass="pnlIndirizzo"
+								indirizzoManBean="#{cc.attrs.residenzaManBean.indirizzoMan}" />
+						</td>
+					</tr>
+					<tr>
+						<td style="width: 150px;">
+							<h:outputText value="Dalla data:" />
+						</td>
+						<td>
+							<webred:pnlData id="dataInizioAppComune"
+								dataValue="#{cc.attrs.residenzaManBean.dataInizioAppComune}"
+								dataPattern="dd/MM/yyyy" dataReq="false"
+								dataValMes="Data di inizio validità non valida"
+								dataConMes="Data inizio validità non valida"
+								yearRange="c-100:c+0" 
+								dataPatternLabel="(gg/mm/aaaa)" />
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<p:spacer width="10"/>
+						</td>
+						<td>
+							<p:commandButton value="Aggiungi" process="pnlResidenzaComune"
+								update="pnlTableIndirizzi, pnlResidenzaComune"
+								action="#{cc.attrs.residenzaManBean.aggiungiIndirizzo}"/>
+						</td>
+					</tr>
+				</table>
+			</p:panel>
+			</p:outputPanel>
+			<p:spacer height="5px;" width="100%" />
+			<p:outputPanel id="pnlResidenzaNoComune">
+			<p:panel header="Nuovo indirizzo" rendered="#{cc.attrs.residenzaManBean.residenzaNoComuneRendered}" styleClass="#{cc.attrs.panelStyleClass}">
+				<table border="0">
+					<tr>
+						<td colspan="2">
+							<webred:pnlComuneNazione id="comuneNazioneResidenza" pnlToUpdate="#{p:component('pnlResidenzaNoComune')}"
+								comuneNazioneManBean="#{cc.attrs.residenzaManBean.comuneNazioneResidenzaMan}" />
+						</td>
+					</tr>
+					<tr>
+						<td style="width: 150px;">
+							<h:outputText value="Città *:" rendered="#{!cc.attrs.residenzaManBean.comuneNazioneResidenzaMan.comuneRendered}"/>
+						</td>
+						<td>
+							<p:inputText id="citta" style="width: 70%;"
+								value="#{cc.attrs.residenzaManBean.citta}" maxlength="255" rendered="#{!cc.attrs.residenzaManBean.comuneNazioneResidenzaMan.comuneRendered}"/>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<h:outputText value="Indirizzo *:" />
+						</td>
+						<td>
+							<p:inputText id="indirizzo" style="width: 70%;"
+								value="#{cc.attrs.residenzaManBean.indirizzo}" maxlength="255" />
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<h:outputText value="Civico:" />
+						</td>
+						<td>
+							<p:inputText id="civicoNumero" style="width: 70px;"
+								value="#{cc.attrs.residenzaManBean.civicoNumero}"
+								maxlength="50" />
+							<p:spacer width="15px;" />
+							<h:outputText value="/" />
+							<p:spacer width="15px;" />
+							<p:inputText id="civicoAltro" style="width: 70px;"
+								value="#{cc.attrs.residenzaManBean.civicoAltro}"
+								maxlength="100" />
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<h:outputText value="Dalla data:" />
+						</td>
+						<td>
+							<webred:pnlData id="dataInizioApp"
+								dataValue="#{cc.attrs.residenzaManBean.dataInizioApp}"
+								dataPattern="dd/MM/yyyy" dataReq="false"
+								dataValMes="Data di inizio validità non valida"
+								dataConMes="Data inizio validità non valida"
+								yearRange="c-100:c+0" 
+								dataPatternLabel="(gg/mm/aaaa)" />
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<p:spacer width="10"/>
+						</td>
+						<td>
+							<p:commandButton actionListener="#{cc.attrs.residenzaManBean.aggiungiIndirizzo}"
+								value="Aggiungi" update="pnlTableIndirizzi, pnlResidenzaNoComune"
+								partialSubmit="true" process="pnlResidenzaNoComune"/>
+						</td>
+					</tr>
+				</table>
+			</p:panel>
+			</p:outputPanel>
+			<p:spacer height="5px;" width="100%" />
+			<p:outputPanel id="pnlTableIndirizzi">
+				<p:dataTable id="tblIndirizzi" var="indirizzo"
+					value="#{cc.attrs.residenzaManBean.lstIndirizzi}" rowKey="#{indirizzo.id}"
+					rendered="#{not cc.attrs.residenzaManBean.indirizziEmpty}"
+					rowStyleClass="#{indirizzo.dataFineApp != null and indirizzo.dataFineApp.time != cc.attrs.residenzaManBean.nullDateTime ? 'inattivo' : null}">
+					
+					<f:facet name="header">  
+			            <p:outputLabel value="#{cc.attrs.residenzaManBean.panelHeader}"/>
+			        </f:facet>
+					
+					<p:column headerText="Tipo indirizzo">
+						<h:outputText
+							value="#{indirizzo.csTbTipoIndirizzo.descrizione == null ? '-' : indirizzo.csTbTipoIndirizzo.descrizione}" />
+					</p:column>
+					<p:column headerText="Codice via">
+						<h:outputText
+							value="#{indirizzo.csAAnaIndirizzo.codiceVia == null ? '-' : indirizzo.csAAnaIndirizzo.codiceVia}" />
+					</p:column>
+					<p:column headerText="Indirizzo">
+						<h:outputText
+							value="#{indirizzo.csAAnaIndirizzo.indirizzo == null ? '-' : indirizzo.csAAnaIndirizzo.indirizzo}" />
+					</p:column>
+					<p:column headerText="Civico">
+						<h:outputText
+							value="#{cc.attrs.residenzaManBean.getCivicoFromNumeroAltro(indirizzo.csAAnaIndirizzo.civicoNumero, indirizzo.csAAnaIndirizzo.civicoAltro)}" />
+					</p:column>
+					<p:column headerText="Comune">
+						<h:outputText
+							value="#{indirizzo.csAAnaIndirizzo.comDes == null ? '-' : indirizzo.csAAnaIndirizzo.comDes}" />
+					</p:column>
+					<p:column headerText="Stato">
+						<h:outputText
+							value="#{indirizzo.csAAnaIndirizzo.statoDes == null ? '-' : indirizzo.csAAnaIndirizzo.statoDes}" />
+					</p:column>
+					<p:column headerText="Dalla data">
+						<h:outputText value="#{indirizzo.dataInizioApp}">
+							<f:convertDateTime pattern="dd/MM/yyyy"/>
+						</h:outputText>
+					</p:column>
+					<p:column headerText="Alla data">
+						<h:outputText value="#{indirizzo.dataFineApp}"
+							rendered="#{indirizzo.dataFineApp != null and indirizzo.dataFineApp.time != cc.attrs.residenzaManBean.nullDateTime}">
+							<f:convertDateTime pattern="dd/MM/yyyy"/>
+						</h:outputText>
+						<h:outputText value="#{cc.attrs.residenzaManBean.activeText}"
+							rendered="#{indirizzo.dataFineApp == null or indirizzo.dataFineApp.time == cc.attrs.residenzaManBean.nullDateTime}" />
+					</p:column>
+					<p:column>
+						<p:commandButton value="Annulla" process="@this" onclick="confermaAnnulla.show()" 
+							rendered="#{indirizzo.dataFineApp == null or indirizzo.dataFineApp.time == cc.attrs.residenzaManBean.nullDateTime}">
+							<f:setPropertyActionListener value="#{indirizzo}" target="#{cc.attrs.residenzaManBean.indirizzoSelezionato}"/>
+						</p:commandButton>
+					
+					
+						<p:commandButton value="Attiva" process="@this" onclick="confermaAttiva.show()"
+							rendered="#{indirizzo.dataFineApp != null and indirizzo.dataFineApp.time != cc.attrs.residenzaManBean.nullDateTime}">
+							<f:setPropertyActionListener value="#{indirizzo}" target="#{cc.attrs.residenzaManBean.indirizzoSelezionato}"/>
+						</p:commandButton>
+
+						<p:commandButton value="Elimina" process="@this" onclick="confermaElimina.show()">
+							<f:setPropertyActionListener value="#{indirizzo}" target="#{cc.attrs.residenzaManBean.indirizzoSelezionato}"/>
+						</p:commandButton>
+					</p:column>
+				</p:dataTable>
+
+				<p:dialog header="Annulla indirizzo"
+					widgetVar="confermaAnnulla" appendToBody="pnlModalIndirizzi"
+					closable="false" resizable="false">
+					<p:outputPanel id="pnlAnnullaInd">
+						<table border="0">
+							<tr>
+								<td style="text-align: center;">
+									<p:outputLabel value="Procedere all'annullamento dell'indirizzo?"/>
+								</td>
+							</tr>
+							<tr><td><p:spacer height="10"/></td></tr>
+							<tr>
+								<td style="text-align: center;">
+									<p:calendar value="#{cc.attrs.residenzaManBean.dataAnnullamento}" 
+										pattern="dd/MM/yyyy" showOn="button"/>
+								</td>
+							</tr>
+							<tr><td><p:spacer height="10"/></td></tr>
+							<tr>
+								<td style="text-align: center;">
+									<p:commandButton value="SI" partialSubmit="true" process="pnlAnnullaInd"
+										onclick="PF('confermaAnnulla').hide()" update="pnlTableIndirizzi"
+										actionListener="#{cc.attrs.residenzaManBean.annullaIndirizzo}"/>
+									<p:commandButton value="NO"
+										onclick="PF('confermaAnnulla').hide();" type="button" />
+								</td>
+							</tr>
+						</table>
+					</p:outputPanel>
+				</p:dialog>
+				<p:confirmDialog header="Attiva indirizzo"
+					widgetVar="confermaAttiva" severity="alert"
+					closable="false" appendTo="@(body)"
+					message="Procedere all'attivazione dell'indirizzo?">
+					<p:panelGrid>
+						<p:row>
+							<p:column style="text-align: center;">
+								<p:commandButton value="SI" process="@this"
+									onclick="PF('confermaAttiva').hide()">
+									<p:ajax update="pnlTableIndirizzi"
+										listener="#{cc.attrs.residenzaManBean.attivaIndirizzo}" />
+									<f:param name="pnlToUpdateId" value="#{cc.attrs.pnlToUpdate}" />
+								</p:commandButton>
+								<p:commandButton value="NO"
+									onclick="PF('confermaAttiva').hide();" type="button" />
+							</p:column>
+						</p:row>
+					</p:panelGrid>
+				</p:confirmDialog>
+				<p:confirmDialog header="Elimina indirizzo"
+					widgetVar="confermaElimina" severity="alert"
+					closable="false" appendTo="@(body)"
+					message="Procedere alla cancellazione dell'indirizzo?">
+					<p:panelGrid>
+						<p:row>
+							<p:column style="text-align: center;">
+								<p:commandButton value="SI" process="@this"
+									onclick="PF('confermaElimina').hide()">
+									<p:ajax update="pnlTableIndirizzi"
+										listener="#{cc.attrs.residenzaManBean.eliminaIndirizzo}" />
+									<f:param name="pnlToUpdateId" value="#{cc.attrs.pnlToUpdate}" />
+								</p:commandButton>
+								<p:commandButton value="NO"
+									onclick="PF('confermaElimina').hide();" type="button" />
+							</p:column>
+						</p:row>
+					</p:panelGrid>
+				</p:confirmDialog>
+			<p:outputPanel rendered="#{cc.attrs.residenzaManBean.indirizziEmpty}">
+				<table border="0">
+					<tr>
+						<td>
+							<h:outputText value="#{cc.attrs.residenzaManBean.textIfEmpty}"
+								rendered="#{cc.attrs.residenzaManBean.indirizziEmpty}" />
+						</td>
+					</tr>
+				</table>
+			</p:outputPanel>
+			</p:outputPanel>
+			
+			<p:spacer height="10px;" width="100%" />
+			
+			<table border="0" width="100%">
+				<tr>
+					<td>
+						<h:outputText value="* campo obbligatorio" style="font-weight:bold;"/>
+					</td>
+				</tr>
+				<tr>
+					<td style="text-align: center;">
+						<p:commandButton value="Salva" process="@this"
+							actionListener="#{cc.attrs.residenzaManBean.salvaIndirizzi}"
+							oncomplete="if (args &amp;&amp; args.saved) PF('#{cc.attrs.residenzaManBean.widgetVar}').hide();">
+							<f:param name="pnlToResetId"
+								value="#{p:component('pnlModalIndirizzi')}" />
+							<f:param name="pnlToUpdateId" value="#{cc.attrs.pnlToUpdate}" />
+						</p:commandButton>
+						<p:spacer width="15px;" />
+						<p:commandButton value="Esci" process="@this"
+							oncomplete="confermaEsciModalInd.show()" />
+						<p:confirmDialog header="Conferma uscita"
+							widgetVar="confermaEsciModalInd" severity="alert"
+							closable="false" appendTo="@(body)"
+							message="I dati non salvati saranno persi: continuare?">
+							<table border="0" width="100%">
+								<tr>
+									<td style="text-align: center;">
+										<p:commandButton value="SI" process="@this"
+											onclick="PF('confermaEsciModalInd').hide();"
+											oncomplete="PF('#{cc.attrs.residenzaManBean.widgetVar}').hide();">
+											<p:ajax update="pnlModalIndirizzi"
+												listener="#{cc.attrs.residenzaManBean.reset}" />
+											<f:param name="pnlToResetId"
+												value="#{p:component('pnlModalIndirizzi')}" />
+											<f:param name="pnlToUpdateId"
+												value="#{cc.attrs.pnlToUpdate}" />
+										</p:commandButton>
+										<p:commandButton value="NO"
+											onclick="PF('confermaEsciModalInd').hide();" type="button" />
+									</td>
+								</tr>
+							</table>
+						</p:confirmDialog>
+					</td>
+				</tr>
+			</table>
+		</p:dialog>
+	</composite:implementation>
+</h:body>
+
+</html>

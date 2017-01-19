@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Diario" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<field name="dataColloquio" class="java.lang.String"/>
+	<field name="dove" class="java.lang.String"/>
+	<field name="conChi" class="java.lang.String"/>
+	<field name="tipoColloquio" class="java.lang.String"/>
+	<field name="riservato" class="java.lang.String"/>
+	<field name="testoDiario" class="java.lang.String"/>
+	<title>
+		<band height="33" splitType="Stretch">
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="13" width="555" height="20" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="html">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Diario]]></text>
+			</staticText>
+		</band>
+	</title>
+	<detail>
+		<band height="636" splitType="Stretch">
+			<staticText>
+				<reportElement x="10" y="80" width="138" height="20"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Tipo di Colloquio]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="10" y="100" width="138" height="20"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Riservato]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="10" y="10" width="84" height="20"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Data Colloquio:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="157" y="40" width="385" height="20"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{dove}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="157" y="80" width="385" height="20"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{tipoColloquio}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="157" y="60" width="385" height="20"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{conChi}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="10" y="60" width="138" height="20"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Con Chi]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="94" y="10" width="166" height="20"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{dataColloquio}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="10" y="40" width="138" height="20"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Dove]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="157" y="100" width="385" height="20"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{riservato}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="13" y="146" width="532" height="490" isPrintWhenDetailOverflows="true"/>
+				<textElement markup="html">
+					<font pdfEncoding="Cp1250"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{testoDiario}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="0" y="134" width="545" height="1"/>
+			</line>
+		</band>
+	</detail>
+</jasperReport>

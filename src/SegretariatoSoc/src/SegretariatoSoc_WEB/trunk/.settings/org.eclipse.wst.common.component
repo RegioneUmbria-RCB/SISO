@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-modules id="moduleCoreId" project-version="1.5.0">
+    <wb-module deploy-name="SegretariatoSoc_WEB">
+        <wb-resource deploy-path="/" source-path="/WebContent" tag="defaultRootSource"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/src"/>
+        <dependent-module archiveName="datarouter.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/CT-LIBS/cet-lib/datarouter.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="WebredEJBUtility.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/WebredEJBUtility/WebredEJBUtility">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="webred-ui-comp-jsf.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/webred-ui-comp-jsf/webred-ui-comp-jsf">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="cetsecutil.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/CT-LIBS/cet-lib/cetsecutil.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="SegretariatoSoc_EJBClient.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/SegretariatoSoc_EJBClient/SegretariatoSoc_EJBClient">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="SegretariatoSoc_DataModel.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/SegretariatoSoc_DataModel/SegretariatoSoc_DataModel">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="CarSocialeA_EJBClient.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/CarSocialeA_EJBClient/CarSocialeA_EJBClient">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="CarSocialeA_DataModel.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/CarSocialeA_DataModel/CarSocialeA_DataModel">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="webred-cs-ui-comp-jsf.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/webred-cs-ui-comp-jsf/webred-cs-ui-comp-jsf">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="webredutils.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/CT-LIBS/cet-lib/webredutils.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="SocioSanitario_EJBClient.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/SocioSanitario_EJBClient/SocioSanitario_EJBClient">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <property name="context-root" value="SegretariatoSoc_WEB"/>
+        <property name="java-output-path" value="/SegretariatoSoc_WEB/build/classes"/>
+    </wb-module>
+</project-modules>

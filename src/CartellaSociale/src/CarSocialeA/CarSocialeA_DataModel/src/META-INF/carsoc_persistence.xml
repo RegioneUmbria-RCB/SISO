@@ -1,0 +1,236 @@
+<persistence xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
+	version="2.0">
+
+	<persistence-unit name="CarSocialeA_DataModel" transaction-type="JTA">
+		<provider>org.hibernate.ejb.HibernatePersistence</provider>
+		<mapping-file>META-INF/orm_carsociale.xml</mapping-file>
+
+
+		<class>it.webred.cs.data.model.view.VMobiIntErog</class>
+		<class>it.webred.cs.data.model.CsAAnagrafica</class>
+		<class>it.webred.cs.data.model.VLineaFin</class>
+        <class>it.webred.cs.data.model.VTipiInterventoUsati</class>
+
+		<class>it.webred.cs.data.model.CsAAnaIndirizzo</class>
+		<class>it.webred.cs.data.model.CsACaso</class>
+		<class>it.webred.cs.data.model.CsACasoBASIC</class>
+		<class>it.webred.cs.data.model.CsACasoOpeTipoOpe</class>
+		<class>it.webred.cs.data.model.CsACasoOpeTipoOpeBASIC</class>
+		<class>it.webred.cs.data.model.CsACasoOpeTipoOpe2</class>
+		<class>it.webred.cs.data.model.CsAComponente</class>
+		<class>it.webred.cs.data.model.CsAComponenteGit</class>
+		<class>it.webred.cs.data.model.CsAContributi</class>
+		<class>it.webred.cs.data.model.CsADatiSociali</class>
+		<class>it.webred.cs.data.model.CsADatiInvalidita</class>
+		<class>it.webred.cs.data.model.CsADisabilita</class>
+		<class>it.webred.cs.data.model.CsAFamigliaGruppo</class>
+		<class>it.webred.cs.data.model.CsAFamigliaGruppoGit</class>
+		<class>it.webred.cs.data.model.CsAIndirizzo</class>
+		<class>it.webred.cs.data.model.persist.CsAlert</class>
+		<class>it.webred.cs.data.model.CsAlertBASIC</class>
+		<class>it.webred.cs.data.model.CsAlertConfig</class>
+		<class>it.webred.cs.data.model.CsAServizi</class>
+		<class>it.webred.cs.data.model.CsASoggettoLAZY</class>
+		<class>it.webred.cs.data.model.CsASoggettoCategoriaSoc</class>
+		<class>it.webred.cs.data.model.CsASoggettoCategoriaSocPK</class>
+		<class>it.webred.cs.data.model.CsASoggettoCategoriaSocLAZY</class>
+		<class>it.webred.cs.data.model.CsASoggettoMedico</class>
+		<class>it.webred.cs.data.model.CsASoggettoMedicoPK</class>
+		<class>it.webred.cs.data.model.CsASoggettoStatoCivile</class>
+		<class>it.webred.cs.data.model.CsASoggettoStatoCivilePK</class>
+		<class>it.webred.cs.data.model.CsASoggettoStatus</class>
+		<class>it.webred.cs.data.model.CsASoggettoStatusPK</class>
+		<class>it.webred.cs.data.model.CsATribunale</class>
+		<class>it.webred.cs.data.model.CsCCategoriaSociale</class>
+		<class>it.webred.cs.data.model.CsCCategoriaSocialeBASIC</class>
+		<class>it.webred.cs.data.model.CsCComunita</class>
+		<class>it.webred.cs.data.model.CsDClob</class>
+		<class>it.webred.cs.data.model.CsCDiarioConchi</class>
+		<class>it.webred.cs.data.model.CsCDiarioDove</class>
+		<class>it.webred.cs.data.model.CsDDiarioBASIC</class>
+		<class>it.webred.cs.data.model.CsDIsee</class>
+		<class>it.webred.cs.data.model.CsDValutazione</class>
+		<class>it.webred.cs.data.model.CsDScuola</class>
+		<class>it.webred.cs.data.model.CsCfgAttr</class>
+		<class>it.webred.cs.data.model.CsCfgAttrOption</class>
+		<class>it.webred.cs.data.model.CsCfgItRuoloTransizione</class>
+		<class>it.webred.cs.data.model.CsCfgItStato</class>
+		<class>it.webred.cs.data.model.CsCfgItStatoAttr</class>
+
+		<class>it.webred.cs.data.model.CsCfgItStatoAttrLAZY</class>
+		<class>it.webred.cs.data.model.CsCfgItTransizioneLAZY</class>
+		<class>it.webred.cs.data.model.CsCfgItStatoLAZY</class>
+		<class>it.webred.cs.data.model.CsCfgItRuoloTransizioneLAZY</class>
+		<class>it.webred.cs.data.model.CsCfgAttrOptionLAZY</class>
+		<class>it.webred.cs.data.model.CsCfgAttrLAZY</class>
+
+
+		<class>it.webred.cs.data.model.CsCfgItTransizione</class>
+
+		<class>it.webred.cs.data.model.CsCfgAttrUnitaMisura</class>
+		<class>it.webred.cs.data.model.CsCfgIntEseg</class>
+		<class>it.webred.cs.data.model.CsCfgIntEsegStato</class>
+		<class>it.webred.cs.data.model.CsCfgIntEsegStatoInt</class>
+		<class>it.webred.cs.data.model.CsCfgIntEsegAttUm</class>
+
+		<class>it.webred.cs.data.model.CsCfgParametri</class>
+		<class>it.webred.cs.data.model.CsCfgParametriPK</class>
+		<class>it.webred.cs.data.model.CsCMedico</class>
+		<class>it.webred.cs.data.model.CsVMedico</class>
+		<class>it.webred.cs.data.model.CsCTipoIntervento</class>
+		<class>it.webred.cs.data.model.CsCTipoColloquio</class>
+		<class>it.webred.cs.data.model.CsFlgIntervento</class>
+		<class>it.webred.cs.data.model.CsIAdmAdh</class>
+		<class>it.webred.cs.data.model.CsIAffidoFam</class>
+		<class>it.webred.cs.data.model.CsIContrEco</class>
+		<class>it.webred.cs.data.model.CsIIntervento</class>
+
+		<class>it.webred.cs.data.model.CsIInterventoEseg</class>
+		<class>it.webred.cs.data.model.CsIInterventoEsegMast</class>
+		<class>it.webred.cs.data.model.CsIInterventoEsegMastSogg</class>
+		<class>it.webred.cs.data.model.CsIInterventoEsegValore</class>
+
+		<class>it.webred.cs.data.model.CsIPasti</class>
+		<class>it.webred.cs.data.model.CsIPs</class>
+		<class>it.webred.cs.data.model.CsIPsExport</class>
+		<class>it.webred.cs.data.model.CsIPsExportMast</class>
+		<class>it.webred.cs.data.model.CsIResiAdulti</class>
+		<class>it.webred.cs.data.model.CsIResiMinore</class>
+		<class>it.webred.cs.data.model.CsISchedaLavoro</class>
+		<class>it.webred.cs.data.model.CsISemiResiMin</class>
+		<class>it.webred.cs.data.model.CsICentrod</class>
+		<class>it.webred.cs.data.model.CsIBuonoSoc</class>
+		<class>it.webred.cs.data.model.CsItAggiornamento</class>
+		<class>it.webred.cs.data.model.CsItComunicazione</class>
+		<class>it.webred.cs.data.model.CsItStep</class>
+		<class>it.webred.cs.data.model.CsItStepLAZY</class>
+		<class>it.webred.cs.data.model.CsItStepAttrValue</class>
+		<class>it.webred.cs.data.model.CsItStepAttrValueBASIC</class>
+		<class>it.webred.cs.data.model.CsIVouchersad</class>
+		<class>it.webred.cs.data.model.CsOOperatoreAnagrafica</class>
+		<class>it.webred.cs.data.model.CsOOperatore</class>
+		
+		<class>it.webred.cs.data.model.CsOOperatoreAnagrafica</class>
+		
+		<class>it.webred.cs.data.model.CsOOperatoreBASIC</class>
+		<class>it.webred.cs.data.model.CsOOperatoreBASIC</class>
+		<class>it.webred.cs.data.model.CsOOperatoreSettore</class>
+		<class>it.webred.cs.data.model.CsOOperatoreSettoreBASIC</class>
+		<class>it.webred.cs.data.model.CsOOperatoreTipoOperatore</class>
+		<class>it.webred.cs.data.model.CsOOperatoreTipoOperatoreBASIC</class>
+		<class>it.webred.cs.data.model.CsOOrganizzazione</class>
+		<class>it.webred.cs.data.model.CsOSettore</class>
+		<class>it.webred.cs.data.model.CsOSettoreBASIC</class>
+		<class>it.webred.cs.data.model.CsRelDiarioDiariorif</class>
+		<class>it.webred.cs.data.model.CsRelDiarioDiariorifPK</class>
+		<class>it.webred.cs.data.model.CsRelCatsocTipoInter</class>
+		<class>it.webred.cs.data.model.CsRelCatsocTipoInterPK</class>
+		<class>it.webred.cs.data.model.CsRelRelazioneTipoint</class>
+		<class>it.webred.cs.data.model.CsRelRelazioneTipointPK</class>
+		<class>it.webred.cs.data.model.CsRelSettCatsocEsclusiva</class>
+		<class>it.webred.cs.data.model.CsRelSettCatsocEsclusivaPK</class>
+		<class>it.webred.cs.data.model.CsRelSettCsocTipoInter</class>
+		<class>it.webred.cs.data.model.CsRelSettCsocTipoInterPK</class>
+		<class>it.webred.cs.data.model.CsRelSettoreCatsoc</class>
+		<class>it.webred.cs.data.model.CsRelSettoreCatsocPK</class>
+		<class>it.webred.cs.data.model.CsSsSchedaSegr</class>
+		<class>it.webred.cs.data.model.CsTbBuono</class>
+		<class>it.webred.cs.data.model.CsTbCittadinanzaAcq</class>
+		<class>it.webred.cs.data.model.CsTbCondLavoro</class>
+		<class>it.webred.cs.data.model.CsTbContatto</class>
+		<class>it.webred.cs.data.model.CsTbDisabEnte</class>
+		<class>it.webred.cs.data.model.CsTbDisabGravita</class>
+		<class>it.webred.cs.data.model.CsTbDisabTipologia</class>
+		<class>it.webred.cs.data.model.CsTbDisponibilita</class>
+		<class>it.webred.cs.data.model.CsTbEsenzioneRiduzione</class>
+		<class>it.webred.cs.data.model.CsTbGVulnerabile</class>
+		<class>it.webred.cs.data.model.CsTbIcd10</class>
+		<class>it.webred.cs.data.model.CsTbIcd9</class>
+		<class>it.webred.cs.data.model.CsTbIngMercato</class>
+		<class>it.webred.cs.data.model.CsTbInterventiUOL</class>
+		<class>it.webred.cs.data.model.CsTbMacroSegnal</class>
+		<class>it.webred.cs.data.model.CsTbMacroAttivita</class>
+		<class>it.webred.cs.data.model.CsTbMicroSegnal</class>
+		<class>it.webred.cs.data.model.CsTbMicroAttivita</class>
+		<class>it.webred.cs.data.model.CsTbMotivoChiusuraInt</class>
+        <class>it.webred.cs.data.model.CsTbMotivoChiusuraPai</class>
+		<class>it.webred.cs.data.model.CsTbMotivoSegnal</class>
+		<class>it.webred.cs.data.model.CsTbPotesta</class>
+		<class>it.webred.cs.data.model.CsTbProblematica</class>
+		<class>it.webred.cs.data.model.CsTbProfessione</class>
+		<class>it.webred.cs.data.model.CsTbPermesso</class>
+		<class>it.webred.cs.data.model.CsTbResponsabilita</class>
+		<class>it.webred.cs.data.model.CsTbScuola</class>
+		<class>it.webred.cs.data.model.CsTbServComunita</class>
+		<class>it.webred.cs.data.model.CsTbServLuogoStr</class>
+		<class>it.webred.cs.data.model.CsTbServResRetta</class>
+		<class>it.webred.cs.data.model.CsTbServSemiresRetta</class>
+		<class>it.webred.cs.data.model.CsTbStatoCivile</class>
+		<class>it.webred.cs.data.model.CsTbStatus</class>
+		<class>it.webred.cs.data.model.CsTbSottocartellaDoc</class>
+		<class>it.webred.cs.data.model.CsTbStesuraRelazioniPer</class>
+		<class>it.webred.cs.data.model.CsTbTipoCirc4</class>
+		<class>it.webred.cs.data.model.CsTbTipoComunita</class>
+		<class>it.webred.cs.data.model.CsTbTipoContributo</class>
+		<class>it.webred.cs.data.model.CsTbTipoDiario</class>
+		<class>it.webred.cs.data.model.CsTbTipoIndirizzo</class>
+		<class>it.webred.cs.data.model.CsTbTipologiaFamiliare</class>
+		<class>it.webred.cs.data.model.CsTbTipoOperatore</class>
+        <class>it.webred.cs.data.model.CsTbTipoPai</class>
+		<class>it.webred.cs.data.model.CsTbTipoProgetto</class>
+		<class>it.webred.cs.data.model.CsTbTipoRapportoCon</class>
+		<class>it.webred.cs.data.model.CsTbMapTipoRapGit2Cs</class>
+		<class>it.webred.cs.data.model.CsTbMapTipoRapGit2CsPK</class>
+		<class>it.webred.cs.data.model.CsTbTipoRetta</class>
+		<class>it.webred.cs.data.model.CsTbTipoRientriFami</class>
+		<class>it.webred.cs.data.model.CsTbTipoScuola</class>
+		<class>it.webred.cs.data.model.CsTbTitoloStudio</class>
+		<class>it.webred.cs.data.model.CsTbTutela</class>
+		<class>it.webred.cs.data.model.CsTbTipoContratto</class>
+		<class>it.webred.cs.data.model.CsTbSchedaMultidim</class>
+		
+		<class>it.webred.cs.data.model.CsTbSettoreImpiego</class>
+		<class>it.webred.cs.data.model.CsDColloquio</class>
+		<class>it.webred.cs.data.model.CsDColloquioBASIC</class>
+		<class>it.webred.cs.data.model.CsDDiario</class>
+		<class>it.webred.cs.data.model.CsDDiarioDoc</class>
+		<class>it.webred.cs.data.model.CsDDiarioDocPK</class>
+		<class>it.webred.cs.data.model.CsDNote</class>
+		<class>it.webred.cs.data.model.CsDRelazione</class>
+		<class>it.webred.cs.data.model.CsDDocIndividuale</class>
+		<class>it.webred.cs.data.model.CsIInterventoEseg</class>
+		<class>it.webred.cs.data.model.CsTbUnitaMisura</class>
+		<class>it.webred.cs.data.model.CsLoadDocumento</class>
+		<class>it.webred.cs.data.model.CsDPai</class>
+		<class>it.webred.cs.data.model.CsOZonaSoc</class>
+		<!-- Vista SSchedaSegr Filtro -->
+		<class>it.webred.cs.data.model.CsVistaCasiSS</class>
+		<!-- tree Tipi Servizi -->
+		<class>it.webred.cs.data.model.VGerrarchiaServizi</class>
+		<class>it.webred.cs.data.model.CsCTipoInterventoCustom</class>
+		
+		<class>it.webred.cs.data.model.CsIQuota</class>
+		<class>it.webred.cs.data.model.CsIRigaQuota</class>
+		<class>it.webred.cs.data.model.CsIValQuota</class>
+		<class>it.webred.cs.data.model.CsIQuotaRipartiz</class>
+
+		<class>it.webred.cs.data.model.CsTbProbl</class>
+		<class>it.webred.cs.data.model.CsRelRelazioneProbl</class>  
+		<class>it.webred.cs.data.model.CsRelRelazioneProblPK</class>
+		
+	 	<class>it.webred.cs.data.model.ArTClasse</class>				<!-- MOD-RL --> 
+	 	<class>it.webred.cs.data.model.ArTbPrestazioniInps</class>				<!-- MOD-RL --> 
+	 	<class>it.webred.cs.data.model.ArRelClassememoPresInps</class>				<!-- MOD-RL --> 
+
+		<properties>
+			<!-- property name="hibernate.dialect" value="org.hibernate.dialect.Oracle9iDialect" / -->
+			<property name="hibernate.dialect" value="it.webred.ct.data.spatial.OracleSpatialDialect" />
+			<!-- <property name="hibernate.hbm2ddl.auto" value="update"/> -->
+			<property name="javax.persistence.validation.mode" value="NONE" />
+			<property name="hibernate.show_sql" value="false" />   <!-- RIMETTERE A TRUE PER VISUALIZZARE IL LOG -->
+			<property name="hibernate.format_sql" value="false" /> <!-- RIMETTERE A TRUE PER VISUALIZZARE IL LOG -->
+
+			<property name="hibernate.transaction.jta.platform" value="org.hibernate.service.jta.platform.internal.JBossAppServerJtaPlatform" />
+		</properties>
+	</persistence-unit>
+</persistence>

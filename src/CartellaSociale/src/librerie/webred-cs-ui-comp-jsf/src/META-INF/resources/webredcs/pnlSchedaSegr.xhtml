@@ -1,0 +1,351 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:webred="http://java.sun.com/jsf/composite/webred"
+	xmlns:webredcs="http://java.sun.com/jsf/composite/webredcs">
+
+<h:head>
+	<title>Componente Schede</title>
+</h:head>
+<h:body>
+	<composite:interface componentType="pnlSchedaSegr">
+		<composite:attribute name="iSchedaSegr" type="it.webred.cs.jsf.interfaces.ISchedaSegr" />
+	</composite:interface>
+	<composite:implementation>
+
+		<style type="text/css">
+			.bold {
+				font-weight:bold;
+			}
+			.noBorderBackground
+			{
+				border: none !important;
+				background: none !important;
+			}
+		</style>
+
+		<p:accordionPanel  multiple="true" activeIndex="2" >
+        <p:tab title="Accesso">
+		
+		<h:panelGrid columns="6" cellpadding="10" width="100%">  
+                  <h:outputText value="Ufficio" styleClass="bold"/>  
+                  <h:outputText value="#{cc.attrs.iSchedaSegr.ssScheda.accesso.ssRelUffPcontOrg.ssUfficio.nome}"/>
+                  
+                  <h:outputText value="Luogo" styleClass="bold"/>  
+                  <h:outputText value="#{cc.attrs.iSchedaSegr.ssScheda.accesso.ssRelUffPcontOrg.ssPuntoContatto.nome}"/>
+                  
+                  <h:outputText value="Ente di rif." styleClass="bold"/>  
+                  <h:outputText value="#{cc.attrs.iSchedaSegr.ssScheda.accesso.ssRelUffPcontOrg.ssOOrganizzazione.nome}"/>
+                  
+                  <h:outputText value="Data di accesso" styleClass="bold"/>  
+                  <h:outputText value="#{cc.attrs.iSchedaSegr.ssScheda.accesso.data}">
+                  	<f:convertDateTime pattern="dd/MM/yyyy" />
+                  </h:outputText>  
+                    
+                  <h:outputText value="Operatore" styleClass="bold"/>  
+                  <h:outputText value="#{cc.attrs.iSchedaSegr.getCognomeNomeUtente(cc.attrs.iSchedaSegr.ssScheda.accesso.operatore)}"/>  
+      			
+                  <h:outputText value="Descrizione scheda " styleClass="bold"/>
+                  <h:outputText value="#{cc.attrs.iSchedaSegr.ssScheda.accesso.descrizione}"/>
+                    
+                  <h:outputText value="Modalità di accesso" styleClass="bold"/>  
+                  <h:outputText value="#{cc.attrs.iSchedaSegr.ssScheda.accesso.modalita}"/>
+      			
+      			  <h:outputText value="Motivo di accesso" styleClass="bold"/>  
+                  <h:outputText value="#{cc.attrs.iSchedaSegr.ssScheda.accesso.motivo} #{cc.attrs.iSchedaSegr.ssScheda.accesso.motivoDesc}" />
+                                   
+      			  <h:outputText value="Interlocutore" styleClass="bold"/>  
+                  <h:outputText value="#{cc.attrs.iSchedaSegr.ssScheda.accesso.interlocutore}"/>
+        </h:panelGrid>
+        </p:tab>  	 
+        <p:tab title="Interlocutore">
+		<h:panelGrid columns="4" cellpadding="10" width="100%">  
+                  <h:outputText value="Cognome e nome" styleClass="bold"/>  
+                  <h:outputText value="#{cc.attrs.iSchedaSegr.ssScheda.segnalante.cognome} #{cc.attrs.iSchedaSegr.ssScheda.segnalante.nome}" />
+ 
+                  <h:outputText value="Sesso" styleClass="bold"/> 
+                  <h:outputText   value="#{cc.attrs.iSchedaSegr.ssScheda.segnalante.sesso}" rendered="#{cc.attrs.iSchedaSegr.ssScheda.segnalante.sesso ne 'F' and cc.attrs.iSchedaSegr.ssScheda.segnalante.sesso ne 'M'}"  />
+				  <p:graphicImage title="Donna" rendered="#{cc.attrs.iSchedaSegr.ssScheda.segnalante.sesso eq 'F'}"  value="/images/female.png" height="20"/>
+			      <p:graphicImage title="Uomo"  rendered="#{cc.attrs.iSchedaSegr.ssScheda.segnalante.sesso eq 'M'}"  value="/images/male.png" height="20"/>
+                  
+                  <h:outputText value="Data di nascita " styleClass="bold"/>
+                  <h:outputText value="#{cc.attrs.iSchedaSegr.ssScheda.segnalante.dataNascita}">
+                  	<f:convertDateTime pattern="dd/MM/yyyy" />
+                  </h:outputText>
+                  
+                  <h:outputText value="Luogo di nascita" styleClass="bold"/>  
+                  <h:outputText value="#{cc.attrs.iSchedaSegr.ssScheda.segnalante.luogoDiNascita}" />
+                             
+                  <h:outputText value="Stato civile" styleClass="bold"/>  
+                  <h:outputText value="#{cc.attrs.iSchedaSegr.statoCivileSegnalante}"/>
+                  
+                  <h:outputText value="Relazione" styleClass="bold"/>  
+                  <h:outputText value="#{cc.attrs.iSchedaSegr.relazioneSegnalante}"/>
+                                	                  
+                  <h:outputText value="Telefono" styleClass="bold"/>  
+                  <h:panelGrid>
+                  	 <h:outputText value="#{cc.attrs.iSchedaSegr.ssScheda.segnalante.telefono}" 
+                  	               rendered="#{cc.attrs.iSchedaSegr.ssScheda.segnalante.telefono!=null}" />
+                     <h:outputText value="#{cc.attrs.iSchedaSegr.ssScheda.segnalante.cel}"
+                      			   rendered="#{cc.attrs.iSchedaSegr.ssScheda.segnalante.cel!=null}"/>
+                  </h:panelGrid>
+                        
+                  <h:outputText value="Email" styleClass="bold"/>  
+                  <h:outputText value="#{cc.attrs.iSchedaSegr.ssScheda.segnalante.email}"/>
+                  
+                  <h:outputText value="Indirizzo" styleClass="bold"/>  
+                  <h:outputText  value="#{cc.attrs.iSchedaSegr.ssScheda.segnalante.via}"/>
+                          
+                  <h:outputText value="Comune" styleClass="bold" rendered="#{cc.attrs.iSchedaSegr.comuneSegnalante != null}"/>  
+                  <h:outputText value="#{cc.attrs.iSchedaSegr.comuneSegnalante.denominazione} (#{cc.attrs.iSchedaSegr.comuneSegnalante.siglaProv})"
+                  	rendered="#{cc.attrs.iSchedaSegr.comuneSegnalante != null}"/>
+                  
+                  <h:outputText value="Ente/Servizio" styleClass="bold"/>  
+                  <h:outputText value="#{cc.attrs.iSchedaSegr.ssScheda.segnalante.ente_servizio}" />
+                       
+                  <h:outputText value="Ruolo" styleClass="bold"/>  
+                  <h:outputText value="#{cc.attrs.iSchedaSegr.ssScheda.segnalante.ruolo}" />
+                  
+                  <h:outputText value="Inviato da" styleClass="bold"/>
+                  <h:outputText value="#{cc.attrs.iSchedaSegr.inviatoDaSegnalante}"/>
+                  
+               </h:panelGrid>
+         </p:tab>      
+         <p:tab title="Utente">
+		<h:panelGrid columns="6" cellpadding="10" width="100%">  
+                  <h:outputText value="Cognome e nome" styleClass="bold"/>  
+                  <h:outputText value="#{cc.attrs.iSchedaSegr.ssSchedaSegnalato.anagrafica.cognome} #{cc.attrs.iSchedaSegr.ssSchedaSegnalato.anagrafica.nome}" />
+                         
+                  <h:outputText value="Codice fiscale" styleClass="bold"/>  
+                  <h:outputText value="#{cc.attrs.iSchedaSegr.ssSchedaSegnalato.anagrafica.cf}"/>        
+                          
+                  <h:outputText value="Sesso" styleClass="bold"/>  
+                  <h:outputText   value="#{cc.attrs.iSchedaSegr.ssSchedaSegnalato.anagrafica.sesso}" 
+                                  rendered="#{cc.attrs.iSchedaSegr.ssSchedaSegnalato.anagrafica.sesso ne 'F' and cc.attrs.iSchedaSegr.ssSchedaSegnalato.anagrafica.sesso ne 'M'}"  />
+				  <p:graphicImage title="Donna" rendered="#{cc.attrs.iSchedaSegr.ssSchedaSegnalato.anagrafica.sesso eq 'F'}"  value="/images/female.png" height="20"/>
+			      <p:graphicImage title="Uomo"  rendered="#{cc.attrs.iSchedaSegr.ssSchedaSegnalato.anagrafica.sesso eq 'M'}"  value="/images/male.png" height="20"/>
+                  
+                  <h:outputText value="Data di nascita" styleClass="bold"/>  
+                  <h:outputText value="#{cc.attrs.iSchedaSegr.ssSchedaSegnalato.anagrafica.data_nascita}">
+                  		<f:convertDateTime pattern="dd/MM/yyyy" />
+                  </h:outputText>
+                       
+                  <h:outputText value="Luogo di nascita" styleClass="bold"/>  
+                  <h:outputText value="#{cc.attrs.iSchedaSegr.ssSchedaSegnalato.anagrafica.luogoDiNascita}" />
+      			
+                <h:outputText value="Stato civile" styleClass="bold"/>  
+                  <h:outputText value="#{cc.attrs.iSchedaSegr.ssSchedaSegnalato.anagrafica.stato_civile}"/>
+                  
+                  <h:outputText value="Cittadinanza" styleClass="bold"/>  
+                  <h:outputText value="#{cc.attrs.iSchedaSegr.ssSchedaSegnalato.anagrafica.cittadinanza} #{cc.attrs.iSchedaSegr.cittadinanzaAcq.descrizione!=null ? (' ('.concat(cc.attrs.iSchedaSegr.cittadinanzaAcq.descrizione)).concat(')') : ''}"/>
+        		  
+        		  <h:outputText value="Seconda cittadinanza" styleClass="bold"/>  
+                  <h:outputText value="#{cc.attrs.iSchedaSegr.ssSchedaSegnalato.anagrafica.cittadinanza2}"/>
+        </h:panelGrid>
+        
+        <h:panelGrid columns="2" cellpadding="10" >  
+                  <h:outputText value="Indirizzo residenza" styleClass="bold"/>
+                  <h:panelGroup>
+                  <h:outputText value="#{cc.attrs.iSchedaSegr.ssSchedaSegnalato.residenza.via} 
+                  #{cc.attrs.iSchedaSegr.ssSchedaSegnalato.residenza.numero}, 
+                  #{cc.attrs.iSchedaSegr.comuneResidenzaSegnalato.denominazione} (#{cc.attrs.iSchedaSegr.comuneResidenzaSegnalato.siglaProv})" />
+                  <h:outputText value="#{cc.attrs.iSchedaSegr.ssSchedaSegnalato.strutturaAccoglienza}" 
+                                rendered="#{cc.attrs.iSchedaSegr.ssSchedaSegnalato.strutturaAccoglienza!=null}" />
+                  </h:panelGroup>  
+                  <h:outputText value="Indirizzo domicilio" styleClass="bold"/>  
+                  <h:outputText value="#{cc.attrs.iSchedaSegr.ssSchedaSegnalato.domicilio.via} 
+                  #{cc.attrs.iSchedaSegr.ssSchedaSegnalato.domicilio.numero}, 
+                  #{cc.attrs.iSchedaSegr.comuneDomicilioSegnalato.denominazione} (#{cc.attrs.iSchedaSegr.comuneDomicilioSegnalato.siglaProv})" />
+                  
+                 
+        </h:panelGrid>
+        
+        <h:panelGrid columns="6" cellpadding="10" width="100%" >  
+                  <h:outputText value="Telefono" styleClass="bold"/>  
+                  <h:outputText value="#{cc.attrs.iSchedaSegr.ssSchedaSegnalato.telefono}" />
+                  
+                  <h:outputText value="Cellulare" styleClass="bold"/>  
+                  <h:outputText value="#{cc.attrs.iSchedaSegr.ssSchedaSegnalato.cel}" />
+                          
+                  <h:outputText value="Email" styleClass="bold"/>  
+                  <h:outputText value="#{cc.attrs.iSchedaSegr.ssSchedaSegnalato.email}"/>
+                            				                 
+                  <h:outputText value="Medico medicina generale" styleClass="bold"/>  
+                  <h:outputText value="#{cc.attrs.iSchedaSegr.ssSchedaSegnalato.medico}" />
+      			
+                  <h:outputText value="N.Tessera sanitaria" styleClass="bold"/>  
+                  <h:outputText value="#{cc.attrs.iSchedaSegr.ssSchedaSegnalato.tessera_sanitaria}"/>
+                  
+                  <h:outputText value="STP" styleClass="bold"/>  
+                  <h:outputText value="#{cc.attrs.iSchedaSegr.ssSchedaSegnalato.stp ? 'Si' : 'No'}"/>
+                  
+                  <h:outputText value="Invalidità" styleClass="bold"/>  
+                  <h:outputText value="#{cc.attrs.iSchedaSegr.ssSchedaSegnalato.invalidita!=null ? 'Si, '.concat(cc.attrs.iSchedaSegr.ssSchedaSegnalato.invalidita).concat(' %') : 'No'}"/>
+                                         			
+        </h:panelGrid>
+        <h:panelGrid columns="1" width="100%" >
+        <webredcs:pnlFormazioneLavoro iFormazioneLavoro="#{cc.attrs.iSchedaSegr.formLavoroSegnalato}" soloLettura="true" numColonne="2" padding="10"/>
+      	<p:fieldset legend="Presenza in Italia (per persone di origine straniera)" toggleable="false" 
+                    rendered="#{cc.attrs.iSchedaSegr.stranieriMan!=null}"  >
+              <webredcs:pnlStranieri iStranieri="#{cc.attrs.iSchedaSegr.stranieriMan}" soloLettura="true"/>
+         </p:fieldset>
+         <p:fieldset legend="Abitazione" toggleable="false" 
+                    rendered="#{cc.attrs.iSchedaSegr.abitazioneMan!=null}"  >
+              <webredcs:pnlAbitazione iAbitazione="#{cc.attrs.iSchedaSegr.abitazioneMan}" soloLettura="true"/>
+         </p:fieldset>
+         <p:fieldset legend="Familiari e Conviventi" toggleable="false" 
+                     rendered="#{cc.attrs.iSchedaSegr.famConviventiMan!=null}"> 
+				<webredcs:pnlFamConviventi iFamConviventi="#{cc.attrs.iSchedaSegr.famConviventiMan}" soloLettura="true"/>
+		</p:fieldset>
+		</h:panelGrid>
+         </p:tab>
+         <p:tab title="Riferimento">
+        
+		<h:panelGrid columns="4" cellpadding="10" width="100%">
+			      <h:outputText value="Cognome e nome" styleClass="bold"/>  
+                  <h:outputText value="#{cc.attrs.iSchedaSegr.ssScheda.riferimento.cognome} #{cc.attrs.iSchedaSegr.ssScheda.riferimento.nome}"/>
+                             
+                  <h:outputText value="Sesso" styleClass="bold"/>  
+                  <h:outputText value="#{cc.attrs.iSchedaSegr.ssScheda.riferimento.sesso}" 
+                     rendered="#{cc.attrs.iSchedaSegr.ssScheda.riferimento.sesso ne 'F' and cc.attrs.iSchedaSegr.ssScheda.riferimento.sesso ne 'M'}"  />
+				  <p:graphicImage title="Donna" rendered="#{cc.attrs.iSchedaSegr.ssScheda.riferimento.sesso eq 'F'}"  value="/images/female.png" height="20"/>
+			      <p:graphicImage title="Uomo"  rendered="#{cc.attrs.iSchedaSegr.ssScheda.riferimento.sesso eq 'M'}"  value="/images/male.png" height="20"/>
+                  
+                  <h:outputText value="Data di nascita " styleClass="bold"/>
+                  <h:outputText value="#{cc.attrs.iSchedaSegr.ssScheda.riferimento.dataNascita}">
+                  	<f:convertDateTime pattern="dd/MM/yyyy" />
+                  </h:outputText>
+                  
+                  <h:outputText value="Luogo di nascita" styleClass="bold"/>  
+                  <h:outputText value="#{cc.attrs.iSchedaSegr.ssScheda.riferimento.luogoDiNascita}" />
+                  
+                  <h:outputText value="Stato civile" styleClass="bold"/>  
+                  <h:outputText value="#{cc.attrs.iSchedaSegr.statoCivileRiferimento}"/>
+
+                  <h:outputText value="Relazione" styleClass="bold"/>
+                  <h:outputText value="#{cc.attrs.iSchedaSegr.relazioneRiferimento}"/>      			
+                    
+                  <h:outputText value="Telefono" styleClass="bold"/>  
+                  <h:panelGrid columns="1">
+                  	<h:outputText value="#{cc.attrs.iSchedaSegr.ssScheda.riferimento.telefono}" 
+                  	              rendered="#{cc.attrs.iSchedaSegr.ssScheda.riferimento.telefono}!=null}"/>
+                  	<h:outputText value="#{cc.attrs.iSchedaSegr.ssScheda.riferimento.cel}" 
+                  	              rendered="#{cc.attrs.iSchedaSegr.ssScheda.riferimento.cel!=null}"/>
+                  </h:panelGrid>   
+                  
+                  <h:outputText value="Email" styleClass="bold"/>  
+                  <h:outputText value="#{cc.attrs.iSchedaSegr.ssScheda.riferimento.email}"/>
+                  
+                  <h:outputText value="Recapito" styleClass="bold"/>  
+                  <h:outputText value="#{cc.attrs.iSchedaSegr.ssScheda.riferimento.recapito}"/>
+                    
+                <h:outputText value="Eventuali problemi" styleClass="bold"/>
+                  <h:outputText value="#{cc.attrs.iSchedaSegr.ssScheda.riferimento.problemi_desc}"/>  
+		</h:panelGrid>
+		</p:tab>
+		 <p:tab title="Bisogni">
+		
+		<p:outputPanel rendered="#{cc.attrs.iSchedaSegr.listaMotivazioni != null}">
+				<p:dataList value="#{cc.attrs.iSchedaSegr.listaMotivazioni}" var="mot" emptyMessage="-" styleClass="datalist-noborder">
+					<h:outputText value="#{mot.motivazione.motivo}"/>	
+				</p:dataList>
+		</p:outputPanel>
+			
+		<h:panelGrid columns="2" cellpadding="10" rendered="#{cc.attrs.iSchedaSegr.ssScheda.motivazione.altro != null}">
+			<h:outputText value="Altro" styleClass="bold"/>
+            <h:outputText value="#{cc.attrs.iSchedaSegr.ssScheda.motivazione.altro}"/> 
+        </h:panelGrid>
+        <p:outputPanel rendered="#{cc.attrs.iSchedaSegr.listaDiari != null and !empty cc.attrs.iSchedaSegr.listaDiari}">
+                 	<h:panelGrid columns="1" cellpadding="10">
+                  	<h:outputText value="Note diario" styleClass="bold"/>
+				<p:dataList value="#{cc.attrs.iSchedaSegr.listaDiari}" var="dia" emptyMessage="-"  styleClass="datalist-noborder">
+					<h:outputText value="#{dia.nota}"/>	
+				</p:dataList>
+			</h:panelGrid>
+		</p:outputPanel>
+		</p:tab>
+		<p:tab title="Servizi Richiesti">
+		
+		<p:outputPanel rendered="#{cc.attrs.iSchedaSegr.listaInterventi != null}" >
+			<p:dataList value="#{cc.attrs.iSchedaSegr.listaInterventi}" var="int" emptyMessage="-"
+				styleClass="datalist-noborder">
+				<h:outputText value="#{int.intervento.intervento}"/>	
+			</p:dataList>
+		
+			<p:tabView rendered="#{cc.attrs.iSchedaSegr.listaInterventi != null}">
+			   <p:tab title="Intermediazione Ab." >
+			      <p:outputPanel rendered="#{cc.attrs.iSchedaSegr.intermediazioneAbMan!=null}">
+	        		<webredcs:pnlIntermediazioneAb iIntermediazioneAb="#{cc.attrs.iSchedaSegr.intermediazioneAbMan}" soloLettura="true"/>
+	        	  </p:outputPanel>
+	           </p:tab>
+	            <p:tab title="Orientamento Lav." >
+	               <p:outputPanel rendered="#{cc.attrs.iSchedaSegr.orientamentoLavMan!=null}">
+	        		<webredcs:pnlInserimentoLavoro OrientamentoLavoroManBean="#{cc.attrs.iSchedaSegr.orientamentoLavMan}" soloLettura="true"/>
+	        	   </p:outputPanel>
+	           </p:tab>		
+               <p:tab title="Mediazione cult." >
+                  <p:outputPanel rendered="#{cc.attrs.iSchedaSegr.mediazioneCultMan!=null}">
+                    <webredcs:pnlMediazioneCult iMediazioneCult="#{cc.attrs.iSchedaSegr.mediazioneCultMan}" soloLettura="true"/>
+                  </p:outputPanel>
+               </p:tab>
+               <p:tab title="Orientamento istr./form." >
+                  <p:outputPanel rendered="#{cc.attrs.iSchedaSegr.orientamentoIstruzioneMan!=null}">
+                    <webredcs:pnlOrientamentoIstruzione iOrientamentoIstruzione="#{cc.attrs.iSchedaSegr.orientamentoIstruzioneMan}" soloLettura="true"/>
+                  </p:outputPanel>
+               </p:tab>
+	        </p:tabView>
+	     </p:outputPanel>
+		</p:tab>
+		<p:tab title="Altro " rendered="#{cc.attrs.iSchedaSegr.ssScheda.interventi.altro != null}">
+		<h:panelGrid columns="2" cellpadding="10" >
+                  <h:outputText value="#{cc.attrs.iSchedaSegr.ssScheda.interventi.altro}"/> 
+          </h:panelGrid>
+              
+              <p:outputPanel rendered="#{cc.attrs.iSchedaSegr.listaInterventiEcon != null }">
+					<p:dataTable emptyMessage="Nessun elemento trovato" 
+						var="econ" value="#{cc.attrs.iSchedaSegr.listaInterventiEcon}">
+						<f:facet name="header"> Interventi economici </f:facet>
+						
+						<p:column headerText="Data">
+							<h:outputText value="#{econ.data}">
+								<f:convertDateTime pattern="dd/MM/yyyy" />
+							</h:outputText>
+						</p:column>
+						
+						<p:column headerText="Importo">
+							<h:outputText value="#{econ.importo}">
+								<f:convertNumber currencySymbol="€" type="currency"/>
+							</h:outputText>
+						</p:column>
+						
+						<p:column headerText="Tipo">
+							<h:outputText value="#{econ.tipo.tipo}"/>
+						</p:column>
+						
+						<p:column headerText="Erogante">
+							<h:outputText value="#{econ.erogante}"/>
+						</p:column>
+				
+					</p:dataTable>
+			
+		</p:outputPanel>
+		</p:tab>
+		<p:tab title="Diario Sociale">
+			<h:panelGrid columns="1" cellpadding="2" style="width:100%">
+				<ui:repeat value="#{cc.attrs.iSchedaSegr.notediario}" var="nota">
+	            	<p:fieldset legend="#{cc.attrs.iSchedaSegr.getCognomeNomeUtente(nota.autore)}: #{nota.ente.nome}, #{nota.formattedData} - nota #{nota.pubblica ? 'pubblica' : 'privata'}" toggleable="true" collapsed="false" toggleSpeed="500">  
+	            			<h:outputText value="#{nota.nota}" style="display: block; width: 100%" />
+	    			</p:fieldset>
+	    			<p:spacer height="5px"/>
+    			</ui:repeat>
+			</h:panelGrid>
+		</p:tab>
+	</p:accordionPanel>
+	</composite:implementation>
+</h:body>
+
+</html>

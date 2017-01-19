@@ -1,0 +1,139 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+     	xmlns:h="http://java.sun.com/jsf/html"
+		xmlns:f="http://java.sun.com/jsf/core"
+		xmlns:ui="http://java.sun.com/jsf/facelets"
+		xmlns:p="http://primefaces.org/ui"
+	  	xmlns:composite="http://java.sun.com/jsf/composite"
+	  	xmlns:webredcs="http://java.sun.com/jsf/composite/webredcs"
+	  	xmlns:webred="http://java.sun.com/jsf/composite/webred">
+      
+	<h:head>
+		<title>Lista Componenti con Data validità</title>
+	</h:head>
+	<h:body>
+		<composite:interface componentType="pnlDataValiditaList">
+			<composite:attribute name="iDatiValList" type="it.webred.cs.jsf.interfaces.IDatiValiditaList" required="true"/>
+			<composite:attribute name="disableModifica" default="false"/>
+			<composite:attribute name="dataValiditaStyleClass" required="false"/>
+			<composite:attribute name="buttonFooterStyleClass" required="false"/>
+			<composite:attribute name="panelToUpdate" require="true" default=":frmSalva:tabScheda"/>
+			<composite:attribute name="isStatoAttivo" default="false"/>
+		</composite:interface>
+		<composite:implementation>
+			
+			<style type="text/css">
+				.dataValButton .eliminaImg {
+    				background-image: url("#{resource['webredcs/img/bin.png']}") !important;
+    				width: 25px;
+    				height: 25px;
+    				margin-left: -12px;
+    				margin-top: -12px;
+				}
+				.dataValButton .copyImg {
+    				background-image: url("#{resource['webredcs/img/copy.png']}") !important;
+    				width: 25px;
+    				height: 25px;
+    				margin-left: -12px;
+    				margin-top: -12px;
+				}
+				.dataValButton {
+                	width: 50px;
+                	height: 50px;
+            	}
+				
+			</style>
+			
+			
+			
+			<h:panelGrid columns="3" cellpadding="0" cellspacing="0">
+					<p:spacer height="10" />
+					<p:commandButton value="Nuovo" disabled="#{cc.attrs.disableModifica || !cc.attrs.isStatoAttivo}"
+					action="#{cc.attrs.iDatiValList.nuovo}" update="@form" />	
+			</h:panelGrid>	
+			
+			<p:spacer height="20"/>
+			
+			<h:outputText value="Nessun dato disponibile"
+				rendered="#{empty cc.attrs.iDatiValList.listaComponenti}" />
+
+		
+			<p:accordionPanel value="#{cc.attrs.iDatiValList.listaComponenti}"
+				var="rowComp" activeIndex="#{cc.attrs.iDatiValList.currentIndex}"
+				rendered="#{not empty cc.attrs.iDatiValList.listaComponenti}">
+
+				<p:tab >
+					<f:facet name="title">
+						<h:panelGrid columns="3">
+							<h:outputText value="#{rowComp.dataInizio}"
+								style="#{rowComp.attivo? '': 'color: gray;'}">
+								<f:convertDateTime pattern="dd/MM/yyyy" timeZone="CET" />
+							</h:outputText>
+							<h:outputText value=" - " style="#{rowComp.attivo? '': 'color: gray;'}"
+								rendered="#{rowComp.finito}"/>
+							<h:outputText value="#{rowComp.dataFine}" style="#{rowComp.attivo? '': 'color: gray;'}"
+								rendered="#{rowComp.finito}">
+								<f:convertDateTime pattern="dd/MM/yyyy" timeZone="CET" />
+							</h:outputText>
+						</h:panelGrid>
+					</f:facet>
+					
+					<p:outputPanel rendered="#{cc.attrs.iDatiValList.typeComponent eq 'pnlDatiSociali'}">
+					<webredcs:pnlDatiSociali iDatiSociali="#{rowComp}"/></p:outputPanel>
+					
+					<p:outputPanel rendered="#{cc.attrs.iDatiValList.typeComponent eq 'pnlDatiInvalidita'}">
+					<webredcs:pnlDatiInvalidita iDatiInvalidita="#{rowComp}"
+						disableModifica="#{cc.attrs.disableModifica}"/></p:outputPanel>
+					
+					<p:outputPanel rendered="#{cc.attrs.iDatiValList.typeComponent eq 'pnlDatiDisabilita'}">
+					<webredcs:pnlDatiDisabilita iDatiDisabilita="#{rowComp}"/></p:outputPanel>
+					
+					<p:outputPanel rendered="#{cc.attrs.iDatiValList.typeComponent eq 'pnlDatiTribunale'}">
+					<webredcs:pnlDatiTribunale iDatiTribunale="#{rowComp}"/></p:outputPanel>
+					
+					<p:outputPanel rendered="#{cc.attrs.iDatiValList.typeComponent eq 'pnlParenti'}">
+					<webredcs:pnlParenti iParenti="#{rowComp}"
+						disableModifica="#{cc.attrs.disableModifica}"
+						iNuovoParente="#{rowComp.nuovoParenteBean}"
+						iNuovoConoscente="#{rowComp.nuovoConoscenteBean}"
+						isStatoAttivo="#{schedaBean.attivaSalvataggio}"/>
+					</p:outputPanel>
+
+					<br/>
+					<table width="100%">
+						<tr>
+						<td>
+						<h:panelGrid columns="3" cellpadding="0" cellspacing="0" styleClass="#{cc.attrs.buttonFooterStyleClass}">
+						<p:commandButton icon="eliminaImg" action="#{cc.attrs.iDatiValList.elimina}" update="@form"
+							styleClass="dataValButton" title="Elimina" disabled="#{cc.attrs.disableModifica}">
+							<p:confirm header="Conferma" message="Procedere con l eliminazione?" icon="ui-icon-alert"/>
+						</p:commandButton>
+						<p:spacer height="10" />
+						<p:commandButton icon="copyImg" action="#{cc.attrs.iDatiValList.copia}" update="@form"
+							styleClass="dataValButton" title="Copia su nuovo" disabled="#{cc.attrs.disableModifica}">
+							<p:confirm header="Conferma" message="Copiare i dati su un nuovo elemento?" icon="ui-icon-alert"/>
+						</p:commandButton>
+						</h:panelGrid>
+						</td>
+						<td align="right">
+						
+						<webredcs:pnlDataValidita iDatiVal="#{rowComp}" panelStyleClass="#{cc.attrs.dataValiditaStyleClass}"
+							disableModifica="#{cc.attrs.disableModifica}"
+							salvaListener="#{cc.attrs.iDatiValList.salvaCs(rowComp.id)}"
+							chiudiListener="#{cc.attrs.iDatiValList.validaCs(rowComp)}"/>
+						
+						</td>
+						</tr>
+					</table>
+
+
+				</p:tab>
+			</p:accordionPanel>
+
+			<br/><br/>
+
+			
+		</composite:implementation>
+	</h:body>
+		
+</html>

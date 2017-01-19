@@ -1,0 +1,9 @@
+<xs:schema targetNamespace="http://sistematlante.it/AtlanteWebServices.ObjectModel.Messages" xmlns:mstns="http://sistematlante.it/gestioneServizi" xmlns="http://sistematlante.it/AtlanteWebServices.ObjectModel.Messages" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" attributeFormDefault="qualified" elementFormDefault="qualified" xmlns:app1="http://sistematlante.it/AtlanteWebServices.ObjectModel.Messages">
+  <xs:import namespace="http://sistematlante.it/gestioneServizi" />
+  <xs:element name="CodiceFonteEsterna"   msdata:Prefix="atl" type="xs:string" />
+  <xs:element name="Matricola" msdata:Prefix="atl" type="xs:string" />
+  <xs:element name="DaData"  msdata:Prefix="atl" type="xs:string" />
+  <xs:element name="CodiceFiscale"   msdata:Prefix="atl" type="xs:string" />
+  <xs:element name="AData"  msdata:Prefix="atl" type="xs:string" />
+  <xs:element name="Token"   msdata:Prefix="atl" type="xs:string" />
+</xs:schema>

@@ -1,0 +1,96 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+     	xmlns:h="http://java.sun.com/jsf/html"
+		xmlns:f="http://java.sun.com/jsf/core"
+		xmlns:ui="http://java.sun.com/jsf/facelets"
+		xmlns:p="http://primefaces.org/ui"
+	  	xmlns:composite="http://java.sun.com/jsf/composite">
+      
+	<h:head>
+		<title>Componente gestione doppio combo box con modal panel</title>
+	</h:head>
+	<h:body>
+		<composite:interface componentType="pnlDoppioCmbBox">
+			<composite:attribute name="doppioCmbBoxBean" type="it.webred.jsf.interfaces.IDoppioCmbBox"/>
+			<composite:attribute name="disableModifica" default="false"/>
+		</composite:interface>
+		<composite:implementation>
+			<style type="text/css">
+				.gestione_icon {
+				    background-image: url("#{resource['webred/img/gestione.png']}") !important;
+				}
+			</style>
+			
+		<h:panelGroup id="pnlLabelScelta">
+			<h:outputText value="#{cc.attrs.doppioCmbBoxBean.descrSceltaSalvata}"
+				rendered="#{cc.attrs.doppioCmbBoxBean.descrSceltaSalvata != null}"/>
+			<h:outputText value="#{cc.attrs.doppioCmbBoxBean.textIfEmpty}" rendered="#{cc.attrs.doppioCmbBoxBean.descrSceltaSalvata == null}"/>
+		</h:panelGroup>
+				
+		<p:spacer width="10"/>
+				
+		<p:commandButton value="Gestisci" icon="gestione_icon" type="button" disabled="#{cc.attrs.disableModifica}">
+			<p:ajax event="click" oncomplete="PF('#{cc.attrs.doppioCmbBoxBean.widgetVar}').show()"/>
+		</p:commandButton> 
+			
+		<p:dialog  modal="true"
+			widgetVar="#{cc.attrs.doppioCmbBoxBean.widgetVar}"
+			closable="false" draggable="false" 
+			header="#{cc.attrs.doppioCmbBoxBean.dialogHeader}"
+			width="650" height="220">
+		
+			<h:panelGrid columns="1" id="pnlLabelScelta2">
+				<h:outputLabel value="#{cc.attrs.doppioCmbBoxBean.testoIniziale}" rendered="#{cc.attrs.doppioCmbBoxBean.testoIniziale != null}"/>
+				<p:spacer height="10px;" width="100%" rendered="#{cc.attrs.doppioCmbBoxBean.testoIniziale != null}"/>
+				<h:outputLabel value="Selezione attuale: #{cc.attrs.doppioCmbBoxBean.descrSceltaSalvata != null? cc.attrs.doppioCmbBoxBean.descrSceltaSalvata : cc.attrs.doppioCmbBoxBean.textIfEmpty}"/>
+			</h:panelGrid>
+			
+			<p:spacer height="10px;" width="100%" />
+			
+			<h:panelGrid columns="3" id="pnlLabelScelta3">
+				<h:outputLabel value="#{cc.attrs.doppioCmbBoxBean.labelComboBox}" />
+				<p:spacer height="10" width="10"/>
+				<p:selectOneMenu value="#{cc.attrs.doppioCmbBoxBean.codIniziale}">
+           			<f:selectItems value="#{cc.attrs.doppioCmbBoxBean.lstCodIniziali}"/>
+           			
+           			<p:ajax event="change" process="@this" update="cmbCodici" listener="#{cc.attrs.doppioCmbBoxBean.codInizialeValueChangeListener}"/>
+           		</p:selectOneMenu> 
+           		
+           		<p:spacer height="10" width="10"/>
+           		<p:spacer height="10" width="10"/>
+           		<p:outputPanel id="cmbCodici">
+            		<p:selectOneMenu value="#{cc.attrs.doppioCmbBoxBean.idScelta}" 
+            			rendered="#{cc.attrs.doppioCmbBoxBean.codIniziale != null}"
+            			filter="true" filterMatchMode="contains">
+            			<f:selectItems value="#{cc.attrs.doppioCmbBoxBean.lstCodici}"/>
+            			
+            			<p:ajax event="change" process="@this" listener="#{cc.attrs.doppioCmbBoxBean.codiceValueChangeListener}"/>
+            		</p:selectOneMenu> 
+            		<p:spacer height="25" width="10" rendered="#{cc.attrs.doppioCmbBoxBean.codIniziale == null}"/>
+           		</p:outputPanel>
+			</h:panelGrid>
+			
+			<p:spacer height="10px;" width="100%" />
+		
+			<table border="0" width="100%">
+				<tr>
+					<td style="text-align: center;">
+						<p:commandButton value="Salva" process="@this"
+							actionListener="#{cc.attrs.doppioCmbBoxBean.salva}" update="pnlLabelScelta, pnlLabelScelta2, pnlLabelScelta3"
+							oncomplete="PF('#{cc.attrs.doppioCmbBoxBean.widgetVar}').hide();">
+						</p:commandButton>
+						<p:spacer width="15px;" />
+						<p:commandButton value="Esci" process="@this" update="pnlLabelScelta3"
+							actionListener="#{cc.attrs.doppioCmbBoxBean.reset}"
+							oncomplete="PF('#{cc.attrs.doppioCmbBoxBean.widgetVar}').hide();">
+						</p:commandButton>
+					</td>
+				</tr>
+			</table>
+		
+		</p:dialog>
+					
+		</composite:implementation>
+	</h:body>
+		
+</html>

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="d001166a-d35e-4b51-a5dd-cd33e9c819cf">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<field name="tipologiaFamiliare" class="java.lang.String"/>
+	<field name="minoriPresenti" class="java.lang.String"/>
+	<field name="problematica" class="java.lang.String"/>
+	<field name="titoloStudio" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="133" splitType="Immediate">
+			<staticText>
+				<reportElement x="0" y="35" width="120" height="20" uuid="60c1d990-e430-492a-b33a-b9152cf5f324"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Tipologia familiare]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="60" width="120" height="20" uuid="247964ff-c8d2-4668-bf61-e1a378d5fb9d"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Minori presenti nel nucleo]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="150" y="35" width="398" height="20" uuid="383791a2-4f0a-402e-a302-665afe198a2a"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{tipologiaFamiliare}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="150" y="60" width="398" height="20" uuid="61476134-7191-4eb4-8840-4194e14e52ec"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{minoriPresenti}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="150" y="85" width="398" height="20" uuid="9bdc9b72-2c90-47bf-a3db-9a2b8410a2fb"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{problematica}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="85" width="120" height="20" uuid="128cbda0-b9d7-4ab5-be04-d04ba051acdb"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Problematica]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="150" y="110" width="398" height="20" uuid="70bba635-1b24-48ba-bd8e-2959ddf26857"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{titoloStudio}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="110" width="120" height="20" uuid="579c07b6-72f3-45b9-89c1-827d402a58ba"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Titolo di studio]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="0" width="555" height="20" backcolor="#CCCCCC" uuid="90b73843-422f-46cb-a349-b94b9adedd4f"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="html">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Dati sociali]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+</jasperReport>

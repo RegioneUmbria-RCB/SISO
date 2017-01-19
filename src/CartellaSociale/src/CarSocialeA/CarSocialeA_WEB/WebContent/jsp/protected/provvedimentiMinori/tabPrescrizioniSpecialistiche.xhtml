@@ -1,0 +1,57 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:webred="http://java.sun.com/jsf/composite/webred"
+	xmlns:webredcs="http://java.sun.com/jsf/composite/webredcs">
+<ui:fragment>
+	<h:panelGrid id="pnlPrescrizioni" columns="3" width="100%" styleClass="top-aligned-columns">
+		<p:fieldset legend="Valutazione Psicologica">
+			<p:selectManyCheckbox id="valPsc"
+				value="#{provMinoriTabManBean.jsonCurrent.prescrizioniSpecialistiche.selValutazionePsc}"
+				layout="grid" columns="1">
+				<f:selectItems value="#{dataBean.lstvalutazionePsc}" />
+			</p:selectManyCheckbox>
+		</p:fieldset>
+		<p:fieldset legend="Psicoterapia">
+			<p:selectManyCheckbox id="psicoterapia"
+				value="#{provMinoriTabManBean.jsonCurrent.prescrizioniSpecialistiche.selPsicoterapia}"
+				layout="grid" columns="1">
+				<f:selectItems value="#{dataBean.lstPsicoterapia}" />
+			</p:selectManyCheckbox>
+		</p:fieldset>
+		<p:fieldset legend="Valutazione Capacità">
+			<h:panelGrid>
+				<p:selectManyCheckbox id="valCapacita"
+					value="#{provMinoriTabManBean.jsonCurrent.prescrizioniSpecialistiche.selValutazioneCptv}"
+					layout="grid" columns="1">
+					<f:selectItems value="#{dataBean.lstValCapacitiva}" />
+				</p:selectManyCheckbox>
+				<p:spacer height="10px" />
+				<p:selectOneMenu id="cbRelazioni" filter="true" filterMatchMode="contains"
+				                 value="#{provMinoriTabManBean.jsonCurrent.prescrizioniSpecialistiche.selValutazioneRel}">
+					<f:selectItem noSelectionOption="true" itemLabel="- seleziona -"/>
+					<f:selectItems value="#{dataBean.lstRelazioni}" />
+				</p:selectOneMenu>
+			</h:panelGrid>
+		</p:fieldset>
+	</h:panelGrid>
+	<p:separator />
+	<p:outputPanel id="pnlUpload" >
+	<f:facet name="header">Upload documento</f:facet>
+	<p:outputPanel rendered="#{!dataBean.uploadDisabled}">
+		<webredcs:pnlUploadFile iUploadFile="#{dataBean.diarioDocsMan.uFileMan}" fileLimit="1" />
+	</p:outputPanel>
+	<p:outputPanel rendered="#{dataBean.uploadDisabled}"  >
+		<h:outputLabel value="Documento Caricato:" style="font-weight:bold;"/><p:spacer width="10px;"/>
+		<webredcs:pnlDownloadFile csLoadDocumento="#{dataBean.csLoadDocumento}"
+	                              iDownloadFile="#{dataBean.diarioDocsMan.dFileMan}" />
+	    <p:spacer width="30px"/>
+	    <p:commandButton icon="ui-icon-trash" title="Rimuovi" action="#{dataBean.eliminaDocumento}" update=":#{p:component('pnlUpload')}"/>
+
+	</p:outputPanel>
+	</p:outputPanel>		
+</ui:fragment>
+</html>

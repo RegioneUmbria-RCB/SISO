@@ -1,0 +1,79 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+     	xmlns:h="http://java.sun.com/jsf/html"
+		xmlns:f="http://java.sun.com/jsf/core"
+		xmlns:ui="http://java.sun.com/jsf/facelets"
+		xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+		xmlns:p="http://primefaces.org/ui"
+	  	xmlns:composite="http://java.sun.com/jsf/composite"
+	  	xmlns:webredcs="http://java.sun.com/jsf/composite/webredcs"
+	  	xmlns:webred="http://java.sun.com/jsf/composite/webred">
+      
+	<h:head>
+		<title>Upload File</title>
+	</h:head>
+	<h:body> 
+		<composite:interface componentType="pnlUploadFile">
+			<composite:attribute name="iUploadFile" type="it.webred.cs.jsf.interfaces.IUploadFile"/>
+			<composite:attribute name="allowTypes" default="/(\.|\/)(doc|pdf|jpg|png|zip|docx|xls|xlsx)$/"/>
+			<composite:attribute name="allowTypesMessage" default="Formati ammessi: doc pdf jpg png zip docx xls xlsx"/>
+			<composite:attribute name="sizeLimit"/>
+			<composite:attribute name="fileLimit" default="100"/>
+			<composite:attribute name="multiple" default="true"/>
+			<composite:attribute name="pnlToUpdate"/>
+		</composite:interface>
+		<composite:implementation>			
+			
+		<style type="text/css">
+			.datalist-noborder .ui-widget-content {
+				border: none !important;
+				background: none !important;
+			}
+		</style>
+			
+		<p:outputPanel rendered="#{cc.attrs.iUploadFile.externalSave}">
+			<h:panelGrid columns="1" rendered="#{not empty cc.attrs.iUploadFile.documentiUploaded}">
+	    		<p:spacer height="10"/>
+				<h:outputText value="Documenti caricati" style="font-weight: bold;"/>	
+			
+				<p:dataList value="#{cc.attrs.iUploadFile.documentiUploaded}" 
+					rowIndexVar="rowIndex" var="doc" type="definition" styleClass="datalist-noborder">
+						<p:commandButton icon="ui-icon ui-icon-close" action="#{cc.attrs.iUploadFile.elimina}" 
+							update="@parent:@parent:@parent" process="@this" title="Elimina">
+							<f:setPropertyActionListener value="#{rowIndex}" target="#{cc.attrs.iUploadFile.selId}"/>
+						</p:commandButton>
+						<p:spacer width="10"/>
+						<h:outputText value="#{doc.nome}"/>
+			    </p:dataList>
+		    </h:panelGrid>
+			
+			<p:fileUpload multiple="#{cc.attrs.multiple}"
+			   fileLimit="#{cc.attrs.fileLimit}" 
+			   label="Seleziona file"
+			   cancelLabel="Cancella"
+			   uploadLabel="Salva" 
+			   invalidFileMessage="Formato non valido. #{cc.attrs.allowTypesMessage}"
+			   auto="true"
+			   fileUploadListener="#{cc.attrs.iUploadFile.gestisciFileUpload}" mode="advanced" dragDropSupport="false"
+	           sizeLimit="#{cc.attrs.sizeLimit}" allowTypes="#{cc.attrs.allowTypes}" 
+	           update="@parent"
+	           rendered="#{cc.attrs.fileLimit > fn:length(cc.attrs.iUploadFile.documentiUploaded)}">
+	    	</p:fileUpload>
+	     </p:outputPanel>
+		
+		 <p:fileUpload multiple="#{cc.attrs.multiple}"
+		   fileLimit="#{cc.attrs.fileLimit}"  
+		   label="Seleziona file"
+		   cancelLabel="Cancella"
+		   uploadLabel="Salva" 
+		   invalidFileMessage="Formato non valido. #{cc.attrs.allowTypesMessage}"
+		   fileUploadListener="#{cc.attrs.iUploadFile.gestisciFileUpload}" mode="advanced" dragDropSupport="false"
+           sizeLimit="#{cc.attrs.sizeLimit}" allowTypes="#{cc.attrs.allowTypes}" 
+           update="#{cc.attrs.pnlToUpdate}"
+           rendered="#{!cc.attrs.iUploadFile.externalSave}">
+    	 </p:fileUpload>
+
+		</composite:implementation>
+	</h:body>
+	
+</html>
