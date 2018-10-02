@@ -29,8 +29,10 @@ Folder   |  Descrizione
 + Jboss 7 AS
 
 ## Licenza ##
-In questa sezione va inserita la parte relativa alla licenza con cui si intende distribuire il codice.
-Nel caso in cui si preferisca utilizzare una file apposito (LICENCE.md) allora è necessario inserire il link a tale file.
+Il software è rilasciato secondo la licenza EUPL 1.2. Per maggiori informazioni fare riferimento al [testo della licenza](https://joinup.ec.europa.eu/sites/default/files/custom-page/attachment/eupl_v1.2_it.pdf)
+
+## Librerie utilizzate ##
+Il file denominato ["Componenti e librerie"](./Componenti-e-librerie.xlsx) contiene la lista delle librerie utilizzate nell'applicativo e le relative licenze d'utilizzo.
 
 ## Riferimenti ##
 In questa sezione vanno inseriti i riferimenti alla persona/persone ovvero alla struttura che ha in carico la gestione del prodotto e può fornire informazioni utili. 
