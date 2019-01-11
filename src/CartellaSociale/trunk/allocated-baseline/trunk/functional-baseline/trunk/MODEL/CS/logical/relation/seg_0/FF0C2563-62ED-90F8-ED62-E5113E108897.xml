@@ -1,0 +1,21 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Relation class="oracle.dbtools.crest.model.design.logical.Relation" name="FK_INDIR_SOGGV1" directorySegmentName="seg_0" id="FF0C2563-62ED-90F8-ED62-E5113E108897">
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:18 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>D1843142-08BD-918E-5FA3-7E042A505D4C</importedID>
+<engineerTo>
+<item key="2B43EB65-62DA-EC53-86CF-E94D657D3AAF" value="true"/>
+<item key="36B1C6E8-6FD2-1EF6-8F4A-4E5B3D846A78" value="true"/>
+</engineerTo>
+<sourcePk>F27319AC-A3DF-7ED0-EAB2-882CFA87DD22</sourcePk>
+<identifying>false</identifying>
+<optionalSource>true</optionalSource>
+<optionalTarget>false</optionalTarget>
+<sourceCardinality>1</sourceCardinality>
+<sourceEntity>5223C53A-07C8-F754-CFE3-A5571AED6E58</sourceEntity>
+<targetCardinalityString>*</targetCardinalityString>
+<targetEntity>285320FA-F81C-06A6-BD65-6C10D9B77E2E</targetEntity>
+<transferable>true</transferable>
+<deleteRule>NO ACTION</deleteRule>
+</Relation>

@@ -1,0 +1,18 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<FKIndexAssociation class="oracle.dbtools.crest.model.design.relational.FKIndexAssociation" directorySegmentName="seg_1" id="2E9B2DBB-F763-929E-E26A-70B5641A8E96" containerWithKeyObject="07BFAFCE-4B8B-342C-CE2C-1792595D6483" localFKIndex="65CB6B46-3327-1480-9756-9DC76B5B8559" name="CS_REL_SET_CSOC_1">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>CS_SISO</sourceObjSchema>
+<sourceObjName>CS_REL_SET_CSOC_1</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:19 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>F7583B30-FC8A-279B-FD54-FC6EA9C5204F</importedID>
+<deleteRule>NO ACTION</deleteRule>
+<referredTableID>C22DED0F-D392-FEB8-4B15-8D2E7516C55E</referredTableID>
+<keyObject>67600A9E-C89F-955F-36D0-3D4F97CCDFBA</keyObject>
+<referredKeyID>67600A9E-C89F-955F-36D0-3D4F97CCDFBA</referredKeyID>
+<mandatory>true</mandatory>
+<transferable>true</transferable>
+<rely>false</rely>
+<columnDependencyConstraintGenerateInDDL>false</columnDependencyConstraintGenerateInDDL>
+</FKIndexAssociation>

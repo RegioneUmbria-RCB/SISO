@@ -1,0 +1,138 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:webred="http://java.sun.com/jsf/composite/webred"
+	xmlns:webredcs="http://java.sun.com/jsf/composite/webredcs">
+
+   <p:outputPanel styleClass="#{'utenteAccompagnatoOk utentePresenteInformatoChanged updateUtenteAccompagnatoChanged'}" >
+	<p:panel id="pnlNoDati" header=" " rendered="#{!nuovaSchedaWizard.pnlSegnalanteRendered}" 
+			 toggleable="true" toggleSpeed="500" >
+			<p:outputLabel value="L'interlocutore è l'utente stesso" />
+	</p:panel>
+
+	<p:panel id="pnlSegnalante" header="Dati dell'interlocutore" 
+	        toggleable="true" toggleSpeed="500" widgetVar="widgetPnlSegnalante" 
+			rendered="#{nuovaSchedaWizard.pnlSegnalanteRendered}" >
+
+		<p:outputPanel id="pnlSearch" >
+			<h:outputText value="Ricerca interlocutore in anagrafe popolazione" style="font-weight:bold;"/>	
+		    <p:spacer width="20px"/>
+			<webredcs:pnlUserSearch id="wbrdUserSearch" styleClass="myAutoComplete" userManBean="#{nuovaSchedaWizard.userSearchBean}" 
+					componentsToUpdate="@widgetVar(widgetPnlSegnalante)"/>
+		</p:outputPanel>
+		<p:spacer height="20"/> 
+		<h:panelGrid columns="4" columnClasses="label, value" styleClass="grid" >
+			<h:outputText value="Cognome " for="cognome_segnalante" />
+			<p:inputText label="Cognome" id="cognome_segnalante"   value="#{nuovaSchedaWizard.segnalante.cognome}" />
+
+			<h:outputText value="Nome " for="nome_segnalante" />
+			<p:inputText label="Nome" id="nome_segnalante"  value="#{nuovaSchedaWizard.segnalante.nome}" />
+			
+			<h:outputText value="Ente/Servizio di appartenenza " for="ente_segnalante" />
+			<!-- SISO-346 mantengo il capo di testo (disabilitato) per le vecchie schede, le nuove viene usato il selectOneMenu -->
+			<p:inputText label="Ente/Servizio di appartenenza" id="ente_segnalante" 
+						 value="#{nuovaSchedaWizard.segnalante.ente}" 
+						 rendered="#{nuovaSchedaWizard.enteCampoAperto}"
+						 disabled="true" /> 
+			<p:selectOneMenu  id="somSettore" value="#{nuovaSchedaWizard.segnalante.settoreId}" 
+							  effect="fold" editable="false" filter="true" filterMatchMode="contains"
+			                 panelStyleClass="selectOneMenuGrouped" 
+							  rendered="#{!nuovaSchedaWizard.enteCampoAperto}" >
+				<f:selectItem itemLabel="- seleziona -" noSelectionOption="true" />
+				<f:selectItems value="#{nuovaSchedaWizard.settori}" /> 
+			</p:selectOneMenu>  
+		
+		
+			<h:outputText value="Ruolo " for="ruolo_segnalante" />
+			<p:inputText label="Ruolo" id="ruolo_segnalante" value="#{nuovaSchedaWizard.segnalante.ruolo}" />
+			
+			<h:outputText value="Data di nascita " for="data_nascita_segnalante" />
+			<webred:pnlData id="data_nascita_segnalante" dataValue="#{nuovaSchedaWizard.segnalante.dataNascita}" dataPattern="dd/MM/yyyy" dataPatternLabel="gg/mm/aaaa" yearRange="c-100:c+0" />
+						    
+			<h:outputText value="Luogo di nascita " for="citta_nascita_segnalante" />
+			<h:panelGrid colums="1">
+				<webred:pnlComuneNazione comuneNazioneManBean="#{nuovaSchedaWizard.segnalante.comuneNazioneNascitaMan}" extraLabelRequired="false" />
+			</h:panelGrid>
+			
+			<h:outputText value="Sesso " for="sesso_segnalato" />
+			<webred:pnlSesso value="#{nuovaSchedaWizard.segnalante.datiSesso}" />
+			
+			<h:outputText value="Codice fiscale"  />
+			<h:panelGroup>
+				<webredcs:pnlCodFisc codFiscValue="#{nuovaSchedaWizard.segnalante.cf}" 
+								   codFiscValMes="Codice Fiscale interlocutore non corretto" 
+								   codFiscReq="#{nuovaSchedaWizard.segnalante.reqCf}" />
+				<p:commandButton value="Genera CF temporaneo" icon="ui-icon-gear" title="Generazione di un nuovo codice fiscale temporaneo, a partire dai dati anagrafici immessi nel form" 
+		       			action="#{tempCodFiscManager.openDlgGenerateCfAction}" 			       			
+		       			rendered="#{empty nuovaSchedaWizard.segnalante.cf}"
+		       			update="pnlSegnalante" process="pnlSegnalante">
+		      			<f:setPropertyActionListener target="#{tempCodFiscManager.datiAnagrafici}" value="#{nuovaSchedaWizard.segnalante}"/>
+		      			<f:setPropertyActionListener target="#{tempCodFiscManager.comuneNascita}" value="#{nuovaSchedaWizard.segnalante.comuneNazioneNascitaMan.comuneMan.comune}"/>
+		      			<p:ajax event="dialogReturn" listener="#{tempCodFiscManager.onCfGenerated}" update="pnlSegnalante"  />
+	   			</p:commandButton>   	
+		   		<p:commandButton value="Sostituisci CF" icon="ui-icon-shuffle" title="Applica il codice fiscale definitivo" 
+		       			action="#{tempCodFiscManager.openDlgReplaceCfAction}"						
+		       			rendered="#{tempCodFiscManager.isTemporaneo(nuovaSchedaWizard.segnalante.cf)}"
+		       			update="pnlSegnalante" process="pnlSegnalante">
+		       			<f:attribute name="saveObject" value="#{nuovaSchedaWizard}"/>				
+		       			<f:attribute name="saveMethodName" value="salvaTabSegnalante"/>
+		      			<f:setPropertyActionListener target="#{tempCodFiscManager.datiAnagrafici}" value="#{nuovaSchedaWizard.segnalante}"/>	      			
+		      			<f:setPropertyActionListener target="#{tempCodFiscManager.comuneNascita}" value="#{nuovaSchedaWizard.segnalante.comune}"/>
+		      			<p:ajax event="dialogReturn" listener="#{tempCodFiscManager.onCfReplaced}" update="pnlSegnalante"/>      			
+	   			</p:commandButton>	
+			</h:panelGroup>
+			
+
+			<h:outputText value="Stato civile " for="stato_civile_segnalante" />
+			<p:selectOneMenu label="Stato civile" id="stato_civile_segnalante" value="#{nuovaSchedaWizard.segnalante.codStatoCivile}" effect="fold" editable="false">
+				<f:selectItem itemLabel="- seleziona -"  noSelectionOption="true" />
+				<f:selectItems value="#{nuovaSchedaWizard.statiCiviliSelectItem}" />
+			</p:selectOneMenu>
+			<p:outputLabel value=" "/>
+			<p:outputLabel value=" "/>
+			
+			<h:outputText value="Tipo Interlocutore " for="relazione_segnalante" />
+			<p:selectOneMenu label="Relazione" id="relazione_segnalante" filter="true" filterMatchMode="contains"
+			                 panelStyleClass="selectOneMenuGrouped" value="#{nuovaSchedaWizard.segnalante.codRelazione}" >
+				<f:selectItem itemLabel="- seleziona -" noSelectionOption="true" />
+				<f:selectItems value="#{nuovaSchedaWizard.relazioni}" />
+			</p:selectOneMenu>
+			
+		</h:panelGrid>
+			
+		<p:spacer height="20px" />
+		
+		<p:separator />
+		
+		<p:spacer height="10px" />
+
+		<h:panelGrid columns="4" columnClasses="label, value" styleClass="grid">
+			<h:outputText value="Indirizzo " for="indirizzo_segnalante" />
+			<p:inputText label="Indirizzo"  id="indirizzo_segnalante" value="#{nuovaSchedaWizard.segnalante.indirizzo}" />
+
+			<h:outputText value="Comune " for="comune_segnalante" />
+			<webred:pnlComune id="comune_segnalante" comuneManBean="#{nuovaSchedaWizard.segnalante}" value="#{nuovaSchedaWizard.segnalante.comune}" />
+			
+			<h:outputText value="Telefono " for="tel_segnalante" />
+			<p:inputText label="Telefono" id="tel_segnalante" value="#{nuovaSchedaWizard.segnalante.telefono}"/>
+
+			<h:outputText value="Cellulare " for="cel_segnalante" />
+			<p:inputText label="Cellulare" id="cel_segnalante" value="#{nuovaSchedaWizard.segnalante.cellulare}"/>
+
+			<h:outputText value="Email " for="email_segnalante" />
+			<p:inputText label="Email" id="email_segnalante" value="#{nuovaSchedaWizard.segnalante.email}" />
+		</h:panelGrid>
+
+		<p:spacer height="10px" />
+		<p:separator />
+		<webred:pnlRequiredSalva salvaAction="#{nuovaSchedaWizard.salvaTabSegnalante()}"  
+		 						 renderRecupero="#{nuovaSchedaWizard.abilitaLoadPrecedente}"
+		                         recuperoLastAction="#{nuovaSchedaWizard.valorizzaSegnalanteDaUltima()}" 
+		                         panelToUpdate="pnlSegnalante"/>
+	</p:panel>
+</p:outputPanel>
+</ui:composition>

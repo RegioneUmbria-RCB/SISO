@@ -1,0 +1,93 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Entity class="oracle.dbtools.crest.model.design.logical.Entity" directorySegmentName="seg_0" id="0C27DF02-D00C-247F-5353-DE3779919AA4" name="CS_TB_STATO_CIVILE">
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:18 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>DC888140-148D-D1B4-216A-52886CF1920E</importedID>
+<engineerTo>
+<item key="2B43EB65-62DA-EC53-86CF-E94D657D3AAF" value="true"/>
+<item key="36B1C6E8-6FD2-1EF6-8F4A-4E5B3D846A78" value="true"/>
+</engineerTo>
+<adequatelyNormalized>NO</adequatelyNormalized>
+<expectedVolumes>0</expectedVolumes>
+<fwdEngineeringStrategyName>Single Table</fwdEngineeringStrategyName>
+<growthPercent>0</growthPercent>
+<growthType>Year</growthType>
+<maxVolumes>9999999</maxVolumes>
+<minVolumes>0</minVolumes>
+<normalForm>Third</normalForm>
+<attributes itemClass="oracle.dbtools.crest.model.design.logical.Attribute">
+<Attribute name="COD" id="CAC6F73F-D411-0EA2-8526-41781B2E2B63">
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:18 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>F49F9EF6-8F2B-563F-1C97-CB0C52889E84</importedID>
+<engineerTo>
+<item key="2B43EB65-62DA-EC53-86CF-E94D657D3AAF" value="true"/>
+<item key="36B1C6E8-6FD2-1EF6-8F4A-4E5B3D846A78" value="true"/>
+</engineerTo>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="DESCRIZIONE" id="37FDF382-1F95-7C12-75ED-DE2C5C9EACE3">
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:18 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>210465A2-D61E-5DA6-5B89-7BE29BFE4768</importedID>
+<engineerTo>
+<item key="2B43EB65-62DA-EC53-86CF-E94D657D3AAF" value="true"/>
+<item key="36B1C6E8-6FD2-1EF6-8F4A-4E5B3D846A78" value="true"/>
+</engineerTo>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="TOOLTIP" id="80AD7B34-92BA-D29C-1950-AB026B029D50">
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:18 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>B30804B4-D2FC-462C-5C00-8DA05C03BED2</importedID>
+<engineerTo>
+<item key="2B43EB65-62DA-EC53-86CF-E94D657D3AAF" value="true"/>
+<item key="36B1C6E8-6FD2-1EF6-8F4A-4E5B3D846A78" value="true"/>
+</engineerTo>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="ABILITATO" id="588CAB23-D591-F289-96B5-BF98DAE5A73C">
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:18 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>790392E3-3090-7C80-CEEC-40D29384244E</importedID>
+<engineerTo>
+<item key="2B43EB65-62DA-EC53-86CF-E94D657D3AAF" value="true"/>
+<item key="36B1C6E8-6FD2-1EF6-8F4A-4E5B3D846A78" value="true"/>
+</engineerTo>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<dataTypeSize>1</dataTypeSize>
+<ownDataTypeParameters>1,,</ownDataTypeParameters>
+</Attribute>
+</attributes>
+<identifiers itemClass="oracle.dbtools.crest.model.design.logical.CandidateKey">
+<identifier id="CA93E92E-478C-D2C3-8C66-787FB38F413E" name="STATO_CIVILE_PK">
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:18 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>341CE3B4-7767-5473-DB31-BF895A4069EF</importedID>
+<engineerTo>
+<item key="2B43EB65-62DA-EC53-86CF-E94D657D3AAF" value="true"/>
+<item key="36B1C6E8-6FD2-1EF6-8F4A-4E5B3D846A78" value="true"/>
+</engineerTo>
+<pk>true</pk>
+<usedAttributes>
+<attributeRef>CAC6F73F-D411-0EA2-8526-41781B2E2B63</attributeRef>
+</usedAttributes>
+</identifier>
+</identifiers>
+</Entity>

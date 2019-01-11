@@ -1,0 +1,18 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<FKIndexAssociation class="oracle.dbtools.crest.model.design.relational.FKIndexAssociation" directorySegmentName="seg_1" id="1E45013F-8C1B-C5BA-DF92-FC11387387FE" containerWithKeyObject="733D3FDC-D41B-E1DF-7429-267E5C4F482B" localFKIndex="9C6DF878-23B7-AA4D-064A-FCDC1203419D" name="FK_GR_VULNERABILE_ID">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>CS_SISO</sourceObjSchema>
+<sourceObjName>FK_GR_VULNERABILE_ID</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:19 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>61E7D1DD-349C-3311-21C7-64D2682A7043</importedID>
+<deleteRule>NO ACTION</deleteRule>
+<referredTableID>1648E1F2-FA3A-3F8B-9B32-059C1452319A</referredTableID>
+<keyObject>948323A1-D9DD-9B0A-6159-A4D473691722</keyObject>
+<referredKeyID>948323A1-D9DD-9B0A-6159-A4D473691722</referredKeyID>
+<mandatory>false</mandatory>
+<transferable>true</transferable>
+<rely>false</rely>
+<columnDependencyConstraintGenerateInDDL>false</columnDependencyConstraintGenerateInDDL>
+</FKIndexAssociation>

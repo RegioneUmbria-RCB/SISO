@@ -1,0 +1,545 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+     	xmlns:h="http://java.sun.com/jsf/html"
+		xmlns:f="http://java.sun.com/jsf/core"
+		xmlns:ui="http://java.sun.com/jsf/facelets"
+		xmlns:p="http://primefaces.org/ui"
+	  	xmlns:composite="http://java.sun.com/jsf/composite"
+	  	xmlns:webred="http://java.sun.com/jsf/composite/webred" 	
+	  	xmlns:webredcs="http://java.sun.com/jsf/composite/webredcs">
+      
+
+      
+	<h:head>
+		<title>Parenti</title>
+		
+	</h:head>
+	<h:body>
+	      
+    <ui:define name="head">
+        
+ 
+    </ui:define>
+    
+		<composite:interface componentType="pnlParenti">
+			<composite:attribute name="iParenti" type="it.webred.cs.jsf.interfaces.IParenti"/>
+			<composite:attribute name="iNuovoConoscente" type="it.webred.cs.jsf.interfaces.INuovoConoscente"/>
+			<composite:attribute name="iNuovoParente" type="it.webred.cs.jsf.interfaces.INuovoParente"/>
+			<composite:attribute name="disabled" default="false"/>
+		</composite:interface>
+		
+		
+		<composite:implementation>			
+			
+			<h:panelGrid columns="8"  >
+				<h:outputText value="Vive Solo" style="font-weight: bold;" />
+				<p:selectOneRadio value="#{cc.attrs.iParenti.viveSolo}"  disabled="#{cc.attrs.disabled}">
+					<f:selectItem itemLabel="Si" itemValue="#{true}"/>
+					<f:selectItem itemLabel="No" itemValue="#{false}"/>
+				</p:selectOneRadio>
+				<p:spacer width="100px"/>
+				<h:outputText value="Ha parenti" style="font-weight: bold;" />
+				<p:selectOneRadio value="#{cc.attrs.iParenti.haParenti}"  disabled="#{cc.attrs.disabled}">
+					<f:selectItem itemLabel="Si" itemValue="#{true}"/>
+					<f:selectItem itemLabel="No" itemValue="#{false}"/>
+				</p:selectOneRadio>
+				<p:spacer width="100px"/>
+				<h:outputText value="Parenti Sconosciuti" style="font-weight: bold;"/>
+				<p:selectOneRadio value="#{cc.attrs.iParenti.parentiSconosciuti}"  disabled="#{cc.attrs.disabled}" >
+					<f:selectItem itemLabel="Si" itemValue="#{true}"/>
+					<f:selectItem itemLabel="No" itemValue="#{false}"/>
+				</p:selectOneRadio>
+			</h:panelGrid>
+  			
+			<p:outputPanel>
+				<h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="5">
+					<p:outputLabel for="info-disp" value="DATI ANAGRAFICI DELLE RISORSE:" style="font-weight: bold;"/>
+					<p:selectOneRadio id="info-disp"  value="#{cc.attrs.iParenti.disponibilitaDatiAnagraficiRisorse}" disabled="#{cc.attrs.disabled}">
+					    <f:selectItem itemLabel="NON DISPONIBILI" itemValue="1" />
+					    <f:selectItem itemLabel="DISPONIBILI" itemValue="0" />
+					    <f:selectItem itemLabel="DISPONIBILI MA INCOMPLETI" itemValue="2" />
+					</p:selectOneRadio>
+				</h:panelGrid>
+				
+				<p:spacer height="10px" />
+				
+				<p:dataTable id="tblComponenti" 
+					var="comp" value="#{cc.attrs.iParenti.lstParenti}" rowStyleClass="#{comp.csTbDisponibilita.colori}"  
+					style="text-align:center;"   emptyMessage="Nessun elemento trovato" rowIndexVar="rowIndex" >
+					<f:facet name="header">Parenti</f:facet>
+					<p:column width="20">
+						<webredcs:tooltipInfo stringDescr="#{cc.attrs.iParenti.loadStatoCartella(comp.csAAnagrafica.cf)}" 
+						                      icona="#{resource['webredcs/img/folder.png']}" rendered="#{cc.attrs.iParenti.loadStatoCartella(comp.csAAnagrafica.cf) != NULL}"/>
+					</p:column>
+					<p:column headerText="Cognome">
+						<h:outputText value="#{comp.csAAnagrafica.cognome}" />
+					</p:column>
+					
+					<p:column headerText="Nome">
+						<h:outputText value="#{comp.csAAnagrafica.nome}" />
+					</p:column>
+					
+					<p:column headerText="Cod.fiscale">
+						<h:outputText value="#{comp.csAAnagrafica.cf}" />
+					</p:column>
+		
+					<p:column headerText="Età" width="20">
+						<h:outputText value="#{cc.attrs.iParenti.calcoloEta(comp.csAAnagrafica.dataNascita, comp.csAAnagrafica.dataDecesso)}"/>
+					</p:column>
+					
+					<p:column headerText="Sesso" width="20" style="text-align:center;">
+						<h:outputText   rendered="#{comp.csAAnagrafica.sesso ne 'F' and comp.csAAnagrafica.sesso ne 'M'}" value="#{comp.csAAnagrafica.sesso}" />
+						<p:graphicImage rendered="#{comp.csAAnagrafica.sesso eq 'F'}" title="Donna" value="/images/female.png" height="20"/>
+		            	<p:graphicImage rendered="#{comp.csAAnagrafica.sesso eq 'M'}" title="Uomo" value="/images/male.png" height="20"/>
+					</p:column>
+					
+					<p:column headerText="Parentela">
+						<h:outputText value="#{comp.csTbTipoRapportoCon.descrizione}" />
+					</p:column>
+					
+					<p:column headerText="Telefono">
+						<h:outputText value="#{comp.csAAnagrafica.tel}" />
+					</p:column>
+					
+					<p:column headerText="Cellulare">
+						<h:outputText value="#{comp.csAAnagrafica.cell}" />
+					</p:column>
+					
+					<p:column headerText="Convivente" style="text-align:center;">
+						<p:graphicImage rendered="#{comp.convivente}" value="/images/check.png"/>
+					</p:column>
+					
+					<!--  <p:column headerText="" style="text-align:center;">
+						<p:graphicImage value="/webredcs/img/home.png" height="20px" title="Convivente"
+							rendered="#{comp.convivente}"/>
+					</p:column>  -->
+					
+					<p:column headerText="" style="text-align:center;" width="200">
+						<p:commandButton value="Modifica" process="@this" disabled="#{cc.attrs.disabled}"
+							action="#{cc.attrs.iParenti.loadModificaParente}" update="@(.updateParentiDialog)"
+							oncomplete="wdgNewParente#{cc.attrs.iParenti.id}.show()">
+							<f:setPropertyActionListener value="#{rowIndex}" target="#{cc.attrs.iParenti.idxSelected}" />
+							<f:setPropertyActionListener value="false" target="#{cc.attrs.iParenti.nuovo}" />
+							<f:setPropertyActionListener value="true" target="#{cc.attrs.iParenti.showNewParente}" />
+						</p:commandButton>
+						<p:commandButton value="Elimina" process="@this" 
+							disabled="#{cc.attrs.disabled}" oncomplete="diaEliminaParente#{cc.attrs.iParenti.id}.show()">
+							<f:setPropertyActionListener value="#{rowIndex}" target="#{cc.attrs.iParenti.idxSelected}" />
+						</p:commandButton>
+					</p:column>
+					
+				</p:dataTable>
+				
+				<h:panelGrid columns="2">
+					<p:commandButton value="Inserisci nuovo parente" process="@this" disabled="#{cc.attrs.disabled}"
+							action="#{cc.attrs.iNuovoParente.reset}" update="@(.updateParentiDialog)"
+							oncomplete="wdgNewParente#{cc.attrs.iParenti.id}.show()">
+						<f:setPropertyActionListener value="true" target="#{cc.attrs.iParenti.nuovo}" />
+						<f:setPropertyActionListener value="true" target="#{cc.attrs.iParenti.showNewParente}" />
+					</p:commandButton> 
+					<p:selectOneMenu id="lstParCalc" label=""  value="#{cc.attrs.iParenti.anagraficaCompDaAltraScheda_id}" process="@this" disabled="#{cc.attrs.disabled}"	>
+			                    <f:selectItem noSelectionOption="true" itemLabel="- Importa Parente da altre schede  -" itemValue=""  />
+			                    <f:selectItems value="#{cc.attrs.iParenti.lstComponentiCalc}"/>
+			                    <p:ajax event="change" update="@(.updateParentiDialog)" oncomplete="wdgNewParente#{cc.attrs.iParenti.id}.show()"/>
+				    </p:selectOneMenu>
+				</h:panelGrid>
+				
+				<p:dialog resizable="true" styleClass="#{'updateParentiDialog'}"
+					widgetVar="wdgNewParente#{cc.attrs.iParenti.id}" modal="true"
+					closable="false" header="#{cc.attrs.iNuovoParente.dialogHeader}"
+					width="50%" height="400" >
+					
+					<p:outputPanel id="pnlNewParente" rendered="#{cc.attrs.iParenti.showNewParente}" >
+					    <p:outputLabel value="#{cc.attrs.iNuovoParente.msgInfoRecapiti}" escape="false" style="color:#1c94c4; font-weight:bold;"/>
+					    <p:messages id="msgParente" showDetail="true" autoUpdate="true" closable="true" />
+						<table style="width:100%;">
+							<tr>
+							   <td><h:outputLabel value="Cognome *"/></td>
+							   <td>
+								<p:inputText value="#{cc.attrs.iNuovoParente.cognome}" onblur="value=value.toUpperCase()" 
+								             required="true" requiredMessage="Cognome è un campo obbligatorio"/>
+							    </td>	
+								
+								<td><h:outputLabel value="Nome *" /></td>
+								<td>
+									<p:inputText value="#{cc.attrs.iNuovoParente.nome}" onblur="value=value.toUpperCase()"  
+									             required="true" requiredMessage="Nome è un campo obbligatorio"/>
+								</td>
+							</tr>
+							<tr>
+								<td><h:outputLabel value="Cod. fiscale" /></td>
+								<td><p:inputText value="#{cc.attrs.iNuovoParente.codFiscale}" onblur="value=value.toUpperCase()" /></td>				
+								
+								<td><h:outputLabel value="Sesso *" /></td>
+								<td>
+									<webred:pnlSesso value="#{cc.attrs.iNuovoParente.datiSesso}" required="true" />
+	            				</td>
+							</tr>
+							<tr>
+							<td><h:outputLabel value="Data di nascita" /></td>
+							<td><webred:pnlData dataValue="#{cc.attrs.iNuovoParente.dataNascita}" dataPattern="dd/MM/yyyy" dataReq="false" 
+	            					dataValMes="Data di nascita non valida" dataConMes="Data di nascita non valida"
+	            					dataPatternLabel="gg/mm/aaaa" maxDate="#{commonSessionMan.currentDate}" yearRange="c-100:c+0"/>
+	            			</td>
+							
+							<td colspan="2">	
+								<webred:pnlComuneNazione comuneNazioneManBean="#{cc.attrs.iNuovoParente.comuneNazioneNascitaBean}" />
+							</td>
+							</tr>		
+						
+							<tr>
+							<td><h:outputLabel value="Indirizzo residenza" /></td>
+							<td>
+								<h:panelGrid columns="3" style="padding:0px;">
+									<p:inputText value="#{cc.attrs.iNuovoParente.indirizzo}" onblur="value=value.toUpperCase()"  />
+									<h:outputText value="n°" />
+									<p:inputText value="#{cc.attrs.iNuovoParente.civico}" style="width:25px;"/>
+								</h:panelGrid>
+							</td>	
+							<td colspan="2">	
+								<webred:pnlComuneNazione comuneNazioneManBean="#{cc.attrs.iNuovoParente.comuneNazioneResidenzaBean}" />
+							</td>
+							</tr>
+							<tr>
+								<td><h:outputLabel value="Cittadinanza" /></td>
+								<td>
+								<p:selectOneMenu value="#{cc.attrs.iNuovoParente.cittadinanza}" 
+									filter="true" filterMatchMode="startsWith">
+		            				<f:selectItems value="#{cc.attrs.iNuovoParente.lstCittadinanze}"/>
+		            			</p:selectOneMenu>
+		            			</td>
+		            			
+		            			<td><h:outputLabel value="Parentela con l'utente *" style="display: block; width: 100px;"/></td>
+								<td>
+								<p:selectOneMenu value="#{cc.attrs.iNuovoParente.idParentela}" filter="true" filterMatchMode="contains"
+								                 required="true" requiredMessage="Parentela è un campo obbligatorio">
+	            					<f:selectItem noSelectionOption="true" itemLabel=" - seleziona - "/>
+	            					<f:selectItems value="#{cc.attrs.iNuovoParente.lstParentela}"/>
+	            				</p:selectOneMenu>
+	            				<p:spacer width="10px"/>
+	            				<p:selectBooleanCheckbox value="#{cc.attrs.iNuovoParente.convivente}" itemLabel="convivente"/>
+	            				</td>
+							</tr>
+							<tr>									
+								
+								<td><h:outputLabel value="E-mail" /></td>
+								<td><p:inputText value="#{cc.attrs.iNuovoParente.email}"/></td>
+								
+								
+								<td><h:outputText value="Telefono" /></td>
+								<td><h:panelGrid columns="4">
+									<h:outputText value="fisso" />
+									<p:inputText style="width: 100px;" value="#{cc.attrs.iNuovoParente.telefono}" maxlength="50"  />
+								
+									<h:outputText value="cellulare" />
+									<p:inputText style="width: 100px;" value="#{cc.attrs.iNuovoParente.cellulare}" maxlength="50" />
+								</h:panelGrid></td>
+								
+							</tr>
+							
+							<tr>												
+								<td><h:outputLabel value="Contatto *" /></td>
+								<td>
+								<p:selectOneMenu value="#{cc.attrs.iNuovoParente.idContatto}" required="true" requiredMessage="Contatto è un campo obbligatorio">  
+						            <f:selectItems value="#{cc.attrs.iNuovoParente.lstContatto}"/>
+					        	</p:selectOneMenu>
+					        	</td>
+					        	
+					        	<td><h:outputLabel value="Decesso" /></td>
+								<td>
+								<h:panelGrid columns="2">
+									<p:selectBooleanCheckbox value="#{cc.attrs.iNuovoParente.decesso}" >
+										<p:ajax update="dataDecessoPanel" event="change" listener="#{cc.attrs.iNuovoParente.resetDataDecesso()}"/>
+									</p:selectBooleanCheckbox>
+						        	
+						        	<webred:pnlData  id="dataDecessoPanel" dataValue="#{cc.attrs.iNuovoParente.dataDecesso}" dataPattern="dd/MM/yyyy" 
+						        	    dataReq="#{cc.attrs.iNuovoParente.decesso}" 
+		            					dataValMes="Data decesso non valida" dataConMes="Data decesso non valida" dataReqMes="Impostare la data del decesso"
+		            					dataPatternLabel="gg/mm/aaaa"/>
+		            			
+								</h:panelGrid>
+								</td>
+							</tr>
+							<tr>									
+								<td><h:outputLabel value="Potestà *" /></td>
+								<td>
+								<p:selectOneMenu value="#{cc.attrs.iNuovoParente.idPotesta}" required="true" requiredMessage="Potestà è un campo obbligatorio">  
+						            <f:selectItems value="#{cc.attrs.iNuovoParente.lstPotesta}"/>
+					        	</p:selectOneMenu>
+					        	</td>
+								<td colspan="2" rowspan="2">
+									<webredcs:pnlFormazioneLavoro iFormazioneLavoro="#{cc.attrs.iNuovoParente.formLavoroMan}"
+										onChangeCondLavoro="#{cc.attrs.iNuovoParente.onChangeCondLavoro()}" 
+										onChangeTitoloStudio="#{cc.attrs.iNuovoParente.onChangeTitoloStudio()}"
+										numColonne="2" soloLettura="#{cc.attrs.disabled}"/>
+								</td>
+								
+							</tr>
+							<tr>	
+							
+								<td><h:outputLabel value="Disponibilità *" /></td>
+								<td>
+								<p:selectOneMenu value="#{cc.attrs.iNuovoParente.idDisponibilita}" required="true" requiredMessage="Disponibilità è un campo obbligatorio">  
+						            <f:selectItems value="#{cc.attrs.iNuovoParente.lstDisponibilita}"/>
+					        	</p:selectOneMenu>
+					        	</td>
+							</tr>
+							
+							<tr>							
+								<td><h:outputLabel value="Note" /></td>
+								<td colspan="4"><p:inputTextarea rows="5" cols="90" value="#{cc.attrs.iNuovoParente.note}"/></td>
+							</tr>
+							</table>
+					    	<h:outputText value="* campo obbligatorio" styleClass="bold"/>
+					</p:outputPanel>
+					
+					<table border="0" width="100%">
+						<tr>
+							<td style="text-align: center;">
+								<p:commandButton value="Conferma" process="@parent"
+									action="#{cc.attrs.iParenti.salvaNuovoParente}" 
+									update=":#{p:component('tblComponentiGit')}, tblComponenti, pnlNewParente, :#{p:component('pnlSearch')} "
+									oncomplete="if (args &amp;&amp; !args.validationFailed) wdgNewParente#{cc.attrs.iParenti.id}.hide();">
+								</p:commandButton>
+								
+								<p:spacer width="15" />
+								<p:commandButton value="Esci" process="@this" update="@parent:@parent, :#{p:component('pnlSearch')}"
+									onclick="wdgNewParente#{cc.attrs.iParenti.id}.hide();">
+									<f:setPropertyActionListener value="false" target="#{cc.attrs.iParenti.showNewParente}" />
+								</p:commandButton>
+							</td>
+						</tr>
+					</table>
+					
+				</p:dialog>
+			
+				<p:confirmDialog widgetVar="diaEliminaParente#{cc.attrs.iParenti.id}" showEffect="fade" hideEffect="fade"
+					header="Conferma" message="procedere con l'eliminazione?">
+					<h:panelGrid columns="2" style="margin: 0 auto;	text-align: center;">
+		        		<p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check">
+		        			<p:ajax update="@parent:@parent:@parent, :#{p:component('tblComponentiGit')}"
+									listener="#{cc.attrs.iParenti.eliminaParente}" oncomplete="diaEliminaParente#{cc.attrs.iParenti.id}.hide()"/>
+		        		</p:commandButton>  
+		        		<p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"
+		        		onclick="diaEliminaParente#{cc.attrs.iParenti.id}.hide()"/> 
+		        	</h:panelGrid>      
+		    	</p:confirmDialog>
+			</p:outputPanel>
+			
+			<p:outputPanel>
+				<p:spacer height="20"/>
+				<p:dataTable id="tblConoscenti" style="text-align:center;"   
+					var="comp" value="#{cc.attrs.iParenti.lstConoscenti}" rowIndexVar="rowIndex" emptyMessage="Nessun elemento trovato">
+					<f:facet name="header">Conoscenti / Gruppo amicale (disponibili)</f:facet>
+					<p:column width="20">
+						<webredcs:tooltipInfo stringDescr="#{cc.attrs.iParenti.loadStatoCartella(comp.csAAnagrafica.cf)}" 
+						                      icona="#{resource['webredcs/img/folder.png']}" rendered="#{cc.attrs.iParenti.loadStatoCartella(comp.csAAnagrafica.cf) != NULL}"/>
+					</p:column>
+					<p:column headerText="Cognome">
+						<h:outputText value="#{comp.csAAnagrafica.cognome}" />
+					</p:column>
+					
+					<p:column headerText="Nome">
+						<h:outputText value="#{comp.csAAnagrafica.nome}" />
+					</p:column>
+					
+					<p:column headerText="Cod.fiscale">
+						<h:outputText value="#{comp.csAAnagrafica.cf}" />
+					</p:column>
+					
+					<p:column headerText="Parentela">
+						<h:outputText value="#{comp.csTbTipoRapportoCon.descrizione}" />
+					</p:column>
+					
+					<p:column headerText="Telefono">
+						<h:outputText value="#{comp.csAAnagrafica.tel}" />
+					</p:column>
+					
+					<p:column headerText="Cellulare">
+						<h:outputText value="#{comp.csAAnagrafica.cell}" />
+					</p:column>
+					
+					<p:column headerText="Convivente" style="text-align:center;">
+						<p:graphicImage rendered="#{comp.convivente}" value="/images/check.png"/>
+					</p:column>
+					
+					<p:column headerText="" style="text-align:center;" width="200">
+						<p:commandButton value="Modifica" process="@this" disabled="#{cc.attrs.disabled}"
+							action="#{cc.attrs.iParenti.loadModificaConoscente}" update="@(.updateConoscentiDialog)"
+							oncomplete="wdgNewConoscente#{cc.attrs.iParenti.id}.show()">
+							<f:setPropertyActionListener value="#{rowIndex}" target="#{cc.attrs.iParenti.idxSelected}" />
+							<f:setPropertyActionListener value="false" target="#{cc.attrs.iParenti.nuovo}" />
+							<f:setPropertyActionListener value="true" target="#{cc.attrs.iParenti.showNewConoscente}" />
+						</p:commandButton>
+						<p:commandButton value="Elimina" disabled="#{cc.attrs.disabled}" 
+							oncomplete="diaEliminaConoscente#{cc.attrs.iParenti.id}.show()">
+							<f:setPropertyActionListener value="#{rowIndex}" target="#{cc.attrs.iParenti.idxSelected}" />
+						</p:commandButton>
+					</p:column>
+					
+				</p:dataTable>
+				
+				<h:panelGrid columns="1">
+					<p:spacer height="5"/>
+					<p:commandButton value="Inserisci conoscente" process="@this" disabled="#{cc.attrs.disabled}"
+							action="#{cc.attrs.iNuovoConoscente.reset}" update="@(.updateConoscentiDialog)"
+							oncomplete="wdgNewConoscente#{cc.attrs.iParenti.id}.show()">
+						<f:setPropertyActionListener value="true" target="#{cc.attrs.iParenti.nuovo}" />
+						<f:setPropertyActionListener value="true" target="#{cc.attrs.iParenti.showNewConoscente}" />
+					</p:commandButton>  
+				</h:panelGrid>
+			
+				<p:dialog styleClass="#{'updateConoscentiDialog'}"
+					widgetVar="wdgNewConoscente#{cc.attrs.iParenti.id}" modal="true"
+					closable="false" header="#{cc.attrs.iNuovoConoscente.dialogHeader}"
+					width="890" height="400" >
+					
+					<p:outputPanel id="pnlNewConoscente" rendered="#{cc.attrs.iParenti.showNewConoscente}" >
+					 <p:outputLabel value="#{cc.attrs.iNuovoConoscente.msgInfoRecapiti}" escape="false" style="color:#1c94c4; font-weight:bold;"/>
+					 <p:messages id="msgConoscente" showDetail="true" autoUpdate="true" closable="true" />
+					<table border="0" width="100%">
+						<tr>
+							<td>
+								<h:outputLabel value="Cognome *"/>
+							</td>
+							<td>
+								<p:inputText value="#{cc.attrs.iNuovoConoscente.cognome}"  
+								             required="#{cc.attrs.iParenti.showNewConoscente}" requiredMessage="Cognome è un campo obbligatorio"/>
+							</td>
+							<td>
+								<h:outputLabel value="Nome *" />
+							</td>
+							<td>
+								<p:inputText value="#{cc.attrs.iNuovoConoscente.nome}" 
+											 required="#{cc.attrs.iParenti.showNewConoscente}"  requiredMessage="Nome è un campo obbligatorio"/>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<h:outputLabel value="Cod. fiscale *" />
+							</td>
+							<td><p:inputText value="#{cc.attrs.iNuovoConoscente.codFiscale}" onblur="value=value.toUpperCase()" /></td>				
+								
+							<td><h:outputLabel value="Sesso *" /></td>
+								<td>
+									<webred:pnlSesso value="#{cc.attrs.iNuovoConoscente.datiSesso}" required="true"  />
+	            			</td>	
+						  </tr>
+						  <tr>
+							<td><h:outputLabel value="Data di nascita" /></td>
+							<td><webred:pnlData dataValue="#{cc.attrs.iNuovoConoscente.dataNascita}" dataPattern="dd/MM/yyyy" dataReq="false" 
+	            					dataValMes="Data di nascita non valida" dataConMes="Data di nascita non valida"
+	            					dataPatternLabel="gg/mm/aaaa" maxDate="#{commonSessionMan.currentDate}" yearRange="c-100:c+0"/>
+	            			</td>
+							
+							<td colspan="2">	
+								<webred:pnlComuneNazione comuneNazioneManBean="#{cc.attrs.iNuovoConoscente.comuneNazioneNascitaBean}" />
+							</td>
+						  </tr>		
+						  <tr>
+							<td>
+								<h:outputLabel value="Indirizzo residenza *" />
+							</td>
+							<td >
+								<h:panelGrid columns="3" style="padding:0px;">
+								<p:inputText value="#{cc.attrs.iNuovoConoscente.indirizzo}" 
+								             required="true"  requiredMessage="Indirizzo è un campo obbligatorio"/>
+								<h:outputText value="n. *"/>
+								<p:inputText value="#{cc.attrs.iNuovoConoscente.civico}" style="width:25px;"  
+								             required="true"  requiredMessage="n. è un campo obbligatorio"/>
+								</h:panelGrid>
+							</td>
+							<td colspan="2">
+								<webred:pnlComuneNazione comuneNazioneManBean="#{cc.attrs.iNuovoConoscente.comuneNazioneResidenzaBean}" />
+							</td>
+						</tr>
+						
+						<tr>
+							<td>
+								<h:outputLabel value="Telefono" />
+							</td>
+							<td>
+								<p:inputText value="#{cc.attrs.iNuovoConoscente.telefono}"/>
+							</td>
+							<td>
+								<h:outputLabel value="Cellulare" />
+							</td>
+							<td>
+								<p:inputText value="#{cc.attrs.iNuovoConoscente.cellulare}"/>
+							</td>
+						</tr>
+						
+						<tr>
+							<td><h:outputLabel value="E-mail" /></td>
+							<td><p:inputText value="#{cc.attrs.iNuovoConoscente.email}"/></td>		
+							
+							<td>
+								<h:outputLabel value="Relazione con l'utente *" />
+							</td>
+							<td>
+								<p:selectOneMenu value="#{cc.attrs.iNuovoConoscente.idParentela}" 
+								                 required="true"  
+								                 requiredMessage="'Relazione con l'utente' è un campo obbligatorio">
+	            					<f:selectItem  noSelectionOption="true" itemLabel=" - seleziona - "/>
+	            					<f:selectItems value="#{cc.attrs.iNuovoConoscente.lstParentela}"/>
+	            				</p:selectOneMenu>
+	            				<p:spacer width="10px"/>
+	            				<p:selectBooleanCheckbox value="#{cc.attrs.iNuovoConoscente.convivente}" itemLabel="convivente"/>
+							</td>
+						</tr>
+						
+						
+
+						<tr>
+							<td>
+								<h:outputText value="Note" />
+							</td>
+							<td colspan="3">
+								<p:inputTextarea rows="5" cols="90" value="#{cc.attrs.iNuovoConoscente.note}"/> 
+							</td>
+						</tr>
+					</table>
+					</p:outputPanel>
+					
+					<h:panelGrid columns="1">
+						<p:spacer height="5" />
+						<h:outputText value="* campo obbligatorio" styleClass="bold"/>
+					</h:panelGrid>
+					
+					<table border="0" width="100%">
+						<tr>
+							<td style="text-align: center;">
+								<p:commandButton value="Conferma" process="@parent"
+									action="#{cc.attrs.iParenti.salvaNuovoConoscente}"
+									update="tblConoscenti, pnlNewConoscente, tblComponenti, :#{p:component('pnlSearch')}"
+									oncomplete="if (args &amp;&amp; !args.validationFailed) wdgNewConoscente#{cc.attrs.iParenti.id}.hide();">
+								</p:commandButton>
+								
+								<p:spacer width="15" />
+								<p:commandButton value="Esci" process="@this" update=":#{p:component('pnlSearch')}"
+									onclick="wdgNewConoscente#{cc.attrs.iParenti.id}.hide();">
+									<f:setPropertyActionListener value="false" target="#{cc.attrs.iParenti.showNewConoscente}" />
+								</p:commandButton>
+							</td>
+						</tr>
+					</table>
+					
+				</p:dialog>
+				
+				<p:confirmDialog widgetVar="diaEliminaConoscente#{cc.attrs.iParenti.id}" showEffect="fade" hideEffect="fade"
+					header="Conferma" message="procedere con l'eliminazione?">
+					<h:panelGrid columns="2" style="margin: 0 auto;	text-align: center;">
+		        		<p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check">
+		        			<p:ajax update="@parent:@parent:@parent"
+									listener="#{cc.attrs.iParenti.eliminaConoscente}" oncomplete="diaEliminaConoscente#{cc.attrs.iParenti.id}.hide()"/>
+		        		</p:commandButton>  
+		        		<p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"
+		        		onclick="diaEliminaConoscente#{cc.attrs.iParenti.id}.hide()"/> 
+		        	</h:panelGrid>      
+		    	</p:confirmDialog>  
+			</p:outputPanel> 
+
+		</composite:implementation>
+	</h:body>
+	
+</html>

@@ -1,0 +1,172 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+     	xmlns:h="http://java.sun.com/jsf/html"
+		xmlns:f="http://java.sun.com/jsf/core"
+		xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+		xmlns:ui="http://java.sun.com/jsf/facelets"
+		xmlns:p="http://primefaces.org/ui"
+	  	xmlns:composite="http://java.sun.com/jsf/composite">
+      
+	<h:head>
+		<title>Familiari e Conviventi</title>
+	</h:head>
+	<h:body>
+		<composite:interface componentType="pnlFamConviventi">
+			<composite:attribute name="iFamConviventi" type="it.webred.cs.json.familiariConviventi.IFamConviventi" required="true"/>
+			<composite:attribute name="soloLettura" default="false"/>
+		</composite:interface>
+		<composite:implementation 
+			xmlns:webred="http://java.sun.com/jsf/composite/webred"
+			xmlns:webredcs="http://java.sun.com/jsf/composite/webredcs">
+		 
+		   <p:outputPanel rendered="#{cc.attrs.iFamConviventi.versionLowerCase eq '1'}" style="width:100%">
+
+			<h:panelGrid columns="2" style="display: inline-block; vertical-align: top;">
+				    <p:outputLabel value="Tipologia Nucleo *"/>
+					
+					<h:panelGroup>
+						<p:selectOneMenu value="#{cc.attrs.iFamConviventi.jsonCurrent.tipologiaFamiliare}" disabled="#{cc.attrs.soloLettura}">
+	            			<f:selectItem noSelectionOption="true" itemLabel="- seleziona -"/>
+	            			<f:selectItems value="#{cc.attrs.iFamConviventi.listaTipologiaNucleo}"/>
+	            		</p:selectOneMenu>
+	            		<p:spacer width="12px" />
+	            		<webredcs:tooltipInfo title="Tipo famiglia: che cosa si intende" valueList="#{cc.attrs.iFamConviventi.lstCsTbTipologiaFam}"/>
+					    <p:spacer width="20px" />
+					    <p:selectBooleanCheckbox value="#{cc.attrs.iFamConviventi.jsonCurrent.conFigli}" itemLabel="Ha figli" disabled="#{cc.attrs.soloLettura}">
+					    	 <p:ajax event="change" listener="#{cc.attrs.iFamConviventi.changeConFigli}" update="pnlFigli"/>
+					    </p:selectBooleanCheckbox>     			
+            		</h:panelGroup>
+            		<h:outputLabel value="Num. minori nel nucleo " />
+					<p:spinner value="#{cc.attrs.iFamConviventi.jsonCurrent.conMinoriNum}" min="0"  size="2" disabled="#{cc.attrs.soloLettura}"/>
+            		
+					<p:outputLabel value="Gruppo vulnerabile principale *"/>
+					<p:selectOneMenu value="#{cc.attrs.iFamConviventi.jsonCurrent.gruppoVulnerabile}"  style="width:300px;" 
+					disabled="#{cc.attrs.soloLettura}" filter="true" filterMatchMode="contains">  
+            			<f:selectItems value="#{cc.attrs.iFamConviventi.listaGruppoVulnerabile}"/> 
+            		</p:selectOneMenu>
+            		<!-- SISO-792 -->
+            		
+            		<p:outputLabel value="Gruppo vulnerabile 2"/>
+					<p:selectOneMenu value="#{cc.attrs.iFamConviventi.jsonCurrent.gruppoVulnerabile2}"  style="width:300px;" 
+					disabled="#{cc.attrs.soloLettura}" filter="true" filterMatchMode="contains">  
+            			<f:selectItems value="#{cc.attrs.iFamConviventi.listaGruppoVulnerabile}"/> 
+            		</p:selectOneMenu>
+            		
+            		<p:outputLabel value="Gruppo vulnerabile 3"/>
+					<p:selectOneMenu value="#{cc.attrs.iFamConviventi.jsonCurrent.gruppoVulnerabile3}"  style="width:300px;" 
+					disabled="#{cc.attrs.soloLettura}" filter="true" filterMatchMode="contains">  
+            			<f:selectItems value="#{cc.attrs.iFamConviventi.listaGruppoVulnerabile}"/> 
+            		</p:selectOneMenu>
+            		<!-- SISO-794 -->
+            		
+			         <h:outputText value="Specificare eventuali conviventi" style="display: block; width: 150px;"/>
+				     <h:panelGrid id="pnlConAlri" columns="4" >
+					     <h:outputLabel value="Figli " />
+					     <p:spinner value="#{cc.attrs.iFamConviventi.jsonCurrent.conFigliNum}" min="0"  size="2" disabled="#{cc.attrs.soloLettura}"/>
+					     <h:outputText value="Coniuge o compagno " style="display: block; width: 100px;"/>
+        				 <p:selectBooleanCheckbox value="#{cc.attrs.iFamConviventi.jsonCurrent.conCompagnoConiuge}" disabled="#{cc.attrs.soloLettura}"/>
+        				 <h:outputLabel value="Genitori e/o affidatari " style="display: block; width: 100px;"/>
+					     <p:spinner value="#{cc.attrs.iFamConviventi.jsonCurrent.conGenitoriAffidatariNum}" min="0"  size="2" disabled="#{cc.attrs.soloLettura}"/>
+					     <h:outputLabel value="Altri parenti " />
+					     <p:spinner value="#{cc.attrs.iFamConviventi.jsonCurrent.conAltriParentiNum}" min="0"  size="2" disabled="#{cc.attrs.soloLettura}"/>
+					    <h:outputLabel value="Altri conviventi (italiani) " style="display: block; width: 100px;"/>
+						 <p:spinner value="#{cc.attrs.iFamConviventi.jsonCurrent.conItalianiNum}" min="0"  size="2"  disabled="#{cc.attrs.soloLettura}"/>
+						  <h:outputLabel value="Altri conviventi (stranieri) " style="display: block; width: 100px;"/>
+						 <p:spinner value="#{cc.attrs.iFamConviventi.jsonCurrent.conStranieriNum}" min="0"  size="2"  disabled="#{cc.attrs.soloLettura}"/>
+					 </h:panelGrid>
+				</h:panelGrid>
+			<p:outputPanel id="pnlFigli" style="display: inline-block; vertical-align: top;  ">  
+	
+				<p:panelGrid style="padding: 0px;  " rendered="#{cc.attrs.iFamConviventi.jsonCurrent.conFigli}" styleClass="tableNoBg">
+				  <f:facet name="header">Figli</f:facet>
+				  <p:row >
+				  	<p:column>
+				 		<h:outputText value="" style="font-weight: bold;"/>
+				 	</p:column>
+				 	<p:column style="text-align:center;" width="100px;">
+			     		<h:outputText value="minorenni" style="font-weight: bold;"/>
+			     	</p:column>
+			     	<p:column style="text-align:center;" width="100px;">
+			     		<h:outputText value="maggiorenni" style="font-weight: bold;"/>
+			     	</p:column>
+				  </p:row>
+				  <p:row>
+				    <p:column>
+					<h:outputText value="In Italia" style="font-weight: bold;"/>
+					</p:column>
+					<p:column>
+					<h:panelGrid columns="2" style="padding: 2px;  ">
+						<p:graphicImage id="boyMinI" title="Maschi" value="#{resource['webredcs/img/boy.jpg']}" height="20px"/>
+						<p:spinner value="#{cc.attrs.iFamConviventi.jsonCurrent.minoriIta.numMaschi}" min="0"  size="3"  disabled="#{cc.attrs.soloLettura}"/>
+						<p:graphicImage id="girlMinI" title="Femmine" value="#{resource['webredcs/img/girl.jpg']}" height="20px"/>
+						<p:spinner value="#{cc.attrs.iFamConviventi.jsonCurrent.minoriIta.numFemmine}" min="0"  size="3"  disabled="#{cc.attrs.soloLettura}"/>
+					</h:panelGrid>
+					</p:column>
+					<p:column>
+					<h:panelGrid columns="2" style="padding: 2px;  ">
+					 	<p:graphicImage id="boyManI" title="Maschi" value="#{resource['webredcs/img/boy.jpg']}" height="20px"/>
+					 	<p:spinner value="#{cc.attrs.iFamConviventi.jsonCurrent.maggioriIta.numMaschi}" min="0"  size="3"  disabled="#{cc.attrs.soloLettura}"/>
+					    <p:graphicImage id="girlManI" title="Femmine" value="#{resource['webredcs/img/girl.jpg']}" height="20px"/>
+					 	<p:spinner value="#{cc.attrs.iFamConviventi.jsonCurrent.maggioriIta.numFemmine}" min="0"  size="3"  disabled="#{cc.attrs.soloLettura}"/>
+					 </h:panelGrid>
+					 </p:column>
+				 </p:row>
+				 <p:row>
+				 <p:column>
+					<h:outputText value="All'Estero" style="font-weight: bold;"/>
+				</p:column>
+				<p:column>
+					<h:panelGrid columns="2" style="padding: 2px;  ">
+						<p:graphicImage id="boyMinE" title="Maschi" value="#{resource['webredcs/img/boy.jpg']}" height="20px"/>
+					 	<p:spinner value="#{cc.attrs.iFamConviventi.jsonCurrent.minoriEst.numMaschi}" min="0"  size="3"  disabled="#{cc.attrs.soloLettura}"/>
+					    <p:graphicImage id="girlMinE" title="Femmine" value="#{resource['webredcs/img/girl.jpg']}" height="20px"/>
+					    <p:spinner value="#{cc.attrs.iFamConviventi.jsonCurrent.minoriEst.numFemmine}" min="0"  size="3"  disabled="#{cc.attrs.soloLettura}"/>
+					 </h:panelGrid>
+				</p:column>
+				<p:column>
+					 <h:panelGrid columns="2" style="padding: 2px;  ">
+					 	<p:graphicImage id="boyManE" title="Maschi" value="#{resource['webredcs/img/boy.jpg']}" height="20px"/>
+					    <p:spinner value="#{cc.attrs.iFamConviventi.jsonCurrent.maggioriEst.numMaschi}" min="0"  size="3"  disabled="#{cc.attrs.soloLettura}"/>
+					    <p:graphicImage id="girlManE" title="Femmine" value="#{resource['webredcs/img/girl.jpg']}" height="20px"/>
+					    <p:spinner value="#{cc.attrs.iFamConviventi.jsonCurrent.maggioriEst.numFemmine}" min="0"  size="3"  disabled="#{cc.attrs.soloLettura}"/>
+					 </h:panelGrid>
+				</p:column>
+				</p:row>
+				</p:panelGrid>
+			</p:outputPanel>
+           </p:outputPanel>
+           <p:outputPanel rendered="#{cc.attrs.iFamConviventi.versionLowerCase eq '2'}" style="width:100%">
+
+			<h:panelGrid columns="2" style="display: inline-block; vertical-align: top;">
+				    <p:outputLabel value="Tipologia Nucleo *" rendered="#{cc.attrs.iFamConviventi.renderTipologiaNucleo}"/>
+					<h:panelGrid columns="2" rendered="#{cc.attrs.iFamConviventi.renderTipologiaNucleo}">
+						<p:selectOneMenu value="#{cc.attrs.iFamConviventi.jsonCurrent.tipologiaFamiliare}" disabled="#{cc.attrs.soloLettura}" >
+	            			<f:selectItem noSelectionOption="true" itemLabel="- seleziona -"/>
+	            			<f:selectItems value="#{cc.attrs.iFamConviventi.listaTipologiaNucleo}"/>
+	            		</p:selectOneMenu>
+	            		<webredcs:tooltipInfo title="Tipologia Nucleo: che cosa si intende" valueList="#{cc.attrs.iFamConviventi.lstCsTbTipologiaFam}"/>
+					</h:panelGrid>
+					<p:outputLabel value="Gruppo Vulnerabile principale *"/>
+					<p:selectOneMenu value="#{cc.attrs.iFamConviventi.jsonCurrent.gruppoVulnerabile}" style="width:300px;" disabled="#{cc.attrs.soloLettura}">
+            			<f:selectItems value="#{cc.attrs.iFamConviventi.listaGruppoVulnerabile}"/>
+            		</p:selectOneMenu>
+            		<p:outputLabel value="Gruppo vulnerabile 2"/>
+					<p:selectOneMenu value="#{cc.attrs.iFamConviventi.jsonCurrent.gruppoVulnerabile2}"  style="width:300px;" 
+					disabled="#{cc.attrs.soloLettura}" filter="true" filterMatchMode="contains">  
+            			<f:selectItems value="#{cc.attrs.iFamConviventi.listaGruppoVulnerabile}"/> 
+            		</p:selectOneMenu>
+            		
+            		<p:outputLabel value="Gruppo vulnerabile 3"/>
+					<p:selectOneMenu value="#{cc.attrs.iFamConviventi.jsonCurrent.gruppoVulnerabile3}"  style="width:300px;" 
+					disabled="#{cc.attrs.soloLettura}" filter="true" filterMatchMode="contains">  
+            			<f:selectItems value="#{cc.attrs.iFamConviventi.listaGruppoVulnerabile}"/> 
+            		</p:selectOneMenu>
+            		<!-- SISO-794 -->
+            		
+			</h:panelGrid>
+
+           </p:outputPanel>
+		</composite:implementation>
+	</h:body>
+		
+</html>

@@ -1,0 +1,241 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+     	xmlns:h="http://java.sun.com/jsf/html"
+		xmlns:f="http://java.sun.com/jsf/core"
+		xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+		xmlns:ui="http://java.sun.com/jsf/facelets"
+		xmlns:p="http://primefaces.org/ui"
+	  	xmlns:composite="http://java.sun.com/jsf/composite">
+      
+	<h:head>
+		<title>Gestione Documenti Individuali</title>
+	</h:head>
+	<h:body>
+		<composite:interface componentType="pnlDocIndividuali">
+			<composite:attribute name="iDocIndividuali" type="it.webred.cs.jsf.interfaces.IDocIndividuali" required="true"/>
+			<composite:attribute name="var"  type="java.lang.String" required="false" default="1"/>
+		</composite:interface>
+		<composite:implementation 
+			xmlns:webred="http://java.sun.com/jsf/composite/webred"
+			xmlns:webredcs="http://java.sun.com/jsf/composite/webredcs">
+		
+		<p:outputPanel id="pnlDocIndividuali">	
+			
+			<h:panelGrid columns="1" cellpadding="0" cellspacing="0">
+				<p:commandButton value="Nuovo" action="#{cc.attrs.iDocIndividuali.nuovo}" icon="ui-icon-document-b" 
+					disabled="#{cc.attrs.iDocIndividuali.readOnly}"
+					process="@this"	oncomplete="wdgDocIndModal#{cc.attrs.var}.show();" update=":#{p:component('dlgDocInd')}">
+				</p:commandButton>
+				<p:spacer height="2"/>
+			</h:panelGrid>
+			
+			<p:dataTable var="rowInd" rowIndexVar="rowKeyInd" emptyMessage="Nessun elemento presente"
+				value="#{cc.attrs.iDocIndividuali.listaDocIndividualiPubblica}" filterDelay="2000">
+		        
+		        <f:facet name="header">Documenti Individuali Pubblici</f:facet>
+		        
+				<p:column headerText="Data" width="60">	
+					<h:outputText value="#{rowInd.csDDocIndividuale.csDDiario.dtAmministrativa}">
+						<f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+					</h:outputText>	
+				</p:column>
+				
+				<p:column headerText="Tipo" filterBy="#{rowInd.csDDocIndividuale.csTbSottocartellaDoc.descrizione}" filterMatchMode="contains" >	
+					<h:outputText value="#{rowInd.csDDocIndividuale.csTbSottocartellaDoc.descrizione}" rendered="#{rowInd.csDDocIndividuale.csTbSottocartellaDoc!=null}"/>
+				</p:column>
+				
+				<p:column headerText="Descrizione" >	
+					<h:outputText value="#{rowInd.csDDocIndividuale.descrizione}"/>
+				</p:column>
+				
+				<p:column headerText="Documento">
+				   <h:outputText value="#{rowInd.csLoadDocumento.nome}" rendered="#{rowInd.disableDownload}" />
+				   <p:outputPanel rendered="#{!rowInd.disableDownload}">
+						<webredcs:pnlDownloadFile csLoadDocumento="#{rowInd.csLoadDocumento}"
+							iDownloadFile="#{cc.attrs.iDocIndividuali.diarioDocsMan.dFileMan}" />
+					</p:outputPanel>
+				</p:column>
+				
+				<p:column headerText="Letto" style="text-align:center;" width="150px;">	
+					<p:commandButton value="Indica Lettura" process="@this" icon="ui-icon-check" 
+						update=":#{p:component('pnlDocIndividuali')}" rendered="#{!rowInd.csDDocIndividuale.letto}"
+						action="#{cc.attrs.iDocIndividuali.indicaLettura}" disabled="#{cc.attrs.iDocIndividuali.readOnly or rowInd.disableDownload}">
+						<f:setPropertyActionListener value="#{rowKeyInd}" target="#{cc.attrs.iDocIndividuali.idxSelected}" />
+					</p:commandButton>
+					<p:graphicImage value="#{resource['webredcs/img/check.png']}" width="16px" rendered="#{rowInd.csDDocIndividuale.letto}"/>
+				</p:column>
+				
+				<p:column headerText="Ultima Modifica" style="text-align:center;"> 
+						<h:outputLabel value="#{cc.attrs.iDocIndividuali.getDenominazioneOperatore(rowInd.csDDocIndividuale.csDDiario)} il " />	
+						<h:outputLabel value="#{rowInd.csDDocIndividuale.csDDiario.dtMod!=null ? rowInd.csDDocIndividuale.csDDiario.dtMod : rowInd.csDDocIndividuale.csDDiario.dtIns}">
+							<f:convertDateTime type="date" pattern="dd/MM/yyyy HH:mm:ss" timeZone="Europe/Berlin" />
+						</h:outputLabel>
+				</p:column>
+				
+				<p:column headerText="" style="text-align:right;" width="150px;" >
+					<p:commandButton oncomplete="wdgDocIndModal#{cc.attrs.var}.show()"  
+					    title="Modifica" icon="ui-icon-pencil" value="Modifica"
+						action="#{cc.attrs.iDocIndividuali.caricaPubblico}" 
+						update=":#{p:component('dlgDocInd')}" process="@this" 
+						disabled="#{cc.attrs.iDocIndividuali.readOnly or rowInd.disableDownload}">
+						<f:setPropertyActionListener value="#{rowKeyInd}" target="#{cc.attrs.iDocIndividuali.idxSelected}" />
+					</p:commandButton>
+					<p:spacer width="5"/>
+					<p:commandButton process="@this" icon="ui-icon-trash" title="Elimina"
+						action="#{cc.attrs.iDocIndividuali.caricaPubblico}" 
+						oncomplete="confermaEliminaDocInd.show()" disabled="#{cc.attrs.iDocIndividuali.readOnly or rowInd.disableDownload}">
+						<f:setPropertyActionListener value="#{rowKeyInd}" target="#{cc.attrs.iDocIndividuali.idxSelected}" />
+					</p:commandButton>
+				</p:column>
+				
+			</p:dataTable>
+			<p:spacer height="10px;"/>	
+			<p:dataTable var="rowInd" rowIndexVar="rowKeyInd" emptyMessage="Nessun elemento presente"
+				value="#{cc.attrs.iDocIndividuali.listaDocIndividualiPrivata}" filterDelay="2000">
+		        		
+		        <f:facet name="header">Documenti Individuali Privati</f:facet>
+		        			
+				<p:column headerText="Data" width="60">	
+					<h:outputText value="#{rowInd.csDDocIndividuale.csDDiario.dtAmministrativa}">
+						<f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+					</h:outputText>	
+				</p:column>
+				
+				<p:column headerText="Tipo" filterBy="#{rowInd.csDDocIndividuale.csTbSottocartellaDoc.descrizione}" filterMatchMode="contains" >	
+					<h:outputText value="#{rowInd.csDDocIndividuale.csTbSottocartellaDoc.descrizione}" rendered="#{rowInd.csDDocIndividuale.csTbSottocartellaDoc!=null}"/>
+				</p:column>
+				
+				<p:column headerText="Descrizione" >	
+					<h:outputText value="#{rowInd.csDDocIndividuale.descrizione}"/>
+				</p:column>
+				
+				<p:column headerText="Documento">
+				   <h:outputText value="#{rowInd.csLoadDocumento.nome}" rendered="#{rowInd.disableDownload}" />
+				   <p:outputPanel rendered="#{!rowInd.disableDownload}">	
+					<webredcs:pnlDownloadFile csLoadDocumento="#{rowInd.csLoadDocumento}"
+						iDownloadFile="#{cc.attrs.iDocIndividuali.diarioDocsMan.dFileMan}" />
+					</p:outputPanel>
+				</p:column>
+				<p:column headerText="Ultima Modifica" style="text-align:center;"> 
+						<h:outputLabel value="#{cc.attrs.iDocIndividuali.getDenominazioneOperatore(rowInd.csDDocIndividuale.csDDiario)} il " />	
+						<h:outputLabel value="#{rowInd.csDDocIndividuale.csDDiario.dtMod!=null ? rowInd.csDDocIndividuale.csDDiario.dtMod : rowInd.csDDocIndividuale.csDDiario.dtIns}">
+							<f:convertDateTime type="date" pattern="dd/MM/yyyy HH:mm:ss" timeZone="Europe/Berlin" />
+						</h:outputLabel>
+				</p:column>
+				
+				<p:column headerText="" style="text-align:right;" width="150px;" >
+					<p:commandButton value="Modifica" process="@this" icon="ui-icon-pencil"
+							action="#{cc.attrs.iDocIndividuali.caricaPrivato}" update=":#{p:component('dlgDocInd')}"
+							oncomplete="wdgDocIndModal#{cc.attrs.var}.show()" disabled="#{cc.attrs.iDocIndividuali.readOnly or rowInd.disableDownload}">
+							<f:setPropertyActionListener value="#{rowKeyInd}" target="#{cc.attrs.iDocIndividuali.idxSelected}" />
+						</p:commandButton>
+					<p:spacer width="5"/>
+					<p:commandButton process="@this" icon="ui-icon-trash" title="Elimina"
+							action="#{cc.attrs.iDocIndividuali.caricaPrivato}" 
+							oncomplete="confermaEliminaDocInd.show()" disabled="#{cc.attrs.iDocIndividuali.readOnly or rowInd.disableDownload }">
+							<f:setPropertyActionListener value="#{rowKeyInd}" target="#{cc.attrs.iDocIndividuali.idxSelected}" />
+					</p:commandButton>
+				</p:column>
+				
+			</p:dataTable>
+			
+			<!-- SISO-438 tabella dei doc di tipo richiesta servizio -->
+			<p:spacer height="10px;"/>	
+			<p:dataTable var="rowInd" rowIndexVar="rowKeyInd" emptyMessage="Nessun elemento presente"
+				value="#{cc.attrs.iDocIndividuali.listaDocIndividualiRichiestaServizio}" filterDelay="2000">
+		        
+		        <f:facet name="header">Documenti Individuali Richiesta Servizio</f:facet>
+		        
+				<p:column headerText="Data" width="60">	
+					<h:outputText value="#{rowInd.csDDocIndividuale.csDDiario.dtAmministrativa}">
+						<f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+					</h:outputText>	
+				</p:column>
+				<p:column headerText="Tipo" filterBy="#{rowInd.csDDocIndividuale.csTbSottocartellaDoc.descrizione}" filterMatchMode="contains" >	
+					<h:outputText value="#{rowInd.csDDocIndividuale.csTbSottocartellaDoc.descrizione}" rendered="#{rowInd.csDDocIndividuale.csTbSottocartellaDoc!=null}"/>
+				</p:column>
+				
+				<p:column headerText="Descrizione" >	
+					<h:outputText value="#{rowInd.csDDocIndividuale.descrizione}"/>
+				</p:column>
+				 
+				<p:column headerText="Documento">
+				  <h:outputText value="#{rowInd.csLoadDocumento.nome}" rendered="#{rowInd.disableDownload}" />
+				   <p:outputPanel rendered="#{!rowInd.disableDownload}">	
+					<webredcs:pnlDownloadFile csLoadDocumento="#{rowInd.csLoadDocumento}"
+						iDownloadFile="#{cc.attrs.iDocIndividuali.diarioDocsMan.dFileMan}" />
+					</p:outputPanel>
+				</p:column> 
+				 
+				<p:column headerText="Ultima Modifica" style="text-align:center;"> 
+						<h:outputLabel value="#{cc.attrs.iDocIndividuali.getDenominazioneOperatore(rowInd.csDDocIndividuale.csDDiario)} il " />	
+						<h:outputLabel value="#{rowInd.csDDocIndividuale.csDDiario.dtMod!=null ? rowInd.csDDocIndividuale.csDDiario.dtMod : rowInd.csDDocIndividuale.csDDiario.dtIns}">
+							<f:convertDateTime type="date" pattern="dd/MM/yyyy HH:mm:ss" timeZone="Europe/Berlin" />
+						</h:outputLabel>
+				</p:column>   
+				
+			</p:dataTable>
+			
+			
+			
+						
+			<p:dialog dynamic="true" modal="true" id="dlgDocInd"
+				widgetVar="wdgDocIndModal#{cc.attrs.var}" width="600"
+				closable="false" resizable="true" header="#{cc.attrs.iDocIndividuali.modalHeader}">	
+								
+				<h:panelGrid columns="2">
+					<h:outputText value="Pubblicazione" />
+					<p:outputPanel>
+				        <p:selectOneButton value="#{cc.attrs.iDocIndividuali.docIndividuale.privato}" >
+				            <f:selectItem itemLabel="Pubblica" itemValue="false" />
+				            <f:selectItem itemLabel="Privata" itemValue="true" />
+				        </p:selectOneButton>
+				        <h:outputText value="(Se privata la vede solo l'operatore che ha inserito il documento)" style="font-size: 11px;"/>
+			        </p:outputPanel>
+					
+					<h:outputLabel value="Tipo *"/>
+					<p:selectOneMenu value="#{cc.attrs.iDocIndividuali.idSottocartella}" >
+						<f:selectItem noSelectionOption="true" itemLabel="- seleziona -" />
+						<f:selectItems value="#{cc.attrs.iDocIndividuali.listaSottocartelleItem}"  />
+					</p:selectOneMenu>
+				
+					<h:outputLabel value="Descrizione *"/>
+					<p:inputTextarea value="#{cc.attrs.iDocIndividuali.docIndividuale.descrizione}" 
+					        required="true" requiredMessage="Descrizione obbligatoria" rows="8" cols="60"/>
+					
+					<h:outputLabel value="Data *"/>
+					<webred:pnlData id="dataDoc" dataValue="#{cc.attrs.iDocIndividuali.docIndividuale.csDDiario.dtAmministrativa}" dataPattern="dd/MM/yyyy"
+						dataReq="true" dataReqMes="Data obbligatoria" dataValMes="Data non valida" dataConMes="Data non valida" dataPatternLabel="gg/mm/aaaa"/>
+				</h:panelGrid>		
+				
+				<p:spacer height="20" width="100%"/>
+				
+				<p:outputPanel rendered="#{!cc.attrs.iDocIndividuali.disableUpload}">
+					<webredcs:pnlUploadFile iUploadFile="#{cc.attrs.iDocIndividuali.diarioDocsMan.uFileMan}" fileLimit="1"/>
+				</p:outputPanel>	
+				
+				<webred:pnlSalvaEsci dialogToHide="wdgDocIndModal#{cc.attrs.var}" pnlToUpdate=":#{p:component('pnlDocIndividuali')}" 
+								     salvaAction="#{cc.attrs.iDocIndividuali.salva()}" />
+	    </p:dialog>
+			 
+		<p:confirmDialog header="Elimina" 
+			widgetVar="confermaEliminaDocInd" severity="alert"
+			closable="false"
+			message="Procedere con l'eliminazione?">
+			<p:panelGrid>
+				<p:row>
+					<p:column style="text-align: center;">
+						<p:commandButton value="SI" onclick="PF('confermaEliminaDocInd').hide()"
+							action="#{cc.attrs.iDocIndividuali.elimina}" update=":#{p:component('pnlDocIndividuali')}"/>
+						<p:commandButton value="NO"
+							onclick="PF('confermaEliminaDocInd').hide();" type="button" />
+					</p:column>
+				</p:row>
+			</p:panelGrid>
+		</p:confirmDialog>
+		
+		</p:outputPanel>
+		</composite:implementation>
+	</h:body>
+		
+</html>

@@ -1,0 +1,63 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Table class="oracle.dbtools.crest.model.design.relational.Table" directorySegmentName="seg_2" id="08F2879F-B44B-F051-F12E-A4B93820828C" schemaObject="31789C62-6489-FE63-4664-3CFB4035AC87" name="ASS_NOMENCLATORE_CISIS">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>CS_SISO</sourceObjSchema>
+<sourceObjName>ASS_NOMENCLATORE_CISIS</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-07-20 09:02:32 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>0390D1F7-7B79-1911-29E5-C2CEE3AB9354</importedID>
+<allowColumnReorder>false</allowColumnReorder>
+<existDependencyGenerateInDDl>true</existDependencyGenerateInDDl>
+<parsed>true</parsed>
+<columns itemClass="oracle.dbtools.crest.model.design.relational.Column">
+<Column name="CODICE" id="564EEA56-4538-099F-B9ED-74A069A9EE61">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>ASS_NOMENCLATORE_CISIS</sourceObjSchema>
+<sourceObjName>CODICE</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-07-20 09:02:32 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>CDFCDE02-AD68-5515-E25E-C6DCC9FEE58C</importedID>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>5 BYTE</dataTypeSize>
+<ownDataTypeParameters>5 BYTE,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="DEFINIZIONE" id="BA20BC6B-DA9F-4657-E9DF-52C073216B09">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>ASS_NOMENCLATORE_CISIS</sourceObjSchema>
+<sourceObjName>DEFINIZIONE</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-07-20 09:02:32 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>37293C8F-DA05-E8FC-20AA-1940F2A141A4</importedID>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>255 BYTE</dataTypeSize>
+<ownDataTypeParameters>255 BYTE,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="DESCRIZIONE" id="08229824-892C-1291-94A3-A902A45E8AAE">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>ASS_NOMENCLATORE_CISIS</sourceObjSchema>
+<sourceObjName>DESCRIZIONE</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-07-20 09:02:32 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>F7C3440A-1A78-B5BC-8DA8-C269D6D2CB64</importedID>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>4000 BYTE</dataTypeSize>
+<ownDataTypeParameters>4000 BYTE,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+</columns>
+</Table>

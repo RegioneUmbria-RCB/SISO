@@ -1,5 +1,0 @@
-<s:Fault xmlns:s="http://schemas.xmlsoap.org/soap/envelope/">
-<faultcode>s:Non è stato trovato l'ospite</faultcode>
-<faultstring xml:lang="it-IT">Non è stato trovato l'ospite
-</faultstring>
-</s:Fault>

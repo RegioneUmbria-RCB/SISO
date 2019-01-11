@@ -1,0 +1,1033 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+     	xmlns:h="http://java.sun.com/jsf/html"
+		xmlns:f="http://java.sun.com/jsf/core"
+		xmlns:ui="http://java.sun.com/jsf/facelets"
+		xmlns:p="http://primefaces.org/ui"
+	  	xmlns:composite="http://java.sun.com/jsf/composite"
+	  	xmlns:webredcs="http://java.sun.com/jsf/composite/webredcs"
+	  	xmlns:webred="http://java.sun.com/jsf/composite/webred">
+     
+	<h:body>
+	
+		<composite:interface componentType="pnlFglIntervento">
+			<composite:attribute name="salvaActionUpdate" />
+			<composite:attribute name="esciActionUpdate" required="false"/>
+			<composite:attribute name="styleClass"/>
+			<composite:attribute name="widgetVar" />
+		</composite:interface>
+		<composite:implementation>	 
+		
+		<span id="#{cc.clientId}">
+		
+		<!-- Foglio Amministrativo Dialog TOLTO da frida:  header="#{fglInterventoBean.headerDialogo}" -->
+		<p:dialog id="dlgFglAmmDialog" rendered="#{fglInterventoBean.rendered}" 
+			widgetVar="#{cc.attrs.widgetVar}" closable="false" resizable="false" dynamic="true" modal="true"
+			position="center" styleClass="dialog">
+			
+		<!-- INIZIO MOD-RL --> 
+		<h:form id="annoIseeWVForm" styleClass="annoIseeWVFormClass" >
+		
+			<p:dialog id="annoIseeDG" widgetVar="annoIseeWV"  modal="true" height="100"    
+	 				  resizable="false" closable="false" header="Seleziona anno" > 
+		 		<h:panelGrid id="pnlCbxAnnoIsee" columns="2" width="100%"> 
+		 	 
+					<p:selectOneMenu id="cbxAnnoIsee" style="width:150px" value="#{fglInterventoBean.erogazioneInterventoBean.iseeSelezionata}" >			
+						<f:selectItems value="#{fglInterventoBean.erogazioneInterventoBean.listaAnniDsuTipologia}"  /> 	
+					</p:selectOneMenu>
+				</h:panelGrid>
+	
+				<h:panelGrid id="pnlPulsanti" columns="2" width="100%">
+					<p:commandButton   value="Conferma" type="button"  onclick="annoIseeWV.hide();"> 	
+							<p:ajax  listener="#{fglInterventoBean.erogazioneInterventoBean.confermaAnnoIsee}"  process="@this cbxAnnoIsee" update="@(.pgDatiIseePerInpsClass)"/> 
+					</p:commandButton> 
+					<p:commandButton value="Annulla" onclick="annoIseeWV.hide();  PF('sbcSituazioneEconomicaVerificataWV').uncheck();" type="button" immediate="true"/> 
+				</h:panelGrid>  
+	
+			</p:dialog> 
+		
+		</h:form>
+		<!-- FINE MOD-RL -->
+			
+		<h:form id="frmDlgFglInterventi">
+			
+			<p:tabView id="erogazioniInterventiTabView" styleClass="erogazioniInterventiTabView" orientation="top" cache="true" effect="fade">	
+				
+			<p:tab id="interventiTab" title="Interventi" titletip="Interventi" rendered="#{fglInterventoBean.datiInterventoTabRendered}" >	
+				<!-- FORM INSERIMENTO DATI NUOVO INTERVENTO -->	
+				<p:panel header="Dati Intervento " rendered="#{fglInterventoBean.datiInterventoBean.dettaglioInterventoModifica}" 
+				         toggleable="true" toggleSpeed="500" >	   
+				  	
+					<h:panelGrid columns="5"  width="100%" styleClass="#{cc.attrs.styleClass}">
+						<h:outputText value="Tipo Intervento" /> 
+						<h:outputText value="#{fglInterventoBean.datiInterventoBean.descTipoIntervento}" style="font-weight: bold; display: block; width: 250px;" />
+				    
+						<h:outputText value="Tipo Intervento Personalizzato" />
+						<h:outputText style="font-weight: bold"
+						value="#{fglInterventoBean.datiInterventoBean.descTipoInterventoCustom!=null ? fglInterventoBean.datiInterventoBean.descTipoInterventoCustom : '-'}" />
+						
+		 			    <p:selectOneButton value="#{fglInterventoBean.datiInterventoBean.flagPrimaErRinnovo}" required="true" requiredMessage="Specificare se l'intervento è di prima erogazione o rinnovo" >
+	         				<f:selectItems value="#{fglInterventoBean.lstModalitaIntervento}" var="tipo" itemLabel="#{tipo.descrizione}" itemValue="#{tipo}"/>
+	         			</p:selectOneButton>
+	         			
+		      			<h:outputText value="Data inizio" /> 
+		          		<p:selectOneMenu value="#{fglInterventoBean.datiInterventoBean.tipoDataInizio}" >
+		          			<f:selectItems value="#{fglInterventoBean.lstTipoPeriodo}" var="tipo" itemLabel="#{tipo.descrizione}" itemValue="#{tipo}"/>
+		          			<p:ajax event="change" update="dataI,pannel"/>
+		          		</p:selectOneMenu>
+		      			
+		      			<h:panelGroup>
+			      			<h:outputText value=" Dal" /><p:spacer width="10px;"/> 
+			        		<webred:pnlData id="dataI" 
+			        		dataValue="#{fglInterventoBean.datiInterventoBean.inizioDa}" dataPattern="dd/MM/yyyy" 
+			        		dataValMes="Data Inizio non valida" dataConMes="Data Inizio non valida"
+			        		dataPatternLabel="gg/mm/aaaa"  yearRange="c-10:c+10" />
+		        		</h:panelGroup>
+		        			
+		        		<p:outputPanel  id="pannel">
+		        		<h:panelGrid columns="3" rendered="#{fglInterventoBean.datiInterventoBean.tipoDataInizio eq '1'}">
+			      			<h:outputText value=" Al"/> 
+			      			<p:spacer width="20"/> 
+			      			<webred:pnlData id="pnlDataInizio" 
+			      			dataValue="#{fglInterventoBean.datiInterventoBean.inizioA}" dataPattern="dd/MM/yyyy" 
+			      			dataValMes="Data Fine non valida" dataConMes="Data Fine non valida"
+			      			dataPatternLabel="gg/mm/aaaa"  yearRange="c-10:c+10" />
+		      			</h:panelGrid>
+		      			</p:outputPanel>
+		      			<p:spacer width="10px;"/>
+		      			   			
+			      		<h:outputText value="Data fine" />
+			          		<p:selectOneMenu value="#{fglInterventoBean.datiInterventoBean.tipoDataFine}" >
+			          			<f:selectItems value="#{fglInterventoBean.lstTipoPeriodo}" var="tipo" itemLabel="#{tipo.descrizione}" itemValue="#{tipo}"/>
+			          			<p:ajax event="change"   update="dataF,pannelf"/>
+			          		</p:selectOneMenu>
+		      			
+		      			<h:panelGroup>
+			      			<h:outputText value=" Dal" /> <p:spacer width="10px;"/>
+			        		<webred:pnlData id="dataF"
+			        		dataValue="#{fglInterventoBean.datiInterventoBean.fineDa}" dataPattern="dd/MM/yyyy" 
+			        		dataValMes="Data Inizio non valida" dataConMes="Data Inizio non valida"
+			        		dataPatternLabel="gg/mm/aaaa"  yearRange="c-10:c+10" />
+		        		</h:panelGroup>
+		        		
+		        		<p:outputPanel id="pannelf">
+		        		<h:panelGrid  columns="3" rendered="#{fglInterventoBean.datiInterventoBean.tipoDataFine eq '1'}" >
+			      			<h:outputText value=" Al "/>
+			      			<p:spacer width="20"/> 
+			      			<webred:pnlData id="pnlDataFine"
+			      			dataValue="#{fglInterventoBean.datiInterventoBean.fineA}" dataPattern="dd/MM/yyyy" 
+			      			dataValMes="Data Fine non valida" dataConMes="Data Fine non valida"
+			      			dataPatternLabel="gg/mm/aaaa"  yearRange="c-10:c+10" />
+		      			</h:panelGrid>
+		      			</p:outputPanel>
+		      			<p:spacer width="10px;"/>
+				   </h:panelGrid>
+				   <h:panelGrid columns="1"  width="100%" styleClass="#{cc.attrs.styleClass}">
+				   		<h:outputLabel value="Specifiche intervento e soggetto erogante" />
+				   		<p:inputTextarea value="#{fglInterventoBean.datiInterventoBean.note}" maxlength="4000" rows="2" cols="90" counter="display" 
+				   		                 counterTemplate="{0} caratteri rimanenti"/>
+				   	    <h:outputText id="display" />
+				   </h:panelGrid>
+				   
+				   <p:spacer height="10"/>
+			
+				   <h:panelGroup id="pnlDettaglioIntervento">
+				   	  
+				    <!-- FORM VOUCHER (1) -->
+					<h:panelGrid columns="8"  width="100%" id="pnlSAD" rendered="#{fglInterventoBean.datiInterventoBean.idTipoIntrCustom eq 1}" styleClass="#{cc.attrs.styleClass}">
+					       
+						   <h:outputLabel value="Aumento Ore n°"  for="txt1AumentoOre"/> 
+						   <p:spinner id="txt1AumentoOre" value="#{fglInterventoBean.datiInterventoBean.sad.aumentoOre}" min="0" size="4"/>	
+						  
+						   <h:outputLabel value="Diminuzione Ore n°"  for="txt1DiminOre"/> 
+						   <p:spinner id="txt1DiminOre" value="#{fglInterventoBean.datiInterventoBean.sad.diminuzioneOre}" min="0" size="4"/>	
+						    
+						    <h:outputLabel value="Dal*" /> 
+			         		<webred:pnlData dataValue="#{fglInterventoBean.datiInterventoBean.sad.aumDimOreDal}" dataPattern="dd/MM/yyyy" 
+			         		dataReq="#{fglInterventoBean.datiInterventoBean.idTipoIntrCustom eq 1}" dataReqMes="Data Aumento/Diminuzione Ore è un campo obbligatorio" 
+			         		dataValMes="Data Aumento/Diminuzione Ore non valida" dataConMes="Data Aumento/Diminuzione Ore non valida"
+			         		dataPatternLabel="gg/mm/aaaa"  yearRange="c-1:c+10" />
+			         		
+			         		<h:outputLabel value="" />
+			         		<h:outputLabel value="" />
+			         		
+			         		<h:outputLabel value="Ore Previste*"  />
+			               <h:panelGrid columns="2">
+				         	   <p:selectOneMenu value="#{fglInterventoBean.datiInterventoBean.sad.tipoOrePreviste}" 
+				         		   				  required="#{fglInterventoBean.datiInterventoBean.idTipoIntrCustom eq 1}" requiredMessage="Ore Previste è un campo obbligatorio">
+							   			<f:selectItems value="#{fglInterventoBean.lstTipoOreVoucher}" var="tipo" itemLabel="#{tipo.descrizione}" itemValue="#{tipo}"/>
+							   			<p:ajax event="change" update="txt1OrePreviste" />
+							   </p:selectOneMenu>
+				         		
+				         	  <h:panelGroup id="txt1OrePreviste">
+				          	   		<p:spinner value="#{fglInterventoBean.datiInterventoBean.sad.orePreviste}"  rendered="#{fglInterventoBean.datiInterventoBean.sad.tipoOrePreviste eq 'Giornaliere' or fglInterventoBean.datiInterventoBean.sad.tipoOrePreviste==null }" min="0" max="24"  size="4" />	
+							 		<p:spinner value="#{fglInterventoBean.datiInterventoBean.sad.orePreviste}"  rendered="#{fglInterventoBean.datiInterventoBean.sad.tipoOrePreviste eq 'Settimanali'}" min="0" max="168"  size="4" />	
+							 		<p:spinner value="#{fglInterventoBean.datiInterventoBean.sad.orePreviste}"  rendered="#{fglInterventoBean.datiInterventoBean.sad.tipoOrePreviste eq 'Mensili'}" min="0" max="744"  size="4" />	
+				          	   		<p:spinner value="#{fglInterventoBean.datiInterventoBean.sad.orePreviste}"  rendered="#{fglInterventoBean.datiInterventoBean.sad.tipoOrePreviste eq 'Annuali'}" min="0" max="8760"  size="4"  />	
+							   </h:panelGroup>	
+						   </h:panelGrid>
+						   
+						   <h:outputLabel value="n° accessi*"  for="txt1NumAccessi"/> 
+						   <p:spinner id="txt1NumAccessi" value="#{fglInterventoBean.datiInterventoBean.sad.numAccessi}"  min="0" size="4"/>	
+						      
+						   <h:outputLabel value="Contributo Utente* €"  for="txt1Contributo"/> 
+						   <p:inputText id="txt1Contributo" value="#{fglInterventoBean.datiInterventoBean.sad.contributioUtente}"  style="width:90px;"
+						   			required="#{fglInterventoBean.datiInterventoBean.idTipoIntrCustom eq 1}" 
+						   			requiredMessage="Contributo Utente è un campo obbligatorio" 
+						   			converterMessage="Il campo 'Contributo Utente' non è corretto: inserire valore numerico intero o decimale (es.12.34)">
+							        <p:ajax event="change" update="txt1Contributo" />
+						   </p:inputText>
+						   
+					   </h:panelGrid>
+					   
+					   <!-- FORM CONTRIBUTI ECONOMICI (2) -->
+					   <h:panelGroup width="100%" id="pnlbuonosoc" rendered="#{fglInterventoBean.datiInterventoBean.idTipoIntrCustom eq 2}" styleClass="#{cc.attrs.styleClass}">
+					   	   <table>
+					   	   <tr><td>
+					   	   <h:outputLabel value="Contributo Richiesto* €"  for="txt2ContrRich"/>
+					   	   </td><td> 
+						   <p:inputText id="txt2ContrRich" value="#{fglInterventoBean.datiInterventoBean.contrEco.valRichiesto}" style="width:50px;" 
+						   			required="#{fglInterventoBean.datiInterventoBean.idTipoIntrCustom eq 2}" requiredMessage="Contributo Richiesto è un campo obbligatorio" 
+						   			converterMessage="Il campo 'Contributo Richiesto' non è corretto:inserire valore numerico intero o decimale (es.12.34)">
+							        <p:ajax event="change" update="txt2ContrRich" />
+						   </p:inputText>
+					   	   </td><td>
+					   	   <h:outputLabel value="Periodo Erogazione*"  /> 
+					   	   </td><td>
+			         		<p:selectOneMenu value="#{fglInterventoBean.datiInterventoBean.contrEco.tipoPeriodoErogazione}" 
+			         			required="#{fglInterventoBean.datiInterventoBean.idTipoIntrCustom eq 2}"  requiredMessage="Periodo Erogazione è un campo obbligatorio">
+						   		<f:selectItems value="#{fglInterventoBean.lstTipoPeriodoErogazione}" var="tipo" itemLabel="#{tipo.descrizione}" itemValue="#{tipo}"/>
+						   </p:selectOneMenu>
+					   	   </td>
+					   	   <td><h:outputLabel value="Richiesto per*"/></td>
+					   	   <td>
+					   	   <h:panelGroup>
+					   	   <p:inputText id="txtDestinatario2" style="width:200px;" disabled="#{fglInterventoBean.datiInterventoBean.contrSeStesso}" 
+					   	   				required="#{!fglInterventoBean.datiInterventoBean.contrSeStesso}"
+					   	   				requiredMessage="Specificare soggetto per cui è richiesto l'intervento e selezionare se stesso"
+					   	   				value="#{fglInterventoBean.datiInterventoBean.contrEco.richAltroDesc}" title="Specificare il soggetto per cui è richiesto il contributo" />	
+					   	   <p:spacer width="10px"/>
+					   	   <p:selectBooleanCheckbox value="#{fglInterventoBean.datiInterventoBean.contrSeStesso}" itemLabel="Se stesso" >
+					   	   		<p:ajax update="txtDestinatario2" event="change" />
+					   	   </p:selectBooleanCheckbox>
+					   	   </h:panelGroup>
+					   		</td></tr><tr><td>
+					   	    <h:outputLabel value="Tipo contributo"  />
+					   	    </td><td colspan="3"> 
+					   	    <h:panelGrid columns="3" cellpadding="0" cellspacing="0">
+			           		    <p:selectOneMenu value="#{fglInterventoBean.datiInterventoBean.ceTipoContributo}">
+							   		<f:selectItem noSelectionOption="true" itemLabel=" - seleziona - " />
+							   		<f:selectItems value="#{fglInterventoBean.lstTipoContributo}" var="tipo" itemLabel="#{tipo.descrizione}" itemValue="#{tipo}"/>
+							   </p:selectOneMenu>
+							   <p:spacer width="12" />
+				               <webredcs:tooltipInfo title="Tipo contributo: che cosa si intende" 
+				               		valueList="#{fglInterventoBean.lstTipoContributoTooltip}"/>
+			               </h:panelGrid>
+					   	   </td><td>
+					   	   <h:outputLabel value="Tipo Riscossione*"  />
+					   	   </td><td> 
+			         		<p:selectOneMenu value="#{fglInterventoBean.datiInterventoBean.contrEco.tipoRiscossione}" 
+			         		   		required="#{fglInterventoBean.datiInterventoBean.idTipoIntrCustom eq 2}" requiredMessage="Tipo Riscossione è un campo obbligatorio">
+						   		<f:selectItem noSelectionOption="true" itemLabel=" - seleziona - " />
+						   		<f:selectItems value="#{fglInterventoBean.lstTipoRiscossione}" var="tipo" itemLabel="#{tipo.descrizione}" itemValue="#{tipo}"/>
+						   		<p:ajax update="pnlDelegatoAccredito2" event="change" listener="#{fglInterventoBean.datiInterventoBean.onChangeTipoRiscossione}" />
+						   </p:selectOneMenu>
+						   </td></tr>
+						   </table>
+					   </h:panelGroup>
+					  
+					   <h:panelGroup id="pnlDelegatoAccredito2" >
+					   
+					   <webredcs:pnlComponenteOAltro header="Familiare delegato alla riscossione" iComponenteOAltro="#{fglInterventoBean.datiInterventoBean.contrEcoComponente}" 
+					   								 required="#{fglInterventoBean.datiInterventoBean.idTipoIntrCustom eq 2 and fglInterventoBean.datiInterventoBean.contrEco.tipoRiscossione eq 'Delegato'}"
+					   								 rendered="#{fglInterventoBean.datiInterventoBean.idTipoIntrCustom eq 2 and fglInterventoBean.datiInterventoBean.contrEco.tipoRiscossione eq 'Delegato'}" styleClass="#{cc.attrs.styleClass}"/>
+				
+			      			<h:panelGrid  columns="1" width="100%" styleClass="#{cc.attrs.styleClass}" 
+									  rendered="#{fglInterventoBean.datiInterventoBean.idTipoIntrCustom eq 2 and fglInterventoBean.datiInterventoBean.contrEco.tipoRiscossione eq 'Accredito'}">
+			          
+							<h:panelGrid  columns="4" styleClass="#{cc.attrs.styleClass}">
+			           			<h:outputLabel value="Accredito a " />
+			           			<p:inputText style="text-transform: capitalize; width:300px;" value="#{fglInterventoBean.datiInterventoBean.contrEco.accreditoA}"  maxlength="200" 
+			           						 required="#{fglInterventoBean.datiInterventoBean.contrEco.tipoRiscossione eq 'Accredito'}" requiredMessage="Inserire Accredito A:"/>
+			       				
+			       				<h:outputLabel value="IBAN " />
+			       				<p:inputText style="text-transform: capitalize; width:100px;" maxlength="27" value="#{fglInterventoBean.datiInterventoBean.contrEco.iban}" 
+			       				required="#{fglInterventoBean.datiInterventoBean.contrEco.tipoRiscossione eq 'Accredito'}" requiredMessage="IBAN mancante" />
+									
+			          			</h:panelGrid>
+			      			</h:panelGrid>
+					   </h:panelGroup>
+					   
+					   <!-- FORM CENTRO DIURNO INTEGRATO (3)-->
+					   <h:panelGrid columns="6" width="80%" id="pnlCentrod" rendered="#{fglInterventoBean.datiInterventoBean.idTipoIntrCustom eq 3}" styleClass="#{cc.attrs.styleClass}">	   
+					   	   <h:outputLabel value="Quota Utente*  €"  /> 
+		         		   <p:selectOneMenu value="#{fglInterventoBean.datiInterventoBean.centrod.tipoQuotaUtente}" required="true" >
+						  		<f:selectItem noSelectionOption="true" itemLabel=" - seleziona - " />
+						  	    <f:selectItems value="#{fglInterventoBean.lstTipoQuotaCentroD}" var="tipo" itemLabel="#{tipo.descrizione}" itemValue="#{tipo}"/>
+						   </p:selectOneMenu>
+			         			
+		         		   <h:outputLabel value="Contributo Utente €" for="txt3Contributo" /> 
+		          		   <p:inputText id="txt3Contributo" value="#{fglInterventoBean.datiInterventoBean.centrod.contributioUtente}" style="width:50px;" 
+		          		   				converterMessage="Il campo 'Contributo Utente' non è corretto: inserire un valore numerico intero o decimale (es.12.34)">
+							            <p:ajax event="change" update="txt3Contributo" />
+						   </p:inputText>
+			         			
+					   	   <p:selectBooleanCheckbox value="#{fglInterventoBean.datiInterventoBean.centrodDieta}" itemLabel="Dieta Speciale"/>
+					   	   
+					   	   <p:selectBooleanCheckbox value="#{fglInterventoBean.datiInterventoBean.centrodTrasporto}" itemLabel="Trasporto"/>
+					   </h:panelGrid>
+			
+					   
+					   <!-- FORM PASTI (4) -->
+					   <h:panelGrid columns="5" width="80%" id="pnlPasti" rendered="#{fglInterventoBean.datiInterventoBean.idTipoIntrCustom eq 4}" styleClass="#{cc.attrs.styleClass}">	   
+					   	   <h:outputLabel value="Quota Utente*  €"  /> 
+			         	   <p:selectOneMenu value="#{fglInterventoBean.datiInterventoBean.pasti.tipoQuotaUtente}" required="true" >
+						   		<f:selectItem noSelectionOption="true" itemLabel=" - seleziona - " />
+						   		<f:selectItems value="#{fglInterventoBean.lstTipoQuotaPasti}" var="tipo" itemLabel="#{tipo.descrizione}" itemValue="#{tipo}"/>
+						   </p:selectOneMenu>
+			         			
+			         		   <h:outputLabel value="Contributo Utente €"  for="txt4Contributo"/> 
+			          		<p:inputText id="txt4Contributo" value="#{fglInterventoBean.datiInterventoBean.pasti.contributioUtente}" style="width:50px;" 
+			          		   			 converterMessage="Il campo 'Contributo Utente' non è corretto:inserire valore numerico intero o decimale (es.12.34)">
+							            <p:ajax event="change" update="txt4Contributo" />
+						     </p:inputText>
+			         			
+					   	   <p:selectBooleanCheckbox value="#{fglInterventoBean.datiInterventoBean.pastiDieta}" itemLabel="Dieta Speciale"/>
+					   </h:panelGrid>
+					 
+					   <!-- FORM BUONO SOCIALE (5)-->
+					   <h:panelGrid columns="6" width="100%" id="pnlBuonoSociale" rendered="#{fglInterventoBean.datiInterventoBean.idTipoIntrCustom eq 5}" styleClass="#{cc.attrs.styleClass}">
+					   	   
+					   	   <h:outputLabel value="Gestione*"  /> 
+			         		   <p:selectOneMenu value="#{fglInterventoBean.datiInterventoBean.buonosoc.tipoGestione}" 
+			         		   		required="#{fglInterventoBean.datiInterventoBean.idTipoIntrCustom eq 5}"  requiredMessage="Gestione è un campo obbligatorio">
+						   		<f:selectItem noSelectionOption="true" itemLabel=" - seleziona - " />
+						   		<f:selectItems value="#{fglInterventoBean.lstTipoGestione}" var="tipo" itemLabel="#{tipo.descrizione}" itemValue="#{tipo}"/>
+						   </p:selectOneMenu>
+						   
+						   <h:outputLabel value="Deroghe*"  /> 
+			         		   <p:selectOneMenu value="#{fglInterventoBean.datiInterventoBean.buonosoc.tipoDeroghe}" 
+			         		   		required="#{fglInterventoBean.datiInterventoBean.idTipoIntrCustom eq 5}"  requiredMessage="Deroghe è un campo obbligatorio">
+						   		<f:selectItem noSelectionOption="true" itemLabel=" - seleziona - " />
+						   		<f:selectItems value="#{fglInterventoBean.lstTipoDeroghe}" var="tipo" itemLabel="#{tipo.descrizione}" itemValue="#{tipo}"/>
+						   </p:selectOneMenu>
+					   	   
+					   	   <h:outputLabel value="Richiesta per"/>
+					   	   <h:panelGroup>
+					   	   <p:inputText id="txtDestinatario5" style="width:200px;" disabled="#{fglInterventoBean.datiInterventoBean.buonoSeStesso}" 
+					   	   				required="#{!fglInterventoBean.datiInterventoBean.buonoSeStesso}"
+					   	   				requiredMessage="Specificare soggetto per cui è richiesto l'intervento o selezionare 'se stesso'"
+					   	   				value="#{fglInterventoBean.datiInterventoBean.buonosoc.richAltroDesc}" title="Specificare il soggetto per cui è richiesto il buono sociale" />	
+					   	   <p:spacer width="10px"/>
+					   	   <p:selectBooleanCheckbox value="#{fglInterventoBean.datiInterventoBean.buonoSeStesso}" itemLabel="Se stesso" >
+					   	   		<p:ajax update="txtDestinatario5" event="change" />
+					   	   </p:selectBooleanCheckbox>
+					   	   
+					   	   </h:panelGroup>
+					   	   
+					   	   <h:outputLabel value="Periodo Erogazione*"  /> 
+			         	   <p:selectOneMenu value="#{fglInterventoBean.datiInterventoBean.buonosoc.tipoPeriodoErogazione}" 
+			         		   		required="#{fglInterventoBean.datiInterventoBean.idTipoIntrCustom eq 5}"  requiredMessage="Periodo Erogazione è un campo obbligatorio">
+						   		<f:selectItem noSelectionOption="true" itemLabel=" - seleziona - " />
+						   		<f:selectItems value="#{fglInterventoBean.lstTipoPeriodoErogazione}" var="tipo" itemLabel="#{tipo.descrizione}" itemValue="#{tipo}"/>
+						   </p:selectOneMenu>
+					   	   
+					   	   <h:outputLabel value="Tipo Riscossione*"  /> 
+			         	   <p:selectOneMenu value="#{fglInterventoBean.datiInterventoBean.buonosoc.tipoRiscossione}" 
+			         		   		required="#{fglInterventoBean.datiInterventoBean.idTipoIntrCustom eq 5}" requiredMessage="Tipo Riscossione è un campo obbligatorio">
+						   		<f:selectItem noSelectionOption="true" itemLabel=" - seleziona - " />
+						   		<f:selectItems value="#{fglInterventoBean.lstTipoRiscossione}" var="tipo" itemLabel="#{tipo.descrizione}" itemValue="#{tipo}"/>
+						   		<p:ajax update="pnlDelegatoAccredito5" event="change" />
+						   </p:selectOneMenu>
+					   	 	
+					   </h:panelGrid>
+					  
+					   <h:panelGroup id="pnlDelegatoAccredito5" >
+					   
+					   <webredcs:pnlComponenteOAltro header="Familiare delegato alla riscossione" iComponenteOAltro="#{fglInterventoBean.datiInterventoBean.buonoSocComponente}" 
+					   								 required="#{fglInterventoBean.datiInterventoBean.idTipoIntrCustom eq 5 and fglInterventoBean.datiInterventoBean.buonosoc.tipoRiscossione eq 'Delegato'}"
+					   								 rendered="#{fglInterventoBean.datiInterventoBean.idTipoIntrCustom eq 5 and fglInterventoBean.datiInterventoBean.buonosoc.tipoRiscossione eq 'Delegato'}" styleClass="#{cc.attrs.styleClass}"/>
+				
+			      			<h:panelGrid  columns="1" width="100%" styleClass="#{cc.attrs.styleClass}" 
+									  rendered="#{fglInterventoBean.datiInterventoBean.idTipoIntrCustom eq 5 and fglInterventoBean.datiInterventoBean.buonosoc.tipoRiscossione eq 'Accredito'}">
+			          
+							<h:panelGrid  columns="4" styleClass="#{cc.attrs.styleClass}">
+			           			<h:outputLabel value="Accredito a " />
+			           			<p:inputText style="text-transform: capitalize; width:300px;" value="#{fglInterventoBean.datiInterventoBean.buonosoc.accreditoA}"  maxlength="200" 
+			           						 required="#{fglInterventoBean.datiInterventoBean.buonosoc.tipoRiscossione eq 'Accredito'}" requiredMessage="Inserire Accredito A:"/>
+			       				
+			       				<h:outputLabel value="IBAN " />
+			       				<p:inputText style="text-transform: capitalize; width:100px;" maxlength="27" value="#{fglInterventoBean.datiInterventoBean.buonosoc.iban}" 
+			       				required="#{fglInterventoBean.datiInterventoBean.buonosoc.tipoRiscossione eq 'Accredito'}" requiredMessage="IBAN mancante" />
+									
+			          			</h:panelGrid>
+			      			</h:panelGrid>
+					   </h:panelGroup>
+					   
+					    <!-- INTERVENTO RESIDENZIALE ADULTI (6)-->
+					   <h:panelGrid columns="4" width="100%" id="pnlIntResAdulti" rendered="#{fglInterventoBean.datiInterventoBean.idTipoIntrCustom eq 6}" styleClass="#{cc.attrs.styleClass}">
+					   	  
+					   	   	    <h:outputLabel value="Con Retta*"  /> 
+			           		    <p:selectOneMenu value="#{fglInterventoBean.datiInterventoBean.raTipoRetta}" 
+			          		   		required="#{fglInterventoBean.datiInterventoBean.idTipoIntrCustom eq 6}"  
+			          		   		requiredMessage="Il campo Con Retta è obbligatorio">
+							   		<f:selectItem noSelectionOption="true" itemLabel=" - seleziona - " />
+							   		<f:selectItems value="#{fglInterventoBean.lstTipoRetta}" var="tipo" itemLabel="#{tipo.descrizione}" itemValue="#{tipo}"/>
+							   </p:selectOneMenu>
+						   
+						       <h:outputLabel value="Valore retta* €" for="txt6Retta" style="width:50px;"/> 
+							   <h:panelGroup>
+							   <p:inputText id="txt6Retta" value="#{fglInterventoBean.datiInterventoBean.resiAdu.valoreRetta}" style="width:90px;" 
+							   			required="#{fglInterventoBean.datiInterventoBean.idTipoIntrCustom eq 6}" 
+							   			requiredMessage="Il campo Valore retta è obbligatorio" 
+		          		   			    converterMessage="Il campo 'Valore retta' non è corretto:inserire valore numerico intero o decimale (es.12.34)">
+							            <p:ajax event="change" update="txt6Retta" />
+					    		</p:inputText>
+					    		<p:spacer width="3px;"/><h:outputLabel value="(IVA inclusa)" style="font-size:10px;"/> 
+					    		</h:panelGroup>
+					    		
+					    	   <h:outputLabel value="Contributo a favore dell'ospite €" for="txt6Contr" style="width:50px;"/> 
+							   <p:inputText id="txt6Contr" value="#{fglInterventoBean.datiInterventoBean.resiAdu.contrPerOspite}" style="width:90px;" 
+		          		   			    converterMessage="Il campo 'Contributo a favore[...]' non è corretto:inserire valore numerico intero o decimale (es.12.34)">
+										 <p:ajax event="change" update="txt6Contr" />
+					    		</p:inputText>
+					    		
+					    	    <h:outputLabel value="Compartecipazione alla spesa dell'ospite €" for="txt6Compart" style="width:50px;"/> 
+							    <p:inputText id="txt6Compart" value="#{fglInterventoBean.datiInterventoBean.resiAdu.compartecipazione}" style="width:90px;" 
+		          		   			    converterMessage="Il campo 'Compartecipazione alle spese[...]' non è corretto:inserire valore numerico intero o decimale (es.12.34)">
+							            <p:ajax event="change" update="txt6Compart" />
+					    		</p:inputText>
+					    		
+					    		<h:outputLabel value="Comunità *" style="width:50px;"/> 
+			       			    <webredcs:pnlListaComunita label="Comunità" iComunita="#{fglInterventoBean.datiInterventoBean.raComunita}"/>
+					    		
+					    		<h:outputLabel value="Se altro specificare" />
+			           			<p:inputText value="#{fglInterventoBean.datiInterventoBean.resiAdu.pressoAltro}"  />
+			       				
+					   </h:panelGrid>
+					 
+					 	<!-- RESIDENZIALITA MINORE (7)-->
+					   <h:panelGrid columns="1" width="100%" id="pnlResiMinore" rendered="#{fglInterventoBean.datiInterventoBean.idTipoIntrCustom eq 7}" styleClass="#{cc.attrs.styleClass}">
+					   	   
+					   	<h:panelGrid columns="2" styleClass="#{cc.attrs.styleClass}" style="vertical-align:top;" width="100%">
+					   	  
+					   	   <h:panelGroup>
+						   	   <h:outputLabel value="Spese extra retta - Importo* €"  for="txt7ImportoExtra"/><p:spacer width="10px;"></p:spacer>
+			          		   <p:inputText id="txt7ImportoExtra" value="#{fglInterventoBean.datiInterventoBean.minore.importo}" style="width:90px;" 
+			          		   			    required="#{fglInterventoBean.datiInterventoBean.idTipoIntrCustom eq 7}" 
+			          		   			    requiredMessage="Campo Importo Extra Retta è obbligatorio"	
+			          		   			    converterMessage="Il campo 'Importo' non è corretto:inserire valore numerico intero o decimale (es.12.34)">
+								            <p:ajax event="change" update="txt7ImportoExtra" />
+							    </p:inputText>
+						    </h:panelGroup>
+						    
+						    <h:panelGroup>
+			          				<p:selectBooleanCheckbox value="#{fglInterventoBean.datiInterventoBean.rmSenzaProvvedimento}" itemLabel="Senza provvedimento A.G.">
+				          		    	<p:ajax update="txtNumProvvAG,txtDtProvvAG" event="change" />
+				          		 	</p:selectBooleanCheckbox>
+				          		 	
+			         		    	<p:spacer width="20px;"/>
+			         		    	
+			         		    	<h:outputLabel value="Numero"  /><p:spacer width="5px;"/> 
+			          		   		<p:inputText id="txtNumProvvAG" value="#{fglInterventoBean.datiInterventoBean.minore.NProvvAg}" style="width:90px;" 
+			          		   			    required="#{!fglInterventoBean.datiInterventoBean.rmSenzaProvvedimento}" 
+			          		   			    disabled="#{fglInterventoBean.datiInterventoBean.rmSenzaProvvedimento}"
+			          		   			    requiredMessage="Il campo Num.Provv.A.G. è obbligatorio"/>
+			         				
+			         				<p:spacer width="10px;"/>
+			         				
+			         				<h:outputLabel value="Data"  /> <p:spacer width="5px;"/> 
+			          		   		<webred:pnlData id="txtDtProvvAG" dataValue="#{fglInterventoBean.datiInterventoBean.minore.dtProvAg}" dataPattern="dd/MM/yyyy" 
+			          		   				dataReq="#{!fglInterventoBean.datiInterventoBean.rmSenzaProvvedimento}" 
+			          		   				dataReqMes="Il campo Data.Provv. A.G. obbligatorio"
+			          		   				disabled="#{fglInterventoBean.datiInterventoBean.rmSenzaProvvedimento}"
+						         		dataPatternLabel="gg/mm/aaaa"  maxDate="#{commonSessionMan.currentDate}" yearRange="c-10:c+0" />
+			         		  		
+			          		</h:panelGroup>
+			          		
+			          		<p:selectManyCheckbox value="#{fglInterventoBean.datiInterventoBean.rmSpeseExtra}" 
+	        		    			      styleClass="#{cc.attrs.styleClass}"  layout="grid" columns="1">
+					            <f:selectItems value="#{fglInterventoBean.lstSpeseExtra}" var="tipo" itemLabel="#{tipo.descrizione}" itemValue="#{tipo}" />
+					        </p:selectManyCheckbox>
+			          					
+			          		<h:panelGrid columns="2" styleClass="#{cc.attrs.styleClass}" width="100%">
+				          		  
+				          		    <h:outputLabel value="Rientri previsti presso la famiglia d'origine*"  style="width:90px;"/> 
+				           		    <p:selectOneMenu value="#{fglInterventoBean.datiInterventoBean.rmTipoRientriFam}" 
+				          		   		required="#{fglInterventoBean.datiInterventoBean.idTipoIntrCustom eq 7}"  
+				          		   		requiredMessage="Il campo Tipo rientri in famiglia(...) è obbligatorio">
+								   		<f:selectItem noSelectionOption="true" itemLabel=" - seleziona - " />
+								   		<f:selectItems value="#{fglInterventoBean.lstTipoRientriFam}" var="tipo" itemLabel="#{tipo.descrizione}" itemValue="#{tipo}"/>
+								   </p:selectOneMenu>
+								   
+								    <h:outputLabel value="Con Retta*"  /> 
+				           		    <p:selectOneMenu value="#{fglInterventoBean.datiInterventoBean.rmTipoRetta}" 
+				          		   		required="#{fglInterventoBean.datiInterventoBean.idTipoIntrCustom eq 7}"  
+				          		   		requiredMessage="Il campo Con Retta è obbligatorio">
+								   		<f:selectItem noSelectionOption="true" itemLabel=" - seleziona - " />
+								   		<f:selectItems value="#{fglInterventoBean.lstTipoRetta}" var="tipo" itemLabel="#{tipo.descrizione}" itemValue="#{tipo}"/>
+								   </p:selectOneMenu>
+								   
+								   <h:outputLabel value="Valore retta* €" for="txt7Retta" style="width:50px;"/> 
+								   <h:panelGroup>
+								   <p:inputText id="txt7Retta" value="#{fglInterventoBean.datiInterventoBean.minore.valoreRetta}" style="width:90px;" 
+								   			required="#{fglInterventoBean.datiInterventoBean.idTipoIntrCustom eq 7}" 
+								   			requiredMessage="Il campo Valore retta è obbligatorio" 
+			          		   			    converterMessage="Il campo 'Valore retta' non è corretto:inserire valore numerico intero o decimale (es.12.34)">
+								            <p:ajax event="change" update="txt7Retta" />
+						    		</p:inputText>
+						    		<p:spacer width="3px;"/><h:outputLabel value="(IVA inclusa)" style="font-size:10px;"/> 
+								   </h:panelGroup>
+								   
+								    <h:outputLabel value="Contributo mensile della famiglia d'origine* €" for="txt7ContribFamiglia" style="width:50px;"/> 
+								    <p:inputText id="txt7ContribFamiglia" value="#{fglInterventoBean.datiInterventoBean.minore.contributoMensileFamiOri}" style="width:90px;" 
+								   			required="#{fglInterventoBean.datiInterventoBean.idTipoIntrCustom eq 7}" 
+								   			requiredMessage="Il campo Contributo della famiglia d'origine è obbligatorio" 
+		          		   			    	converterMessage="Il campo 'Contributo della famiglia d'origine' non è corretto:inserire valore numerico intero o decimale (es.12.34)">
+							            <p:ajax event="change" update="txt7ContribFamiglia" />
+								     </p:inputText>
+								     
+								     <h:outputLabel value="Comunità" style="width:50px;"/>
+									<webredcs:pnlListaComunita label="Comunità" iComunita="#{fglInterventoBean.datiInterventoBean.rmComunita}"/>
+								     
+						      </h:panelGrid>
+						      
+						      </h:panelGrid>
+						      
+				      	      <webredcs:pnlComponenteOAltro header="Minore inserito con" iComponenteOAltro="#{fglInterventoBean.datiInterventoBean.rmComponente}" 
+			    			    rendered="#{fglInterventoBean.datiInterventoBean.idTipoIntrCustom eq 7}" styleClass="#{cc.attrs.styleClass}" required="false"/>
+							
+					   </h:panelGrid>
+					   
+					   <!-- AFFIDO FAMILIARE (8)-->
+					   <h:panelGrid columns="1" width="100%" id="pnlAffFam" rendered="#{fglInterventoBean.datiInterventoBean.idTipoIntrCustom eq 8}" styleClass="#{cc.attrs.styleClass}">
+					   	  
+					   	  <h:panelGrid columns="3" styleClass="#{cc.attrs.styleClass}" width="100%">
+					   	   <h:panelGroup>
+						   	   <h:outputLabel value="Spese extra retta - Importo* €"  for="txt8ImportoExtra"/><p:spacer width="10px;"></p:spacer>
+			          		   <p:inputText id="txt8ImportoExtra" value="#{fglInterventoBean.datiInterventoBean.affido.importo}" style="width:90px;" 
+			          		   			    required="#{fglInterventoBean.datiInterventoBean.idTipoIntrCustom eq 8}" 
+			          		   			    requiredMessage="Campo Importo Extra Retta è obbligatorio"	
+			          		   			    converterMessage="Il campo 'Importo' non è corretto:inserire valore numerico intero o decimale (es.12.34)">
+								            <p:ajax event="change" update="txt8ImportoExtra" />
+							    </p:inputText>
+						    </h:panelGroup>
+						    <p:separator style="width:1px; height:10px"/>
+						    <h:panelGroup>
+			          				<p:selectBooleanCheckbox value="#{fglInterventoBean.datiInterventoBean.affSenzaProvvedimento}" itemLabel="Senza provvedimento A.G.">
+				          		    	<p:ajax update="txt8NumProvvAG,txt8DtProvvAG" event="change" />
+				          		 	</p:selectBooleanCheckbox>
+				          		 	
+			         		    	<p:spacer width="20px;"/>
+			         		    	
+			         		    	<h:outputLabel value="Numero"  /><p:spacer width="5px;"/> 
+			          		   		<p:inputText id="txt8NumProvvAG" value="#{fglInterventoBean.datiInterventoBean.affido.NProvvAg}" style="width:90px;" 
+			          		   			    required="#{!fglInterventoBean.datiInterventoBean.affSenzaProvvedimento}" 
+			          		   			    disabled="#{fglInterventoBean.datiInterventoBean.affSenzaProvvedimento}"
+			          		   			    requiredMessage="Il campo Num.Provv.A.G. è obbligatorio"/>
+			         				
+			         				<p:spacer width="10px;"/>
+			         				
+			         				<h:outputLabel value="Data"  /> <p:spacer width="5px;"/> 
+			          		   		<webred:pnlData id="txt8DtProvvAG" dataValue="#{fglInterventoBean.datiInterventoBean.affido.dtProvAg}" dataPattern="dd/MM/yyyy" 
+			          		   				dataReq="#{!fglInterventoBean.datiInterventoBean.affSenzaProvvedimento}" 
+			          		   				dataReqMes="Il campo Data.Provv. A.G. obbligatorio"
+			          		   				disabled="#{fglInterventoBean.datiInterventoBean.affSenzaProvvedimento}"
+						         		dataPatternLabel="gg/mm/aaaa"  maxDate="#{commonSessionMan.currentDate}" yearRange="c-10:c+0" />
+			         		  		
+			          		</h:panelGroup>
+			          		
+			          		<h:panelGrid columns="1" styleClass="#{cc.attrs.styleClass}" style="vertical-align:bottom;">
+				          		<p:selectManyCheckbox value="#{fglInterventoBean.datiInterventoBean.affSpeseExtra}" 
+		        		    			      styleClass="#{cc.attrs.styleClass}"  layout="grid" columns="2">
+						            <f:selectItems value="#{fglInterventoBean.lstSpeseExtra}" var="tipo" itemLabel="#{tipo.descrizione}" itemValue="#{tipo}" />
+						            <p:ajax event="change" update="txt8SpeseExtraAltro" />
+						        </p:selectManyCheckbox>
+						        
+						        <h:panelGroup>
+						        <h:outputLabel value="(se Altro, specificare)"  style="font-size:11px;width:90px;"/><p:spacer width="10px;"/> 
+						        <p:inputText id="txt8SpeseExtraAltro" value="#{fglInterventoBean.datiInterventoBean.affido.altroDesc}" style="width:90px;" 
+				          		   			 disabled="#{!fglInterventoBean.datiInterventoBean.affSpeseExtraAltro}"/>
+				          		</h:panelGroup>
+			          		</h:panelGrid>
+			          		
+			          		<p:separator style="width:1px; height:100px;"/>
+			          		
+			          		<h:panelGrid columns="4" styleClass="#{cc.attrs.styleClass}" width="100%">
+		         				
+		         				<p:selectBooleanCheckbox value="#{fglInterventoBean.datiInterventoBean.affConsensuale}" itemLabel="Consensuale"/>
+		          				<p:spacer/>
+		          				
+		          				<h:outputLabel value="Anno" for="txt8Anno" /> 
+							    <p:spinner id="txt8Anno" value="#{fglInterventoBean.datiInterventoBean.affido.anno}" min="2000" max="2100"  size="4"/>	
+							 	
+		        				<h:outputLabel value="Famiglia affidataria"/> 
+							    <p:inputText value="#{fglInterventoBean.datiInterventoBean.affido.famigliaAffidataria}" style="width: 150px;" />
+							    
+							    <h:outputLabel value="c.f. del capo famiglia" /> 
+							    <p:inputText value="#{fglInterventoBean.datiInterventoBean.affido.famCf}" maxlength="16" style="width: 150px;" />
+							    
+							    <h:outputLabel value="Indirizzo" /> 
+							    <p:inputText value="#{fglInterventoBean.datiInterventoBean.affido.famIndirizzo}" style="width: 150px;" />
+							    
+							    <h:outputLabel for="txt8Comune" value="Comune" />
+			       				<webred:pnlComune id="txt8Comune" comuneManBean="#{fglInterventoBean.datiInterventoBean.affComuneFamiglia}" />
+										
+			           			<h:outputLabel for="txt8Telefono" value="Telefono" />
+			           			<p:inputText id="txt8Telefono" style="width: 150px;" value="#{fglInterventoBean.datiInterventoBean.affido.famTel}" maxlength="50" />
+							 
+							 	<h:outputLabel for="txt8Cellulare" value="Cellulare" />
+			           			<p:inputText id="txt8Cellulare" style="width: 150px;" value="#{fglInterventoBean.datiInterventoBean.affido.famCellulare}" maxlength="50" />
+			           		</h:panelGrid>
+			           		
+			           		<p:separator />
+			           		<p:spacer/>
+			           		<p:separator />
+			           		
+			           		<h:panelGrid columns="1" styleClass="#{cc.attrs.styleClass}"  style="vertical-align:bottom;">
+							   <p:outputLabel for="smcAffTipo" value="Retta mensile affido" />
+							   <p:selectManyCheckbox id="smcAffTipo" value="#{fglInterventoBean.datiInterventoBean.affTipo}" 
+		        		    			      styleClass="#{cc.attrs.styleClass}"  layout="grid" columns="2">
+						            <f:selectItems value="#{fglInterventoBean.lstTipoAffido}" var="tipo" itemLabel="#{tipo.descrizione}" itemValue="#{tipo}" />
+						            <p:ajax event="change" update="txt8GiorniSettimanali" />
+						        </p:selectManyCheckbox>
+						        <h:panelGrid columns="2" styleClass="#{cc.attrs.styleClass}">
+							        <h:outputLabel value="n° giorni alla settimana" /> 
+							        <p:spinner id="txt8GiorniSettimanali" value="#{fglInterventoBean.datiInterventoBean.affido.affidoNumGiorniSett}" min="0" max="7"  size="1" 
+					          		   			 disabled="#{!fglInterventoBean.datiInterventoBean.affDiurnoGiornaliero}"/>
+							    </h:panelGrid>
+					        </h:panelGrid> 
+					        <p:separator style="width:1px; height:100px"/>
+						    <h:panelGrid columns="1" width="100%" styleClass="#{cc.attrs.styleClass}">
+ 							   <h:panelGrid columns="4" width="100%" styleClass="#{cc.attrs.styleClass}">  
+ 							   	   <h:outputLabel value="Quota Particolare €" for="txt8Retta" style="width:50px;"/> 
+								   <p:inputText id="txt8Retta" value="#{fglInterventoBean.datiInterventoBean.affido.quotaParticolare}" style="width:90px;"
+			          		   			    converterMessage="Il campo 'Quota particolare' non è corretto:inserire valore numerico intero o decimale (es.12.34)">
+								            <p:ajax event="change" update="txt8Retta" />
+						    		</p:inputText>
+ 							   
+								   <h:outputLabel value="Tipo Riscossione*"  /> 
+					         	   <p:selectOneMenu value="#{fglInterventoBean.datiInterventoBean.affido.tipoRiscossione}" 
+					         		   		required="#{fglInterventoBean.datiInterventoBean.idTipoIntrCustom eq 8}" requiredMessage="Tipo Riscossione è un campo obbligatorio">
+								   		 <f:selectItem noSelectionOption="true" itemLabel=" - seleziona - " />
+								   		 <f:selectItem itemLabel="Riscossione diretta" itemValue="Riscossione diretta" />
+								   		 <f:selectItem itemLabel="Accredito" itemValue="Accredito" />
+								   		<p:ajax update="pnlDelegatoAccredito8" event="change" />
+								   </p:selectOneMenu>
+				   	 		   </h:panelGrid>
+							   <h:panelGroup id="pnlDelegatoAccredito8" >
+							   		<p:spacer height="10px;" rendered="fglInterventoBean.datiInterventoBean.affido.tipoRiscossione eq ''"></p:spacer>
+							   		<h:panelGrid  columns="2" width="100%" styleClass="#{cc.attrs.styleClass}" 
+											  rendered="#{fglInterventoBean.datiInterventoBean.idTipoIntrCustom eq 8 and fglInterventoBean.datiInterventoBean.affido.tipoRiscossione eq 'Riscossione diretta'}">
+											  <h:outputLabel value="Intestazione" />
+											  <p:inputText style="text-transform: capitalize; width:300px;" value="#{fglInterventoBean.datiInterventoBean.affido.intestazione}"  maxlength="200" 
+						           						 required="#{fglInterventoBean.datiInterventoBean.affido.tipoRiscossione eq 'Riscossione diretta'}" requiredMessage="Inserire Intestazione"/> 
+									</h:panelGrid>
+										
+					      			<h:panelGrid  columns="1" width="100%" styleClass="#{cc.attrs.styleClass}" 
+											  rendered="#{fglInterventoBean.datiInterventoBean.idTipoIntrCustom eq 8 and fglInterventoBean.datiInterventoBean.affido.tipoRiscossione eq 'Accredito'}">
+										<h:panelGrid  columns="4" styleClass="#{cc.attrs.styleClass}">
+						           			<h:outputLabel value="Accredito a " />
+						           			<p:inputText style="text-transform: capitalize; width:300px;" value="#{fglInterventoBean.datiInterventoBean.affido.accreditoA}"  maxlength="200" 
+						           						 required="#{fglInterventoBean.datiInterventoBean.affido.tipoRiscossione eq 'Accredito'}" requiredMessage="Inserire Accredito A:"/>
+						       				
+						       				<h:outputLabel value="IBAN " />
+						       				<p:inputText style="text-transform: capitalize; width:100px;" maxlength="27" value="#{fglInterventoBean.datiInterventoBean.affido.iban}" 
+						       				required="#{fglInterventoBean.datiInterventoBean.affido.tipoRiscossione eq 'Accredito'}" requiredMessage="IBAN mancante" />	
+					          			</h:panelGrid>
+					      			</h:panelGrid>
+								</h:panelGroup>
+								<h:panelGrid columns="2" styleClass="#{cc.attrs.styleClass}">
+								    <h:outputLabel value="Contributo della famiglia d'origine €" for="txt8ContribFamiglia" style="width:50px;"/> 
+								    <p:inputText id="txt8ContribFamiglia" value="#{fglInterventoBean.datiInterventoBean.affido.contributoFamiOri}" style="width:90px;" 
+		          		   			    	converterMessage="Il campo 'Contributo della famiglia d'origine' non è corretto:inserire valore numerico intero o decimale (es.12.34)">
+							            <p:ajax event="change" update="txt8ContribFamiglia" />
+								     </p:inputText>
+						       </h:panelGrid>
+								
+						    </h:panelGrid>
+						    
+						      </h:panelGrid>
+							      
+					   </h:panelGrid>
+					   
+					   <!-- ASSISTENZA DOMICILIARE MINORI (9)-->
+					   <h:panelGrid columns="1" width="100%" id="pnlADM" rendered="#{fglInterventoBean.datiInterventoBean.idTipoIntrCustom eq 9}" styleClass="#{cc.attrs.styleClass}">
+					   	    
+					   	    <h:panelGrid columns="2" styleClass="#{cc.attrs.styleClass}" width="100%">  
+					        <p:selectOneButton id="tipo9" value="#{fglInterventoBean.datiInterventoBean.adm.tipo}"  required="true" requiredMessage="Specificare la tipologia di assistenza" >
+					            <f:selectItems value="#{fglInterventoBean.lstTipoAdmAdh}" var="tipo" itemLabel="#{tipo.descrizione}" itemValue="#{tipo}"/>
+					        </p:selectOneButton>
+						   
+					   	    <h:panelGroup>
+		          				<p:selectBooleanCheckbox value="#{fglInterventoBean.datiInterventoBean.admSenzaProvvedimento}" itemLabel="Senza provvedimento A.G.">
+			          		    	<p:ajax update="txt9NumProvvAG,txt9DtProvvAG" event="change" />
+			          		 	</p:selectBooleanCheckbox>
+			          		 	
+		         		    	<p:spacer width="20px;"/>
+		         		    	
+		         		    	<h:outputLabel value="Numero"  /><p:spacer width="5px;"/> 
+		          		   		<p:inputText id="txt9NumProvvAG" value="#{fglInterventoBean.datiInterventoBean.adm.NProvvAg}" style="width:90px;" 
+		          		   			    required="#{!fglInterventoBean.datiInterventoBean.admSenzaProvvedimento}" 
+		          		   			    disabled="#{fglInterventoBean.datiInterventoBean.admSenzaProvvedimento}"
+		          		   			    requiredMessage="Il campo Num.Provv.A.G. è obbligatorio"/>
+		         				
+		         				<p:spacer width="10px;"/>
+		         				
+		         				<h:outputLabel value="Data"  /> <p:spacer width="5px;"/> 
+		          		   		<webred:pnlData id="txt9DtProvvAG" dataValue="#{fglInterventoBean.datiInterventoBean.adm.dtProvAg}" dataPattern="dd/MM/yyyy" 
+		          		   				dataReq="#{!fglInterventoBean.datiInterventoBean.admSenzaProvvedimento}" 
+		          		   				dataReqMes="Il campo Data.Provv. A.G. obbligatorio"
+		          		   				disabled="#{fglInterventoBean.datiInterventoBean.admSenzaProvvedimento}"
+					         		dataPatternLabel="gg/mm/aaaa"  maxDate="#{commonSessionMan.currentDate}" yearRange="c-10:c+0" />
+			          		</h:panelGroup>
+			          		</h:panelGrid>
+			          		<h:panelGrid columns="8" styleClass="#{cc.attrs.styleClass}" width="100%">
+			          		
+			          		   <h:outputLabel value="Anno" for="txt9anno" />
+			          		   <p:spinner id="txt9anno" value="#{fglInterventoBean.datiInterventoBean.adm.anno}" min="2000" max="2100"  size="4"/>	 
+						       
+							   <h:outputLabel value="Ore Previste*"  />
+							  
+				         	   <h:panelGrid columns="2">
+				         	   <p:selectOneMenu value="#{fglInterventoBean.datiInterventoBean.adm.tipoOrePreviste}" 
+				         		   				  required="#{fglInterventoBean.datiInterventoBean.idTipoIntrCustom eq 9}" requiredMessage="Ore Previste è un campo obbligatorio">
+							   			<f:selectItem noSelectionOption="true" itemLabel=" - seleziona - " />
+							   			<f:selectItems value="#{fglInterventoBean.lstTipoOreVoucher}" var="tipo" itemLabel="#{tipo.descrizione}" itemValue="#{tipo}"/>
+							   			<p:ajax event="change" update="txt9OrePreviste" />
+							   </p:selectOneMenu>
+				          	   <h:panelGroup id="txt9OrePreviste">
+				          	   		<p:spinner value="#{fglInterventoBean.datiInterventoBean.adm.orePreviste}"  rendered="#{fglInterventoBean.datiInterventoBean.adm.tipoOrePreviste eq 'Giornaliere' or fglInterventoBean.datiInterventoBean.adm.tipoOrePreviste==NULL}" min="0" max="24"  size="4" />	
+							 		<p:spinner value="#{fglInterventoBean.datiInterventoBean.adm.orePreviste}"  rendered="#{fglInterventoBean.datiInterventoBean.adm.tipoOrePreviste eq 'Settimanali'}" min="0" max="168"  size="4" />	
+							 		<p:spinner value="#{fglInterventoBean.datiInterventoBean.adm.orePreviste}"  rendered="#{fglInterventoBean.datiInterventoBean.adm.tipoOrePreviste eq 'Mensili'}" min="0" max="744"  size="4" />	
+				          	   		<p:spinner value="#{fglInterventoBean.datiInterventoBean.adm.orePreviste}"  rendered="#{fglInterventoBean.datiInterventoBean.adm.tipoOrePreviste eq 'Annuali'}" min="0" max="8760"  size="4" />	
+							   </h:panelGroup>
+							  </h:panelGrid>
+							   <h:outputLabel value="n° accessi" for="txt9accessi" />
+							   <p:spinner id="txt9accessi" value="#{fglInterventoBean.datiInterventoBean.adm.numAccessi}" min="0"  size="4"/>	
+						       
+							    <h:outputLabel value="Contributo famiglia €" for="txt9ContribFamiglia" style="width:50px;"/> 
+							    <p:inputText id="txt9ContribFamiglia" value="#{fglInterventoBean.datiInterventoBean.adm.contributoFamiglia}" style="width:90px;" 
+	          		   			    	converterMessage="Il campo Contributo della famiglia non è corretto:inserire valore numerico intero o decimale (es.12.34)">
+						            <p:ajax event="change" update="txt9ContribFamiglia" />
+							    </p:inputText>
+						    </h:panelGrid>
+						    
+					   </h:panelGrid>
+					   
+				       <!-- SEMI RESIDENZIALITA' MINORI (10)-->
+					   <h:panelGrid columns="2" width="100%" id="pnlSRM" rendered="#{fglInterventoBean.datiInterventoBean.idTipoIntrCustom eq 10}" styleClass="#{cc.attrs.styleClass}">
+					   	
+					   	   <h:panelGroup>
+						   	   <h:outputLabel value="Spese extra retta - Importo* €"  for="txt10ImportoExtra"/><p:spacer width="10px;"/>
+			          		   <p:inputText id="txt10ImportoExtra" value="#{fglInterventoBean.datiInterventoBean.srm.importo}" style="width:50px;" 
+			          		   			    required="#{fglInterventoBean.datiInterventoBean.idTipoIntrCustom eq 10}" 
+			          		   			    requiredMessage="Campo Importo Extra Retta è obbligatorio"	
+			          		   			    converterMessage="Il campo Importo non è corretto:inserire valore numerico intero o decimale (es.12.34)">
+								            <p:ajax event="change" update="txt10ImportoExtra" />
+							    </p:inputText>
+						    </h:panelGroup>
+						    
+						    <h:panelGroup>
+			          				<p:selectBooleanCheckbox value="#{fglInterventoBean.datiInterventoBean.srmSenzaProvvedimento}" itemLabel="Senza provvedimento A.G.">
+				          		    	<p:ajax update="txt10NumProvvAG,txt10DtProvvAG" event="change" />
+				          		 	</p:selectBooleanCheckbox>
+				          		 	
+			         		    	<p:spacer width="20px;"/>
+			         		    	
+			         		    	<h:outputLabel value="Numero"  /><p:spacer width="5px;"/> 
+			          		   		<p:inputText id="txt10NumProvvAG" value="#{fglInterventoBean.datiInterventoBean.srm.NProvvAg}" style="width:90px;" 
+			          		   			    required="#{!fglInterventoBean.datiInterventoBean.srmSenzaProvvedimento}" 
+			          		   			    disabled="#{fglInterventoBean.datiInterventoBean.srmSenzaProvvedimento}"
+			          		   			    requiredMessage="Il campo Num.Provv.A.G. è obbligatorio"/>
+			         				
+			         				<p:spacer width="10px;"/>
+			         				
+			         				<h:outputLabel value="Data"  /> <p:spacer width="5px;"/> 
+			          		   		<webred:pnlData id="txt10DtProvvAG" dataValue="#{fglInterventoBean.datiInterventoBean.srm.dtProvAg}" dataPattern="dd/MM/yyyy" 
+			          		   				dataReq="#{!fglInterventoBean.datiInterventoBean.srmSenzaProvvedimento}" 
+			          		   				dataReqMes="Il campo Data.Provv. A.G. obbligatorio"
+			          		   				disabled="#{fglInterventoBean.datiInterventoBean.srmSenzaProvvedimento}"
+						         		dataPatternLabel="gg/mm/aaaa"  maxDate="#{commonSessionMan.currentDate}" yearRange="c-10:c+0" />
+			         		  		
+			          		</h:panelGroup>
+			          		
+			          		<p:selectManyCheckbox value="#{fglInterventoBean.datiInterventoBean.srmSpeseExtra}" 
+	        		    			      styleClass="#{cc.attrs.styleClass}"  layout="grid" columns="2">
+					            <f:selectItems value="#{fglInterventoBean.lstSpeseExtraSRM}" var="tipo" itemLabel="#{tipo.descrizione}" itemValue="#{tipo}" />
+					        </p:selectManyCheckbox>
+			          					
+			          		<h:panelGrid columns="6" styleClass="#{cc.attrs.styleClass}" width="100%">
+			          				
+			          			   <h:outputLabel value="Anno" for="txt10anno" /> 
+							 	   <p:spinner id="txt10anno" value="#{fglInterventoBean.datiInterventoBean.srm.anno}" min="2000" max="2100"  size="4"/>	
+							 				          							          				
+			          				<p:spacer/>
+			          				<p:selectBooleanCheckbox value="#{fglInterventoBean.datiInterventoBean.srmPranzi}" itemLabel="Pranzi"/>
+				          		   	
+			          				<h:outputLabel value="Trasporto" />
+			          				<h:panelGroup>
+			          				<p:selectBooleanCheckbox value="#{fglInterventoBean.datiInterventoBean.srmTrasportoSC}" itemLabel="Scuola-Centro"/>
+			                        <p:spacer width="5px;"/>
+				          		   	<p:selectBooleanCheckbox value="#{fglInterventoBean.datiInterventoBean.srmTrasportoCC}" itemLabel="Centro-Casa"/>
+				          		   	</h:panelGroup>
+				          		   	
+				          		    <h:outputLabel value="n° giorni settimana" for="txt10numgiorni" /> 
+								    <p:spinner id="txt10numgiorni" value="#{fglInterventoBean.datiInterventoBean.srm.numGiorniSett}" min="0" max="7"  size="1"/>
+	
+								    <h:outputLabel value="Con Retta*"  /> 
+				           		    <p:selectOneMenu value="#{fglInterventoBean.datiInterventoBean.srmTipoRetta}" 
+				          		   		required="#{fglInterventoBean.datiInterventoBean.idTipoIntrCustom eq 10}"  
+				          		   		requiredMessage="Il campo Con Retta è obbligatorio">
+								   		<f:selectItem noSelectionOption="true" itemLabel=" - seleziona - " />
+								   		<f:selectItems value="#{fglInterventoBean.lstTipoRetta}" var="tipo" itemLabel="#{tipo.descrizione}" itemValue="#{tipo}"/>
+								   </p:selectOneMenu>
+								   
+								   <h:outputLabel value="Valore retta* €" for="txt10Retta"/> 
+								   <h:panelGroup>
+								   <p:inputText id="txt10Retta" value="#{fglInterventoBean.datiInterventoBean.srm.valoreRetta}" style="width:50px;" 
+								   			required="#{fglInterventoBean.datiInterventoBean.idTipoIntrCustom eq 7}" 
+								   			requiredMessage="Il campo Valore retta è obbligatorio" 
+			          		   			    converterMessage="Il campo Valore retta non è corretto:inserire valore numerico intero o decimale (es.12,34)">
+											<f:convertNumber maxFractionDigits="2" maxIntegerDigits="8" type="number"/>
+								            <p:ajax event="change" update="txt10Retta" />
+						    		</p:inputText>
+						    		<p:spacer width="3px;"/><h:outputLabel value="(IVA inclusa)" style="font-size:10px;"/> 
+						    		</h:panelGroup>
+						      </h:panelGrid>
+						      
+						      <h:panelGroup >
+						      <h:outputLabel value="Contributo della famiglia d'origine* €" for="txt10ContribFamiglia" /><p:spacer width="10px;"/>
+									<p:inputText id="txt10ContribFamiglia" value="#{fglInterventoBean.datiInterventoBean.srm.contributoMensileFamiOri}" style="width:50px;" 
+								   			required="#{fglInterventoBean.datiInterventoBean.idTipoIntrCustom eq 10}" 
+								   			requiredMessage="Il campo Contributo della famiglia d'origine è obbligatorio" 
+		          		   			    	converterMessage="Il campo 'Contributo della famiglia d'origine' non è corretto:inserire valore numerico intero o decimale (es.12.34)">
+							            <p:ajax event="change" update="txt10ContribFamiglia" />
+								     </p:inputText>	   		
+						      </h:panelGroup>
+						      
+						      <h:panelGrid columns="4" styleClass="#{cc.attrs.styleClass}" width="100%">
+							       
+							        <h:outputLabel value="Comunità"/>
+								    <webredcs:pnlListaComunita label="Comunità" iComunita="#{fglInterventoBean.datiInterventoBean.srmComunita}"/>
+							      
+							      	<h:outputLabel value="se altro, specificare"/>
+							      	<p:inputText value="#{fglInterventoBean.datiInterventoBean.srm.comunitaAltro}" style="width:150px;" />
+							      
+						      </h:panelGrid>
+					 	</h:panelGrid>
+					 	
+					 	<!-- SCHEDA UOL (11)-->
+					 	<p:outputPanel rendered="#{fglInterventoBean.datiInterventoBean.idTipoIntrCustom eq 11}">
+						   <h:panelGrid columns="4" columnClasses="span-3" width="100%" id="pnlSUOL" styleClass="#{cc.attrs.styleClass}">
+						   		<h:outputText value="Codice utente *"/>
+								<p:inputText value="#{fglInterventoBean.datiInterventoBean.sl.codUtente}"
+									required="#{fglInterventoBean.datiInterventoBean.idTipoIntrCustom eq 11}" 
+						   			requiredMessage="Il campo Codice utente è obbligatorio" />
+								
+								<h:outputText value="Anno *"/>
+								<p:inputText value="#{fglInterventoBean.datiInterventoBean.sl.anno}"
+									required="#{fglInterventoBean.datiInterventoBean.idTipoIntrCustom eq 11}" 
+						   			requiredMessage="Il campo Anno è obbligatorio" 
+          		   			    	converterMessage="Il campo Anno non è corretto:inserire valore numerico intero (es.2014)">
+									<f:convertNumber maxIntegerDigits="4" type="number"/>
+								</p:inputText>
+								
+								<h:outputText value="Educatore"/>
+								<p:selectOneMenu value="#{fglInterventoBean.datiInterventoBean.sl.csOOperatore.id}">
+									<f:selectItem noSelectionOption="true" itemLabel=" - seleziona - " />
+									<f:selectItems value="#{fglInterventoBean.lstEducatori}"/>
+								</p:selectOneMenu>
+								
+								<p:spacer width="10"/>
+								<p:spacer width="10"/>
+								
+								<h:outputText value="Tipologia Circ. 4"/>
+								<p:selectOneMenu value="#{fglInterventoBean.datiInterventoBean.sl.tipoCirc4Id}">
+									<f:selectItem noSelectionOption="true" itemLabel=" - seleziona - " />
+									<f:selectItems value="#{fglInterventoBean.lstTipoCirc4}"/>
+								</p:selectOneMenu>
+								
+								<p:spacer width="10"/>
+								<p:spacer width="10"/>
+								
+								<h:outputText value="Intervento"/>
+								<p:selectOneMenu value="#{fglInterventoBean.datiInterventoBean.sl.interventiUOLId}">
+									<f:selectItem noSelectionOption="true" itemLabel=" - seleziona - " />
+									<f:selectItems value="#{fglInterventoBean.lstTipoInterventi}"/>
+								</p:selectOneMenu>
+								
+								<h:outputText value="Tipologia progetto"/>
+								<p:selectOneMenu value="#{fglInterventoBean.datiInterventoBean.sl.tipoProgettoId}">
+									<f:selectItem noSelectionOption="true" itemLabel=" - seleziona - " />
+									<f:selectItems value="#{fglInterventoBean.lstTipoProgetto}"/>
+								</p:selectOneMenu>
+						   </h:panelGrid>
+						   <h:panelGrid columns="2" columnClasses="span-3" width="100%" styleClass="#{cc.attrs.styleClass}">
+						   		<h:outputText value="Note"/>
+								<p:inputTextarea rows="4" cols="90" value="#{fglInterventoBean.datiInterventoBean.sl.note}"/>
+						   </h:panelGrid>
+					   </p:outputPanel>
+				   </h:panelGroup>
+					
+					<webredcs:pnlComponenteOAltro header="Soggetto di riferimento" iComponenteOAltro="#{fglInterventoBean.datiInterventoBean.componente}" required="false" styleClass="#{cc.attrs.styleClass}" disabled="#{fglInterventoBean.readOnly}"/>
+								   
+			   </p:panel>
+			   
+			   <!-- Dettaglio dati Intervento (In lettura) abilitato se non è un nuovo intervento -->
+			    <ui:include src="/webredcs/pnlFglIntervento/frgDettaglioIntervento.xhtml"/> 
+			  
+				<p:panel header="Dati Foglio Amministrativo " toggleable="true" toggleSpeed="500" widgetVar="FApanel" >
+				
+		<h:panelGrid  columns="6" width="100%" styleClass="#{cc.attrs.styleClass}">				<!--  <bah> -->
+			<p:selectBooleanCheckbox id="ckx_respinto" value="#{fglInterventoBean.datiFglIntBean.flagRespinto}" itemLabel="Respinto" >
+				<p:ajax update="growl ckx_respinto pnlLblDettaglioOperazione pnlDettaglioOperazione txtMotivoRespinto cbxTipoFoglio dtFoglioAl dtFoglioDal @parent:@parent:pnlSpeseTestata @parent:@parent:pnlTestata @parent:@parent:pnlDettaglio" 
+           			  listener="#{fglInterventoBean.onCheckRespinto}" event="change" disabled="#{fglInterventoBean.readOnly}"/>
+           	</p:selectBooleanCheckbox>	           			 
+           	<h:outputLabel value="" />
+           	<h:outputLabel for="txtMotivoRespinto" value="Motivazione" />
+          	<p:inputText id="txtMotivoRespinto"  disabled="#{!fglInterventoBean.datiFglIntBean.flagRespinto or fglInterventoBean.readOnly}" style="width:200px;"
+          				 value="#{fglInterventoBean.datiFglIntBean.motivoRespinto}"/>									
+			 <h:outputLabel value="" />
+			 <p:growl id="growl" life="2000" />
+			
+			 
+			<h:outputLabel for="dataAmministrativa" value="Data Amministrativa*" /> 
+     			<webred:pnlData id="dataAmministrativa" dataValue="#{fglInterventoBean.datiFglIntBean.dataAmministrativa}" dataPattern="dd/MM/yyyy" dataReq="true" 
+     			dataReqMes="Data Amministrativa è un campo obbligatorio" dataValMes="Data Domanda non valida" dataConMes="Data Amministrativa non valida"
+     			dataPatternLabel="gg/mm/aaaa" maxDate="#{commonSessionMan.currentDate}" yearRange="c-10:c+0" disabled="#{fglInterventoBean.readOnly}"/>    				  	 
+	 	 	
+	 		<h:outputText value="Relazione" /> 
+     			<p:selectOneMenu  id="somRelazioni" value="#{fglInterventoBean.datiFglIntBean.idRelazione}" disabled="#{fglInterventoBean.readOnly}"  >
+     				<f:selectItems value="#{fglInterventoBean.lstRelazioni}" var="tipo" itemLabel="#{tipo.descrizione}" itemValue="#{tipo}"/>
+     		</p:selectOneMenu>				 				 
+			 <p:spacer width="24" />
+			 <p:spacer width="24" />	
+					    				 	
+    		
+			 <h:outputText value="Tipo Foglio *" />
+            <h:panelGroup>
+               <p:tooltip for="cbxTipoFoglio" rendered="#{fglInterventoBean.anyErogazioniBetweenDataInizioDataFine}"
+                  value="#{fglInterventoBean.tipoErogazioneDisableTooltip}" />
+               <!-- fix SISO-624 aggiunta condizione su attributo disabled -->
+               <p:selectOneMenu id="cbxTipoFoglio" value="#{fglInterventoBean.datiFglIntBean.flagAttivazione}" required="true"
+                  requiredMessage="'Tipo Foglio' è un campo obbligatorio"                  
+                  disabled="#{fglInterventoBean.readOnly or fglInterventoBean.datiFglIntBean.flagRespinto or fglInterventoBean.anyErogazioniBetweenDataInizioDataFine or fglInterventoBean.diarioId != 0}">
+                  <f:selectItems value="#{fglInterventoBean.lstTipoAttivita}" var="tipo" itemLabel="#{tipo.descrizione}"  itemValue="#{tipo}" />
+                  <p:ajax listener="#{fglInterventoBean.resetDatiAttivita}" event="change"
+                     update="@(.updateFlagAttivazioneChange) pnlDettaglioOperazione pnlLblDettaglioOperazione  @parent:@parent:pnlTestata @parent:@parent:pnlDettaglio @parent:@parent:panelStorico" />
+               </p:selectOneMenu>
+            </h:panelGroup>
+
+            <h:outputText value=" Dal *" />
+       		<h:panelGroup styleClass="#{'updateFlagAttivazioneChange'}">
+	       		<p:tooltip for="dtFoglioDal" rendered="#{fglInterventoBean.anyErogazioniBetweenDataInizioDataFine}" value="#{fglInterventoBean.tipoErogazioneDisableTooltip}" /> 
+	       		<webred:pnlData dataReq="true" dataReqMes="Inserire data di inizio validita' per il foglio amministrativo"
+	      			dataValue="#{fglInterventoBean.datiFglIntBean.dtTipoAttDa}" dataPattern="dd/MM/yyyy" id="dtFoglioDal" 
+	      			dataValMes="Data Inizio Tipo Attivazione non valida" dataConMes="Data Inizio Tipo Attivazione non valida"
+	      			dataPatternLabel="gg/mm/aaaa"  yearRange="c-10:c+10" 
+	      			disabled="#{fglInterventoBean.datiFglIntBean.valutazione or fglInterventoBean.readOnly or fglInterventoBean.datiFglIntBean.flagRespinto or fglInterventoBean.anyErogazioniBetweenDataInizioDataFine}">	           								
+	      		</webred:pnlData>
+	      	</h:panelGroup> 
+      			
+      		<h:outputText value=" Al *" />
+      		<h:panelGroup styleClass="#{'updateFlagAttivazioneChange'}">
+	      		<p:tooltip for="dtFoglioAl" rendered="#{fglInterventoBean.anyErogazioniBetweenDataInizioDataFine}" value="#{fglInterventoBean.tipoErogazioneDisableTooltip}" /> 
+	      		<webred:pnlData dataReq="true" dataReqMes="Inserire data di fine validita' per il foglio amministrativo" 
+	      			dataValue="#{fglInterventoBean.datiFglIntBean.dtTipoAttA}" dataPattern="dd/MM/yyyy" id="dtFoglioAl" 
+	      			disabled="#{fglInterventoBean.datiFglIntBean.valutazione or fglInterventoBean.datiFglIntBean.chiusura or fglInterventoBean.readOnly or fglInterventoBean.datiFglIntBean.flagRespinto or fglInterventoBean.anyErogazioniBetweenDataInizioDataFine}"
+	      			dataValMes="Data Fine Tipo Attivazione non valida" dataConMes="Data Fine Tipo Attivazione non valida"
+	      			dataPatternLabel="gg/mm/aaaa"  yearRange="c-10:c+10" >	           			
+	      		</webred:pnlData>
+      		</h:panelGroup>
+		
+	          			 
+	          	
+	          	<h:panelGroup id="pnlLblDettaglioOperazione">
+	           				<h:outputLabel for="somTipoAttivazione" value="Tipo Attivazione" rendered="#{fglInterventoBean.datiFglIntBean.flagAttivazione eq 'A'}" 
+	           				disabled="#{fglInterventoBean.readOnly}"/> 
+		           			<h:outputLabel for="somDesSospensione" value="Tipo Sospensione" rendered="#{fglInterventoBean.datiFglIntBean.flagAttivazione eq 'S'}" 
+		           			disabled="#{fglInterventoBean.readOnly}"/> 
+		           			<h:outputLabel for="somMotivoChiusura" value="Motivo Chiusura" rendered="#{fglInterventoBean.datiFglIntBean.flagAttivazione eq 'C'}" 
+		           			disabled="#{fglInterventoBean.readOnly}"/> 
+	           	</h:panelGroup>	           			
+          		<h:panelGroup id="pnlDettaglioOperazione">
+           		    <p:selectOneMenu id="somTipoAttivazione" value="#{fglInterventoBean.datiFglIntBean.tipoAttivazione}" rendered="#{fglInterventoBean.datiFglIntBean.flagAttivazione eq 'A'}" 
+           		    disabled="#{fglInterventoBean.readOnly or fglInterventoBean.datiFglIntBean.flagRespinto}">
+           				<f:selectItems value="#{fglInterventoBean.lstTipoAttivazione}" var="tipo" itemLabel="#{tipo.descrizione}" itemValue="#{tipo}"/>
+           			</p:selectOneMenu>
+           			
+          			<p:selectOneMenu id="somDesSospensione" value="#{fglInterventoBean.datiFglIntBean.descrSospensione}" rendered="#{fglInterventoBean.datiFglIntBean.flagAttivazione eq 'S'}" 
+          			disabled="#{fglInterventoBean.readOnly or fglInterventoBean.datiFglIntBean.flagRespinto}">
+           				<f:selectItems value="#{fglInterventoBean.lstTipoSospensione}" var="tipo" itemLabel="#{tipo.descrizione}" itemValue="#{tipo}"/> 
+           			</p:selectOneMenu>	
+          						          				
+          			<p:selectOneMenu id="somMotivoChiusura" value="#{fglInterventoBean.datiFglIntBean.motivoChiusura}" rendered="#{fglInterventoBean.datiFglIntBean.flagAttivazione eq 'C'}"   
+          			disabled="#{fglInterventoBean.readOnly or fglInterventoBean.datiFglIntBean.flagRespinto}">
+           				<f:selectItems value="#{fglInterventoBean.lstMotiviChiusura}" var="tipo" itemLabel="#{tipo.descrizione}" itemValue="#{tipo}"/> 
+           			</p:selectOneMenu>
+           		</h:panelGroup>
+	          	
+	          </h:panelGrid >
+ 	
+				</p:panel>
+	   			<p:spacer height="10px;"/><br/>
+	       		<h:outputLabel value="* campi obbligatori" style="font-weight:bold;font-style:italic;font-size:11px;"/>
+	       	</p:tab>
+			<p:tab id="tariffeTab" title="Tariffe" titletip="Tariffe" > 
+			   <ui:include src="/webredcs/pnlFglIntervento/tariffe.xhtml"/> 
+		    </p:tab>
+		    <p:tab id="progettiTab" title="Progetti" titletip="Progetti"> 
+			   <ui:include src="/webredcs/pnlFglIntervento/progetti.xhtml"/> 
+		    </p:tab>   
+	        <p:tab id="erogazioniTab" title="Erogazioni" titletip="Erogazioni" >
+					<ui:include src="/webredcs/pnlFglIntervento/erogazioni.xhtml"/>
+			</p:tab>
+		
+		</p:tabView>
+			    
+				<table border="0" width="100%">
+					<tr><td style="border: none;"><p:spacer height="20"/></td></tr>
+					<tr>
+					<td style="text-align: center; border: none;">
+		 		    	<p:commandButton id="cmdSalva" value="Salva" 
+		 		    		disabled="#{fglInterventoBean.readOnly and !fglInterventoBean.abilitaSalvataggio}"
+							actionListener="#{fglInterventoBean.salva}"  process="@form" 
+							oncomplete="if (args &amp;&amp; !args.validationFailed &amp;&amp; args.saved){ PF('#{cc.attrs.widgetVar}').hide(); updateListaInterventi(); } else {}">
+						<!--  <f:param name="pnlToUpdateId" value="#{cc.attrs.salvaActionUpdate}" /> -->
+						</p:commandButton>
+						<p:remoteCommand name="updateListaInterventi" process="@this" update="#{cc.attrs.salvaActionUpdate} @parent:erogazioniInterventiTabView" />  
+						<p:spacer width="15px;" />
+						<p:commandButton value="Esci" oncomplete="#{cc.attrs.widgetVar}ConfermaEsci.show()" process="@this" update="#{ not empty cc.attrs.esciActionUpdate ? cc.attrs.esciActionUpdate : '@none'}" />
+					  </td>
+					</tr>
+				</table>
+				
+				<p:confirmDialog header="Conferma uscita"
+					widgetVar="#{cc.attrs.widgetVar}ConfermaEsci" severity="alert"
+					closable="false" appendTo="@(body)"
+					message="I dati non salvati saranno persi: continuare?">
+					<table border="0" width="100%">
+						<tr>
+							<td style="text-align: center;">
+								<p:commandButton value="SI" 
+									onclick="PF('#{cc.attrs.widgetVar}ConfermaEsci').hide();" process="@this"
+									oncomplete="PF('#{cc.attrs.widgetVar}').hide();"
+									action="#{fglInterventoBean.reset}"/>
+								<p:commandButton value="NO" onclick="PF('#{cc.attrs.widgetVar}ConfermaEsci').hide();" type="button" />
+							</td>
+						</tr>
+					</table>
+				</p:confirmDialog>
+				
+			 </h:form>
+
+	    </p:dialog>
+	   
+	   </span>
+	   
+	</composite:implementation>
+		
+	</h:body>
+	
+</html>

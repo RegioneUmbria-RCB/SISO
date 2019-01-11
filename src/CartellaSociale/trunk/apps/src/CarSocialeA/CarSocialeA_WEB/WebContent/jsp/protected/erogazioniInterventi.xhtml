@@ -1,0 +1,92 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui"
+	xmlns:webred="http://java.sun.com/jsf/composite/webred" xmlns:webredcs="http://java.sun.com/jsf/composite/webredcs">
+<ui:composition template="/jsp/protected/layout/layout.xhtml">
+
+	<ui:define name="content">
+		<h:form id="frmErogazioniInterventi" onkeypress="if (event.keyCode == 13) { return false; }">
+			<p:confirmDialog id="ConfirmDialogFrmErogazione" global="false" showEffect="fade" hideEffect="explode">
+				<p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+				<p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+			</p:confirmDialog>
+
+		
+			
+
+			<p:panel header="Nuova Erogazione" id="NuovaErogazione">
+				
+				<p:panelGrid id="panelInizio" >
+					<p:row >
+						<p:column colspan="6">
+							<h:outputText value="Ricerca in anagrafe popolazione" styleClass="bold" />
+							<p:spacer width="5"/>
+							<webredcs:pnlUserSearch id="wbrdUserSearch" styleClass="myAutoComplete" userManBean="#{erogazioniInterventiBean.userSearchBean}" />
+						</p:column>
+					</p:row>
+					<p:row>
+						<p:column colspan="5">
+							<!-- START Gestione scelta tipi intervento  -->
+							<f:metadata>
+								<ui:param name="tipoIntTreeView" value="#{erogazioniInterventiBean.tipoIntTreeView}" />
+							</f:metadata>
+							<ui:include src="/jsp/protected/treeTipoIntervento/tipoInterventoTree.xhtml">								
+								<ui:param name="id" value="panelSarchTipoIntervento" />
+								<ui:param name="tree_modal_dlg" value="true" />
+								<ui:param name="tipoIntTreeView" value="#{erogazioniInterventiBean.tipoIntTreeView}" />
+								<ui:param name="esciActionUpdate" value="@form:panelSarchTipoIntervento" />
+							</ui:include>
+						</p:column>
+						<p:column>
+							<p:commandButton  process="@this" value="Nuova Erogazione" title="Nuova Erogazione" style=""
+								action="#{erogazioniInterventiBean.inizializzaDialogo(null)}"
+								oncomplete="if(args &amp;&amp; args.isShowDialog){updateDialogContent(); PF('#{fglInterventoBean.widgetVar}').show()}" 
+								icon="ui-icon-document-b" />
+							<p:remoteCommand id="rmtBtnApriDialogo" name="updateDialogContent" process="@this" update=":dlgFglIntervento:frmDlgFglInterventi" />
+						</p:column>
+					</p:row>
+				</p:panelGrid>
+			</p:panel>
+			<p:spacer height="20" />
+			<p:panel style="align:center;">
+				
+				<h:panelGrid columns="3" width="100%">
+					<p:selectOneButton id="RadioFiltriInterv" value="#{erogazioniInterventiBean.lazyListaErogazioniModel.tipoFiltroInterventiSelezionato}">
+						<p:ajax listener="#{erogazioniInterventiBean.onTipoListaInterventiChanged}" update="listaErogazioneInterventi" />
+						<f:selectItems var="filtro" itemLabel="#{filtro.label}" itemValue="#{filtro.value}" value="#{erogazioniInterventiBean.listaTipoFiltroInterventi}" />
+					</p:selectOneButton>
+				
+					<p:remoteCommand id="updateTabella" process="@this" update="listaErogazioneInterventi" action="#{erogazioniInterventiBean.chiamataUpdate}" />
+	
+	 				<h:panelGrid id="pnlAppErogazioni"  columns="4" rendered="#{navigationBean.renderDownloadAppErogazioni}" style="float:right;font-weight:bold;">
+				  	 	<h:outputLabel value="Invia app per la gestione delle erogazioni ad indirizzo e-mail" style="font-weigh:bold;"/>
+				  	 	<p:inputText id="focus" value="#{navigationBean.appEmail}" title="indirizzo e-mail accessibile da dispositivo mobile" style="width:200px;"/>
+		    			<p:tooltip id="toolTipFocus" for="focus" showEvent="focus" hideEvent="blur" />
+				  	 	<p:commandButton value="Invia" action="#{navigationBean.sendEmailApp}"  update=":#{p:component('pnlAppErogazioni')}" icon="ui-icon-mail-closed"/>
+				  	 </h:panelGrid>
+			  	 </h:panelGrid>
+
+				<!-- Alessandro Feriani
+				A causa di un problema primefaces Ajax il parametro "dataBean"
+				 viene risolto a null durante un update nel file include. Risolto con questo magheggio
+				"Facelet composition parameter not resolved by p:ajax"
+				https://code.google.com/p/primefaces/issues/detail?id=4075
+				 -->
+				<f:metadata>
+					<ui:param name="bugFixBean" value="#{erogazioniInterventiBean}" />
+				</f:metadata>
+				<ui:include src="/jsp/protected/erogazioneInterventi/listaErogazioneInterventi.xhtml">
+					<ui:param name="dataBean" value="#{erogazioniInterventiBean}" />
+					<ui:param name="apriActionUpdate" value=":dlgFglIntervento:frmDlgFglInterventi" />
+				</ui:include>
+			</p:panel>
+		</h:form>
+				
+		<webredcs:pnlFglIntervento id="dlgFglIntervento" styleClass="noBorder" 
+			iDatiFoglio = "#{fglInterventoBean}"
+			widgetVar="#{fglInterventoBean.widgetVar}"
+			salvaActionUpdate = ":#{p:component('frmErogazioniInterventi')}"
+			esciActionUpdate = ":#{p:component('panelSarchTipoIntervento')}" />
+			
+	</ui:define>
+</ui:composition>
+</html>

@@ -1,0 +1,74 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Table class="oracle.dbtools.crest.model.design.relational.Table" directorySegmentName="seg_0" id="3A64CA11-B977-1F9B-585D-59AB36563952" schemaObject="31789C62-6489-FE63-4664-3CFB4035AC87" name="CS_IT_AGGIORNAMENTO">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>CS_SISO</sourceObjSchema>
+<sourceObjName>CS_IT_AGGIORNAMENTO</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:18 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>37530777-F56F-3CE2-B32F-2F713988D1A8</importedID>
+<parsed>true</parsed>
+<columns itemClass="oracle.dbtools.crest.model.design.relational.Column">
+<Column name="STEP_ID" id="0A7010AF-F531-7257-E9B3-463BD5197DAE">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>CS_IT_AGGIORNAMENTO</sourceObjSchema>
+<sourceObjName>STEP_ID</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:18 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>D224500C-B658-962C-DA38-FBE5D87F337C</importedID>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<dataTypePrecision>10</dataTypePrecision>
+<ownDataTypeParameters>,10,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="NOTE" id="286A1C0D-28E2-4E18-3450-A0F4F7EC733C">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>CS_IT_AGGIORNAMENTO</sourceObjSchema>
+<sourceObjName>NOTE</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:18 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>E7EFEA43-DE3C-E2AD-619B-4BD0DCCDC062</importedID>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>4000 BYTE</dataTypeSize>
+<ownDataTypeParameters>4000 BYTE,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+</columns>
+<indexes itemClass="oracle.dbtools.crest.model.design.relational.Index">
+<ind_PK_UK id="83BB85E2-223A-FB48-35CC-0FCDEDAD17FA" name="AGGIORNAMENTO_PK">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>CS_SISO</sourceObjSchema>
+<sourceObjName>AGGIORNAMENTO_PK</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:18 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>514F2A19-9B86-AE42-C873-5A0D0E42D783</importedID>
+<pk>true</pk>
+<indexState>Primary Constraint</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="0A7010AF-F531-7257-E9B3-463BD5197DAE"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="B059D13F-27D7-7F2B-1FD3-D50D5809F604" schemaObject="31789C62-6489-FE63-4664-3CFB4035AC87" name="AGGIORNAMENTO_PK">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>CS_SISO</sourceObjSchema>
+<sourceObjName>AGGIORNAMENTO_PK</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:18 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>15B311A4-FAFF-D741-DF1C-3873229DF166</importedID>
+<indexState>Unique Plain Index</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="0A7010AF-F531-7257-E9B3-463BD5197DAE"/>
+</indexColumnUsage>
+</ind_PK_UK>
+</indexes>
+</Table>

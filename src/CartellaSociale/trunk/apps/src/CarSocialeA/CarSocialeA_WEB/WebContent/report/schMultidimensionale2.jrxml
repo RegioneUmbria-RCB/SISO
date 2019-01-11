@@ -1,0 +1,872 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Scheda Multidimensionale" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" whenResourceMissingType="Empty" uuid="93843840-9f8c-4606-890a-8a0073a053b9">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="1820"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String">
+		<defaultValueExpression><![CDATA["subreport\\"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="header" class="net.sf.jasperreports.engine.JRDataSource"/>
+	<parameter name="SUBREPORT_JASPER" class="java.lang.String">
+		<defaultValueExpression><![CDATA["subreport\\"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="conChiVive" class="net.sf.jasperreports.engine.JRDataSource"/>
+	<parameter name="sina" class="net.sf.jasperreports.engine.JRDataSource"/>
+	<parameter name="inps" class="net.sf.jasperreports.engine.JRDataSource"/>
+	<parameter name="famAnaConvs" class="net.sf.jasperreports.engine.JRDataSource"/>
+	<parameter name="famAnaNonConvs" class="net.sf.jasperreports.engine.JRDataSource"/>
+	<parameter name="famAnaAltris" class="net.sf.jasperreports.engine.JRDataSource"/>
+	<parameter name="prestazioniDaChis" class="net.sf.jasperreports.engine.JRDataSource"/>
+	<parameter name="patologie" class="net.sf.jasperreports.engine.JRDataSource"/>
+	<parameter name="barthel" class="net.sf.jasperreports.engine.JRDataSource"/>
+	<parameter name="anagrafica" class="net.sf.jasperreports.engine.JRDataSource"/>
+	<field name="denominazione" class="java.lang.String"/>
+	<field name="momValTipo" class="java.lang.String"/>
+	<field name="momValLuogo" class="java.lang.String"/>
+	<field name="momValRef" class="java.lang.String"/>
+	<field name="momValTel" class="java.lang.String"/>
+	<field name="nFigli" class="java.lang.String"/>
+	<field name="nFiglie" class="java.lang.String"/>
+	<field name="nFratelli" class="java.lang.String"/>
+	<field name="nSorelle" class="java.lang.String"/>
+	<field name="relAltriSogg" class="java.lang.String"/>
+	<field name="relAltriSoggRetr" class="java.lang.String"/>
+	<field name="noteSanitarie" class="java.lang.String"/>
+	<field name="valSalFisica" class="java.lang.String"/>
+	<field name="valSalPsichica" class="java.lang.String"/>
+	<field name="valAutonomiaDomestica" class="java.lang.String"/>
+	<field name="valAutonomiaExtraDom" class="java.lang.String"/>
+	<field name="tipAbit" class="java.lang.String"/>
+	<field name="ascensore" class="java.lang.String"/>
+	<field name="portineria" class="java.lang.String"/>
+	<field name="titoloGodimento" class="java.lang.String"/>
+	<field name="numVani" class="java.lang.String"/>
+	<field name="riscaldamento" class="java.lang.String"/>
+	<field name="gabinetto" class="java.lang.String"/>
+	<field name="fornitos" class="java.lang.String"/>
+	<field name="elettrodomestici" class="java.lang.String"/>
+	<field name="altriProblemi" class="java.lang.String"/>
+	<field name="valUbAbitazione" class="java.lang.String"/>
+	<field name="valAdAbitazione" class="java.lang.String"/>
+	<field name="assSociale" class="java.lang.String"/>
+	<field name="comune" class="java.lang.String"/>
+	<field name="dataOdierna" class="java.lang.String"/>
+	<field name="pieDiPagina" class="java.lang.String"/>
+	<field name="isee" class="java.lang.String"/>
+	<field name="iseeRipa" class="java.lang.String"/>
+	<field name="dataPIC" class="java.lang.String"/>
+	<field name="mappaRisorse" class="java.lang.String"/>
+	<field name="renderBarthel" class="java.lang.Boolean"/>
+	<field name="gestoreProprietario" class="java.lang.String"/>
+	<background>
+		<band/>
+	</background>
+	<title>
+		<band height="705" splitType="Prevent">
+			<subreport>
+				<reportElement positionType="Float" isPrintRepeatedValues="false" x="0" y="0" width="412" height="40" isPrintWhenDetailOverflows="true" uuid="eb89ffb1-4e09-4185-a97b-dc49625a6a51">
+					<property name="net.sf.jasperreports.export.pdf.tag.table" value="null"/>
+				</reportElement>
+				<dataSourceExpression><![CDATA[$P{header}]]></dataSourceExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "header.jasper"]]></subreportExpression>
+			</subreport>
+			<staticText>
+				<reportElement x="170" y="233" width="244" height="122" uuid="678354dd-80e0-481c-9ee0-a0faa915651f"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
+					<font size="16" isBold="true" isItalic="true"/>
+					<paragraph lineSpacing="1_1_2"/>
+				</textElement>
+				<text><![CDATA[Scheda di Valutazione Multidimensionale]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="228" y="440" width="133" height="20" uuid="5438a7c6-8064-4966-81ff-6897dfd5f281"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Utente: ]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" x="365" y="440" width="189" height="20" uuid="83d2f3e7-49e2-4395-92c2-8f414d2eedd3"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{denominazione}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="228" y="460" width="133" height="20" uuid="343c751b-325e-4112-bf9e-b6d72d2bc2bc"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Data di presa in carico: ]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" x="365" y="460" width="189" height="20" uuid="6a0aeaf2-e0b4-4be8-a8dd-61bd2ec05315"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{dataPIC}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="365" y="480" width="189" height="20" uuid="a7bf0a66-616b-4ad9-99fd-b761376a03e5"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{assSociale}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="228" y="480" width="133" height="20" uuid="886361bb-53b1-493b-a542-1fe0c759c746"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Assistente sociale: ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="FixRelativeToBottom" x="0" y="682" width="556" height="22" uuid="3c51b189-e6f2-4ea4-a985-7bba03c74797"/>
+				<textElement>
+					<font size="8" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Scheda Elaborata da A.S. Chiara Pozzi (Ufficio Anziani) | A.S. Jean Damien Hornung (Staff Direzione e Comunicazione Sociale) con la supervisione della Prof.ssa Carla Facchini Università degli Studi Bicocca Milano - Facoltà di Sociologia]]></text>
+			</staticText>
+		</band>
+	</title>
+	<detail>
+		<band height="79" splitType="Prevent">
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="0" width="551" height="31" backcolor="#CCCCCC" uuid="b1e54c75-5aca-4295-9647-a8698210e92e"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="13" isBold="true"/>
+				</textElement>
+				<text><![CDATA[DATI PERSONALI]]></text>
+			</staticText>
+			<subreport>
+				<reportElement positionType="Float" isPrintRepeatedValues="false" x="1" y="34" width="412" height="40" isRemoveLineWhenBlank="true" uuid="7b60af53-0b03-4049-974c-57b1368b99dd">
+					<property name="net.sf.jasperreports.export.pdf.tag.table" value="null"/>
+				</reportElement>
+				<dataSourceExpression><![CDATA[$P{anagrafica}]]></dataSourceExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "anagrafica.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+		<band height="94" splitType="Stretch">
+			<textField>
+				<reportElement positionType="Float" x="379" y="42" width="176" height="20" uuid="e9142934-5068-4b1c-9f78-bd72c51d10f4"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{momValLuogo}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="289" y="42" width="88" height="20" uuid="2b8a7175-f655-4c8c-a545-fdf7616d3728"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Luogo]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="0" y="59" width="107" height="20" uuid="7912e382-c1a7-4156-a782-97a989ce428c"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Referente]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="111" y="59" width="168" height="20" uuid="86ff3398-b5d8-4576-850a-bb8c2efc30b2"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{momValRef}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="377" y="61" width="178" height="20" uuid="ea3ef382-11ae-4812-ac6d-820e34c4ae82"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{momValTel}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="289" y="61" width="88" height="20" uuid="55e6f9c0-2c83-46f3-9307-4b3422953a90"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Telefono]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="111" y="40" width="168" height="20" uuid="34650740-4bf3-47a4-9e84-76c6ccd941e1"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{momValTipo}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="0" y="40" width="107" height="20" uuid="02281ac5-e861-4276-b2bc-ca5c8f371b11"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[La persona si trova]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="0" width="551" height="31" backcolor="#CCCCCC" uuid="1fd8fdc9-f832-4d58-8564-3987fc41558b"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="13" isBold="true"/>
+				</textElement>
+				<text><![CDATA[SITUAZIONE ATTUALE]]></text>
+			</staticText>
+		</band>
+		<band height="372" splitType="Stretch">
+			<staticText>
+				<reportElement positionType="Float" mode="Opaque" x="2" y="2" width="555" height="28" backcolor="#CCCCCC" uuid="9a950497-1b9d-4926-a995-7265acbbee25"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[1 - Disabilità e NA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="0" y="41" width="107" height="20" uuid="135ab83a-c204-4a0b-a58c-c43f0d7392e9"/>
+				<textElement verticalAlignment="Top">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Autonomia domestica]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="0" y="62" width="107" height="20" uuid="b5e6dcb8-0a80-4cb1-801d-1c3ae472f98c"/>
+				<textElement verticalAlignment="Top">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Autonomia extra-domestica]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="109" y="41" width="445" height="20" isRemoveLineWhenBlank="true" uuid="129d4963-8c46-407f-bd10-47d1593c1433"/>
+				<textElement verticalAlignment="Top">
+					<font isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{valAutonomiaDomestica}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="109" y="62" width="445" height="20" isRemoveLineWhenBlank="true" uuid="8a990c96-744a-4300-976c-402cf047382d"/>
+				<textElement verticalAlignment="Top">
+					<font isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{valAutonomiaExtraDom}]]></textFieldExpression>
+			</textField>
+			<subreport isUsingCache="false">
+				<reportElement positionType="Float" isPrintRepeatedValues="false" x="0" y="83" width="555" height="60" isRemoveLineWhenBlank="true" uuid="94f24955-7758-465d-8dd2-97fc85d4eafc">
+					<property name="net.sf.jasperreports.export.pdf.tag.table" value="null"/>
+				</reportElement>
+				<dataSourceExpression><![CDATA[$P{sina}]]></dataSourceExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "listaValori.jasper"]]></subreportExpression>
+			</subreport>
+			<staticText>
+				<reportElement positionType="Float" x="1" y="154" width="129" height="20" uuid="135ab83a-c204-4a0b-a58c-c43f0d7392e9"/>
+				<textElement verticalAlignment="Top">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Prestazioni INPS ]]></text>
+			</staticText>
+			<subreport isUsingCache="false">
+				<reportElement positionType="Float" x="-1" y="199" width="555" height="60" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" uuid="94f24955-7758-465d-8dd2-97fc85d4eafc">
+					<property name="net.sf.jasperreports.export.pdf.tag.table" value="null"/>
+				</reportElement>
+				<dataSourceExpression><![CDATA[$P{inps}]]></dataSourceExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "listaValori.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+		<band height="302" splitType="Stretch">
+			<staticText>
+				<reportElement positionType="Float" x="2" y="37" width="107" height="20" uuid="2ab2d96f-410f-4ec2-ac85-3f615783f1b9"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Con chi vive?]]></text>
+			</staticText>
+			<subreport isUsingCache="false">
+				<reportElement positionType="Float" x="16" y="62" width="535" height="40" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" uuid="94f24955-7758-465d-8dd2-97fc85d4eafc">
+					<property name="net.sf.jasperreports.export.pdf.tag.table" value="null"/>
+				</reportElement>
+				<dataSourceExpression><![CDATA[$P{conChiVive}]]></dataSourceExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "listaValori.jasper"]]></subreportExpression>
+			</subreport>
+			<staticText>
+				<reportElement positionType="Float" mode="Opaque" x="0" y="0" width="555" height="28" backcolor="#CCCCCC" uuid="66df9bc7-b52a-4214-a32e-55af8749228e"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[2 - Rete familiare]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="417" y="141" width="52" height="20" uuid="bb135248-d638-40ff-959a-9ec1fe22a486"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[N° sorelle]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="3" y="220" width="548" height="20" uuid="836a89d8-a231-4288-82ae-e28f8b0db763"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12" isBold="true" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[Relazioni con altri familiari/parenti non conviventi]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="289" y="141" width="52" height="20" uuid="39b0a0bd-f704-4d34-ba9f-47c224d62bf7"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[N° fratelli]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="116" y="141" width="52" height="20" uuid="816a8cf1-314d-4ef1-b874-a6a9b07a4bce"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[N° figlie]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" x="41" y="140" width="68" height="20" uuid="5ccf4226-3195-4288-8eef-2a66c8dcfab8"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nFigli}]]></textFieldExpression>
+			</textField>
+			<subreport isUsingCache="false">
+				<reportElement positionType="Float" x="2" y="168" width="412" height="40" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" uuid="ae497ae2-b4ba-4bf8-b361-ec92fe4d538f">
+					<property name="net.sf.jasperreports.export.pdf.tag.table" value="null"/>
+				</reportElement>
+				<dataSourceExpression><![CDATA[$P{famAnaConvs}]]></dataSourceExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "soggetti.jasper"]]></subreportExpression>
+			</subreport>
+			<textField>
+				<reportElement positionType="Float" x="341" y="141" width="68" height="20" uuid="de78cf91-73c7-4e32-b223-3a9095236d2e"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nFratelli}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="2" y="140" width="39" height="20" uuid="07e83594-9b4f-4fe3-9cf0-5eccf7b63efa"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[N° figli]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" x="168" y="141" width="68" height="20" uuid="4d76faeb-7775-4cdf-9f10-0d51d99b15e1"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nFiglie}]]></textFieldExpression>
+			</textField>
+			<subreport isUsingCache="false">
+				<reportElement positionType="Float" x="1" y="241" width="412" height="40" isRemoveLineWhenBlank="true" uuid="c2a49c8e-5272-4543-8846-84f33c5b4acd">
+					<property name="net.sf.jasperreports.export.pdf.tag.table" value="null"/>
+				</reportElement>
+				<dataSourceExpression><![CDATA[$P{famAnaNonConvs}]]></dataSourceExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "soggetti.jasper"]]></subreportExpression>
+			</subreport>
+			<textField>
+				<reportElement positionType="Float" x="470" y="141" width="68" height="20" uuid="1b5e3dd3-72eb-4018-a007-5c6b37de6ae4"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nSorelle}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="3" y="116" width="128" height="20" uuid="e6070273-3317-45ab-a3f4-7e569bba3f2d"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12" isBold="true" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[Famiglia anagrafica]]></text>
+			</staticText>
+		</band>
+		<band height="138" splitType="Immediate">
+			<staticText>
+				<reportElement positionType="Float" x="3" y="34" width="548" height="20" uuid="638dd387-cf1c-4b9d-ad43-586e3eb3fa39"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12" isBold="true" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[Relazioni con altri soggetti]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="2" y="57" width="197" height="20" uuid="4f26e6b0-7679-4e70-b4d3-e65bc331152f"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Esistenza supporto non familiare presente?]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="199" y="57" width="80" height="20" uuid="6c2e69dd-44fc-4bda-a694-55c8500fb017"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{relAltriSogg}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="288" y="59" width="191" height="20" uuid="712d4ba6-5eab-429f-a194-9938c2fd291b"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Esistenza supporto retributo presente?]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" mode="Opaque" x="0" y="0" width="555" height="28" backcolor="#CCCCCC" uuid="d4df0f0a-5c05-45a4-86a0-be5b9227a801"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[3 - Rete Sociale]]></text>
+			</staticText>
+			<subreport isUsingCache="false">
+				<reportElement positionType="Float" x="1" y="84" width="412" height="40" isRemoveLineWhenBlank="true" uuid="cedcd4ba-019c-4c7a-b0a4-5221665e7432">
+					<property name="net.sf.jasperreports.export.pdf.tag.table" value="null"/>
+				</reportElement>
+				<dataSourceExpression><![CDATA[$P{famAnaAltris}]]></dataSourceExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "soggetti.jasper"]]></subreportExpression>
+			</subreport>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="479" y="59" width="75" height="20" uuid="692d2cf3-4181-4283-a8ba-1a32fc4db143"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{relAltriSoggRetr}]]></textFieldExpression>
+			</textField>
+		</band>
+		<band height="203" splitType="Prevent">
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="33" y="94" width="523" height="15" uuid="b16425d0-4829-4620-a0eb-5a4c81302081"/>
+				<textElement verticalAlignment="Top">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{noteSanitarie}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="0" y="31" width="553" height="15" uuid="7eea383f-e667-4527-8f0d-49e51da1f6b0"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Elementi significativi acquisiti dal Medico di Medicina Generale o dallo specialista]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" mode="Opaque" x="0" y="0" width="555" height="28" backcolor="#CCCCCC" uuid="64195c44-811b-4974-8374-d887d5894a8c"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[4 - Stato di salute e autosufficienza]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="2" y="94" width="28" height="15" uuid="1d9f1242-1e39-4fb9-936c-6458b689f208"/>
+				<textElement verticalAlignment="Top"/>
+				<text><![CDATA[Note: ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="2" y="122" width="495" height="20" uuid="8d406818-b6fb-4e25-a6fe-ee182bf0aa89"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12" isBold="true" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[Sintesi valutazione]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="110" y="147" width="445" height="20" uuid="5e5c0b4b-1308-4eb6-b6cf-3f10b83fa842"/>
+				<textElement verticalAlignment="Top">
+					<font isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{valSalFisica}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="1" y="168" width="107" height="20" uuid="0c0eb518-a2e6-474a-90fc-579213d82c70"/>
+				<textElement verticalAlignment="Top">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Salute psichica]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="110" y="168" width="445" height="20" isRemoveLineWhenBlank="true" uuid="d53d3d22-7dfc-47ea-be68-e353e94aaba4"/>
+				<textElement verticalAlignment="Top">
+					<font isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{valSalPsichica}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="1" y="146" width="107" height="20" uuid="aec687f6-1f2e-4596-b98e-9d91f63a6390"/>
+				<textElement verticalAlignment="Top">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Salute fisica]]></text>
+			</staticText>
+			<subreport isUsingCache="false">
+				<reportElement positionType="Float" x="16" y="51" width="412" height="40" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" uuid="2c4d43aa-8a1a-447c-807f-016d6d090eb2">
+					<property name="net.sf.jasperreports.export.pdf.tag.table" value="null"/>
+				</reportElement>
+				<dataSourceExpression><![CDATA[$P{patologie}]]></dataSourceExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "listaValori.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+		<band height="271" splitType="Prevent">
+			<staticText>
+				<reportElement positionType="Float" mode="Opaque" x="0" y="0" width="555" height="28" backcolor="#CCCCCC" uuid="9dd09fd3-d1b9-447c-8931-a6daa91eea4d"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[5 - Situazione abitativa]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="112" y="55" width="168" height="20" uuid="87ca34f8-fdbf-44a2-9194-c6f088a91e72"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{titoloGodimento}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="290" y="57" width="88" height="20" uuid="f4113813-9a5c-4ae0-8dd2-70a6a5113d39"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Numero Vani]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="112" y="36" width="168" height="20" uuid="78d1b1e5-427a-4e71-84db-1c374d9de2a1"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{tipAbit}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="1" y="36" width="107" height="20" uuid="8e7f2f0f-c861-4537-9d02-6e98ab94505f"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Tipo abitazione]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" x="342" y="38" width="80" height="20" uuid="7a42d02f-fe03-4bff-be16-28b2cb7795dc"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ascensore}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="1" y="55" width="107" height="20" uuid="a608f838-bb59-47d1-89b6-e9deacef7296"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Titolo di godimento]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="378" y="57" width="178" height="20" uuid="cd8a7582-5a1e-493a-8503-fd9c4061a2c0"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{numVani}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="290" y="38" width="51" height="20" uuid="cfd0864a-9623-4872-b3f5-f48faf83a57d"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Ascensore]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="421" y="38" width="51" height="20" uuid="345fc2da-87db-49aa-a6d1-62a41301e4f2"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Portineria]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" x="473" y="38" width="80" height="20" uuid="2fd44127-a301-4042-9bc9-17acd127bf94"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{portineria}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="112" y="98" width="168" height="20" uuid="4a230afb-beb0-4e76-bb66-06b2f67d21fc"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{riscaldamento}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="290" y="78" width="88" height="20" uuid="7237978e-31cb-4213-9101-e08071253fbc"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Gabinetto]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="378" y="78" width="178" height="20" uuid="83eaab96-fba2-4f26-b6ca-0abd14f35b2c"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{gabinetto}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="1" y="98" width="107" height="20" uuid="2b7481ed-03ba-4055-8a40-e3705b448826"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Riscaldamento]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="111" y="220" width="445" height="20" uuid="d8f4f179-3a6a-406e-8658-3856ddb44beb"/>
+				<textElement verticalAlignment="Top">
+					<font isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{valAdAbitazione}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="1" y="200" width="495" height="20" uuid="9c9deb84-9f0e-4f98-a155-cd4eca567aa4"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12" isBold="true" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[Sintesi valutazione abitazione]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="2" y="220" width="107" height="20" uuid="5c455d9b-ddf8-4521-b070-0ca061182eff"/>
+				<textElement verticalAlignment="Top">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Adeguatezza abitativa]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="111" y="242" width="445" height="20" uuid="beb51061-efba-44d1-b5da-8899c1f9aeae"/>
+				<textElement verticalAlignment="Top">
+					<font isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{valUbAbitazione}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="2" y="242" width="107" height="20" uuid="41264883-5b59-4284-9063-f9821f7f4a2b"/>
+				<textElement verticalAlignment="Top">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Ubicazione abitazione]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="1" y="122" width="107" height="20" uuid="ace5a7c1-c664-4a9e-9572-b2729a35ab2b"/>
+				<textElement verticalAlignment="Top"/>
+				<text><![CDATA[Fornito]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="1" y="142" width="107" height="20" uuid="d5bd1e1e-9ed5-4e35-89a0-9cbcee465e01"/>
+				<textElement verticalAlignment="Top"/>
+				<text><![CDATA[Elettrodomestici]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="1" y="164" width="107" height="20" uuid="1f316c04-01d0-4ef5-a3f2-361ab2865071"/>
+				<textElement verticalAlignment="Top"/>
+				<text><![CDATA[Altri problemi esistenti]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="112" y="122" width="444" height="20" uuid="11b003a6-dd0c-4003-a940-26ff29b768c1"/>
+				<textElement verticalAlignment="Top">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fornitos}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="112" y="164" width="442" height="20" uuid="b93a195d-86f0-4f03-a2be-e4d0e0cb9a0a"/>
+				<textElement verticalAlignment="Top">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{altriProblemi}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="112" y="142" width="444" height="20" uuid="01668b93-b491-45c2-a558-bfe302032c6b"/>
+				<textElement verticalAlignment="Top">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{elettrodomestici}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="3" y="75" width="107" height="20" uuid="c6b58967-866f-4585-a4be-8c20873532ab"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Proprietario / Gestore]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="112" y="75" width="168" height="20" uuid="c2af9f44-199e-4cf2-aff1-4e17eb25ef69"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{gestoreProprietario}]]></textFieldExpression>
+			</textField>
+		</band>
+		<band height="73" splitType="Prevent">
+			<staticText>
+				<reportElement positionType="Float" mode="Opaque" x="0" y="0" width="555" height="28" backcolor="#CCCCCC" uuid="46370324-1b77-49f9-bf51-627475ccbe37"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[6 - Situazione economica]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="305" y="40" width="102" height="20" uuid="3a4eb4ae-c60a-4afb-a111-7842f7ded590"/>
+				<textElement verticalAlignment="Top"/>
+				<text><![CDATA[ISEE riparametrata:   €]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="411" y="40" width="133" height="20" uuid="d652567e-d3ed-4ad1-b4d1-ad93cd35baf4"/>
+				<textElement verticalAlignment="Top">
+					<font isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{iseeRipa}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="41" y="40" width="247" height="20" uuid="2c152a67-4128-4409-a45c-35a8fa5cb6dd"/>
+				<textElement verticalAlignment="Top" markup="html">
+					<font isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{isee}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="1" y="40" width="40" height="20" uuid="03cf9f87-3eba-42e5-86a9-1ae28d2e859a"/>
+				<textElement verticalAlignment="Top"/>
+				<text><![CDATA[ISEE]]></text>
+			</staticText>
+		</band>
+		<band height="60" splitType="Prevent">
+			<staticText>
+				<reportElement positionType="Float" mode="Opaque" x="0" y="0" width="555" height="28" backcolor="#CCCCCC" uuid="d4168888-489f-4d6d-897a-a62cc0da85f9"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[7 - Mappa risorse]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="14" y="32" width="537" height="20" uuid="05653d4a-c5bb-47ee-ab6f-0f308c373744"/>
+				<textElement verticalAlignment="Top" markup="html">
+					<font isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{mappaRisorse}]]></textFieldExpression>
+			</textField>
+		</band>
+		<band height="209" splitType="Prevent">
+			<staticText>
+				<reportElement mode="Opaque" x="2" y="2" width="551" height="31" backcolor="#CCCCCC" uuid="c4bd37df-0ea5-4d62-8526-f2913e7e982b"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="13" isBold="true"/>
+				</textElement>
+				<text><![CDATA[SINTESI VALUTAZIONE COMPLESSIVA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="1" y="79" width="550" height="20" uuid="da854606-8503-4cfb-b088-d63022f0aa55"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12" isBold="true" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[Salute psichica]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="1" y="99" width="550" height="20" uuid="eb5eefb4-0842-4f5d-a764-ff2e5da3cf3c"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{valSalPsichica}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="1" y="59" width="550" height="20" uuid="00d690ae-e438-4b2f-b6c5-b3e1aa174dea"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{valSalFisica}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="1" y="39" width="550" height="20" uuid="f71598fc-dcf9-4195-b86f-32eda3868db1"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12" isBold="true" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[Salute fisica]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="1" y="182" width="550" height="20" uuid="020dcb8c-8eb1-4213-88b7-c1418c8dcd07"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{valAutonomiaExtraDom}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="1" y="122" width="550" height="20" uuid="0ab8ce90-2f14-4833-8580-31ed211ffa84"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12" isBold="true" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[Autonomia domestica]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="1" y="142" width="550" height="20" uuid="39cae4a4-e8cd-40c2-b7ac-9cdf3bae482e"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{valAutonomiaDomestica}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="1" y="162" width="550" height="20" uuid="e1f03943-94dc-487b-bdde-de59711558b4"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12" isBold="true" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[Autonomia extra-domestica]]></text>
+			</staticText>
+		</band>
+		<band height="334" splitType="Prevent">
+			<printWhenExpression><![CDATA[false]]></printWhenExpression>
+			<line>
+				<reportElement positionType="FixRelativeToBottom" x="331" y="290" width="223" height="1" uuid="aa4166d6-3c48-4b6a-beec-8b092bd91c21"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</line>
+			<textField>
+				<reportElement positionType="FixRelativeToBottom" x="0" y="273" width="177" height="15" isRemoveLineWhenBlank="true" uuid="4f3b2434-f3f2-4482-bd15-9bf4b7752b32"/>
+				<textFieldExpression><![CDATA[$F{comune} + ", " + $F{dataOdierna}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="FixRelativeToBottom" x="411" y="245" width="142" height="15" uuid="9542acbe-3af9-4587-9e18-673aa21f4ff8"/>
+				<textElement textAlignment="Right">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Assistente sociale]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="FixRelativeToBottom" x="331" y="260" width="223" height="15" isRemoveLineWhenBlank="true" uuid="573271ec-2658-49d7-b100-fdf5ede689e4"/>
+				<textElement textAlignment="Right">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{assSociale}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" mode="Opaque" x="0" y="139" width="555" height="28" backcolor="#CCCCCC" uuid="eb8dab6c-00f2-472f-9071-f84954f4fc24"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Progetto PAI]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="2" y="0" width="551" height="31" backcolor="#CCCCCC" uuid="2eb47084-6426-4757-b1a8-b1dc39713d1e"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="13" isBold="true"/>
+				</textElement>
+				<text><![CDATA[APPROFONDIMENTO E PROGETTO PAI]]></text>
+			</staticText>
+			<line>
+				<reportElement x="138" y="76" width="400" height="1" uuid="2800c238-ee68-4e72-a8cb-3b5d6d4acb12"/>
+			</line>
+			<line>
+				<reportElement x="7" y="98" width="530" height="1" uuid="147db85b-1c0a-4514-912f-ac6b86ff9a6f"/>
+			</line>
+			<rectangle>
+				<reportElement x="135" y="41" width="15" height="15" uuid="8a66fcdc-b74e-4400-8867-c8488197c1d6"/>
+			</rectangle>
+			<staticText>
+				<reportElement positionType="Float" x="3" y="38" width="127" height="20" uuid="86e03718-867a-4911-9077-6139fa4a3617"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Nessun approfondimento:]]></text>
+			</staticText>
+			<line>
+				<reportElement x="137" y="123" width="400" height="1" uuid="c5d5c5e3-3332-44ed-b188-6e050c76300f"/>
+			</line>
+			<staticText>
+				<reportElement positionType="Float" x="4" y="58" width="127" height="20" uuid="0a5d82af-a73a-441d-9843-e163dab99104"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Se si, quali approfondimenti:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="5" y="108" width="127" height="20" uuid="f873e4a8-9f1d-435a-93bb-8548882bf88f"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Quando:]]></text>
+			</staticText>
+		</band>
+		<band height="50" splitType="Immediate">
+			<printWhenExpression><![CDATA[$F{renderBarthel}.booleanValue()]]></printWhenExpression>
+			<subreport isUsingCache="false">
+				<reportElement positionType="Float" x="3" y="5" width="412" height="40" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" uuid="2230f202-4244-4ada-8069-084a22ac09fd">
+					<property name="net.sf.jasperreports.export.pdf.tag.table" value="null"/>
+				</reportElement>
+				<dataSourceExpression><![CDATA[$P{barthel}]]></dataSourceExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "barthel.jasper"]]></subreportExpression>
+			</subreport>
+			<break>
+				<reportElement x="0" y="0" width="100" height="1" uuid="2fc9fecf-c5fb-46bf-a483-a2d66ce6e1d8"/>
+			</break>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="43">
+			<textField>
+				<reportElement x="412" y="8" width="103" height="19" forecolor="#999999" uuid="d0357c10-d032-4dc1-8798-27afed74faf5"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA["Pagina "+$V{PAGE_NUMBER}+" /"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="515" y="8" width="40" height="19" forecolor="#999999" uuid="777cb2e9-adc9-4e25-a734-32ede29801d1"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="0" y="2" width="392" height="41" forecolor="#999999" uuid="8d4257c5-4bf5-4087-82f6-72062f12cc9c"/>
+				<textElement verticalAlignment="Middle" markup="html">
+					<font size="8" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{pieDiPagina}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="0" y="-2" width="555" height="1" uuid="ea914ff7-edf9-4506-88f1-562597460f09"/>
+			</line>
+		</band>
+	</pageFooter>
+</jasperReport>

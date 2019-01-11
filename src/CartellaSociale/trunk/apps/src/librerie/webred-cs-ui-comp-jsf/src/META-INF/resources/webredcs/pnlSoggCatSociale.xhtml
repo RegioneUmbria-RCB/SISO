@@ -1,0 +1,190 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+     	xmlns:h="http://java.sun.com/jsf/html"
+		xmlns:f="http://java.sun.com/jsf/core"
+		xmlns:ui="http://java.sun.com/jsf/facelets"
+		xmlns:p="http://primefaces.org/ui"
+	  	xmlns:composite="http://java.sun.com/jsf/composite">
+      
+	<h:head>
+		<title>Componente per la gestione Soggetto/Categoria Sociale</title>
+	</h:head>
+	<h:body>
+		<composite:interface componentType="pnlSoggCatSociale">
+			<composite:attribute name="iSoggCatSociale" type="it.webred.cs.jsf.interfaces.ISoggCatSociale" />
+			<composite:attribute name="idModalDialog"  type="java.lang.String" required="true" default="mdlSoggCatSocDialog" />
+			<composite:attribute name="readOnly" default="false"/>
+			<composite:attribute name="salvaActionUpdate" />
+		</composite:interface>
+		<composite:implementation>
+	     		
+			<p:dialog id="#{cc.attrs.idModalDialog}" dynamic="true" modal="true"
+				widgetVar="#{cc.attrs.iSoggCatSociale.modalWidgetVar}" width="800"
+				closable="false" header="Gestione Categorie Sociali">
+
+				<h:panelGrid id="pnlSelectCat" columns="2" style="margin-left:auto; margin-right:auto;" rendered="#{!cc.attrs.readOnly}">
+					<p:outputLabel value="#{cc.attrs.iSoggCatSociale.labelSegrSociale}: "
+						rendered="#{cc.attrs.iSoggCatSociale.ufficioSchedaSegr != null}"/>
+					<p:outputLabel value="#{cc.attrs.iSoggCatSociale.ufficioSchedaSegr}" style="font-weight:bold;"
+						rendered="#{cc.attrs.iSoggCatSociale.ufficioSchedaSegr != null}"/>
+						
+				    <p:outputLabel value="Area Target assegnata:"
+						rendered="#{cc.attrs.iSoggCatSociale.catSocSegr != null}"/>
+					<p:outputLabel value="#{cc.attrs.iSoggCatSociale.catSocSegr}" style="font-weight:bold;"
+						rendered="#{cc.attrs.iSoggCatSociale.catSocSegr != null}"/>
+					
+					<p:selectOneMenu value="#{cc.attrs.iSoggCatSociale.itemSelezionato}" filter="true" filterMatchMode="contains">
+			            <f:selectItem itemLabel="- seleziona -" itemValue="" />
+			            <f:selectItems value="#{cc.attrs.iSoggCatSociale.lstItems}"
+			            	var="itm" itemLabel="#{itm.value}" itemValue="#{itm.key}|#{itm.value}"/>
+			        </p:selectOneMenu>
+			        
+			        <p:commandButton action="#{cc.attrs.iSoggCatSociale.aggiungiSelezionato}"
+						value="Aggiungi" update="tblCatSociali" process="pnlSelectCat"/>
+						
+					<p:spacer height="20"/>
+				</h:panelGrid>
+				
+				<p:outputPanel id="tblCatSociali">
+				<p:dataTable var="row" rowIndexVar="rowKey"
+					value="#{cc.attrs.iSoggCatSociale.lstComponents}"
+					rendered="#{not empty cc.attrs.iSoggCatSociale.lstComponents}"
+					rowStyleClass="#{row.attivo ? '' : 'inattivo'}">
+					
+					<f:facet name="header">  
+			            <p:outputLabel value="Lista Categorie Sociali"/>
+			        </f:facet>
+					
+					<p:column>
+						<h:outputText
+							value="#{row.descrizione}" />
+					</p:column>
+					
+					<p:column headerText="Dalla data" style="text-align: center">
+						<p:calendar value="#{row.dataInizio}" pattern="dd/MM/yyyy"
+							converterMessage="Data non valida" disabled="#{cc.attrs.readOnly}">
+							<p:ajax event="dateSelect"/>
+						</p:calendar>
+					</p:column>
+					<p:column headerText="Alla data" style="text-align: center">
+						<p:calendar value="#{row.dataFine}" pattern="dd/MM/yyyy" 
+						    converterMessage="Data non valida" rendered="#{row.finito}"
+						    disabled="#{cc.attrs.readOnly}">
+						    <f:attribute name="startDate" value="#{row.dataInizio}" />
+						    <f:validator validatorId="dateRangeValidator" />
+						    <p:ajax event="dateSelect" update="@parent:@parent:@parent"/>
+						</p:calendar>
+						<h:outputText value="ATTIVO" rendered="#{!row.finito}"/>
+					</p:column>
+					<p:column headerText="Prevalente" style="text-align: center">
+						<p:selectBooleanCheckbox value="#{row.prevalente}" disabled="#{cc.attrs.readOnly or !row.attivo}"/>
+					</p:column>
+					<p:column style="text-align: center" rendered="#{!cc.attrs.readOnly}">
+						<p:commandButton value="Chiudi" oncomplete="confermaChiudiCat.show()" rendered="#{!row.finito}" process="@this">
+							<f:setPropertyActionListener value="#{row}" target="#{cc.attrs.iSoggCatSociale.compSelezionato}"/>
+							<f:setPropertyActionListener value="#{rowKey}" target="#{cc.attrs.iSoggCatSociale.indexSelezionato}"/>
+						</p:commandButton>
+						
+						<p:commandButton value="Elimina" onclick="confermaEliminaCat.show()" process="@this">
+							<f:setPropertyActionListener value="#{row}" target="#{cc.attrs.iSoggCatSociale.compSelezionato}"/>
+							<f:setPropertyActionListener value="#{rowKey}" target="#{cc.attrs.iSoggCatSociale.indexSelezionato}"/>
+						</p:commandButton>
+					</p:column>
+				</p:dataTable>
+				
+				<p:spacer height="20"/>
+				
+				<h:panelGrid columns="2" style="margin-left:auto; margin-right:auto;">
+					<h:outputText value="Il salvataggio verrà segnalato al responsabile del Settore:"/>
+					<h:outputText value="#{cc.attrs.iSoggCatSociale.settTo}" style="font-weight: bold;"/>
+				</h:panelGrid>
+				
+				<table border="0" width="100%">
+					<tr><td><p:spacer height="20"/></td></tr>
+					<tr>
+						<td style="text-align: center;">
+							<p:commandButton value="Salva" process="@this"
+								onclick="confermaSalvaCat.show()" 
+								disabled="#{cc.attrs.readOnly or empty cc.attrs.iSoggCatSociale.lstComponents}"/>
+							<p:spacer width="15px;" />
+							<p:commandButton value="Esci"
+								process="@this" rendered="#{!cc.attrs.iSoggCatSociale.disableEsci}"
+								oncomplete="PF('#{cc.attrs.iSoggCatSociale.modalWidgetVar}').hide();"
+								action="#{cc.attrs.iSoggCatSociale.reset}"/>
+						</td>
+					</tr>
+				</table>
+				</p:outputPanel>
+			</p:dialog>
+			
+			<p:dialog header="Chiudi alla data:"
+				widgetVar="confermaChiudiCat" modal="true"
+				closable="false" resizable="false">
+				<p:outputPanel id="pnlConfermaChiudiCat">
+					<table border="0">
+						<tr>
+							<td style="text-align: center;">
+								<p:calendar value="#{cc.attrs.iSoggCatSociale.compSelezionato.dataTemp}"
+									pattern="dd/MM/yyyy" converterMessage="Data non valida" showOn="button">
+								    <f:attribute name="startDate" value="#{cc.attrs.iSoggCatSociale.compSelezionato.dataInizio}" />
+								    <f:validator validatorId="dateRangeValidator" />
+								</p:calendar>
+								<p:spacer width="10"/>
+	        					<h:outputText value="(gg/mm/aaaa)" style="font-size: 12px;" /> 
+							</td>
+						</tr>
+						<tr><td><p:spacer height="10"/></td></tr>
+						<tr>
+							<td style="text-align: center;">
+								<p:commandButton value="Conferma" partialSubmit="true" process="pnlConfermaChiudiCat"
+									oncomplete="if (args &amp;&amp; !args.validationFailed) PF('confermaChiudiCat').hide()"
+									update="tblCatSociali" action="#{cc.attrs.iSoggCatSociale.chiudiSelezionato}"/>
+								<p:commandButton value="Annulla"
+									onclick="PF('confermaChiudiCat').hide();" type="button" />
+							</td>
+						</tr>
+					</table>
+				</p:outputPanel>
+			</p:dialog>
+
+	    	<p:confirmDialog header="Elimina"
+				widgetVar="confermaEliminaCat" severity="alert"
+				closable="false"
+				message="Procedere con l'eliminazione?">
+				<p:panelGrid>
+					<p:row>
+						<p:column style="text-align: center;">
+							<p:commandButton value="SI" update="tblCatSociali"
+								action="#{cc.attrs.iSoggCatSociale.eliminaSelezionato}"
+								onclick="PF('confermaEliminaCat').hide()" process="@this">
+							</p:commandButton>
+							<p:commandButton value="NO"
+								onclick="PF('confermaEliminaCat').hide();" type="button" />
+						</p:column>
+					</p:row>
+				</p:panelGrid>
+			</p:confirmDialog>
+			
+			<p:confirmDialog header="Salva"
+				widgetVar="confermaSalvaCat" severity="alert"
+				closable="false"
+				message="Procedere con il salvataggio?">
+				<p:panelGrid>
+					<p:row>
+						<p:column style="text-align: center;">
+							<p:commandButton value="SI" onclick="PF('confermaSalvaCat').hide()"
+								action="#{cc.attrs.iSoggCatSociale.salva}" process="@this" 
+								oncomplete="if (args &amp;&amp; !args.validationFailed &amp;&amp; args.saved){ PF('#{cc.attrs.iSoggCatSociale.modalWidgetVar}').hide(); updateDati();}else{}"/>
+							<p:remoteCommand name="updateDati" process="@this" update=":#{p:component(cc.attrs.salvaActionUpdate)}" />  
+							<p:commandButton value="NO"
+								onclick="PF('confermaSalvaCat').hide();" type="button" />
+						</p:column>
+					</p:row>
+				</p:panelGrid>
+			</p:confirmDialog>  
+			
+		</composite:implementation>
+		
+	</h:body>
+		
+</html>

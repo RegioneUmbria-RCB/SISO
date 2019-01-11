@@ -1,0 +1,111 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+     	xmlns:h="http://java.sun.com/jsf/html"
+		xmlns:f="http://java.sun.com/jsf/core"
+		xmlns:ui="http://java.sun.com/jsf/facelets"
+		xmlns:p="http://primefaces.org/ui"
+	  	xmlns:composite="http://java.sun.com/jsf/composite"
+	  	xmlns:webred="http://java.sun.com/jsf/composite/webred">
+	  	
+	<h:body>
+		<composite:interface componentType="pnlCodFiscTemp" />
+		<composite:implementation>
+		
+		<!-- loading -->
+		<p:ajaxStatus onstart="PF('statusDialog').show();" onsuccess="PF('statusDialog').hide();" />  
+		<p:dialog modal="true" widgetVar="statusDialog" header="generazione codici fiscali temporanei in corso..."  
+		        draggable="false" closable="false" resizable="false" >
+		    <p:graphicImage value="/images/ajaxloadingbar.gif"  />  
+		</p:dialog>
+		<!-- Fine Loading --> 
+		
+        <h:form>
+        	<p:messages showDetail="true" showSummary="true" autoUpdate="true"></p:messages>
+        	<h:panelGrid columns="2" >
+        		<p:outputLabel value="Cod. fiscale temporaneo" style="display: block; width: 100px;" />	
+        		<h:panelGroup >        	
+		        	<p:inputMask id="codicefiscaleinput" value="#{tempCodFiscManagerDlg.codiceFiscaleTemporaneoScelto}" 
+		        		style="text-transform: uppercase;"
+		        		widgetVar="wv_codiceFiscaleTemporaneoScelto" mask="[***********?*********************]" placeholder="[***********?*********************]" placeHolder="_" maxlength="34" size="36">	        		
+		        			<p:ajax update="@form" listener="#{tempCodFiscManagerDlg.genOrEditCf}" event="blur"/>
+		        	</p:inputMask>
+		        	<p:commandButton value="Modifica" actionListener="#{tempCodFiscManagerDlg.genOrEditCf}" update="@form" icon="ui-icon-pencil"/>
+		        	<p:commandButton value="Genera"   actionListener="#{tempCodFiscManagerDlg.cfGeneration}" update="@form" icon="ui-icon-gear"/>
+	        	</h:panelGroup>
+				<p:spacer width="10px"/>
+ 				<p:fieldset toggleable="true" legend="Dati utilizzati nella generazione del codice fiscale" >	        		
+	        		<h:panelGrid columns="2">
+		        		<p:outputLabel value="Nome: " />
+		        		<p:outputLabel value="#{tempCodFiscManagerDlg.nome}" />
+		        		
+		        		<p:outputLabel value="Cognome: " /> 
+		        		<p:outputLabel value="#{tempCodFiscManagerDlg.cognome}" />	
+		        		 
+		        		<p:outputLabel value="Data di Nascita: " /> 
+			        	<p:outputLabel value="#{tempCodFiscManagerDlg.dataNascita}"  >
+	    		        	<f:convertDateTime pattern="dd/MM/yyyy"/>
+		        		</p:outputLabel>	        	
+			        	 
+			        	<p:outputLabel value="Comune di Nascita: " /> 
+			        	<p:outputLabel value="#{tempCodFiscManagerDlg.comuneNascita}"  />		        	
+						 
+						<p:outputLabel value="Cittadinanza: " /> 
+						<p:outputLabel value="#{tempCodFiscManagerDlg.cittadinanza}"  />
+		        	</h:panelGrid>	        	
+	        	</p:fieldset>		
+	        	<p:spacer width="10px"/>
+				<h:panelGroup layout="block">
+<!-- 		        		
+		        	<h:outputLabel value="seleziona un codice fiscale temporaneo esistente" 
+		        		title="i codici temporanei in elenco sono quelli associati ai medesimi attributi identificativi del soggetto"/>
+		        				        		        	
+		        	<p:selectOneListbox id="selectEsistente" value="#{tempCodFiscManagerDlg.csCfTempEsistente}"     		 		        		 
+		        		converterMessage="errore di conversione" converter="#{tempCodFiscManagerDlg.converter}" 
+		        		validatorMessage="errore di validazione" validator="#{tempCodFiscManagerDlg.cfTempValidator}" 
+		        		required="false" requiredMessage="required!">
+ 		        		<f:selectItem itemLabel="..seleziona un codice" itemValue="" noSelectionOption="true"/>		        		
+		        		<f:selectItems value="#{tempCodFiscManagerDlg.elencoCodiciFiscaliTemporaneiNonAssegnati}" var="sitm" 
+		        			itemValue="#{sitm}" 
+		        			itemLabel="#{sitm.id}" 
+		        			itemDescription="#{sitm.attributi}" />
+		        		<p:column>
+		        			<h:outputLabel value="#{itm.dtIns}"/>		        			
+	        			</p:column>
+	        			<p:column>
+	        				<h:outputLabel value="#{itm.cfTemp}"/>							
+						</p:column>        					        				        			
+	        			<p:ajax update="@form"/>
+		        	</p:selectOneListbox> -->
+		        	
+		        			        	
+<!-- 		        	csCfTemp:<p:outputLabel id="test2" value="#{tempCodFiscManagerDlg.csCfTemp}" /> -->
+		        	
+		        	<p:panel header="Esistono altri cod.fiscali temporanei per il soggetto non ancora convertiti:" rendered="#{tempCodFiscManagerDlg.elencoCodiciFiscaliTemporaneiNonAssegnati.size()>0}">
+			        	<p:dataList id="elencoCodiciFiscaliTemporaneiNonAssegnati" value="#{tempCodFiscManagerDlg.elencoCodiciFiscaliTemporaneiNonAssegnati}" var="itm" emptyMessage="none">			        		 
+			        		<p:commandLink value="#{itm.cfTemp}" title="#{itm.id}" actionListener="#{tempCodFiscManagerDlg.selectExistingCfTemp(itm.id)}" update="@form"/> 
+			        	</p:dataList> 
+		        	</p:panel>
+		        	
+		        	<br/>
+		        	<p:panel header="Esistono altri cod.fiscali temporanei per il soggetto convertiti in definitivi:" rendered="#{tempCodFiscManagerDlg.elencoCodiciFiscaliTemporaneiAssegnatiReali.size()>0}">	        	
+			        	
+			        	<p:dataList id="elencoCodiciFiscaliTemporaneiAssegnatiReali" value="#{tempCodFiscManagerDlg.elencoCodiciFiscaliTemporaneiAssegnatiReali}" var="itm" emptyMessage="none">
+			        		<p:outputLabel value="#{itm.cfTemp} -> "/> &nbsp;  
+	    				    <p:commandLink value="#{itm.cf}" title="#{itm.id}"  actionListener="#{tempCodFiscManagerDlg.selectCf(itm.cf)}" update="@form"/>       					        		
+			        	</p:dataList>
+		        	</p:panel>
+		        	
+				</h:panelGroup>        	        	
+	        	
+	        	<f:facet name="footer">
+	        		<p:separator />
+    			    <p:commandButton value="Salva" action="#{tempCodFiscManagerDlg.saveCfTemp}" disabled="#{!tempCodFiscManagerDlg.saveEnabled}"/>
+	        	</f:facet>	       		
+
+       		</h:panelGrid>      	
+        	
+        </h:form>
+        
+		</composite:implementation>
+	</h:body>
+	</html>

@@ -1,0 +1,461 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" whenResourceMissingType="Empty">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String">
+		<defaultValueExpression><![CDATA["subreport\\"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="anagrafica" class="net.sf.jasperreports.engine.JRDataSource"/>
+	<parameter name="parenti" class="net.sf.jasperreports.engine.JRDataSource"/>
+	<parameter name="datisociali" class="net.sf.jasperreports.engine.JRDataSource"/>
+	<parameter name="invalidita" class="net.sf.jasperreports.engine.JRDataSource"/>
+	<parameter name="disabilita" class="net.sf.jasperreports.engine.JRDataSource"/>
+	<parameter name="tribunale" class="net.sf.jasperreports.engine.JRDataSource"/>
+	<parameter name="operatori" class="net.sf.jasperreports.engine.JRDataSource"/>
+	<parameter name="note" class="net.sf.jasperreports.engine.JRDataSource"/>
+	<parameter name="header" class="net.sf.jasperreports.engine.JRDataSource"/>
+	<parameter name="SUBREPORT_JASPER" class="java.lang.String">
+		<defaultValueExpression><![CDATA["subreport\\"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="tipoIntervento" class="net.sf.jasperreports.engine.JRDataSource"/>
+	<field name="tipoIntervento" class="java.lang.String"/>
+	<field name="modalita" class="java.lang.String"/>
+	<field name="unaTantum" class="java.lang.String"/>
+	<field name="catSociale" class="java.lang.String"/>
+	<field name="settRichiedente" class="java.lang.String"/>
+	<field name="note" class="java.lang.String"/>
+	<field name="dataInizio" class="java.lang.String"/>
+	<field name="dataFine" class="java.lang.String"/>
+	<field name="tipoFoglio" class="java.lang.String"/>
+	<field name="dataAmministrativa" class="java.lang.String"/>
+	<field name="relazione" class="java.lang.String"/>
+	<field name="descrDettOperazione" class="java.lang.String"/>
+	<field name="attDal" class="java.lang.String"/>
+	<field name="attAl" class="java.lang.String"/>
+	<field name="respinto" class="java.lang.String"/>
+	<field name="motivazione" class="java.lang.String"/>
+	<field name="rifDenominazione" class="java.lang.String"/>
+	<field name="rifIndirizzo" class="java.lang.String"/>
+	<field name="rifLuogo" class="java.lang.String"/>
+	<field name="rifTelefono" class="java.lang.String"/>
+	<field name="dettOperazione" class="java.lang.String"/>
+	<field name="assSociale" class="java.lang.String"/>
+	<field name="comune" class="java.lang.String"/>
+	<field name="dataOdierna" class="java.lang.String"/>
+	<field name="pieDiPagina" class="java.lang.String"/>
+	<field name="showCasellaContributo" class="java.lang.Boolean"/>
+	<field name="stampIntCustom" class="java.lang.Boolean"/>
+	<background>
+		<band/>
+	</background>
+	<title>
+		<band height="45" splitType="Immediate">
+			<subreport>
+				<reportElement positionType="Float" stretchType="RelativeToTallestObject" isPrintRepeatedValues="false" x="2" y="0" width="412" height="40" isPrintWhenDetailOverflows="true">
+					<property name="net.sf.jasperreports.export.pdf.tag.table" value="null"/>
+				</reportElement>
+				<dataSourceExpression><![CDATA[$P{header}]]></dataSourceExpression>
+				<subreportExpression class="java.lang.String"><![CDATA[$P{SUBREPORT_DIR} + "header.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</title>
+	<detail>
+		<band height="66" splitType="Immediate">
+			<staticText>
+				<reportElement positionType="Float" x="3" y="0" width="128" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Intervento a favore di:]]></text>
+			</staticText>
+			<subreport>
+				<reportElement positionType="Float" isPrintRepeatedValues="false" x="-17" y="22" width="412" height="40" isRemoveLineWhenBlank="true">
+					<property name="net.sf.jasperreports.export.pdf.tag.table" value="null"/>
+				</reportElement>
+				<dataSourceExpression><![CDATA[$P{anagrafica}]]></dataSourceExpression>
+				<subreportExpression class="java.lang.String"><![CDATA[$P{SUBREPORT_DIR} + "anagrafica.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+		<band height="140" splitType="Immediate">
+			<textField>
+				<reportElement positionType="Float" mode="Opaque" x="0" y="2" width="555" height="28" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{tipoIntervento}.toUpperCase()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="0" y="42" width="60" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Modalità]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="60" y="42" width="136" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{modalita}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="259" y="42" width="20" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{unaTantum}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="196" y="42" width="61" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<text><![CDATA[Una tantum]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" x="379" y="42" width="176" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{catSociale}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="289" y="42" width="88" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Cat. sociale]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="0" y="82" width="107" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Settore richiedente]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="111" y="82" width="168" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{settRichiedente}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="114" y="102" width="441" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{note}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="1" y="102" width="106" height="32"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Specifiche intervento e settore erogante]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="377" y="62" width="178" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{dataFine}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="289" y="62" width="88" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Data fine]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="111" y="62" width="168" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{dataInizio}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="0" y="62" width="107" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Data inizio]]></text>
+			</staticText>
+		</band>
+		<band height="125" splitType="Immediate">
+			<subreport>
+				<reportElement positionType="Float" stretchType="RelativeToTallestObject" isPrintRepeatedValues="false" x="1" y="2" width="412" height="40" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true">
+					<property name="net.sf.jasperreports.export.pdf.tag.table" value="null"/>
+					<printWhenExpression><![CDATA[$F{stampIntCustom}]]></printWhenExpression>
+				</reportElement>
+				<dataSourceExpression><![CDATA[$P{tipoIntervento}]]></dataSourceExpression>
+				<subreportExpression class="java.lang.String"><![CDATA[$P{SUBREPORT_JASPER}]]></subreportExpression>
+			</subreport>
+			<staticText>
+				<reportElement positionType="Float" x="0" y="51" width="392" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font size="11" isBold="false" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[Soggetto di riferimento]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="0" y="72" width="93" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Denominazione]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="254" y="72" width="81" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Indirizzo]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="335" y="72" width="220" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{rifIndirizzo}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="93" y="72" width="161" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{rifDenominazione}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="335" y="94" width="220" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{rifTelefono}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="254" y="94" width="81" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Telefono]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="0" y="94" width="93" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Luogo]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="93" y="94" width="161" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{rifLuogo}]]></textFieldExpression>
+			</textField>
+		</band>
+		<band height="248" splitType="Immediate">
+			<staticText>
+				<reportElement positionType="Float" mode="Opaque" x="0" y="0" width="555" height="28" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Foglio amministrativo]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="254" y="35" width="81" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Data amministr.]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="93" y="35" width="130" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{tipoFoglio}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="0" y="35" width="93" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Tipo foglio]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="334" y="35" width="120" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{dataAmministrativa}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="0" y="54" width="93" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Relazione]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="93" y="54" width="462" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{relazione}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="254" y="73" width="81" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Dal]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="93" y="73" width="161" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{descrDettOperazione}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="335" y="73" width="94" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{attDal}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="460" y="73" width="95" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{attAl}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="434" y="73" width="26" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Al]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="0" y="92" width="93" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Respinto]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="93" y="92" width="111" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{respinto}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="335" y="92" width="220" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{motivazione}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="254" y="92" width="81" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Motivazione]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="0" y="73" width="93" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{dettOperazione}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="411" y="125" width="142" height="15"/>
+				<textElement textAlignment="Right">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Assistente sociale]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="331" y="140" width="223" height="15" isRemoveLineWhenBlank="true"/>
+				<textElement textAlignment="Right">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{assSociale}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="331" y="170" width="223" height="1"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</line>
+			<textField>
+				<reportElement x="0" y="153" width="177" height="15" isRemoveLineWhenBlank="true"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{comune} + ", " + $F{dataOdierna}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="1" y="212" width="80" height="15" isRemoveLineWhenBlank="true"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{comune} + ","]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="85" y="226" width="25" height="1"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</line>
+			<line direction="BottomUp">
+				<reportElement x="114" y="215" width="6" height="12"/>
+			</line>
+			<line>
+				<reportElement x="120" y="226" width="25" height="1"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</line>
+			<line direction="BottomUp">
+				<reportElement x="150" y="215" width="6" height="12"/>
+			</line>
+			<line>
+				<reportElement x="158" y="226" width="25" height="1"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</line>
+			<staticText>
+				<reportElement positionType="Float" x="410" y="193" width="142" height="15"/>
+				<textElement textAlignment="Right">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Responsabile]]></text>
+			</staticText>
+			<line>
+				<reportElement x="330" y="228" width="223" height="1"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</line>
+		</band>
+		<band height="66" splitType="Immediate">
+			<printWhenExpression><![CDATA[$F{showCasellaContributo}]]></printWhenExpression>
+			<rectangle>
+				<reportElement positionType="Float" x="3" y="22" width="15" height="15" isRemoveLineWhenBlank="true"/>
+			</rectangle>
+			<staticText>
+				<reportElement positionType="Float" x="24" y="14" width="531" height="25" isRemoveLineWhenBlank="true"/>
+				<textElement markup="html">
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[Barrare la casella se l'effettiva erogazione del contributo previsto è subordinata alla trasmissione di successive <b>note periodiche</b> indicanti la cifra reale da corrispondere.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="2" y="44" width="60" height="17" isRemoveLineWhenBlank="true"/>
+				<textElement/>
+				<text><![CDATA[Annotazioni:]]></text>
+			</staticText>
+			<line>
+				<reportElement positionType="Float" x="67" y="56" width="490" height="1" isRemoveLineWhenBlank="true"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</line>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="43">
+			<textField>
+				<reportElement x="412" y="8" width="103" height="19"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.String"><![CDATA["Pagina "+$V{PAGE_NUMBER}+" /"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="515" y="8" width="40" height="19"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="0" y="2" width="392" height="41"/>
+				<textElement verticalAlignment="Middle" markup="html">
+					<font size="8" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{pieDiPagina}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="0" y="-2" width="555" height="1"/>
+			</line>
+		</band>
+	</pageFooter>
+</jasperReport>

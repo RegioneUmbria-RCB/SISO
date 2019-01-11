@@ -1,0 +1,101 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Table class="oracle.dbtools.crest.model.design.relational.Table" directorySegmentName="seg_0" id="B4B5B6AD-144D-A901-9342-E4E44560EB1C" schemaObject="31789C62-6489-FE63-4664-3CFB4035AC87" name="CS_CFG_INT_ESEG">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>CS_SISO</sourceObjSchema>
+<sourceObjName>CS_CFG_INT_ESEG</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:18 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>D753CD8C-0DFE-0A21-2A80-5FCE85FAE6E2</importedID>
+<existDependencyGenerateInDDl>true</existDependencyGenerateInDDl>
+<parsed>true</parsed>
+<columns itemClass="oracle.dbtools.crest.model.design.relational.Column">
+<Column name="ID" id="B4F6BBB4-A114-1074-F299-530BAB8F5202">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>CS_CFG_INT_ESEG</sourceObjSchema>
+<sourceObjName>ID</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:19 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>C433CCF2-83A4-97D9-6F60-057306E22C74</importedID>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<dataTypePrecision>10</dataTypePrecision>
+<ownDataTypeParameters>,10,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="TIPO_INTERVENTO_ID" id="2416B404-A38D-C84A-8DEB-A9A73B839B79">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>CS_CFG_INT_ESEG</sourceObjSchema>
+<sourceObjName>TIPO_INTERVENTO_ID</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:19 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>788F1256-4439-EE95-B5F4-E7FC38C8DBF7</importedID>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<dataTypePrecision>10</dataTypePrecision>
+<ownDataTypeParameters>,10,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+<associations>
+<colAssociation fkAssociation="16D0764C-9CEF-F4E7-A92E-CF0A7EB36D3F" referredColumn="63FD419E-76EE-86F6-C49F-7F71FFCB6960"/>
+</associations>
+</Column>
+</columns>
+<indexes itemClass="oracle.dbtools.crest.model.design.relational.Index">
+<ind_PK_UK id="3585D99D-A4E0-7202-6A30-2FA4E288308D" name="CS_CFG_INT_ESEG_ESEG_PK">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>CS_SISO</sourceObjSchema>
+<sourceObjName>CS_CFG_INT_ESEG_ESEG_PK</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:19 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>AC117E0B-6A8F-99D8-F6AF-744D4E5D95B2</importedID>
+<pk>true</pk>
+<indexState>Primary Constraint</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="B4F6BBB4-A114-1074-F299-530BAB8F5202"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="A8377C33-B3F3-34EC-E9FA-403099CFFC2C" schemaObject="31789C62-6489-FE63-4664-3CFB4035AC87" name="CS_CFG_INT_ESEG_ESEG_PK">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>CS_SISO</sourceObjSchema>
+<sourceObjName>CS_CFG_INT_ESEG_ESEG_PK</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:19 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>0604DFFC-90AD-B533-279F-9C811AF2F78C</importedID>
+<indexState>Unique Plain Index</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="B4F6BBB4-A114-1074-F299-530BAB8F5202"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="EAEA2CE6-1F46-E2E9-C6F4-EA918C453966" schemaObject="31789C62-6489-FE63-4664-3CFB4035AC87" name="IDX_CFG_INT_ESEG_TIPOINT">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>CS_SISO</sourceObjSchema>
+<sourceObjName>IDX_CFG_INT_ESEG_TIPOINT</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-08-31 12:44:19 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>9487058C-FC0A-DC35-E6FB-114DE93B200A</importedID>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="2416B404-A38D-C84A-8DEB-A9A73B839B79"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="38BC5572-449C-3C4A-694B-5434C0719A79" name="CS_CFG_INT_ESEG_TIPOINT_FK">
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:19 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<indexState>Foreign Key</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="2416B404-A38D-C84A-8DEB-A9A73B839B79"/>
+</indexColumnUsage>
+</ind_PK_UK>
+</indexes>
+</Table>

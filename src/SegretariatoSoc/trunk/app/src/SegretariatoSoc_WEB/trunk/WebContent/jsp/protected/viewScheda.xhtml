@@ -1,0 +1,387 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:webred="http://java.sun.com/jsf/composite/webred"
+	xmlns:webredcs="http://java.sun.com/jsf/composite/webredcs">
+<ui:composition template="/jsp/protected/layout/layout.xhtml">
+
+	<ui:define name="content">
+
+	
+	<p:ajaxStatus onstart="PF('statusDialog').show();" onsuccess="PF('statusDialog').hide();"/>  
+              
+	<p:dialog modal="true" widgetVar="statusDialog" header="Caricamento"   
+        draggable="false" closable="false" resizable="false" >  
+    	<p:graphicImage value="/images/loadingbar.gif" />  
+	</p:dialog>
+	
+	<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+        <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>  
+        <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>       
+    </p:confirmDialog>
+    
+     <h:form id="goBackForm">
+		<p:commandLink id="goBackLink" ajax="false" actionListener="#{viewSchedaBean.goBack}" value="Indietro">
+	    </p:commandLink>
+	</h:form>
+    <p:separator/>
+        
+	<h:form id="viewSchedaForm">
+        <p:panel header="Dettaglio Scheda">
+        <h:panelGrid columns="2">
+        	<p:graphicImage value="/images/signature-ok.png" width="25px" title="#viewSchedaBean.privacy}" rendered="#{viewSchedaBean.privacy!=null}" /> 
+        	<p:outputLabel  value="#{viewSchedaBean.privacy}" rendered="#{viewSchedaBean.privacy!=null}"       style="font-weight:bold;"/>
+			<p:graphicImage value="/images/signature-no.png" rendered="#{viewSchedaBean.privacy==null}"  width="25px"/>
+			<p:outputLabel  value="Modulo privacy non sottoscritto" rendered="#{viewSchedaBean.privacy==null}" style="font-weight:bold;color:orange;" />
+    	</h:panelGrid>
+    	
+    	<p:accordionPanel  multiple="true" activeIndex="2" >
+        <p:tab title="Accesso">
+        
+        	<p:panel rendered="#{viewSchedaBean.accessoOrig!=null}" id="anagrafica_scheda_orig_panel" 
+        	         header="Modalità di accesso - SCHEDA ORIGINALE" toggleable="true" collapsed="false" toggleSpeed="500">
+						<h:panelGrid columns="4"  styleClass="grid">
+							<h:outputText value="Ufficio:" style="font-weight:bold;" />
+							<h:outputText value="#{viewSchedaBean.accessoOrig.puntoContatto.ufficio.nome}" />
+
+							<h:outputLabel value="Luogo: " style="font-weight:bold;" />
+							<h:outputText value="#{viewSchedaBean.accessoOrig.puntoContatto.nomePContatto}" />
+
+							<h:outputText value="Ente di riferimento:" style="font-weight:bold;" />
+							<h:outputText value="#{viewSchedaBean.accessoOrig.puntoContatto.organizzazione.nome}" />
+					
+							<h:outputText value="Data di accesso *" for="data_accesso" style="font-weight:bold;" />
+							<h:outputText value="#{viewSchedaBean.accessoOrig.dataAccesso}" >
+							<f:convertDateTime pattern="dd/MM/yyyy" /> </h:outputText>
+							
+							<h:outputText value="Operatore:"  style="font-weight:bold;" />
+							<h:outputText value="#{viewSchedaBean.accessoOrig.operatore}"  />
+							
+							<h:outputText value="Descrizione scheda:"  style="font-weight:bold;" />
+							<h:outputText value="#{viewSchedaBean.accessoOrig.descrizione}"   />
+							
+							<h:outputText value="Interlocutore:"  style="font-weight:bold;" />
+							<h:panelGroup>
+								<h:outputText value="#{viewSchedaBean.accessoOrig.interlocutore}"   />
+								<h:outputText value=" (accompagnato da: #{viewSchedaBean.accessoOrig.accompagnatore!=null ? viewSchedaBean.accessoOrig.accompagnatore : 'non specificato'}" 
+							              rendered="#{viewSchedaBean.accessoOrig.utenteAccompagnato}"  />
+								<h:outputText value=" (utente presente o informato)" 
+							              rendered="#{viewSchedaBean.accessoOrig.utentePresenteInformato}"  />
+							</h:panelGroup>
+							
+							<h:outputText value="Motivo Accesso:" for="motivo_accesso" style="font-weight:bold;" />
+							<h:panelGroup>
+								<h:outputText value="#{viewSchedaBean.accessoOrig.motivo}"   />
+								<h:outputText value=" #{viewSchedaBean.accessoOrig.inviante}" 
+											  rendered="#{viewSchedaBean.accessoOrig.inviante!=null}"  />
+								<h:outputText value=" (#{viewSchedaBean.accessoOrig.motivoDesc})" 
+								              rendered="#{viewSchedaBean.accessoOrig.motivoDesc!=null}"   />
+							</h:panelGroup>
+									
+							<h:outputText value="Modalità di accesso:" for="modalita_accesso_scheda_orig" style="font-weight:bold;"  />
+							<h:outputText value="#{viewSchedaBean.accessoOrig.modalitaAccesso}"   />
+							
+						</h:panelGrid>
+		
+					</p:panel>
+			<h:panelGrid columns="4" cellpadding="5" >
+				<h:outputText value="Ufficio: " style="font-weight:bold"/>
+				<h:outputText value="#{viewSchedaBean.puntoContatto.ufficio.nome}" />
+			
+			    <h:outputText value="Luogo: " style="font-weight:bold"/>
+				<h:outputText value="#{viewSchedaBean.puntoContatto.nomePContatto}" />
+				
+				<h:outputText value="Ente di riferimento: " style="font-weight:bold"/>
+				<h:panelGroup>
+				<h:outputText value="Comune di " rendered="#{viewSchedaBean.puntoContatto.organizzazione.belfiore!=null}"/>
+				<h:outputText value="#{viewSchedaBean.puntoContatto.organizzazione.nome}" />
+				</h:panelGroup>
+				
+				<h:outputText value="Data di accesso: " style="font-weight:bold"/>
+				<h:outputText value="#{viewSchedaBean.data}" >
+					<f:convertDateTime pattern="dd/MM/yyyy" />
+				</h:outputText>
+				
+				<h:outputText value="Operatore: " style="font-weight:bold"/>
+				<h:outputLabel value="#{userBean.getCognomeNomeUtente(viewSchedaBean.operatore)} (#{viewSchedaBean.operatore}) "/>     
+								
+								
+				<h:outputText value="Descrizione scheda:"  style="font-weight:bold;" />
+				<h:outputText value="#{viewSchedaBean.descrizione}" />
+				
+				<h:outputText value="Interlocutore:"  style="font-weight:bold;" />
+				<h:outputText value="#{viewSchedaBean.interlocutore}" />
+					
+				<h:outputText value="Motivo Accesso:" for="motivo_accesso" style="font-weight:bold;" />
+				<h:outputText value="#{viewSchedaBean.motivo}" />
+								
+				<h:outputText value="Modalità di accesso: " style="font-weight:bold"/>
+				<h:outputText value="#{viewSchedaBean.modalita}" />
+				
+				<h:outputText value="Tipo di scheda: " style="font-weight:bold"/>
+				<h:outputText value="#{viewSchedaBean.tipoScheda}" />
+			</h:panelGrid>
+		</p:tab>
+		<p:tab title="Interlocutore" >
+			
+			<p:outputPanel id="pnlNoDati" header=" " rendered="#{viewSchedaBean.hideSegnalante}" 
+			 toggleable="true" toggleSpeed="500" >
+				<p:outputLabel value="L'interlocutore è l'utente stesso" />
+			</p:outputPanel>
+		
+			<h:panelGrid columns="2" cellpadding="5" rendered="#{!viewSchedaBean.hideSegnalante}">
+				<h:outputText value="Cognome e Nome: " style="font-weight:bold"/>
+				<h:outputText value="#{viewSchedaBean.cognomeNomeSegnalante}" />
+				
+				<h:outputText value="Data e luogo di nascita: " style="font-weight:bold"/>
+				<h:panelGroup>
+					<h:outputText value="#{viewSchedaBean.dataNascitaSegnalante}" >
+						<f:convertDateTime pattern="dd/MM/yyyy" />
+					</h:outputText>
+					<h:outputText value=" #{viewSchedaBean.comuneNascitaSegnalante}" />
+				</h:panelGroup>
+			
+				<h:outputText value="Sesso: " style="font-weight:bold"/>
+				<h:outputText value="#{viewSchedaBean.sessoSegnalante}" 
+				              rendered="#{viewSchedaBean.sessoSegnalante ne 'F' and viewSchedaBean.sessoSegnalante ne 'M'}"/>
+				<p:graphicImage rendered="#{viewSchedaBean.sessoSegnalante eq 'F'}" title="Donna" value="/images/female.png" height="20"/>
+			    <p:graphicImage rendered="#{viewSchedaBean.sessoSegnalante eq 'M'}" title="Uomo" value="/images/male.png" height="20"/>
+				
+				
+				<h:outputText value="Stato civile: " style="font-weight:bold"/>
+				<h:outputText value="#{viewSchedaBean.statoCivileSegnalante}" />
+				
+				<h:outputText value="Ente/Servizio: " style="font-weight:bold"/>
+				<h:outputText value="#{viewSchedaBean.ente}" />
+				
+				<h:outputText value="Ruolo: " style="font-weight:bold"/>
+				<h:outputText value="#{viewSchedaBean.ruolo}" />
+				
+				<h:outputText value="Relazione: " style="font-weight:bold"/>
+				<h:outputText value="#{viewSchedaBean.relazione}" />
+				
+				<h:outputText value="Telefono/Cellulare: " style="font-weight:bold"/>
+				<h:outputText value="#{viewSchedaBean.telCelSegnalante}" />
+				
+				<h:outputText value="Email: " style="font-weight:bold"/>
+				<h:outputText value="#{viewSchedaBean.emailSegnalante}" />
+				
+				<h:outputText value="Indirizzo: " style="font-weight:bold"/>
+				<h:outputText value="#{viewSchedaBean.indirizzo}" />
+				
+			</h:panelGrid>
+		</p:tab>
+		<p:tab title="Utente">
+	
+			<h:panelGrid columns="4" cellpadding="5" style="display: inline-block; vertical-align: top;">
+				<h:outputText value="Cognome e Nome: " style="font-weight:bold"/>
+				<h:outputText value="#{viewSchedaBean.cognomeNomeSegnalato}" />
+				
+				<h:outputText value="Codice fiscale: " style="font-weight:bold"/>
+				<h:outputText value="#{viewSchedaBean.cf}" />
+				
+				<h:outputText value="Data e luogo di nascita: " style="font-weight:bold"/>
+				<h:panelGroup>
+					<h:outputText value="#{viewSchedaBean.dataNascita}" >
+						<f:convertDateTime pattern="dd/MM/yyyy" />
+					</h:outputText>
+					<h:outputText value=" #{viewSchedaBean.comuneNascita}" />
+				</h:panelGroup>
+				
+				<p:spacer width="2px;"/>
+				<p:spacer width="2px;"/>
+				
+				<h:outputText value="Sesso: " style="font-weight:bold"/>
+				<h:outputText value="#{viewSchedaBean.sesso}" 
+				              rendered="#{viewSchedaBean.sesso ne 'F' and viewSchedaBean.sesso ne 'M'}"/>
+				<p:graphicImage rendered="#{viewSchedaBean.sesso eq 'F'}" title="Donna" value="/images/female.png" height="20"/>
+			    <p:graphicImage rendered="#{viewSchedaBean.sesso eq 'M'}" title="Uomo" value="/images/male.png" height="20"/>
+				
+				
+				<h:outputText value="Stato civile: " style="font-weight:bold"/>
+				<h:outputText value="#{viewSchedaBean.statoCivile}" />
+				
+				<h:outputText value="Cittadinanza: " style="font-weight:bold"/>
+				<h:outputText value="#{viewSchedaBean.cittadinanza}" />
+								
+				<h:outputText value="Seconda Cittadinanza: " style="font-weight:bold"/>
+				<h:outputText value="#{viewSchedaBean.cittadinanza2}" />
+					
+				<h:outputText value="Residenza: " style="font-weight:bold"/>
+				<h:outputText value="#{viewSchedaBean.residenza}" />
+				
+				<h:outputText value="Domicilio: " style="font-weight:bold"/>
+				<h:outputText value="#{viewSchedaBean.domicilio}" />
+				
+				<h:outputText value="Telefono/Cellulare: " style="font-weight:bold"/>
+				<h:outputText value="#{viewSchedaBean.telCel}" />
+				
+				<h:outputText value="Email: " style="font-weight:bold"/>
+				<h:outputText value="#{viewSchedaBean.email}" />
+				
+				<h:outputText value="Medico medicina generale: " style="font-weight:bold"/>
+				<h:outputText value="#{viewSchedaBean.medico}" />
+				
+				<h:outputText value="N.Tessera sanitaria: " style="font-weight:bold"/>
+				<h:outputText value="#{viewSchedaBean.tesseraSanitaria}" />
+				
+				<h:panelGroup>
+					<h:outputText id="lblSTP" value="STP: " style="font-weight:bold"/>
+					<p:tooltip id="toolTiplblSTP" for="lblSTP" value="Straniero temporaneamente presente"/>
+				</h:panelGroup>
+				<h:outputText value="#{viewSchedaBean.stp ? 'Si' : 'No'}" />
+				
+				<h:outputText value="Invalidità: " style="font-weight:bold"/>
+				<h:outputText value="#{viewSchedaBean.invalidita ? 'Si, al ' : 'No'} #{viewSchedaBean.invalidita ? viewSchedaBean.percInvalidita.concat('%') : ''}" />
+												
+			</h:panelGrid>
+
+					<webredcs:pnlFormazioneLavoro iFormazioneLavoro="#{viewSchedaBean.formLavoroSegnalato}" soloLettura="true" numColonne="2" padding="5" />
+
+					<p:fieldset legend="Presenza in Italia (per persone di origine straniera)" toggleable="false" style="display: inline-block; vertical-align: top;"
+						rendered="#{viewSchedaBean.visPanelStranieri and viewSchedaBean.stranieriMan!=null}">
+						<webredcs:pnlStranieri iStranieri="#{viewSchedaBean.stranieriMan}" soloLettura="true" />
+					</p:fieldset>
+					<p:fieldset legend="Abitazione" toggleable="false" style="display: inline-block; vertical-align: top;"
+						rendered="#{viewSchedaBean.visPanelStranieri and viewSchedaBean.abitazioneMan!=null}">
+						<webredcs:pnlAbitazione iAbitazione="#{viewSchedaBean.abitazioneMan}" soloLettura="true" numColonne="2" />
+					</p:fieldset>
+					<p:fieldset legend="Familiari e Conviventi" toggleable="false" style="display: inline-block; vertical-align: top;"
+						rendered="#{viewSchedaBean.visPanelStranieri and viewSchedaBean.famConviventiMan!=null}">
+						<webredcs:pnlFamConviventi iFamConviventi="#{viewSchedaBean.famConviventiMan}" soloLettura="true" />
+					</p:fieldset>
+				</p:tab>
+				
+		<p:tab title="Riferimento">
+			<h:panelGrid columns="2" cellpadding="5" >
+				<h:outputText value="Cognome e Nome: " style="font-weight:bold"/>
+				<h:outputText value="#{viewSchedaBean.cognomeNomeRiferimento}" />
+				
+				<h:outputText value="Data e luogo di nascita: " style="font-weight:bold"/>
+				<h:panelGroup>
+					<h:outputText value="#{viewSchedaBean.dataNascitaRiferimento}" >
+						<f:convertDateTime pattern="dd/MM/yyyy" />
+					</h:outputText>
+					<h:outputText value=" #{viewSchedaBean.comuneNascitaRiferimento}" />
+				</h:panelGroup>
+				
+				<h:outputText value="Sesso: " style="font-weight:bold"/>
+				<h:outputText value="#{viewSchedaBean.sessoRiferimento}" 
+				              rendered="#{viewSchedaBean.sessoRiferimento ne 'F' and viewSchedaBean.sessoRiferimento ne 'M'}"/>
+				<p:graphicImage rendered="#{viewSchedaBean.sessoRiferimento eq 'F'}" title="Donna" value="/images/female.png" height="20"/>
+			    <p:graphicImage rendered="#{viewSchedaBean.sessoRiferimento eq 'M'}" title="Uomo" value="/images/male.png" height="20"/>
+				
+				
+				<h:outputText value="Stato civile: " style="font-weight:bold"/>
+				<h:outputText value="#{viewSchedaBean.statoCivileRiferimento}" />
+				
+				<h:outputText value="Telefono: " style="font-weight:bold"/>
+				<h:outputText value="#{viewSchedaBean.telefonoRiferimento}" />
+				
+				<h:outputText value="Cellulare: " style="font-weight:bold"/>
+				<h:outputText value="#{viewSchedaBean.celRiferimento}" />
+				
+				<h:outputText value="Email: " style="font-weight:bold"/>
+				<h:outputText value="#{viewSchedaBean.emailRiferimento}" />
+				
+				<h:outputText value="Recapito: " style="font-weight:bold"/>
+				<h:outputText value="#{viewSchedaBean.recapitoRiferimento}" />
+				
+				<h:outputText value="Relazione: " style="font-weight:bold"/>
+				<h:outputText value="#{viewSchedaBean.parentelaRiferimento}" />
+				
+				<h:outputText value="Eventuali problemi: " style="font-weight:bold"/>
+				<h:outputText value="#{viewSchedaBean.problemiRiferimento}" />
+			</h:panelGrid>
+		</p:tab>
+		<p:tab title="Bisogni">
+			<p:dataList var="bisogno" value="#{viewSchedaBean.selectedMotivazioni}" 
+			            rendered="#{viewSchedaBean.selectedMotivazioni!=null and !empty viewSchedaBean.selectedMotivazioni}" >
+	           #{bisogno}
+			</p:dataList><br/>
+			<h:outputText value="Altro: " style="font-weight:bold"/>
+			<h:outputText value="#{viewSchedaBean.motivazioneAltro}" />
+		</p:tab>
+		<p:tab title="Servizi richiesti">
+			<p:dataList var="intervento" value="#{viewSchedaBean.selectedInterventi}"
+			             rendered="#{viewSchedaBean.selectedInterventi!=null and !empty viewSchedaBean.selectedInterventi}" >
+			   #{intervento}
+			</p:dataList><br/>
+			<h:outputText value="Altro: " style="font-weight:bold"/>
+			<h:outputText value="#{viewSchedaBean.interventiAltro}" />
+			 <p:spacer width="5px"/>
+			<p:tabView  rendered="#{viewSchedaBean.visPanelStranieri 
+								and (viewSchedaBean.intermediazioneAbMan!=null or viewSchedaBean.orientamentoLavoro!=null
+								or viewSchedaBean.mediazioneCultMan!=null
+								or viewSchedaBean.orientamentoIstruzioneMan!=null)}">
+			   <p:tab title="Intermediazione Abitativa" rendered="#{viewSchedaBean.intermediazioneAbMan!=null}">
+	        	  <webredcs:pnlIntermediazioneAb  iIntermediazioneAb="#{viewSchedaBean.intermediazioneAbMan}" soloLettura="true"/>
+	           </p:tab>	
+			   <p:tab title="Inserimento Orientamento al Lavoro" rendered="#{viewSchedaBean.orientamentoLavoro!=null}">
+	        	  <webredcs:pnlInserimentoLavoro  OrientamentoLavoroManBean="#{viewSchedaBean.orientamentoLavoro}" soloLettura="true"/>
+	           </p:tab>
+	           <p:tab title="Mediazione Culturale" rendered="#{viewSchedaBean.mediazioneCultMan!=null}">
+              	  <webredcs:pnlMediazioneCult iMediazioneCult="#{viewSchedaBean.mediazioneCultMan}" soloLettura="true" /> 
+              </p:tab>
+              <p:tab title="Orientamento all'istruzione / formazione" rendered="#{viewSchedaBean.orientamentoIstruzioneMan!=null}">
+              	  <webredcs:pnlOrientamentoIstruzione iOrientamentoIstruzione="#{viewSchedaBean.orientamentoIstruzioneMan}" soloLettura="true" />
+              </p:tab>  
+	        </p:tabView>
+	        
+	        
+            <p:dataList id="dataListServiziRichiestiView" type="definition"
+               			value="#{viewSchedaBean.serviziRichiestiInterventiCustomBean.serviziRichiestiCustomDaSalvare}" var="servizio"
+               			emptyMessage="Non ci sono servizi selezionati"  >
+				
+						<p:panel toggleable="true" collapsed="false"
+							rendered="#{viewSchedaBean.serviziRichiestiInterventiCustomBean.servizioRendered(servizio, 'IServizioRichiestoCustom')}">
+							<f:facet name="header">
+								<h:outputLabel value="#{servizio.tipoInterventoCustom}" />
+							</f:facet>
+							<webredcs:pnlServizioRichiestoCustom iServizioRichiestoCustom="#{servizio}"
+								serviziBean="#{viewSchedaBean.serviziRichiestiInterventiCustomBean}" soloLettura="true" />
+						</p:panel>
+						 
+			</p:dataList>
+			
+		</p:tab>
+		<p:tab title="Diario Sociale" rendered="#{not empty viewSchedaBean.diarioSociale.note}" >
+			 <webredcs:tooltipInfo stringDescr="#{viewSchedaBean.MSG_INFO_NOTA_PRIVATA}" />
+			<p:dataTable value="#{viewSchedaBean.diarioSociale.note}" var="nota"  
+			             style="font-size:0.9em;">
+					<p:column headerText="Data inserimento" width="120">
+						<p:outputLabel value="#{nota.formattedData}"/>
+					</p:column>
+					<p:column headerText="Ente">
+						<p:outputLabel value="#{nota.ente.nome}"/>
+					</p:column>
+					<p:column headerText="Operatore">
+						<p:outputLabel value="#{nota.descOperatore}"/>
+					</p:column>
+					<p:column headerText="Tipo" width="20" style="text-align:center;">
+						<p:graphicImage value="/images/closed_lock.png" height="25px" rendered="#{!nota.pubblica}"  title="nota #{nota.labelTipologia}"/>  
+						<p:graphicImage value="/images/open_lock.png"   height="25px" rendered="#{nota.pubblica}"  title="nota #{nota.labelTipologia}"/>  
+					</p:column>
+					<p:column headerText="Nota">
+							<h:outputText value="#{nota.nota}" rendered="#{nota.canRead}" style="display: block; width: 100%" />
+							<h:outputText value="#{nota.MSG_NOTA_PRIVATA}" rendered="#{!nota.canRead}" 
+							              style="display: block; width: 100%; color:red;"/>
+							
+					</p:column>
+			</p:dataTable>
+		   
+		</p:tab>
+		</p:accordionPanel>
+		</p:panel>
+		
+		
+		</h:form>
+		
+				 
+	</ui:define>
+
+</ui:composition>
+</html>

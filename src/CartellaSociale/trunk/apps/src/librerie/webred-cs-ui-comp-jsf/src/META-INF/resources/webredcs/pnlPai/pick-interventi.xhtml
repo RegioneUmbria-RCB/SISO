@@ -1,0 +1,95 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+     	xmlns:h="http://java.sun.com/jsf/html"
+		xmlns:f="http://java.sun.com/jsf/core"
+		xmlns:ui="http://java.sun.com/jsf/facelets"
+		xmlns:p="http://primefaces.org/ui"
+	  	xmlns:composite="http://java.sun.com/jsf/composite"
+	  	xmlns:webredcs="http://java.sun.com/jsf/composite/webredcs"
+	  	xmlns:webred="http://java.sun.com/jsf/composite/webred">
+
+<p:panelGrid id="interventi_picklist_panel" columns="1" style="width:100%"
+				widgetVar="wv_interventi_picklist_panel"
+				rendered="#{cc.attrs.iPai.onUpdateInterventi}">
+				<f:facet name="header">
+					<p:outputLabel value="Associazione di altri interventi al PAI" />
+				</f:facet>
+				<f:facet name="footer">
+					<h:panelGroup>
+						<p:commandButton value="conferma"
+							process="interventi_picklist_panel" 
+							update="@([id$=paiTabViewContainer])"  
+							action="#{cc.attrs.iPai.setOnUpdateInterventi(false)}"  />
+						<p:commandButton value="annulla" 
+							process="@this" 
+							update="interventi_picklist_panel:@parent"
+							action="#{cc.attrs.iPai.setOnUpdateInterventi(false)}" />
+					</h:panelGroup>
+				</f:facet>
+				
+				<p:pickList id="interventi_picklist" style="width:100%" 
+					value="#{cc.attrs.iPai.picklistInterventi}" var="v_intervento"
+					itemLabel="#{v_intervento.labelConcatAll}"
+					itemValue="#{v_intervento}" showSourceFilter="true"
+					showTargetFilter="false" filterMatchMode="contains"
+					converterMessage="Errore di conversione"
+					converter="#{cc.attrs.iPai.picklistInterventiConverter}"
+					showCheckbox="true">
+					<f:facet name="sourceCaption">Disponibili</f:facet>
+					<f:facet name="targetCaption">Collegati al progetto PAI</f:facet>
+					<p:column headerText="Tipo">						
+						<h:outputText value="#{v_intervento.descTipoIntervento}" />
+					</p:column>
+					<p:column>
+					categ.:&sp;
+						<h:outputText
+							value="#{v_intervento.relSettCsocTipoInter.csRelSettoreCatsoc.csCCategoriaSociale.descrizione}" />
+					<br/>
+					modal.:&sp;
+						<h:panelGrid columns="3" styleClass="#{cc.attrs.styleClass}">
+							<h:panelGroup>
+								<h:outputText value="Rinnovo" rendered="#{v_intervento.flagPrimaErRinnovo eq 'R'}" />
+								<h:outputText value="Prima Erogazione" rendered="#{v_intervento.flagPrimaErRinnovo eq 'P'}" />
+							</h:panelGroup>
+						</h:panelGrid>
+					</p:column>
+					<p:column style="text-align:center;">
+						inizio:&sp;
+						<h:panelGroup rendered="#{v_intervento.inizioDa ne NULL}">
+							<h:outputText value="Dal " rendered="#{v_intervento.inizioA ne NULL}" />
+							<h:outputText value="#{v_intervento.inizioDa}">
+								<f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+							</h:outputText>
+						</h:panelGroup>
+						<h:panelGroup rendered="#{v_intervento.inizioA ne NULL}">
+							<h:outputText value=" al " />
+							<h:outputText value="#{v_intervento.inizioA}">
+								<f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+							</h:outputText>
+						</h:panelGroup>
+					<br/>
+					fine:&sp;
+						<h:panelGroup rendered="#{v_intervento.fineDa ne NULL}">
+							<h:outputText value="Dal " rendered="#{v_intervento.fineA ne NULL}" />
+							<h:outputText value="#{v_intervento.fineDa}">
+								<f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+							</h:outputText>
+						</h:panelGroup>
+						<h:panelGroup rendered="#{v_intervento.fineA ne NULL}">
+							<h:outputText value=" al " />
+							<h:outputText value="#{v_intervento.fineA}">
+								<f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+							</h:outputText>
+						</h:panelGroup>
+					</p:column> 
+					<p:column>
+					richied.:&sp;
+						<h:outputText
+							value="#{v_intervento.relSettCsocTipoInter.csRelSettoreCatsoc.csOSettore.nome}" />
+					
+					</p:column>
+					
+				</p:pickList>
+			</p:panelGrid>
+	  	
+</html>

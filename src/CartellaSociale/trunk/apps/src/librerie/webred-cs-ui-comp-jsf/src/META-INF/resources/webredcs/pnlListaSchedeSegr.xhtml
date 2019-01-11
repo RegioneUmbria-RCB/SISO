@@ -1,0 +1,135 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui" xmlns:composite="http://java.sun.com/jsf/composite">
+
+<h:head>
+	<title>Componente lista Schede</title>
+</h:head>
+<h:body>
+	<composite:interface componentType="pnlListaSchedeSegr">
+		<composite:attribute name="listaSchedeSegrBean" type="it.webred.cs.jsf.interfaces.IListaSchedeSegr" />
+		<composite:attribute name="schedaSegrBean" type="it.webred.cs.jsf.interfaces.ISchedaSegr" />
+		<composite:attribute name="nuovaCartellaListener" method-signature="void action(java.lang.Object)" required="false" default="null" />
+		<composite:attribute name="caricaCartellaListener" method-signature="void action(java.lang.Object)" required="false" default="null" />
+		<composite:attribute name="vistaSegrListener" method-signature="void action(java.lang.Object)" required="false" default="null" />
+	</composite:interface>
+	<composite:implementation xmlns:webred="http://java.sun.com/jsf/composite/webred" xmlns:webredcs="http://java.sun.com/jsf/composite/webredcs">
+
+		<p:dataTable id="dataTableSchedeSegrId" var="scheda" value="#{cc.attrs.listaSchedeSegrBean.lazyListaSchedeSegrModel}" rowIndexVar="rowIndex"
+			rowKey="#{scheda.id}" emptyMessage="Nessun elemento trovato" widgetVar="dataTableSchedeSegr" paginator="true"
+			paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+			currentPageReportTemplate="Risultati {startRecord} - {endRecord} di {totalRecords} "
+			rows="10" rowsPerPageTemplate="10,20,40" lazy="true" filterEvent="enter">
+
+			<f:facet name="header">
+            	Lista Schede #{listaSchedeSegrBean.labelSegrSociale}
+        	</f:facet>
+
+			<p:column headerText="Data di accesso" filterBy="dataAccesso">
+				<h:outputText value="#{scheda.dataAccesso}">
+					<f:convertDateTime pattern="dd/MM/yyyy" />
+				</h:outputText>
+			</p:column>
+
+			<p:column headerText="Operatore" filterBy="operatore">
+				<h:outputText value="#{scheda.operatore}" />
+			</p:column>
+
+			<p:column headerText="Ufficio" filterBy="ufficio">
+				<h:outputText value="#{scheda.ufficio}" />
+			</p:column>
+
+			<p:column headerText="Segnalato" filterBy="soggSegnalante">
+				<h:outputText value="#{scheda.cognome}  #{scheda.nome}" />
+			</p:column>
+
+			<p:column headerText="Tipo di intervento" filterBy="tipoIntervento">
+				<h:outputText value="#{scheda.intervento}" />
+			</p:column>
+			
+			<p:column headerText="Categoria Sociale" filterBy="categoriaSociale">
+				<h:outputText value="#{scheda.csSsSchedaSegr.csCCategoriaSociale.descrizione}" />
+			</p:column>
+
+			<p:column headerText="" style="text-align:center;">
+				<table border="0" width="100%">
+					<tr>
+						<td style="border: 0; padding: 0;"><p:graphicImage value="/webredcs/img/warning.png" height="20px" title="Cartella già esistente"
+								rendered="#{scheda.csSsSchedaSegr.flgEsistente}" /></td>
+						<td style="border: 0; padding: 0;"><p:graphicImage value="/webredcs/img/created.png" height="20px" title="Cartella creata"
+								rendered="#{scheda.csSsSchedaSegr.stato eq 'CREATA'}" /></td>
+						<td style="border: 0; padding: 0;"><p:graphicImage value="/webredcs/img/rejected.png" height="20px"
+								title="Respinta: #{scheda.csSsSchedaSegr.notaStato}" rendered="#{scheda.csSsSchedaSegr.stato eq 'RESPINTA'}" /></td>
+						<td style="border: 0; padding: 0;"><p:graphicImage value="/webredcs/img/eye.png" height="20px" title="Vista"
+								rendered="#{scheda.csSsSchedaSegr.stato eq 'VISTA'}" /></td>
+					</tr>
+				</table>
+			</p:column>
+
+			<p:column headerText="" style="text-align:center;">
+				<p:commandButton id="btnDettagli" value="Info" icon="ui-icon-search" title="Dettagli Scheda #{cc.attrs.schedaSegrBean.labelSegrSociale}"
+					action="#{cc.attrs.schedaSegrBean.caricaDettagliSchedaSegr(scheda.id)}" oncomplete="dettagliSchSegr.show()"
+					update=":#{p:component('dlgDettagliSchSegr')}" />
+				<p:commandButton id="btnCrea" value="Nuova" icon="ui-icon-document" action="#{cc.attrs.nuovaCartellaListener}" title="Nuova cartella"
+					rendered="#{scheda.csSsSchedaSegr.csASoggetto == null
+           				and cc.attrs.listaSchedeSegrBean.renderNuovaCartella
+           				and !scheda.csSsSchedaSegr.flgEsistente
+           				and scheda.csSsSchedaSegr.stato ne 'RESPINTA'}" />
+				<p:commandButton id="btnVista" value="Vista" icon="ui-icon-check" action="#{cc.attrs.listaSchedeSegrBean.vediScheda}" title="Segna come Vista"
+					rendered="#{scheda.csSsSchedaSegr.flgEsistente 
+           				and scheda.csSsSchedaSegr.stato ne 'VISTA'
+           				and scheda.csSsSchedaSegr.stato ne 'RESPINTA'}"
+					update="@form">
+					<f:setPropertyActionListener value="#{scheda}" target="#{cc.attrs.listaSchedeSegrBean.schedaSelected}" />
+				</p:commandButton>
+				<p:commandButton id="btnRespingi" value="Respingi" icon="ui-icon-cancel" oncomplete="respingiSchSegr.show()"
+					update=":#{p:component('dlgRespingiSchSegr')}"
+					rendered="#{scheda.csSsSchedaSegr!=null 
+           			    and (scheda.csSsSchedaSegr.csASoggetto == null or scheda.csSsSchedaSegr.flgEsistente)
+           				and scheda.csSsSchedaSegr.stato ne 'RESPINTA'
+           				and scheda.csSsSchedaSegr.stato ne 'VISTA'}">
+					<f:setPropertyActionListener value="#{scheda}" target="#{cc.attrs.listaSchedeSegrBean.schedaSelected}" />
+					<f:setPropertyActionListener value="" target="#{cc.attrs.listaSchedeSegrBean.note}" />
+				</p:commandButton>
+				<p:commandButton id="btnCarica" icon="ui-icon-pencil" value="Entra nella Cartella" action="#{cc.attrs.caricaCartellaListener}"
+					title="#{scheda.tooltipEntraCartellaButton}"
+					rendered="#{scheda.csSsSchedaSegr.csASoggetto != null and cc.attrs.listaSchedeSegrBean.renderCaricaCartella}" 
+					disabled="#{!scheda.canOpenCartella}"/>
+
+				<p:outputPanel rendered="#{scheda.csSsSchedaSegr.csASoggetto != null and scheda.showStatoCartella}">
+					<webredcs:pnlIterInfoStato iIterInfoStato="#{scheda.lastIterStepInfo}" widgetDialog="dlgSS" showOpenDialogButton="false" />
+				</p:outputPanel>
+			</p:column>
+
+		</p:dataTable>
+
+		<p:dialog dynamic="true" modal="true" id="dlgDettagliSchSegr" widgetVar="dettagliSchSegr" width="800" height="600" closable="true"
+			header="Dettagli scheda #{cc.attrs.schedaSegrBean.labelSegrSociale}">
+			<webredcs:pnlSchedaSegr id="pnlDettSchedaSegr" iSchedaSegr="#{cc.attrs.schedaSegrBean}" />
+		</p:dialog>
+
+		<p:dialog dynamic="true" modal="true" id="dlgRespingiSchSegr" widgetVar="respingiSchSegr" width="620" height="160" closable="true"
+			header="Respingi scheda #{cc.attrs.schedaSegrBean.labelSegrSociale}">
+
+			<h:panelGrid columns="2">
+				<h:outputText value="Note" />
+				<p:inputTextarea rows="5" cols="90" value="#{cc.attrs.listaSchedeSegrBean.note}" />
+			</h:panelGrid>
+
+			<table border="0" width="100%">
+				<tr>
+					<td><p:spacer height="20" /></td>
+				</tr>
+				<tr>
+					<td style="text-align: center;"><p:commandButton value="Respingi" action="#{cc.attrs.listaSchedeSegrBean.respingiScheda}"
+							oncomplete="respingiSchSegr.hide();" update="@form" /> <p:spacer width="15px;" /> <p:commandButton value="Esci" process="@this"
+							oncomplete="respingiSchSegr.hide();" /></td>
+				</tr>
+			</table>
+
+		</p:dialog>
+
+	</composite:implementation>
+</h:body>
+
+</html>

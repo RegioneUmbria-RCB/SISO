@@ -1,0 +1,56 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:webred="http://java.sun.com/jsf/composite/webred" xmlns:webredcs="http://java.sun.com/jsf/composite/webredcs">
+	
+	
+	<p:outputPanel>
+		
+		<p:dataTable value="#{nuovaSchedaWizard.diarioSociale.note}" var="nota" style="font-size:0.9em;" rendered="#{!empty nuovaSchedaWizard.diarioSociale.note}" >
+				 <f:facet name="header">
+				 	<p:outputLabel value="Diario Sociale"/><p:spacer width="20"/>
+			        <webredcs:tooltipInfo stringDescr="#{nuovaSchedaWizard.MSG_INFO_NOTA_PRIVATA}" />
+			    </f:facet>
+				<p:column headerText="Data inserimento" width="120">
+					<p:outputLabel value="#{nota.formattedData}"/>
+				</p:column>
+				<p:column headerText="Ente">
+					<p:outputLabel value="#{nota.ente.nome}"/>
+				</p:column>
+				<p:column headerText="Operatore">
+					<p:outputLabel value="#{nota.descOperatore}"/>
+				</p:column>
+				<p:column headerText="Tipo" width="20" style="text-align:center;">
+					<p:graphicImage value="/images/closed_lock.png" height="25px" rendered="#{!nota.pubblica}"  title="nota #{nota.labelTipologia}"/>  
+					<p:graphicImage value="/images/open_lock.png"   height="25px" rendered="#{nota.pubblica}"  title="nota #{nota.labelTipologia}"/>  
+				</p:column>
+				<p:column headerText="Nota">
+						<h:outputText value="#{nota.nota}" rendered="#{nota.canRead}" style="display: block; width: 100%" />
+						<h:outputText value="#{nota.MSG_NOTA_PRIVATA}" rendered="#{!nota.canRead}" 
+						              style="display: block; width: 100%; color:red;"/>
+				</p:column>
+				<p:column width="20">
+					<p:commandButton icon="ui-icon-trash" rendered="#{nota.canDelete}" oncomplete="confermaEliminaDiario.show()"
+									 action="#{nuovaSchedaWizard.setSelectedNota2Delete(nota)}"/>
+				</p:column>
+						
+		</p:dataTable> 
+		
+		<p:confirmDialog header="Elimina" 
+			widgetVar="confermaEliminaDiario" severity="alert"
+			closable="false"
+			message="Procedere con l'eliminazione?">
+			<h:panelGrid columns="2">
+						<p:commandButton value="SI" onclick="PF('confermaEliminaDiario').hide()"
+							action="#{nuovaSchedaWizard.eliminaNotaDiario()}" update="@parent:@parent:@parent"/>
+						<p:commandButton value="NO"
+							onclick="PF('confermaEliminaDiario').hide();" type="button" />
+			</h:panelGrid>
+		</p:confirmDialog>                    
+		                      
+	</p:outputPanel>
+</ui:composition>

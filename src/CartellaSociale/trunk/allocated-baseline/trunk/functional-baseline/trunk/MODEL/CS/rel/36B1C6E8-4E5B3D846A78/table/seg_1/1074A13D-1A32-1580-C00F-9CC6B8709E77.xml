@@ -1,0 +1,129 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Table class="oracle.dbtools.crest.model.design.relational.Table" directorySegmentName="seg_1" id="1074A13D-1A32-1580-C00F-9CC6B8709E77" schemaObject="31789C62-6489-FE63-4664-3CFB4035AC87" name="CS_REL_DIARIO_DIARIORIF">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>CS_SISO</sourceObjSchema>
+<sourceObjName>CS_REL_DIARIO_DIARIORIF</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:18 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>1FF4B69A-331F-6077-2947-1E2E6F7559D2</importedID>
+<existDependencyGenerateInDDl>true</existDependencyGenerateInDDl>
+<parsed>true</parsed>
+<columns itemClass="oracle.dbtools.crest.model.design.relational.Column">
+<Column name="DIARIO_ID" id="833885BB-6C29-072C-B718-BCA69B1F110F">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>CS_REL_DIARIO_DIARIORIF</sourceObjSchema>
+<sourceObjName>DIARIO_ID</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:19 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>5F070D27-6A8D-42B4-A1A2-DF7524BB58D1</importedID>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<dataTypePrecision>10</dataTypePrecision>
+<ownDataTypeParameters>,10,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+<associations>
+<colAssociation fkAssociation="E6B836BD-DF10-8C21-B356-B43FDD8EE634" referredColumn="FFA9CF12-6561-7FD0-BB6A-AA2609A216C4"/>
+</associations>
+</Column>
+<Column name="DIARIO_ID_RIF" id="975AF93A-0C63-48B6-921A-0CC90684C9EB">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>CS_REL_DIARIO_DIARIORIF</sourceObjSchema>
+<sourceObjName>DIARIO_ID_RIF</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:19 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>8A3E4A42-FB1F-B045-DA5D-4C456C6E8252</importedID>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<dataTypePrecision>10</dataTypePrecision>
+<ownDataTypeParameters>,10,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+<associations>
+<colAssociation fkAssociation="F2707F00-67A1-3869-EF6C-07F1C27122B5" referredColumn="FFA9CF12-6561-7FD0-BB6A-AA2609A216C4"/>
+</associations>
+</Column>
+</columns>
+<indexes itemClass="oracle.dbtools.crest.model.design.relational.Index">
+<ind_PK_UK id="B610A973-881A-FFCE-91F9-C3F5C19F45CB" name="CS_REL_DIARIO_DIARIORIF_PK">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>CS_SISO</sourceObjSchema>
+<sourceObjName>CS_REL_DIARIO_DIARIORIF_PK</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:19 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>04D16E56-7D4A-218D-2FC8-FC5FA235FB79</importedID>
+<pk>true</pk>
+<indexState>Primary Constraint</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="975AF93A-0C63-48B6-921A-0CC90684C9EB"/>
+<colUsage columnID="833885BB-6C29-072C-B718-BCA69B1F110F"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="0D6CBFD8-AB01-EC3A-1BB3-8D62831B4A95" schemaObject="31789C62-6489-FE63-4664-3CFB4035AC87" name="CS_REL_DIARIO_DIARIORIF_PK">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>CS_SISO</sourceObjSchema>
+<sourceObjName>CS_REL_DIARIO_DIARIORIF_PK</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:19 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>9F2BC5BD-5E72-B019-306E-B800BCD4242A</importedID>
+<indexState>Unique Plain Index</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="975AF93A-0C63-48B6-921A-0CC90684C9EB"/>
+<colUsage columnID="833885BB-6C29-072C-B718-BCA69B1F110F"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="8DEB138C-879D-678D-22D6-3482A60ECA6F" schemaObject="31789C62-6489-FE63-4664-3CFB4035AC87" name="IDX_REL_DIARIO">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>CS_SISO</sourceObjSchema>
+<sourceObjName>IDX_REL_DIARIO</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-10-12 13:53:10 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>34BE87CC-845C-FF9B-9A8A-15A5A265804C</importedID>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="833885BB-6C29-072C-B718-BCA69B1F110F"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="9069D1D8-685F-F81A-EEF8-D1345E33F10A" schemaObject="31789C62-6489-FE63-4664-3CFB4035AC87" name="IDX_REL_DIARIO_RIF">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>CS_SISO</sourceObjSchema>
+<sourceObjName>IDX_REL_DIARIO_RIF</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-10-12 13:53:10 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>81EEA239-67CA-828B-F649-8ED2A54D1B4A</importedID>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="975AF93A-0C63-48B6-921A-0CC90684C9EB"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="3CB0D8D1-F437-1406-D7D9-FA61F12D1E16" name="CS_REL_DDRIF_DIARIO_FK1">
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:19 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<indexState>Foreign Key</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="833885BB-6C29-072C-B718-BCA69B1F110F"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="A4DCCC0F-E627-CDDE-DD14-4E479B94E7C5" name="CS_REL_DDRIF_DIARIO_FK2">
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:19 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<indexState>Foreign Key</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="975AF93A-0C63-48B6-921A-0CC90684C9EB"/>
+</indexColumnUsage>
+</ind_PK_UK>
+</indexes>
+</Table>

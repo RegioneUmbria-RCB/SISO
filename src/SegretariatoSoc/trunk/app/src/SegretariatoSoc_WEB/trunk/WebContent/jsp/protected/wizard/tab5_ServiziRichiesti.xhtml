@@ -1,0 +1,330 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:webred="http://java.sun.com/jsf/composite/webred" 
+	xmlns:webredcs="http://java.sun.com/jsf/composite/webredcs">
+
+
+		
+		<p:panel id="pnlInterventi" >
+		
+			<p:panel header="Interventi eseguiti" toggleable="true" toggleSpeed="500"
+		         rendered="#{preselPuntoContatto.puntoContatto.ufficio.visInterventi and not empty nuovaSchedaWizard.interventiErogati}" >
+				<p:dataTable value="#{nuovaSchedaWizard.interventiErogati}" var="inte" emptyMessage="Nessun intervento erogato">
+				<p:column headerText="Tipo"><h:outputText value="#{inte.tipoIntervento}" /></p:column>
+				<p:column headerText="Org. erogante" style="text-align:center;"><h:outputText value="#{inte.organizzazione}" /></p:column>
+				<p:column headerText="num.interventi" style="text-align:center;"><h:outputText value="#{inte.numero}" /></p:column>
+				<p:column headerText="Ultima erogazione" style="text-align:center;">
+					<h:outputText value="#{inte.dataUltimaErogazione}" >
+						<f:convertDateTime pattern="dd/MM/yyyy" />
+					</h:outputText>
+				</p:column>
+				</p:dataTable>
+			</p:panel>
+			
+			<h:panelGrid columns="2" columnClasses="label, value" styleClass="grid">
+
+				<h:outputText />
+
+				<p:selectManyCheckbox label="Selezionare interventi" id="interventi_richiesti"  value="#{nuovaSchedaWizard.intervento.interventi}" layout="grid" columns="4">
+					<f:selectItems value="#{nuovaSchedaWizard.interventi}" />
+				</p:selectManyCheckbox>
+
+				<h:outputText value="Altro " for="altri_interventi_richiesti" />
+				<p:inputText label="Altro servizio (specificare)" id="altri_interventi_richiesti" value="#{nuovaSchedaWizard.intervento.altro}" />
+
+			</h:panelGrid>
+			<p:spacer height="20px" />
+			
+			  
+			<p:panel header="RICHIESTA SERVIZI/CONSUNTIVAZIONE INTERVENTI EROGATI NELLA FASE DI ACCESSO">
+				<h:panelGrid columns="3" columnClasses="label, value" styleClass="grid" style="margin-top:20px;">
+						    <h:outputText value="Servizio/Intervento" for="tipoInterventosCustomSOM" />
+							<p:selectOneMenu  id="tipoInterventosCustomSOM"	 value="#{nuovaSchedaWizard.selectedTipoInterventoCustom}" 
+				                                     panelStyle="width:200px"  
+				                                     scrollHeight="150" filter="true" filterMatchMode="contains">
+				                   <f:selectItem noSelectionOption="true" itemLabel="- seleziona -"/>
+				                   <f:selectItems value="#{nuovaSchedaWizard.tipoInterventosCustom}" />
+				            </p:selectOneMenu>
+							
+							<p:commandButton value="Inserisci richiesta"
+												action="#{nuovaSchedaWizard.aggiungiServiziRichiestiInterventiCustomBean}" 
+												update="dataListServiziRichiesti" >		
+							</p:commandButton>
+				</h:panelGrid>
+
+			  
+                <p:dataList id="dataListServiziRichiesti" type="definition"
+                			value="#{nuovaSchedaWizard.serviziRichiestiInterventiCustomBean.serviziRichiestiInterventiCustomDaSalvare}" 
+                			var="servizio" emptyMessage="Non ci sono servizi selezionati"  >
+					
+					<p:panel  toggleable="true" collapsed="false" rendered="#{nuovaSchedaWizard.serviziRichiestiInterventiCustomBean.servizioRendered(servizio, 'IIntermediazioneAb')}">  
+						    <f:facet name="header">
+            				   <h:outputLabel value="Intermediazione Abitativa"/>  
+								<p:commandButton title="Elimina" icon="ui-icon-trash"  styleClass="serviziRichiestiEliminaButton" 
+									update="dataListServiziRichiesti"
+									action="#{nuovaSchedaWizard.serviziRichiestiInterventiCustomBean.elimina(servizio)}"/>
+                            </f:facet>
+							<webredcs:pnlIntermediazioneAb iIntermediazioneAb="#{nuovaSchedaWizard.intermediazioneAbMan}"  />  
+					</p:panel>
+					<p:panel  toggleable="true" collapsed="false" rendered="#{nuovaSchedaWizard.serviziRichiestiInterventiCustomBean.servizioRendered(servizio, 'IOrientamentoLavoro')}">
+						    <f:facet name="header">
+            				   <h:outputLabel value="Orientamento / Inserimento Lavoro"/> 
+								<p:commandButton title="Elimina" icon="ui-icon-trash"  styleClass="serviziRichiestiEliminaButton"
+									update="dataListServiziRichiesti"
+									action="#{nuovaSchedaWizard.serviziRichiestiInterventiCustomBean.elimina(servizio)}"/>
+                            </f:facet>
+							<webredcs:pnlInserimentoLavoro OrientamentoLavoroManBean="#{nuovaSchedaWizard.orientamentoLavoroManBean}" />  
+					</p:panel> 
+					<p:panel  toggleable="true" collapsed="false" rendered="#{nuovaSchedaWizard.serviziRichiestiInterventiCustomBean.servizioRendered(servizio, 'IMediazioneCult')}">
+						    <f:facet name="header">
+            				   <h:outputLabel value="Mediazione Culturale"/> 
+								<p:commandButton title="Elimina" icon="ui-icon-trash"  styleClass="serviziRichiestiEliminaButton"
+									update="dataListServiziRichiesti"
+									action="#{nuovaSchedaWizard.serviziRichiestiInterventiCustomBean.elimina(servizio)}"/>
+                            </f:facet>
+		                    <webredcs:pnlMediazioneCult iMediazioneCult="#{nuovaSchedaWizard.mediazioneCultMan}" />  
+					</p:panel>
+					<p:panel  toggleable="true" collapsed="false" rendered="#{nuovaSchedaWizard.serviziRichiestiInterventiCustomBean.servizioRendered(servizio, 'IOrientamentoIstruzione')}">
+					    	<f:facet name="header">
+            				   <h:outputLabel value="Orientamento all'istruzione / formazione"/>
+								<p:commandButton title="Elimina" icon="ui-icon-trash"  styleClass="serviziRichiestiEliminaButton"
+									update="dataListServiziRichiesti"
+									action="#{nuovaSchedaWizard.serviziRichiestiInterventiCustomBean.elimina(servizio)}"/>
+                            </f:facet>
+		                    <webredcs:pnlOrientamentoIstruzione iOrientamentoIstruzione="#{nuovaSchedaWizard.orientamentoIstruzioneMan}" /> 
+					</p:panel>
+				
+					<p:panel  toggleable="true" collapsed="false" rendered="#{nuovaSchedaWizard.serviziRichiestiInterventiCustomBean.servizioRendered(servizio, 'IServizioRichiestoCustom')}">
+						    <f:facet name="header">
+            				   <h:outputLabel value="#{servizio.tipoInterventoCustom}"/>
+								<p:commandButton title="Elimina" icon="ui-icon-trash"  styleClass="serviziRichiestiEliminaButton"
+									update="dataListServiziRichiesti"
+									action="#{nuovaSchedaWizard.eliminaServiziRichiestiInterventiCustomBean(servizio)}"/>
+                            </f:facet>
+
+							<!-- SISO-659 INVIO SCHEDA -->
+							<p:panel rendered="#{servizio.tipoInvioScheda}">
+								<h:outputText style="font-weight:bold;" value="Invio scheda a" for="invio_panel"/>
+									<h:panelGrid id="invio_panel" style="width:100%;" columns="7" >
+									    
+									    <h:outputText value="Organizzazione:" for="org_zona" style="font-variant:italic;" />
+									    
+										<h:outputText value="della zona" for="org_zona" />
+										<p:selectOneMenu id="org_zona" value="#{nuovaSchedaWizard.organizzazioneDiZonaId}" filter="true" filterMatchMode="startsWith" 
+										 				 styleClass="#{'updateOrgFuoriZonaChange updateOrgAltreChange'}"
+										                 disabled="#{nuovaSchedaWizard.schedaInviata or !nuovaSchedaWizard.visPanelInvioEnte or nuovaSchedaWizard.organizzazioneAltraZonaId gt 0 or nuovaSchedaWizard.organizzazioneAltreId gt 0}"
+										                 >
+											<f:selectItem itemLabel="- seleziona -" itemValue="-1" />
+											<f:selectItems value="#{nuovaSchedaWizard.organizzazioniDiZona}" />
+											<p:ajax update="@(.updateOrgZonaChange), @this" event="change" process="@this" partialSubmit="true"/>
+										</p:selectOneMenu>
+										
+										<h:outputText value="di altra zona" for="org_fuori_zona" />
+										<p:selectOneMenu id="org_fuori_zona" value="#{nuovaSchedaWizard.organizzazioneAltraZonaId}" filter="true" filterMatchMode="startsWith"
+														 styleClass="#{'updateOrgZonaChange updateOrgAltreChange'}"
+										                 disabled="#{nuovaSchedaWizard.schedaInviata or !nuovaSchedaWizard.visPanelInvioEnte or nuovaSchedaWizard.organizzazioneDiZonaId gt 0 or nuovaSchedaWizard.organizzazioneAltreId gt 0}">
+											<f:selectItem itemLabel="- seleziona -" itemValue="-1" />
+											<f:selectItems value="#{nuovaSchedaWizard.organizzazioniAltraZona}" />
+											<p:ajax update="@(.updateOrgFuoriZonaChange)" event="change" process="@this" partialSubmit="true"/>
+										</p:selectOneMenu>
+										
+										<h:outputText value="Altre" for="org_altre" />
+										<p:selectOneMenu id="org_altre" value="#{nuovaSchedaWizard.organizzazioneAltreId}" filter="true" filterMatchMode="startsWith"
+										                 styleClass="#{'updateOrgZonaChange updateOrgFuoriZonaChange'}"
+										                 disabled="#{nuovaSchedaWizard.schedaInviata or !nuovaSchedaWizard.visPanelInvioEnte or nuovaSchedaWizard.organizzazioneDiZonaId gt 0 or nuovaSchedaWizard.organizzazioneAltraZonaId gt 0 }">
+											<f:selectItem itemLabel="- seleziona -" itemValue="-1" />
+											<f:selectItems value="#{nuovaSchedaWizard.organizzazioniAltre}" />
+											<p:ajax update="@(.updateOrgAltreChange)" event="change" process="@this" partialSubmit="true"/>
+										</p:selectOneMenu>	
+							
+									</h:panelGrid>
+													
+									<h:outputText style="font-weight:bold;" value="Dettagli invio scheda" for="invio_panel"/>
+									<h:panelGrid id="invio_panel_details" columns="6" >
+									
+									
+										<h:outputText value="Invio all’ufficio #{nuovaSchedaWizard.visPanelInvioUfficio ? ' *' : '(facoltativo)'}" for="uffici_organizzazione"/>
+										<p:selectOneMenu id="uffici_organizzazione" value="#{nuovaSchedaWizard.ufficioOrganizzazioneId}" filter="true" filterMatchMode="contains"
+											styleClass="#{'updateOrgZonaChange updateOrgFuoriZonaChange updateOrgAltreChange'}"
+										    disabled="#{nuovaSchedaWizard.schedaInviata or (!nuovaSchedaWizard.visPanelInvioEnte or nuovaSchedaWizard.organizzazioneDiZonaId eq 0 ) and  !nuovaSchedaWizard.visPanelInvioUfficio }">
+											<f:selectItem itemLabel="- seleziona -" itemValue="-1" />
+											<f:selectItems value="#{nuovaSchedaWizard.ufficiOrganizzazione}" />
+											<p:ajax update="invio_panel,invio_panel_details,invio_panel_details_messaggio" event="change" />
+										</p:selectOneMenu>
+										
+										<h:outputText value="Email destinazione*" for="ind_email_dest_invio_scheda"/>
+										<p:inputText id="ind_email_dest_invio_scheda" value="#{nuovaSchedaWizard.emailDest}" 
+										             disabled="#{nuovaSchedaWizard.schedaInviata or !nuovaSchedaWizard.visPanelInvioEnte and !nuovaSchedaWizard.visPanelInvioUfficio }"/>
+									
+									
+										<h:outputText value="Oggetto" for="oggetto_invio_scheda"/>
+										<p:inputText id="oggetto_invio_scheda"  style="width:300px;" readonly="true"  value="#{nuovaSchedaWizard.emailSubj}" />
+									
+										
+									</h:panelGrid>
+									
+									<h:outputText value="" for="invio_panel_details_messaggio" />
+									<h:panelGrid id="invio_panel_details_messaggio" columns="1"  >
+									    <h:outputText style="font-weight:bold;" value="Messaggio" for="messaggio_invio_scheda"/>
+										<h:inputTextarea id="messaggio_invio_scheda" cols="134" rows="15" autoResize="false" 
+										          value="#{nuovaSchedaWizard.emailTxt}" 
+										          styleClass="#{'updateOrgZonaChange updateOrgFuoriZonaChange updateOrgAltreChange'}"
+										          disabled="#{nuovaSchedaWizard.schedaInviata or !nuovaSchedaWizard.visPanelInvioEnte and !nuovaSchedaWizard.visPanelInvioUfficio }"/>
+									
+									</h:panelGrid>
+							</p:panel>	
+
+		                    <webredcs:pnlServizioRichiestoCustom iServizioRichiestoCustom="#{servizio}" 
+		                    		rendered="#{! servizio.tipoInvioScheda}"
+		                    		serviziBean="#{nuovaSchedaWizard.serviziRichiestiInterventiCustomBean}" />
+ 
+					</p:panel>
+        		</p:dataList>
+				</p:panel>
+            
+<!-- 			<p:dialog id="testDialog" widgetVar="testDialog" closable="true"
+				modal="true" resizable="false" position="center" draggable="true">
+				
+				<p:commandButton value="non fare niente" ajax="true"
+					action="#{nuovaSchedaWizard.serviziRichiestiInterventiCustomBean.doNothing}"
+					update="dataListServiziRichiesti" />
+				
+
+				<p:fileUpload value="#{nuovaSchedaWizard.serviziRichiestiInterventiCustomBean.file}"
+					mode="simple" skinSimple="true" />
+
+				<p:commandButton value="Submit" ajax="true"
+					actionListener="#{nuovaSchedaWizard.serviziRichiestiInterventiCustomBean.upload}"
+					update="dataListServiziRichiesti" /> 
+			</p:dialog> -->
+            
+					 
+					
+			
+			<!-- FINE SISO-438 -->
+			
+
+			<p:spacer height="10px" />
+
+			<h:panelGrid rendered="#{nuovaSchedaWizard.renderInterventoEconomico()}" columns="4" columnClasses="label, value" styleClass="grid">
+
+				<h:outputText value="Intervento economico " for="intervento_economico_tipo" />
+				<p:selectOneMenu label="Intervento economico" id="intervento_economico_tipo" value="#{nuovaSchedaWizard.interventoEconomicoTipo}" effect="fold" editable="false">
+					<f:selectItem itemLabel="- seleziona -" itemValue="" />
+					<f:selectItems value="#{nuovaSchedaWizard.interventiEconomiciTipi}" />
+				</p:selectOneMenu>
+
+				<h:outputText value="Importo in € " for="intervento_economico_importo" />
+				<p:inputText label="Importo" id="intervento_economico_importo" size="5" value="#{nuovaSchedaWizard.interventoEconomicoImporto}" />
+
+			</h:panelGrid>
+
+		<p:spacer height="5px" />
+
+		<p:panel header="#{nuovaSchedaWizard.getInterventiEconomiciHeader()}" rendered="#{nuovaSchedaWizard.showInterventiEconomici}" collapsed="true" toggleable="true" toggleSpeed="500">
+
+			<p:dataTable var="intervento" value="#{nuovaSchedaWizard.interventiEconomici.interventi}" rows="10" paginator="true"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="5,10,15" sortBy="data">
+
+				<p:column headerText="Data" sortBy="data">
+					<h:outputText value="#{intervento.data}">
+						<f:convertDateTime pattern="dd/MM/yyyy" />
+					</h:outputText>
+				</p:column>
+
+				<p:column headerText="Importo in €">
+					<h:outputText value="#{intervento.importo}" />
+				</p:column>
+
+				<p:column headerText="Tipo" sortBy="tipo">
+					<h:outputText value="#{intervento.tipo}" />
+				</p:column>
+
+				<p:column headerText="Ente erogante" sortBy="erogante">
+					<h:outputText value="#{intervento.erogante}" />
+				</p:column>
+			</p:dataTable>
+
+		</p:panel>
+
+		<p:spacer height="10px" />
+
+
+		<!-- INIZIO SISO-438 -->
+		
+		<p:panel header="STORICO RICHIESTE/CONSUNTIVAZIONE INTERVENTI EROGATI NELLA FASE DI ACCESSO (da altre schede completate)" toggleable="true">
+            
+                <p:dataList id="dataListServiziRichiestiStorico" type="definition"
+                			value="#{nuovaSchedaWizard.serviziRichiestiInterventiCustomBean.listaServizioRichiestoCustomAltreSchede}" 
+                			var="servizio" style="border:none;"
+                			emptyMessage="Non ci sono servizi"  >  
+
+					<p:panel  toggleable="true" collapsed="true" rendered="#{nuovaSchedaWizard.serviziRichiestiInterventiCustomBean.servizioRendered(servizio, 'IIntermediazioneAb')}">  
+						    <f:facet name="header">
+            				   <h:outputLabel value="Intermediazione Abitativa"/>   
+                            </f:facet>
+							<webredcs:pnlIntermediazioneAb iIntermediazioneAb="#{servizio}" soloLettura="true" />  
+					</p:panel>
+					<p:panel  toggleable="true" collapsed="true" rendered="#{nuovaSchedaWizard.serviziRichiestiInterventiCustomBean.servizioRendered(servizio, 'IOrientamentoLavoro')}">
+						    <f:facet name="header">
+            				   <h:outputLabel value="Orientamento / Inserimento Lavoro"/>  
+                            </f:facet>
+							<webredcs:pnlInserimentoLavoro OrientamentoLavoroManBean="#{servizio}" soloLettura="true" />  
+					</p:panel> 
+					<p:panel  toggleable="true" collapsed="true" rendered="#{nuovaSchedaWizard.serviziRichiestiInterventiCustomBean.servizioRendered(servizio, 'IMediazioneCult')}">
+						    <f:facet name="header">
+            				   <h:outputLabel value="Mediazione Culturale"/>  
+                            </f:facet>
+		                    <webredcs:pnlMediazioneCult iMediazioneCult="#{servizio}" soloLettura="true" />  
+					</p:panel>
+					<p:panel  toggleable="true" collapsed="true" rendered="#{nuovaSchedaWizard.serviziRichiestiInterventiCustomBean.servizioRendered(servizio, 'IOrientamentoIstruzione')}">
+						    <f:facet name="header">
+            				   <h:outputLabel value="Orientamento all'istruzione / formazione"/> 
+                            </f:facet>
+		                    <webredcs:pnlOrientamentoIstruzione iOrientamentoIstruzione="#{servizio}" soloLettura="true" /> 
+					</p:panel>
+			
+					<p:panel  toggleable="true" collapsed="true" rendered="#{nuovaSchedaWizard.serviziRichiestiInterventiCustomBean.servizioRendered(servizio, 'IServizioRichiestoCustom')}">
+						    <f:facet name="header">
+            				   <h:outputLabel value="#{servizio.tipoInterventoCustom}"/> 
+                            </f:facet>
+		                    <webredcs:pnlServizioRichiestoCustom
+	                    				iServizioRichiestoCustom="#{servizio}"
+		                    			serviziBean="#{nuovaSchedaWizard.serviziRichiestiInterventiCustomBean}"
+		                    			soloLettura="true" /> 
+					</p:panel>
+
+        		</p:dataList>
+		</p:panel>
+         
+			
+			<!-- FINE SISO-438 -->
+
+	<p:spacer height="10px" />
+	<p:panel header="Note di diario" toggleable="true" collapsed="true">
+		<p:outputPanel style="display: inline-block; vertical-align:top;">
+			<h:panelGrid columns="2">
+				<p:outputLabel value="Data"/>
+				<webred:pnlData dataValue="#{nuovaSchedaWizard.notaDiarioPubblica.data}" 
+			            dataPattern="dd/MM/yyyy"  dataPatternLabel="gg/mm/aaaa" dataReq="false" />
+			</h:panelGrid>
+			<webred:pnlNota id="diario_pubblico_servizi" notaLabel="Visibile a tutti" notaValue="#{nuovaSchedaWizard.notaDiarioPubblica.nota}" />
+		</p:outputPanel>
+	</p:panel>		
+	<p:separator />
+	<webred:pnlRequiredSalva salvaAction="#{nuovaSchedaWizard.salvaTabServiziRichiesti()}"  
+						     renderRecupero="#{nuovaSchedaWizard.abilitaLoadPrecedente}"
+	                         recuperoLastAction="#{nuovaSchedaWizard.valorizzaInterventiDaUltima()}" 
+	                         panelToUpdate="pnlInterventi"/>
+</p:panel>
+
+<p:spacer height="5px" />
+
+<ui:include src="/jsp/protected/wizard/pnlDiarioSociale.xhtml"/>
+
+</ui:composition>

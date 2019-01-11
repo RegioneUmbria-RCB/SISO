@@ -1,0 +1,42 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+     	xmlns:h="http://java.sun.com/jsf/html"
+		xmlns:f="http://java.sun.com/jsf/core"
+		xmlns:ui="http://java.sun.com/jsf/facelets"
+		xmlns:p="http://primefaces.org/ui"
+	  	xmlns:composite="http://java.sun.com/jsf/composite">
+      
+	<h:head>
+		<title>Pannello con informazioni sul tipo intervento</title>
+	</h:head>
+	<h:body>
+		<composite:interface componentType="pnlInfoTipoIntervento">
+			<composite:attribute name="value" type="it.webred.cs.csa.ejb.dto.InformativaDTO"/>
+		</composite:interface>
+		<composite:implementation>
+		        <p:panel header="#{cc.attrs.value.descClasse}" rendered="#{cc.attrs.value!=null}"  
+		                 style="max-height: 250px; overflow: auto;" >
+				
+					<h:outputText value="#{cc.attrs.value.descClasseISTAT}" style="font-size: 0.8em;"/><br/>
+					<p:spacer height="10px"/>
+					
+					<p:dataTable value="#{cc.attrs.value.lstCodINPS}" rendered="#{!empty cc.attrs.value.lstCodINPS}"
+					             var="inps" style="font-size: 0.8em;">
+						<f:facet name="header">Codifiche Inps</f:facet>
+					
+						<p:column headerText="PSA" width="20" >
+							<p:outputLabel value="#{inps.psa ? 'Si' : 'No'}" />
+						</p:column>
+						<p:column headerText="Denominazione" >
+							<p:outputLabel value="#{inps.denomINPS}" />
+						</p:column>
+						<p:column headerText="Descrizione" >
+							<p:outputLabel value="#{inps.descINPS}" />
+						</p:column>
+					
+					</p:dataTable>
+				</p:panel>
+		</composite:implementation>
+	</h:body>
+		
+</html>

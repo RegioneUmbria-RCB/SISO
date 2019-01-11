@@ -1,0 +1,7 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<SchemaObject class="oracle.dbtools.crest.model.design.relational.SchemaObject" name="CS_SISO" directorySegmentName="seg_0" id="31789C62-6489-FE63-4664-3CFB4035AC87">
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:18 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>EC2DC2D7-4534-41FE-7794-556FE65CC9A3</importedID>
+</SchemaObject>

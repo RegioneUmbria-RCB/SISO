@@ -1,0 +1,287 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Table class="oracle.dbtools.crest.model.design.relational.Table" directorySegmentName="seg_0" id="79AA7667-DA36-22BE-B740-3283FF7BECD1" schemaObject="B1581F26-2A56-2190-06E4-BABE86DDE8BD" name="GL_SPAZIO">
+<sourceConnName>GALILEO_UMBRIA</sourceConnName>
+<sourceObjSchema>GALILEO_UMBRIA</sourceObjSchema>
+<sourceObjName>GL_SPAZIO</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:53:58 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>ADF0DD1E-AE02-2C95-1F90-6F323BC2BB25</importedID>
+<parsed>true</parsed>
+<columns itemClass="oracle.dbtools.crest.model.design.relational.Column">
+<Column name="ID" id="B33832FD-593D-0C40-2A2F-0E5BDE6B91C7">
+<sourceConnName>GALILEO_UMBRIA</sourceConnName>
+<sourceObjSchema>GL_SPAZIO</sourceObjSchema>
+<sourceObjName>ID</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:53:59 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>FBDE92DA-3C03-FC77-EDE5-7867C7E68618</importedID>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<dataTypePrecision>10</dataTypePrecision>
+<ownDataTypeParameters>,10,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="LATITUDE" id="306BE441-F1CF-FD11-BAF9-0990706D4662">
+<sourceConnName>GALILEO_UMBRIA</sourceConnName>
+<sourceObjSchema>GL_SPAZIO</sourceObjSchema>
+<sourceObjName>LATITUDE</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:53:59 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>1FBC22A6-1B48-51D6-FC2E-EC4374DB0D31</importedID>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>50 BYTE</dataTypeSize>
+<ownDataTypeParameters>50 BYTE,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="LONGITUDE" id="C696A235-4FFC-5A55-9E51-7E8EEFAD54ED">
+<sourceConnName>GALILEO_UMBRIA</sourceConnName>
+<sourceObjSchema>GL_SPAZIO</sourceObjSchema>
+<sourceObjName>LONGITUDE</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:53:59 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>6A5FD8F6-BD7F-D9EF-3C9D-A7900F396F1C</importedID>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>50 BYTE</dataTypeSize>
+<ownDataTypeParameters>50 BYTE,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="SHAPE" id="B2C4E66C-C6F5-8ECC-F363-9BA2269064B9">
+<sourceConnName>GALILEO_UMBRIA</sourceConnName>
+<sourceObjSchema>GL_SPAZIO</sourceObjSchema>
+<sourceObjName>SHAPE</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:53:59 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>E55DB58C-ABA1-CB0A-32C0-2E89FAE4536F</importedID>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<allowSubtypeSubstitution>false</allowSubtypeSubstitution>
+<use>3</use>
+<structuredType>47E390DE-0671-C4B1-8428-0F45CBEE18F8</structuredType>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="USER_INS" id="9B05592D-63E0-1EC7-5AF7-B4304BA0C23C">
+<sourceConnName>GALILEO_UMBRIA</sourceConnName>
+<sourceObjSchema>GL_SPAZIO</sourceObjSchema>
+<sourceObjName>USER_INS</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:53:59 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>7FBE148C-11E9-9819-D7C6-6050D050D99A</importedID>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>50 BYTE</dataTypeSize>
+<ownDataTypeParameters>50 BYTE,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="DT_INS" id="3C4F741C-C88C-8FA9-8267-C51246B4B294">
+<sourceConnName>GALILEO_UMBRIA</sourceConnName>
+<sourceObjSchema>GL_SPAZIO</sourceObjSchema>
+<sourceObjName>DT_INS</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:53:59 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>FAF497BD-035C-EA68-D748-DB3BE2FEC364</importedID>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT007</logicalDatatype>
+<dataTypeSize>7</dataTypeSize>
+<ownDataTypeParameters>7,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="USR_MOD" id="A48BD55C-4C61-D1DB-2AF0-28FDB53F0B1A">
+<sourceConnName>GALILEO_UMBRIA</sourceConnName>
+<sourceObjSchema>GL_SPAZIO</sourceObjSchema>
+<sourceObjName>USR_MOD</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:53:59 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>E652C95D-C165-114E-2AD4-E87F174E6976</importedID>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>50 BYTE</dataTypeSize>
+<ownDataTypeParameters>50 BYTE,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="DT_MOD" id="9595A63E-0662-5D7F-1EEA-50392ABC222C">
+<sourceConnName>GALILEO_UMBRIA</sourceConnName>
+<sourceObjSchema>GL_SPAZIO</sourceObjSchema>
+<sourceObjName>DT_MOD</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:53:59 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>A93EA777-A2AD-3377-1D6B-957453F6130F</importedID>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT007</logicalDatatype>
+<dataTypeSize>7</dataTypeSize>
+<ownDataTypeParameters>7,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+</columns>
+<nestedColumns itemClass="oracle.dbtools.crest.model.design.relational.Column">
+<nestedColumn name="SHAPE.SDO_GTYPE" id="DE57D4F0-89A6-3817-6F17-06DE51A4C674">
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:53:59 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<parentObject>B2C4E66C-C6F5-8ECC-F363-9BA2269064B9</parentObject>
+<structAttributeID>75094A3B-1945-F73E-5B06-4F7C490C680B</structAttributeID>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<dataTypePrecision>0</dataTypePrecision>
+<dataTypeScale>0</dataTypeScale>
+<ownDataTypeParameters>,0,0</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</nestedColumn>
+<nestedColumn name="SHAPE.SDO_SRID" id="9BF5BC11-67B0-57EE-E108-844F6BB23E84">
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:53:59 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<parentObject>B2C4E66C-C6F5-8ECC-F363-9BA2269064B9</parentObject>
+<structAttributeID>E38286F0-34D7-86AF-00D2-33809B3F4B1A</structAttributeID>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<dataTypePrecision>0</dataTypePrecision>
+<dataTypeScale>0</dataTypeScale>
+<ownDataTypeParameters>,0,0</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</nestedColumn>
+<nestedColumn name="SHAPE.SDO_POINT" id="443EB10F-53A9-B786-0FA5-2EB6BC4BA0B1">
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:53:59 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<parentObject>B2C4E66C-C6F5-8ECC-F363-9BA2269064B9</parentObject>
+<structAttributeID>E2D86D5D-D91F-9CA1-AB4D-23800BBD7341</structAttributeID>
+<use>0</use>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</nestedColumn>
+<nestedColumn name="SHAPE.SDO_ELEM_INFO" id="A735AF76-EFF4-35BF-FFD9-148C7AFC2F9E">
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:53:59 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<parentObject>B2C4E66C-C6F5-8ECC-F363-9BA2269064B9</parentObject>
+<structAttributeID>0CB42461-9F50-D6FE-9213-ADA25DED4AFD</structAttributeID>
+<use>0</use>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</nestedColumn>
+<nestedColumn name="SHAPE.SDO_ORDINATES" id="FD828EAB-3DEA-C3A1-8CDB-06393684A517">
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:53:59 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<parentObject>B2C4E66C-C6F5-8ECC-F363-9BA2269064B9</parentObject>
+<structAttributeID>5B287725-3876-8030-D032-5CBDC0491BCA</structAttributeID>
+<use>0</use>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</nestedColumn>
+<nestedColumn name="SHAPE.SDO_GTYPE" id="7CB5E798-3672-1850-C5B9-2C7E9AB289A2">
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:18 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<parentObject>B2C4E66C-C6F5-8ECC-F363-9BA2269064B9</parentObject>
+<structAttributeID>6696A257-2597-1EC1-2DB0-8DECA78D15D8</structAttributeID>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<dataTypePrecision>0</dataTypePrecision>
+<dataTypeScale>0</dataTypeScale>
+<ownDataTypeParameters>,0,0</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</nestedColumn>
+<nestedColumn name="SHAPE.SDO_SRID" id="7143E440-7070-1CA0-EAE9-B947283D0837">
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:18 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<parentObject>B2C4E66C-C6F5-8ECC-F363-9BA2269064B9</parentObject>
+<structAttributeID>FE0B02F5-89FC-D9B0-401E-B48177B41EE5</structAttributeID>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<dataTypePrecision>0</dataTypePrecision>
+<dataTypeScale>0</dataTypeScale>
+<ownDataTypeParameters>,0,0</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</nestedColumn>
+<nestedColumn name="SHAPE.SDO_POINT" id="7D838952-A5EA-31E6-AF3E-3B5AF434EFA0">
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:18 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<parentObject>B2C4E66C-C6F5-8ECC-F363-9BA2269064B9</parentObject>
+<structAttributeID>5A304F52-6DB5-A081-1201-F5726B489648</structAttributeID>
+<use>0</use>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</nestedColumn>
+<nestedColumn name="SHAPE.SDO_ELEM_INFO" id="1D943F6E-86BB-4179-B92E-79DF5688B567">
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:18 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<parentObject>B2C4E66C-C6F5-8ECC-F363-9BA2269064B9</parentObject>
+<structAttributeID>8F356E31-C052-E653-3238-A751680893F1</structAttributeID>
+<use>0</use>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</nestedColumn>
+<nestedColumn name="SHAPE.SDO_ORDINATES" id="EB59D8DD-E4BA-727E-1A2D-EECFDD14F712">
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:18 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<parentObject>B2C4E66C-C6F5-8ECC-F363-9BA2269064B9</parentObject>
+<structAttributeID>F3D14040-6C77-840E-26DB-4B87D5FCE377</structAttributeID>
+<use>0</use>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</nestedColumn>
+</nestedColumns>
+<indexes itemClass="oracle.dbtools.crest.model.design.relational.Index">
+<ind_PK_UK id="F1648FA1-1491-B879-CFD9-04B64EC0FD43" name="GL_SPAZIO_PK">
+<sourceConnName>GALILEO_UMBRIA</sourceConnName>
+<sourceObjSchema>GALILEO_UMBRIA</sourceObjSchema>
+<sourceObjName>GL_SPAZIO_PK</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:53:59 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>3005279B-E49D-D0E1-E318-08B75D38D9BE</importedID>
+<pk>true</pk>
+<indexState>Primary Constraint</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="B33832FD-593D-0C40-2A2F-0E5BDE6B91C7"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="5549183A-C668-01C4-4D70-43428EE7136D" schemaObject="B1581F26-2A56-2190-06E4-BABE86DDE8BD" name="GL_SPAZIO_PK">
+<sourceConnName>GALILEO_UMBRIA</sourceConnName>
+<sourceObjSchema>GALILEO_UMBRIA</sourceObjSchema>
+<sourceObjName>GL_SPAZIO_PK</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:53:59 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>BE693404-0366-7703-78DB-4937940003CE</importedID>
+<indexState>Unique Plain Index</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="B33832FD-593D-0C40-2A2F-0E5BDE6B91C7"/>
+</indexColumnUsage>
+</ind_PK_UK>
+</indexes>
+</Table>

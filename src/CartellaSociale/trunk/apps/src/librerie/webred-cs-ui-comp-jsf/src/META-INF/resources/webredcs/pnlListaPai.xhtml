@@ -1,0 +1,286 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:webred="http://java.sun.com/jsf/composite/webred"
+	xmlns:webredcs="http://java.sun.com/jsf/composite/webredcs"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+<h:head>
+	<title>Gestione Progetti</title>	
+</h:head>
+
+<h:body>
+	<composite:interface componentType="pnlListaPai">
+		<composite:attribute name="iPai" type="it.webred.cs.jsf.interfaces.IPai" />
+		<!--     <composite:attribute name="var" type="java.lang.String" required="false" default="1" /> -->
+	</composite:interface>
+
+	<composite:implementation>
+     
+		<style>
+		  .ui-picklist .ui-picklist-list
+		  {
+		  	width:auto !important;
+		  }
+		</style>
+		
+        <p:spacer height="10px" />
+
+		<!-- ELENCO PROGETTI -->
+		<ui:include src="/webredcs/pnlPai/listaPai.xhtml"/> 
+		
+
+		<!-- inizio aggiunta evoluzione-pai -->  
+        <p:panel id="paiDetailContainer2aaa" rendered="#{not empty cc.attrs.iPai.selectedPai}" >
+			
+			    <f:facet name="header">
+			        <h:outputText id="nuovProgHeader" value="#{cc.attrs.iPai.modalHeader}" />
+			    </f:facet> 
+								
+				<p:panelGrid id="paiDetail" style="width:100%;" >
+					 <p:row>
+							<p:column>
+								<h:outputLabel for="tipoProgetto" value="Tipo Progetto*" />
+							</p:column>
+							<p:column>
+								<p:selectOneMenu id="tipoProgetto"
+											value="#{cc.attrs.iPai.selectedPai.csTbTipoPai.id}"
+											disabled="#{cc.attrs.iPai.closed or cc.attrs.iPai.onClosing}">
+											<f:selectItems value="#{cc.attrs.iPai.lstTipoPai}" />
+											<p:ajax event="change" update="panel-progetti" 
+											        immediate="true" process="@this" 
+											        partialSubmit="true" listener="#{cc.attrs.iPai.onChangeTipoProgetto}" />
+								</p:selectOneMenu>
+							</p:column>
+							<p:column>
+							 	<p:outputLabel for="progetto" value="Progetto " />
+							 </p:column>
+							<p:column>
+								<p:selectOneMenu id="progetto" style="width:150px" 
+								value="#{cc.attrs.iPai.selectedPai.tipoProgettoId}">
+								<f:selectItem itemLabel="- seleziona -" itemValue="" noSelectionOption="true" />
+								<f:selectItems value="#{cc.attrs.iPai.lstArFfProgetti}"/>
+								</p:selectOneMenu>
+							</p:column>
+						</p:row>
+					
+						<p:row>
+							<p:column>
+								<h:outputLabel for="dataAttivazione" value="Data Attivazione*" />
+							</p:column>
+							<p:column>
+								<webred:pnlData id="dataAttivazione"
+									dataValue="#{cc.attrs.iPai.selectedPai.csDDiario.dtAttivazioneDa}"
+									dataPattern="dd/MM/yyyy" dataReq="true"
+									dataReqMes="Data Attivazione è un campo obbligatorio"
+									dataValMes="Data Attivazione non valida"
+									dataConMes="Data attivazione non valida"
+									dataPatternLabel="gg/mm/aaaa" yearRange="c-1:c+5"
+									disabled="#{cc.attrs.iPai.closed or cc.attrs.iPai.onClosing}" />
+							</p:column>
+							<p:column>
+								<h:outputLabel for="dataChiusuraPrevista" value="Data Chiusura Prevista" />
+							</p:column>
+							<p:column colspan="3">
+								<webred:pnlData id="dataChiusuraPrevista"
+									dataValue="#{cc.attrs.iPai.selectedPai.dataChiusuraPrevista}"
+									dataPattern="dd/MM/yyyy" 
+									dataReq="false"
+									dataValMes="Data Chiusura Prevista non valida"
+									dataConMes="Data chiusura Prevista non valida"
+									dataPatternLabel="gg/mm/aaaa" yearRange="c-1:c+5"
+									disabled="#{cc.attrs.iPai.closed}" />
+							</p:column>
+						</p:row>
+		         </p:panelGrid>
+		      
+		         <!-- BASE -->
+                 <p:panel header="Obiettivi">
+		            <ui:include src="/webredcs/pnlPai/progetti/basePai.xhtml"/> 
+				    <p:spacer height="15px;" />
+				    <h:outputLabel value="* campi obbligatori" style="font-weight:bold;font-style:italic;font-size:11px;" />
+				    <p:spacer height="10px;" />
+				    <h:outputLabel value="** compilare almeno uno degli obiettivi" style="font-weight:bold;font-style:italic;font-size:11px;" />
+				 </p:panel>
+				 
+				 
+				
+				<!-- PROGETTI PAI -->
+				<p:outputPanel id="panel-progetti">
+				    <c:if test="#{cc.attrs.iPai.tipoProgetto != null}">
+				        <ui:include src="/webredcs/pnlPai/progetti/#{cc.attrs.iPai.tipoProgetto}.xhtml" />
+				    </c:if>
+				</p:outputPanel>			
+			
+			
+		<p:outputPanel id="paiTabViewContainer">	
+	    <p:spacer height="35px;" />
+	
+		<!-- INTERVENTI -->
+		<ui:include src="/webredcs/pnlPai/pick-interventi.xhtml"/> 
+		         
+		<!-- ATTIVITA -->
+		<ui:include src="/webredcs/pnlPai/pick-attivita.xhtml"/>
+		
+		<!-- EROGAZIONI -->
+		<ui:include src="/webredcs/pnlPai/pick-erogazioni.xhtml"/> 
+		
+		   
+	
+	<p:tabView 	id="paitabview" activeIndex="#{cc.attrs.iPai.tabViewIndex}"
+			    rendered="#{not cc.attrs.iPai.onUpdateInterventi and not cc.attrs.iPai.onUpdateRelazioni and not cc.attrs.iPai.onUpdateErogazioni}" 
+				orientation="left" styleClass="paiDetailTabLeft" cache="false"  >
+				
+				 <p:ajax event="tabChange" listener="#{cc.attrs.iPai.onChangeTabView}" immediate="true" global="false"/>
+			
+        <p:tab title="Collega interventi/erogazioni">
+        <p:panel id="panelIntervento" header="Interventi/erogazioni"> 
+						 	
+                        <!-- inizio evoluzione-pai 	-->
+							<f:metadata>
+								<ui:param name="tipoIntTreeViewMetadataPai"  value="#{cc.attrs.iPai.tipoInterventoManBean}" />
+							</f:metadata>    
+								
+							<ui:include
+								src="/jsp/protected/treeTipoIntervento/tipoInterventoTreePai.xhtml">
+								<ui:param name="id" value="panelSearchTipoInterventoPai" /> 
+								<ui:param name="tipoIntTreeView" value="#{cc.attrs.iPai.tipoInterventoManBean}" />
+								<ui:param name="esciActionUpdate" value="panelSearchTipoInterventoPai" />
+							</ui:include>
+						
+							<webredcs:pnlFglIntervento id="paiDlgFglInt" styleClass=""
+								widgetVar="pnlFglInterventoNuovoPaiWidgetVar"
+								salvaActionUpdate = ":#{p:component('panelSearchTipoInterventoPai')}" 
+								esciActionUpdate=":#{p:component('panelSearchTipoInterventoPai')}" />
+					
+						<p:commandButton id="btnNuovaErogazionePai" process="@this" value="Nuova Erogazione" title="Nuova Erogazione"
+							action="#{cc.attrs.iPai.aggiungiTipoErogazioneButton()}"
+							disabled="#{cc.attrs.iPai.readOnly}"
+							oncomplete="if(args &amp;&amp; args.isShowDialog){  updatePaiDlgFglInt(); PF('pnlFglInterventoNuovoPaiWidgetVar').show(); } " 
+							icon="ui-icon-plus" />
+						<p:remoteCommand id="rmtBtnNuovaErogazionePai"
+									 name="updatePaiDlgFglInt" process="@this" 
+									 update="paiDlgFglInt:frmDlgFglInterventi" />
+									
+					
+						<p:commandButton id="btnNuovoInteverntoPai" process="@this" value="Nuovo Intervento" title="Nuovo Intervento"
+							action="#{cc.attrs.iPai.aggiungiTipoInterventoButton()}"
+							disabled="#{cc.attrs.iPai.readOnly}"
+							oncomplete="if(args &amp;&amp; args.interventoSelezionato){  updatePaiDlgFglInt(); PF('pnlFglInterventoNuovoPaiWidgetVar').show(); } " 
+							icon="ui-icon-plus" />
+						<p:remoteCommand id="rmtBtnNuovoInteverntoPai"
+									 name="updatePaiDlgFglInt" process="@this" 
+									 update="paiDlgFglInt:frmDlgFglInterventi" />
+									 
+						
+
+									<!-- fine 	evoluzione-pai 	   --> 
+						
+						</p:panel>
+				<ui:include src="/webredcs/pnlPai/tab-interventi-erogazioni.xhtml"/> 	
+        </p:tab>
+        
+<!--         <p:tab title="Collega erogazioni"> -->
+<!-- 				<ui:include src="/webredcs/pnlPai/tab-erogazioni.xhtml"/> 	 -->
+<!--         </p:tab> -->
+        
+        <p:tab title="Collega attività" >
+        
+        	<!-- inizio evoluzione-pai   -->
+			<p:panel id="dataTableRelazioni_panel">
+					
+			 	<h:panelGrid columns="1" >
+		        	<webredcs:pnlRelazioni iRelazioni="#{fascicoloBean.relazioniBean}" iDiarioDocs="#{diarioDocsMan}" styleClass="noBorder" var="propostaAttivita" /> 
+			 	
+					<p:commandButton value="Collega attività"
+						disabled="#{cc.attrs.iPai.closed or cc.attrs.iPai.onClosing or cc.attrs.iPai.readOnly}"
+						action="#{cc.attrs.iPai.setOnUpdateRelazioni(true)}" 
+						process="@this" 
+						update="@([id$=paiTabViewContainer])" />   
+			 	</h:panelGrid>
+       
+			</p:panel>
+			<!-- fine evoluzione-pai -->
+        </p:tab>
+    </p:tabView>
+			
+<!--  Salva esci -->
+	
+
+	<h:panelGroup rendered="#{not cc.attrs.iPai.onUpdateInterventi and not cc.attrs.iPai.onUpdateRelazioni and not cc.attrs.iPai.onUpdateErogazioni}" >				
+		<p:spacer height="20px;" />
+		<p:commandButton value="Salva" rendered="#{not cc.attrs.iPai.onClosing}"
+			disabled="#{cc.attrs.iPai.closed or cc.attrs.iPai.readOnly}"
+			type="button"
+			onclick="confermaSalvataggioDettaglioPai.show()" />  
+		<p:commandButton value="Chiudi progetto" rendered="#{cc.attrs.iPai.onClosing}"
+			disabled="#{cc.attrs.iPai.closed or cc.attrs.iPai.readOnly}"
+			partialSubmit="true"
+			process="@form"
+			actionListener="#{cc.attrs.iPai.chiudi}"
+			update="@form"
+			/>
+			<!-- actionListener="#{cc.attrs.iPai.salva}" -->
+								
+		<p:commandButton value="Annulla" oncomplete="confermaEsciDettaglioPai.show()"  process="@this" />
+			
+		<p:messages for="messagesPai" closable="true" showDetail="true" showSummary="true" autoUpdate="true" />
+	</h:panelGroup>
+
+	<p:confirmDialog header="Conferma uscita" widgetVar="confermaEsciDettaglioPai"
+		severity="alert" closable="false" appendTo="@(body)"
+		message="I dati non salvati saranno persi: continuare?">
+		<table border="0" width="100%">
+			<tr>
+				<td style="text-align: center;">
+					<p:commandButton value="SÌ"
+						onclick="PF('confermaEsciDettaglioPai').hide();"
+						process="@this" 
+						actionListener="#{cc.attrs.iPai.initializeData}"
+						update="@form"/> 
+					<p:commandButton value="NO" 
+						onclick="PF('confermaEsciDettaglioPai').hide();" type="button" />
+					</td>
+				</tr>
+			</table>
+		</p:confirmDialog>
+		
+		<!-- SISO-520 -->
+			<p:confirmDialog header="Conferma salvataggio" widgetVar="confermaSalvataggioDettaglioPai"
+		severity="alert" closable="false" appendTo="@(body)"
+		message="Hai monitorato gli obiettivi?">
+			
+		<table border="0" width="100%">
+			<tr>
+				<td style="text-align: center;">
+					<p:commandButton value="SÌ"
+						onclick="PF('confermaSalvataggioDettaglioPai').hide();"
+						 actionListener="#{cc.attrs.iPai.salvataggioConMonitoraggio}"
+						update="@form"
+						process="@form" 
+						partialSubmit="true"
+						/> 
+					<p:commandButton value="NO" 
+						onclick="PF('confermaSalvataggioDettaglioPai').hide();" 
+						 actionListener="#{cc.attrs.iPai.salvataggioSenzaMonitoraggio}"
+						 update="@form"
+						process="@form" 
+						partialSubmit="true"
+						/>
+					</td>
+				</tr>
+			</table>
+			</p:confirmDialog>
+			<p:spacer width="40px;" />
+		</p:outputPanel>
+
+		
+	</p:panel>
+
+</composite:implementation>
+</h:body>
+</html>
