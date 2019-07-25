@@ -1,0 +1,61 @@
+publiccodeYmlVersion: "0.2"
+
+name: SISO/SIGESS (Sistema Informativo Servizi Sociali)
+url: "https://github.com/Regione-Umbria/SISO"
+softwareVersion: "1.0"
+releaseDate: "2017-04-15"
+platforms:
+  - web
+
+categories:
+  - data-visualization
+  - office
+
+usedBy:
+  - Regione Umbria
+  - Comune Perugia
+  - 14 ambiti SOciali Regione Umbria
+  - Comune di Monza
+  - 11 Ambiti sociali provincia di Monza e Brianza
+  - Ambito Sociale Cittiglio (VA)
+  - Ambito Sociale Luini (VA)
+  - Ambito Gallarate (VA)
+  - Ambito sociale Vigevano (PV)
+  - Regione Marche
+  - 7 ambiti Sociali Regione Marche
+  - Regione Lazio
+  - Comune di Roma
+  
+
+developmentStatus: stable
+
+softwareType: "standalone/web"
+
+description:
+  it:   
+    shortDescription: >
+          SISO Gestione Servizi sociali del Comune, accoglienza e presa in carico ed erogazione interventi e benefici sociali
+    genericName: Gestione della cartella sociale      
+    longDescription: >
+         S.I.SO/SIgeSS (Sistema Informativo SOciale) è una piattaforma digitale a supporto degli adempimenti di accoglienza, raccolta del fabbisogno, gestione anagrafiche, produzione PAI/interventi, erogazione, rendicontazione sulle voci dei fondi e di altri (REI e Reddito di cittadinanza con rapporti ARPAL/ANPAL, L.26/2019) per i servizi sociali Comuni nel modello singolo Ente o Ambito territoriale. In questo il sistema è rivolto agli uffici perle fasi di contatto e presa in carico del cittadino, favorendo modelli uniformi di servizio fino a livello regionale e in grado di interoperare attraverso automatismi di servizio con Gli Enti esterni interessati. I servizi, oltre alla gestione sopra indicata intervengono quale supporto ai comuni nella gestione delle UVM e nelle problematiche inerenti il SOcio-sanitario regionale.
+    
+    features:
+       - Miglioramento della presa in carico e della gestione dei percorsi di cura, con incremento della qualità del servizio a favore del cittadino
+       - Integrazione professionale ed istituzionale con accresciuti risultati di salute per la Persona/utente e la sua famiglia
+       - Una riduzione dei costi di gestione attraverso un miglioramento dell’impiego delle risorse a favore dei risultati di salute
+       - Una maggiore trasparenza dei percorsi e dei processi che favoriscono il monitoraggio, il controllo e la qualità della risposta
+
+legal:
+  license: 	EUPL-1.2
+  repoOwner: Regione Umbria
+
+maintenance:
+  type: "internal"
+
+  contacts:
+    - name: Carlo Falcinelli
+
+localisation:
+  localisationReady: no
+  availableLanguages:
+    - it
