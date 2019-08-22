@@ -1,7 +1,7 @@
 publiccodeYmlVersion: "0.2"
 
 name: SISO/SIGESS (Sistema Informativo Servizi Sociali)
-url: "https://github.com/Regione-Umbria/SISO"
+url: "https://github.com/RegioneUmbria/SISO"
 softwareVersion: "1.0"
 releaseDate: "2017-04-15"
 platforms:
