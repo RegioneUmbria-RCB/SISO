@@ -1,0 +1,30 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+     	xmlns:h="http://java.sun.com/jsf/html"
+		xmlns:f="http://java.sun.com/jsf/core"
+		xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+		xmlns:ui="http://java.sun.com/jsf/facelets"
+		xmlns:p="http://primefaces.org/ui"
+		xmlns:c="http://java.sun.com/jsp/jstl/core"
+	  	xmlns:composite="http://java.sun.com/jsf/composite">
+      
+	<h:head>
+		<title>Gestione Schede valutazione Sinba</title>
+	</h:head>
+	<h:body>
+		<composite:interface componentType="pnlValSinba">
+			<composite:attribute name="iScheda" type="it.webred.cs.json.valSinba.IValSinba" required="true"/>
+		</composite:interface>
+		<composite:implementation 
+			xmlns:webred="http://java.sun.com/jsf/composite/webred"
+			xmlns:webredcs="http://java.sun.com/jsf/composite/webredcs">
+			
+			<p:tabView id="tabViewValSinba_v1" 
+					   style="padding:0;" orientation="top" scrollable="true" effect="fade" 
+					   rendered="#{cc.attrs.iScheda.versionLowerCase eq '1'}">
+			</p:tabView>
+			
+		</composite:implementation>
+	</h:body>
+		
+</html>

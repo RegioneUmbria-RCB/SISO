@@ -1,0 +1,22 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Relation class="oracle.dbtools.crest.model.design.logical.Relation" name="FK_CPOMUNICAZ_STEP" directorySegmentName="seg_0" id="68F83B0B-2777-8E70-395D-EC230A083A96">
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:18 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>EE0B4DB7-8A2D-F095-DAAE-6A2E8FEDF5C7</importedID>
+<engineerTo>
+<item key="2B43EB65-62DA-EC53-86CF-E94D657D3AAF" value="true"/>
+<item key="36B1C6E8-6FD2-1EF6-8F4A-4E5B3D846A78" value="true"/>
+</engineerTo>
+<sourcePk>7B4D1748-74F8-6BE3-691C-DA4B82CF5D07</sourcePk>
+<dominantRole>2F52DF94-A2D0-974B-EA07-71C9381B5523</dominantRole>
+<identifying>true</identifying>
+<optionalSource>true</optionalSource>
+<optionalTarget>false</optionalTarget>
+<sourceCardinality>1</sourceCardinality>
+<sourceEntity>2F52DF94-A2D0-974B-EA07-71C9381B5523</sourceEntity>
+<targetCardinalityString>1</targetCardinalityString>
+<targetEntity>609EDC76-240B-5BDE-D851-184D1BE9E9D4</targetEntity>
+<transferable>true</transferable>
+<deleteRule>NO ACTION</deleteRule>
+</Relation>

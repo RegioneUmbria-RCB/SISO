@@ -1,0 +1,77 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Table class="oracle.dbtools.crest.model.design.relational.Table" directorySegmentName="seg_2" id="A5653404-C0DD-5197-AD50-3E3FD7965A7E" schemaObject="31789C62-6489-FE63-4664-3CFB4035AC87" name="ASS_ENTI_EROGANTI">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>CS_SISO</sourceObjSchema>
+<sourceObjName>ASS_ENTI_EROGANTI</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-07-20 09:02:32 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>1EDE4950-84AD-7B1A-9371-F9C7CA0C57E6</importedID>
+<allowColumnReorder>false</allowColumnReorder>
+<existDependencyGenerateInDDl>true</existDependencyGenerateInDDl>
+<parsed>true</parsed>
+<columns itemClass="oracle.dbtools.crest.model.design.relational.Column">
+<Column name="COD_ENTE" id="B1E7E368-1394-55FE-B55B-808CB12F9F38">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>ASS_ENTI_EROGANTI</sourceObjSchema>
+<sourceObjName>COD_ENTE</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-07-20 09:02:32 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>1E2115CD-1939-D7CF-865D-99E239016B8A</importedID>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>15 BYTE</dataTypeSize>
+<ownDataTypeParameters>15 BYTE,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="DESCRIZIONE" id="9930AB6A-712C-BE6D-56F5-D8B37AA231EE">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>ASS_ENTI_EROGANTI</sourceObjSchema>
+<sourceObjName>DESCRIZIONE</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-07-20 09:02:32 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>4FBF55D3-FDF6-31C5-79C7-696F832587CA</importedID>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>300 BYTE</dataTypeSize>
+<ownDataTypeParameters>300 BYTE,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+</columns>
+<indexes itemClass="oracle.dbtools.crest.model.design.relational.Index">
+<ind_PK_UK id="9B945485-B4EF-69F7-8313-A5CADD64450A" name="ASS_ENTI_EROGANTI_PK">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>CS_SISO</sourceObjSchema>
+<sourceObjName>ASS_ENTI_EROGANTI_PK</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-07-20 09:02:32 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>12989A70-2331-F8C3-B7FA-D895BCA7A671</importedID>
+<pk>true</pk>
+<indexState>Primary Constraint</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="B1E7E368-1394-55FE-B55B-808CB12F9F38"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="5CD26A3A-FA7B-CBE9-1EE9-2850A7BF0FAF" schemaObject="31789C62-6489-FE63-4664-3CFB4035AC87" name="ASS_ENTI_EROGANTI_PK">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>CS_SISO</sourceObjSchema>
+<sourceObjName>ASS_ENTI_EROGANTI_PK</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-07-20 09:02:32 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>D2A7D98F-C9FF-199A-F0A3-CE5E55F60259</importedID>
+<indexState>Unique Plain Index</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="B1E7E368-1394-55FE-B55B-808CB12F9F38"/>
+</indexColumnUsage>
+</ind_PK_UK>
+</indexes>
+</Table>

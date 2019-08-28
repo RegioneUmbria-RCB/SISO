@@ -1,0 +1,294 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:webredcs="http://java.sun.com/jsf/composite/webredcs"
+	xmlns:webred="http://java.sun.com/jsf/composite/webred">
+
+<ui:composition template="/jsp/protected/layout/layout.xhtml">
+
+	<ui:define name="content" >
+	   <p:outputPanel id="schedaContent">
+<!--        <h:form id="frmSalva"> 		 -->
+        <p:outputPanel rendered="#{!schedaBean.attivaSalvataggio and !schedaBean.disableModificaCartella}">
+        <h:form id="frmSalva">
+	        <div class="ui-message-warn"  >
+			    <h:panelGrid columns="3">
+				    <span class="ui-messages-warn-icon"/>
+				    <span class="ui-message-error-detail">
+				    	La cartella è attualmente aperta in modalità di VISUALIZZAZIONE: eventuali modifiche non verranno salvate." Per modificare i dati inseriti attivare la "Modalità Modifica"  
+				    </span>
+				   
+				 	<h:panelGrid id="modifica" rendered="#{schedaBean.modificaButt}">
+						<p:commandButton value="Attiva" process="@this" disabled="#{schedaBean.disableModificaCartella}"
+							actionListener="#{schedaBean.modifica()}" update=":header,:schedaContent,:schedaPICForm">
+						</p:commandButton>
+					</h:panelGrid>
+					</h:panelGrid>
+			</div>
+			</h:form>
+		</p:outputPanel> 
+	   
+		<p:tabView id="#{schedaBean.idTabScheda}" activeIndex="#{schedaBean.tabViewIndex}" >
+		
+		    <p:ajax event="tabChange" listener="#{schedaBean.onChangeTabView}" immediate="true" global="false"/>
+
+			<p:tab id="tabAnagrafica" title="Anagrafica" rendered="#{schedaBean.renderTabAnagrafica}"  >
+			<h:form>
+					<h:panelGroup  rendered="#{anagraficaBean.soggCatSocialeBean.richiediCategoriaSociale}">
+					    <span class="ui-messages-error-icon"/>
+					    <span class="ui-message-error-detail" style="color:red;font-weight:bold;">
+					    	Assegnare almeno una categoria sociale al caso
+					    </span>
+						<p:commandButton id="btnCatSociale" value="Gestisci" icon="ui-icon-person" title="Gestione Categoria Sociale"
+	           				actionListener="#{anagraficaBean.caricaSoggCatSocialeBean()}" update=":#{p:component('mdlSoggCatSocDialog')}" process="@this"/>
+					</h:panelGroup>
+					<h:panelGrid id="pnlGrid1" styleClass="span-20" columns="1">
+					    <h:panelGroup rendered="#{schedaBean.identificativoScheda!=null}">
+					    	<h:outputText value="Num.Identificativo Cartella: #{schedaBean.identificativoScheda}" style="font-weight:bold;" />
+							<p:spacer height="20"/>
+					    </h:panelGroup>
+	
+						<webredcs:pnlAna id="pnlDatAna" panelStyleClass="noBorder" iDatiAna="#{anagraficaBean}" 
+						                 disableModifica="#{schedaBean.disableModificaCartella}"/>
+					</h:panelGrid>
+				</h:form>
+			</p:tab>
+			<p:tab id="tabParenti" title="Risorse" rendered="#{schedaBean.renderTabParenti}">
+			<h:form>
+					<p:dataTable emptyMessage="Nessun elemento trovato" id="tblComponentiGit"
+						var="compGit" value="#{parentiBean.lstComponentiGit}" rowIndexVar="rowIndex">
+						<f:facet name="header">Nucleo familiare come da anagrafe comunale</f:facet>
+						<p:column width="20">
+							<webredcs:tooltipInfo stringDescr="#{compGit.statoCartella}" 
+							                      icona="#{resource['webredcs/img/folder.png']}" 
+							                      rendered="#{compGit.statoCartella != NULL}"/>
+						</p:column>
+			
+						<p:column headerText="Cognome">
+							<h:outputText value="#{compGit.compGit.cognome}" />
+						</p:column>
+						
+						<p:column headerText="Nome">
+							<h:outputText value="#{compGit.compGit.nome}" />
+						</p:column>
+						
+						<p:column headerText="Cod.fiscale">
+							<h:outputText value="#{compGit.compGit.cf}" />
+						</p:column>
+			
+						<p:column headerText="Data nascita" width="40" style="text-align:center;">
+							<h:outputText value="#{compGit.compGit.dataNascita}">
+								<f:convertDateTime pattern="dd/MM/yyyy" />
+							</h:outputText>
+						</p:column>
+						
+						<p:column headerText="Sesso" width="20" style="text-align:center;">
+							<h:outputText   rendered="#{compGit.compGit.sesso ne 'F' and compGit.compGit.sesso ne 'M'}" value="#{compGit.compGit.sesso}" />
+							<p:graphicImage rendered="#{compGit.compGit.sesso eq 'F'}" title="Donna" value="/images/female.png" height="20"/>
+			            	<p:graphicImage rendered="#{compGit.compGit.sesso eq 'M'}" title="Uomo" value="/images/male.png" height="20"/>
+						</p:column>
+						
+						<p:column headerText="Relazione">
+							<h:panelGroup rendered="#{!compGit.compGit.parentelaValida}">						
+								<p:graphicImage value="/images/attention.png" title="La relazione si riferisce all'intestatario della scheda anagrafica (diverso dal titolare della cartella corrente)"
+								height="15px" /><p:spacer width="10px"/>
+							</h:panelGroup>	
+							<h:outputText value="#{compGit.compGit.csTbTipoRapportoCon.descrizione}" />
+						</p:column>
+						
+						<p:column headerText="" style="text-align:center;">
+							<p:graphicImage value="/images/new-doc.png" title="Sono presenti dati aggiornati"
+								height="20px" rendered="#{'1' eq compGit.compGit.flgSegnalazione}"/>
+						</p:column>
+						
+						<p:column headerText="" style="text-align:center;">
+							<p:commandButton id="btnAttiva" value="Attiva" disabled="#{schedaBean.disableModificaCartella || !compGit.attiva || !schedaBean.attivaSalvataggio}"
+							action="#{parentiBean.attivaParente}" process="@this"  update="@(.updateParentiDialog)"
+							oncomplete="if (args &amp;&amp; args.canActivate) {  PF('wdgNewParente#{parentiBean.listaComponenti[0].id}').loadContents();  PF('wdgNewParente#{parentiBean.listaComponenti[0].id}').show()}">
+								<f:setPropertyActionListener value="#{rowIndex}" target="#{parentiBean.idxSelected}" />
+							</p:commandButton>
+						</p:column>
+						
+					</p:dataTable>
+
+					<h:panelGrid columns="1">
+						<p:spacer height="20"/>
+						<h:outputText value="Ricerca soggetto in anagrafe popolazione" style="font-weight: bold;"/>	
+						<p:spacer height="10"/>
+					</h:panelGrid>
+					
+					<h:panelGrid columns="3">
+					
+					<p:outputPanel id="pnlSearch" >
+					<webredcs:pnlUserSearch id="autoCompUserSearchId" styleClass="myAutoComplete" 
+											disabled="#{schedaBean.disableModificaCartella or !schedaBean.attivaSalvataggio}"  
+					                        userManBean="#{parentiBean.userSearchNuovoParente}"  />
+					</p:outputPanel>
+					<p:commandButton value="Inserisci come parente"	action="#{parentiBean.creaParenteTrovatoAnagrafica()}"  
+									 update="@(.updateParentiDialog)"
+					                 process="@this" disabled="#{schedaBean.disableModificaCartella or !schedaBean.attivaSalvataggio}"   
+									 oncomplete="if (args &amp;&amp; args.canActivate) {  PF('wdgNewParente#{parentiBean.listaComponenti[0].id}').loadContents();  PF('wdgNewParente#{parentiBean.listaComponenti[0].id}').show()}" />
+					
+					<p:commandButton value="Inserisci come conoscente"	action="#{parentiBean.creaConoscenteTrovatoAnagrafica()}"    
+									 update="@(.updateConoscentiDialog)"
+					                 process="@this" disabled="#{schedaBean.disableModificaCartella or !schedaBean.attivaSalvataggio}"  
+					                 oncomplete="if (args &amp;&amp; args.canActivate) {  PF('wdgNewConoscente#{parentiBean.listaComponenti[0].id}').loadContents();  PF('wdgNewConoscente#{parentiBean.listaComponenti[0].id}').show()}"/>
+					</h:panelGrid>
+					<h:panelGrid columns="1">
+						<p:spacer height="20"/>
+						<p:spacer height="10"/>
+					</h:panelGrid>
+					
+					<webredcs:pnlDataValiditaList 
+							iDatiValList="#{parentiBean}"
+							dataValiditaStyleClass="accordionFooter"
+							buttonFooterStyleClass="buttonFooter"
+							disableModifica="#{schedaBean.disableModificaCartella}"
+							isStatoAttivo="#{schedaBean.attivaSalvataggio}" />
+					
+					<h:panelGrid columns="1">
+						<p:spacer height="10"/>
+						<h:outputLabel value="ATTENZIONE: I dati non salvati verranno persi" style="font-weight:bold;"/>
+					</h:panelGrid>
+				</h:form>
+			</p:tab>
+				<p:tab id="tabDatiSociali" title="Dati Sociali" rendered="#{schedaBean.renderTabDatiSociali}">
+				<h:form>
+					<webredcs:pnlDataValiditaList iDatiValList="#{datiSocialiBean}" dataValiditaStyleClass="accordionFooter" buttonFooterStyleClass="buttonFooter"
+						disableModifica="#{schedaBean.disableModificaCartella}" 
+						isStatoAttivo="#{schedaBean.attivaSalvataggio}" />
+					<h:panelGrid columns="1">
+						<p:spacer height="10" />
+						<h:outputLabel value="ATTENZIONE: I dati non salvati verranno persi" style="font-weight:bold;" />
+					</h:panelGrid>
+					</h:form>
+				</p:tab>
+				
+				<p:tab id="tabDatiInvalidita" title="Invalidita" titletip="Dati Invalidità" rendered="#{schedaBean.renderTabInvalidita}">
+				<h:form>
+					<webredcs:pnlDataValiditaList iDatiValList="#{datiInvaliditaBean}" dataValiditaStyleClass="accordionFooter" buttonFooterStyleClass="buttonFooter"
+						disableModifica="#{schedaBean.disableModificaCartella}" 
+						isStatoAttivo="#{schedaBean.attivaSalvataggio}"/>
+					<h:panelGrid columns="1">
+						<p:spacer height="10" />
+						<h:outputLabel value="ATTENZIONE: I dati non salvati verranno persi" style="font-weight:bold;" />
+					</h:panelGrid>
+					</h:form>
+				</p:tab>
+
+				<p:tab id="tabDatiDisabilita" title="Disabilità" titletip="Dati Disabilità" rendered="#{schedaBean.renderTabDisabilita}">
+				<h:form>
+					<webredcs:pnlDataValiditaList iDatiValList="#{datiDisabilitaBean}" dataValiditaStyleClass="accordionFooter" buttonFooterStyleClass="buttonFooter"
+						disableModifica="#{schedaBean.disableModificaCartella}" 
+						isStatoAttivo="#{schedaBean.attivaSalvataggio}" />
+
+					<h:panelGrid columns="1">
+						<p:spacer height="10" />
+						<h:outputLabel value="ATTENZIONE: I dati non salvati verranno persi" style="font-weight:bold;" />
+					</h:panelGrid>
+					</h:form>
+				</p:tab>
+
+				<p:tab id="tabDatiTribunale" title="Tribunale" titletip="Dati Tribunale" rendered="#{schedaBean.renderTabTribunale}">
+				<h:form>
+					<webredcs:pnlDataValiditaList iDatiValList="#{datiTribunaleBean}" dataValiditaStyleClass="accordionFooter" buttonFooterStyleClass="buttonFooter"
+						disableModifica="#{schedaBean.disableModificaCartella}" 
+						isStatoAttivo="#{schedaBean.attivaSalvataggio}" />
+					<h:panelGrid columns="1">
+						<p:spacer height="10" />
+						<h:outputLabel value="ATTENZIONE: I dati non salvati verranno persi" style="font-weight:bold;" />
+					</h:panelGrid>
+                 </h:form>
+				</p:tab>
+
+				<p:tab id="tabServizi" title="Servizi" rendered="#{schedaBean.renderTabServizi}">
+				<h:form>
+					<webredcs:pnlServizi id="pnlServizi" iServizi="#{serviziBean}" />
+					</h:form>
+				</p:tab>
+
+				<p:tab id="tabContributi" title="Contributi" rendered="#{schedaBean.renderTabContributi}">
+				<h:form>
+					<webredcs:pnlContributi id="pnlContributi" iContributi="#{contributiBean}" />
+					</h:form>
+				</p:tab>
+				
+				<p:tab id="tabOperatori" title="Operatori" rendered="#{schedaBean.renderTabOperatori}">
+				<h:form>
+					<webredcs:pnlOperatori 
+							id="pnlOperatori" 
+							iOperatori="#{operatoriBean}" 
+							disabled="#{schedaBean.disableModificaCartella or !schedaBean.attivaSalvataggio}"/>
+					<h:panelGrid columns="1">
+						<p:spacer height="10" />
+						<h:outputLabel value="ATTENZIONE: I dati non salvati verranno persi" style="font-weight:bold;" />
+					</h:panelGrid>
+					</h:form>
+				</p:tab>
+				
+				<p:tab id="tabNote" title="Note" rendered="#{schedaBean.renderTabNote}">
+				<h:form>
+					<webredcs:pnlNote id="pnlNote" iNote="#{noteBean}" disabled="#{!schedaBean.attivaSalvataggio}" />
+					</h:form>
+				</p:tab>
+				
+			</p:tabView>
+		
+	 	<p:tab id="tabSalva" >
+	 	<h:form>
+				<h:panelGrid columns="1" styleClass="ui-widget-header"  style="text-align:center;width:100%;">
+					
+					<h:panelGrid columns="2" id="salvataggio" >
+					<p:commandButton value="Salva" disabled="#{!schedaBean.attivaSalvataggio}"
+						actionListener="#{schedaBean.salva()}" update=":schedaContent :header"
+						partialSubmit="true"
+						process="@this, :#{schedaBean.idTabScheda}:tabAnagrafica, :#{schedaBean.idTabScheda}:tabParenti, 
+						         :#{schedaBean.idTabScheda}:tabDatiSociali, :#{schedaBean.idTabScheda}:tabDatiInvalidita,
+						         :#{schedaBean.idTabScheda}:tabDatiDisabilita, :#{schedaBean.idTabScheda}:tabDatiTribunale,
+						         :#{schedaBean.idTabScheda}:tabServizi, :#{schedaBean.idTabScheda}:tabContributi,
+						         :#{schedaBean.idTabScheda}:tabOperatori, :#{schedaBean.idTabScheda}:tabNote" >
+					<p:confirm header="Conferma" message="Procedere con il salvataggio?" icon="ui-icon-alert"/>
+					
+					</p:commandButton>
+					
+					
+					<p:commandButton value="Esci" process="@this" disabled="#{!schedaBean.attivaSalvataggio}"
+						action="#{schedaBean.disabilitaModifiche()}" update=":schedaContent :header">
+					    <p:confirm header="Conferma" message="Sicuro di voler uscire dalla \'Modalità Modifica\'?" icon="ui-icon-alert"/>
+					</p:commandButton>
+					</h:panelGrid>
+				</h:panelGrid>
+					
+			
+			       <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+						<h:panelGrid columns="2" styleClass="centerAlign">
+				        <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>
+				        <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>
+				        </h:panelGrid>     
+				    </p:confirmDialog>
+				    
+				  </h:form>  
+		</p:tab>		
+<!-- 	</h:form> -->
+	
+	<h:form id="schedaPICForm">
+	    <webredcs:pnlSoggCatSociale idModalDialog="mdlSoggCatSocDialog" iSoggCatSociale="#{anagraficaBean.soggCatSocialeBean}" 
+				 salvaActionUpdate="#{schedaBean.idTabScheda}"/>
+		
+		<p:spacer height="20"/>
+		
+	 	<p:panel collapsed="false" toggleable="true" header="Dati Di Presa In Carico" rendered="#{soggetto!=null and schedaBean.presaInCaricoBean.casoInfo!=null}">
+	       	<webredcs:pnlPresaInCarico iPresaInCarico="#{schedaBean.presaInCaricoBean}"  updateOnClose="schedaContent"/>
+	    </p:panel>
+	</h:form>
+	</p:outputPanel>
+	</ui:define>
+
+</ui:composition>
+
+<ui:debug hotkey="x" />
+
+</html>

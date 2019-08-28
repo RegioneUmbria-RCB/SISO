@@ -1,0 +1,213 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+     	xmlns:h="http://java.sun.com/jsf/html"
+		xmlns:f="http://java.sun.com/jsf/core"
+		xmlns:ui="http://java.sun.com/jsf/facelets"
+		xmlns:p="http://primefaces.org/ui"
+	  	xmlns:composite="http://java.sun.com/jsf/composite"
+	  	xmlns:webredcs="http://java.sun.com/jsf/composite/webredcs"
+	  	xmlns:webred="http://java.sun.com/jsf/composite/webred">
+      
+	<h:head>
+		<title>Gestione Settori</title>
+	</h:head>
+	<h:body>
+		<composite:interface componentType="pnlGestSettori">
+			<composite:attribute name="iGestioneSettori" type="it.webred.cs.jsf.interfaces.IGestioneSettori"/>
+		</composite:interface>
+		<composite:implementation>			
+
+			<h:panelGrid columns="1">
+				<h:outputText value="Gestione Organizzazioni" styleClass="bold"/>	
+				<p:spacer height="10" />
+			</h:panelGrid>
+			
+			<h:panelGrid columns="20" cellpadding="0" cellspacing="0">
+				<h:outputLabel value="Nome" />
+				<p:spacer width="10" />
+				<p:inputText value="#{cc.attrs.iGestioneSettori.newOrganizzazione.nome}"/>
+				<p:spacer width="10" />
+				<h:outputLabel value="Email" />
+				<p:spacer width="10" />
+				<p:inputText value="#{cc.attrs.iGestioneSettori.newOrganizzazione.email}"/>
+				<p:spacer width="10" />
+				<p:selectBooleanCheckbox value="#{cc.attrs.iGestioneSettori.enteEsterno}" itemLabel="Ente Esterno">
+		            <p:ajax update="idPnlComuneOrg" />
+		        </p:selectBooleanCheckbox>
+		        <p:spacer width="10" />
+				<h:outputLabel value="Comune" />
+				<p:spacer width="10" />
+				<p:outputPanel id="idPnlComuneOrg">
+					<webred:pnlComune disabled="#{cc.attrs.iGestioneSettori.enteEsterno}" comuneManBean="#{cc.attrs.iGestioneSettori.newComune}"/>
+				</p:outputPanel>
+				<p:spacer width="20" />
+				<p:commandButton value="Nuovo" process="@form" update="@form"
+					action="#{cc.attrs.iGestioneSettori.nuovaOrganizzazione}">
+				</p:commandButton>
+			</h:panelGrid>
+			
+			<p:spacer height="10" />
+			
+		    <p:dataTable id="dtOrg" var="org" value="#{cc.attrs.iGestioneSettori.lstOrganizzazioni}" 
+		    	selection="#{cc.attrs.iGestioneSettori.selectedOrganizzazioni}" rowKey="#{org.id}" rows="20" paginatorPosition="bottom"
+		    	paginator="true" paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+		    	emptyMessage="Nessun elemento trovato">
+		        
+		        <p:ajax event="rowSelect" listener="#{cc.attrs.iGestioneSettori.onOrganizzazioneSelect}" update="@form" />
+		        
+		        <p:column selectionMode="multiple" style="width:16px;text-align:center"/>
+		        
+		        <p:column headerText="Nome" sortBy="nome" filterBy="#{org.nome}">
+		            <h:outputText value="#{org.nome}" />
+		        </p:column>
+		        <p:column headerText="Cod. Belfiore" sortBy="belfiore" style="text-align:center" width="50">
+		            <h:outputText value="#{org.belfiore}"  />
+		        </p:column>
+		        <p:column headerText="Email">
+		            <h:outputText value="#{org.email}" />
+		        </p:column>
+		        				        
+		        <p:column headerText="Attivo" sortBy="abilitato" style="text-align:center" width="50">
+		            <h:outputText value="#{org.abilitato eq '1'? 'SI' : 'NO'}" />
+		        </p:column>
+
+		    </p:dataTable>
+		    					
+			<h:panelGrid columns="10" cellpadding="0" cellspacing="0">
+				<p:commandButton value="Carica settori" process="@form" update="@form"
+					action="#{cc.attrs.iGestioneSettori.caricaSettori}"/>
+				<p:spacer width="30"/>
+				<p:commandButton value="Attiva" process="@form" update="@form"
+					action="#{cc.attrs.iGestioneSettori.attivaOrganizzazioni}">
+					<p:confirm header="Conferma" message="Procedere con l\'attivazione?" icon="ui-icon-alert"/>
+				</p:commandButton>
+				<p:spacer width="10"/>
+				<p:commandButton value="Disattiva" process="@form" update="@form"
+					action="#{cc.attrs.iGestioneSettori.disattivaOrganizzazioni}">
+					<p:confirm header="Conferma" message="Procedere con la disattivazione?" icon="ui-icon-alert"/>
+				</p:commandButton>
+				<p:spacer width="10"/>
+				<p:commandButton value="Elimina" process="@form" update="@form"
+					action="#{cc.attrs.iGestioneSettori.eliminaOrganizzazioni}">
+					<p:confirm header="Conferma" message="Procedere con l\'eliminazione?" icon="ui-icon-alert"/>
+				</p:commandButton>
+			</h:panelGrid>
+			
+			<p:outputPanel rendered="#{cc.attrs.iGestioneSettori.renderSettori}" id="pnlGestSettori">
+				<h:panelGrid columns="1" cellpadding="0" cellspacing="0">
+					<p:spacer height="20" />
+					<h:outputText value="Gestione Settori per Organizzazione: #{cc.attrs.iGestioneSettori.selectedOrganizzazione.nome}"
+						styleClass="bold"/>
+					<p:spacer height="10" />
+				</h:panelGrid>
+				
+				<h:panelGrid columns="11" cellpadding="0" cellspacing="0" columnClasses="span-2">
+					<h:outputLabel value="Nome" />
+					<p:spacer width="10" />
+					<p:inputText value="#{cc.attrs.iGestioneSettori.newSettore.nome}"/>
+					<p:spacer width="10" />
+					<h:outputLabel value="Secondo nome" />
+					<p:spacer width="10" />
+					<p:inputText value="#{cc.attrs.iGestioneSettori.newSettore.nome2}"/>
+					<p:spacer width="10" />
+					<h:outputLabel value="Orari" />
+					<p:spacer width="10" />
+					<p:inputText value="#{cc.attrs.iGestioneSettori.newSettore.orario}"/>
+					
+					<h:outputLabel value="Telefono" />
+					<p:spacer width="10" />
+					<p:inputText value="#{cc.attrs.iGestioneSettori.newSettore.tel}"/>
+					<p:spacer width="10" />
+					<h:outputLabel value="Cellulare" />
+					<p:spacer width="10" />
+					<p:inputText value="#{cc.attrs.iGestioneSettori.newSettore.cell}"/>
+					<p:spacer width="10" />
+					<h:outputLabel value="Fax" />
+					<p:spacer width="10" />
+					<p:inputText value="#{cc.attrs.iGestioneSettori.newSettore.fax}"/>
+					
+					<h:outputLabel value="Email" />
+					<p:spacer width="10" />
+					<p:inputText value="#{cc.attrs.iGestioneSettori.newSettore.email}"/>
+
+				</h:panelGrid>
+				<h:panelGrid columns="11" cellpadding="0" cellspacing="0" columnClasses="span-2">
+					<h:outputLabel value="Indirizzo" />
+					<p:spacer width="10" />
+					<webred:pnlIndirizzo id="pnlIndirizzo"
+						indirizzoManBean="#{cc.attrs.iGestioneSettori.newIndirizzo}"/>
+					<p:spacer width="20" />
+					<p:commandButton value="Aggiungi" process="@form" update="@form"
+						action="#{cc.attrs.iGestioneSettori.aggiungiSettore}">
+					</p:commandButton>
+				</h:panelGrid>
+				
+				<p:spacer height="10" />
+				
+			    <p:dataTable id="dtSett" var="sett" value="#{cc.attrs.iGestioneSettori.lstSettori}"
+			    	selection="#{cc.attrs.iGestioneSettori.selectedSettori}" rowKey="#{sett.id}"
+			    	emptyMessage="Nessun elemento trovato">
+			        
+			        <p:column selectionMode="multiple" style="width:16px;text-align:center"/>
+			        
+			        <p:column headerText="Nome">
+			            <h:outputText value="#{sett.nome}" />
+			        </p:column>
+			        
+			        <p:column headerText="Telefono">
+			            <h:outputText value="#{sett.tel}" />
+			        </p:column>
+			        
+			        <p:column headerText="Cellulare">
+			            <h:outputText value="#{sett.cell}" />
+			        </p:column>
+			        
+			        <p:column headerText="Email">
+			            <h:outputText value="#{sett.email}" />
+			        </p:column>
+			        
+			        <p:column headerText="Fax">
+			            <h:outputText value="#{sett.fax}" />
+			        </p:column>
+			        
+			        <p:column headerText="Indirizzo">
+			            <h:outputText value="#{sett.csAAnaIndirizzo.indirizzo} #{sett.csAAnaIndirizzo.civicoNumero}
+			             -  #{sett.csAAnaIndirizzo.comDes}(#{sett.csAAnaIndirizzo.prov})" 
+			             rendered="#{sett.csAAnaIndirizzo != null}"/>
+			        </p:column>
+			        
+			        <p:column headerText="Attivo" style="text-align:center" width="50">
+			            <h:outputText value="#{sett.abilitato ? 'SI' : 'NO'}" />
+			        </p:column>
+	
+			    </p:dataTable>
+			    					
+				<h:panelGrid columns="10" cellpadding="0" cellspacing="0">
+					<p:commandButton value="Attiva" process="@form" update=":#{p:component('dtSett')}"
+						action="#{cc.attrs.iGestioneSettori.attivaSettori}">
+						<p:confirm header="Conferma" message="Procedere con l\'attivazione?" icon="ui-icon-alert"/>
+					</p:commandButton>
+					<p:spacer width="10"/>
+					<p:commandButton value="Disattiva" process="@form" update=":#{p:component('dtSett')}"
+						action="#{cc.attrs.iGestioneSettori.disattivaSettori}">
+						<p:confirm header="Conferma" message="Procedere con la disattivazione?" icon="ui-icon-alert"/>
+					</p:commandButton>
+					<p:spacer width="10"/>
+					<p:commandButton value="Elimina" process="@form" update=":#{p:component('dtSett')}"
+						action="#{cc.attrs.iGestioneSettori.eliminaSettori}">
+						<p:confirm header="Conferma" message="Procedere con l\'eliminazione?" icon="ui-icon-alert"/>
+					</p:commandButton>
+				</h:panelGrid>
+			</p:outputPanel>
+			
+			<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+				<h:panelGrid columns="2" styleClass="centerAlign">
+			       <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>
+			       <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>
+			    </h:panelGrid>     
+		    </p:confirmDialog>	
+
+		</composite:implementation>
+	</h:body>
+	
+</html>

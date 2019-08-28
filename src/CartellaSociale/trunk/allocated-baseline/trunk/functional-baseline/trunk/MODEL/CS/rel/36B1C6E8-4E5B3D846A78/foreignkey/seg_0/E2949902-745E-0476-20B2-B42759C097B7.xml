@@ -1,0 +1,18 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<FKIndexAssociation class="oracle.dbtools.crest.model.design.relational.FKIndexAssociation" directorySegmentName="seg_0" id="E2949902-745E-0476-20B2-B42759C097B7" containerWithKeyObject="137AD4DD-2DC1-D50D-21E0-3744C23895B4" localFKIndex="2C007F2B-6E54-5F38-1FD8-B9186510DADD" name="CS_I_RESI_ADULTI_TIPO_RETTA_FK">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>CS_SISO</sourceObjSchema>
+<sourceObjName>CS_I_RESI_ADULTI_TIPO_RETTA_FK</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:19 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>28119A8B-7FDA-0062-956E-72C711B6562C</importedID>
+<deleteRule>NO ACTION</deleteRule>
+<referredTableID>4904B48C-20FB-25BD-650D-83DEEA810E8F</referredTableID>
+<keyObject>7BC14FC0-1E23-C5C8-0FE9-C2003FC9B887</keyObject>
+<referredKeyID>7BC14FC0-1E23-C5C8-0FE9-C2003FC9B887</referredKeyID>
+<mandatory>true</mandatory>
+<transferable>true</transferable>
+<rely>false</rely>
+<columnDependencyConstraintGenerateInDDL>false</columnDependencyConstraintGenerateInDDL>
+</FKIndexAssociation>

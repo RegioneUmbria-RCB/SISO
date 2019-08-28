@@ -1,0 +1,333 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Table class="oracle.dbtools.crest.model.design.relational.Table" directorySegmentName="seg_2" id="75EC738F-A2F3-B749-E348-3F4971717A2C" schemaObject="31789C62-6489-FE63-4664-3CFB4035AC87" name="ASS_ANAGRAFE">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>CS_SISO</sourceObjSchema>
+<sourceObjName>ASS_ANAGRAFE</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-07-20 09:02:32 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>FCD54C2F-3531-87A1-878D-061DFB605F36</importedID>
+<allowColumnReorder>false</allowColumnReorder>
+<existDependencyGenerateInDDl>true</existDependencyGenerateInDDl>
+<parsed>true</parsed>
+<columns itemClass="oracle.dbtools.crest.model.design.relational.Column">
+<Column name="ID_SOGGETTO" id="FDAECD5E-D38C-FCA0-0F72-3AFB9F30A782">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>ASS_ANAGRAFE</sourceObjSchema>
+<sourceObjName>ID_SOGGETTO</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-07-20 09:02:32 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>61B43C96-EEB3-F490-B249-BA41610DE3DE</importedID>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>30 BYTE</dataTypeSize>
+<ownDataTypeParameters>30 BYTE,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="COD_FISC" id="F4137BC0-3A1F-71CA-8E13-AAE1791BCFCB">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>ASS_ANAGRAFE</sourceObjSchema>
+<sourceObjName>COD_FISC</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-07-20 09:02:32 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>6768E739-F6DC-2AA7-2A63-D7088D1B4782</importedID>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>16 BYTE</dataTypeSize>
+<ownDataTypeParameters>16 BYTE,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="COGNOME" id="C8642050-C07A-9D7E-55B1-CED179D75D00">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>ASS_ANAGRAFE</sourceObjSchema>
+<sourceObjName>COGNOME</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-07-20 09:02:32 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>7EC45387-6A74-6059-F030-51FA3C6CBED0</importedID>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>30 BYTE</dataTypeSize>
+<ownDataTypeParameters>30 BYTE,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="NOME" id="8D1675C6-9D91-1625-CE17-A2DA78FA69D2">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>ASS_ANAGRAFE</sourceObjSchema>
+<sourceObjName>NOME</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-07-20 09:02:32 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>4E8197D8-65DC-AF68-9167-8C94299E0B1A</importedID>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>30 BYTE</dataTypeSize>
+<ownDataTypeParameters>30 BYTE,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="DT_NASCITA" id="ED8752C6-DF84-FC02-918A-6FB0FD622385">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>ASS_ANAGRAFE</sourceObjSchema>
+<sourceObjName>DT_NASCITA</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-07-20 09:02:32 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>523E4B86-B750-CD34-71B6-2951C3EB9B75</importedID>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT007</logicalDatatype>
+<dataTypeSize>7</dataTypeSize>
+<ownDataTypeParameters>7,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="SESSO" id="F552E79B-0FFF-9121-820E-EAAA78C3CDC6">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>ASS_ANAGRAFE</sourceObjSchema>
+<sourceObjName>SESSO</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-07-20 09:02:32 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>2A20C96B-1B39-5109-7383-C4E0F8E3EC9F</importedID>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>1 BYTE</dataTypeSize>
+<ownDataTypeParameters>1 BYTE,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="COD_FISC_COM_NASC" id="B528B48D-4764-14EC-644D-4E0B58E8AC76">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>ASS_ANAGRAFE</sourceObjSchema>
+<sourceObjName>COD_FISC_COM_NASC</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-07-20 09:02:32 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>6723E0A7-165C-443C-06CD-AA77B814AAD8</importedID>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>6 BYTE</dataTypeSize>
+<ownDataTypeParameters>6 BYTE,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="COD_FAMIGLIA" id="DB41A31F-DE85-E67A-B704-090A4BDA5679">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>ASS_ANAGRAFE</sourceObjSchema>
+<sourceObjName>COD_FAMIGLIA</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-07-20 09:02:32 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>B7E77706-7369-BE7F-22D5-FE208ACC9261</importedID>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>10 BYTE</dataTypeSize>
+<ownDataTypeParameters>10 BYTE,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="COD_FISC_COM_RES" id="E00FD847-074E-B899-8D0B-A7F225BBF8B7">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>ASS_ANAGRAFE</sourceObjSchema>
+<sourceObjName>COD_FISC_COM_RES</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-07-20 09:02:32 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>B2E4AED0-B06A-709E-8AA3-52D9B4B075DD</importedID>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>6 BYTE</dataTypeSize>
+<ownDataTypeParameters>6 BYTE,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="SEDIME_RES" id="78EB9D26-BF3D-BC0A-CA76-C2F48D1AAA84">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>ASS_ANAGRAFE</sourceObjSchema>
+<sourceObjName>SEDIME_RES</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-07-20 09:02:32 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>EC369E2C-8337-A5B2-E7B6-DC4E77540D7B</importedID>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>15 BYTE</dataTypeSize>
+<ownDataTypeParameters>15 BYTE,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="VIA_RES" id="380ADB05-0E48-FA89-7D88-1446247E1BF8">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>ASS_ANAGRAFE</sourceObjSchema>
+<sourceObjName>VIA_RES</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-07-20 09:02:32 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>0946D9AE-5355-1F9D-29F2-BD9358AFE5AD</importedID>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>100 BYTE</dataTypeSize>
+<ownDataTypeParameters>100 BYTE,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="CIVICO_RES" id="750DF6BD-4FD8-9577-59CC-ABC56EEB8408">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>ASS_ANAGRAFE</sourceObjSchema>
+<sourceObjName>CIVICO_RES</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-07-20 09:02:32 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>ACE1A783-5753-8899-9D3E-699C019D0ACD</importedID>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>20 BYTE</dataTypeSize>
+<ownDataTypeParameters>20 BYTE,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="DT_MORTE" id="B84E5303-33A1-8E6C-912A-416005D2292E">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>ASS_ANAGRAFE</sourceObjSchema>
+<sourceObjName>DT_MORTE</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-07-20 09:02:32 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>87932E9D-6534-6CCB-036B-FFDAA1B9A699</importedID>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT007</logicalDatatype>
+<dataTypeSize>7</dataTypeSize>
+<ownDataTypeParameters>7,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="DT_IMM_NE" id="F0BC11BC-9719-2E3E-34D3-0E8652669CBB">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>ASS_ANAGRAFE</sourceObjSchema>
+<sourceObjName>DT_IMM_NE</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-07-20 09:02:32 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>4D62ACD8-7B18-E7EA-C463-4AA8C05D5912</importedID>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT007</logicalDatatype>
+<dataTypeSize>7</dataTypeSize>
+<ownDataTypeParameters>7,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="DT_INI_VAL" id="D4AA97B9-E4D7-9759-4114-1F08A5F90280">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>ASS_ANAGRAFE</sourceObjSchema>
+<sourceObjName>DT_INI_VAL</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-07-20 09:02:32 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>37F0D518-434C-30F3-45B8-282A6F0B1202</importedID>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT007</logicalDatatype>
+<dataTypeSize>7</dataTypeSize>
+<ownDataTypeParameters>7,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="DT_FINE_VAL" id="F9DF200F-F81C-19CA-B51B-5BE2F7DC2B3E">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>ASS_ANAGRAFE</sourceObjSchema>
+<sourceObjName>DT_FINE_VAL</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-07-20 09:02:32 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>AAC51F7E-D9CC-5E0A-1763-5410CE397D54</importedID>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT007</logicalDatatype>
+<dataTypeSize>7</dataTypeSize>
+<ownDataTypeParameters>7,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="DT_INS" id="B3333CDF-E78C-6ED3-2105-8B2114B3545F">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>ASS_ANAGRAFE</sourceObjSchema>
+<sourceObjName>DT_INS</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-07-20 09:02:32 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>8CB8E668-7458-5BC4-5BBB-2D3B3676EB96</importedID>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT007</logicalDatatype>
+<dataTypeSize>7</dataTypeSize>
+<ownDataTypeParameters>7,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="COMUNE_INS" id="0EBD7206-377B-5273-92B4-2FB4A6AF7156">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>ASS_ANAGRAFE</sourceObjSchema>
+<sourceObjName>COMUNE_INS</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-07-20 09:02:32 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>FDA396CC-9590-1B2F-45A8-AEBFD5884125</importedID>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>10 BYTE</dataTypeSize>
+<ownDataTypeParameters>10 BYTE,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+</columns>
+<indexes itemClass="oracle.dbtools.crest.model.design.relational.Index">
+<ind_PK_UK id="AC163445-6EE8-DDB2-FCB0-3086C3E39615" name="ASS_ANAGRAFE_PK">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>CS_SISO</sourceObjSchema>
+<sourceObjName>ASS_ANAGRAFE_PK</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-07-20 09:02:32 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>722CF0DB-A49C-CC87-4EF6-4CEB7F4CEB15</importedID>
+<pk>true</pk>
+<indexState>Primary Constraint</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="F4137BC0-3A1F-71CA-8E13-AAE1791BCFCB"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="08969A67-FC72-603D-506D-98BEF337D300" schemaObject="31789C62-6489-FE63-4664-3CFB4035AC87" name="ASS_ANAGRAFE_PK">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>CS_SISO</sourceObjSchema>
+<sourceObjName>ASS_ANAGRAFE_PK</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-07-20 09:02:32 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>AF9BED66-250B-FFA5-D9FC-6917F150B804</importedID>
+<indexState>Unique Plain Index</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="F4137BC0-3A1F-71CA-8E13-AAE1791BCFCB"/>
+</indexColumnUsage>
+</ind_PK_UK>
+</indexes>
+</Table>

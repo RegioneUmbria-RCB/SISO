@@ -1,0 +1,7 @@
+<ges:Login xmlns:ges="http://sistematlante.it/gestioneServizi"  
+                      xmlns:atl="http://sistematlante.it/AtlanteWebServices.ObjectModel.Messages"> 
+<ges:request>
+	<atl:Password>SISO2015</atl:Password>
+	<atl:Username>USISO</atl:Username>
+</ges:request>
+</ges:Login>

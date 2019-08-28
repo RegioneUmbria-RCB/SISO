@@ -1,0 +1,15 @@
+<GetServiziOspiteResponse xmlns="http://sistematlante.it/gestioneServizi">
+	<GetServiziOspiteResult xmlns:i="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:a="http://schemas.datacontract.org/2004/07/AtlanteWebServices.ObjectModel.Messages.GestioneServizi">
+	<a:ServiziOspite>
+		<a:ServizioOspiteResponse>
+				<a:DataFine i:nil="true"></a:DataFine>
+				<a:DataInizio>2008-10-11T00:00:00</a:DataInizio>
+				<a:IGUCausFineServ i:nil="true"></a:IGUCausFineServ>
+				<a:IdEntitaDes>PES Alviano</a:IdEntitaDes>
+				<a:IdEntitaProp>98</a:IdEntitaProp>
+				<a:IdMessaggio>2854_1</a:IdMessaggio>
+		</a:ServizioOspiteResponse>
+	</a:ServiziOspite>
+	</GetServiziOspiteResult>
+</GetServiziOspiteResponse>

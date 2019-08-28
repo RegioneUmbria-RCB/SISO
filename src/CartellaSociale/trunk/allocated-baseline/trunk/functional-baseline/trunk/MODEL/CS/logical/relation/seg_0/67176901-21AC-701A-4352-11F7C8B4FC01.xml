@@ -1,0 +1,21 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Relation class="oracle.dbtools.crest.model.design.logical.Relation" name="FK_ASS_1" directorySegmentName="seg_0" id="67176901-21AC-701A-4352-11F7C8B4FC01">
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:18 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>9BD35810-676B-5407-3DF5-E0FA9AC4D7A9</importedID>
+<engineerTo>
+<item key="2B43EB65-62DA-EC53-86CF-E94D657D3AAF" value="true"/>
+<item key="36B1C6E8-6FD2-1EF6-8F4A-4E5B3D846A78" value="true"/>
+</engineerTo>
+<sourcePk>23E0ADEE-D8B3-B67B-0A37-92A2C23AA696</sourcePk>
+<identifying>true</identifying>
+<optionalSource>true</optionalSource>
+<optionalTarget>false</optionalTarget>
+<sourceCardinality>1</sourceCardinality>
+<sourceEntity>7EFA575D-AECF-739F-8BA5-FEFB5BD1E68D</sourceEntity>
+<targetCardinalityString>*</targetCardinalityString>
+<targetEntity>6AED92B2-450F-A89C-5A46-C8B3AD230AB7</targetEntity>
+<transferable>true</transferable>
+<deleteRule>NO ACTION</deleteRule>
+</Relation>

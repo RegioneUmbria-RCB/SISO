@@ -1,0 +1,22 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Relation class="oracle.dbtools.crest.model.design.logical.Relation" name="FK_INCONTRO_DIARIOV1" directorySegmentName="seg_0" id="E1112078-F750-899E-D6FC-85AD73AB95CE">
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:18 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>E635F221-A9BE-3A23-56BB-D0673E43E050</importedID>
+<engineerTo>
+<item key="2B43EB65-62DA-EC53-86CF-E94D657D3AAF" value="true"/>
+<item key="36B1C6E8-6FD2-1EF6-8F4A-4E5B3D846A78" value="true"/>
+</engineerTo>
+<sourcePk>78453B21-D152-7672-FECF-F936CD975D50</sourcePk>
+<dominantRole>CAB2F59D-B1C3-96B3-E38B-CC5389CBE3DD</dominantRole>
+<identifying>true</identifying>
+<optionalSource>true</optionalSource>
+<optionalTarget>false</optionalTarget>
+<sourceCardinality>1</sourceCardinality>
+<sourceEntity>CAB2F59D-B1C3-96B3-E38B-CC5389CBE3DD</sourceEntity>
+<targetCardinalityString>1</targetCardinalityString>
+<targetEntity>38BB69F5-75C2-B697-7FA7-2FF10765B176</targetEntity>
+<transferable>true</transferable>
+<deleteRule>NO ACTION</deleteRule>
+</Relation>

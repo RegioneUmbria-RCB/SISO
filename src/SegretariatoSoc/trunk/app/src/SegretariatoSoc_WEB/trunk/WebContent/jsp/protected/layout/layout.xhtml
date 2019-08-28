@@ -1,0 +1,139 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:webred="http://java.sun.com/jsf/composite/webred"
+	xmlns:webredcs="http://java.sun.com/jsf/composite/webredcs">
+
+
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+	<title><h:outputText value="#{userBean.labelSegrSociale}" /></title>
+	  <link rel="stylesheet" type="text/css" href="${facesContext.externalContext.requestContextPath}/css/style.css" />
+	<script type="text/javascript" src="${facesContext.externalContext.requestContextPath}/js/it.js" />
+</h:head>
+
+<h:body>
+
+	<h:panelGroup layout="block" id="header">
+	<div class="block">
+	
+	<input type="hidden" id="refreshed" value="no"/>
+	<script type="text/javascript">
+		onload=function(){
+		var e=document.getElementById("refreshed");
+		if(e.value=="no")e.value="yes";
+		else{e.value="no";location.reload();}
+		}
+	</script>
+
+		<div class="column" >
+	      <p:graphicImage id="imgLogoComune" value="#{userBean.logoComune}" rendered="#{userBean.esisteLogoComune()}" height="70" cache="false" />
+	       <p:spacer width="20px"/> 
+		  <h:graphicImage value="/images/#{userBean.logoTitolo}"/>
+		  <p:spacer width="10px"/> 
+		</div>
+		<div  class="column">
+	      <p:graphicImage id="imgLogoHeader1" value="#{userBean.logoHeader1}" rendered="#{userBean.esisteLogoHeader1()}" height="70" cache="false" />
+	      <p:spacer width="20px"/> 
+	      <p:graphicImage id="imgLogoHeader2" value="#{userBean.logoHeader2}" rendered="#{userBean.esisteLogoHeader2()}" height="70" cache="false" />
+		</div>
+		<div class="last">
+			<!-- Login -->
+			<ui:fragment rendered="#{!userBean.logged}">
+				<form id="frmLogin" action='j_security_check' method='post'>
+					<h:panelGrid columnClasses="rightAlign" columns="1" width="100%">
+						<h:panelGroup>
+							<p:spacer width="5px" />
+							<h:outputText value="Nome utente: " />
+							<p:spacer width="5px" />
+							<p:inputText value="" id="j_username" />
+	
+							<p:spacer width="5px" />
+							<h:outputText value="Password: " />
+							<p:spacer width="5px" />
+							<p:inputText value="" id="j_password" type="password" />
+							
+						</h:panelGroup>
+						<p:commandButton value="Login" onclick="document.forms['frmLogin'].submit();" />
+					</h:panelGrid>
+				</form>
+				<webredcs:pnlNews iNews="#{newsMan}" renderGoogleDoc="false"/>
+			</ui:fragment>
+			<ui:fragment rendered="#{userBean.logged and !empty userBean.listaOrganizzazioni}" >
+				<h:form id="frmUser">
+					<h:panelGrid columns="1" >
+					      <h:panelGrid columns="5" cellpadding="0" cellspacing="0" width="100%" columnClasses="rightAlign">
+					  
+							<h:outputLabel value="Benvenuto"/><p:spacer width="5px"/>
+							<h:outputLabel value=" #{userBean.cognomeNomeOperatore}" styleClass="bold"/>
+						  
+							<p:commandLink id="logout" title="Esci" ajax="false" action="#{userBean.doLogout}">
+								<p:graphicImage id="imgLogout" value="/images/logout.png"
+									width="20px" style="cursor: pointer;" />
+							</p:commandLink>
+							
+							<p:outputPanel id="pnlLink" deferred="true">
+							<p:commandButton value="Cartella Sociale" action="#{navigationBean.goCartellaSociale}" 
+							                 disabled="#{!navigationBean.permessoCarSocialeEnte}" ajax="false" icon="ui-icon-folder-open"/>
+						    </p:outputPanel>
+						  </h:panelGrid>
+						 
+						 <p:panel style="background:#f9fbfd !important;">
+						 	 
+						    <h:outputLabel value="ZONA SOCIALE #{userBean.zonaSociale}" style="font-weight:bold;"/>
+						    <p:spacer width="10px"/>
+					    	<h:panelGroup>
+					    	<h:outputLabel value="Comune di "/><p:spacer width="5px"/>
+					    	<p:selectOneMenu id="somOrganizzazioni" value="#{ufficiTableBean.preselectedOrganizzazione}" style="font-size:12px;">
+								<f:selectItems value="#{userBean.listaOrganizzazioni}" /> 
+								<p:ajax update=":content,:#{p:component('imgLogoComune')}, :#{p:component('pnlLink')}" 
+								        event="change" process="@this"
+								        listener="#{ufficiTableBean.onChangeOrganizzazione()}"   /> 
+							</p:selectOneMenu>
+							</h:panelGroup>
+							
+							<p:spacer width="5px"/>
+						    <p:commandButton value="Home" label="Home" action="#{navigationBean.goHome}" ajax="false" icon="ui-icon-home" update=":content"/>
+						    	
+						  </p:panel>
+						
+						
+					</h:panelGrid>
+				</h:form>
+
+			</ui:fragment>
+		</div>
+	</div>
+	</h:panelGroup>
+
+	<ui:fragment rendered="#{!userBean.logged}">
+	<div class="post">
+		<h1 class="title ui-widget-header ui-corner-all"></h1>
+	</div>	
+	</ui:fragment>
+	<ui:fragment rendered="#{userBean.logged}">
+	<div class="post" style="text-align: center;" >
+		<h2 class="title ui-widget-header ui-corner-all"/>
+	</div>	
+	</ui:fragment>
+	
+	 	<h:form id="frmMessages">
+			<p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" escape="false"/> 
+		</h:form>
+
+		<!-- Content -->
+		<h:panelGroup layout="block" id="content">
+			<ui:insert name="content"/>
+		</h:panelGroup>
+
+		<p:spacer height="15px"/>
+
+		<!-- Footer -->
+		<ui:include id="footer" src="/jsp/protected/layout/footer.xhtml"/>
+
+</h:body>
+
+</html>

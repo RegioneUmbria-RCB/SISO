@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?><project-modules id="moduleCoreId" project-version="1.5.0">
+    <wb-module deploy-name="webred-cs-ui-comp-jsf">
+        <wb-resource deploy-path="/" source-path="/src"/>
+        <dependent-module archiveName="cetsecutil.jar" deploy-path="/" handle="module:/classpath/lib/CT-LIBS/cet-lib/cetsecutil.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+    </wb-module>
+</project-modules>

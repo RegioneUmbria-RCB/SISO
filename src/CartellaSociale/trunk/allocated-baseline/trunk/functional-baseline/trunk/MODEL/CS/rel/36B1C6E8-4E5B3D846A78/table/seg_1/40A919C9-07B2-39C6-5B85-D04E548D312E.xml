@@ -1,0 +1,108 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Table class="oracle.dbtools.crest.model.design.relational.Table" directorySegmentName="seg_1" id="40A919C9-07B2-39C6-5B85-D04E548D312E" schemaObject="31789C62-6489-FE63-4664-3CFB4035AC87" name="SS_INDIRIZZO">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>CS_SISO</sourceObjSchema>
+<sourceObjName>SS_INDIRIZZO</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:18 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>4249F414-11CD-846A-A081-CF8126B57695</importedID>
+<parsed>true</parsed>
+<columns itemClass="oracle.dbtools.crest.model.design.relational.Column">
+<Column name="ID" id="0976CB1F-6FED-7FF5-2084-E0D0EA08E576">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>SS_INDIRIZZO</sourceObjSchema>
+<sourceObjName>ID</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:19 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>04535955-BA12-C7B2-6CD5-1394340A76E7</importedID>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<dataTypeSize>22</dataTypeSize>
+<ownDataTypeParameters>22,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="VIA" id="85EAC232-152E-B434-F0CC-9178E36E9017">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>SS_INDIRIZZO</sourceObjSchema>
+<sourceObjName>VIA</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:19 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>0CFFCE31-C7C0-1A2B-9028-D105151B7E42</importedID>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>100 BYTE</dataTypeSize>
+<ownDataTypeParameters>100 BYTE,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="NUMERO" id="6F3AE0B6-C34D-BEF7-7DD4-629829C9CBA0">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>SS_INDIRIZZO</sourceObjSchema>
+<sourceObjName>NUMERO</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:19 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>5C708137-2BC0-FC63-E56C-797E0681BFB9</importedID>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<dataTypeSize>22</dataTypeSize>
+<ownDataTypeParameters>22,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="COMUNE" id="15FD3ACA-F7EA-CFFE-56DD-DEAA9E9D33C1">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>SS_INDIRIZZO</sourceObjSchema>
+<sourceObjName>COMUNE</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:19 UTC</createdTime>
+<commentInRDBMS>codice istat</commentInRDBMS>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>470BD12A-71A1-3CC3-24B1-0D3440E62398</importedID>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>10 BYTE</dataTypeSize>
+<ownDataTypeParameters>10 BYTE,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+</columns>
+<indexes itemClass="oracle.dbtools.crest.model.design.relational.Index">
+<ind_PK_UK id="96C61843-27A3-0BCA-194B-3B80522DBC98" name="SS_INIDIRIZZO_PK">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>CS_SISO</sourceObjSchema>
+<sourceObjName>SS_INIDIRIZZO_PK</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:19 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>2AB08D9A-EFD7-3731-3B8C-86785BA1998D</importedID>
+<pk>true</pk>
+<indexState>Primary Constraint</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="0976CB1F-6FED-7FF5-2084-E0D0EA08E576"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="48DA7C3F-1D98-7CD9-FB1A-E0706F33BA3D" schemaObject="31789C62-6489-FE63-4664-3CFB4035AC87" name="SS_INIDIRIZZO_PK">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>CS_SISO</sourceObjSchema>
+<sourceObjName>SS_INIDIRIZZO_PK</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:19 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>0A53DF8F-3705-B2E8-7D91-BFCA1AA78FBF</importedID>
+<indexState>Unique Plain Index</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="0976CB1F-6FED-7FF5-2084-E0D0EA08E576"/>
+</indexColumnUsage>
+</ind_PK_UK>
+</indexes>
+</Table>

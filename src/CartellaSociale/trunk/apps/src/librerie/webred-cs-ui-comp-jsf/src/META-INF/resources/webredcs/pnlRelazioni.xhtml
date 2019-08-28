@@ -1,0 +1,933 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+
+<h:head>
+	<title>Gestione Attività Professionali</title>
+</h:head>
+<h:body>
+	<composite:interface componentType="pnlRelazioni">
+		<composite:attribute name="iRelazioni"  type="it.webred.cs.jsf.interfaces.IRelazioni" required="true" />
+		<composite:attribute name="iDiarioDocs" type="it.webred.cs.jsf.interfaces.IDiarioDocs" required="true" />
+		<composite:attribute name="styleClass" />
+		<composite:attribute name="var" type="java.lang.String" required="false" default="1" />
+	</composite:interface>
+	<composite:implementation
+		xmlns:webredcs="http://java.sun.com/jsf/composite/webredcs"
+		xmlns:webred="http://java.sun.com/jsf/composite/webred">
+
+		<style type="text/css">
+tr.green_background td {
+	background-color: lightgreen;
+}
+
+.noDecoration {
+	text-align: center;
+}
+
+.triageHeaderColumn{
+    text-align:center;
+    font-weight:bold;
+}
+.myTable thead {
+  			  display:none;
+			}/*senza header*/
+
+</style>
+		<p:outputPanel id="pnlRelazioni">
+
+			<h:panelGrid columns="1" cellpadding="0" cellspacing="0">
+				<p:commandButton value="Nuova attività"
+					action="#{cc.attrs.iRelazioni.nuovo}" icon="ui-icon-document-b"
+					disabled="#{cc.attrs.iRelazioni.readOnly}" process="@this"
+					oncomplete="wdgRelazModal#{cc.attrs.var}.show();"
+					update="dlgRelazione">
+				</p:commandButton>
+				<p:spacer height="2" />
+			</h:panelGrid>
+
+			<p:dataTable var="rowRel" rowIndexVar="rowKeyRel"
+				emptyMessage="Nessun elemento presente"
+				value="#{cc.attrs.iRelazioni.listaRelazioniDTO(cc.attrs.var)}"
+				rows="10" paginator="true">
+				<!-- residuo-evoluzione-pai aggiunto parametro var al metodo listaRelazioniDTO per determinare se farsi restituire tutte le attività o solo quelle associate al pai -->
+
+				<f:facet name="header">
+					<p:outputLabel value="Lista Attività Professionali" />
+				</f:facet>
+
+				<p:column style="width:2%">
+					<p:rowToggler
+						rendered="#{!empty rowRel.listaPaiDTO or rowRel.relazione.microAttivita.flagTipoForm eq 3 }" />
+				</p:column>
+
+				<p:column headerText="Data" width="60">
+					<h:outputText
+						value="#{rowRel.relazione.csDDiario.dtAmministrativa}">
+						<f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+					</h:outputText>
+				</p:column>
+				<p:column headerText="Macro tipo attività">
+					<h:outputText value="#{rowRel.relazione.macroAttivita.descrizione}" />
+				</p:column>
+				<p:column headerText="Micro tipo attività">
+					<h:outputText value="#{rowRel.relazione.microAttivita.descrizione}" />
+				</p:column>
+				<p:column headerText="Analisi problematiche"
+					style="text-align:center;">
+					<p:selectBooleanCheckbox
+						value="#{rowRel.relazione.flagRilevazioneProblematiche eq 1}"
+						disabled="true" />
+				</p:column>
+				<p:column headerText="Interventi proposti" >
+ 					 <p:dataList var="intervento" value="#{rowRel.relazione.csCTipoInterventos.toArray()}" rendered="#{not empty rowRel.relazione.csCTipoInterventos}" 
+ 					 			style="border:none !important; padding:0px;"> 
+						<h:outputLabel value="#{intervento.descrizione}"  style="font-size: 0.7rem;" />
+					</p:dataList>
+				</p:column>
+				 <p:column headerText="Con Chi">
+				  <ui:repeat var="CC" value="#{rowRel.relazione.lstConChi}" >
+				  		 <h:outputText value="#{CC.descrizione}" />
+  			  			 <h:outputText rendered="#{(CC.id eq 9999)}" value=": #{rowRel.relazione.conChiAltro}" /><br/>
+  			  		</ui:repeat>
+				</p:column> 
+				<p:column headerText="Riunione Con">
+					<h:outputText value="#{rowRel.relazione.riunioneCon.nome}" />
+				</p:column>
+				<p:column headerText="Num. operatori" style="text-align:center" >
+					<h:outputText value="#{rowRel.relazione.numOperatori}" />
+				</p:column>
+				<p:column headerText="Ore impiegate" style="text-align:center" >
+					<h:outputText value="#{rowRel.relazione.oreImpiegate}">
+						<f:convertDateTime type="time" pattern="HH:mm" locale="it_IT" />
+					</h:outputText>
+				</p:column>
+
+				<!-- 				<p:column headerText="Sit. socio ambientale">
+					<h:outputText value="#{rowRel.relazione.situazioneAmb!=null and rowRel.relazione.situazioneAmb.length()>20 ? rowRel.relazione.situazioneAmb.substring(0,20).concat('...') : rowRel.relazione.situazioneAmb}"/>	
+				</p:column>
+				<p:column headerText="Sit. socio parentale">
+					<h:outputText value="#{rowRel.relazione.situazioneParentale!=null and rowRel.relazione.situazioneParentale.length()>20 ? rowRel.relazione.situazioneParentale.substring(0,20).concat('...') : rowRel.relazione.situazioneParentale}"/>
+				</p:column>
+				<p:column headerText="Sit. socio sanitaria">
+					<h:outputText value="#{rowRel.relazione.situazioneSanitaria!=null and rowRel.relazione.situazioneSanitaria.length()>20 ? rowRel.relazione.situazioneSanitaria.substring(0,20).concat('...'): rowRel.relazione.situazioneSanitaria}"/>
+				</p:column>
+				<p:column headerText="Proposta">
+					<h:outputText value="#{rowRel.relazione.proposta!=null and (rowRel.relazione.proposta.length()>20) ? rowRel.relazione.proposta.substring(0,20).concat('...') : rowRel.relazione.proposta}"/>
+				</p:column>
+ -->
+ 
+				<p:column headerText="Documento" style="text-align:center;">
+					<p:outputPanel rendered="#{rowRel.containsDoc}">
+						<webredcs:pnlDownloadFile
+							csLoadDocumento="#{rowRel.csLoadDocumento}"
+							iDownloadFile="#{cc.attrs.iRelazioni.diarioDocsMan.dFileMan}" />
+					</p:outputPanel>
+					<p:commandButton value="Stampa"
+						rendered="#{!rowRel.containsDoc and rowRel.relazione.microAttivita.flagTipoForm eq 1}"
+						icon="ui-icon-print"
+						action="#{cc.attrs.iRelazioni.esportaRelazioneStampa}"
+						ajax="false" update="@form">
+						<f:setPropertyActionListener value="#{rowKeyRel}"
+							target="#{cc.attrs.iRelazioni.idxSelected}" />
+					</p:commandButton>
+					
+					<p:commandButton value="Stampa"
+						rendered="#{rowRel.relazione.microAttivita.flagTipoForm eq 3}"
+						icon="ui-icon-print" ajax="false" 
+						action="#{cc.attrs.iRelazioni.stampaTriage}"
+						update="@form">
+						<f:setPropertyActionListener value="#{rowKeyRel}"
+							target="#{cc.attrs.iRelazioni.idxSelected}" />
+					</p:commandButton>
+				</p:column>
+
+				<p:column headerText="Ultima Modifica" style="text-align:center;">
+					<h:outputLabel
+						value="#{cc.attrs.iRelazioni.getOpUltimaModifica(rowRel.relazione.csDDiario)} il " />
+					<h:outputLabel
+						value="#{cc.attrs.iRelazioni.getDataUltimaModifica(rowRel.relazione.csDDiario)}">
+						<f:convertDateTime type="date" pattern="dd/MM/yyyy HH:mm:ss"
+							timeZone="Europe/Berlin" />
+					</h:outputLabel>
+				</p:column>
+
+
+				<p:column headerText="" style="text-align:center;">
+					<table border="0" style="margin: auto;">
+						<tr>
+							<td style="border: 0; padding: 0;"><p:commandButton
+									value="Apri" process="@this" icon="ui-icon-search"
+									action="#{cc.attrs.iRelazioni.carica}"
+									update="@(.dlgRelazione)"
+									oncomplete="wdgRelazModal#{cc.attrs.var}.show()">
+									<f:setPropertyActionListener value="#{rowRel.relazione.diarioId}"
+										target="#{cc.attrs.iRelazioni.idRelazioneSelezionata}" />
+								</p:commandButton></td>
+							<!-- 					    <td style="border: 0; padding: 0;"> -->
+							<!-- 						<p:outputPanel rendered="#{!cc.attrs.iRelazioni.readOnly and !cc.attrs.iRelazioni.disableNuovoPAI}" width="200px;"> -->
+							<!-- 							<webredcs:pnlSchedaPAI iSchedaPai="#{cc.attrs.iRelazioni.managerPai}" refreshBean="#{cc.attrs.iRelazioni}" -->
+							<!-- 						          relazione="#{rowRel.relazione}" nomePulsante="Schede PAI (#{fn:length(rowRel.listaPaiDTO)})" icona="ui-icon-note" -->
+							<!-- 						          tooltipPulsante="Nuova Scheda PAI" pnlToUpdate="#{p:component('pnlRelazioni')}" styleClass="#{cc.attrs.styleClass}"/> -->
+							<!-- 						</p:outputPanel> -->
+							<!-- 						</td> -->
+						</tr>
+					</table>
+				</p:column>
+
+				<p:rowExpansion>
+					<p:outputPanel rendered="#{!empty rowRel.listaPaiDTO}">
+						<h:outputLabel value="Schede PAI" styleClass="h4" />
+						<br />
+						<p:dataTable id="dataTablePai" var="paiDTO"
+							value="#{rowRel.listaPaiDTO}" rowIndexVar="rowIndex">
+
+							<p:column headerText="ID" style="text-align:left;width:40px;">
+								<h:outputText value="#{paiDTO.pai.diarioId}" />
+							</p:column>
+
+							<p:column headerText="Tipo progetto">
+								<h:outputText value="#{paiDTO.pai.csTbTipoPai.descrizione}" />
+							</p:column>
+
+							<p:column headerText="Data Attivazione" width="60">
+								<h:outputText value="#{paiDTO.pai.csDDiario.dtAttivazioneDa}">
+									<f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+								</h:outputText>
+							</p:column>
+
+							<p:column headerText="Data Chiusura" width="60">
+								<h:outputText value="#{paiDTO.pai.csDDiario.dtChiusuraDa}">
+									<f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+								</h:outputText>
+							</p:column>
+
+							<p:column headerText="Verifica">
+								<h:outputText
+									value="ogni #{paiDTO.pai.verificaOgni} #{paiDTO.pai.verificaUnitaMisura}" />
+							</p:column>
+
+							<p:column headerText="Obiettivi">
+									<ui:repeat var="ob" value="#{paiDTO.pai.txtObiettivi}">
+										<h:outputText value=" • #{ob}" /><br/>
+									</ui:repeat>
+							</p:column>
+
+							<p:column headerText="Ultima Modifica" style="text-align:center;">
+								<h:outputLabel
+									value="#{cc.attrs.iRelazioni.getOpUltimaModifica(paiDTO.pai.csDDiario)} il " />
+								<h:outputLabel
+									value="#{cc.attrs.iRelazioni.getDataUltimaModifica(paiDTO.pai.csDDiario)}">
+									<f:convertDateTime type="date" pattern="dd/MM/yyyy HH:mm:ss"
+										timeZone="Europe/Berlin" />
+								</h:outputLabel>
+
+							</p:column>
+
+							<!-- 							<p:column headerText="Azioni Previste" > -->
+							<!-- 								<h:outputText value="#{paiDTO.pai.azioniPreviste}" /> -->
+							<!-- 							</p:column> -->
+
+							<!-- 							<p:column width="350"> -->
+							<!-- 							   <h:panelGroup rendered="#{!cc.attrs.iRelazioni.readOnly}"> -->
+
+							<!-- 						   		<webredcs:pnlSchedaPAI iSchedaPai="#{cc.attrs.iRelazioni.managerPai}" schedaSel="#{paiDTO.pai}" -->
+							<!-- 				            		relazione="#{rowRel.relazione}" nomePulsante="Modifica" icona="ui-icon-pencil" refreshBean="#{cc.attrs.iRelazioni}" -->
+							<!-- 				             		tooltipPulsante="Modifica Scheda PAI" pnlToUpdate="#{p:component('pnlRelazioni')}" styleClass="#{cc.attrs.styleClass}"/> -->
+							<!-- 				                <p:spacer width="5"/> -->
+							<!-- 						    	<p:commandButton value="Elimina" icon="ui-icon-trash" oncomplete="confermaEliminaPai.show()" process="@this"/> -->
+							<!-- 					    		<p:confirmDialog header="Conferma eliminazione" -->
+							<!-- 									widgetVar="confermaEliminaPai" severity="alert" -->
+							<!-- 									closable="false" appendTo="@(body)" -->
+							<!-- 									message="Vuoi eliminare il PAI selezionato"> -->
+							<!-- 									<table border="0" width="100%"> -->
+							<!-- 										<tr> -->
+							<!-- 											<td style="text-align: center;"> -->
+							<!-- 												<p:commandButton value="SI" update=":#{p:component('pnlRelazioni')}" -->
+							<!-- 													process="@this" actionListener="#{cc.attrs.iRelazioni.eliminaPai(paiDTO.pai)}"  -->
+							<!-- 													oncomplete="if (args &amp;&amp; args.eliminato) {PF('confermaEliminaPai').hide();}else{alert('errore salvataggio');}"> -->
+							<!-- 												</p:commandButton> -->
+							<!-- 											   <p:commandButton value="NO" onclick="PF('confermaEliminaPai').hide();" type="button" /> -->
+							<!-- 											</td> -->
+							<!-- 										</tr> -->
+							<!-- 									</table> -->
+							<!-- 								</p:confirmDialog>	 -->
+							<!-- 								<p:spacer width="5"/> -->
+							<!-- 								<p:commandButton value="Documenti (#{paiDTO.countDoc})" process="@this" icon="ui-icon-folder-open" -->
+							<!-- 									action="#{cc.attrs.iDiarioDocs.caricaDocumenti(paiDTO.pai.diarioId)}" update=":#{p:component('dlgDocRel')}" -->
+							<!-- 									oncomplete="wdgRelazDocModal#{cc.attrs.var}.show()"> -->
+							<!-- 								</p:commandButton> -->
+
+							<!-- 								</h:panelGroup>									 -->
+							<!-- 							</p:column> -->
+
+						</p:dataTable>
+					</p:outputPanel>
+
+					<p:outputPanel rendered="#{!empty rowRel.triage.idRelazione}">
+						<h:outputLabel value="Scheda Triage" styleClass="h4" />
+						<br />
+						<!-- 	value="#{rowRel.listaPaiDTO}"  -->
+						<p:panelGrid>
+							<p:row>
+								<p:column styleClass="triageHeaderColumn">
+									<h:outputText value="DATA INSERIMENTO" />
+								</p:column>
+								<p:column styleClass="triageHeaderColumn">
+									<h:outputText value="MORBILITA'" />
+								</p:column>
+								<p:column styleClass="triageHeaderColumn">
+									<h:outputText value="ALIMENTAZIONE" />
+								</p:column>
+								<p:column styleClass="triageHeaderColumn">
+									<h:outputText value="ALVO E DIURESI" />
+								</p:column>
+								<p:column styleClass="triageHeaderColumn">
+									<h:outputText value="MOBILITA'" />
+								</p:column>
+								<p:column styleClass="triageHeaderColumn">
+									<h:outputText value="IGIENE PERSONALE" />
+								</p:column>
+								<p:column styleClass="triageHeaderColumn">
+									<h:outputText value="STATO MENTALE" />
+								</p:column>
+								<p:column styleClass="triageHeaderColumn">
+									<h:outputText value="CON CHI VIVE" />
+								</p:column>
+								<p:column styleClass="triageHeaderColumn">
+									<h:outputText value="ASSISTENZA DIRETTA" />
+								</p:column>
+								<p:column styleClass="triageHeaderColumn">
+									<h:outputText value="TOTALE" />
+								</p:column>
+							</p:row>
+
+							<p:row>
+								<!-- DATA INSERIMENTO -->
+								<p:column style="text-align:center;">
+									<h:outputText value="#{rowRel.triage.dataInserimento}">
+										<f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+									</h:outputText>
+								</p:column>
+								<!-- MORBILITA -->
+								<p:column style="text-align:center;">
+									<h:outputText value="#{cc.attrs.iRelazioni.triageBean.valoreCampoTriage(rowRel.triage.morbilita)}" />
+								</p:column>
+								<!-- ALIMENTAZIONE -->
+								<p:column style="text-align:center;">
+									<h:outputText value="#{cc.attrs.iRelazioni.triageBean.valoreCampoTriage(rowRel.triage.alimentazione)}" />
+								</p:column>
+								<!-- ALVO E DIURESI -->
+								<p:column style="text-align:center;">
+									<h:outputText value="#{cc.attrs.iRelazioni.triageBean.valoreCampoTriage(rowRel.triage.alvoDiuresi)}" />
+								</p:column>
+								<!-- MOBILITA -->
+								<p:column style="text-align:center;">
+									<h:outputText value="#{cc.attrs.iRelazioni.triageBean.valoreCampoTriage(rowRel.triage.mobilita)}" />
+								</p:column>
+								<!-- IGIENE PERSONALE -->
+								<p:column style="text-align:center;">
+									<h:outputText value="#{cc.attrs.iRelazioni.triageBean.valoreCampoTriage(rowRel.triage.igienePersonale)}" />
+								</p:column>
+								<!-- STATO MENTALE -->
+								<p:column style="text-align:center;">
+									<h:outputLabel value="#{cc.attrs.iRelazioni.triageBean.valoreCampoTriage(rowRel.triage.statoMentale)}" />
+								</p:column>
+								<!-- CON CHI VIVE -->
+								<p:column style="text-align:center;">
+									<h:outputText value="#{cc.attrs.iRelazioni.triageBean.valoreCampoTriage(rowRel.triage.conChiVive)}" />
+								</p:column>
+								<!-- ASSISTENZA: -->
+								<p:column style="text-align:center;">
+									<h:outputText value="#{cc.attrs.iRelazioni.triageBean.valoreCampoTriage(rowRel.triage.assistenzaDiretta)}" />
+								</p:column>
+
+								<!-- TOTALE -->
+								<p:column style="text-align:center;">
+									<table border="0" style="margin: auto;">
+										<tr>
+											<td style="border: 0; padding: 0;"><h:outputText
+											        value="#{cc.attrs.iRelazioni.triageBean.calcolaRisultato(rowRel.triage)}"></h:outputText></td>
+										</tr>
+									</table>
+								</p:column>
+							</p:row>
+
+						</p:panelGrid>
+					</p:outputPanel>
+
+
+				</p:rowExpansion>
+
+			</p:dataTable>
+			<!-- PANNELLO ATTIVITA' onShow="PF('wvar_wizard').loadStep('tab_attività', true)"  -->
+			
+			<p:spacer height="20px" />
+
+			<p:dialog dynamic="true" modal="true" id="dlgRelazione" styleClass="dlgRelazione"
+				focus="pnlRelazioniDialogForm:multiselect_catalogoAttivita"
+				widgetVar="wdgRelazModal#{cc.attrs.var}" width="1024" height="800"
+				closable="true" header="#{cc.attrs.iRelazioni.modalHeader}"
+				appendTo="@(body)">
+				<!-- evoluzione-pai aggiunto l'append to body e il form interno alla dialog per workaround per far funzionare la dialog nella tab PAI -->
+
+
+				<h:form id="pnlRelazioniDialogForm">
+					<!-- evoluzione-pai -->
+
+					<h:panelGrid columns="2" width="100%" rendered="#{cc.attrs.iRelazioni.relazioneDTO.listaPaiDTO !=null and cc.attrs.iRelazioni.relazioneDTO.listaPaiDTO.size()>0}">
+						<p:outputPanel></p:outputPanel>
+						<p:spacer height="5" />
+						<p:spacer height="5" />
+
+						<p:spacer />
+						<h:panelGroup style="text-align: right; width:100%; vertical-align: middle;"
+							layout="block" rendered="#{cc.attrs.iRelazioni.relazioneDTO.listaPaiDTO !=null and cc.attrs.iRelazioni.relazioneDTO.listaPaiDTO.size()>0}">						
+		 						Progetto collegato:&sp;
+		 						"<em><h:outputText
+									value="#{cc.attrs.iRelazioni.relazioneDTO.listaPaiDTO.get(0).pai.csTbTipoPai.descrizione}" /></em>"
+		 						&sp;del&sp;
+							<h:outputText
+								value="#{cc.attrs.iRelazioni.relazioneDTO.listaPaiDTO.get(0).pai.csDDiario.dtAttivazioneDa}">
+								<f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+							</h:outputText>
+						</h:panelGroup>
+
+						<p:spacer height="5" />
+						<p:spacer height="5" />
+					</h:panelGrid>
+
+					<h:panelGrid columns="4">
+						<h:outputText value="Data attività *" />
+						<h:panelGrid columns="3" cellpadding="0" cellspacing="0">
+							<p:calendar
+								value="#{cc.attrs.iRelazioni.relazioneDTO.relazione.csDDiario.dtAmministrativa}"
+								pattern="dd/MM/yyyy" size="11"
+								validatorMessage="Data non valida" required="true"
+								requiredMessage="E' necessario specificare la data della attività"
+								navigator="true" showButtonPanel="true">
+								<f:validator validatorId="dateValidator" />
+							</p:calendar>
+							<p:spacer width="10px" />
+							<h:outputText value="(gg/mm/aaaa)" />
+						</h:panelGrid>
+						
+						<h:outputText value="Eseguita da richiesta indagine" />
+						<p:selectOneMenu value="#{cc.attrs.iRelazioni.relazioneDTO.relazione.richiestaIndagine}" >
+					        <f:selectItem noSelectionOption="true" itemLabel="- seleziona -"/>
+					        <f:selectItems value="#{cc.attrs.iRelazioni.listaRichiestaIndagine}" />
+					    </p:selectOneMenu>
+
+						<h:outputText value="N. operatori dell'ente coinvolti  *" />
+						<p:spinner min="0" size="4"
+							value="#{cc.attrs.iRelazioni.relazioneDTO.relazione.numOperatori}"
+							required="true"
+							requiredMessage="E' necessario specificare il numero di operatori coinvolti" />
+
+						<h:outputText value="Ore impiegate totali *" />
+						<p:calendar pattern="HH:mm" timeOnly="true" readonlyInput="true"
+							mode="popup"
+							value="#{cc.attrs.iRelazioni.relazioneDTO.relazione.oreImpiegate}"
+							required="true"
+							requiredMessage="E' necessario specificare le ore impiegate in totale" />
+
+
+						<h:outputText value="Data prossima attività dal" />	
+						<h:panelGrid columns="8" cellpadding="0" cellspacing="0">
+							<p:calendar
+								value="#{cc.attrs.iRelazioni.relazioneDTO.relazione.dataProssimaRelazioneDal}"
+								size="11" navigator="true" showButtonPanel="true"
+								mindate="#{commonSessionMan.currentDate}" pattern="dd/MM/yyyy"
+								converterMessage="Data non valida">
+								<p:ajax event="dateSelect" />
+							</p:calendar>
+							<p:spacer width="10" />
+							<h:outputText value="al" />
+							<p:spacer width="10" />
+							<p:calendar
+								value="#{cc.attrs.iRelazioni.relazioneDTO.relazione.dataProssimaRelazioneAl}"
+								size="11" navigator="true" showButtonPanel="true"
+								mindate="#{commonSessionMan.currentDate}" pattern="dd/MM/yyyy"
+								converterMessage="Data non valida">
+								<f:attribute name="startDate"
+									value="#{cc.attrs.iRelazioni.relazioneDTO.relazione.dataProssimaRelazioneDal}" />
+								<f:validator validatorId="dateRangeValidator" />
+							</p:calendar>
+							<p:spacer width="10" />
+							<h:outputText value="(gg/mm/aaaa)" />
+						</h:panelGrid>
+					</h:panelGrid>
+					
+					<p:spacer height="20px"  />
+					<!-- SISO - 830 -->
+					<p:fieldset legend="Ulteriori soggetti" toggleable="true" collapsed="true">
+					
+					<p:dataTable id="dataTableBeneficiari" value="#{cc.attrs.iRelazioni.famiglia}" var="familiare" emptyMessage="Famiglia non valorizzata"
+			             rowKey="#{familiare.anagraficaId}" rendered="#{!cc.attrs.iRelazioni.relazioneCollegata}" >
+			             
+			             <f:facet name="header" >
+			                <h:panelGrid columns="2">
+				                <p:outputLabel value="Selezionare ulteriori soggetti interessati dall'attività" />
+							    <webredcs:tooltipInfo title="Collegamento" stringDescr="L'attività professionale sarà resa modificabile anche nella cartella dei soggetti selezionati" />
+						    </h:panelGrid>					    
+						 </f:facet>
+			   
+<!-- 					   <p:column headerText="Collega" selectionMode="multiple" style="width:16px;text-align:center"  />  selection="#{cc.attrs.iRelazioni.famigliaSelezionata}"-->
+					   <p:column>
+					       <p:selectBooleanCheckbox value="#{familiare.selezionato}" />
+					   </p:column>
+					
+		               <p:column headerText="Cognome" style="text-align:center;">
+		                   <h:outputLabel value="#{familiare.cognome}" />
+		               </p:column>
+		               
+		               <p:column headerText="Nome" style="text-align:center;">
+		                   <h:outputLabel value="#{familiare.nome}" />
+		               </p:column>
+		               
+		               <p:column headerText="CF" style="text-align:center;">
+		                   <h:outputLabel value="#{familiare.cf}" />
+		               </p:column>
+		               
+		               <p:column headerText="Motivo del coinvolgimento" style="text-align:center;">
+		                  <p:inputTextarea value="#{familiare.note}" rows="1" cols="50" scrollHeight="20"/>
+		               </p:column>
+		               
+		            </p:dataTable>
+		            
+		            </p:fieldset>
+		            <p:spacer height="20px" />
+
+					<!-- WIZARD -->
+					<p:wizard widgetVar="wvar_wizard" id="wizard" backLabel="Indietro"
+						nextLabel="Avanti" showNavBar="true" showStepStatus="true"
+						flowListener="#{cc.attrs.iRelazioni.onWizardFlowProcess}">
+						<!-- tab_attività -->
+						<p:tab id="tab_attività" title="Attività" titletip="">
+
+							<p:panel id="panelAttivita" header="#{cc.attrs.iRelazioni.headerAttivita}">
+								<h:panelGrid rendered="#{(cc.attrs.iRelazioni.relazioneDTO.relazione.microAttivita eq null)}">
+									<f:facet name="header">Scelta del tipo di attività:</f:facet>
+									<p:multiSelectListbox id="multiselect_catalogoAttivita"
+										rendered="#{cc.attrs.iRelazioni.relazioneDTO.relazione.microAttivita eq null}"
+										effect="slide"
+										value="#{cc.attrs.iRelazioni.relazioneDTO.microAttivita}"
+										converter="#{cc.attrs.iRelazioni.microAttivitaConverter}"
+										required="true"
+										requiredMessage="Scegliere il tipo di micro attività">
+										<f:selectItems value="#{cc.attrs.iRelazioni.catalogoAttivita}"
+											noSelectionValue="NULL" />
+									</p:multiSelectListbox>
+									<p:commandButton update="panelAttivita" value="Scegli" process="multiselect_catalogoAttivita" />
+								</h:panelGrid>
+								<!-- 							
+							<p:outputLabel id="selectionAttivita_out" 
+								rendered="#{cc.attrs.iRelazioni.relazioneDTO.relazione.microAttivita ne null}"
+								value="Tipo di Attività scelto: '#{cc.attrs.iRelazioni.relazioneDTO.relazione.macroAttivita.descrizione} #{cc.attrs.iRelazioni.relazioneDTO.relazione.microAttivita.descrizione}'" >																							
+							</p:outputLabel>						
+-->
+								<f:verbatim
+									rendered="#{cc.attrs.iRelazioni.relazioneDTO.relazione.microAttivita eq null}">
+									<script type="text/javascript">								
+								 	$(function() {								 									    
+									    if($(".ui-wizard-nav-next"))
+									    	$(".ui-wizard-nav-next").hide();
+									  });												
+								</script>
+								</f:verbatim>
+								<f:verbatim
+									rendered="#{cc.attrs.iRelazioni.relazioneDTO.relazione.microAttivita ne null}">
+									<script type="text/javascript">								
+								 	$(function() {									 								    
+									    if($(".ui-wizard-nav-next"))
+									    	$(".ui-wizard-nav-next").show();
+									  });												
+								</script>
+								</f:verbatim>
+
+								<br />
+								<p:spacer height="3" />
+
+								<h:panelGroup layout="block"
+									rendered="#{cc.attrs.iRelazioni.relazioneDTO.relazione.microAttivita.flagTipoForm eq 1}">
+									<p:selectBooleanButton id="relSwitch"
+										value="#{cc.attrs.iRelazioni.loadRelazione}"
+										disabled="#{cc.attrs.iRelazioni.uploadDisabled}"
+										onLabel="Carica Documento" offLabel="Compila Relazione">
+										<p:ajax event="change" update="panelAttivita" process="@this"
+											partialSubmit="true"
+											listener="#{cc.attrs.iRelazioni.clearRelazione}" />
+									</p:selectBooleanButton>
+									<p:spacer />
+
+									<p:panelGrid columns="2"
+										rendered="#{!cc.attrs.iRelazioni.loadRelazione}"
+										style="border:none;">
+
+										<h:outputText value="Situazione ambientale *" />
+										<p:inputTextarea rows="4" cols="90" required="true"
+											requiredMessage="E' necessario specificare la 'Situazione ambientale'"
+											value="#{cc.attrs.iRelazioni.relazioneDTO.relazione.situazioneAmb}" />
+
+										<h:outputText value="Situazione parentale" />
+										<p:inputTextarea rows="4" cols="90"
+											value="#{cc.attrs.iRelazioni.relazioneDTO.relazione.situazioneParentale}" />
+
+										<h:outputText value="Situazione sanitaria" />
+										<p:inputTextarea rows="4" cols="90"
+											value="#{cc.attrs.iRelazioni.relazioneDTO.relazione.situazioneSanitaria}" />
+
+										<h:outputText value="Proposta" />
+										<p:inputTextarea rows="4" cols="90"
+											value="#{cc.attrs.iRelazioni.relazioneDTO.relazione.proposta}" />
+
+										<h:outputText value="Organizzazione servizio" />
+										<p:inputTextarea rows="4" cols="90"
+											value="#{cc.attrs.iRelazioni.relazioneDTO.relazione.organizzazioneServizio}" />
+									</p:panelGrid>
+									<p:outputPanel
+										rendered="#{cc.attrs.iRelazioni.loadRelazione and !cc.attrs.iRelazioni.uploadDisabled}">
+										<webredcs:pnlUploadFile
+											iUploadFile="#{cc.attrs.iRelazioni.diarioDocsMan.uFileMan}"
+											fileLimit="1" />
+									</p:outputPanel>
+									<p:outputPanel
+										rendered="#{cc.attrs.iRelazioni.loadRelazione and cc.attrs.iRelazioni.uploadDisabled}">
+										<h:outputLabel value="Relazione Caricata:"
+											style="font-weight:bold;" />
+										<p:spacer width="10px" />
+										<webredcs:pnlDownloadFile
+											csLoadDocumento="#{cc.attrs.iRelazioni.relazioneDTO.csLoadDocumento}"
+											iDownloadFile="#{cc.attrs.iRelazioni.diarioDocsMan.dFileMan}" />
+										<p:spacer width="30px" />
+										<p:commandButton icon="ui-icon-trash" title="Rimuovi"
+											action="#{cc.attrs.iRelazioni.eliminaDocumento}"
+											process="@this"
+											update=":#{p:component('panelAttivita')} :#{p:component('relSwitch')}" />
+									</p:outputPanel>
+
+								</h:panelGroup>
+
+								<h:panelGroup layout="block"
+									rendered="#{cc.attrs.iRelazioni.relazioneDTO.relazione.microAttivita.flagTipoForm eq 2}">
+									<p:editor id="editorTesto"
+										value="#{cc.attrs.iRelazioni.relazioneDTO.relazione.testo}"
+										required="true"
+										requiredMessage="Inserire il testo dell'attività" />
+								</h:panelGroup>
+
+								<h:panelGroup layout="block"
+									rendered="#{cc.attrs.iRelazioni.relazioneDTO.relazione.microAttivita.flagTipoForm eq 3}">
+
+									<ui:include src="pnlTriage.xhtml" />
+
+									<!-- 							<p:panelGrid columns="1"> -->
+									<!-- 							<p:inputText value="#{cc.attrs.iRelazioni.relazioneDTO.triage.morbilita}" /> -->
+									<!--  							<p:inputText value="#{cc.attrs.iRelazioni.relazioneDTO.triage.alimentazione}" />  -->
+									<!--  							<p:inputText value="#{cc.attrs.iRelazioni.relazioneDTO.triage.alvoDiuresi}" /> -->
+									<!--  							<p:inputText value="#{cc.attrs.iRelazioni.relazioneDTO.triage.mobilita}" />							 -->
+									<!-- 							</p:panelGrid> -->
+
+
+								</h:panelGroup>
+
+								<h:panelGrid columns="2"
+									rendered="#{!cc.attrs.iRelazioni.loadRelazione and cc.attrs.iRelazioni.relazioneDTO.relazione.microAttivita.macroAttivita.flagConChi}"
+									style="border:none;" width="100%">
+
+									<h:outputText value="Con Chi *" />
+									<p:selectManyCheckbox value="#{cc.attrs.iRelazioni.lstConChiSel}" layout="grid" columns="5"> 
+										<!-- converter="#{cc.attrs.iRelazioni.conChiConverter}" --> 
+										<f:selectItems value="#{cc.attrs.iRelazioni.lstConChi}" var="conChi" itemLabel="#{conChi.descrizione}"  itemValue="#{conChi.id}" />
+										<p:ajax event="change"  update="altroConChi_id, @this" process="@this" listener="#{cc.attrs.iRelazioni.conChiSelezionato()}" />
+									</p:selectManyCheckbox>
+									<p:spacer width="5px"/>
+									<p:outputPanel id="altroConChi_id">
+										<h:outputText value="Specificare 'Altri'" rendered="#{cc.attrs.iRelazioni.relazioneDTO.relazioneConChiAltro}" />
+										<p:spacer width="5" />
+										<p:inputText  value="#{cc.attrs.iRelazioni.relazioneDTO.relazione.conChiAltro}" rendered="#{cc.attrs.iRelazioni.relazioneDTO.relazioneConChiAltro}" />
+									</p:outputPanel>
+
+								</h:panelGrid>
+
+								<p:panelGrid columns="2"
+									rendered="#{!cc.attrs.iRelazioni.loadRelazione and cc.attrs.iRelazioni.relazioneDTO.relazione.microAttivita.macroAttivita.flagRiunioneCon}"
+									style="border:none;">
+
+									<h:outputText
+										value="#{cc.attrs.iRelazioni.relazioneDTO.relazione.macroAttivita.descrizione} Con" />
+									<p:selectOneMenu
+										value="#{cc.attrs.iRelazioni.relazioneDTO.relazione.riunioneCon}"
+										filter="true" filterMatchMode="startsWith"
+										converter="#{cc.attrs.iRelazioni.riunioneConConverter}">
+										<f:selectItems value="#{cc.attrs.iRelazioni.lstRiunioneCon}"
+											noSelectionValue="NULL" />
+									</p:selectOneMenu>
+
+								</p:panelGrid>
+
+
+							</p:panel>
+
+						</p:tab>
+
+						<!-- tab_problematiche -->
+						<p:tab id="tab_problematiche" title="Problematiche" titletip="">
+							<p:panel id="panelProblematiche" header="Problematiche">
+
+								<p:selectOneButton label="stato"
+									value="#{cc.attrs.iRelazioni.relazioneDTO.flagRilevazioneProblematiche}"
+									valueChangeListener="#{cc.attrs.iRelazioni.rilevazioniProblematicheButtonValueChangeListener}"
+									disabled="#{cc.attrs.iRelazioni.relazioneDTO.rilevazioniProblematicheButtonDisabled}">
+									<f:selectItem itemLabel="Nessuna rilevazione" itemValue="NULL"
+										itemDescription="TODO descr 0" />
+									<f:selectItem itemLabel="Analisi problematiche" itemValue="1"
+										itemDescription="TODO descr 1" />
+									<p:ajax event="change" process="panelProblematiche"
+										update="@parent"></p:ajax>
+								</p:selectOneButton>
+								<p:separator />
+
+								<h:panelGroup
+									rendered="#{cc.attrs.iRelazioni.relazioneDTO.relazione.flagRilevazioneProblematiche eq '1'}">
+
+									<p:dataTable id="datatable_problematiche"
+										widgetVar="wv_datatable_problematiche" lazy="true"
+										sortBy="flagRisolta"
+										rowStyleClass="#{item.flagRisolta?'green_background':''}"
+										value="#{cc.attrs.iRelazioni.relazioneDTO.relazione.csRelRelazioneProbl}"
+										var="item" emptyMessage="Nessuna problematica rilevata">
+										<f:facet name="header">
+											<h:outputText value="Elenco delle problematiche" />
+										</f:facet>
+										<f:facet name="footer">
+											<h:outputText
+												style="background-color: darkred; font-style: italic;"
+												value="Sola lettura: attività riferita da problematiche di altre attività.."
+												rendered="#{cc.attrs.iRelazioni.relazioneDTO.rilevazioniProblematicheReadOnly}" />
+										</f:facet>
+										<p:column headerText="Materiale/Immateriale">
+											<h:outputText value="#{item.csTbProbl.flagMatImm}" />
+										</p:column>
+										<p:column headerText="Tipo">
+											<h:outputText value="#{item.csTbProbl.tipo}" />
+										</p:column>
+										<p:column headerText="Problematica">
+											<h:outputText value="#{item.csTbProbl.descrizione}" />
+										</p:column>
+										<p:column headerText="Rif. Analisi">
+											<h:outputText
+												value="#{item.csDRelazioneRif.csDDiario.dtAmministrativa}">
+												<f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+											</h:outputText>
+										</p:column>
+										<p:column headerText="Tipo Attività">
+											<h:outputText
+												value="#{cc.attrs.iRelazioni.printTipoAttivitaProblematica(item)}" />
+										</p:column>
+										<p:column headerText="Risolta">
+											<p:selectBooleanCheckbox value="#{item.flagRisolta}"
+												disabled="#{cc.attrs.iRelazioni.relazioneDTO.rilevazioniProblematicheReadOnly}">
+												<p:ajax event="change" process="@this"
+													update="datatable_problematiche"></p:ajax>
+											</p:selectBooleanCheckbox>
+										</p:column>
+										<p:column headerText="&nbsp;">
+											<p:commandButton
+												action="#{cc.attrs.iRelazioni.deleteProblematica(item)}"
+												icon="ui-icon ui-icon-circle-close" process="@this"
+												update="datatable_problematiche"
+												rendered="#{item.csDRelazioneRif eq null}"
+												disabled="#{cc.attrs.iRelazioni.relazioneDTO.rilevazioniProblematicheReadOnly}">
+											</p:commandButton>
+										</p:column>
+									</p:dataTable>
+
+									<hr />
+									<h:panelGrid columns="2" id="add_problematica_panel_id"
+										rendered="#{not cc.attrs.iRelazioni.relazioneDTO.rilevazioniProblematicheReadOnly}">
+
+										<p:multiSelectListbox id="multiselect_addProblematica"
+											effect="slide"
+											value="#{cc.attrs.iRelazioni.selectedProblematicaId}"
+											required="false"
+											requiredMessage="Scegliere il tipo di problematica">
+											<f:selectItems
+												value="#{cc.attrs.iRelazioni.catalogoProblematiche}" />
+										</p:multiSelectListbox>
+										<h:panelGrid columns="3">
+											<p:selectOneRadio required="true"
+												value="#{cc.attrs.iRelazioni.selectedProblematicaRisolta}">
+												<f:selectItem itemLabel="Presente" itemValue="#{false}"
+													itemDescription="problematica ancora presente" />
+												<f:selectItem itemLabel="Risolta" itemValue="#{true}"
+													itemDescription="problematica risolta" />
+											</p:selectOneRadio>
+											<p:spacer width="10" />
+											<p:commandButton icon="ui-icon-plus" value="aggiungi"
+												process="add_problematica_panel_id"
+												update="add_problematica_panel_id datatable_problematiche"
+												action="#{cc.attrs.iRelazioni.aggiungiProblematicaButton}" />
+										</h:panelGrid>
+									</h:panelGrid>
+
+								</h:panelGroup>
+							</p:panel>
+						</p:tab>
+
+						<!-- tab_prop_intervento -->
+						<p:tab id="tab_prop_intervento" title="Proposta Intervento"
+							titletip="">
+							<p:panel id="panelIntervento" header="Proposta Intervento">
+
+								<!-- START Gestione scelta tipi intervento  -->
+								<f:metadata>
+									<ui:param name="tipoIntTreeViewMetadataRelazioni"
+										value="#{cc.attrs.iRelazioni.tipoInterventoManBean}" />
+								</f:metadata>
+								<ui:include
+									src="/jsp/protected/treeTipoIntervento/tipoInterventoTreeRelazioni.xhtml">
+									<ui:param name="id" value="panelSearchTipoInterventoRelazione" />
+									<ui:param name="tree_modal_dlg" value="false" />
+									<ui:param name="tipoIntTreeView"
+										value="#{cc.attrs.iRelazioni.tipoInterventoManBean}" />
+									<ui:param name="esciActionUpdate"
+										value="panelSearchTipoInterventoRelazione" />
+								</ui:include>
+								<!-- END scelta tipi intervento  -->
+
+								<p:commandButton value="Aggiungi"
+									action="#{cc.attrs.iRelazioni.aggiungiTipoInterventoButton}"
+									disabled="#{cc.attrs.iRelazioni.readOnly}"
+									update="panelIntervento" process="panelIntervento"
+									icon="ui-icon ui-icon-circle-plus" />
+
+								<hr />
+
+								<p:outputPanel>
+									<p:dataTable var="item" rowIndexVar="rowKeyTI"
+										id="tblTipiIntervento"
+										emptyMessage="Nessun intervento presente"
+										value="#{cc.attrs.iRelazioni.relazioneDTO.relazione.csRelRelazioneTipoint}">
+
+										<f:facet name="header">
+											<p:outputLabel value="Lista Tipi Intervento" />
+										</f:facet>
+
+										<p:column headerText="Descrizione">
+											<h:outputText value="#{item.csCTipoIntervento.descrizione}" />
+										</p:column>
+
+										<p:column headerText="Custom">
+											<h:outputText
+												value="#{item.csCTipoInterventoCustom.descrizione}" />
+										</p:column>
+
+										<p:column headerText="" style="text-align: center;">
+											<p:commandButton value="Elimina" process="@this"
+												icon="ui-icon ui-icon-circle-close"
+												disabled="#{cc.attrs.iRelazioni.readOnly}"
+												action="#{cc.attrs.iRelazioni.eliminaTipoInterventoButton(item)}"
+												update="tblTipiIntervento">
+												<f:setPropertyActionListener value="#{rowKeyTI}"
+													target="#{cc.attrs.iRelazioni.idxSelected}" />
+											</p:commandButton>
+										</p:column>
+									</p:dataTable>
+								</p:outputPanel>
+
+								<p:outputPanel
+									rendered="#{not empty cc.attrs.iRelazioni.listaFogliAmmCollegati}">
+									<p:spacer height="15" />
+									<p:dataList
+										value="#{cc.attrs.iRelazioni.listaFogliAmmCollegati}"
+										var="int" type="unordered" paginator="true" rows="3"
+										paginatorPosition="bottom">
+										<f:facet name="header">
+						            Lista Fogli amministrativi collegati
+						        </f:facet>
+										<h:outputText value="#{int.descTipoIntervento} - " />
+										<h:outputText value="Inizio: " />
+										<h:panelGroup rendered="#{int.inizioDa ne NULL}">
+											<h:outputText value="Dal " rendered="#{int.inizioA ne NULL}" />
+											<h:outputText value="#{int.inizioDa} ">
+												<f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+											</h:outputText>
+										</h:panelGroup>
+										<h:panelGroup rendered="#{int.inizioA ne NULL}">
+											<h:outputText value=" al " />
+											<h:outputText value="#{int.inizioA} ">
+												<f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+											</h:outputText>
+										</h:panelGroup>
+										<h:outputText value="Fine: " />
+										<h:panelGroup rendered="#{int.fineDa ne NULL}">
+											<h:outputText value="Dal " rendered="#{int.fineA ne NULL}" />
+											<h:outputText value="#{int.fineDa} ">
+												<f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+											</h:outputText>
+										</h:panelGroup>
+										<h:panelGroup rendered="#{int.fineA ne NULL}">
+											<h:outputText value=" al " />
+											<h:outputText value="#{int.fineA} ">
+												<f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+											</h:outputText>
+										</h:panelGroup>
+									</p:dataList>
+								</p:outputPanel>
+
+							</p:panel>
+
+						</p:tab>
+
+					</p:wizard>
+
+					<h:panelGroup>
+						<h:outputText value="* Campi obbligatori" styleClass="bold" />
+						<p:spacer height="20" />
+					</h:panelGroup>
+
+					<!-- SALVA pnlToUpdate=":#{p:component('pnlRelazioni')}" -->
+					<webred:pnlSalvaEsci dialogToHide="wdgRelazModal#{cc.attrs.var}"
+						disabled="#{cc.attrs.iRelazioni.readOnly}"
+						pnlToUpdate=":#{p:component('pnlRelazioni')}"
+						salvaAction="#{cc.attrs.iRelazioni.salva()}" />
+
+
+				</h:form>
+
+
+
+			</p:dialog>
+
+			<p:dialog dynamic="true" modal="true" id="dlgDocRel"
+				widgetVar="wdgRelazDocModal#{cc.attrs.var}" width="600"
+				minHeight="500" closable="false" header="Gestione Documenti">
+
+				<webredcs:pnlDiarioDocs iDiarioDocs="#{cc.attrs.iDiarioDocs}"
+					isReadOnly="#{cc.attrs.iRelazioni.readOnly}" />
+
+				<table border="0" width="100%">
+					<tr>
+						<td><p:spacer height="20" /></td>
+					</tr>
+					<tr>
+						<td style="text-align: center;"><p:commandButton value="Esci"
+								update=":#{p:component('pnlRelazioni')}" process="@this"
+								action="#{cc.attrs.iRelazioni.initializeData}"
+								oncomplete="wdgRelazDocModal#{cc.attrs.var}.hide();" /></td>
+					</tr>
+				</table>
+			</p:dialog>
+		</p:outputPanel>
+	</composite:implementation>
+</h:body>
+
+</html>

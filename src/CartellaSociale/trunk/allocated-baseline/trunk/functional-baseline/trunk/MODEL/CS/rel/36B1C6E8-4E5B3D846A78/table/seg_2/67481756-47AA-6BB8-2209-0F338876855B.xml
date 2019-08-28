@@ -1,0 +1,133 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Table class="oracle.dbtools.crest.model.design.relational.Table" directorySegmentName="seg_2" id="67481756-47AA-6BB8-2209-0F338876855B" name="CS_TB_MODULO_RICHIESTA">
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-11-10 15:07:56 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<ordsAlias>table_175</ordsAlias>
+<allowColumnReorder>false</allowColumnReorder>
+<existDependencyGenerateInDDl>true</existDependencyGenerateInDDl>
+<parsed>true</parsed>
+<columns itemClass="oracle.dbtools.crest.model.design.relational.Column">
+<Column name="ID" id="1F6AD843-D8AF-5C06-D71A-1E1DFEF2470F">
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-11-10 16:08:41 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<dataTypePrecision>10</dataTypePrecision>
+<ownDataTypeParameters>,10,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="CODICE_MEMO_MODULO" id="E0041019-0D7E-3DA7-0AAB-1F7F6D5F5015">
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-11-10 16:09:44 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>255</dataTypeSize>
+<ownDataTypeParameters>255,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="TIPO_DIARIO_ID" id="CE933EAB-0B27-F775-1D3C-858E98E4C8FC">
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-11-10 16:01:37 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<dataTypePrecision>10</dataTypePrecision>
+<ownDataTypeParameters>,10,</ownDataTypeParameters>
+<previousColumn>false</previousColumn>
+<autoIncrementCycle>false</autoIncrementCycle>
+<associations>
+<colAssociation fkAssociation="CC7F0179-5B53-5FCF-7C23-11013349578B" referredColumn="1574D05C-5A2A-D6AA-C461-D99638604679"/>
+</associations>
+</Column>
+<Column name="DESCRIZIONE" id="46BA3BDB-57D5-ED6E-AFFB-A67975C579A0">
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-11-10 16:08:56 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>100 BYTE</dataTypeSize>
+<ownDataTypeParameters>100 BYTE,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="TOOLTIP" id="18DC026B-96EE-CCB9-BC6E-C084985AECED">
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-11-10 16:08:56 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>4000 BYTE</dataTypeSize>
+<ownDataTypeParameters>4000 BYTE,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="ABILITATO" id="AF70E3A7-CA47-EEE0-1DD0-01B314B4B269">
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-11-10 16:08:56 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT025</logicalDatatype>
+<dataTypeSize>1 BYTE</dataTypeSize>
+<ownDataTypeParameters>1 BYTE,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="TIPO_INTERVENTO_ID" id="F20F2E68-B4D4-B7EA-48E6-5A3D011B5EFD">
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-11-10 16:23:21 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<dataTypePrecision>10</dataTypePrecision>
+<ownDataTypeParameters>,10,</ownDataTypeParameters>
+<previousColumn>false</previousColumn>
+<autoIncrementCycle>false</autoIncrementCycle>
+<associations>
+<colAssociation fkAssociation="87DA0110-3266-92B0-9EAF-02503EF2A570" referredColumn="63FD419E-76EE-86F6-C49F-7F71FFCB6960"/>
+</associations>
+</Column>
+</columns>
+<indexes itemClass="oracle.dbtools.crest.model.design.relational.Index">
+<ind_PK_UK id="62D68F9D-BC6D-EB39-A369-F4B269655E19" name="CS_TB_MODULI_RICHIESTE_PK">
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-11-10 16:08:41 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<pk>true</pk>
+<indexState>Primary Constraint</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="1F6AD843-D8AF-5C06-D71A-1E1DFEF2470F"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="BB8CC478-8615-7B17-AA94-8BEE9BA1E1B9" name="CS_MORICH_TIPODIA_FK">
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-11-10 16:01:37 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<indexState>Foreign Key</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="CE933EAB-0B27-F775-1D3C-858E98E4C8FC"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="2DD1D76E-AB88-B7FB-49E3-F6BA3AD6D082" name="CS_TB_MODULI_RICHIESTE_CS_C_TIPO_INTERVENTO_FK">
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-11-10 16:23:21 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<indexState>Foreign Key</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="F20F2E68-B4D4-B7EA-48E6-5A3D011B5EFD"/>
+</indexColumnUsage>
+</ind_PK_UK>
+</indexes>
+</Table>

@@ -1,0 +1,14 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<FKIndexAssociation class="oracle.dbtools.crest.model.design.relational.FKIndexAssociation" directorySegmentName="seg_2" id="5F736F7A-CA60-34DD-2288-7B9CE24F9F8D" containerWithKeyObject="8249CC08-9FF1-2D32-C0F9-830A8EA797E1" localFKIndex="197FCB25-F995-8FFD-AA16-4534F7FB7541" name="CS_REL_TIPOINTERV_CLASSE_CS_C_TIPO_INTERVENTO_FK">
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-11-10 16:34:06 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<deleteRule>NO ACTION</deleteRule>
+<referredTableID>D002B140-5113-8EA7-A86E-A0B9E2A02066</referredTableID>
+<keyObject>43B0AE87-F965-35B0-ECDB-53B72D31AA1F</keyObject>
+<referredKeyID>43B0AE87-F965-35B0-ECDB-53B72D31AA1F</referredKeyID>
+<mandatory>true</mandatory>
+<transferable>true</transferable>
+<rely>false</rely>
+<columnDependencyConstraintGenerateInDDL>true</columnDependencyConstraintGenerateInDDL>
+</FKIndexAssociation>

@@ -1,0 +1,205 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Table class="oracle.dbtools.crest.model.design.relational.Table" directorySegmentName="seg_0" id="E7603F9B-A0AC-E6C4-C890-4E7CE318732A" schemaObject="31789C62-6489-FE63-4664-3CFB4035AC87" name="CS_D_COLLOQUIO">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>CS_SISO</sourceObjSchema>
+<sourceObjName>CS_D_COLLOQUIO</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:18 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>AD031691-F96E-7684-B04B-3BD391537BC5</importedID>
+<existDependencyGenerateInDDl>true</existDependencyGenerateInDDl>
+<parsed>true</parsed>
+<columns itemClass="oracle.dbtools.crest.model.design.relational.Column">
+<Column name="DIARIO_ID" id="9CB3D794-3DFD-BABC-5391-6DF1EB875547">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>CS_D_COLLOQUIO</sourceObjSchema>
+<sourceObjName>DIARIO_ID</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:18 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>E7286402-A7B0-0690-670B-D810077E7660</importedID>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<dataTypePrecision>10</dataTypePrecision>
+<ownDataTypeParameters>,10,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+<associations>
+<colAssociation fkAssociation="5B039CB9-1B8D-243E-FBD2-B27DDE6465E0" referredColumn="FFA9CF12-6561-7FD0-BB6A-AA2609A216C4"/>
+</associations>
+</Column>
+<Column name="DIARIO_CONCHI_ID" id="C8138B58-5570-8D3F-6EA2-99BFBE9C3901">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>CS_D_COLLOQUIO</sourceObjSchema>
+<sourceObjName>DIARIO_CONCHI_ID</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:18 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>C410E202-2412-CE3E-E8D2-3AC49221D20B</importedID>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<dataTypePrecision>10</dataTypePrecision>
+<ownDataTypeParameters>,10,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+<associations>
+<colAssociation fkAssociation="B26D6FF0-FA53-C702-D066-77A771528F2B" referredColumn="A4C9F334-1ADC-F3DA-4B29-75FF915FB2E3"/>
+</associations>
+</Column>
+<Column name="TESTO_DIARIO" id="3185FF87-4BE5-C474-1E73-C90F490C1B50">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>CS_D_COLLOQUIO</sourceObjSchema>
+<sourceObjName>TESTO_DIARIO</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:18 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>52DC32C1-9F93-CE38-5293-94F3678B6F67</importedID>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT028</logicalDatatype>
+<dataTypeSize>4000</dataTypeSize>
+<ownDataTypeParameters>4000,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="DIARIO_DOVE_ID" id="1DF3DC1A-5BC0-CEBF-2C56-0206741D76E6">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>CS_D_COLLOQUIO</sourceObjSchema>
+<sourceObjName>DIARIO_DOVE_ID</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:18 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>DCCE1B18-5BF2-CA3D-4F4B-617CFF3C7E8C</importedID>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<dataTypePrecision>10</dataTypePrecision>
+<ownDataTypeParameters>,10,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+<associations>
+<colAssociation fkAssociation="F484C9EF-CC91-FF34-80C0-281CA772E3A4" referredColumn="71AE5289-3D27-8235-3AD1-27D258A52807"/>
+</associations>
+</Column>
+<Column name="TIPO_COLLOQUIO_ID" id="CFA02B7B-2FA7-ED0F-1490-50D293C8D28F">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>CS_D_COLLOQUIO</sourceObjSchema>
+<sourceObjName>TIPO_COLLOQUIO_ID</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:18 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>CEC772BE-1850-5643-70B8-976B87232ADD</importedID>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<dataTypePrecision>10</dataTypePrecision>
+<ownDataTypeParameters>,10,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+<associations>
+<colAssociation fkAssociation="405471F3-0708-51FE-9ADF-140AE46D3392" referredColumn="3762D550-4B47-E71A-9E15-63EC45164722"/>
+</associations>
+</Column>
+<Column name="RISERVATO" id="C1ADF69A-94A9-F812-F6A2-0622738B7352">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>CS_D_COLLOQUIO</sourceObjSchema>
+<sourceObjName>RISERVATO</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:18 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>DD61CB19-B781-2FDF-A5B5-BB05EE5B403B</importedID>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>1 BYTE</dataTypeSize>
+<defaultValue>0</defaultValue>
+<ownDataTypeParameters>1 BYTE,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="DIARIO_CONCHI_ALTRO" id="7C36543E-6816-B5CB-15A5-A09A610F31F7">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>CS_D_COLLOQUIO</sourceObjSchema>
+<sourceObjName>DIARIO_CONCHI_ALTRO</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2016-01-21 16:42:56 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>5CD1FA83-9B14-FE37-302D-3F79956877FF</importedID>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>100 CHAR</dataTypeSize>
+<ownDataTypeParameters>100 CHAR,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+</columns>
+<indexes itemClass="oracle.dbtools.crest.model.design.relational.Index">
+<ind_PK_UK id="9F27DC05-773E-E533-C0E5-1BEADDC14B65" name="COLLOQUIO_PK">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>CS_SISO</sourceObjSchema>
+<sourceObjName>COLLOQUIO_PK</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:18 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>83C36547-B400-07A9-DAED-BF63FBB74931</importedID>
+<pk>true</pk>
+<indexState>Primary Constraint</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="9CB3D794-3DFD-BABC-5391-6DF1EB875547"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="84F7E4EB-7B6B-BC82-E229-FE28D5B92268" schemaObject="31789C62-6489-FE63-4664-3CFB4035AC87" name="COLLOQUIO_PK">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>CS_SISO</sourceObjSchema>
+<sourceObjName>COLLOQUIO_PK</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:18 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>596F12E4-AF74-0A6B-1DB9-34927D85A52E</importedID>
+<indexState>Unique Plain Index</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="9CB3D794-3DFD-BABC-5391-6DF1EB875547"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="AC3C8FA7-8D54-A5AA-F8BE-A2E7F9697ABF" name="CS_D_COLL_DIARIO_DOVE_FK">
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:19 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<indexState>Foreign Key</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="1DF3DC1A-5BC0-CEBF-2C56-0206741D76E6"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="AEB4AC70-628A-DFF0-0365-66F3CB4D9846" name="CS_D_COLLO_DIARIOCHI_FK">
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:19 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<indexState>Foreign Key</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="C8138B58-5570-8D3F-6EA2-99BFBE9C3901"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="9AFBA644-32E6-75C1-5BD0-FEDFEFFAD76E" name="CS_D_COLL_TIPO_COLLOQUIO_FK">
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:19 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<indexState>Foreign Key</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="CFA02B7B-2FA7-ED0F-1490-50D293C8D28F"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="E18538F8-E7DA-31A9-C639-843A525D9C14" name="FK_COLLOQUIO_DIARIO">
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:19 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<indexState>Foreign Key</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="9CB3D794-3DFD-BABC-5391-6DF1EB875547"/>
+</indexColumnUsage>
+</ind_PK_UK>
+</indexes>
+</Table>

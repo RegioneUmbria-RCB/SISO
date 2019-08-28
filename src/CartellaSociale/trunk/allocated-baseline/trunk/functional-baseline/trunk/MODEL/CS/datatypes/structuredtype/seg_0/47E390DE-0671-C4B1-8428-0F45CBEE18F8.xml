@@ -1,0 +1,594 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<StructuredType class="oracle.dbtools.crest.model.design.datatypes.StructuredType" name="SDO_GEOMETRY" directorySegmentName="seg_0" id="47E390DE-0671-C4B1-8428-0F45CBEE18F8">
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:49:04 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<visible>false</visible>
+<predefined>true</predefined>
+<final>false</final>
+<instantiable>true</instantiable>
+<attributes itemClass="oracle.dbtools.crest.model.design.datatypes.TypeElement">
+<Attribute name="SDO_GTYPE" id="75094A3B-1945-F73E-5B06-4F7C490C680B">
+<sourceConnName>GALILEO_UMBRIA</sourceConnName>
+<sourceObjSchema>GALILEO_UMBRIA</sourceObjSchema>
+<sourceObjName>SDO_GTYPE</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:53:58 UTC</createdTime>
+<generatorID>7CF9B5AE-656E-E018-E7BE-32565AC4C1C8</generatorID>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>7CF9B5AE-656E-E018-E7BE-32565AC4C1C8</importedID>
+<mandatory>false</mandatory>
+<precision>0</precision>
+<reference>false</reference>
+<scale>0</scale>
+<type>LOGDT019</type>
+</Attribute>
+<Attribute name="SDO_SRID" id="E38286F0-34D7-86AF-00D2-33809B3F4B1A">
+<sourceConnName>GALILEO_UMBRIA</sourceConnName>
+<sourceObjSchema>GALILEO_UMBRIA</sourceObjSchema>
+<sourceObjName>SDO_SRID</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:53:58 UTC</createdTime>
+<generatorID>55327CA5-5BFC-8FC5-2804-5F8B8F742435</generatorID>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>55327CA5-5BFC-8FC5-2804-5F8B8F742435</importedID>
+<mandatory>false</mandatory>
+<precision>0</precision>
+<reference>false</reference>
+<scale>0</scale>
+<type>LOGDT019</type>
+</Attribute>
+<Attribute name="SDO_POINT" id="E2D86D5D-D91F-9CA1-AB4D-23800BBD7341">
+<sourceConnName>GALILEO_UMBRIA</sourceConnName>
+<sourceObjSchema>GALILEO_UMBRIA</sourceObjSchema>
+<sourceObjName>SDO_POINT</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:53:58 UTC</createdTime>
+<generatorID>540A935C-0E88-C56F-BDE9-BB18AAA99DA1</generatorID>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>540A935C-0E88-C56F-BDE9-BB18AAA99DA1</importedID>
+<mandatory>false</mandatory>
+<precision>0</precision>
+<reference>false</reference>
+<scale>0</scale>
+<type>DOM3000004</type>
+</Attribute>
+<Attribute name="SDO_ELEM_INFO" id="0CB42461-9F50-D6FE-9213-ADA25DED4AFD">
+<sourceConnName>GALILEO_UMBRIA</sourceConnName>
+<sourceObjSchema>GALILEO_UMBRIA</sourceObjSchema>
+<sourceObjName>SDO_ELEM_INFO</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:53:58 UTC</createdTime>
+<generatorID>18321E03-F764-0AA0-8CC9-F62DECEB3590</generatorID>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>18321E03-F764-0AA0-8CC9-F62DECEB3590</importedID>
+<mandatory>false</mandatory>
+<precision>0</precision>
+<reference>false</reference>
+<scale>0</scale>
+<type>DOM3000004</type>
+</Attribute>
+<Attribute name="SDO_ORDINATES" id="5B287725-3876-8030-D032-5CBDC0491BCA">
+<sourceConnName>GALILEO_UMBRIA</sourceConnName>
+<sourceObjSchema>GALILEO_UMBRIA</sourceObjSchema>
+<sourceObjName>SDO_ORDINATES</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:53:58 UTC</createdTime>
+<generatorID>72FFA226-00C6-A215-4A9F-B414625B2B15</generatorID>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>72FFA226-00C6-A215-4A9F-B414625B2B15</importedID>
+<mandatory>false</mandatory>
+<precision>0</precision>
+<reference>false</reference>
+<scale>0</scale>
+<type>DOM3000004</type>
+</Attribute>
+<Attribute name="SDO_GTYPEv1" id="6696A257-2597-1EC1-2DB0-8DECA78D15D8">
+<sourceConnName>GALILEO_UMBRIA</sourceConnName>
+<sourceObjSchema>GALILEO_UMBRIA</sourceObjSchema>
+<sourceObjName>SDO_GTYPE</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:18 UTC</createdTime>
+<generatorID>7CF9B5AE-656E-E018-E7BE-32565AC4C1C8</generatorID>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>7CF9B5AE-656E-E018-E7BE-32565AC4C1C8</importedID>
+<mandatory>false</mandatory>
+<precision>0</precision>
+<reference>false</reference>
+<scale>0</scale>
+<type>LOGDT019</type>
+</Attribute>
+<Attribute name="SDO_SRIDv1" id="FE0B02F5-89FC-D9B0-401E-B48177B41EE5">
+<sourceConnName>GALILEO_UMBRIA</sourceConnName>
+<sourceObjSchema>GALILEO_UMBRIA</sourceObjSchema>
+<sourceObjName>SDO_SRID</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:18 UTC</createdTime>
+<generatorID>55327CA5-5BFC-8FC5-2804-5F8B8F742435</generatorID>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>55327CA5-5BFC-8FC5-2804-5F8B8F742435</importedID>
+<mandatory>false</mandatory>
+<precision>0</precision>
+<reference>false</reference>
+<scale>0</scale>
+<type>LOGDT019</type>
+</Attribute>
+<Attribute name="SDO_POINTv1" id="5A304F52-6DB5-A081-1201-F5726B489648">
+<sourceConnName>GALILEO_UMBRIA</sourceConnName>
+<sourceObjSchema>GALILEO_UMBRIA</sourceObjSchema>
+<sourceObjName>SDO_POINT</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:18 UTC</createdTime>
+<generatorID>540A935C-0E88-C56F-BDE9-BB18AAA99DA1</generatorID>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>540A935C-0E88-C56F-BDE9-BB18AAA99DA1</importedID>
+<mandatory>false</mandatory>
+<precision>0</precision>
+<reference>false</reference>
+<scale>0</scale>
+<type>DOM3000004</type>
+</Attribute>
+<Attribute name="SDO_ELEM_INFOv1" id="8F356E31-C052-E653-3238-A751680893F1">
+<sourceConnName>GALILEO_UMBRIA</sourceConnName>
+<sourceObjSchema>GALILEO_UMBRIA</sourceObjSchema>
+<sourceObjName>SDO_ELEM_INFO</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:18 UTC</createdTime>
+<generatorID>18321E03-F764-0AA0-8CC9-F62DECEB3590</generatorID>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>18321E03-F764-0AA0-8CC9-F62DECEB3590</importedID>
+<mandatory>false</mandatory>
+<precision>0</precision>
+<reference>false</reference>
+<scale>0</scale>
+<type>DOM3000004</type>
+</Attribute>
+<Attribute name="SDO_ORDINATESv1" id="F3D14040-6C77-840E-26DB-4B87D5FCE377">
+<sourceConnName>GALILEO_UMBRIA</sourceConnName>
+<sourceObjSchema>GALILEO_UMBRIA</sourceObjSchema>
+<sourceObjName>SDO_ORDINATES</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:18 UTC</createdTime>
+<generatorID>72FFA226-00C6-A215-4A9F-B414625B2B15</generatorID>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>72FFA226-00C6-A215-4A9F-B414625B2B15</importedID>
+<mandatory>false</mandatory>
+<precision>0</precision>
+<reference>false</reference>
+<scale>0</scale>
+<type>DOM3000004</type>
+</Attribute>
+</attributes>
+<methods itemClass="oracle.dbtools.crest.model.design.datatypes.Method">
+<Method name="GET_GTYPE" id="E016D674-6D4D-5DC5-FF26-43BACD287FA7">
+<sourceConnName>GALILEO_UMBRIA</sourceConnName>
+<sourceObjSchema>GALILEO_UMBRIA</sourceObjSchema>
+<sourceObjName>GET_GTYPE</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:53:58 UTC</createdTime>
+<generatorID>825E7106-351C-98FD-A03B-AB6EE6419453</generatorID>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>825E7106-351C-98FD-A03B-AB6EE6419453</importedID>
+<number>0</number>
+<returnValue class="oracle.dbtools.crest.model.design.datatypes.MethodParam" name="NULL SET GENERATED_152" id="3C265459-60BE-EC3D-7010-30EAD5C75B2D">
+<precision>0</precision>
+<reference>false</reference>
+<scale>0</scale>
+<typeID>LOGDT019</typeID>
+</returnValue>
+</Method>
+<Method name="GET_DIMS" id="3D1E7BE0-2131-EDAB-892D-7C51A1C85ECC">
+<sourceConnName>GALILEO_UMBRIA</sourceConnName>
+<sourceObjSchema>GALILEO_UMBRIA</sourceObjSchema>
+<sourceObjName>GET_DIMS</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:53:58 UTC</createdTime>
+<generatorID>53A52F2B-BBBF-E077-F973-56577387BCB8</generatorID>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>53A52F2B-BBBF-E077-F973-56577387BCB8</importedID>
+<number>0</number>
+<returnValue class="oracle.dbtools.crest.model.design.datatypes.MethodParam" name="NULL SET GENERATED_153" id="515F4F80-CDFC-98F3-91B5-F4788F956C58">
+<precision>0</precision>
+<reference>false</reference>
+<scale>0</scale>
+<typeID>LOGDT019</typeID>
+</returnValue>
+</Method>
+<Method name="GET_LRS_DIM" id="E1FF8BF6-36F3-8C15-3F92-B3DD7C4B5038">
+<sourceConnName>GALILEO_UMBRIA</sourceConnName>
+<sourceObjSchema>GALILEO_UMBRIA</sourceObjSchema>
+<sourceObjName>GET_LRS_DIM</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:53:58 UTC</createdTime>
+<generatorID>C21FD2B5-57F5-23F3-0436-329C0971A82B</generatorID>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>C21FD2B5-57F5-23F3-0436-329C0971A82B</importedID>
+<number>0</number>
+<returnValue class="oracle.dbtools.crest.model.design.datatypes.MethodParam" name="NULL SET GENERATED_154" id="5CDEE849-27A5-BCEA-F9E9-F562B1F09973">
+<precision>0</precision>
+<reference>false</reference>
+<scale>0</scale>
+<typeID>LOGDT019</typeID>
+</returnValue>
+</Method>
+<Method name="GET_WKB" id="31C3581C-BE14-25CE-A2EE-6EEF0808A7B5">
+<sourceConnName>GALILEO_UMBRIA</sourceConnName>
+<sourceObjSchema>GALILEO_UMBRIA</sourceObjSchema>
+<sourceObjName>GET_WKB</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:53:58 UTC</createdTime>
+<generatorID>27AC7E0A-B5AA-8B37-5A5A-7A9D63F2266B</generatorID>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>27AC7E0A-B5AA-8B37-5A5A-7A9D63F2266B</importedID>
+<number>0</number>
+<returnValue class="oracle.dbtools.crest.model.design.datatypes.MethodParam" name="NULL SET GENERATED_155" id="BA7082BF-95F5-A0B9-77AA-50F4BB4D86F9">
+<precision>0</precision>
+<reference>false</reference>
+<scale>0</scale>
+<typeID>LOGDT029</typeID>
+</returnValue>
+</Method>
+<Method name="GET_WKT" id="2B175587-CF29-905A-8461-6E449383B77A">
+<sourceConnName>GALILEO_UMBRIA</sourceConnName>
+<sourceObjSchema>GALILEO_UMBRIA</sourceObjSchema>
+<sourceObjName>GET_WKT</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:53:58 UTC</createdTime>
+<generatorID>496116AF-0721-7986-D7B8-CB596D138666</generatorID>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>496116AF-0721-7986-D7B8-CB596D138666</importedID>
+<number>0</number>
+<returnValue class="oracle.dbtools.crest.model.design.datatypes.MethodParam" name="NULL SET GENERATED_156" id="B9ECD016-FE46-8607-D42D-36A91F78EE9C">
+<precision>0</precision>
+<reference>false</reference>
+<scale>0</scale>
+<typeID>LOGDT028</typeID>
+</returnValue>
+</Method>
+<Method name="ST_COORDDIM" id="F076165F-49C7-13A0-BFD7-A415CFC8EB33">
+<sourceConnName>GALILEO_UMBRIA</sourceConnName>
+<sourceObjSchema>GALILEO_UMBRIA</sourceObjSchema>
+<sourceObjName>ST_COORDDIM</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:53:58 UTC</createdTime>
+<generatorID>810BF25D-9602-E630-2F60-3E5B5CD8B0EA</generatorID>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>810BF25D-9602-E630-2F60-3E5B5CD8B0EA</importedID>
+<number>0</number>
+<returnValue class="oracle.dbtools.crest.model.design.datatypes.MethodParam" name="NULL SET GENERATED_157" id="F39BFA0E-DCB6-9AD9-87AC-24F78433AFF5">
+<precision>0</precision>
+<reference>false</reference>
+<scale>0</scale>
+<typeID>LOGDT018</typeID>
+</returnValue>
+</Method>
+<Method name="ST_ISVALID" id="9322EEC3-4F9B-76AC-5C03-629858369B45">
+<sourceConnName>GALILEO_UMBRIA</sourceConnName>
+<sourceObjSchema>GALILEO_UMBRIA</sourceObjSchema>
+<sourceObjName>ST_ISVALID</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:53:58 UTC</createdTime>
+<generatorID>906C2C22-EFCA-AF04-2A54-00DD8A3EB261</generatorID>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>906C2C22-EFCA-AF04-2A54-00DD8A3EB261</importedID>
+<number>0</number>
+<returnValue class="oracle.dbtools.crest.model.design.datatypes.MethodParam" name="NULL SET GENERATED_158" id="62E5E996-C1FA-3797-D9B8-03AF6B352C79">
+<precision>0</precision>
+<reference>false</reference>
+<scale>0</scale>
+<typeID>LOGDT011</typeID>
+</returnValue>
+</Method>
+<Method name="SDO_GEOMETRY" id="19072805-4C1D-067D-54ED-1703F1DEF192">
+<sourceConnName>GALILEO_UMBRIA</sourceConnName>
+<sourceObjSchema>GALILEO_UMBRIA</sourceObjSchema>
+<sourceObjName>SDO_GEOMETRY</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:53:58 UTC</createdTime>
+<generatorID>78EFF261-1ED6-710F-5CA3-ED751C1733F5</generatorID>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>78EFF261-1ED6-710F-5CA3-ED751C1733F5</importedID>
+<constructor>true</constructor>
+<number>0</number>
+<returnValue class="oracle.dbtools.crest.model.design.datatypes.MethodParam" name="NULL SET GENERATED_159" id="727DC7D3-040F-9A5B-0A5C-AA1779F84CB6">
+<precision>0</precision>
+<reference>false</reference>
+<scale>0</scale>
+<typeID>47E390DE-0671-C4B1-8428-0F45CBEE18F8</typeID>
+</returnValue>
+<parameters>
+<Parameter class="oracle.dbtools.crest.model.design.datatypes.MethodParam" name="WKT" id="F752307B-591A-A867-E16F-5E0FAC27ACF9">
+<precision>0</precision>
+<reference>false</reference>
+<scale>0</scale>
+<typeID>LOGDT028</typeID>
+</Parameter>
+<Parameter class="oracle.dbtools.crest.model.design.datatypes.MethodParam" name="SRID" id="213B884E-58C1-4319-22FA-7F84383A847E">
+<precision>0</precision>
+<reference>false</reference>
+<scale>0</scale>
+<typeID>LOGDT011</typeID>
+</Parameter>
+</parameters>
+</Method>
+<Method name="SDO_GEOMETRY" id="2AE32CD0-4FD6-674B-D9AD-0DBE6E114925">
+<sourceConnName>GALILEO_UMBRIA</sourceConnName>
+<sourceObjSchema>GALILEO_UMBRIA</sourceObjSchema>
+<sourceObjName>SDO_GEOMETRY</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:53:58 UTC</createdTime>
+<generatorID>EF1A3821-CC78-D8B4-58C3-B9081215E3A3</generatorID>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>EF1A3821-CC78-D8B4-58C3-B9081215E3A3</importedID>
+<constructor>true</constructor>
+<number>0</number>
+<returnValue class="oracle.dbtools.crest.model.design.datatypes.MethodParam" name="NULL SET GENERATED_160" id="0D6C41D3-458E-6E45-B8B2-3C2F929B2224">
+<precision>0</precision>
+<reference>false</reference>
+<scale>0</scale>
+<typeID>47E390DE-0671-C4B1-8428-0F45CBEE18F8</typeID>
+</returnValue>
+<parameters>
+<Parameter class="oracle.dbtools.crest.model.design.datatypes.MethodParam" name="WKT" id="3006A0F6-3C54-2C4A-AC79-7AEAADBE02AB">
+<precision>0</precision>
+<reference>false</reference>
+<scale>0</scale>
+<typeID>LOGDT024</typeID>
+</Parameter>
+<Parameter class="oracle.dbtools.crest.model.design.datatypes.MethodParam" name="SRID" id="7FEF8749-9976-B5E0-47AD-354680C14C42">
+<precision>0</precision>
+<reference>false</reference>
+<scale>0</scale>
+<typeID>LOGDT011</typeID>
+</Parameter>
+</parameters>
+</Method>
+<Method name="SDO_GEOMETRY" id="F33DF1D3-DF2B-D61F-D518-4A4705C38F8B">
+<sourceConnName>GALILEO_UMBRIA</sourceConnName>
+<sourceObjSchema>GALILEO_UMBRIA</sourceObjSchema>
+<sourceObjName>SDO_GEOMETRY</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:53:58 UTC</createdTime>
+<generatorID>F5FEC923-4337-EAA8-21E7-23D6D1C60963</generatorID>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>F5FEC923-4337-EAA8-21E7-23D6D1C60963</importedID>
+<constructor>true</constructor>
+<number>0</number>
+<returnValue class="oracle.dbtools.crest.model.design.datatypes.MethodParam" name="NULL SET GENERATED_161" id="1499EDD2-106D-EC02-04CA-BBC3A94C2161">
+<precision>0</precision>
+<reference>false</reference>
+<scale>0</scale>
+<typeID>47E390DE-0671-C4B1-8428-0F45CBEE18F8</typeID>
+</returnValue>
+<parameters>
+<Parameter class="oracle.dbtools.crest.model.design.datatypes.MethodParam" name="WKB" id="BDC18555-0C36-BD17-E768-BEDAF702BF5C">
+<precision>0</precision>
+<reference>false</reference>
+<scale>0</scale>
+<typeID>LOGDT029</typeID>
+</Parameter>
+<Parameter class="oracle.dbtools.crest.model.design.datatypes.MethodParam" name="SRID" id="9834B4F3-CE18-2507-A10E-0C1F2185FFE4">
+<precision>0</precision>
+<reference>false</reference>
+<scale>0</scale>
+<typeID>LOGDT011</typeID>
+</Parameter>
+</parameters>
+</Method>
+<Method name="GET_GTYPE" id="99EBDF6C-2402-B14A-4592-3E7BC592E4FD">
+<sourceConnName>GALILEO_UMBRIA</sourceConnName>
+<sourceObjSchema>GALILEO_UMBRIA</sourceObjSchema>
+<sourceObjName>GET_GTYPE</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:18 UTC</createdTime>
+<generatorID>825E7106-351C-98FD-A03B-AB6EE6419453</generatorID>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>825E7106-351C-98FD-A03B-AB6EE6419453</importedID>
+<number>0</number>
+<returnValue class="oracle.dbtools.crest.model.design.datatypes.MethodParam" name="NULL SET GENERATED_1324" id="FBB69DB3-F1E2-93E5-5EF0-50A32E92DF4F">
+<precision>0</precision>
+<reference>false</reference>
+<scale>0</scale>
+<typeID>LOGDT019</typeID>
+</returnValue>
+</Method>
+<Method name="GET_DIMS" id="6AAA5E83-8580-23DC-6450-8ED000D69564">
+<sourceConnName>GALILEO_UMBRIA</sourceConnName>
+<sourceObjSchema>GALILEO_UMBRIA</sourceObjSchema>
+<sourceObjName>GET_DIMS</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:18 UTC</createdTime>
+<generatorID>53A52F2B-BBBF-E077-F973-56577387BCB8</generatorID>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>53A52F2B-BBBF-E077-F973-56577387BCB8</importedID>
+<number>0</number>
+<returnValue class="oracle.dbtools.crest.model.design.datatypes.MethodParam" name="NULL SET GENERATED_1325" id="61A670B2-B30A-ADCB-0363-8D3F8A6957F2">
+<precision>0</precision>
+<reference>false</reference>
+<scale>0</scale>
+<typeID>LOGDT019</typeID>
+</returnValue>
+</Method>
+<Method name="GET_LRS_DIM" id="CC088DE5-0BDF-D455-1607-71490DD49B12">
+<sourceConnName>GALILEO_UMBRIA</sourceConnName>
+<sourceObjSchema>GALILEO_UMBRIA</sourceObjSchema>
+<sourceObjName>GET_LRS_DIM</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:18 UTC</createdTime>
+<generatorID>C21FD2B5-57F5-23F3-0436-329C0971A82B</generatorID>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>C21FD2B5-57F5-23F3-0436-329C0971A82B</importedID>
+<number>0</number>
+<returnValue class="oracle.dbtools.crest.model.design.datatypes.MethodParam" name="NULL SET GENERATED_1326" id="84FE5100-0465-599B-0E90-BE5256F41C7B">
+<precision>0</precision>
+<reference>false</reference>
+<scale>0</scale>
+<typeID>LOGDT019</typeID>
+</returnValue>
+</Method>
+<Method name="GET_WKB" id="B87C8BF1-5992-1272-33DA-2C42942352A2">
+<sourceConnName>GALILEO_UMBRIA</sourceConnName>
+<sourceObjSchema>GALILEO_UMBRIA</sourceObjSchema>
+<sourceObjName>GET_WKB</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:18 UTC</createdTime>
+<generatorID>27AC7E0A-B5AA-8B37-5A5A-7A9D63F2266B</generatorID>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>27AC7E0A-B5AA-8B37-5A5A-7A9D63F2266B</importedID>
+<number>0</number>
+<returnValue class="oracle.dbtools.crest.model.design.datatypes.MethodParam" name="NULL SET GENERATED_1327" id="FE56A07A-D122-07C2-246C-BF289164C2FB">
+<precision>0</precision>
+<reference>false</reference>
+<scale>0</scale>
+<typeID>LOGDT029</typeID>
+</returnValue>
+</Method>
+<Method name="GET_WKT" id="5612D599-696D-7786-1A9C-9E127C4C1E22">
+<sourceConnName>GALILEO_UMBRIA</sourceConnName>
+<sourceObjSchema>GALILEO_UMBRIA</sourceObjSchema>
+<sourceObjName>GET_WKT</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:18 UTC</createdTime>
+<generatorID>496116AF-0721-7986-D7B8-CB596D138666</generatorID>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>496116AF-0721-7986-D7B8-CB596D138666</importedID>
+<number>0</number>
+<returnValue class="oracle.dbtools.crest.model.design.datatypes.MethodParam" name="NULL SET GENERATED_1328" id="62FA4C27-A45B-943B-6980-772E24586071">
+<precision>0</precision>
+<reference>false</reference>
+<scale>0</scale>
+<typeID>LOGDT028</typeID>
+</returnValue>
+</Method>
+<Method name="ST_COORDDIM" id="B44260BC-B3DF-5EBD-32CF-F3D8B795C510">
+<sourceConnName>GALILEO_UMBRIA</sourceConnName>
+<sourceObjSchema>GALILEO_UMBRIA</sourceObjSchema>
+<sourceObjName>ST_COORDDIM</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:18 UTC</createdTime>
+<generatorID>810BF25D-9602-E630-2F60-3E5B5CD8B0EA</generatorID>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>810BF25D-9602-E630-2F60-3E5B5CD8B0EA</importedID>
+<number>0</number>
+<returnValue class="oracle.dbtools.crest.model.design.datatypes.MethodParam" name="NULL SET GENERATED_1329" id="C7980140-10C9-4655-E699-F7FE058189CE">
+<precision>0</precision>
+<reference>false</reference>
+<scale>0</scale>
+<typeID>LOGDT018</typeID>
+</returnValue>
+</Method>
+<Method name="ST_ISVALID" id="4DB83E88-EBE8-FAD4-24FD-E1732CF2DF7A">
+<sourceConnName>GALILEO_UMBRIA</sourceConnName>
+<sourceObjSchema>GALILEO_UMBRIA</sourceObjSchema>
+<sourceObjName>ST_ISVALID</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:18 UTC</createdTime>
+<generatorID>906C2C22-EFCA-AF04-2A54-00DD8A3EB261</generatorID>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>906C2C22-EFCA-AF04-2A54-00DD8A3EB261</importedID>
+<number>0</number>
+<returnValue class="oracle.dbtools.crest.model.design.datatypes.MethodParam" name="NULL SET GENERATED_1330" id="CB8140AC-1C6D-CC50-0E69-DAD195AA7F3A">
+<precision>0</precision>
+<reference>false</reference>
+<scale>0</scale>
+<typeID>LOGDT011</typeID>
+</returnValue>
+</Method>
+<Method name="SDO_GEOMETRY" id="9F6DA934-6B2E-0EEE-B87B-92D58470B392">
+<sourceConnName>GALILEO_UMBRIA</sourceConnName>
+<sourceObjSchema>GALILEO_UMBRIA</sourceObjSchema>
+<sourceObjName>SDO_GEOMETRY</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:18 UTC</createdTime>
+<generatorID>78EFF261-1ED6-710F-5CA3-ED751C1733F5</generatorID>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>78EFF261-1ED6-710F-5CA3-ED751C1733F5</importedID>
+<constructor>true</constructor>
+<number>0</number>
+<returnValue class="oracle.dbtools.crest.model.design.datatypes.MethodParam" name="NULL SET GENERATED_1331" id="5403400F-58B2-760C-4466-71437E85A0B3">
+<precision>0</precision>
+<reference>false</reference>
+<scale>0</scale>
+<typeID>47E390DE-0671-C4B1-8428-0F45CBEE18F8</typeID>
+</returnValue>
+<parameters>
+<Parameter class="oracle.dbtools.crest.model.design.datatypes.MethodParam" name="WKT" id="4AE162D6-99B5-9C5F-A90F-2838EB532B4F">
+<precision>0</precision>
+<reference>false</reference>
+<scale>0</scale>
+<typeID>LOGDT028</typeID>
+</Parameter>
+<Parameter class="oracle.dbtools.crest.model.design.datatypes.MethodParam" name="SRID" id="507E5424-5C4C-1BBA-9F5C-8859843B9CE8">
+<precision>0</precision>
+<reference>false</reference>
+<scale>0</scale>
+<typeID>LOGDT011</typeID>
+</Parameter>
+</parameters>
+</Method>
+<Method name="SDO_GEOMETRY" id="254CBD3D-C26E-659B-A874-37260711528C">
+<sourceConnName>GALILEO_UMBRIA</sourceConnName>
+<sourceObjSchema>GALILEO_UMBRIA</sourceObjSchema>
+<sourceObjName>SDO_GEOMETRY</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:18 UTC</createdTime>
+<generatorID>EF1A3821-CC78-D8B4-58C3-B9081215E3A3</generatorID>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>EF1A3821-CC78-D8B4-58C3-B9081215E3A3</importedID>
+<constructor>true</constructor>
+<number>0</number>
+<returnValue class="oracle.dbtools.crest.model.design.datatypes.MethodParam" name="NULL SET GENERATED_1332" id="C5D23B61-8EE7-6AAD-B2F0-4E12F1A8A35E">
+<precision>0</precision>
+<reference>false</reference>
+<scale>0</scale>
+<typeID>47E390DE-0671-C4B1-8428-0F45CBEE18F8</typeID>
+</returnValue>
+<parameters>
+<Parameter class="oracle.dbtools.crest.model.design.datatypes.MethodParam" name="WKT" id="FF8D00FE-ED77-B3F9-E332-3348C3E40D18">
+<precision>0</precision>
+<reference>false</reference>
+<scale>0</scale>
+<typeID>LOGDT024</typeID>
+</Parameter>
+<Parameter class="oracle.dbtools.crest.model.design.datatypes.MethodParam" name="SRID" id="FA6346A8-9C69-7B18-8377-AEE417C9C818">
+<precision>0</precision>
+<reference>false</reference>
+<scale>0</scale>
+<typeID>LOGDT011</typeID>
+</Parameter>
+</parameters>
+</Method>
+<Method name="SDO_GEOMETRY" id="9517738E-E642-7040-59E9-FD385FD24CD3">
+<sourceConnName>GALILEO_UMBRIA</sourceConnName>
+<sourceObjSchema>GALILEO_UMBRIA</sourceObjSchema>
+<sourceObjName>SDO_GEOMETRY</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:18 UTC</createdTime>
+<generatorID>F5FEC923-4337-EAA8-21E7-23D6D1C60963</generatorID>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>F5FEC923-4337-EAA8-21E7-23D6D1C60963</importedID>
+<constructor>true</constructor>
+<number>0</number>
+<returnValue class="oracle.dbtools.crest.model.design.datatypes.MethodParam" name="NULL SET GENERATED_1333" id="FFA73D61-AC8C-058A-C388-10F18314DA09">
+<precision>0</precision>
+<reference>false</reference>
+<scale>0</scale>
+<typeID>47E390DE-0671-C4B1-8428-0F45CBEE18F8</typeID>
+</returnValue>
+<parameters>
+<Parameter class="oracle.dbtools.crest.model.design.datatypes.MethodParam" name="WKB" id="AC921279-A274-26DE-FE94-2143D3E60D9A">
+<precision>0</precision>
+<reference>false</reference>
+<scale>0</scale>
+<typeID>LOGDT029</typeID>
+</Parameter>
+<Parameter class="oracle.dbtools.crest.model.design.datatypes.MethodParam" name="SRID" id="45E6BF14-1238-44C5-C1FB-FA1D8925EBEF">
+<precision>0</precision>
+<reference>false</reference>
+<scale>0</scale>
+<typeID>LOGDT011</typeID>
+</Parameter>
+</parameters>
+</Method>
+</methods>
+</StructuredType>

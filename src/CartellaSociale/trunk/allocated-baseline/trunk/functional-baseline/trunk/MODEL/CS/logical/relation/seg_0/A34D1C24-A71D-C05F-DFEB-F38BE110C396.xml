@@ -1,0 +1,21 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Relation class="oracle.dbtools.crest.model.design.logical.Relation" name="FK_TRIBUNALE_SOGGV1" directorySegmentName="seg_0" id="A34D1C24-A71D-C05F-DFEB-F38BE110C396">
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:18 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>32738C37-8CFE-E1F1-3A4E-C6D5A36E5AC3</importedID>
+<engineerTo>
+<item key="2B43EB65-62DA-EC53-86CF-E94D657D3AAF" value="true"/>
+<item key="36B1C6E8-6FD2-1EF6-8F4A-4E5B3D846A78" value="true"/>
+</engineerTo>
+<sourcePk>F27319AC-A3DF-7ED0-EAB2-882CFA87DD22</sourcePk>
+<identifying>false</identifying>
+<optionalSource>true</optionalSource>
+<optionalTarget>false</optionalTarget>
+<sourceCardinality>1</sourceCardinality>
+<sourceEntity>5223C53A-07C8-F754-CFE3-A5571AED6E58</sourceEntity>
+<targetCardinalityString>*</targetCardinalityString>
+<targetEntity>385127DB-919B-57F2-E9DD-7D641C6AF411</targetEntity>
+<transferable>true</transferable>
+<deleteRule>NO ACTION</deleteRule>
+</Relation>

@@ -1,0 +1,130 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Table class="oracle.dbtools.crest.model.design.relational.Table" directorySegmentName="seg_0" id="F21C71B1-61F9-FA6B-4E07-FAA4C5172448" schemaObject="31789C62-6489-FE63-4664-3CFB4035AC87" name="CS_I_INTERVENTO_ESEG_VALORE">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>CS_SISO</sourceObjSchema>
+<sourceObjName>CS_I_INTERVENTO_ESEG_VALORE</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:18 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>D524113E-9FDA-2275-86F9-71D41C6F40D2</importedID>
+<parsed>true</parsed>
+<columns itemClass="oracle.dbtools.crest.model.design.relational.Column">
+<Column name="ID" id="BF9806C8-AC50-3F23-A767-5F27B9B22B97">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>CS_I_INTERVENTO_ESEG_VALORE</sourceObjSchema>
+<sourceObjName>ID</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:19 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>BE0E1CFB-1150-B9D6-64D0-8794EF338528</importedID>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<dataTypePrecision>10</dataTypePrecision>
+<ownDataTypeParameters>,10,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="INTERVENTO_ESEG_ID" id="00A9F3AF-1219-9D42-89F7-88EF05936592">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>CS_I_INTERVENTO_ESEG_VALORE</sourceObjSchema>
+<sourceObjName>INTERVENTO_ESEG_ID</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:19 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>5430C301-79B2-B478-423A-26D331B02C46</importedID>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<dataTypePrecision>10</dataTypePrecision>
+<ownDataTypeParameters>,10,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+<associations>
+<colAssociation fkAssociation="C65F8DBF-7351-9877-020B-213868AAE02D" referredColumn="22CE8886-EFA5-E8B4-DEC0-798D8BF32291"/>
+</associations>
+</Column>
+<Column name="VALORE" id="46C1FED6-749B-80E0-9E93-29B4068A2B6B">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>CS_I_INTERVENTO_ESEG_VALORE</sourceObjSchema>
+<sourceObjName>VALORE</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:19 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>430153B8-CFB3-F49E-CF8D-EC207A2621E7</importedID>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>256 BYTE</dataTypeSize>
+<ownDataTypeParameters>256 BYTE,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="ATTR_UM_ID" id="1FACCF1D-D947-A2CE-8E1E-34B7BF130CB2">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>CS_I_INTERVENTO_ESEG_VALORE</sourceObjSchema>
+<sourceObjName>ATTR_UM_ID</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:19 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>55430E61-8CDF-2E7B-4C6C-0894BA79C3F2</importedID>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<dataTypePrecision>10</dataTypePrecision>
+<ownDataTypeParameters>,10,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+<associations>
+<colAssociation fkAssociation="080BEB4C-DD02-235A-F82C-8CB68E808405" referredColumn="047CBB00-B399-DC1F-E1EB-B84780A3B223"/>
+</associations>
+</Column>
+</columns>
+<indexes itemClass="oracle.dbtools.crest.model.design.relational.Index">
+<ind_PK_UK id="1D65ECD3-4FE7-CCCA-427B-9F0E6540000F" name="CS_INT_ESEGVALORE_PK">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>CS_SISO</sourceObjSchema>
+<sourceObjName>CS_INT_ESEGVALORE_PK</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:19 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>4B93A282-29C0-7D3D-A3BA-53D06C34964D</importedID>
+<pk>true</pk>
+<indexState>Primary Constraint</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="BF9806C8-AC50-3F23-A767-5F27B9B22B97"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="88F2928E-E8F2-8A50-1095-6F83DBEB8356" schemaObject="31789C62-6489-FE63-4664-3CFB4035AC87" name="CS_INT_ESEGVALORE_PK">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>CS_SISO</sourceObjSchema>
+<sourceObjName>CS_INT_ESEGVALORE_PK</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:19 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>E1A6BF88-FCD7-2B8B-FCCD-5C929D8E9A54</importedID>
+<indexState>Unique Plain Index</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="BF9806C8-AC50-3F23-A767-5F27B9B22B97"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="A59FF003-6B8B-577C-3C96-3BA72D5A05A9" name="CS_INT_ESEGVALORE_ATTRUM_FK">
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:19 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<indexState>Foreign Key</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="1FACCF1D-D947-A2CE-8E1E-34B7BF130CB2"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="5B9F97EF-8CD8-E0F0-CBF5-C27592695429" name="CS_INT_ESEGVALORE_INT_ESEG_FK">
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:19 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<indexState>Foreign Key</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="00A9F3AF-1219-9D42-89F7-88EF05936592"/>
+</indexColumnUsage>
+</ind_PK_UK>
+</indexes>
+</Table>

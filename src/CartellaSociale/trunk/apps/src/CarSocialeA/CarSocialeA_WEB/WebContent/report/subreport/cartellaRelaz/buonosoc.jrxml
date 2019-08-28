@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="buonosoc" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="0ec4219a-10ca-42aa-9bed-e6d80e9662a6">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<field name="richiestoPer" class="java.lang.String"/>
+	<field name="tipoRiscossione" class="java.lang.String"/>
+	<field name="gestione" class="java.lang.String"/>
+	<field name="deroghe" class="java.lang.String"/>
+	<field name="accreditoA" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="127" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="76603c33-3f54-4218-a0b1-b364323b7253" x="0" y="0" width="317" height="25"/>
+				<textElement>
+					<font fontName="Arial" size="12" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Buoni Sociali:]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="c1018d00-0096-4f97-b86a-94e54bd382de" x="0" y="25" width="293" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA["Richiesto Per: " + $F{richiestoPer}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="0ccd791f-d664-4f78-bcdb-7b950709f05e" x="0" y="45" width="293" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA["Tipo di Riscossione: " + $F{tipoRiscossione}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="1b29177d-b1ab-44fd-a00d-07c70858ef71" x="0" y="65" width="293" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA["Gestione: " + $F{gestione}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="1b29177d-b1ab-44fd-a00d-07c70858ef71" x="0" y="85" width="293" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA["Deroghe: " + $F{deroghe}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="1b29177d-b1ab-44fd-a00d-07c70858ef71" x="0" y="105" width="293" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA["Accredito a: " + $F{accreditoA}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+</jasperReport>

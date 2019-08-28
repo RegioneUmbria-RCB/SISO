@@ -1,0 +1,140 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+     	xmlns:h="http://java.sun.com/jsf/html"
+		xmlns:f="http://java.sun.com/jsf/core"
+		xmlns:ui="http://java.sun.com/jsf/facelets"
+		xmlns:p="http://primefaces.org/ui"
+	  	xmlns:composite="http://java.sun.com/jsf/composite"
+	  	xmlns:webredcs="http://java.sun.com/jsf/composite/webredcs"
+	  	xmlns:webred="http://java.sun.com/jsf/composite/webred">
+
+<h:head>
+	<title>Anagrafica</title>
+</h:head>
+<h:body>
+	<composite:interface componentType="pnlAna">
+		<composite:attribute name="iDatiAna" type="it.webred.cs.jsf.interfaces.IDatiAna" />
+		<composite:attribute name="disableModifica" default="false" />
+		<composite:attribute name="panelStyleClass" />
+	</composite:interface>
+	<composite:implementation>
+		
+		<h:panelGrid columns="2">
+			<h:outputText value="Cognome *" />
+			<p:inputText style="width: 95%; text-transform: capitalize;" value="#{cc.attrs.iDatiAna.datiAnaBean.cognome}" maxlength="100"
+				disabled="#{cc.attrs.iDatiAna.soggettoId != null}" />
+
+			<h:outputText value="Nome *" />
+			<p:inputText style="width: 95%; text-transform: capitalize;" value="#{cc.attrs.iDatiAna.datiAnaBean.nome}" maxlength="100"
+				disabled="#{cc.attrs.iDatiAna.soggettoId != null}" />
+
+			<h:outputText value="Data di nascita *" />
+			<h:panelGroup>
+				<webred:pnlData dataValue="#{cc.attrs.iDatiAna.datiAnaBean.dataNascita}" dataPattern="dd/MM/yyyy" dataReq="false"
+					dataReqMes="Data di nascita è un campo obbligatorio" dataValMes="Data di nascita non valida" dataConMes="Data di nascita non valida"
+					dataPatternLabel="gg/mm/aaaa" maxDate="#{commonSessionMan.currentDate}" yearRange="c-100:c+0"
+					disabled="#{cc.attrs.iDatiAna.soggettoId != null}" />
+				<p:spacer width="40px;" />
+				<webred:pnlComuneNazione id="comuneNazioneNascita" pnlToUpdate="#{p:component('comuneNazioneNascita')}"
+					comuneNazioneManBean="#{cc.attrs.iDatiAna.comuneNazioneNascitaMan}" disabled="#{cc.attrs.iDatiAna.soggettoId != null}" />
+			</h:panelGroup>
+
+			<h:outputText value="Codice fiscale *" />
+			<h:panelGroup>
+				<webredcs:pnlCodFisc id="codFisc" codFiscValue="#{cc.attrs.iDatiAna.datiAnaBean.codiceFiscale}" codFiscValMes="Codice fiscale non valido"
+					codFiscReq="false" codFiscReqMes="Codice fiscale è un campo obbligatorio" 
+					disabled="#{cc.attrs.iDatiAna.soggettoId != null}" />
+						
+	       		<p:commandButton value="Genera CF temporaneo" icon="ui-icon-gear" title="Generazione di un nuovo codice fiscale temporaneo, a partire dai dati anagrafici immessi nel form" 
+	       			action="#{tempCodFiscManager.openDlgGenerateCfAction}"  
+	       			disabled="#{cc.attrs.iDatiAna.disabilitaForm}"
+	       			rendered="#{cc.attrs.iDatiAna.soggettoId == null}"
+	       			update="@this" process="@composite">
+	      			<f:setPropertyActionListener target="#{tempCodFiscManager.datiAnagrafici}" value="#{cc.attrs.iDatiAna.datiAnaBean}"/>
+	      			<f:setPropertyActionListener target="#{tempCodFiscManager.comuneNascita}" value="#{cc.attrs.iDatiAna.comuneNazioneNascitaMan.comuneMan.comune}"/>
+	      			<p:ajax event="dialogReturn" listener="#{tempCodFiscManager.onCfGenerated}" update="@form"  />
+	   			</p:commandButton>   			
+				<p:commandButton value="Sostituisci CF" icon="ui-icon-shuffle" title="Applica il codice fiscale definitivo" 
+	       			action="#{tempCodFiscManager.openDlgReplaceCfAction}"
+	       			disabled="#{cc.attrs.iDatiAna.disabilitaForm}"
+	       			rendered="#{tempCodFiscManager.isTemporaneo(cc.attrs.iDatiAna.datiAnaBean.codiceFiscale)}"
+	       			update="@this" process="@composite">
+	       			<f:attribute name="anagraficaBean" value="#{cc.attrs.iDatiAna}"/>	       			
+	      			<f:setPropertyActionListener target="#{tempCodFiscManager.datiAnagrafici}" value="#{cc.attrs.iDatiAna.datiAnaBean}"/>	      			
+	      			<f:setPropertyActionListener target="#{tempCodFiscManager.comuneNascita}" value="#{cc.attrs.iDatiAna.comuneNazioneNascitaMan.comuneMan.comune}"/>
+	      			<p:ajax event="dialogReturn" listener="#{tempCodFiscManager.onCfReplaced}" update="@form"/>      			
+	   			</p:commandButton>			
+			</h:panelGroup>
+   			
+			<h:outputText value="Sesso *" />
+			<webred:pnlSesso value="#{cc.attrs.iDatiAna.datiAnaBean.datiSesso}" disabled="#{cc.attrs.iDatiAna.soggettoId != null}" />
+
+			<h:outputText value="Cittadinanza *" />
+			<p:selectOneMenu value="#{cc.attrs.iDatiAna.datiAnaBean.cittadinanza}" disabled="#{cc.attrs.iDatiAna.soggettoId != null}" filter="true"
+				filterMatchMode="startsWith">
+				<f:selectItems value="#{cc.attrs.iDatiAna.lstCittadinanze}" />
+			</p:selectOneMenu>
+
+			<h:outputText value="Acquisita" for="cittadinanza_acquisita_segnalato" />
+			<p:selectOneMenu id="cittadinanza_acquisita_segnalato" value="#{cc.attrs.iDatiAna.datiAnaBean.cittadinanzaAcq}" effect="fold" editable="false"
+				disabled="#{cc.attrs.iDatiAna.disabilitaForm}">
+				<f:selectItems value="#{cc.attrs.iDatiAna.lstCittadinanzeAcq}" />
+			</p:selectOneMenu>
+
+			<h:outputText value="Seconda Cittadinanza" for="cittadinanza2_segnalato" />
+			<p:selectOneMenu id="cittadinanza2_segnalato" value="#{cc.attrs.iDatiAna.datiAnaBean.cittadinanza2}" effect="fold" editable="false" filter="true"
+				filterMatchMode="startsWith" disabled="#{cc.attrs.iDatiAna.disabilitaForm}">
+				<f:selectItems value="#{cc.attrs.iDatiAna.lstCittadinanze}" />
+			</p:selectOneMenu>
+
+
+			<h:outputText value="Residenza *" />
+			<webred:pnlResidenza id="residenza" residenzaManBean="#{cc.attrs.iDatiAna.residenzaCsaMan}" labelStyle="display:block;width: 162px;"
+				panelStyleClass="#{cc.attrs.panelStyleClass}" codiceFiscale="#{cc.attrs.iDatiAna.datiAnaBean.codiceFiscale}"
+				disableModifica="#{cc.attrs.disableModifica}" attivaSalvataggio="#{!cc.attrs.iDatiAna.disabilitaForm}"/>
+
+			<h:outputText value="Stato civile" />
+			<webredcs:pnlDataValiditaGestione var="SC" textDialogHeader="Gestione Stato Civile" iDatiValGestione="#{cc.attrs.iDatiAna.statoCivileGestBean}"
+				disableModifica="#{cc.attrs.disableModifica or cc.attrs.iDatiAna.disabilitaForm}"/>
+
+			<h:outputText value="Medico medicina generale" />
+			<webredcs:pnlDataValiditaGestione var="Med" textDialogHeader="Gestione Medici" iDatiValGestione="#{cc.attrs.iDatiAna.mediciGestBean}"
+				disableModifica="#{cc.attrs.disableModifica or cc.attrs.iDatiAna.disabilitaForm}"/>
+
+			<h:outputText value="Recapito telefonico*" />
+			<h:panelGrid columns="4">
+				<h:outputText value="Fisso" />
+				<p:inputText style="width: 100px;" value="#{cc.attrs.iDatiAna.datiAnaBean.telefono}" maxlength="50" disabled="#{cc.attrs.iDatiAna.disabilitaForm}" />
+				<h:outputText value="titolare" />
+				<p:inputText style="width: 200px;" value="#{cc.attrs.iDatiAna.datiAnaBean.titTelefono}" disabled="#{cc.attrs.iDatiAna.disabilitaForm}" />
+
+				<h:outputText value="Cellulare" />
+				<p:inputText style="width: 100px;" value="#{cc.attrs.iDatiAna.datiAnaBean.cellulare}" maxlength="50" disabled="#{cc.attrs.iDatiAna.disabilitaForm}" />
+				<h:outputText value="titolare" />
+				<p:inputText style="width: 200px;" value="#{cc.attrs.iDatiAna.datiAnaBean.titCellulare}" disabled="#{cc.attrs.iDatiAna.disabilitaForm}" />
+			</h:panelGrid>
+
+			<h:outputText value="E-mail" />
+			<h:panelGrid columns="3">
+				<p:inputText style="width:150px" value="#{cc.attrs.iDatiAna.datiAnaBean.email}" maxlength="50" disabled="#{cc.attrs.iDatiAna.disabilitaForm}" />
+				<h:outputText value="titolare" />
+				<p:inputText style="width: 200px;" value="#{cc.attrs.iDatiAna.datiAnaBean.titEmail}" disabled="#{cc.attrs.iDatiAna.disabilitaForm}" />
+			</h:panelGrid>
+
+			<h:outputText value="Data apertura fascicolo familiare" style="display: block; width: 150px;"
+				rendered="#{cc.attrs.iDatiAna.visDataAperturaFascicoloFam}" />
+			<webred:pnlData dataValue="#{cc.attrs.iDatiAna.datiAnaBean.dataAperturaFascFam}" 
+				rendered="#{cc.attrs.iDatiAna.visDataAperturaFascicoloFam}" dataPattern="dd/MM/yyyy" dataValMes="Data apertura fascicolo familiare non valida"
+				dataConMes="Data apertura fascicolo familiare non valida" dataPatternLabel="gg/mm/aaaa" maxDate="#{commonSessionMan.currentDate}"
+				yearRange="c-50:c+0"  disabled="#{cc.attrs.iDatiAna.disabilitaForm}"/>
+		</h:panelGrid>
+
+		<h:panelGrid columns="1">
+			<p:spacer height="15" />
+			<h:outputText value="* campo obbligatorio" styleClass="bold" />
+		</h:panelGrid>
+
+	</composite:implementation>
+</h:body>
+
+</html>

@@ -1,0 +1,218 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:webred="http://java.sun.com/jsf/composite/webred"
+	xmlns:webredcs="http://java.sun.com/jsf/composite/webredcs">
+<ui:composition template="/jsp/protected/layout/layout.xhtml">
+
+	<ui:define name="content">
+	
+   <!-- <p:growl id="growl" sticky="true" showDetail="true"/> --> 
+
+  <h:form id="form_anagrafica">
+    <p:wizard id="wizard" flowListener="#{nuovoCasoWizard.onFlowProcess}">  
+      
+        <p:tab id="anagrafica_tab" title="Anagrafica">  
+  
+            <p:panel id="anagrafica_panel" header="Anagrafica" toggleable="true" toggleSpeed="500">  
+              
+                <h:panelGrid id="anagrafica_panelgrid" columns="4" columnClasses="label, value" styleClass="grid">  
+                    <h:outputText value="Nome *" for="nome" />  
+                    <p:inputText id="nome" required="true" label="Firstname"  
+                            value="#{nuovoCasoWizard.firstname}" />  
+                      
+                    <h:outputText value="Cognome *" for="cognome" />  
+                    <p:inputText id="cognome" required="true" label="Lastname"  
+                            value="#{nuovoCasoWizard.lastname}" />  
+                      
+                    <h:outputText value="Data di nascita *" for="data_nascita" />  
+                    <p:calendar id="data_nascita" value="#{nuovoCasoWizard.dataNascita}" navigator="true" 
+                                pattern="dd/MM/yyyy"  maxDate="#{nuovoCasoWizard.currentDate}" yearRange="c-100:c+0" />  
+                    
+                    <h:outputText value="Luogo di nascita *" for="luogo_nascita_1" />
+                    <p:selectBooleanButton id="luogo_nascita_1" value="#{nuovoCasoWizard.comunitario}" onLabel="Comunitario" offLabel="Non comunitario" >
+                    	<p:ajax />
+                    </p:selectBooleanButton>
+                              
+                 	<h:outputText value=" " /><h:outputText value=" " />
+                 	
+            		<h:outputText value=" " for="luogo_nascita_2"/>
+                 	<p:autoComplete id="luogo_nascita_2" minQueryLength="3"   
+                    	value="#{nuovoCasoWizard.luogoNascita}" effect="fade"  
+                    	completeMethod="#{nuovoCasoWizard.completeLuogoNascita}"/>
+                
+                 	<h:outputText value="Sesso *" for="sesso" />
+                 	<p:selectBooleanButton id="sesso" value="#{nuovoCasoWizard.maschio}" onLabel="Maschio" offLabel="Femmina" />
+            
+                    <h:outputText value="Stato civile " for="stato_civile" />  
+                    <p:selectOneMenu id="stato_civile" value="#{nuovoCasoWizard.statoCivile}">  
+            			<f:selectItem itemLabel="Seleziona uno" itemValue="" />  
+            			<f:selectItem itemLabel="Celibe/Nubile" itemValue="1" />  
+            			<f:selectItem itemLabel="Coniugata/o" itemValue="2" />  
+            			<f:selectItem itemLabel="Altro" itemValue="3" />  
+        			</p:selectOneMenu>
+        			
+        			<h:outputText value="Codice fiscale *" for="codice_fiscale" />
+        			<p:inputText id="codice_fiscale" required="true" label="codice fiscale"  
+                            value="#{nuovoCasoWizard.codiceFiscale}" />  
+                     
+                    <h:outputText value="Medico medicina generale *" for="medico" />
+        			<p:selectOneMenu id="medico" value="#{nuovoCasoWizard.medico}" effect="fold" editable="false">  
+            			<f:selectItem itemLabel="Seleziona uno" itemValue="" />  
+            			<f:selectItems value="#{nuovoCasoWizard.medici}" />  
+        			</p:selectOneMenu>
+                    
+                    <h:outputText value="Telefono " for="telefono" />
+        			<p:inputText id="telefono" label="telefono"  
+                            value="#{nuovoCasoWizard.telefono}" />
+                            
+                    <h:outputText value="Cellulare " for="cel" />
+        			<p:inputText id="cel" label="cel"  
+                            value="#{nuovoCasoWizard.cel}" />
+                    
+                    <h:outputText value="Email" for="email" />
+        			<p:inputText id="email" label="email"  
+                            value="#{nuovoCasoWizard.email}" />
+                            
+                    <h:outputText value="Residenza *" for="residenza_button" />
+                    <p:commandButton id="residenza_button" type="button" value="Aggiungi" onclick="PF('dlg_res').show()" />  
+          			
+          			<p:dialog header="Aggiungi residenza" widgetVar="dlg_res" resizable="true" minimizable="true" maximizable="true">  
+    					<h:panelGrid columns="2" style="margin-bottom:10px">  
+            				<h:outputLabel for="firstname" value="Firstname:" />  
+            				<p:inputText id="indirizzo" value="#{nuovoCasoWizard.firstname}" />  
+        					<p:commandButton id="addButton" update=":form_anagrafica:display" partialSubmit="true" process="indirizzo" value="Aggiungi"  onclick="PF('dlg_res').hide();"/>
+        				</h:panelGrid> 
+					</p:dialog>
+					<p:outputPanel id="display" >
+						<h:outputText id="residenza_msg" value="Hello #{nuovoCasoWizard.firstname}" />
+                 	</p:outputPanel>
+                 </h:panelGrid>  
+            </p:panel>
+            
+            <p:spacer height="2px"/>
+            
+            <p:panel header="Dati sociali essenziali apertura" toggleable="true" toggleSpeed="500">
+            	  <h:panelGrid columns="2" cellpadding="5">
+            		<h:outputText value="Ufficio: *" for="ufficio_dd"/>  
+        			<p:selectOneMenu value="#{nuovoCasoWizard.ufficio}" effect="fold" editable="false">  
+            			<f:selectItem itemLabel="Seleziona uno" itemValue="" />  
+            			<f:selectItems value="#{nuovoCasoWizard.uffici}" />  
+        			</p:selectOneMenu>  
+            		
+            		<h:outputText value="Data: *" for="data_pic"/>
+            		<p:calendar value="#{nuovoCasoWizard.date}" id="popupCal" /> 
+            		
+            		<h:outputText value="Assistente sociale: *" for="assistente_soc_dd"/>
+            		 <p:selectOneMenu value="#{nuovoCasoWizard.assistente}" effect="fold" editable="false">  
+            			<f:selectItem itemLabel="Seleziona uno" itemValue="" />  
+            			<f:selectItems value="#{nuovoCasoWizard.assistenti}" />  
+        			</p:selectOneMenu>
+        			
+            	</h:panelGrid>
+            </p:panel>
+            
+            <p:spacer height="2px"/>
+            <p:panel header="Dati chiusura" toggleable="true" toggleSpeed="500">
+            	<h:panelGrid columns="1" columnClasses="label, value" styleClass="grid">
+            		<h:outputText value="Dati" />
+            	</h:panelGrid>
+            </p:panel>
+            
+        </p:tab>  
+              
+        <p:tab id="address" title="Address">  
+            <p:panel header="Adress Details">  
+         
+                <h:panelGrid columns="2" columnClasses="label, value">  
+                    <h:outputText value="Street: " />  
+                    <p:inputText value="#{nuovoCasoWizard.street}" />  
+                      
+                    <h:outputText value="Postal Code: " />  
+                    <p:inputText value="#{nuovoCasoWizard.postalCode}" />  
+                      
+                    <h:outputText value="City: " />  
+                    <p:inputText value="#{nuovoCasoWizard.city}" />  
+                      
+                    <h:outputText value="Skip to last: " />  
+                    <h:selectBooleanCheckbox value="#{nuovoCasoWizard.skip}" />  
+                </h:panelGrid>  
+            </p:panel>  
+        </p:tab>  
+              
+        <p:tab id="contact" title="Contact">  
+            <p:panel header="Contact Information">  
+                
+                <h:panelGrid columns="2" columnClasses="label, value">  
+                    <h:outputText value="Email: *" />  
+                    <p:inputText required="true" label="Email"  
+                            value="#{nuovoCasoWizard.email}" />  
+                      
+                    <h:outputText value="Phone: " />  
+                    <p:inputText value="#{nuovoCasoWizard.phone}"/>  
+                      
+                    <h:outputText value="Additional Info: " />  
+                    <p:inputText value="#{nuovoCasoWizard.info}"/>  
+                </h:panelGrid>  
+            </p:panel>  
+        </p:tab>  
+              
+        <p:tab id="confirm" title="Confirmation">  
+            <p:panel header="Confirmation">  
+              
+                <h:panelGrid id="confirmation" columns="6">  
+                    <h:outputText value="Firstname: " />  
+                    <h:outputText styleClass="outputLabel"  
+                                value="#{nuovoCasoWizard.firstname}" />  
+                      
+                    <h:outputText value="Lastname: " />  
+                    <h:outputText  styleClass="outputLabel"  
+                                value="#{nuovoCasoWizard.lastname}"/>  
+                      
+                    <h:outputText value="Age: " />  
+                    <h:outputText styleClass="outputLabel"  
+                                value="#{nuovoCasoWizard.age}" />  
+                      
+                    <h:outputText value="Street: " />  
+                    <h:outputText styleClass="outputLabel"  
+                                value="#{nuovoCasoWizard.street}" />  
+                      
+                    <h:outputText value="Postal Code: " />  
+                    <h:outputText styleClass="outputLabel"  
+                                value="#{nuovoCasoWizard.postalCode}" />  
+                      
+                    <h:outputText value="City: " />  
+                    <h:outputText styleClass="outputLabel"  
+                                value="#{nuovoCasoWizard.city}" />  
+                      
+                    <h:outputText value="Email: " />  
+                    <h:outputText styleClass="outputLabel"  
+                                value="#{nuovoCasoWizard.email}" />  
+                      
+                    <h:outputText value="Phone " />  
+                    <h:outputText styleClass="outputLabel"  
+                                value="#{nuovoCasoWizard.phone}"/>  
+                      
+                    <h:outputText value="Info: " />  
+                    <h:outputText styleClass="outputLabel"  
+                                value="#{nuovoCasoWizard.info}" />  
+                      
+                    <h:outputText />  
+                    <h:outputText />  
+                </h:panelGrid>  
+                  
+                <p:commandButton value="Submit" actionListener="#{nuovoCasoWizard.save}"/>  
+              
+            </p:panel>  
+        </p:tab>  
+          
+    </p:wizard> 
+    </h:form> 
+     
+	</ui:define>
+
+</ui:composition>
+</html>

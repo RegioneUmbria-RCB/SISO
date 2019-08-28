@@ -1,0 +1,117 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+     	xmlns:h="http://java.sun.com/jsf/html"
+		xmlns:f="http://java.sun.com/jsf/core"
+		xmlns:ui="http://java.sun.com/jsf/facelets"
+		xmlns:p="http://primefaces.org/ui"
+	  	xmlns:composite="http://java.sun.com/jsf/composite"
+	  	xmlns:webredcs="http://java.sun.com/jsf/composite/webredcs"
+	  	xmlns:webred="http://java.sun.com/jsf/composite/webred">
+      
+	<h:head>
+		<title>Dati Sociali</title>
+	</h:head>
+	<h:body>
+	
+		<composite:interface componentType="pnlDatiSociali">
+			<composite:attribute name="iDatiSociali" type="it.webred.cs.jsf.interfaces.IDatiSociali"/>
+		</composite:interface>
+		
+		<composite:implementation>			
+			
+			<style type="text/css">
+				.datalist-noborder .ui-widget-content {
+					border: none;
+				}
+			</style>
+			
+		<p:outputPanel style="width:100%">
+			<p:fieldset legend="Presenza in Italia (per persone di origine straniera)" toggleable="false" 
+							style="display: inline-block; vertical-align: top;"
+							rendered="#{cc.attrs.iDatiSociali.stranieriRequired and cc.attrs.iDatiSociali.abilitaInfoStranieri}">
+				<webredcs:pnlStranieri iStranieri="#{cc.attrs.iDatiSociali.stranieriMan}" soloLettura="#{cc.attrs.iDatiSociali.disabilitaForm}" />
+			</p:fieldset>
+
+			<p:fieldset legend="Abitazione" toggleable="false" style="display: inline-block; vertical-align: top;"
+							rendered="#{cc.attrs.iDatiSociali.abilitaInfoStranieri}">
+				<webredcs:pnlAbitazione iAbitazione="#{cc.attrs.iDatiSociali.abitazioneMan}" 
+				                        numColonne="2" soloLettura="#{cc.attrs.iDatiSociali.disabilitaForm}" />
+			</p:fieldset>
+
+			<p:fieldset legend="Formazione e Lavoro" toggleable="false" style="display: inline-block; vertical-align: top;">
+				<webredcs:pnlFormazioneLavoro iFormazioneLavoro="#{cc.attrs.iDatiSociali.formLavoroMan}"
+						onChangeCondLavoro="#{cc.attrs.iDatiSociali.onChangeCondLavoro()}" 
+						onChangeTitoloStudio="#{cc.attrs.iDatiSociali.onChangeTitoloStudio()}"
+						numColonne="2" soloLettura="#{cc.attrs.iDatiSociali.disabilitaForm}"/>
+			</p:fieldset>
+
+			<p:fieldset legend="Familiari e Conviventi" toggleable="false" style="display: inline-block; vertical-align: top;"
+				rendered="#{cc.attrs.iDatiSociali.abilitaInfoStranieri}">
+				<webredcs:pnlFamConviventi iFamConviventi="#{cc.attrs.iDatiSociali.famConviventiMan}" 
+				                           numColonne="2" soloLettura="#{cc.attrs.iDatiSociali.disabilitaForm}"/>
+			</p:fieldset>
+
+			<h:panelGrid columns="4" style="display: inline-block; vertical-align: top;" >
+				<h:outputText value="Inviante" />
+				<p:selectOneMenu value="#{cc.attrs.iDatiSociali.idInviante}" filter="true" filterMatchMode="startsWith"
+						panelStyleClass="selectOneMenuGrouped" disabled="#{cc.attrs.iDatiSociali.disabilitaForm}">
+					<f:selectItems value="#{cc.attrs.iDatiSociali.lstInviante}" />
+				</p:selectOneMenu>
+				<h:outputText value="Inviato a" />
+				<p:selectOneMenu value="#{cc.attrs.iDatiSociali.idInviatoA}" filter="true" filterMatchMode="startsWith" 
+					panelStyleClass="selectOneMenuGrouped" disabled="#{cc.attrs.iDatiSociali.disabilitaForm}">
+					<f:selectItems value="#{cc.attrs.iDatiSociali.lstInviatoA}" />
+				</p:selectOneMenu>
+				<h:outputText value="Problematica del nucleo" style="display: block; width: 100px;"
+                              rendered="#{cc.attrs.iDatiSociali.idProblematicaNucleo!=null}"/>
+				<p:selectOneMenu value="#{cc.attrs.iDatiSociali.idProblematicaNucleo}" style="width:200px"
+										rendered="#{cc.attrs.iDatiSociali.idProblematicaNucleo!=null}" disabled="true">
+					<f:selectItems value="#{cc.attrs.iDatiSociali.lstProblematicheNucleo}" />
+				</p:selectOneMenu>
+				<h:outputText value="Problematica del soggetto #{cc.attrs.iDatiSociali.renderProblematicaSogg ? '*' : '' }" style="display: block; width: 100px;"
+									rendered="#{cc.attrs.iDatiSociali.renderProblematicaSogg or cc.attrs.iDatiSociali.idProblematica!=null}" />
+				<p:selectOneMenu value="#{cc.attrs.iDatiSociali.idProblematica}"
+										rendered="#{cc.attrs.iDatiSociali.renderProblematicaSogg or cc.attrs.iDatiSociali.idProblematica!=null}"
+										disabled="#{!cc.attrs.iDatiSociali.renderProblematicaSogg or cc.attrs.iDatiSociali.disabilitaForm}">
+					<f:selectItems value="#{cc.attrs.iDatiSociali.lstProblematiche}" />
+				</p:selectOneMenu>
+				<h:outputText value="In carico a" />
+				<p:selectOneMenu value="#{cc.attrs.iDatiSociali.idCaricoA}" filter="true" filterMatchMode="startsWith" 
+					panelStyleClass="selectOneMenuGrouped" disabled="#{cc.attrs.iDatiSociali.disabilitaForm}">
+					<f:selectItems value="#{cc.attrs.iDatiSociali.lstCaricoA}" />
+				</p:selectOneMenu>
+
+				<h:outputText value="Autosufficienza" />
+
+				<p:selectOneRadio value="#{cc.attrs.iDatiSociali.autosufficienza}" layout="pageDirection" disabled="#{cc.attrs.iDatiSociali.disabilitaForm}">
+					<f:selectItem itemLabel="Totalmente non autosufficiente" itemValue="NAT" />
+					<f:selectItem itemLabel="Parzialmente non autosufficiente" itemValue="NAP" />
+					<f:selectItem itemLabel="Autosufficiente" itemValue="AUTO" />
+				</p:selectOneRadio>
+			</h:panelGrid>
+
+			<p:outputPanel style="display: inline-block; vertical-align: top;">
+				<p:tabView>
+					<p:tab title="Amm.Sostegno">
+						<webredcs:pnlComponenteOAltro iComponenteOAltro="#{cc.attrs.iDatiSociali.sostegno}" required="false" styleClass="#{cc.attrs.styleClass}" disabled="#{cc.attrs.iDatiSociali.disabilitaForm}" />
+					</p:tab>
+					<p:tab title="Tutela">
+						<webredcs:pnlComponenteOAltro iComponenteOAltro="#{cc.attrs.iDatiSociali.tutela}" required="false" styleClass="#{cc.attrs.styleClass}" disabled="#{cc.attrs.iDatiSociali.disabilitaForm}" />
+					</p:tab>
+					<p:tab title="Curatela">
+						<webredcs:pnlComponenteOAltro iComponenteOAltro="#{cc.attrs.iDatiSociali.curatela}" required="false" styleClass="#{cc.attrs.styleClass}" disabled="#{cc.attrs.iDatiSociali.disabilitaForm}" />
+					</p:tab>
+				</p:tabView>
+				<p:selectBooleanCheckbox itemLabel="Affidamento al servizio sociale" value="#{cc.attrs.iDatiSociali.affServSociali}" disabled="#{cc.attrs.iDatiSociali.disabilitaForm}"/>
+			</p:outputPanel>
+		</p:outputPanel>
+
+		<h:panelGrid columns="1">
+			<p:spacer height="20" />
+			<h:outputText value="* campo obbligatorio" styleClass="bold" />
+		</h:panelGrid>
+
+		</composite:implementation>
+	</h:body>
+	
+</html>

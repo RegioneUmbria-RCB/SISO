@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jre6"/>
+	<classpathentry kind="lib" path="/CT-LIBS/htmlUnit/sac-1.3.jar"/>
+	<classpathentry kind="lib" path="/CT-LIBS/htmlUnit/xercesImpl-2.11.0.jar"/>
+	<classpathentry kind="lib" path="/CT-LIBS/htmlUnit/xml-apis-1.4.01.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
+	<classpathentry kind="lib" path="/CT-LIBS/json/jackson-annotations-2.2.3.jar"/>
+	<classpathentry kind="lib" path="/CT-LIBS/json/jackson-core-2.2.3.jar"/>
+	<classpathentry kind="lib" path="/CT-LIBS/json/jackson-databind-2.2.3.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/AMProfilerWeb_DTO"/>
+	<classpathentry kind="lib" path="/CT-LIBS/cet-lib/audit.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/SocioSanitario_EJBClient"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/WebredEJBUtility"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/SegretariatoSoc_DataModel"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/SegretariatoSoc_EJBClient"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/CarSocialeA_EJBClient"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/SocioSanitario_WEB_DTO"/>
+	<classpathentry kind="lib" path="/CT-LIBS/htmlUnit/commons-codec-1.10.jar"/>
+	<classpathentry kind="lib" path="/CT-LIBS/htmlUnit/commons-io-2.5.jar"/>
+	<classpathentry kind="lib" path="/CT-LIBS/htmlUnit/commons-lang3-3.5.jar"/>
+	<classpathentry kind="lib" path="/CT-LIBS/htmlUnit/commons-logging-1.2.jar"/>
+	<classpathentry kind="lib" path="/CT-LIBS/htmlUnit/cssparser-0.9.21.jar"/>
+	<classpathentry kind="lib" path="/CT-LIBS/htmlUnit/htmlunit-2.24.jar"/>
+	<classpathentry kind="lib" path="/CT-LIBS/htmlUnit/htmlunit-core-js-2.23.jar"/>
+	<classpathentry kind="lib" path="/CT-LIBS/htmlUnit/httpclient-4.5.2.jar"/>
+	<classpathentry kind="lib" path="/CT-LIBS/htmlUnit/httpcore-4.4.4.jar"/>
+	<classpathentry kind="lib" path="/CT-LIBS/htmlUnit/httpmime-4.5.2.jar"/>
+	<classpathentry kind="lib" path="/CT-LIBS/htmlUnit/jetty-io-9.2.20.v20161216.jar"/>
+	<classpathentry kind="lib" path="/CT-LIBS/htmlUnit/jetty-util-9.2.20.v20161216.jar"/>
+	<classpathentry kind="lib" path="/CT-LIBS/htmlUnit/neko-htmlunit-2.24.jar"/>
+	<classpathentry kind="lib" path="/CT-LIBS/htmlUnit/serializer-2.7.2.jar"/>
+	<classpathentry kind="lib" path="/CT-LIBS/htmlUnit/xalan-2.7.2.jar"/>
+	<classpathentry kind="lib" path="/CT-LIBS/htmlUnit/websocket-api-9.2.20.v20161216.jar"/>
+	<classpathentry kind="lib" path="/CT-LIBS/htmlUnit/websocket-client-9.2.20.v20161216.jar"/>
+	<classpathentry kind="lib" path="/CT-LIBS/htmlUnit/websocket-common-9.2.20.v20161216.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

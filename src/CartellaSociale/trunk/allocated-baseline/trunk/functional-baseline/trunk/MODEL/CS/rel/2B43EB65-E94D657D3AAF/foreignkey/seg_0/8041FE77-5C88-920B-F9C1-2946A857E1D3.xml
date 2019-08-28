@@ -1,0 +1,18 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<FKIndexAssociation class="oracle.dbtools.crest.model.design.relational.FKIndexAssociation" directorySegmentName="seg_0" id="8041FE77-5C88-920B-F9C1-2946A857E1D3" containerWithKeyObject="3EC64053-4AC7-D75D-AD8A-8705F4F2814C" localFKIndex="EC26843D-9CD2-711D-144A-2CC40A33039F" name="GL_DAT_ISTF1_DATIST_F1_FK">
+<sourceConnName>GALILEO_UMBRIA</sourceConnName>
+<sourceObjSchema>GALILEO_UMBRIA</sourceObjSchema>
+<sourceObjName>GL_DAT_ISTF1_DATIST_F1_FK</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:53:59 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>2419197C-D3A1-E62F-7DA9-A1801D1BE7A7</importedID>
+<deleteRule>NO ACTION</deleteRule>
+<referredTableID>3EC64053-4AC7-D75D-AD8A-8705F4F2814C</referredTableID>
+<keyObject>DA7FEBCE-688B-6BAB-BFA4-31D5E7AF3777</keyObject>
+<referredKeyID>DA7FEBCE-688B-6BAB-BFA4-31D5E7AF3777</referredKeyID>
+<mandatory>false</mandatory>
+<transferable>true</transferable>
+<rely>false</rely>
+<columnDependencyConstraintGenerateInDDL>false</columnDependencyConstraintGenerateInDDL>
+</FKIndexAssociation>

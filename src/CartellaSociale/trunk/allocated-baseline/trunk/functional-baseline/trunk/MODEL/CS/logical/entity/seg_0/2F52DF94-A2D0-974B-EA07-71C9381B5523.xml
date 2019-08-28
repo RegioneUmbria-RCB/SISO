@@ -1,0 +1,214 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Entity class="oracle.dbtools.crest.model.design.logical.Entity" directorySegmentName="seg_0" id="2F52DF94-A2D0-974B-EA07-71C9381B5523" name="CS_IT_STEP">
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:18 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>EC9D44CF-BE1C-6462-8410-9029FF7AF66B</importedID>
+<engineerTo>
+<item key="2B43EB65-62DA-EC53-86CF-E94D657D3AAF" value="true"/>
+<item key="36B1C6E8-6FD2-1EF6-8F4A-4E5B3D846A78" value="true"/>
+</engineerTo>
+<adequatelyNormalized>NO</adequatelyNormalized>
+<expectedVolumes>0</expectedVolumes>
+<fwdEngineeringStrategyName>Single Table</fwdEngineeringStrategyName>
+<growthPercent>0</growthPercent>
+<growthType>Year</growthType>
+<maxVolumes>9999999</maxVolumes>
+<minVolumes>0</minVolumes>
+<normalForm>Third</normalForm>
+<attributes itemClass="oracle.dbtools.crest.model.design.logical.Attribute">
+<Attribute name="ID" id="78200BCD-D5EB-0DC1-D4C8-C2C5DC713AE5">
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:18 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>FDC5E291-60D9-FF1F-B173-CBA171519807</importedID>
+<engineerTo>
+<item key="2B43EB65-62DA-EC53-86CF-E94D657D3AAF" value="true"/>
+<item key="36B1C6E8-6FD2-1EF6-8F4A-4E5B3D846A78" value="true"/>
+</engineerTo>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<dataTypePrecision>10</dataTypePrecision>
+<dataTypeScale>0</dataTypeScale>
+<ownDataTypeParameters>,10,0</ownDataTypeParameters>
+</Attribute>
+<Attribute name="CASO_ID" id="0EFE5826-9150-39D4-0205-9C980F5299D8">
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:18 UTC</createdTime>
+<generatorID>73FB2B3F-4942-0280-A2C7-149CCA929D63</generatorID>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>630F2B17-41E5-1B04-450E-44A939ACAAFC</importedID>
+<engineerTo>
+<item key="2B43EB65-62DA-EC53-86CF-E94D657D3AAF" value="true"/>
+<item key="36B1C6E8-6FD2-1EF6-8F4A-4E5B3D846A78" value="true"/>
+</engineerTo>
+<referedAttribute>80CF2B59-88CA-9673-0D39-0D2ED920F698</referedAttribute>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<dataTypePrecision>10</dataTypePrecision>
+<dataTypeScale>0</dataTypeScale>
+<ownDataTypeParameters>,10,0</ownDataTypeParameters>
+</Attribute>
+<Attribute name="DATA_RIF" id="C3765A16-77F8-21E9-DD48-610D1211D661">
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:18 UTC</createdTime>
+<comment>DATA DI PRESA IN CARICO / INVIO ECC.</comment>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>0A97791D-FB13-46BC-B04C-120E1ECE7AB1</importedID>
+<engineerTo>
+<item key="2B43EB65-62DA-EC53-86CF-E94D657D3AAF" value="true"/>
+<item key="36B1C6E8-6FD2-1EF6-8F4A-4E5B3D846A78" value="true"/>
+</engineerTo>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="DIARIO_ID" id="D85FE8FA-D9E9-BBEE-BF45-040A2693FD69">
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:18 UTC</createdTime>
+<generatorID>0110D371-BF63-AAF7-B6D2-137C304CA75D</generatorID>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>E9CBC395-A254-8C59-CB28-1FBC35A9D040</importedID>
+<engineerTo>
+<item key="2B43EB65-62DA-EC53-86CF-E94D657D3AAF" value="true"/>
+<item key="36B1C6E8-6FD2-1EF6-8F4A-4E5B3D846A78" value="true"/>
+</engineerTo>
+<referedAttribute>A0726469-6429-B1F4-DE7B-EEE5EA48FF4C</referedAttribute>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<dataTypePrecision>10</dataTypePrecision>
+<dataTypeScale>0</dataTypeScale>
+<ownDataTypeParameters>,10,0</ownDataTypeParameters>
+</Attribute>
+<Attribute name="TIPO_STEP" id="E45EF472-5521-E0E8-9D4B-E883D5110CA4">
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:18 UTC</createdTime>
+<comment>invio, assegnazione, presa_in_carico, comunicazione, aggiornamento</comment>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>0E07E7AF-DB1D-F881-95BF-4FAB9662A1D5</importedID>
+<engineerTo>
+<item key="2B43EB65-62DA-EC53-86CF-E94D657D3AAF" value="true"/>
+<item key="36B1C6E8-6FD2-1EF6-8F4A-4E5B3D846A78" value="true"/>
+</engineerTo>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<dataTypeSize>50</dataTypeSize>
+<ownDataTypeParameters>50,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="OPERATORE_SETTORE_ID" id="CE67DC46-1EAE-3509-994E-B1A38430802B">
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:18 UTC</createdTime>
+<generatorID>A65869AF-083F-8BDE-40D1-8EED3BA60E17</generatorID>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>C93DD88D-1442-F00A-973F-3517DC8D8CDF</importedID>
+<engineerTo>
+<item key="2B43EB65-62DA-EC53-86CF-E94D657D3AAF" value="true"/>
+<item key="36B1C6E8-6FD2-1EF6-8F4A-4E5B3D846A78" value="true"/>
+</engineerTo>
+<referedAttribute>1B8027EC-1ED0-8D43-95CA-3A6772D79FBE</referedAttribute>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<dataTypePrecision>10</dataTypePrecision>
+<dataTypeScale>0</dataTypeScale>
+<ownDataTypeParameters>,10,0</ownDataTypeParameters>
+</Attribute>
+<Attribute name="OPERATORE_SETTORE_TO" id="C428A5AC-EBD6-9F4F-59BF-C504C5EC3D4C">
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:18 UTC</createdTime>
+<generatorID>BD76032E-1166-6A3B-E51C-0E0968BC7461</generatorID>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>A94BE627-93CF-EEE8-BC90-3D7E6CF4ECBA</importedID>
+<engineerTo>
+<item key="2B43EB65-62DA-EC53-86CF-E94D657D3AAF" value="true"/>
+<item key="36B1C6E8-6FD2-1EF6-8F4A-4E5B3D846A78" value="true"/>
+</engineerTo>
+<referedAttribute>1B8027EC-1ED0-8D43-95CA-3A6772D79FBE</referedAttribute>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<dataTypePrecision>10</dataTypePrecision>
+<dataTypeScale>0</dataTypeScale>
+<ownDataTypeParameters>,10,0</ownDataTypeParameters>
+</Attribute>
+<Attribute name="SETTORE_ID" id="438FE5BD-1082-7492-1C66-BA9C051B9A5B">
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:18 UTC</createdTime>
+<generatorID>C57B1280-DED5-1AA7-F9AC-C9876E31EE85</generatorID>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>11699E45-D6FB-059E-AEA6-58303FB5378D</importedID>
+<engineerTo>
+<item key="2B43EB65-62DA-EC53-86CF-E94D657D3AAF" value="true"/>
+<item key="36B1C6E8-6FD2-1EF6-8F4A-4E5B3D846A78" value="true"/>
+</engineerTo>
+<referedAttribute>4EBC3265-FDAF-BEEC-026C-2619B8B4A7FD</referedAttribute>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="SETTORE_ID_TO" id="5549C019-C35F-ABF2-2C3B-4A2686B5F7B9">
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:18 UTC</createdTime>
+<generatorID>BDFAC315-3B59-F818-F57F-5F35A317A52D</generatorID>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>97DF4DAA-42FF-5744-E53B-4D57DC55C8BC</importedID>
+<engineerTo>
+<item key="2B43EB65-62DA-EC53-86CF-E94D657D3AAF" value="true"/>
+<item key="36B1C6E8-6FD2-1EF6-8F4A-4E5B3D846A78" value="true"/>
+</engineerTo>
+<referedAttribute>4EBC3265-FDAF-BEEC-026C-2619B8B4A7FD</referedAttribute>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="ORGANIZZAZIONE_ID" id="A88AE899-84BA-CFFF-0BB6-49BE1D363C9B">
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:18 UTC</createdTime>
+<generatorID>0EF6EB12-A53F-8EAF-A735-2B87BAE8F81A</generatorID>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>F6D7C2A4-51E3-C719-33C3-1CB0E1DB0039</importedID>
+<engineerTo>
+<item key="2B43EB65-62DA-EC53-86CF-E94D657D3AAF" value="true"/>
+<item key="36B1C6E8-6FD2-1EF6-8F4A-4E5B3D846A78" value="true"/>
+</engineerTo>
+<referedAttribute>55B9BA02-61BE-AD81-448A-6D5408122575</referedAttribute>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="ORGANIZZAZIONE_ID_TO" id="5B0DAFE9-EED8-1CC2-47A5-0AA1119D73A4">
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:18 UTC</createdTime>
+<generatorID>138D346F-A524-04F4-8764-2D1AEE0497EB</generatorID>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>FB567850-18A6-009A-9914-B5BA463D1017</importedID>
+<engineerTo>
+<item key="2B43EB65-62DA-EC53-86CF-E94D657D3AAF" value="true"/>
+<item key="36B1C6E8-6FD2-1EF6-8F4A-4E5B3D846A78" value="true"/>
+</engineerTo>
+<referedAttribute>55B9BA02-61BE-AD81-448A-6D5408122575</referedAttribute>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+</attributes>
+<identifiers itemClass="oracle.dbtools.crest.model.design.logical.CandidateKey">
+<identifier id="7B4D1748-74F8-6BE3-691C-DA4B82CF5D07" name="STEP_PK">
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:18 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>67AE16E0-8969-0AAA-02A9-06744BF061D0</importedID>
+<engineerTo>
+<item key="2B43EB65-62DA-EC53-86CF-E94D657D3AAF" value="true"/>
+<item key="36B1C6E8-6FD2-1EF6-8F4A-4E5B3D846A78" value="true"/>
+</engineerTo>
+<pk>true</pk>
+<usedAttributes>
+<attributeRef>78200BCD-D5EB-0DC1-D4C8-C2C5DC713AE5</attributeRef>
+</usedAttributes>
+</identifier>
+</identifiers>
+</Entity>

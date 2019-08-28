@@ -1,0 +1,160 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+     	xmlns:h="http://java.sun.com/jsf/html"
+		xmlns:f="http://java.sun.com/jsf/core"
+		xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+		xmlns:ui="http://java.sun.com/jsf/facelets"
+		xmlns:p="http://primefaces.org/ui"
+	  	xmlns:composite="http://java.sun.com/jsf/composite">
+      
+	<h:head>
+		<title>Gestione Schede valutazione multidimensionali</title>
+	</h:head>
+	<h:body>
+		<composite:interface componentType="pnlSchedaMultidimAnz">
+			<composite:attribute name="iSchedaMultidimAnz" type="it.webred.cs.jsf.interfaces.ISchedaMultidimAnz" required="true"/>
+			<composite:attribute name="listaIsee" required="false"/>
+			<composite:attribute name="initializeStampaListener" method-signature="void action(java.lang.Object)" required="true" default="null" />
+		</composite:interface>
+		<composite:implementation 
+			xmlns:webred="http://java.sun.com/jsf/composite/webred"
+			xmlns:webredcs="http://java.sun.com/jsf/composite/webredcs">
+			
+			<h:panelGrid columns="1" cellpadding="0" cellspacing="0">
+				<p:commandButton action="#{cc.attrs.iSchedaMultidimAnz.setNewSchedaMultidimAnz}" 
+					rendered="#{cc.attrs.iSchedaMultidimAnz.newSchedaMultidimAnzRendered}"
+					disabled="#{cc.attrs.iSchedaMultidimAnz.readOnly}" 
+					oncomplete="PF('schedaMultidimAnzDialog').show()" icon="ui-icon-document-b"
+					title="Dettaglio Schede Valutazione Multidimensionali" value="Nuovo" 
+					update=":#{p:component('schedaMultidimAnzDialog')}" process="@this">
+				</p:commandButton>
+				<p:spacer height="2"/>
+			</h:panelGrid>
+			
+			<p:dataTable id="schedaMultidimAnz" var="scheda"
+				value="#{cc.attrs.iSchedaMultidimAnz.listaSchedeMultidims}"
+				rows="10" paginator="true"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="5,10,15">
+				
+				<p:column headerText="Data Valutazione" width="60">
+					<h:outputLabel value="#{scheda.csDDiario.dtAmministrativa}">
+						<f:convertDateTime type="date" pattern="dd/MM/yyyy"
+							timeZone="Europe/Berlin" />
+					</h:outputLabel>
+				</p:column>
+				<p:column headerText="Descrizione">
+					<h:outputText value="#{scheda.descrizioneScheda}" />
+				</p:column>
+				<p:column headerText="Operatore">
+					<h:outputText
+						value="#{scheda.csDDiario.csOOperatoreSettore.csOOperatore.denominazione}" />
+				</p:column>
+		
+				<p:column headerText="" style="text-align: center">
+					<p:commandButton update="@form" process="@this" value="Scheda Barthel"
+						oncomplete="PF('schedaBarthelDialog').show()"
+						icon="ui-icon-search">
+						<f:setPropertyActionListener value="#{scheda}"
+							target="#{cc.attrs.iSchedaMultidimAnz.onViewBarthel}" />
+					</p:commandButton>
+					<p:spacer width="5"/>
+					<p:commandButton update="@form" process="@this" oncomplete="PF('schedaMultidimAnzDialog').show()"
+						icon="ui-icon-search" value="Scheda Multidim.">
+						<f:setPropertyActionListener value="#{scheda}" target="#{cc.attrs.iSchedaMultidimAnz.selectedSchedaMultidimAnz}" />
+					</p:commandButton>
+					<h:commandButton value="Stampa"  immediate="true" icon="ui-icon-print"
+									 action="#{cc.attrs.iSchedaMultidimAnz.stampaReportSchedaMultidimAnzData(scheda)}" 
+									 styleClass="ui-button ui-widget ui-state-default ui-corner-all"
+									 style="padding: .3em 1em; line-height: 1.4;">
+					</h:commandButton>
+				</p:column>
+			</p:dataTable>
+				
+			<!-- INIZIO SCHEDA VALUTAZIONE DIALOG -->
+			<p:dialog id="schedaMultidimAnzDialog" widgetVar="schedaMultidimAnzDialog" styleClass="fascCartellaUtenteDialog"
+				header="Dettaglio Schede Valutazione Multidimensionali" modal="true" 
+			    dynamic="true" width="70%">
+				<p:tabView id="tabView" style="padding:0;" orientation="top" scrollable="true" effect="fade">
+					<p:tab id="datiGenerali" title="Dati Generali">
+					   <ui:include src="/webredcs/pnlSchedaMultidimensionale/v1/tab/datiGenerali.xhtml"/> 
+					</p:tab>
+					<p:tab id="reteFam" title="Rete Familiare">
+					   <ui:include src="/webredcs/pnlSchedaMultidimensionale/v1/tab/reteFamiliare.xhtml"/> 
+					</p:tab>
+					<p:tab id="reteSoc" title="Rete Sociale">
+						 <ui:include src="/webredcs/pnlSchedaMultidimensionale/v1/tab/reteSociale.xhtml"/> 
+					</p:tab>
+					<p:tab id="statoSal" title="Stato di Salute">
+						<ui:include src="/webredcs/pnlSchedaMultidimensionale/v1/tab/statoSalute.xhtml"/> 
+					</p:tab>
+					<p:tab id="abit" title="Abitazione">
+						<ui:include src="/webredcs/pnlSchedaMultidimensionale/v1/tab/abitazione.xhtml"/> 
+					</p:tab>
+					<p:tab id="econ" title="Economia">
+						<ui:include src="/webredcs/pnlSchedaMultidimensionale/v1/tab/economia.xhtml"/> 
+					</p:tab>
+					<p:tab id="mapRis" title="Mappe Risorse">
+						<ui:include src="/webredcs/pnlSchedaMultidimensionale/v1/tab/mappaRisorse.xhtml"/> 
+					</p:tab>
+				</p:tabView>
+				
+				<webred:pnlSalvaEsci dialogToHide="schedaMultidimAnzDialog" pnlToUpdate=":#{p:component('schedaMultidimAnz')}" 
+									 disabled="#{cc.attrs.iSchedaMultidimAnz.readOnly}"
+			                         salvaAction="#{cc.attrs.iSchedaMultidimAnz.saveSchedaMultidimAnzDialog()}" />
+		
+			</p:dialog>
+			<!-- FINE SCHEDA VALUTAZIONE DIALOG -->
+			
+			<!-- INIZIO ANAGRAFICA CORRENTE DIALOG -->
+			<p:dialog id="famAnaCorrDialog" widgetVar="famAnaCorrDialog" styleClass="anagCorrente" header="Anagrafica Corrente"
+	   			modal="false" maximizable="true" draggable="true" resizable="true">
+	   			
+		    	<p:dataTable id="famAnaCorr" styleClass="tableNoBg" value="#{cc.attrs.iSchedaMultidimAnz.famComponentes}" selection="#{cc.attrs.iSchedaMultidimAnz.selectedFamComponentes}" rowKey="#{famComponente.csAAnagrafica.id}" var="famComponente">
+					<p:ajax event="rowSelectCheckbox" listener="#{cc.attrs.iSchedaMultidimAnz.onRowSelectFamAnaCorr}" update=":#{p:component('famAnaCorr')}" />
+					<p:ajax event="rowUnselectCheckbox" listener="#{cc.attrs.iSchedaMultidimAnz.onRowUnselectFamAnaCorr}" update=":#{p:component('famAnaCorr')}" />
+					<p:ajax event="rowSelect" listener="#{cc.attrs.iSchedaMultidimAnz.onRowSelectFamAnaCorr}" update=":#{p:component('famAnaCorr')}" />
+					<p:ajax event="rowUnselect" listener="#{cc.attrs.iSchedaMultidimAnz.onRowUnselectFamAnaCorr}" update=":#{p:component('famAnaCorr')}" />
+						        
+			        <p:column selectionMode="multiple" style="width:2%;text-align:center"/>
+			        
+			        <p:column headerText="Cognome">
+			            <h:outputText value="#{famComponente.csAAnagrafica.cognome}" />
+			        </p:column>
+			 
+			        <p:column headerText="Nome">
+			            <h:outputText value="#{famComponente.csAAnagrafica.nome}" />
+			        </p:column>
+			 
+			        <p:column headerText="Indirizzo">
+			            <h:outputText value="#{famComponente.indirizzoRes}" />
+			        </p:column>
+			 
+			        <p:column headerText="Città">
+			            <h:outputText value="#{famComponente.comResDes}" />
+			        </p:column>
+			        
+			        <p:column headerText="Parentela">
+			            <h:outputText value="#{famComponente.csTbTipoRapportoCon.descrizione}" />
+			        </p:column>
+			        
+			        <p:column headerText="Telefono">
+			            <h:outputText value="#{famComponente.csAAnagrafica.tel}" />
+			        </p:column>
+			        
+			        <p:column headerText="Disponibilità">
+			            <h:outputText value="#{famComponente.csTbDisponibilita.descrizione}" />
+			        </p:column>
+			        
+					<f:facet name="footer">
+						<p:commandButton action="#{cc.attrs.iSchedaMultidimAnz.addAnaCorr}" disabled="#{cc.attrs.iSchedaMultidimAnz.addAnaCorrButton}" update=":#{p:component('famAnaConv')}, :#{p:component('famAnaNonConv')}, :#{p:component('famAnaAltri')}" value="Aggiungi" oncomplete="PF('famAnaCorrDialog').hide()" />
+					</f:facet>
+			    </p:dataTable>
+		    </p:dialog>
+		    <!-- FINE ANAGRAFICA CORRENTE DIALOG -->
+
+			
+		</composite:implementation>
+	</h:body>
+		
+</html>

@@ -1,0 +1,270 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:webred="http://java.sun.com/jsf/composite/webred"
+	xmlns:webredcs="http://java.sun.com/jsf/composite/webredcs">
+
+<ui:fragment>
+	
+		<p:dataTable id="listaErogazioneInterventi" var="rowBean" value="#{dataBean.lazyListaErogazioniModel}"
+			rowStyleClass="#{rowBean.interventoDaErogare ? 'interventoDaErogare' : null}" style="font-size:0.7em;"
+			rowIndexVar="rowIndex" 
+			rowKey="#{rowBean.idRow}"
+			selectionMode="single" emptyMessage="Nessun intervento erogato o da erogare" widgetVar="listaErogazioneInterventiWidget"
+			filterDelay="2000" paginator="true"
+			paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rows="10"
+			rowsPerPageTemplate="10,20,40" lazy="true" styleClass="ui-datatable-hor-scroll">
+
+			<f:facet name="header">
+				<p:commandLink ajax="true" value="Lista Interventi erogati o da erogare" update="listaErogazioneInterventi">
+					<span title="refresh" class="ui-icon ui-icon-refresh" />
+				</p:commandLink>
+			</f:facet>
+
+			<f:facet name="footer">
+				<!-- ajax dev'essere false per poter scatenare il download del file -->	
+				<p:commandLink title="Esporta lista in Excel" 
+					 actionListener="#{erogazioniInterventiBean.excelExport}" ajax="false">
+  				     <h:graphicImage value="/images/xls.png" />
+				</p:commandLink>
+								
+			</f:facet>
+			
+			<!-- rowExpansion -->
+			<p:column style="width:2%" exportable="false">
+					<p:rowToggler rendered="#{! empty rowBean.lstInterventiEseguiti}" />
+			</p:column>
+			
+			<!-- Tipo beneficiario -->
+			<p:column>
+				<f:facet name="header">
+					<h:outputText value="" />
+					
+					<p:selectCheckboxMenu value="#{dataBean.lazyListaErogazioniModel.selectedTipoBeneficiario}" 
+	                                      label="Tipo beneficiario" panelStyle="width:150px"  scrollHeight="150" >
+	                    <f:selectItems value="#{dataBean.tipoBeneficiarios}"  />
+	                     <p:ajax event="toggleSelect" update="listaErogazioneInterventi" process="@this" />
+	                     <p:ajax update="listaErogazioneInterventi"  process="@this"/>  
+	                </p:selectCheckboxMenu>
+				</f:facet>
+				<h:outputText value="#{rowBean.master.tipoBeneficiario}" />
+			</p:column>
+			<!-- Beneficiari (cognome e nome) -->
+			<p:column filterBy="denominazione">
+				<f:facet name="header">
+					<h:outputText value="Beneficiari" />
+				</f:facet>
+				
+				 <ui:repeat value="#{rowBean.beneficiari}" var="beneficiario">
+				 	<h:outputText value="#{beneficiario.cognome} #{beneficiario.nome}"  rendered="#{beneficiario.riferimento}" title="Beneficiario di riferimento" />
+				 	<h:outputText value="#{beneficiario.cognome} #{beneficiario.nome}"  rendered="#{!beneficiario.riferimento}" style="color:grey; font-size:0.8em;" />
+				 	<br/>
+				</ui:repeat>
+			</p:column>
+
+			<!-- Richiesta -->
+			<p:column headerText="Richiesta" style="text-align:center;" >
+				<f:facet name="header">
+					<h:outputText value="Richiesta" />
+				</f:facet>
+				
+				<webredcs:tooltipInfo selectItemList="#{rowBean.infoRichiestaIntervento}"  rendered="#{rowBean.richiestaIntervento}" icona="/images/check.png"/>
+			</p:column>
+			<!-- Tipo Intervento -->
+			<p:column>
+				<f:facet name="header">
+					<h:outputText value="" />
+	                <p:selectCheckboxMenu value="#{dataBean.lazyListaErogazioniModel.selectedTipoIntervento}" 
+	                                      label="Tipo Intervento" panelStyle="width:200px"  scrollHeight="150" 
+	                                      filter="true" filterMatchMode="startsWith">
+	                    <f:selectItems value="#{dataBean.tipoInterventosRecenti}"  />
+	                     <p:ajax event="toggleSelect" update="listaErogazioneInterventi" process="@this" />
+	                     <p:ajax update="listaErogazioneInterventi"  process="@this"/>  
+	                </p:selectCheckboxMenu>
+	            </f:facet>
+				<h:outputText value="#{rowBean.master.tipoIntervento.descrizione}" />
+			</p:column>
+			
+			<!-- Tipo intervento Custom -->
+			<p:column>
+			     <f:facet name="header">
+					<h:outputText value="" />
+					<p:selectCheckboxMenu value="#{dataBean.lazyListaErogazioniModel.selectedTipoInterventoCustom}" 
+	                                      label="Tipo intervento Custom" panelStyle="width:200px"  scrollHeight="150" 
+	                                      filter="true" filterMatchMode="startsWith">
+	                    <f:selectItems value="#{dataBean.tipoInterventosCustom}"  />
+	                     <p:ajax event="toggleSelect" update="listaErogazioneInterventi" process="@this" />
+	                     <p:ajax update="listaErogazioneInterventi"  process="@this"/>  
+	                </p:selectCheckboxMenu>
+				</f:facet>	
+				<h:outputText value="#{rowBean.master.tipoInterventoCustom}" />
+			</p:column>
+			<!-- Note -->
+			<p:column style="text-align:center;" exportFunction="">
+				<f:facet name="header">
+					<h:outputText value="Note" />
+				</f:facet>
+				
+			    <webredcs:tooltipInfo stringDescr="#{rowBean.master.descrIntervento}"  rendered="#{!empty rowBean.master.descrIntervento}" icona="#{resource['webredcs/img/note.png']}"/>
+			</p:column>
+
+			<!-- SISO-664 SM -->
+			<!-- Linea Finanziamento -->
+			<!-- 
+			<p:column filterBy="lineaFinanziamento">
+				<f:facet name="header">
+					<h:outputText value="Linea Finanziamento" />
+				</f:facet>
+
+				<h:outputText value="#{rowBean.lineaFinanziamento}" />
+			</p:column>
+			 -->
+			<p:column>
+				<f:facet name="header">
+					<h:outputText value="Progetto" />
+				</f:facet>
+
+				<h:outputText value="#{rowBean.descrizioneProgetto}" />
+			</p:column>
+			<!-- FINE SISO-664 SM -->
+
+
+			<!-- Sett. Titolare -->
+			<p:column>
+				<f:facet name="header">
+					<h:outputText value="Titolare" />
+				</f:facet>
+
+				<h:outputText value="#{rowBean.settoreTitolare.nome} (Org.#{rowBean.settoreTitolare.csOOrganizzazione.nome})"
+					rendered="#{rowBean.settoreTitolare!=NULL}" />
+			</p:column>
+			
+			<!--  siso-663 SM -->
+			<!-- Sett. Gestore -->
+			<p:column>
+				<f:facet name="header">
+					<h:outputText value="Gestore" />
+				</f:facet>
+
+				<h:outputText value="#{rowBean.settoreGestore.nome} (Org.#{rowBean.settoreGestore.csOOrganizzazione.nome})"
+					rendered="#{rowBean.settoreGestore != NULL}" />
+			</p:column>
+			<!-- fine  siso-663 SM -->
+			
+			<!-- Sett. Erogante -->
+			<p:column>
+				<f:facet name="header">
+					<h:outputText value="Erogante" />
+				</f:facet>
+
+				<h:outputText value="#{rowBean.settoreErogante.nome} (Org.#{rowBean.settoreErogante.csOOrganizzazione.nome})"
+					rendered="#{rowBean.settoreErogante!=NULL}"
+				/>
+			</p:column>
+
+			<!-- Data Ultima Erogazione -->
+			<p:column style="text-align:center;">
+				<f:facet name="header">
+					<h:outputText value="Data Ultima Erog." />
+
+					<p:calendar id="dataErog" value="#{dataBean.lazyListaErogazioniModel.dataUltimaErogazione}" pattern="dd/MM/yyyy" size="10"
+						onchange="PF('listaErogazioneInterventiWidget').filter(); updateTabella();">
+						<p:ajax event="dateSelect" process="@this" update="listaErogazioneInterventi" />
+					</p:calendar>
+				</f:facet>
+
+				<h:outputText value="#{rowBean.master.dataUltimaErogazione}">
+					<f:convertDateTime pattern="dd/MM/yyyy" />
+				</h:outputText>
+			</p:column>
+
+			<!-- Stato Ultima Erogazione -->
+			<p:column filterBy="statoErogazione" style="text-align:center;">
+				<f:facet name="header">
+					<h:outputText value="Stato Ultima Erog." />
+				</f:facet>
+
+				<h:outputText value="#{rowBean.master.statoUltimaErogazione}" />
+			</p:column>
+
+			<!-- Tot. Spesa -->
+			<p:column>
+				<f:facet name="header">
+					<h:outputText value="Tot.Spesa" />
+				</f:facet>
+				
+				<h:outputText value="#{rowBean.master.spesa.descrizione}" escape="false" style="font-size:0.9em;"/><br/>
+				<h:outputText value="#{rowBean.master.compartecipazioni.descrizione}" escape="false" style="font-size:0.9em;"/>
+
+			</p:column>
+
+			<!-- Tot. Attributi -->
+			<p:column>
+				<f:facet name="header">
+					<h:outputText value="Tot. Attributi" />
+				</f:facet>
+				
+				<h:outputText value="#{rowBean.dettaglioTotaleErogazione}" escape="false" style="font-size:0.9em;"/>
+
+			</p:column>
+
+			<!-- Button cancella e eroga -->
+			<p:column headerText="" exportable="false">
+				<h:outputLabel value="#{rowBean.idRow}" rendered="false" />
+				<h:panelGrid columns="2" styleClass="noBorder">
+					<ui:fragment rendered="#{rowBean.renderedRowDiaglogButton}">
+						<p:commandButton id="idBtnApriDlg" process="@this" value="#{rowBean.nomeRowDiaglogButton}"
+							title="#{rowBean.nomeRowDiaglogButton}" action="#{bugFixBean.inizializzaDialogo(rowBean)}"
+							oncomplete="if(args &amp;&amp; args.isShowDialog){updateDialogContent(); PF('#{fglInterventoBean.widgetVar}').show()}"
+							icon="ui-icon-play">
+						</p:commandButton>
+						<p:remoteCommand id="rmtBtnApriDlg" name="updateDialogContent" process="@this" update="#{apriActionUpdate}" />
+					</ui:fragment>
+					<p:commandButton id="Remove" title="Rimuovi: non verrà richiesta conferma" icon="ui-icon-trash"
+						action="#{bugFixBean.rimuoviInterventoSenzaRichiesta(rowBean)}" update=":#{p:component('listaErogazioneInterventi')}"
+						rendered="#{rowBean.renderBtnEliminaErog}" process="@this"/>
+				</h:panelGrid>
+			</p:column>
+
+			<p:rowExpansion>
+				<p:dataTable id="dataTableDettagli" var="dett" value="#{rowBean.lstInterventiEseguiti}" rowIndexVar="rowIndex">
+
+					<p:column headerText="Data" style="text-align:center;" width="20px">
+						<h:outputText value="#{dett.dataErogazione}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</h:outputText>
+					</p:column>
+					<!-- SISO se c'è visualizzo anche la dataErogazioneA -->
+					<p:column headerText="Data A" style="text-align:center;" width="20px" rendered="#{rowBean.dataErogazioneARendered}">
+						<h:outputText value="#{dett.dataErogazioneA}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</h:outputText>
+					</p:column>
+
+					<p:column headerText="Stato Erog." style="text-align:center;">
+						<h:outputText value="#{dett.statoErogazione.nome}" />
+					</p:column>
+					<p:column headerText="Note" style="text-align:center;" width="10px">
+						<webredcs:tooltipInfo stringDescr="#{dett.descrizione}" rendered="#{!empty dett.descrizione}"
+							icona="#{resource['webredcs/img/note.png']}"
+						/>
+					</p:column>
+					<p:column headerText="Spesa">
+						<h:outputText value="#{dett.spesa.descrizione}" escape="false" style="font-size:0.9em;" />
+					</p:column>
+					<p:column headerText="Compartecipazioni">
+						<h:outputText value="#{dett.compartecipazione.descrizione}" escape="false" style="font-size:0.9em;" />
+					</p:column>
+
+				</p:dataTable>
+			</p:rowExpansion>
+
+		</p:dataTable>
+
+
+</ui:fragment>
+
+</html>

@@ -1,0 +1,117 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+     	xmlns:h="http://java.sun.com/jsf/html"
+		xmlns:f="http://java.sun.com/jsf/core"
+		xmlns:ui="http://java.sun.com/jsf/facelets"
+		xmlns:p="http://primefaces.org/ui"
+	  	xmlns:composite="http://java.sun.com/jsf/composite"
+	  	xmlns:webredcs="http://java.sun.com/jsf/composite/webredcs"
+	  	xmlns:webred="http://java.sun.com/jsf/composite/webred">
+
+<p:outputPanel id="elencoProgettiContainer" rendered="#{empty cc.attrs.iPai.selectedPai}">
+
+	 
+    <h:panelGrid columns="1" cellpadding="0" cellspacing="0" >
+		<p:commandButton value="Nuovo progetto"
+			action="#{cc.attrs.iPai.nuovo}" icon="ui-icon-document-b"
+			process="@this" update="@form"
+			disabled="#{cc.attrs.iPai.readOnly}" >
+		</p:commandButton>
+	</h:panelGrid> 	
+
+<p:dataTable widgetVar="dataTableWidgetVar" id="dataTablePaiId"
+			var="rowPai" rowIndexVar="rowKeyPai" value="#{cc.attrs.iPai.pais}"
+			filteredValue="#{cc.attrs.iPai.filteredPais}" filterDelay="1000"
+			paginator="true" paginatorPosition="bottom" rows="10"
+			emptyMessage="Nessun progetto corrisponde ai criteri di ricerca"
+			 >
+
+			<f:facet name="header">
+				<p:outputLabel value="Elenco progetti" />
+			</f:facet>
+
+			<p:column headerText="ID" filterBy="diarioId" filterMatchMode="exact"
+				style="text-align:left;width:70px;">
+				<h:outputText value="#{rowPai.diarioId}" />
+			</p:column>
+
+			<p:column headerText="Tipo progetto" filterBy="csTbTipoPai.id"
+				filterOptions="#{cc.attrs.iPai.lstTipoPai}" filterMatchMode="exact">
+				<h:outputText value="#{rowPai.csTbTipoPai.descrizione}" />
+			</p:column>
+
+			<p:column headerText="Data Attivazione" style="text-align:center;width:70px;">
+				<h:outputText value="#{rowPai.csDDiario.dtAttivazioneDa}">
+					<f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+				</h:outputText>
+			</p:column>
+			
+			<p:column headerText="Data Chiusura"
+				style="text-align:center;width:70px;">
+				<h:outputText value="#{rowPai.csDDiario.dtChiusuraDa}">
+					<f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+				</h:outputText>
+			</p:column>
+			
+			<!-- SISO-520 -->
+			<p:column headerText="Data Chiusura prevista"
+				style="text-align:center;width:70px;">
+				<h:outputText value="#{rowPai.dataChiusuraPrevista}">
+					<f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+				</h:outputText>
+			</p:column>
+
+			<!--  <p:column headerText="Chiuso" filterBy="#{rowPai.closed}"
+				filterOptions="#{cc.attrs.iPai.statusOptions}"
+				filterMatchMode="exact" 
+				style="text-align:center;">
+				<h:outputText value="#{rowPai.closed ? 'sì' : 'no'}" />
+			</p:column>-->
+
+			  <p:column headerText="Da chiudere" filterBy="shouldBeClosed"
+				filterOptions="#{cc.attrs.iPai.statusOptions}"
+				filterMatchMode="exact" 
+				style="text-align:center;">
+				<h:outputText value="#{rowPai.shouldBeClosed ? 'sì' : 'no'}" />
+			</p:column>
+
+			<p:column headerText="Da controllare" filterBy="shouldBeChecked"
+				filterOptions="#{cc.attrs.iPai.statusOptions}"
+				filterMatchMode="exact" 
+				style="text-align:center;">
+				<h:outputText value="#{rowPai.shouldBeChecked ? 'sì' : 'no'}" />
+			</p:column>
+
+			<p:column headerText="Obiettivi" 
+				filterMatchMode="contains" filterStyle="width:230px;"
+				style="width:250px; overflow:scroll;">
+				<p:scrollPanel style="width:250px">
+				<ui:repeat var="ob" value="#{rowPai.txtObiettivi}">
+					<h:outputText value=" • #{ob}" /><br/>
+				</ui:repeat>
+				</p:scrollPanel>
+			</p:column>
+			
+			<p:column headerText="Ultima Modifica" style="text-align:center;">	
+				<h:outputLabel value="#{cc.attrs.iPai.getOpUltimaModifica(rowPai.csDDiario)} il " />
+				<h:outputLabel value="#{cc.attrs.iPai.getDataUltimaModifica(rowPai.csDDiario)}">
+					<f:convertDateTime type="date" pattern="dd/MM/yyyy HH:mm:ss" timeZone="Europe/Berlin" />
+				</h:outputLabel>
+			</p:column>
+
+			<p:column headerText="Azioni" style="text-align:center;" width="180">
+				<p:commandButton value="Apri"
+					action="#{cc.attrs.iPai.carica}"
+					icon="ui-icon-pencil" process="@this" update="@form" >
+					<f:setPropertyActionListener value="#{rowKeyPai}" target="#{cc.attrs.iPai.idxSelected}" />
+				</p:commandButton>
+				<p:commandButton rendered="#{not rowPai.closed}" value="Chiudi"
+					action="#{cc.attrs.iPai.caricaChiudi}" icon="ui-icon-close"
+					process="@this" update="@form" disabled="#{cc.attrs.iPai.readOnly}"	>
+					<f:setPropertyActionListener value="#{rowKeyPai}" target="#{cc.attrs.iPai.idxSelected}" />
+				</p:commandButton>
+			</p:column>
+
+		</p:dataTable>
+   </p:outputPanel>	
+</html>
