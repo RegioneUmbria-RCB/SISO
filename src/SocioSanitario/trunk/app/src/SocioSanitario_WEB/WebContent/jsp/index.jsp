@@ -1,4 +1,0 @@
-<HTML>
-HELLO!
-
-</HTML>

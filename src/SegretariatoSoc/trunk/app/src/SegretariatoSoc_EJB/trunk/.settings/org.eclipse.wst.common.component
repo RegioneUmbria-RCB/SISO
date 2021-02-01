@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project-modules id="moduleCoreId" project-version="1.5.0">
-    <wb-module deploy-name="SegretariatoSoc_EJB">
-        <wb-resource deploy-path="/" source-path="/ejbModule" tag="defaultRootSource"/>
-        <property name="java-output-path" value="/SegretariatoSoc_EJB/build/classes"/>
-        <property name="ClientProject" value="SegretariatoSoc_EJBClient"/>
-        <property name="ClientJARURI" value="SegretariatoSoc_EJBClient.jar"/>
-    </wb-module>
-</project-modules>
