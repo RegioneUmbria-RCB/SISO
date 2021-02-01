@@ -1,0 +1,20 @@
+#--------------------------------------------------------------
+# File di configurazione in cui sono indicato i valori dei soli
+# parametri di contesto della catena jelly da passare alla 
+# regola 
+#------------------------------------------------------------
+# Numero di parametri previsti in input
+rengine.jchain.in.nof=3
+#------------------------------------------------------------
+# Le coppie chiavi/valore hanno come key lo stesso nome 
+# indicato nello script jelly xml
+#------------------------------------------------------------
+rengine.jchain.in.1.key=VAR_1
+rengine.jchain.in.1.value=PATH_FILE
+#
+rengine.jchain.in.2.key=VAR_2
+rengine.jchain.in.2.value=PATH_FILE_OUTPUT_PDF
+#
+rengine.jchain.in.3.key=VAR_3
+rengine.jchain.in.3.value=PATH_FILE_OUTPUT_PLAN
+#

@@ -1,0 +1,44 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+     	xmlns:h="http://java.sun.com/jsf/html"
+		xmlns:f="http://java.sun.com/jsf/core"
+		xmlns:ui="http://java.sun.com/jsf/facelets"
+		xmlns:p="http://primefaces.org/ui"
+	  	xmlns:composite="http://java.sun.com/jsf/composite">
+      
+	<h:head>
+		<title>Componente casella di testo nazione</title>
+	</h:head>
+	<h:body>
+		<composite:interface componentType="pnlNazione">
+			<composite:attribute name="nazioneManBean" type="it.webred.jsf.interfaces.INazione" />
+			<composite:attribute name="disabled" type="boolean" default="false"/>
+		</composite:interface>
+		<composite:implementation>
+			<span id="#{cc.clientId}">
+	     		<p:autoComplete styleClass="myAutoComplete" widgetVar="#{cc.attrs.nazioneManBean.widgetVar}"  value="#{cc.attrs.nazioneManBean.nazione}"
+           			title="Inserire almeno 3 caratteri e attendere la ricerca" minQueryLength="3" completeMethod="#{cc.attrs.nazioneManBean.getLstNazioni}"
+           			var="nazioneVar" itemLabel="#{nazioneVar.nazione}" itemValue="#{nazioneVar}" disabled="#{cc.attrs.disabled}"
+           			forceSelection="true" converter="#{cc.attrs.nazioneManBean.nazioneConverter}" queryDelay="1300" validatorMessage="#{cc.attrs.nazioneManBean.validatorMessage}">
+           			
+		           			<p:column>  
+			                    #{nazioneVar.nazione}
+			                </p:column>  
+			                <p:column style="width: 20px;">
+			                    #{nazioneVar.sigla}
+			                </p:column>
+
+							<f:validator validatorId="nazioneValidator"/>
+
+			               	<p:ajax event="itemSelect" process="@this" update="out2" listener="#{cc.attrs.nazioneManBean.handleChangeNazione}"/> 
+			                 
+           		</p:autoComplete>
+           			
+           		<p:spacer width="10px"/>
+				<h:outputText id="out2" value="#{cc.attrs.nazioneManBean.nazione.sigla}" />  
+			</span>
+					
+		</composite:implementation>
+	</h:body>
+		
+</html>

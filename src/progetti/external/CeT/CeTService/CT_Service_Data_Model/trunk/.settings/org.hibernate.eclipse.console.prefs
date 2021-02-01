@@ -1,0 +1,4 @@
+#Mon Aug 02 15:40:34 CEST 2010
+default.configuration=GIT_Service_Data_Model
+eclipse.preferences.version=1
+hibernate3.enabled=true

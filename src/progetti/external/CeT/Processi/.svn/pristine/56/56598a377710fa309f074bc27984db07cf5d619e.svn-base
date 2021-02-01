@@ -1,0 +1,191 @@
+#--------------------------------------------------------------
+# File di configurazione in cui sono indicato i valori dei soli
+# parametri di contesto della catena jelly da passare alla 
+# regola 
+#------------------------------------------------------------
+# Numero di parametri previsti in input
+rengine.jchain.in.nof=22
+#------------------------------------------------------------
+# Le coppie chiavi/valore hanno come key lo stesso nome 
+# indicato nello script jelly xml
+#------------------------------------------------------------
+rengine.jchain.in.1.key=UPDSQL_DEL_a1
+rengine.jchain.in.1.value=delete from R_DEMANIO_BENE WHERE instr(id_orig,'@FIS',-1)>0
+rengine.jchain.in.2.key=UPDSQL_DEL_a2
+rengine.jchain.in.2.value=delete from R_DEMANIO_BENE_INV WHERE instr(id_orig,'@FIS',-1)>0
+rengine.jchain.in.3.key=UPDSQL_DEL_a3
+rengine.jchain.in.3.value=delete from R_DEMANIO_BENE_FASCICOLO WHERE instr(id_orig,'@FIS',-1)>0
+rengine.jchain.in.4.key=UPDSQL_DEL_a4
+rengine.jchain.in.4.value=delete from R_DEMANIO_BENE_EVENTI WHERE instr(id_orig,'@FIS',-1)>0
+rengine.jchain.in.5.key=UPDSQL_DEL_a5
+rengine.jchain.in.5.value=delete from R_DEMANIO_BENE_USO WHERE instr(id_orig,'@FIS',-1)>0
+rengine.jchain.in.6.key=UPDSQL_DEL_a6
+rengine.jchain.in.6.value=delete from R_DEMANIO_BENE_INFO WHERE instr(id_orig,'@FIS',-1)>0
+rengine.jchain.in.7.key=UPDSQL_UPD_a1
+rengine.jchain.in.7.value=update demanio_bene b set dt_fine_val=sysdate, dt_mod = sysdate where not exists (select c.chiave FROM (select * from  V_F205_DEMANIO_BENE_IMMO union all select * from V_F205_DEMANIO_BENE_FABB) c where c.chiave=b.id_orig and instr(c.chiave,'@FIS',-1)<=0)
+rengine.jchain.in.8.key=UPDSQL_UPD_a2
+rengine.jchain.in.8.value=update R_DEMANIO_BENE_INV b set dt_fine_val=sysdate, dt_mod = sysdate where not exists (select c.chiave FROM (select * from  V_F205_DEMANIO_BENE_IMMO union all select * from V_F205_DEMANIO_BENE_FABB) c where c.chiave=b.id_orig and instr(c.chiave,'@FIS',-1)<=0)
+rengine.jchain.in.9.key=UPDSQL_UPD_a3
+rengine.jchain.in.9.value=update R_DEMANIO_BENE_FASCICOLO b set dt_fine_val=sysdate, dt_mod = sysdate where not exists (select c.chiave FROM (select * from  V_F205_DEMANIO_BENE_IMMO union all select * from V_F205_DEMANIO_BENE_FABB) c where c.chiave=b.id_orig and instr(c.chiave,'@FIS',-1)<=0)
+rengine.jchain.in.10.key=UPDSQL_UPD_a4
+rengine.jchain.in.10.value=update R_DEMANIO_BENE_EVENTI b set dt_fine_val=sysdate, dt_mod = sysdate where not exists (select c.chiave FROM (select * from  V_F205_DEMANIO_BENE_IMMO union all select * from V_F205_DEMANIO_BENE_FABB) c where c.chiave=b.id_orig and instr(c.chiave,'@FIS',-1)<=0)
+rengine.jchain.in.11.key=UPDSQL_UPD_a5
+rengine.jchain.in.11.value=update R_DEMANIO_BENE_USO b set dt_fine_val=sysdate, dt_mod = sysdate where not exists (select c.chiave FROM (select * from  V_F205_DEMANIO_BENE_IMMO union all select * from V_F205_DEMANIO_BENE_FABB) c where c.chiave=b.id_orig and instr(c.chiave,'@FIS',-1)<=0)
+rengine.jchain.in.12.key=UPDSQL_UPD_a6
+rengine.jchain.in.12.value=update R_DEMANIO_BENE_INFO b set dt_fine_val=sysdate, dt_mod = sysdate where not exists (select c.chiave FROM (select * from  V_F205_DEMANIO_BENE_IMMO union all select * from V_F205_DEMANIO_BENE_FABB) c where c.chiave=b.id_orig and instr(c.chiave,'@FIS',-1)<=0)
+rengine.jchain.in.13.key=QUERYSQL_BENE_E_DERIVATI
+rengine.jchain.in.13.value=select c.*, SYSDATE AS DT_EXP_DATO FROM (select i.*, 'I' AS TIPO from  V_F205_DEMANIO_BENE_IMMO i union all select f.*, 'F' AS TIPO from V_F205_DEMANIO_BENE_FABB f) c order by pk_orig
+rengine.jchain.in.14.key=RSITRSCRIPT_BENE
+rengine.jchain.in.14.value=<RsIterator><key table\="V_F205_DEMANIO_BENE_IMM"><column name\="CHIAVE" /></key>\
+<commands>\
+<command name\="DEM_BENE"><param id\="field" value\="PK_ORIG" dest\="PK_ORIG" type\="java.math.BigDecimal" /><param id\="field" value\="CHIAVE" dest\="CHIAVE" type\="java.lang.String" /><param id\="field" value\="CHIAVE_PADRE" dest\="CHIAVE_PADRE" type\="java.lang.String" /><param id\="field" value\="CHIAVE1" dest\="CHIAVE1" type\="java.math.BigDecimal" /><param id\="field" value\="CHIAVE2" dest\="CHIAVE2" type\="java.lang.String" /><param id\="field" value\="CHIAVE3" dest\="CHIAVE3" type\="java.lang.String" /><param id\="field" value\="CHIAVE4" dest\="CHIAVE4" type\="java.lang.String" /><param id\="field" value\="CHIAVE5" dest\="CHIAVE5" type\="java.lang.String" /><param id\="field" value\="COD_ECOGRAFICO" dest\="COD_ECOGRAFICO" type\="java.lang.String" /><param id\="field" value\="COD_TIPO_BENE" dest\="COD_TIPO_BENE" type\="java.lang.String" /><param id\="field" value\="DES_TIPO_BENE" dest\="DES_TIPO_BENE" type\="java.lang.String" /><param id\="field" value\="NUM_PARTI" dest\="NUM_PARTI" type\="java.math.BigDecimal" /><param id\="field" value\="DESCRIZIONE" dest\="DESCRIZIONE" type\="java.lang.Object" /><param id\="field" value\="NOTE" dest\="NOTE" type\="java.lang.Object" /><param id\="field" value\="PROVENIENZA" dest\="PROVENIENZA" type\="java.lang.String" /><param id\="field" value\="TIPO" dest\="TIPO" type\="java.lang.String" /><param id\="field" value\="COD_CARTELLA" dest\="COD_CARTELLA" type\="java.lang.String" /><param id\="field" value\="DES_CARTELLA" dest\="DES_CARTELLA" type\="java.lang.String" /><param id\="const" value\="42" dest\="FK_ENTE_SORGENTE" type\="java.lang.Integer" /><param id\="field" value\="DT_EXP_DATO" dest\="DT_EXP_DATO" type\="java.sql.Timestamp" /></command>\
+<command name\="DEM_INV"><param id\="field" value\="CHIAVE" dest\="CHIAVE" type\="java.lang.String" /><param id\="field" value\="COD_INVENTARIO" dest\="COD_INVENTARIO" type\="java.lang.String" /><param id\="field" value\="COD_TIPO" dest\="COD_TIPO" type\="java.lang.String" /><param id\="field" value\="DES_TIPO" dest\="DES_TIPO" type\="java.lang.String" /><param id\="field" value\="COD_TIPO_PROPRIETA" dest\="COD_TIPO_PROPRIETA" type\="java.lang.String" /><param id\="field" value\="DES_TIPO_PROPRIETA" dest\="DES_TIPO_PROPRIETA" type\="java.lang.String" /><param id\="field" value\="COD_CAT_INVENTARIALE" dest\="COD_CAT_INVENTARIALE" type\="java.lang.String" /><param id\="field" value\="DES_CAT_INVENTARIALE" dest\="DES_CAT_INVENTARIALE" type\="java.lang.String" /><param id\="field" value\="COD_CATEGORIA" dest\="COD_CATEGORIA" type\="java.lang.String" /><param id\="field" value\="DES_CATEGORIA" dest\="DES_CATEGORIA" type\="java.lang.String" /><param id\="field" value\="COD_SOTTO_CATEGORIA" dest\="COD_SOTTO_CATEGORIA" type\="java.lang.String" /><param id\="field" value\="DES_SOTTO_CATEGORIA" dest\="DES_SOTTO_CATEGORIA" type\="java.lang.String" /><param id\="field" value\="MEF_TIPOLOGIA" dest\="MEF_TIPOLOGIA" type\="java.lang.String" /><param id\="field" value\="MEF_UTILIZZO" dest\="MEF_UTILIZZO" type\="java.lang.String" /><param id\="field" value\="MEF_FINALITA" dest\="MEF_FINALITA" type\="java.lang.String" /><param id\="field" value\="MEF_NATURA_GIURIDICA" dest\="MEF_NATURA_GIURIDICA" type\="java.lang.String" /><param id\="field" value\="PROVENIENZA" dest\="PROVENIENZA" type\="java.lang.String" /><param id\="field" value\="TIPO" dest\="TIPO" type\="java.lang.String" /><param id\="field" value\="COD_CARTELLA" dest\="COD_CARTELLA" type\="java.lang.String" /><param id\="field" value\="DES_CARTELLA" dest\="DES_CARTELLA" type\="java.lang.String" /><param id\="const" value\="42" dest\="FK_ENTE_SORGENTE" type\="java.lang.Integer" /><param id\="field" value\="DT_EXP_DATO" dest\="DT_EXP_DATO" type\="java.sql.Timestamp" /></command>\
+<command name\="DEM_FASC"><param id\="field" value\="CHIAVE" dest\="CHIAVE" type\="java.lang.String" /><param id\="field" value\="PROVENIENZA" dest\="PROVENIENZA" type\="java.lang.String" /><param id\="field" value\="TIPO" dest\="TIPO" type\="java.lang.String" /><param id\="field" value\="COD_CARTELLA" dest\="COD_CARTELLA" type\="java.lang.String" /><param id\="field" value\="DES_CARTELLA" dest\="DES_CARTELLA" type\="java.lang.String" /><param id\="const" value\="42" dest\="FK_ENTE_SORGENTE" type\="java.lang.Integer" /><param id\="field" value\="DT_EXP_DATO" dest\="DT_EXP_DATO" type\="java.sql.Timestamp" /></command>\
+<command name\="DEM_USO"><param id\="field" value\="CHIAVE" dest\="CHIAVE" type\="java.lang.String" /><param id\="field" value\="COD_TIPO_USO" dest\="COD_TIPO_USO" type\="java.lang.String" /><param id\="field" value\="DES_TIPO_USO" dest\="DES_TIPO_USO" type\="java.lang.String" /><param id\="field" value\="PROVENIENZA" dest\="PROVENIENZA" type\="java.lang.String" /><param id\="field" value\="TIPO" dest\="TIPO" type\="java.lang.String" /><param id\="field" value\="COD_CARTELLA" dest\="COD_CARTELLA" type\="java.lang.String" /><param id\="field" value\="DES_CARTELLA" dest\="DES_CARTELLA" type\="java.lang.String" /><param id\="const" value\="42" dest\="FK_ENTE_SORGENTE" type\="java.lang.Integer" /><param id\="field" value\="DT_EXP_DATO" dest\="DT_EXP_DATO" type\="java.sql.Timestamp" /></command>\
+<command name\="DEM_EVE"><param id\="field" value\="CHIAVE" dest\="CHIAVE" type\="java.lang.String" /><param id\="field" value\="FL_VENDITA" dest\="FL_VENDITA" type\="java.math.BigDecimal" /><param id\="field" value\="DATA_VENDITA" dest\="DATA_VENDITA" type\="java.lang.String" /><param id\="field" value\="ANNO_ACQ" dest\="ANNO_ACQ" type\="java.lang.String" /><param id\="field" value\="ANNO_COSTR" dest\="ANNO_COSTR" type\="java.lang.String" /><param id\="field" value\="ANNO_RISTR" dest\="ANNO_RISTR" type\="java.lang.String" /><param id\="field" value\="PROVENIENZA" dest\="PROVENIENZA" type\="java.lang.String" /><param id\="field" value\="TIPO" dest\="TIPO" type\="java.lang.String" /><param id\="field" value\="COD_CARTELLA" dest\="COD_CARTELLA" type\="java.lang.String" /><param id\="field" value\="DES_CARTELLA" dest\="DES_CARTELLA" type\="java.lang.String" /><param id\="const" value\="42" dest\="FK_ENTE_SORGENTE" type\="java.lang.Integer" /><param id\="field" value\="DT_EXP_DATO" dest\="DT_EXP_DATO" type\="java.sql.Timestamp" /></command>\
+<command name\="DEM_INFO"><param id\="field" value\="CHIAVE" dest\="CHIAVE" type\="java.lang.String" />\
+<param id\="field" value\="QUALITA" dest\="QUALITA" type\="java.lang.String" />\
+<param id\="field" value\="QUOTA_PROPRIETA" dest\="QUOTA_PROPRIETA" type\="java.lang.String" />\
+<param id\="field" value\="FL_CONGELATO" dest\="FL_CONGELATO" type\="java.lang.String" />\
+<param id\="field" value\="FL_ANTICO_POSSESSO" dest\="FL_ANTICO_POSSESSO" type\="java.lang.String" />\
+<param id\="field" value\="VAL_INVENTARIALE" dest\="VAL_INVENTARIALE" type\="java.math.BigDecimal" />\
+<param id\="field" value\="TOT_ABITATIVA" dest\="TOT_ABITATIVA" type\="java.math.BigDecimal" />\
+<param id\="field" value\="TOT_USI_DIVERSI" dest\="TOT_USI_DIVERSI" type\="java.math.BigDecimal" />\
+<param id\="field" value\="TOT_UNITA" dest\="TOT_UNITA" type\="java.math.BigDecimal" />\
+<param id\="field" value\="TOT_UNITA_COMUNALI" dest\="TOT_UNITA_COMUNALI" type\="java.math.BigDecimal" />\
+<param id\="field" value\="NUM_BOX" dest\="NUM_BOX" type\="java.math.BigDecimal" />\
+<param id\="field" value\="DATA_CENSIMENTO" dest\="DATA_CENSIMENTO" type\="java.lang.String" />\
+<param id\="field" value\="STATO_CENSIMENTO" dest\="STATO_CENSIMENTO" type\="java.math.BigDecimal" />\
+<param id\="field" value\="DATA_INS" dest\="DATA_INS" type\="java.lang.String" />\
+<param id\="field" value\="DATA_RIL" dest\="DATA_RIL" type\="java.lang.String" />\
+<param id\="field" value\="DATA_AGG" dest\="DATA_AGG" type\="java.lang.String" />\
+<param id\="field" value\="VOLUME_TOT" dest\="VOLUME_TOT" type\="java.lang.String" />\
+<param id\="field" value\="SUP_COP" dest\="SUP_COP" type\="java.math.BigDecimal" />\
+<param id\="field" value\="SUP_TOT" dest\="SUP_TOT" type\="java.lang.String" />\
+<param id\="field" value\="SUP_TOT_SLP" dest\="SUP_TOT_SLP" type\="java.lang.String" />\
+<param id\="field" value\="SUP_LOC" dest\="SUP_LOC" type\="java.lang.String" />\
+<param id\="field" value\="SUP_OPER" dest\="SUP_OPER" type\="java.lang.String" />\
+<param id\="field" value\="SUP_CO_SE" dest\="SUP_CO_SE" type\="java.lang.String" />\
+<param id\="field" value\="NUM_PIANI_F" dest\="NUM_PIANI_F" type\="java.math.BigDecimal" />\
+<param id\="field" value\="NUM_PIANI_I" dest\="NUM_PIANI_I" type\="java.math.BigDecimal" />\
+<param id\="field" value\="REND_CATAS" dest\="REND_CATAS" type\="java.lang.String" />\
+<param id\="field" value\="VOLUME_I" dest\="VOLUME_I" type\="java.lang.String" />\
+<param id\="field" value\="VOLUME_F" dest\="VOLUME_F" type\="java.lang.String" />\
+<param id\="field" value\="SUP_COMMERCIALE" dest\="SUP_COMMERCIALE" type\="java.math.BigDecimal" />\
+<param id\="field" value\="VAL_ACQUISTO" dest\="VAL_ACQUISTO" type\="java.math.BigDecimal" />\
+<param id\="field" value\="VAL_CATASTALE" dest\="VAL_CATASTALE" type\="java.math.BigDecimal" />\
+<param id\="field" value\="NUM_VANI" dest\="NUM_VANI" type\="java.math.BigDecimal" />\
+<param id\="field" value\="METRI_Q" dest\="METRI_Q" type\="java.math.BigDecimal" />\
+<param id\="field" value\="PROVENIENZA" dest\="PROVENIENZA" type\="java.lang.String" />\
+<param id\="field" value\="TIPO" dest\="TIPO" type\="java.lang.String" />\
+<param id\="field" value\="COD_CARTELLA" dest\="COD_CARTELLA" type\="java.lang.String" /><param id\="field" value\="DES_CARTELLA" dest\="DES_CARTELLA" type\="java.lang.String" />\
+<param id\="const" value\="42" dest\="FK_ENTE_SORGENTE" type\="java.lang.Integer" />\
+<param id\="field" value\="DT_EXP_DATO" dest\="DT_EXP_DATO" type\="java.sql.Timestamp" />\
+</command>\
+</commands></RsIterator>
+rengine.jchain.in.15.key=UPDSQL_DEL_b1
+rengine.jchain.in.15.value=delete from R_DEMANIO_INDIRIZZI WHERE instr(chiave_bene,'@FIS',-1)>0
+rengine.jchain.in.16.key=UPDSQL_UPD_b1
+rengine.jchain.in.16.value=update R_DEMANIO_INDIRIZZI b set dt_fine_val \= sysdate,  dt_mod \= sysdate where not exists (select * from  V_F205_BENE_INDIRIZZI c where c.id\=b.id_orig and instr(c.chiave_bene,'@FIS',-1)<\=0)
+rengine.jchain.in.17.key=QUERYSQL_INDIRIZZI
+rengine.jchain.in.17.value=select c.*, sysdate AS DT_EXP_DATO FROM V_F205_BENE_INDIRIZZI  c
+rengine.jchain.in.18.key=RSITRSCRIPT_INDIRIZZO
+rengine.jchain.in.18.value=<RsIterator><key table\="V_F205_BENE_INDIRIZZI"><column name\="ID" /></key><commands>\\<command name\="DEM_IND"> <param id\="field" value\="ID" dest\="ID" type\="java.lang.String" /><param id\="field" value\="CHIAVE_BENE" dest\="CHIAVE_BENE" type\="java.lang.String" /><param id\="field" value\="FL_PRINCIPALE" dest\="FL_PRINCIPALE" type\="java.math.BigDecimal" /><param id\="field" value\="COD_VIA" dest\="COD_VIA" type\="java.math.BigDecimal" /><param id\="field" value\="TIPOVIA" dest\="TIPOVIA" type\="java.lang.String" /><param id\="field" value\="DESCR_VIA" dest\="DESCR_VIA" type\="java.lang.String" /><param id\="field" value\="CIVICO" dest\="CIVICO" type\="java.lang.String" /><param id\="field" value\="COD_COM" dest\="COD_COM" type\="java.lang.String" />\
+<param id\="field" value\="COMUNE" dest\="COMUNE" type\="java.lang.String" />\
+<param id\="field" value\="PROV" dest\="PROV" type\="java.lang.String" />\
+<param id\="field" value\="PROVENIENZA" dest\="PROVENIENZA" type\="java.lang.String" /><param id\="field" value\="TIPO" dest\="TIPO" type\="java.lang.String" /><param id\="const" value\="42" dest\="FK_ENTE_SORGENTE" type\="java.lang.Integer" />\
+<param id\="field" value\="DT_EXP_DATO" dest\="DT_EXP_DATO" type\="java.sql.Timestamp" /></command></commands></RsIterator>
+rengine.jchain.in.19.key=UPDSQL_DEL_c1
+rengine.jchain.in.19.value=delete from R_DEMANIO_MAPPALI WHERE instr(chiave_bene,'@FIS',-1)>0
+rengine.jchain.in.20.key=UPDSQL_UPD_c1
+rengine.jchain.in.20.value=update R_DEMANIO_MAPPALI b set dt_fine_val=sysdate,  dt_mod=sysdate where not exists (select * from  V_F205_BENE_MAPPALI c where c.id=b.id_orig and instr(c.chiave_bene,'@FIS',-1)<=0)
+rengine.jchain.in.21.key=QUERYSQL_MAPPALI
+rengine.jchain.in.21.value=select c.*, sysdate AS DT_EXP_DATO FROM V_F205_BENE_MAPPALI  c
+rengine.jchain.in.22.key=RSITRSCRIPT_MAPPALE
+rengine.jchain.in.22.value=<RsIterator><key table\="V_F205_BENE_MAPPALI"><column name\="ID" /></key><commands>\\<command name\="DEM_MAP">\
+<param id\="field" value\="ID" dest\="ID" type\="java.lang.String" />\
+<param id\="field" value\="CHIAVE_BENE" dest\="CHIAVE_BENE" type\="java.lang.String" />\
+<param id\="field" value\="TIPO_MAPPALE" dest\="TIPO_MAPPALE" type\="java.lang.String" />\
+<param id\="field" value\="COD_COM" dest\="COD_COMUNE" type\="java.lang.String" />\
+<param id\="field" value\="SEZIONE" dest\="SEZIONE" type\="java.lang.String" />\
+<param id\="field" value\="FOGLIO" dest\="FOGLIO" type\="java.lang.String" />\
+<param id\="field" value\="MAPPALE" dest\="MAPPALE" type\="java.lang.String" />\
+<param id\="field" value\="DATA_INIZIO" dest\="DATA_INIZIO" type\="java.sql.Timestamp" />\
+<param id\="field" value\="DATA_FINE" dest\="DATA_INIZIO" type\="java.sql.Timestamp" />\
+<param id\="field" value\="PROVENIENZA" dest\="PROVENIENZA" type\="java.lang.String" />\
+<param id\="field" value\="TIPO" dest\="TIPO" type\="java.lang.String" />\
+<param id\="const" value\="42" dest\="FK_ENTE_SORGENTE" type\="java.lang.Integer" />\
+<param id\="field" value\="DT_EXP_DATO" dest\="DT_EXP_DATO" type\="java.sql.Timestamp" /></command></commands></RsIterator>
+rengine.jchain.in.99.key=RSITRSCRIPT_ALL
+rengine.jchain.in.99.value=<RsIterator><key table\="V_F205_DEMANIO_BENE_IMM"><column name\="CHIAVE" /></key><commands><command name\="DEM_BENE">\
+<param id\="field" value\="PK_ORIG" dest\="PK_ORIG" type\="java.math.BigDecimal" /><param id\="field" value\="CHIAVE" dest\="CHIAVE" type\="java.lang.String" />\
+<param id\="field" value\="CHIAVE_PADRE" dest\="CHIAVE_PADRE" type\="java.lang.String" /><param id\="field" value\="CHIAVE1" dest\="CHIAVE1" type\="java.math.BigDecimal" />\
+<param id\="field" value\="CHIAVE2" dest\="CHIAVE2" type\="java.lang.String" /><param id\="field" value\="CHIAVE3" dest\="CHIAVE3" type\="java.lang.String" />\
+<param id\="field" value\="CHIAVE4" dest\="CHIAVE4" type\="java.lang.String" /><param id\="field" value\="CHIAVE5" dest\="CHIAVE5" type\="java.lang.String" />\
+<param id\="field" value\="COD_ECOGRAFICO" dest\="COD_ECOGRAFICO" type\="java.lang.String" />\
+<param id\="field" value\="COD_INVENTARIO" dest\="COD_INVENTARIO" type\="java.lang.String" />\
+<param id\="field" value\="COD_TIPO" dest\="COD_TIPO" type\="java.lang.String" /><param id\="field" value\="DES_TIPO" dest\="DES_TIPO" type\="java.lang.String" />\
+<param id\="field" value\="COD_CARTELLA" dest\="COD_CARTELLA" type\="java.lang.String" />\
+<param id\="field" value\="DES_CARTELLA" dest\="DES_CARTELLA" type\="java.lang.String" />\
+<param id\="field" value\="COD_TIPO_BENE" dest\="COD_TIPO_BENE" type\="java.lang.String" />\
+<param id\="field" value\="DES_TIPO_BENE" dest\="DES_TIPO_BENE" type\="java.lang.String" />\
+<param id\="field" value\="COD_TIPO_PROPRIETA" dest\="COD_TIPO_PROPRIETA" type\="java.lang.String" />\
+<param id\="field" value\="DES_TIPO_BENE" dest\="DES_TIPO_BENE" type\="java.lang.String" />\
+<param id\="field" value\="COD_TIPO_PROPRIETA" dest\="COD_TIPO_PROPRIETA" type\="java.lang.String" />\
+<param id\="field" value\="DES_TIPO_PROPRIETA" dest\="DES_TIPO_PROPRIETA" type\="java.lang.String" />\
+<param id\="field" value\="COD_TIPO_USO" dest\="COD_TIPO_USO" type\="java.lang.String" />\
+<param id\="field" value\="DES_TIPO_USO" dest\="DES_TIPO_USO" type\="java.lang.String" />\
+<param id\="field" value\="DESCRIZIONE" dest\="DESCRIZIONE" type\="java.lang.Object" />\
+<param id\="field" value\="NOTE" dest\="NOTE" type\="java.lang.Object" />\
+<param id\="field" value\="COD_CAT_INVENTARIALE" dest\="COD_CAT_INVENTARIALE" type\="java.lang.String" />\
+<param id\="field" value\="DES_CAT_INVENTARIALE" dest\="DES_CAT_INVENTARIALE" type\="java.lang.String" />\
+<param id\="field" value\="COD_CATEGORIA" dest\="COD_CATEGORIA" type\="java.lang.String" />\
+<param id\="field" value\="DES_CATEGORIA" dest\="DES_CATEGORIA" type\="java.lang.String" />\
+<param id\="field" value\="COD_SOTTO_CATEGORIA" dest\="COD_SOTTO_CATEGORIA" type\="java.lang.String" />\
+<param id\="field" value\="DES_SOTTO_CATEGORIA" dest\="DES_SOTTO_CATEGORIA" type\="java.lang.String" />\
+<param id\="field" value\="QUALITA" dest\="QUALITA" type\="java.lang.String" />\
+<param id\="field" value\="QUOTA_PROPRIETA" dest\="QUOTA_PROPRIETA" type\="java.lang.String" />\
+<param id\="field" value\="FL_VENDITA" dest\="FL_VENDITA" type\="java.math.BigDecimal" />\
+<param id\="field" value\="FL_CONGELATO" dest\="FL_CONGELATO" type\="java.lang.String" />\
+<param id\="field" value\="FL_ANTICO_POSSESSO" dest\="FL_ANTICO_POSSESSO" type\="java.lang.String" />\
+<param id\="field" value\="DATA_VENDITA" dest\="DATA_VENDITA" type\="java.lang.String" />\
+<param id\="field" value\="ANNO_ACQ" dest\="ANNO_ACQ" type\="java.lang.String" />\
+<param id\="field" value\="ANNO_COSTR" dest\="ANNO_COSTR" type\="java.lang.String" />\
+<param id\="field" value\="ANNO_RISTR" dest\="ANNO_RISTR" type\="java.lang.String" />\
+<param id\="field" value\="VAL_INVENTARIALE" dest\="VAL_INVENTARIALE" type\="java.math.BigDecimal" />\
+<param id\="field" value\="TOT_ABITATIVA" dest\="TOT_ABITATIVA" type\="java.math.BigDecimal" />\
+<param id\="field" value\="TOT_USI_DIVERSI" dest\="TOT_USI_DIVERSI" type\="java.math.BigDecimal" />\
+<param id\="field" value\="TOT_UNITA" dest\="TOT_UNITA" type\="java.math.BigDecimal" />\
+<param id\="field" value\="TOT_UNITA_COMUNALI" dest\="TOT_UNITA_COMUNALI" type\="java.math.BigDecimal" />\
+<param id\="field" value\="NUM_BOX" dest\="NUM_BOX" type\="java.math.BigDecimal" />\
+<param id\="field" value\="DATA_CENSIMENTO" dest\="DATA_CENSIMENTO" type\="java.lang.String" />\
+<param id\="field" value\="STATO_CENSIMENTO" dest\="STATO_CENSIMENTO" type\="java.math.BigDecimal" />\
+<param id\="field" value\="DATA_AGG" dest\="DATA_AGG" type\="java.lang.String" />\
+<param id\="field" value\="MEF_TIPOLOGIA" dest\="MEF_TIPOLOGIA" type\="java.lang.String" />\
+<param id\="field" value\="MEF_UTILIZZO" dest\="MEF_UTILIZZO" type\="java.lang.String" />\
+<param id\="field" value\="MEF_FINALITA" dest\="MEF_FINALITA" type\="java.lang.String" />\
+<param id\="field" value\="MEF_NATURA_GIURIDICA" dest\="MEF_NATURA_GIURIDICA" type\="java.lang.String" />\
+<param id\="field" value\="NUM_PARTI" dest\="NUM_PARTI" type\="java.lang.String" />\
+<param id\="field" value\="VOLUME_TOT" dest\="VOLUME_TOT" type\="java.lang.String" />\
+<param id\="field" value\="SUP_COP" dest\="SUP_COP" type\="java.math.BigDecimal" />\
+<param id\="field" value\="SUP_TOT" dest\="SUP_TOT" type\="java.lang.String" />\
+<param id\="field" value\="SUP_TOT_SLP" dest\="SUP_TOT_SLP" type\="java.lang.String" />\
+<param id\="field" value\="SUP_LOC" dest\="SUP_LOC" type\="java.lang.String" />\
+<param id\="field" value\="SUP_OPER" dest\="SUP_OPER" type\="java.lang.String" />\
+<param id\="field" value\="SUP_CO_SE" dest\="SUP_CO_SE" type\="java.lang.String" />\
+<param id\="field" value\="NUM_PIANI_F" dest\="NUM_PIANI_F" type\="java.math.BigDecimal" />\
+<param id\="field" value\="NUM_PIANI_I" dest\="NUM_PIANI_I" type\="java.math.BigDecimal" />\
+<param id\="field" value\="REND_CATAS" dest\="REND_CATAS" type\="java.lang.String" />\
+<param id\="field" value\="VOLUME_I" dest\="VOLUME_I" type\="java.lang.String" />\
+<param id\="field" value\="VOLUME_F" dest\="VOLUME_F" type\="java.lang.String" />\
+<param id\="field" value\="SUP_COMMERCIALE" dest\="SUP_COMMERCIALE" type\="java.math.BigDecimal" />\
+<param id\="field" value\="VAL_ACQUISTO" dest\="VAL_ACQUISTO" type\="java.math.BigDecimal" />\
+<param id\="field" value\="VAL_CATASTALE" dest\="VAL_CATASTALE" type\="java.math.BigDecimal" />\
+<param id\="field" value\="NUM_VANI" dest\="NUM_VANI" type\="java.math.BigDecimal" />\
+<param id\="field" value\="METRI_Q" dest\="METRI_Q" type\="java.math.BigDecimal" />\
+<param id\="field" value\="PROVENIENZA" dest\="PROVENIENZA" type\="java.lang.String" />\
+<param id\="field" value\="TIPO" dest\="TIPO" type\="java.lang.String" />\
+<param id\="field" value\="COD_CARTELLA" dest\="COD_CARTELLA" type\="java.lang.String" />\
+<param id\="field" value\="DES_CARTELLA" dest\="DES_CARTELLA" type\="java.lang.String" />\
+<param id\="const" value\="42" dest\="FK_ENTE_SORGENTE" type\="java.lang.Integer" /><param id\="field" value\="DT_EXP_DATO" dest\="DT_EXP_DATO" type\="java.sql.Timestamp" /></command></commands></RsIterator>
+

@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings
+  xmlns="http://java.sun.com/xml/ns/persistence/orm"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
+  version="2.0">
+
+	<named-query name="SitTF24Versamenti.getVersamentoByID">
+		<query>
+			<![CDATA[
+				select v from SitTF24Versamenti v 
+				where v.id = :id
+			 ]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SitTF24Annullamento.getAnnullamentoByID">
+		<query>
+			<![CDATA[
+				select v from SitTF24Annullamento v 
+				where v.id = :id
+			 ]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SitTF24Versamenti.getListaVersamentiByCF">
+		<query>
+			<![CDATA[
+				select v from SitTF24Versamenti v 
+				where v.cf =:codfisc
+			 ]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SitTF24Versamenti.getListaVersamentiByCFOrderByTipoAnno">
+		<query>
+			<![CDATA[
+				select v from SitTF24Versamenti v
+				where v.cf =:codfisc
+				order by v.tipoImposta, v.annoRif, v.dtRiscossione
+			 ]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SitTF24Annullamento.getListaByCF">
+		<query>
+			<![CDATA[
+				select v from SitTF24Annullamento v 
+				where v.cf =:codfisc 
+			 ]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SitTF24Versamenti.getListaVersamentiByAnn">
+		<query>
+			<![CDATA[
+				select v from SitTF24Versamenti v 
+				where v.cf =:codfisc and v.dtRipartizione=:dtRipartizione and v.progRipartizione=:progRipartizione and v.annoRif=:annoRif
+				and v.dtBonifico=:dtBonifico and v.dtRiscossione=:dtRiscossione and v.codEnteRd=:codEnte and v.codTributo=:codTributo
+			 ]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SitTF24Annullamento.getListaAnnullamentiByVer">
+		<query>
+			<![CDATA[
+				select v from SitTF24Annullamento v 
+				where v.cf =:codfisc and v.dtRipartOrig=:dtRipartizione and v.progRipartOrig=:progRipartizione and v.annoRif=:annoRif
+				and v.dtBonificoOrig=:dtBonifico and v.dtRiscossione=:dtRiscossione and v.codEnteRd=:codEnte and v.codTributo=:codTributo
+			 ]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SitTF24Testata.getMaxDtFornitura">
+		<query>
+			<![CDATA[
+				select max(v.dtFornitura) from SitTF24Testata v
+			 ]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SitTF24Versamenti.getMaxDtInsMod">
+		<query>
+			<![CDATA[
+				select max(v.dtIns), max(v.dtMod) from SitTF24Versamenti v
+			 ]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SitTCodTributo.getDescTributoByCod">
+		<query>
+			<![CDATA[
+				select v from SitTCodTributo v 
+				where v.codice = :codice
+			 ]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SitTF24CodSogg.getTipoSoggByCodice">
+		<query>
+			<![CDATA[
+				select v from SitTF24CodSogg v 
+				where v.id.codice = :codice
+			 ]]>
+		</query>
+	</named-query>
+	
+	
+	<named-query name="SitTCodTributoAnno.getLista">
+		<query>
+			<![CDATA[
+				select ca from SitTCodTributoAnno ca
+			 ]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SitTCodTributo.getLista">
+		<query>
+			<![CDATA[
+				select ca from SitTCodTributo ca order by codice
+			 ]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SitTCodTributo.getListaDescrizioni">
+		<query>
+			<![CDATA[
+				select distinct ca.descrizione from SitTCodTributo ca order by descrizione
+			 ]]>
+		</query>
+	</named-query>
+
+</entity-mappings>

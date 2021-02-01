@@ -1,0 +1,154 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+     	xmlns:h="http://java.sun.com/jsf/html"
+		xmlns:f="http://java.sun.com/jsf/core"
+		xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+		xmlns:ui="http://java.sun.com/jsf/facelets"
+		xmlns:p="http://primefaces.org/ui"
+	  	xmlns:composite="http://java.sun.com/jsf/composite">
+      
+	<h:head>
+		<title>Gestione Lista schede valutazione SINBA</title>
+	</h:head>
+	<h:body>
+		<composite:interface componentType="pnlListaValSinba">
+			<composite:attribute name="styleClass" />
+			<composite:attribute name="iDatiLista" type="it.webred.cs.jsf.interfaces.IListaValSinba" />
+			<composite:attribute name="esciActionUpdate" required="false"/>
+			<composite:attribute name="salvaActionUpdate" required="false"/>
+		</composite:interface>
+		<composite:implementation 
+			xmlns:webred="http://java.sun.com/jsf/composite/webred"
+			xmlns:webredcs="http://java.sun.com/jsf/composite/webredcs">
+			
+			<h:panelGrid columns="1" cellpadding="0" cellspacing="0">
+				<p:commandButton value="Nuovo" process="@this"  
+					actionListener="#{cc.attrs.iDatiLista.openDialogOnNew}" 
+					disabled="#{cc.attrs.iDatiLista.readOnly}" 
+					oncomplete="if(args &amp;&amp; args.isShowDialog){updatevalSinbaContent(); PF('sinbaDialog').show()}" 
+					icon="ui-icon-document-b" />
+				<p:spacer height="2"/>
+			</h:panelGrid>
+			<p:remoteCommand id="rmtBtnNuovoValSinba" name="updatevalSinbaContent" action="#{cc.attrs.iDatiLista.updateDialog()}"
+							 process="@this" update="@(.updateOnOpenDialogValSinba)" />
+		
+			<p:dataTable id="schedaValSinba" var="row"
+				value="#{cc.attrs.iDatiLista.lazyListaSchedeValSinbaModel}" lazy="true" selectionMode="single" styleClass="ui-datatable-hor-scroll"
+				rows="10" paginator="true" emptyMessage="Nessuna valutazione presente"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="5,10,15">
+				
+				<p:column headerText="Id Val.Sinba" width="60px;">
+					<h:outputText value="#{row.idRow}"/>
+				</p:column>
+				<p:column headerText="Data valutazione" sortBy="#{row.dataValutazione}" width="150px;" style="text-align:center;">
+					<h:outputLabel value="#{row.dataValutazione}">
+						<f:convertDateTime id="dataValSinba" type="date" pattern="dd/MM/yyyy"  />
+					</h:outputLabel>
+				</p:column>
+				<p:column headerText="Esportazione" width="60px;"  style="text-align:center;">
+					<p:graphicImage
+						value="#{resource['webredcs/img/check.png']}" title="Esportato"
+						width="16px"
+						rendered="#{row.dataExport != null}" />
+					<p:graphicImage
+						value="#{resource['webredcs/img/times.png']}" title="Non esportato"
+						width="16px"
+						rendered="#{row.dataExport == null}"/>
+				</p:column>
+				<p:column headerText="Data esportazione"  width="150px;" style="text-align:center;">
+					<h:outputText 	id="dataEsportazione"	value="#{row.dataExport}">
+						<f:convertDateTime	type="date"	pattern="dd/MM/yyyy" />
+					</h:outputText>
+				</p:column>			
+				<p:column headerText="Identificativo flusso">
+					<h:outputText 	id="identificativoFlusso"	value="#{row.identificazioneFlusso}">
+						<f:convertDateTime	type="date"	pattern="dd/MM/yyyy" />
+					</h:outputText>
+				</p:column>			
+				<p:column headerText="Ultima modifica" style="text-align:center; ">
+					<h:outputLabel value="#{row.opModifica} il " />	
+					<h:outputText 	value="#{row.dtModifica}">
+						<f:convertDateTime	type="date"	pattern="dd/MM/yyyy" />
+					</h:outputText>
+			   </p:column>		
+			   
+				<p:column style="text-align: center">
+					
+					<p:commandButton value="Modifica" icon="ui-icon-pencil" 
+						action="#{cc.attrs.iDatiLista.setOnModifica(row.scheda)}" process="@this"
+						disabled="#{cc.attrs.iDatiLista.checkDisabledModifica(row.idRow, row.dataExport)}"
+						oncomplete="if(args &amp;&amp; args.isShowDialog){updatevalSinbaContent(); PF('sinbaDialog').show()}
+									else if(args &amp;&amp; args.isShowDialogPrestazioni){ updatevalSinbaContent(); PF('aggiornaPrestazioni').show();}"/>
+						
+				   <p:commandButton value="Copia" icon="ui-icon-copy" 
+				   		disabled="#{cc.attrs.iDatiLista.checkDisabledCopia(row.idRow, row.dataExport)}"
+						action="#{cc.attrs.iDatiLista.setOnCopy(row.scheda)}" process="@this"
+						oncomplete="if(args &amp;&amp; args.isShowDialog){updatevalSinbaContent(); PF('sinbaDialog').show()}"/>
+					
+					<h:commandButton value="Stampa"  immediate="true" icon="ui-icon-print" rendered="false"
+									 action="#{cc.attrs.iDatiLista.esportaStampa(row.scheda)}" 
+									 styleClass="ui-button ui-widget ui-state-default ui-corner-all"
+									 style="padding: .3em 1em; line-height: 1.4;"/>
+				</p:column>
+			</p:dataTable>
+				
+			<!-- INIZIO SCHEDA VALUTAZIONE DIALOG -->
+			<p:dialog id="sinbaDialog" widgetVar="sinbaDialog" 
+				header="Dettaglio Scheda Valutazione SInBa" modal="true" 
+			    dynamic="true" width="70%">
+				<p:outputPanel id="pnlDlgValSinba"  styleClass="updateOnOpenDialogValSinba">
+					
+					<webredcs:pnlValSinba sinbaManBean="#{cc.attrs.iDatiLista.currSchedaSinbaManBean}"
+									      copiaDatiDaUltimaValutazione="#{cc.attrs.iDatiLista.copiaDatiDaUltimaValutazione()}"
+									      esisteStorico = "#{cc.attrs.iDatiLista.esisteStorico}"/>
+					
+					<webred:pnlSalvaEsci dialogToHide="sinbaDialog" pnlToUpdate=":#{p:component('schedaValSinba')}" 
+										 disabled="#{cc.attrs.iDatiLista.readOnly}"
+				                         salvaAction="#{cc.attrs.iDatiLista.salva()}" 
+				                         renderedBtnSalvaSecondoLivello="#{cc.attrs.iDatiLista.renderedSecondoLivello}"
+				                         salvaSecondoLivelloAction="#{cc.attrs.iDatiLista.salvaSecondoLivello()}"/>   
+				                         
+				</p:outputPanel>
+			</p:dialog>
+			<!-- FINE SCHEDA VALUTAZIONE DIALOG -->
+			
+			<p:confirmDialog header="Aggiornamento Prestazioni"
+				widgetVar="aggiornaPrestazioni" severity="alert" closable="false"
+				message="Le prestazioni erogate differiscono da quelle registrate nella valutazione" >
+				<p:panelGrid styleClass="updateOnOpenDialogValSinba">
+				<p:row>
+				<p:column style="text-align: left; width:450px">
+				<h:outputText value="Prestazioni erogate: #{cc.attrs.iDatiLista.currSchedaSinbaManBean.codiciPrestazioniDb} " style="font-weight: bold;" />
+				</p:column>
+				</p:row>
+				<p:row>
+				<p:column style="text-align: left;width:450px">
+				<h:outputText value="Prestazioni registrate: #{cc.attrs.iDatiLista.currSchedaSinbaManBean.codiciPrestazioniJson} " style="font-weight: bold;" />
+				</p:column>
+				</p:row>
+					<p:row>
+						<p:column style="text-align: center;">
+							<p:commandButton value="Aggiorna" process="@this" 
+							 action="#{cc.attrs.iDatiLista.allineaCodiciPrestazione()}"
+							 oncomplete="if (args &amp;&amp; !args.validationFailed &amp;&amp; args.saved){ PF('aggiornaPrestazioni').hide(); updateListaExport;}" />
+							 
+							<p:commandButton value="Esci" process="@this" oncomplete="PF('aggiornaPrestazioni').hide()"/> 
+							 <!--
+							 	refreshDueLivelli() è un RemoteCommand che si occupa di fare refresh dell'elenco
+							 	delle schede multidimensionali a partire dal quale si è entrati in questa
+							 	schedaSinba
+							 	
+							 	Verosimilmente la definizione del RemoteCommand sarà nella pagina chiamante
+							 	(di modo da poter personalizzare l'action e l'update necessarie)
+							 -->
+							 <p:remoteCommand name="updateListaExport" process="@this" update=":#{p:component('schedaValSinba')}"/>
+						</p:column>
+					</p:row>
+				</p:panelGrid>
+			</p:confirmDialog>			
+			
+		</composite:implementation>
+	</h:body>
+		
+</html>

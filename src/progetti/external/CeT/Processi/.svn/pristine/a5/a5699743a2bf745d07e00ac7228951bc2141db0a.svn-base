@@ -1,0 +1,3 @@
+tableA.name=RE_SUCCESSIONI_1_1
+#
+Caricatore.class.noversion=it.webred.rulengine.brick.loadDwh.load.successioni.v1.ImportSuccessioni

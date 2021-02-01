@@ -1,0 +1,143 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich">
+
+<ui:composition template="/jsp/protected/layout/layout.xhtml">
+
+	<ui:define name="content">
+
+		<rich:separator lineType="solid" />
+
+		<rich:panel>
+			<h:form id="logForm">
+
+				<a4j:keepAlive beanName="statusDataProviderImpl" />
+
+				<h:panelGrid columns="3">
+
+					<h:graphicImage value="/images/refresh.png" title="Aggiorna"
+						height="16px" style="cursor:pointer; padding-right: 10px;">
+						<a4j:support event="onclick" reRender="logForm">
+						</a4j:support>
+					</h:graphicImage>
+
+					<h:outputLabel value="Filtro per Ente" />
+					<h:selectOneMenu id="ente"
+						value="#{statusDataProviderImpl.enteSelezionato}">
+						<f:selectItem itemLabel="-seleziona-" itemValue="" />
+						<f:selectItems value="#{statusDataProviderImpl.listaEnti}" />
+						<a4j:support event="onchange" reRender="logForm"></a4j:support>
+					</h:selectOneMenu>
+
+				</h:panelGrid>
+
+				<rich:spacer height="5px" />
+
+				<rich:extendedDataTable width="100%" height="1070px" var="row"
+					value="#{statusDataModel}" id="listLogTable"
+					enableContextMenu="false" rows="20"
+					onRowMouseOver="this.style.backgroundColor='#F1F1F1'"
+					onRowMouseOut="this.style.backgroundColor='#{a4jSkin.tableBackgroundColor}'">
+
+					<rich:column sortable="false" width="100%">
+						<f:facet name="header">
+							<h:outputText value="Stato delle attivita'"></h:outputText>
+						</f:facet>
+
+						<div style="float: left;">
+							<h:graphicImage width="20px"
+								rendered="#{row.RAnagStato.tipo eq 'F'}"
+								value="/images/greencircle.png" style="padding-right: 5px;"
+								title="#{row.RAnagStato.descr}" />
+							<h:graphicImage width="20px"
+								rendered="#{row.RAnagStato.tipo eq 'W'}"
+								value="/images/orangecircle.png" style="padding-right: 5px;"
+								title="#{row.RAnagStato.descr}" />
+							<h:graphicImage width="20px"
+								rendered="#{row.RAnagStato.tipo eq 'I'}"
+								value="/images/yellowcircle.png" style="padding-right: 5px;"
+								title="#{row.RAnagStato.descr}" />
+							<h:graphicImage width="20px"
+								rendered="#{row.RAnagStato.tipo eq 'E'}"
+								value="/images/redcircle.png" style="padding-right: 5px;"
+								title="#{row.RAnagStato.descr}" />
+							<rich:spacer width="25px" rendered="#{row.RAnagStato == null}" />
+							<h:outputText value="Id:" style="font-weight: bold;" />
+							<h:outputText value="#{row.commandLaunch.processid}"
+								style="padding-right: 20px;" />
+							<h:outputText value="Descr.:" style="font-weight: bold;" />
+							<h:outputText value="#{row.command.descr}" style="width: 50%;" />
+						</div>
+						<div style="float: right;">
+							<h:outputText value="Data inizio:" style="font-weight: bold;" />
+							<h:outputText value="#{row.commandLaunch.dateStart}"
+								style="padding-right: 20px;">
+								<f:convertDateTime pattern="dd/MM/yyyy HH:mm" timeZone="CET" />
+							</h:outputText>
+							<h:outputText value="Data fine:" style="font-weight: bold;" />
+							<h:outputText value="#{row.commandLaunch.dateEnd}">
+								<f:convertDateTime pattern="dd/MM/yyyy HH:mm" timeZone="CET" />
+							</h:outputText>
+							<h:graphicImage rendered="#{row.processing}"
+								value="/images/wait.gif" title="In esecuzione" />
+						</div>
+
+						<br />
+						<br />
+						<rich:togglePanel switchType="client" stateOrder="closed,log">
+
+							<f:facet name="closed">
+								<rich:toggleControl>
+									<h:outputText value="Apri" />
+								</rich:toggleControl>
+							</f:facet>
+
+							<f:facet name="log">
+
+								<h:panelGrid columns="2">
+									<rich:toggleControl value="Chiudi" switchToState="closed" />
+
+									<rich:dataTable width="100%" var="log"
+										value="#{row.commandAck}"
+										onRowMouseOver="this.style.backgroundColor='#F1F1F1'"
+										onRowMouseOut="this.style.backgroundColor='#{a4jSkin.tableBackgroundColor}'">
+
+										<rich:column>
+											<f:facet name="header">
+												<h:outputText value="Data" />
+											</f:facet>
+											<h:outputText value="#{log.logDate}">
+												<f:convertDateTime pattern="dd/MM/yyyy HH:mm" timeZone="CET" />
+											</h:outputText>
+										</rich:column>
+										<rich:column>
+											<f:facet name="header">
+												<h:outputText value="Messaggio" />
+											</f:facet>
+											<h:outputText value="#{log.message}" />
+										</rich:column>
+
+									</rich:dataTable>
+								</h:panelGrid>
+
+							</f:facet>
+						</rich:togglePanel>
+
+					</rich:column>
+					<f:facet name="footer">
+						<rich:datascroller id="tableScroller" />
+					</f:facet>
+				</rich:extendedDataTable>
+
+			</h:form>
+		</rich:panel>
+
+	</ui:define>
+
+</ui:composition>
+
+</html>

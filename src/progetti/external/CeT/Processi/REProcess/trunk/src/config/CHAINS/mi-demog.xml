@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<j:jelly trim="false" xmlns:define="jelly:define" xmlns:j="jelly:core"
+	     xmlns:x="jelly:xml" xmlns:re="reTagLib" xmlns:log="jelly:log">
+	
+	<define:taglib uri="reTagLib">
+		<define:jellybean name="bridge" className="it.webred.rulengine.chains.bridge.JellyCommandBridge" />
+	</define:taglib>
+	
+	<!-- 0 -->
+	<re:bridge codiceComando="TXT-MIDEM" context="${ctx}" connessione="DWH" var="cmd0" />
+	
+	<!-- 1 -->	
+	<j:set var='par1' encode='true'>
+		<complexParam>
+		  
+	   		<param type="it.webred.rulengine.type.ComplexParam" name="sql">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[QUERYSQL_1]]</param></complexParam> ]]>
+	   		</param>
+	   		
+	   	</complexParam>
+	</j:set>
+	<re:bridge codiceComando="SELECTSQL" context="${ctx}" connessione="DWH" var="cmd1" parametro="${par1}" />
+	
+	
+	<!-- 2 -->
+	<j:set var='par2' encode='true'>
+		<complexParam>
+			
+			<!-- senza specificare il tipo per la creazione di un complexParam da oggetto e nn da stringa -->
+			<param type="" name="sqlrs">${cmd1.risultati.RESULTSET}</param>
+			
+			<param type="it.webred.rulengine.type.ComplexParam" name="xml">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[RSITRSCRIPT_1]]</param></complexParam> ]]>
+	   		</param>
+			
+	   	</complexParam>
+	</j:set>
+	
+	<re:bridge codiceComando="RSITERATOR" context="${ctx}" connessione="DWH" var="cmd2" parametro="${par2}" />
+	
+	
+	 
+</j:jelly>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-modules id="moduleCoreId" project-version="1.5.0">
+    <wb-module deploy-name="CT_Controller_EJB">
+        <wb-resource deploy-path="/" source-path="/ejbModule"/>
+        <property name="ClientJARURI" value="CT_Controller_EJBClient.jar"/>
+        <property name="ClientProject" value="CT_Controller_EJBClient"/>
+        <property name="java-output-path" value="/REngine_EJB/build/classes"/>
+    </wb-module>
+</project-modules>

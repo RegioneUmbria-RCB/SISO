@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-modules id="moduleCoreId" project-version="1.5.0">
+    <wb-module deploy-name="CT_Service_Aggregator_EJB">
+        <wb-resource deploy-path="/" source-path="/ejbModule"/>
+        <property name="java-output-path" value="/CT_Service_Aggregator_EJB/build/classes"/>
+        <property name="ClientProject" value="CT_Service_Aggregator_EJBClient"/>
+        <property name="ClientJARURI" value="CT_Service_Aggregator_EJBClient.jar"/>
+    </wb-module>
+</project-modules>

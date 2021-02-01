@@ -1,0 +1,140 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich">
+
+<!-- INIZIO MODAL PANEL NUOVO COMUNE -->
+<rich:modalPanel id="comuneModalBox" minHeight="330" minWidth="970"
+	height="330" width="970">
+
+	<f:facet name="header">
+		<h:outputText value="Gestione enti"></h:outputText>
+	</f:facet>
+	<f:facet name="controls">
+		<h:form>
+			<h:panelGroup>
+				<h:graphicImage value="/img/close.png" style="cursor:pointer"
+					id="hidelink">
+					<a4j:support event="onclick"
+						oncomplete="javascript:Richfaces.hideModalPanel('comuneModalBox');" />
+				</h:graphicImage>
+			</h:panelGroup>
+		</h:form>
+	</f:facet>
+
+	<h:form id="newcomuneForm">
+
+		<a4j:keepAlive beanName="nuovoComuneBean" />
+
+		<h:panelGrid columns="4">
+			<h:panelGrid columns="2">
+				<h:outputLabel style="font-weight: bold;" value="Nuovo ente:" />
+				<h:outputLabel style="font-weight: normal;" value="" />
+
+				<h:outputLabel style="font-weight: normal;" value="Belfiore" />
+				<h:inputText value="#{nuovoComuneBean.nuovoComune.belfiore}" id="inptBel">
+					<a4j:support event="onclick"
+						action="#{nuovoComuneBean.doCleanGestione}"
+						reRender="cboModComune" focus="inptBel"/>
+				</h:inputText>
+
+				<h:outputLabel style="font-weight: normal;" value="Descrizione" />
+				<h:inputText value="#{nuovoComuneBean.nuovoComune.descrizione}" id="inptDes">
+					<a4j:support event="onclick"
+						action="#{nuovoComuneBean.doCleanGestione}"
+						reRender="cboModComune" focus="inptDes"/>
+				</h:inputText>
+
+				<rich:spacer height="10px" />
+				<rich:spacer height="10px" />
+				<rich:spacer height="10px" />
+				<rich:spacer height="10px" />
+
+				<h:outputLabel style="font-weight: bold;" value="Gestione ente:" />
+				<h:selectOneMenu id="cboModComune"
+					value="#{nuovoComuneBean.labelComuneSelected}">
+					<f:selectItem itemLabel="-Seleziona-" itemValue="" />
+					<f:selectItems value="#{comuneBean.listaComune}" />
+					<a4j:support event="onchange"
+						action="#{nuovoComuneBean.doCaricaDatiComune}"
+						reRender="newcomuneForm" />
+				</h:selectOneMenu>
+
+
+
+			</h:panelGrid>
+
+			<h:outputLabel value="Associa a:" style="font-weight: bold;" />
+
+			<rich:extendedDataTable width="400px" height="250px" var="row"
+				value="#{nuovoComuneBean.listaInstance}" enableContextMenu="false"
+				id="listInstanceTable"
+				onRowMouseOver="this.style.backgroundColor='#F1F1F1'"
+				onRowMouseOut="this.style.backgroundColor='#{a4jSkin.tableBackgroundColor}'">
+				<rich:column width="30px" sortable="false">
+					<center><h:selectBooleanCheckbox id="cbx"
+						value="#{row.check}" /></center>
+				</rich:column>
+				<rich:column width="200px" sortable="false">
+					<f:facet name="header">
+						<h:outputLabel value="Istanza" />
+					</f:facet>
+					<h:outputLabel style="font-weight: normal;"
+						value="#{row.oggetto.name}" />
+				</rich:column>
+				<rich:column width="170px" sortable="false">
+					<f:facet name="header">
+						<h:outputLabel value="Applicazione" />
+					</f:facet>
+					<h:outputLabel style="font-weight: normal;"
+						value="#{row.oggetto.fkAmApplication}" />
+				</rich:column>
+
+			</rich:extendedDataTable>
+
+			<rich:extendedDataTable width="250px" height="250px" var="row"
+				value="#{nuovoComuneBean.listaFonte}" enableContextMenu="false"
+				id="listFonteTable"
+				onRowMouseOver="this.style.backgroundColor='#F1F1F1'"
+				onRowMouseOut="this.style.backgroundColor='#{a4jSkin.tableBackgroundColor}'">
+				<rich:column width="30px" sortable="false">
+					<center><h:selectBooleanCheckbox id="cbx"
+						value="#{row.check}" /></center>
+				</rich:column>
+				<rich:column width="220px" sortable="false">
+					<f:facet name="header">
+						<h:outputLabel value="Fonte dati" />
+					</f:facet>
+					<h:outputLabel style="font-weight: normal;"
+						value="#{row.oggetto.descrizione}" />
+				</rich:column>
+			</rich:extendedDataTable>
+
+		</h:panelGrid>
+
+		<rich:spacer height="10px" />
+
+		<div align="center"><h:panelGrid columns="3">
+
+			<a4j:commandButton value="Salva"
+				action="#{nuovoComuneBean.doSaveNewComune}" reRender="cmnForm">
+				<a4j:support event="onclick"
+					onsubmit="if (!confirm('Procedere con il salvataggio?')) return false" />
+			</a4j:commandButton>
+
+			<rich:spacer width="15px" height="15px" />
+
+			<a4j:commandButton value="Chiudi">
+				<a4j:support event="onclick"
+					oncomplete="javascript:Richfaces.hideModalPanel('comuneModalBox');" />
+			</a4j:commandButton>
+		</h:panelGrid></div>
+
+	</h:form>
+</rich:modalPanel>
+<!-- FINE MODAL PANEL NUOVO COMUNE -->
+
+</html>

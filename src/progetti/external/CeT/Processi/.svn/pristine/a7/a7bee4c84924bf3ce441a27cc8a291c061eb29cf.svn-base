@@ -1,0 +1,48 @@
+sql.RE_CONCESSIONI_A=SELECT \
+Chiave,\
+concessione_numero,\
+progressivo_numero,\
+progressivo_anno,\
+protocollo_data ,\
+protocollo_numero,\
+tipo_intervento,\
+oggetto,\
+procedimento,\
+codice_via,\
+indirizzo,civico,barrato,zona,\
+ data_rilascio,\
+ data_inizio_lavori,\
+ data_fine_lavori,\
+ data_proroga_lavori,\
+POSIZIONE_DESCRIZIONE, POSIZIONE_CODICE, POSIZIONE_DATA, \
+PROCESSID, RE_FLAG_ELABORATO, DT_EXP_DATO \
+FROM RE_CONCESSIONI_A WHERE RE_FLAG_ELABORATO = '0' ORDER BY DT_EXP_DATO
+sql.RE_CONCESSIONI_B=select Chiave    , Chiave_relazione    ,tipo_soggetto    , tipo_persona    ,\
+codice_fiscale    , cognome    ,nome    ,Denominazione_RagSoc    ,\
+titolo   , data_nascita,    \
+comune_nascita    , provincia_nascita    ,indirizzo_residenza    ,civico_residenza    ,\
+cap_residenza    ,comune_residenza    ,provincia_residenza    ,data_inizio_residenza    ,\
+tel    ,fax    ,email    ,piva    ,indirizzo_studio    ,cap_studio    ,comune_studio    ,provincia_studio    ,\
+albo    ,rag_Soc_ditta    ,cf_ditta    ,pi_ditta    ,indirizzo_ditta    ,cap_ditta    ,comune_ditta    ,\
+provincia_ditta    ,qualita,	\
+PROCESSID, RE_FLAG_ELABORATO, DT_EXP_DATO \
+FROM RE_CONCESSIONI_B WHERE RE_FLAG_ELABORATO = '0' ORDER BY DT_EXP_DATO
+sql.RE_CONCESSIONI_C=SELECT Chiave    ,Chiave_relazione    ,dest_uso    ,zone_omogenee    ,zone_funzionali    ,vincoli    ,\
+sup_eff_lotto    ,sup_edificabile    ,sup_lorda_pav    ,sup_occupata    ,sup_coperta    ,\
+sup_filtrante    ,vol_virtuale    ,vol_fisico_istat    ,vol_totale    ,\
+parcheggio_n_posti    ,parcheggio_sup    ,vani    ,num_abitazioni    ,\
+data_agibilita    ,data_abitabilita	,\
+PROCESSID, RE_FLAG_ELABORATO, DT_EXP_DATO \
+FROM RE_CONCESSIONI_C WHERE RE_FLAG_ELABORATO = '0' ORDER BY DT_EXP_DATO
+sql.RE_CONCESSIONI_D=SELECT Chiave,Chiave_relazione,foglio,particella,subalterno,tipo,sezione,codice_Fabbricato,\
+CHIAVE_RELAZIONE_E, \
+PROCESSID, RE_FLAG_ELABORATO, DT_EXP_DATO FROM RE_CONCESSIONI_D \
+WHERE RE_FLAG_ELABORATO = '0' ORDER BY DT_EXP_DATO
+sql.RE_CONCESSIONI_E=SELECT Chiave	, Chiave_A	,\
+FILLER	,sedime	,\
+indirizzo	,codice_via	,\
+civico	,civico2	,\
+civico3	,descrizione, \
+PROCESSID, RE_FLAG_ELABORATO, DT_EXP_DATO \
+FROM RE_CONCESSIONI_E WHERE RE_FLAG_ELABORATO = '0' ORDER BY DT_EXP_DATO
+

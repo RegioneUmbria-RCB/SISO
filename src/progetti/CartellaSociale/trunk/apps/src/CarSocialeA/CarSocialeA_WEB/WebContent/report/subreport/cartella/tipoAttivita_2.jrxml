@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="aac40627-9034-4852-841a-125bbd13a786">
+	<property name="ireport.zoom" value="0.7513148009015778"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<field name="testo" class="java.lang.String"/>
+	<field name="descrizioneCon" class="java.lang.String"/>
+	<background>
+		<band/>
+	</background>
+	<detail>
+		<band height="61" splitType="Prevent">
+			<staticText>
+				<reportElement isPrintRepeatedValues="false" x="0" y="0" width="238" height="20" uuid="f326d9fb-37f8-4ba0-89e0-b2bf9861cea3"/>
+				<textElement>
+					<font size="12" isBold="false" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Testo attività:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement stretchType="RelativeToTallestObject" isPrintRepeatedValues="false" x="0" y="20" width="555" height="13" isRemoveLineWhenBlank="true" uuid="318f045c-50ff-4d2d-8a4a-9af2945ed707"/>
+				<textElement markup="html"/>
+				<textFieldExpression><![CDATA[$F{testo}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="0" y="37" width="555" height="16" isRemoveLineWhenBlank="true" uuid="ff0bcd44-3c51-4738-bedd-a2209ed22ca4"/>
+				<textFieldExpression><![CDATA[$F{descrizioneCon}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

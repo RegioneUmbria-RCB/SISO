@@ -1,0 +1,21 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Relation class="oracle.dbtools.crest.model.design.logical.Relation" name="FK_CHIUSURA_PERIODO" directorySegmentName="seg_0" id="0E8504D1-85C1-9BBA-1520-54732C819C56">
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:18 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>8D41E2C4-E554-9DF9-2F1F-8927D86308B0</importedID>
+<engineerTo>
+<item key="2B43EB65-62DA-EC53-86CF-E94D657D3AAF" value="true"/>
+<item key="36B1C6E8-6FD2-1EF6-8F4A-4E5B3D846A78" value="true"/>
+</engineerTo>
+<sourcePk>6E91357C-512E-7C2C-A549-7203321EA12A</sourcePk>
+<identifying>false</identifying>
+<optionalSource>true</optionalSource>
+<optionalTarget>false</optionalTarget>
+<sourceCardinality>1</sourceCardinality>
+<sourceEntity>D42C816B-576F-BD17-C943-848F8FDE94ED</sourceEntity>
+<targetCardinalityString>*</targetCardinalityString>
+<targetEntity>9C42BD92-6AD0-EB49-7BF6-632DFC5122EE</targetEntity>
+<transferable>true</transferable>
+<deleteRule>NO ACTION</deleteRule>
+</Relation>

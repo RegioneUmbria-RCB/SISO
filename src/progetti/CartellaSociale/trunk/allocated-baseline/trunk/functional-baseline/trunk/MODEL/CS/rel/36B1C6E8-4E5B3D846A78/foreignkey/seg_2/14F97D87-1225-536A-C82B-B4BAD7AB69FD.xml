@@ -1,0 +1,21 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<FKIndexAssociation class="oracle.dbtools.crest.model.design.relational.FKIndexAssociation" directorySegmentName="seg_2" id="14F97D87-1225-536A-C82B-B4BAD7AB69FD" containerWithKeyObject="4603F107-1896-4727-96F2-D7F47B9DD32F" localFKIndex="2AB44324-9C8A-6329-F0ED-DCB83F7EB899" name="GL_Q_CLASSE_Q_CLASSE_FK">
+<sourceConnName>ARGO_ROMA</sourceConnName>
+<sourceObjSchema>ARGO</sourceObjSchema>
+<sourceObjName>GL_Q_CLASSE_Q_CLASSE_FK</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-11-10 15:07:10 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<remoteDesignID>92828518-FDF2-9FC0-8903-79B9B4C1F09E</remoteDesignID>
+<remoteModelID>BB56C057-595C-1618-85D3-720D805D8035</remoteModelID>
+<remoteObjectID>6BFFD351-A2CF-EFC9-705C-634D7543C197</remoteObjectID>
+<remoteObjectRelativeStorageName>\rel\BB56C057-720D805D8035\foreignkey/seg_0/6BFFD351-A2CF-EFC9-705C-634D7543C197.xml</remoteObjectRelativeStorageName>
+<deleteRule>NO ACTION</deleteRule>
+<referredTableID>4603F107-1896-4727-96F2-D7F47B9DD32F</referredTableID>
+<keyObject>C874C392-89F4-3DB3-5A7F-C76D0C14BE8A</keyObject>
+<referredKeyID>C874C392-89F4-3DB3-5A7F-C76D0C14BE8A</referredKeyID>
+<mandatory>false</mandatory>
+<transferable>true</transferable>
+<rely>false</rely>
+<columnDependencyConstraintGenerateInDDL>true</columnDependencyConstraintGenerateInDDL>
+</FKIndexAssociation>

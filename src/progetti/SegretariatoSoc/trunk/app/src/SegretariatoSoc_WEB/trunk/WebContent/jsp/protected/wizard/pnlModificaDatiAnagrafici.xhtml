@@ -1,0 +1,106 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:webred="http://java.sun.com/jsf/composite/webred" xmlns:webredcs="http://java.sun.com/jsf/composite/webredcs">
+
+<p:commandButton value="Modifica dati anagrafici" 
+				title="Modifica dati anagrafici disabilitati: l'operazione verrà tracciata." 
+				actionListener="#{nuovaSchedaWizard.salvaAnagraficaLog}" update="@(.onModificaDatiAnagrafici)"	icon="ui-icon-pencil"		
+				disabled="false" oncomplete="PF('#{nuovaSchedaWizard.widgetVar}').show()" process="@this"  />
+	
+<p:dialog id="dlgModificaAnagrafica" 
+			widgetVar="#{nuovaSchedaWizard.widgetVar}" modal="true" styleClass="onModificaDatiAnagrafici"
+			closable="false" width="750" height="280"
+			header="Modifica Dati Anagrafici Disabilitati">
+			<p:outputPanel rendered="#{nuovaSchedaWizard.renderModDatiAnaDlg}">
+			<p:spacer height="20" />
+			<h:panelGrid columns="4" style="display: inline-block; vertical-align: top; width:100%;">
+				<h:outputText value="Cognome *" for="cognome_segnalato_mod" style="border=1px;" />
+				<p:inputText id="cognome_segnalato_mod"
+					disabled="#{!nuovaSchedaWizard.segnalato.anagrafica.disableAnagrafica and nuovaSchedaWizard.segnalato.anagrafica.cognome!=null}"
+					label="Cognome" 
+					value="#{nuovaSchedaWizard.segnalato.anagrafica.cognome}"
+					readonly="#{nuovaSchedaWizard.privacyAnonimo}" />
+
+				<h:outputText value="Nome *" for="nome_segnalato_mod" />
+				<p:inputText id="nome_segnalato_mod" 
+					disabled="#{!nuovaSchedaWizard.segnalato.anagrafica.disableAnagrafica and nuovaSchedaWizard.segnalato.anagrafica.nome!=null}"
+					label="Nome" 
+					value="#{nuovaSchedaWizard.segnalato.anagrafica.nome}"
+					readonly="#{nuovaSchedaWizard.privacyAnonimo}" />
+				
+				</h:panelGrid>	
+				<h:panelGrid columns="4">
+				 <h:outputText value="Alias *" for="alias_segnalato_mod" rendered="#{nuovaSchedaWizard.privacyAnonimo or tempCodFiscManager.isTemporaneo(nuovaSchedaWizard.segnalato.anagrafica.codiceFiscale)}" />	
+	                	<h:panelGrid rendered="#{nuovaSchedaWizard.privacyAnonimo or tempCodFiscManager.isTemporaneo(nuovaSchedaWizard.segnalato.anagrafica.codiceFiscale)}">		   
+						<p:inputText id="alias_segnalato_mod" disabled="#{!nuovaSchedaWizard.segnalato.anagrafica.disableAnagrafica and nuovaSchedaWizard.segnalato.anagrafica.alias!=null}" label="Alias"  style="text-transform: uppercase"
+							value="#{nuovaSchedaWizard.segnalato.anagrafica.alias}"	/>
+						</h:panelGrid>
+						<h:outputText value="Data di nascita *" for="data_nascita_segnalato_mod" />
+						<webred:pnlData id="data_nascita_segnalato_mod" disabled="#{!nuovaSchedaWizard.segnalato.anagrafica.disableAnagrafica and nuovaSchedaWizard.currentDate!=null}"
+										dataValue="#{nuovaSchedaWizard.segnalato.anagrafica.dataNascita}" dataPattern="dd/MM/yyyy" dataPatternLabel="gg/mm/aaaa" 
+									    yearRange="c-100:c+0"   />
+				</h:panelGrid>	
+				<h:panelGrid columns="4" >		
+						<h:outputText value="Luogo di nascita *" />
+						<h:panelGrid colums="1">
+							<h:panelGroup rendered="#{nuovaSchedaWizard.segnalato.anagrafica.comNascNonValido}">
+								<h:outputText value="Luogo di nascita non riconosciuto " style="color:red; font-size:9px" />
+								<h:outputText value="#{nuovaSchedaWizard.segnalato.anagrafica.comuneOld}" style="font-size:9px" />
+							</h:panelGroup>
+							<webred:pnlComuneNazione comuneNazioneManBean="#{nuovaSchedaWizard.segnalato.anagrafica.comuneNazioneNascitaMan}"
+								disabled="#{!nuovaSchedaWizard.segnalato.anagrafica.disableAnagrafica  and (!nuovaSchedaWizard.segnalato.anagrafica.comNascNonValido)}" 
+								extraLabelRequired="true"/>
+	
+						</h:panelGrid>
+				</h:panelGrid>	
+				<h:panelGrid columns="4">
+		
+						<h:outputText value="Sesso *" for="sesso_segnalato" />
+						<webred:pnlSesso value="#{nuovaSchedaWizard.segnalato.anagrafica.datiSesso}" disabled="#{!nuovaSchedaWizard.segnalato.anagrafica.disableAnagrafica}" />	
+					
+				</h:panelGrid>	
+			<p:spacer height="10px;" width="100%" />
+
+			<table border="0" width="100%">
+
+				<tr>
+					<td style="text-align: center;"><p:commandButton
+							value="Conferma" process="@parent" update="@form"
+							actionListener="#{nuovaSchedaWizard.salvaAnagraficaModificata}"
+							oncomplete="if (args &amp;&amp; args.saved) PF('dlgAnagraficaMod').hide();">
+							<f:param name="pnlToUpdateId" value="#{p:component('datiAnag')}" />
+						</p:commandButton> 
+						<p:spacer width="15px;" /> 
+						<p:commandButton value="Annulla" process="@this" oncomplete="confermaEsciModalInd.show()" /> 
+						<p:confirmDialog
+							header="Conferma uscita" widgetVar="confermaEsciModalInd"
+							severity="alert" closable="false" appendTo="@(body)"
+							message="I dati non salvati saranno persi: continuare?">
+							<table border="0" width="100%">
+								<tr>
+									<td style="text-align: center;">
+										<p:commandButton
+											value="SI" process="@this"
+											action="#{nuovaSchedaWizard.handleDialogModAnaClose}"
+											onclick="PF('confermaEsciModalInd').hide();"
+											oncomplete="PF('dlgAnagraficaMod').hide();" 
+											update="@(.onModificaDatiAnagrafici)">
+											<f:param name="pnlToUpdateId" value="#{cc.attrs.pnlToUpdate}" />
+										</p:commandButton> 
+										<p:commandButton value="NO" onclick="PF('confermaEsciModalInd').hide();" type="button" />
+									</td>
+								</tr>
+							</table>
+						</p:confirmDialog>
+					</td>
+				</tr>
+			</table>
+			</p:outputPanel>
+		</p:dialog>
+		
+</ui:composition>		

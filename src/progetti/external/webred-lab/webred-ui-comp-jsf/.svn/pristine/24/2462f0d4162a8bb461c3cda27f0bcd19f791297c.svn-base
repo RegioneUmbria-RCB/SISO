@@ -1,0 +1,39 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+     	xmlns:h="http://java.sun.com/jsf/html"
+		xmlns:f="http://java.sun.com/jsf/core"
+		xmlns:ui="http://java.sun.com/jsf/facelets"
+		xmlns:p="http://primefaces.org/ui"
+	  	xmlns:composite="http://java.sun.com/jsf/composite">
+      
+	<h:head>
+		<title>Componente casella di testo ricerca indirizzo</title>
+	</h:head>
+	<h:body>
+		<composite:interface componentType="pnlIndirizzo">
+			<composite:attribute name="indirizzoManBean" type="it.webred.jsf.interfaces.IIndirizzo"/>
+			<composite:attribute name="styleClass"/>
+		</composite:interface>
+		<composite:implementation>			
+			<h:panelGrid columns="5" cellpadding="0" cellspacing="0" border="0">
+	     		<p:autoComplete  id="autoCompIndirizzoId" size="50" styleClass="#{cc.attrs.styleClass}" widgetVar="#{cc.attrs.indirizzoManBean.widgetVar}" value="#{cc.attrs.indirizzoManBean.selectedIndirizzo}"
+           			title="Inserire almeno 2 caratteri e attendere la ricerca" minQueryLength="2" completeMethod="#{cc.attrs.indirizzoManBean.getLstIndirizzi}"
+           			forceSelection="false" queryDelay="1300">
+					
+					<p:ajax event="itemSelect" process="@this" update="autoCompCivicoId" listener="#{cc.attrs.indirizzoManBean.handleChangeIndirizzo}" />
+				</p:autoComplete>
+
+				<p:spacer width="10"/>
+				<h:outputLabel value="Civico" />
+				<p:spacer width="10"/>
+
+		        <p:selectOneMenu id="autoCompCivicoId" styleClass="#{cc.attrs.styleClass}" style="width: 80px;"
+		        value="#{cc.attrs.indirizzoManBean.selectedCivico}" editable="true">  
+		            <f:selectItems value="#{cc.attrs.indirizzoManBean.lstCivici}" 
+		            var="civ" itemLabel="#{civ.civicoFormatted}" itemValue="#{civ.civicoFormatted}"/>
+		        </p:selectOneMenu>
+			</h:panelGrid>
+		</composite:implementation>
+	</h:body>
+		
+</html>

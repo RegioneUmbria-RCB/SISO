@@ -1,0 +1,39 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+     	xmlns:h="http://java.sun.com/jsf/html"
+		xmlns:f="http://java.sun.com/jsf/core"
+		xmlns:ui="http://java.sun.com/jsf/facelets"
+		xmlns:p="http://primefaces.org/ui"
+	  	xmlns:composite="http://java.sun.com/jsf/composite"
+	  	xmlns:webred="http://java.sun.com/jsf/composite/webred">
+      
+	<h:head>
+		<title>Download File</title>
+	</h:head>
+	<h:body> 
+		<composite:interface componentType="pnlDownloadFile">
+			<composite:attribute name="iDownloadFile" type="it.webred.cs.jsf.interfaces.IDownloadFile"/>
+			<composite:attribute name="csLoadDocumento" type="it.webred.cs.data.model.CsLoadDocumento"/>
+		</composite:interface>
+		<composite:implementation>
+			 <p:commandLink ajax="false" immediate="true" onclick="PrimeFaces.monitorDownload(start, stop);" title="Download"
+				  	                  actionListener="#{cc.attrs.iDownloadFile.prepDownload(cc.attrs.csLoadDocumento)}" >
+       		   <p:fileDownload value="#{cc.attrs.iDownloadFile.download}" contentDisposition="attachment"/>
+       		   <h:outputText value="#{cc.attrs.csLoadDocumento.nome}"  />
+    		</p:commandLink>
+    		<p:dialog modal="true" widgetVar="statusDialog#{cc.attrs.csLoadDocumento.id}" header="Download in corso..." draggable="false" closable="false" resizable="false">
+			    <p:graphicImage name="/webredcs/img/ajax_loading_bar.gif" />
+			</p:dialog>
+    		<script type="text/javascript">
+				function start() {
+				    PF('statusDialog#{cc.attrs.csLoadDocumento.id}').show();
+				}
+				 
+				function stop() {
+				    PF('statusDialog#{cc.attrs.csLoadDocumento.id}').hide();
+				}
+			</script>
+		</composite:implementation>
+	</h:body>
+	
+</html>

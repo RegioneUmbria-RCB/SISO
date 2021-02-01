@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings
+  xmlns="http://java.sun.com/xml/ns/persistence/orm"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
+  version="2.0">
+  
+	<named-query name="CertificazioneEnergetica.getCertificazioneEnergeticaById">
+		<query>
+			<![CDATA[
+				SELECT ce 
+				FROM CertificazioneEnergetica ce
+				WHERE ce.id = :uid
+			]]>
+		</query>
+	</named-query>
+	<named-query name="CertificazioneEnergetica.getListaByFabbricato">
+		<query>
+			<![CDATA[
+				SELECT ce 
+				FROM CertificazioneEnergetica ce
+				WHERE LPAD(ce.foglio,4, '0') = LPAD(:foglio, 4,'0')
+				  AND LPAD(ce.particella,5, '0') = LPAD(:particella, 5,'0')
+			]]>
+		</query>
+	</named-query>
+	<named-query name="CertificazioneEnergetica.getListaBySezFabbricato">
+		<query>
+			<![CDATA[
+				SELECT ce 
+				FROM CertificazioneEnergetica ce
+				WHERE ce.sezione=:sezione
+				  AND LPAD(ce.foglio,4, '0') = LPAD(:foglio, 4,'0')
+				  AND LPAD(ce.particella,5, '0') = LPAD(:particella, 5,'0')
+				]]>
+		</query>
+	</named-query>
+	<named-query name="CollaudoStatico.getListaByFabbricato">
+		<query>
+			<![CDATA[
+				SELECT cs 
+				FROM CollaudoStatico cs
+				WHERE LPAD(cs.foglio,4, '0') = LPAD(:foglio, 4,'0')
+				  AND LPAD(cs.particella,5, '0') = LPAD(:particella, 5,'0')
+			]]>
+		</query>
+	</named-query>
+	<named-query name="CollaudoStatico.getListaBySezFabbricato">
+		<query>
+			<![CDATA[
+				SELECT cs 
+				FROM CollaudoStatico cs
+				WHERE cs.sezione=:sezione
+				  AND LPAD(cs.foglio,4, '0') = LPAD(:foglio, 4,'0')
+				  AND LPAD(cs.particella,5, '0') = LPAD(:particella, 5,'0')
+				]]>
+		</query>
+	</named-query>
+		<named-query name="DichiarazioneConformita.getListaByFabbricato">
+		<query>
+			<![CDATA[
+				SELECT dc 
+				FROM DichiarazioneConformita dc
+				WHERE LPAD(dc.foglio,4, '0') = LPAD(:foglio, 4,'0')
+				  AND LPAD(dc.particella,5, '0') = LPAD(:particella, 5,'0')
+			]]>
+		</query>
+	</named-query>
+	<named-query name="DichiarazioneConformita.getListaBySezFabbricato">
+		<query>
+			<![CDATA[
+				SELECT dc 
+				FROM DichiarazioneConformita dc
+				WHERE dc.sezione=:sezione
+				  AND LPAD(dc.foglio,4, '0') = LPAD(:foglio, 4,'0')
+				  AND LPAD(dc.particella,5, '0') = LPAD(:particella, 5,'0')
+				]]>
+		</query>
+	</named-query>
+	<named-query name="DocumentiTecniciFabbricato.getListaByIdDati">
+		<query>
+			<![CDATA[
+				SELECT d 
+				FROM DocumentiTecniciFabbricato d
+				WHERE d.idDati=:idDati
+				  AND d.tipoDati =:tipoDati
+				ORDER BY d.tipoDoc   
+				]]>
+		</query>
+	</named-query>
+</entity-mappings>	

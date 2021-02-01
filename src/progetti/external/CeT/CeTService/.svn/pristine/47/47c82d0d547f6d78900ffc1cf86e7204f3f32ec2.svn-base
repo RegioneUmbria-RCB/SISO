@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings version="2.0"
+	xmlns="http://java.sun.com/xml/ns/persistence/orm" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_1_0.xsd">
+
+	<named-query name="SitRuoloTares.getListaRuoliByCF">
+		<query>
+			<![CDATA[
+				select d from SitRuoloTares d
+				where d.codfisc= :codfisc
+				order by d.anno, d.tipo
+			 ]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SitRuoloTaresImm.getListaImmByCodRuolo">
+		<query>
+			<![CDATA[
+				select s from SitRuoloTaresImm s
+				where s.idExtRuolo= :idExtRuolo
+				order by to_number(s.prog)
+			 ]]>
+		</query>
+	</named-query>
+	
+		<named-query name="SitRuoloTaresRata.getListaRateByCodRuolo">
+		<query>
+			<![CDATA[
+				select s from SitRuoloTaresRata s
+				where s.idExtRuolo= :idExtRuolo
+				order by to_number(s.prog)
+			 ]]>
+		</query>
+	</named-query>
+	
+		<named-query name="SitRuoloTaresSt.getListaStByCodRuolo">
+		<query>
+			<![CDATA[
+				select s from SitRuoloTaresSt s
+				where s.idExtRuolo= :idExtRuolo
+				order by to_number(s.prog)
+			 ]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SitRuoloTaresStSg.getListaSgraviByCodRuolo">
+		<query>
+			<![CDATA[
+				select s from SitRuoloTaresStSg s
+				where s.idExtRuolo= :idExtRuolo
+				order by to_number(s.prog)
+			 ]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SitRuoloTarPdf.getListaPdfByCfCu">
+		<query>
+			<![CDATA[
+				select s from SitRuoloTarPdf s
+				where s.codfisc= :codfisc and s.cu=:cu
+				order by s.anno, s.mese
+			 ]]>
+		</query>
+	</named-query>
+	
+		<named-query name="SitRuoloTarPdf.getListaPdfByCf">
+		<query>
+			<![CDATA[
+				select s from SitRuoloTarPdf s
+				where s.codfisc= :codfisc
+				order by s.anno, s.mese
+			 ]]>
+		</query>
+	</named-query>
+
+</entity-mappings>

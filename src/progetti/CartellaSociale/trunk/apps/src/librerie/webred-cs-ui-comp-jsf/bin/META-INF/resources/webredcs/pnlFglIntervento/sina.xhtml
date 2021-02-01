@@ -1,0 +1,94 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:webred="http://java.sun.com/jsf/composite/webred"
+	xmlns:webredcs="http://java.sun.com/jsf/composite/webredcs">
+
+<p:outputPanel styleClass="sinaMan">
+
+	<p:accordionPanel activeIndex="-1" >
+		<p:tab title="Importa dati da scheda multidimensionale" rendered="#{fglInterventoBean.sinaMan.possoCollegare()}">
+			<p:dataTable value="#{fglInterventoBean.sinaMan.sinaCollegabili}" var="sinaDiario" emptyMessage="Nessuna scheda trovata">
+				<p:column headerText="Data valutazione">
+					<p:outputLabel value="#{sinaDiario.data}" rendered="#{sinaDiario.data!=null}">
+						<f:convertDateTime pattern="dd-MM-yyyy" />
+					</p:outputLabel>
+					<p:outputLabel style="color:red" value="Data valutazione non definita" rendered="#{sinaDiario.data==null}"/>
+				</p:column>
+				<p:column width="10px">
+					 <p:graphicImage value="#{resource['webredcs/img/times.png']}"  title="Valuta dopo"
+					 				 rendered="#{sinaDiario.flagValutaDopo}"/>
+				</p:column>
+				<p:column>
+					<p:commandButton value="importa SINA" action="#{fglInterventoBean.sinaMan.caricaSina(sinaDiario.id)}"
+						process="@this" partialSubmit="true" update="@(.sinaMan)" />
+				</p:column>
+			</p:dataTable>
+		</p:tab>
+		<p:tab title="Importa dati SINA da precedente erogazione" rendered="#{not empty fglInterventoBean.sinaMan.sinaCollegabiliDaErogazioni}">
+			<p:dataTable value="#{fglInterventoBean.sinaMan.sinaCollegabiliDaErogazioni}" var="sinaErogazioni" emptyMessage="Nessun Sina trovato">
+				<p:column headerText="Data valutazione"  style="text-align:center; width:60%;">
+					<p:outputLabel value="#{sinaErogazioni.data}" rendered="#{sinaErogazioni.data!=null}">
+						<f:convertDateTime pattern="dd-MM-yyyy" />
+					</p:outputLabel>
+					<p:outputLabel style="color:red" value="Data valutazione non definita" rendered="#{sinaErogazioni.data==null}"/>
+				</p:column>
+				<p:column  style="text-align:center; width:20%;">
+					 <p:graphicImage value="#{resource['webredcs/img/times.png']}"  title="Valuta dopo"
+					 				 rendered="#{sinaErogazioni.flagValutaDopo}"/>
+				</p:column>
+				<p:column style="text-align:center; width:20%;">
+					<p:commandButton value="importa SINA" action="#{fglInterventoBean.sinaMan.caricaSina(sinaErogazioni.id)}"
+						process="@this" partialSubmit="true" update="@(.sinaMan)" />
+				</p:column>
+			</p:dataTable>
+		</p:tab>
+	</p:accordionPanel>
+
+	<p:spacer height="20px" />
+
+	<p:dataTable value="#{fglInterventoBean.sinaMan.sinaCollegati}"
+		selection="#{fglInterventoBean.sinaMan.sinaSelezionato}"
+		var="sinaColl" emptyMessage="" selectionMode="single"
+		rowKey="#{sinaColl.id}"
+		rendered="#{not empty fglInterventoBean.sinaMan.sinaCollegati}">
+		<f:facet name="header">Storico SINA</f:facet>
+		<p:ajax event="rowSelect" listener="#{fglInterventoBean.sinaMan.onRowSelect}" update="@(.sinaMan)" process="@this" partialSubmit="true" />
+
+		<p:column headerText="Data valutazione">
+			<p:outputLabel value="#{sinaColl.data}" rendered="#{sinaColl.data!=null}">
+				<f:convertDateTime pattern="dd-MM-yyyy" />
+			</p:outputLabel>
+			<p:outputLabel style="color:red" value="Data valutazione non definita" rendered="#{sinaColl.data==null}"/>
+		</p:column>
+		<p:column width="10px">
+			 <p:graphicImage value="#{resource['webredcs/img/timer1.png']}"  title="Valuta dopo" width="15px"
+			 				 rendered="#{sinaColl.flagValutaDopo}"/>
+			 <p:spacer width="10px"/>
+			 <p:graphicImage value="#{resource['webredcs/img/eye.png']}"  title="SINA selezionato" width="15px"
+			 				 rendered="#{sinaColl.id eq fglInterventoBean.sinaMan.sinaDTO.csDSina.id}"/>
+		</p:column>
+	</p:dataTable>
+
+	<p:spacer height="20px" />
+	<p:outputPanel >
+		<p:commandButton value="Nuova Valutazione" process="@this" partialSubmit="true" update="@(.sinaMan)" icon="ui-icon-plus"
+					action="#{fglInterventoBean.sinaMan.nuovaValutazione()}" />
+					
+		<p:outputPanel layout="inline">
+			<p:outputLabel value="Data della valutazione * " />
+			<p:calendar value="#{fglInterventoBean.sinaMan.sinaDTO.csDSina.data}" disabled="#{fglInterventoBean.sinaMan.isDisabled()}" 
+			    pattern="dd/MM/yyyy" size="10" mask="true" placeholder="dd/MM/yyyy">
+			</p:calendar>
+		
+		</p:outputPanel>
+	
+		<!-- Mod. SISO-886 aggiunta gestione visibilità oggetti se pagina richiamata da "Esporta casellario"  -->
+		<webredcs:pnlValSina scheda="#{fglInterventoBean.sinaMan}" disabled="#{fglInterventoBean.sinaMan.isDisabled()}"
+				exportMode="#{fglInterventoBean.sinaMan.getExportMode()}" />
+	</p:outputPanel>
+</p:outputPanel>
+</html>

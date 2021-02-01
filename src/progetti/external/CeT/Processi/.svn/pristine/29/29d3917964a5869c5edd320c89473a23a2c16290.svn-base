@@ -1,0 +1,14 @@
+#------------------------------------------------------------
+# File di config della regola
+#------------------------------------------------------------
+rengine.rule.class=it.webred.rulengine.brick.core.RsIteratorAvanzato
+rengine.rule.cc=RSITERATOR
+rengine.rule.number.params.in=2
+rengine.rule.number.params.out=0
+#------------------------------------------------------------
+# parametri di input
+#------------------------------------------------------------
+rengine.rule.param.in.1.type=java.sql.ResultSet
+rengine.rule.param.in.1.descr=RESULTSET
+rengine.rule.param.in.2.type=it.webred.rulengine.type.RsIteratorConfig
+rengine.rule.param.in.2.descr=XML

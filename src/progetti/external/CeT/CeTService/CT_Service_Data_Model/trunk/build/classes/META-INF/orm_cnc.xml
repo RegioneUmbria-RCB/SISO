@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings
+  xmlns="http://java.sun.com/xml/ns/persistence/orm"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
+  version="2.0">
+
+	<!-- Query flusso 290 -->
+	<named-query name="Flusso290.getAnagIntestatarioByComuneMinuta">
+		<query>
+			<![CDATA[SELECT anag from RAnagraficaIntestatarioRuolo anag WHERE anag.codComuneIscrRuolo=:codComune AND anag.progressivoMinuta=:progressivo ORDER BY anag.cognome, anag.denominazione, anag.nome]]>	
+	    </query>
+	</named-query>
+	<named-query name="Flusso290.getDatiContabileByPartitaComuneProgressivo">
+		<query>
+			<![CDATA[SELECT datiCont FROM RDatiContabili datiCont WHERE datiCont.codComuneIscrRuolo=:codComune AND datiCont.codPartita=:codPartita AND datiCont.progressivoMinuta=:progr]]>	
+	    </query>
+	</named-query>
+	
+	
+	<!-- Query flusso 750 -->	
+	<named-query name="Flusso750.getAnagraficaCointestatarioByChiavePartita">
+		<query>
+			<![CDATA[SELECT anag FROM VAnagrafeCointestatario anag where anag.chiavePartita.annoRiferimento=:annoRiferimento
+			      		AND anag.chiavePartita.codicePartita=:codicePartita AND anag.chiavePartita.codTipoUfficio=:codTipoUfficio
+			      		AND anag.chiavePartita.codUfficio=:codUfficio AND anag.chiavePartita.annoRuolo=:annoRuolo
+			      		AND anag.chiavePartita.codAmbito=:codAmbito AND anag.chiavePartita.progressivoRuolo=:progressivoRuolo
+			      		AND anag.chiavePartita.codEnteCreditore=:codEnteCreditore]]>	
+	    </query>
+	</named-query>
+	<named-query name="Flusso750.getAnagraficaDebitoreByParita">
+		<query>
+			<![CDATA[SELECT anag FROM VAnagrafeDebitore anag where anag.chiavePartita.codicePartita=:codPartita]]>	
+	    </query>
+	</named-query>
+	<named-query name="Flusso750.getAnagraficaDebitoreByChiavePartita">
+		<query>
+			<![CDATA[SELECT anag FROM VAnagrafeDebitore anag where anag.chiavePartita.annoRiferimento=:annoRiferimento
+				      AND anag.chiavePartita.codicePartita=:codicePartita AND anag.chiavePartita.codTipoUfficio=:codTipoUfficio
+				      AND anag.chiavePartita.codUfficio=:codUfficio AND anag.chiavePartita.annoRuolo=:annoRuolo
+				      AND anag.chiavePartita.codAmbito=:codAmbito AND anag.chiavePartita.progressivoRuolo=:progressivoRuolo
+				      AND anag.chiavePartita.codEnteCreditore=:codEnteCreditore]]>	
+	    </query>
+	</named-query>
+	<named-query name="Flusso750.getAnagraficaDebitoreByComuneCF">
+		<query>
+			<![CDATA[
+			SELECT 	d 
+			  FROM 	VAnagrafeDebitore d 
+			 WHERE  d.chiavePartita.codEnteCreditore=:codEnteCred
+			   AND  d.codFiscale=:codFis
+		 ORDER BY   d.cognome, d.nome, d.dtNascita, d.codBelfioreNascita
+			   
+		  	   ]]>	
+	    </query>
+	</named-query>
+	<named-query name="Flusso750.getArticoliByChiavePartita">
+		<query>
+			<![CDATA[SELECT art FROM VArticolo art WHERE art.chiavePartita.annoRiferimento=:annoRiferimento 
+			    	   AND art.chiavePartita.codicePartita=:codicePartita
+			    	   AND art.chiavePartita.codTipoUfficio=:codTipoUfficio
+			    	   AND art.chiavePartita.codUfficio=:codUfficio
+			    	   AND art.chiavePartita.annoRiferimento=:annoRiferimento
+			    	   AND art.chiavePartita.annoRuolo=:annoRuolo
+			    	   AND art.chiavePartita.progressivoRuolo=:progressivoRuolo
+			    	   AND art.chiavePartita.codAmbito=:codAmbito
+			    	   AND art.chiavePartita.codEnteCreditore=:codEnteCreditore]]>	
+	    </query>
+	</named-query>
+	<named-query name="Flusso750.getCartellaByChiavePartita">
+		<query>
+			<![CDATA[SELECT cart FROM VCartella cart where cart.chiavePartita.annoRiferimento=:annoRiferimento
+				      AND cart.chiavePartita.codicePartita=:codicePartita AND cart.chiavePartita.codTipoUfficio=:codTipoUfficio
+				      AND cart.chiavePartita.codUfficio=:codUfficio AND cart.chiavePartita.annoRuolo=:annoRuolo
+				      AND cart.chiavePartita.codAmbito=:codAmbito AND cart.chiavePartita.progressivoRuolo=:progressivoRuolo
+				      AND cart.chiavePartita.codEnteCreditore=:codEnteCreditore]]>	
+	    </query>
+	</named-query>
+	<named-query name="Flusso750.getFrontespizioRuoloByChiaveRuolo">
+		<query>
+			<![CDATA[SELECT fronte FROM VFrontespizioRuolo fronte WHERE 
+		    	  	 	fronte.chiaveRuolo.codEnteCreditore=:codEnteCreditore  
+		    	  	  	AND fronte.chiaveRuolo.annoRuolo=:annoRuolo
+		    	  	  	AND fronte.chiaveRuolo.progressivoRuolo=:progressivoRuolo
+		    	  	  	AND fronte.chiaveRuolo.codAmbito=:codAmbito ]]>	
+	    </query>
+	</named-query>
+	<named-query name="Flusso750.getInfoRuoloByChiaveULRuolo">
+		<query>
+			<![CDATA[SELECT info FROM VInizioRuolo info WHERE info.chiaveRuolo.annoRuolo=:annoRuolo
+			    	   AND info.chiaveRuolo.codAmbito=:codAmbito
+			    	   AND info.chiaveRuolo.codEnteCreditore=:codEnteCreditore
+			    	   AND info.chiaveRuolo.progressivoRuolo=:progressivoRuolo]]>	
+	    </query>
+	</named-query>
+	<named-query name="Flusso750.getArticoloByComuneCF">
+		<query>
+			<![CDATA[
+			SELECT 	a 
+			  FROM 	VArticolo a, VAnagrafeDebitore d 
+			 WHERE  a.chiavePartita.annoRuolo = d.chiavePartita.annoRuolo
+			   AND  a.chiavePartita.codAmbito=d.chiavePartita.codAmbito
+			   AND  a.chiavePartita.codEnteCreditore=d.chiavePartita.codEnteCreditore
+			   AND  a.chiavePartita.progressivoRuolo=d.chiavePartita.progressivoRuolo
+			   AND  a.chiavePartita.codTipoUfficio=d.chiavePartita.codTipoUfficio
+			   AND  a.chiavePartita.codUfficio=d.chiavePartita.codUfficio
+			   AND  a.chiavePartita.codicePartita=d.chiavePartita.codicePartita
+			   AND  a.chiavePartita.annoRiferimento=d.chiavePartita.annoRiferimento
+			   AND  d.chiavePartita.codEnteCreditore=:codEnteCred
+			   AND  d.codFiscale=:codFis
+		 ORDER BY   a.chiavePartita.annoRuolo, a.tipoEntrata, a.codEntrata
+			   
+		  	   ]]>	
+	    </query>
+	</named-query>
+	<named-query name="Flusso750.getArticoloByComuneTributoCF">
+		<query>
+			<![CDATA[
+			SELECT 	a 
+			  FROM 	VArticolo a, VAnagrafeDebitore d 
+			 WHERE  a.chiavePartita.annoRuolo = d.chiavePartita.annoRuolo
+			   AND  a.chiavePartita.codAmbito=d.chiavePartita.codAmbito
+			   AND  a.chiavePartita.codEnteCreditore=d.chiavePartita.codEnteCreditore
+			   AND  a.chiavePartita.progressivoRuolo=d.chiavePartita.progressivoRuolo
+			   AND  a.chiavePartita.codTipoUfficio=d.chiavePartita.codTipoUfficio
+			   AND  a.chiavePartita.codUfficio=d.chiavePartita.codUfficio
+			   AND  a.chiavePartita.codicePartita=d.chiavePartita.codicePartita
+			   AND  a.chiavePartita.annoRiferimento=d.chiavePartita.annoRiferimento
+			   AND  d.chiavePartita.codEnteCreditore=:codEnteCred
+			   AND  a.tipoEntrata=:tipEntr
+			   AND  d.codFiscale=:codFis
+		 ORDER BY   a.chiavePartita.annoRuolo, a.codEntrata
+			   
+		  	   ]]>	
+	    </query>
+	</named-query>
+	<named-query name="Flusso750.getDistinctAnnoRifCodEntrByComuneCF">
+		<query>
+			<![CDATA[
+			SELECT 	DISTINCT a.chiavePartita.annoRiferimento,a.tipoEntrata 
+			  FROM 	VArticolo a, VAnagrafeDebitore d 
+			 WHERE  a.chiavePartita.annoRuolo = d.chiavePartita.annoRuolo
+			   AND  a.chiavePartita.codAmbito=d.chiavePartita.codAmbito
+			   AND  a.chiavePartita.codEnteCreditore=d.chiavePartita.codEnteCreditore
+			   AND  a.chiavePartita.progressivoRuolo=d.chiavePartita.progressivoRuolo
+			   AND  a.chiavePartita.codTipoUfficio=d.chiavePartita.codTipoUfficio
+			   AND  a.chiavePartita.codUfficio=d.chiavePartita.codUfficio
+			   AND  a.chiavePartita.codicePartita=d.chiavePartita.codicePartita
+			   AND  a.chiavePartita.annoRiferimento=d.chiavePartita.annoRiferimento
+			   AND  d.chiavePartita.codEnteCreditore=:codEnteCred
+			   AND  d.codFiscale=:codFis
+		 ORDER BY  a.chiavePartita.annoRiferimento DESC,a.tipoEntrata 
+			   
+		  	   ]]>	
+	    </query>
+	</named-query>
+	<named-query name="StatoRiscossioni.getRiscossioneByChiaveULRiscossione">
+		<query>
+			<![CDATA[SELECT risc from SRiscossioni risc WHERE 
+			   		 risc.chiaveRiscossione.annoRuolo=:annoRuolo AND 
+			   		 risc.chiaveRiscossione.codAmbito=:codAmbito AND
+			   		 risc.chiaveRiscossione.codEnteCreditore=:codEnteCreditore AND
+			   		 risc.chiaveRiscossione.codPartita=:codPartita AND 
+			   		 risc.chiaveRiscossione.dtRegistrInformaz=:dtRegistrazione AND 
+			   		 risc.chiaveRiscossione.numeroOperazContab=:numeroOperazContab AND 
+			   		 risc.chiaveRiscossione.progressivoArticoloRuolo=:progressivoArticoloRuolo AND 
+			   		 risc.chiaveRiscossione.progressivoOperazContab=:progressivoOperazContab AND 
+	             	 risc.chiaveRiscossione.progressivoRuolo=:progressivoRuolo]]>	
+	    </query>
+	</named-query>
+	<named-query name="StatoRiscossione.getRiversamentiByChiaveULRiscossione">
+		<query>
+			<![CDATA[SELECT riv from SRiversamenti riv WHERE 
+			          riv.chiaveRiscossione.annoRuolo=:annoRuolo AND 
+			          riv.chiaveRiscossione.codAmbito=:codAmbito AND 
+			          riv.chiaveRiscossione.codEnteCreditore=:codEnteCreditore AND
+			          riv.chiaveRiscossione.codPartita=:codPartita AND 
+			          riv.chiaveRiscossione.dtRegistrInformaz=:dtRegistrazione AND 
+			          riv.chiaveRiscossione.numeroOperazContab=:numeroOperazContab AND 
+			          riv.chiaveRiscossione.progressivoArticoloRuolo=:progressivoArticoloRuolo AND 
+			          riv.chiaveRiscossione.progressivoOperazContab=:progressivoOperazContab AND
+			          riv.chiaveRiscossione.progressivoRuolo=:progressivoRuolo]]>	
+	    </query>
+	</named-query>	
+	<named-query name="StatoRiscossioni.getRiscossioneByAnnoComuneTributoCF">
+		<query>
+			<![CDATA[SELECT risc from SRiscossioni risc WHERE 
+			   		 risc.chiaveRiscossione.annoRuolo=:annoRuolo AND 
+			   		 risc.chiaveRiscossione.codEnteCreditore=:codEnteCreditore AND
+			   		 risc.codEntrata=:codEntrata AND
+			   		 risc.codFiscale=:codFiscale]]>	
+	    </query>
+	  </named-query> 
+	  <named-query name="StatoRiscossioni.getRiscossioneByAnnoComuneCF">
+		<query>
+			<![CDATA[SELECT risc from SRiscossioni risc WHERE 
+			   		 risc.chiaveRiscossione.annoRuolo=:annoRuolo AND 
+			   		 risc.chiaveRiscossione.codEnteCreditore=:codEnteCreditore AND
+			   		 risc.codFiscale=:codFiscale
+			   		 ORDER BY risc.codEntrata ]]>	
+	    </query>
+	</named-query>
+	<named-query name="CodiceEnteCredBenef.getCodiceUfficioDescr">
+	  	<query>
+	    	<![CDATA[SELECT u.descr FROM CodiceEnteCredBenef u WHERE u.codiceUfficio=:codUfficio AND u.codiceTipoUfficio=:codTipoUfficio AND u.codiceEnte=:codEnte]]>
+	  	</query>
+    </named-query>
+    <named-query name="CodiceEnteCredBenef.getCodiceUfficioDescrTipo">
+	  	<query>
+	    	<![CDATA[SELECT u.descr FROM CodiceEnteCredBenef u WHERE u.codiceTipoUfficio=:codTipoUfficio AND u.codiceEnte=:codEnte]]>
+	  	</query>
+    </named-query>
+    <named-query name="CodiceEnteCredBenef.getCodiceUfficioDescrFullParam">
+	  	<query>
+	    	<![CDATA[SELECT u.descr FROM CodiceEnteCredBenef u WHERE u.codiceTipoUfficio=:codTipoUfficio AND u.codiceEnte=:codEnte AND u.codiceUfficio=:codUfficio]]>
+	  	</query>
+    </named-query>
+    <named-query name="CodiceEnteCredBenef.getCodiceEnte">
+	  	<query>
+	    	<![CDATA[SELECT u.codiceEnte FROM CodiceEnteCredBenef u 
+	    	WHERE u.codiceComuneRes=:codComune AND u.tipologiaUfficio = 'C' AND u.codiceTipoUfficio is null AND u.codiceUfficio is null]]>
+	  	</query>
+    </named-query>
+    <named-query name="CodiciTipoEntrata.getCodiceDescr">
+	  	<query>
+	    	<![CDATA[SELECT cte.descrizione FROM CodiciTipoEntrata cte WHERE cte.codice=:codice]]>
+	  	</query>
+    </named-query>
+</entity-mappings>

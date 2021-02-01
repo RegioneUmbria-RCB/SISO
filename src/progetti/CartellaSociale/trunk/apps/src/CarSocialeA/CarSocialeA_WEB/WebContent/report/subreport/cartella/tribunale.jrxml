@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="5" bottomMargin="5" uuid="f8a5167e-bb5a-425b-897a-b107830417ed">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<field name="macroSegnal" class="java.lang.String"/>
+	<field name="microSegnal" class="java.lang.String"/>
+	<field name="motivoSegnal" class="java.lang.String"/>
+	<field name="numProtocollo" class="java.lang.String"/>
+	<field name="dataInizio" class="java.lang.String"/>
+	<field name="dataFine" class="java.lang.String"/>
+	<field name="primoContattoAG" class="java.lang.String"/>
+	<field name="infoNonReperibili" class="java.lang.Boolean"/>
+	<field name="strutture" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="20" splitType="Immediate">
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="0" width="555" height="20" backcolor="#CCCCCC" uuid="fe31177f-0a63-4282-9a6f-ffb2f3a680fa"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="html">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Tribunale]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="183">
+			<staticText>
+				<reportElement x="312" y="2" width="90" height="20" backcolor="#CCCCCC" uuid="5a6e1fee-9d94-4d89-819d-9f6198c1d18a"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="9" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Situazione valida dal]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="490" y="2" width="60" height="20" backcolor="#CCCCCC" uuid="3962f34b-bb37-4285-85a0-4be903ae0c49"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="9" isBold="true" isItalic="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{dataFine}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="477" y="2" width="10" height="20" backcolor="#CCCCCC" uuid="a4c3c344-f066-478e-8212-f2f3c9ec0387"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="9" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[al]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="405" y="3" width="60" height="20" backcolor="#CCCCCC" uuid="1376233e-ee87-4058-9c59-ab3d792bfd1e"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="9" isBold="true" isItalic="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{dataInizio}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="7" y="109" width="120" height="20" uuid="23eb5748-60c1-49ed-a952-ee07818210da"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Motivo segnalazione]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="7" y="69" width="120" height="20" uuid="5ebafea6-bc55-482a-b60c-5f5ade2dc12f"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Macro segnalazione]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="137" y="69" width="418" height="20" uuid="14c64bc6-4a26-4e26-81e6-00a11e061792"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{macroSegnal}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="137" y="109" width="418" height="20" uuid="f0e1cb24-d2ed-42bf-ba50-babb4781ac64"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{motivoSegnal}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="137" y="89" width="418" height="20" uuid="ef9c1c40-6d00-4fe7-a0c9-27d0993b0638"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{microSegnal}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="137" y="149" width="418" height="20" uuid="489bf616-23ff-4b5d-9482-a3280deb1a43"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{numProtocollo}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="8" y="149" width="120" height="20" uuid="2b5e3344-e7e3-47f5-9fff-d63dddada8d7"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Num. protocollo tribunale]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="7" y="89" width="120" height="20" uuid="cffa7e96-01c5-4222-bb03-1d120ac253b2"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Micro segnalazione]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="175" width="555" height="1" uuid="14573537-1a66-4469-a914-d52be08d3bf8"/>
+				<graphicElement>
+					<pen lineStyle="Dotted" lineColor="#CCCCCC"/>
+				</graphicElement>
+			</line>
+			<textField isBlankWhenNull="true">
+				<reportElement x="137" y="129" width="418" height="20" uuid="dc3280d7-9da1-403e-9551-8f59e373bbe7"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{primoContattoAG}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="7" y="129" width="120" height="20" uuid="c0a30bc6-6f71-4842-b13d-cb0e979a342b"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Primo contatto A.G.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="7" y="23" width="289" height="20" forecolor="#FF6666" uuid="97bc7dfa-8bf6-4345-aa10-06c1cd9cdc51">
+					<printWhenExpression><![CDATA[$F{infoNonReperibili}]]></printWhenExpression>
+				</reportElement>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Informazioni non reperibili/reperite]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="8" y="43" width="547" height="20" uuid="284d83bc-ab03-4a84-90d5-6ba9a8eaddf6"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{strutture}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

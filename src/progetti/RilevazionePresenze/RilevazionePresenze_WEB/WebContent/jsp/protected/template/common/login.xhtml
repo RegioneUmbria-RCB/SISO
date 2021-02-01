@@ -1,0 +1,81 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:webred="http://java.sun.com/jsf/composite/webred"
+	xmlns:webredcs="http://java.sun.com/jsf/composite/webredcs">
+
+
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+	<title><h:outputText value="#{userBean.labelRilevazionePresenze}" /></title>
+	  <link rel="stylesheet" type="text/css" href="${facesContext.externalContext.requestContextPath}/css/style.css" />
+	<script type="text/javascript" src="${facesContext.externalContext.requestContextPath}/js/it.js" />
+</h:head>
+
+<h:body>
+
+	<h:panelGroup layout="block" id="header">
+	<div class="block">
+	
+	<input type="hidden" id="refreshed" value="no"/>
+	<script type="text/javascript">
+		onload=function(){
+		var e=document.getElementById("refreshed");
+		if(e.value=="no")e.value="yes";
+		else{e.value="no";location.reload();}
+		}
+	</script>
+
+		<div class="last">
+			<!-- Login -->
+			<ui:fragment rendered="#{!userBean.logged}">
+				<h:form id="frmLogin" action='j_security_check' method='post'>
+					<h:panelGrid columnClasses="rightAlign" columns="1" width="100%">
+						<h:panelGroup>
+							<p:spacer width="5px" />
+							<h:outputText value="Nome utente: " />
+							<p:spacer width="5px" />
+							<p:inputText value="" id="j_username" />
+	
+							<p:spacer width="5px" />
+							<h:outputText value="Password: " />
+							<p:spacer width="5px" />
+							<p:inputText value="" id="j_password" type="password" />
+							
+						</h:panelGroup>
+						<p:commandButton value="Login" onclick="document.forms['frmLogin'].submit();" />
+					</h:panelGrid>
+				</h:form>
+			</ui:fragment>
+		</div>
+	</div>
+	</h:panelGroup>
+
+	<ui:fragment rendered="#{!userBean.logged}">
+	<div class="post">
+		<h1 class="title ui-widget-header ui-corner-all"></h1>
+	</div>	
+	</ui:fragment>
+	<ui:fragment rendered="#{userBean.logged}">
+	<div class="post" style="text-align: center;" >
+		<h2 class="title ui-widget-header ui-corner-all"/>
+	</div>	
+	</ui:fragment>
+	
+	 	<h:form id="frmMessages">
+			<p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" escape="false"/> 
+		</h:form>
+
+		<!-- Content -->
+		<h:panelGroup layout="block" id="content">
+			<ui:insert name="content"/>
+		</h:panelGroup>
+
+		<p:spacer height="15px"/>
+
+</h:body>
+
+</html>

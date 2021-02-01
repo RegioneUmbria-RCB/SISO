@@ -1,0 +1,56 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<ui:composition template="/jsp/protected/layout/layout.xhtml">
+
+	<ui:define name="content">
+
+		<p:panel id="palel1" header="" styleClass="breadcrumb">
+			<h:panelGrid id="panelG1" columns="1">
+				<p:outputLabel>#{msgs['cs.period.breadcrumb']}</p:outputLabel>
+			</h:panelGrid>
+		</p:panel>
+	
+		<p:panel id="palel2" header="" style="text-align: center;">
+			<h:panelGrid id="panelG2" columns="1" style="margin: auto;">
+				<h2>#{msgs['cs.period.identificationdata']}</h2>
+			</h:panelGrid>
+			
+			<h:panelGrid id="panelG3" columns="1" style="text-align: left;">
+				#{msgs['cs.period.authorityname']}
+				<p:inputText id="inAuthorityname" value="#{newPeriodCsBean.currentSubject.denominazione}" />
+				
+				#{msgs['cs.period.authorityaddress']}
+				<p:inputText id="inAuthorityaddress" value="#{newPeriodCsBean.currentSubject.indirizzo}" />
+				
+				#{msgs['cs.period.authorityphone']}
+				<p:inputText id="inAuthorityphone" value="#{newPeriodCsBean.currentSubject.tel}" />
+				
+				#{msgs['cs.period.authorityfax']}
+				<p:inputText id="inAuthorityfax" value="#{newPeriodCsBean.currentSubject.fax}" />
+				
+				#{msgs['cs.period.authorityemail']}
+				<p:inputText id="inAuthorityemail" value="#{newPeriodCsBean.currentSubject.email}" />
+			</h:panelGrid>
+			
+		</p:panel>
+		
+		<h:panelGrid id="panelG4" columns="2" style="margin-top: 10px;">
+			<h:form id="navForm">
+				<p:commandButton icon="ui-icon-arrowreturnthick-1-w" 
+					value="#{msgs['cs.cancel']}" action="#{newPeriodCsBean.goHome}">
+				</p:commandButton>
+				
+				<p:commandButton icon="ui-icon-disk" style="margin-left: 5px;"
+					value="#{msgs['cs.save']}" action="#{newPeriodCsBean.savePeriod}">
+				</p:commandButton>
+			</h:form>
+		</h:panelGrid>
+		
+	</ui:define>
+</ui:composition>
+
+</html>

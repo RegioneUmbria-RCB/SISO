@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"   
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"   
+      xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:composite="http://java.sun.com/jsf/composite">
+
+
+        <ui:composition template="template/common/layout.xhtml"> 
+    	  	
+    		<ui:define name="content" >
+	 			<h:form id="formHome" />
+	 			<p:outputLabel value="L'utente non è autorizzato ad accedere all'applicazione dall'ente selezionato" 
+	 						   rendered="#{!userBean.autorizzato}" style="color:red;"/>
+				<p:tabView id="tabViewRilevazionePresenze" form="formHome" activeIndex="#{homeController.tabViewIndex}" rendered="#{userBean.autorizzato}">
+					<p:ajax event="tabChange" listener="#{homeController.onChangeTabView}"	immediate="true" global="false" />
+					<p:tab title="Villaggi" id="tabVillaggi" >
+						<h:panelGrid >
+							  <ui:include src="/jsp/protected/gestioneStrutture.xhtml" />
+						</h:panelGrid>
+					</p:tab>
+					<p:tab title="Aree" id="tabAree">
+						<h:panelGrid>
+						  <ui:include src="/jsp/protected/gestioneAree.xhtml" />
+						</h:panelGrid>
+					</p:tab>
+					<p:tab title="Anagrafica" id="tabAnagrafica" >
+						<h:panelGrid >
+						  <ui:include src="/jsp/protected/gestioneAnagrafica.xhtml" />
+						</h:panelGrid>
+					</p:tab>
+				</p:tabView>
+			</ui:define>
+    		
+    		<ui:define name="footer">
+				<!-- <h2>HOME Footer</h2> -->
+    		</ui:define>
+    		
+</ui:composition>
+    	
+
+</html>

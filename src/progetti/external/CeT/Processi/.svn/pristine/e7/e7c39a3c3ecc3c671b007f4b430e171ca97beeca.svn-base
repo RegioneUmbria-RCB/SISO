@@ -1,0 +1,15 @@
+#--------------------------------------------------------------
+# File di configurazione in cui sono indicato i valori dei soli
+# parametri di contesto della catena jelly da passare alla 
+# regola 
+#------------------------------------------------------------
+# Numero di parametri previsti in input
+rengine.jchain.in.nof=2
+#------------------------------------------------------------
+# Le coppie chiavi/valore hanno come key lo stesso nome 
+# indicato nello script jelly xml
+#------------------------------------------------------------
+rengine.jchain.in.1.key=SQL_S3_TI09_CATALOGOSTATO
+rengine.jchain.in.1.value=MERGE INTO s3_TI09_CATALOGOSTATO C USING (SELECT '9001' CODICE , 'CARICATO DA SISTEMA INTERSETTORIALE' DESCRIZIONE FROM DUAL) NOVEMILA_UNO ON (C.TI09_CODSTATO = NOVEMILA_UNO.CODICE) WHEN NOT MATCHED THEN INSERT (C.TI09_CODSTATO, C.TI09_DESCR) VALUES ( NOVEMILA_UNO.CODICE,  NOVEMILA_UNO.DESCRIZIONE)
+rengine.jchain.in.2.key=SQL_S3_TI04_SERVIZIDETTAGLIO
+rengine.jchain.in.2.value=UPDATE S3_TI04_SERVIZIDETTAGLIO SET TI04_CODSTATO = '9001' WHERE EXISTS (SELECT 1 FROM S3_TI03_SERVIZIRICHIESTI , S3_TI02_SERVIZI, s3_ti01_comuni, S3_TI06_PERIODICITA where TI03_PERIODICITA = TI06_PERIODICITA  AND TI04_PROGISCRIZIONE = TI03_PROGISCRIZIONE AND TI03_KEYSERVIZIO = TI02_KEYSERVIZIO AND TI03_KEYCOM = TI01_KEYCOM AND TI01_KEYCOM=? AND TI03_KEYSEZ = TI01_KEYSEZ AND TI04_CODSTATO = '4'  AND TI02_KEYSERVIZIO NOT IN('4','6','14','16','19','22','26') AND TI04_DATATIME_FINE IS NOT NULL)

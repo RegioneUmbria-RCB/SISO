@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings
+  xmlns="http://java.sun.com/xml/ns/persistence/orm"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
+  version="2.0">
+  
+  	<named-query name="ArSpazio.findArSpazioByBELFIORE">
+		<query>
+			<![CDATA[
+				select a FROM ArSpazio a
+				WHERE a.belfiore = :belfiore
+			]]>
+		</query>
+	</named-query>
+	
+	
+	<named-query name="ArCsSoggettoCs.findArCsSoggettoCs">
+		<query>
+			<![CDATA[
+				select s FROM ArCsSoggettoCs s
+			]]>
+		</query>
+	</named-query>
+	
+  <named-query name="ArOOrgImpExp.findExportOrg">
+		<query>
+			<![CDATA[
+				select s FROM ArOOrgImpExp s 
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="ArOOrgImpExp.findExportOrgByCodOrg">
+		<query>
+			<![CDATA[
+				select s FROM ArOOrgImpExp s 
+				where s.codiceOrg = :codOrg 
+			]]>
+		</query>
+	</named-query>
+	
+	<!-- find FSE_CHK_IT_comune.id -->
+	<named-query name="FseChkItComune.findByDescrizione">
+		<query>
+			<![CDATA[
+				select c FROM FseChkItComune c 
+				where c.denominazione = :descrizione 
+			]]>
+		</query>
+	</named-query>
+	
+	<!-- find FSE_CHK_LOCALIZZAZIONE_GEOG.id -->
+	<named-query name="FseChkLocalizzazioneGeog.findByDescrizione">
+		<query>
+			<![CDATA[
+				select d FROM FseChkLocalizzazioneGeog d 
+				where d.descrizioneComune = :descrizione 
+			]]>
+		</query>
+	</named-query>
+	
+	
+	<!-- find orario id da FSE_CHK_tipo_orario_lavoro -->
+	<named-query name="FseChkTipoOrarioLavoro.findIdByDescrizione">
+		<query>
+			<![CDATA[
+				select d.id FROM FseChkTipoOrarioLavoro d 
+				where d.descrizione = :descrizione 
+			]]>
+		</query>
+	</named-query>
+
+
+    <named-query name="ArOOrganizzazioneFse.findByDenominazioneCapofila">
+		<query>
+			<![CDATA[
+				select d FROM ArOOrganizzazioneFse d
+				where UPPER(d.capofilaDescrizione) = UPPER(:descrizione) 
+			]]>
+		</query>
+	</named-query>
+
+</entity-mappings>

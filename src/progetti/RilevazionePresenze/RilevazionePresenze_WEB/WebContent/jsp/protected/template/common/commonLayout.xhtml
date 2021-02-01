@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"   
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+	<h:head>
+		<h:outputStylesheet name="common-style.css" library="css" />
+	</h:head>
+    <h:body>
+	<div id="page" align="center" >
+		<div id="header" style="width:69%">
+			<ui:insert name="header" >
+				<ui:include src="commonHeader.xhtml" />
+			</ui:insert>
+			<h:form id="frmMsg" >
+			  <p:growl id="growl" keepAlive="true" redisplay="true" showDetail="true" showSummary="true" sticky="true">
+			  	<p:autoUpdate/>
+			  </p:growl>
+			</h:form>
+	    </div>
+	    
+	    <div id="content" align="left" style="width:70%">
+		   	<ui:insert name="content" >
+		   		<ui:include src="commonContent.xhtml" />
+		   	</ui:insert>
+	    </div>
+		    
+	    <div id="footer" style="width:70%">
+	    	<ui:insert name="footer" >
+	    		<ui:include src="commonFooter.xhtml" />
+	    	</ui:insert>
+    	</div>
+    	
+    </div>
+    
+    </h:body>
+
+</html>

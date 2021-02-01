@@ -1,0 +1,322 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+     	xmlns:h="http://java.sun.com/jsf/html"
+		xmlns:f="http://java.sun.com/jsf/core"
+		xmlns:ui="http://java.sun.com/jsf/facelets"
+		xmlns:p="http://primefaces.org/ui"
+	  	xmlns:composite="http://java.sun.com/jsf/composite"
+	  	xmlns:webredcs="http://java.sun.com/jsf/composite/webredcs"
+	  	xmlns:webred="http://java.sun.com/jsf/composite/webred">
+      
+	<h:head>
+		<title>Gestione Settori</title>
+	</h:head>
+	<h:body>
+		<composite:interface componentType="pnlGestSettori">
+			<composite:attribute name="iGestioneSettori" type="it.webred.cs.jsf.interfaces.IGestioneSettori"/>
+		</composite:interface>
+		<composite:implementation>			
+
+			<h:panelGrid columns="1">
+				<h:outputText value="Gestione Organizzazioni" styleClass="bold"/>	
+				<p:spacer height="10" />
+			</h:panelGrid>
+			<p:selectOneRadio value="#{cc.attrs.iGestioneSettori.enteAccessoAM}">
+				<f:selectItem itemLabel="Organizzazione abilitata ad accedere al sistema" itemValue="#{true}"/>
+				<f:selectItem itemLabel="Altra organizzazione" itemValue="#{false}"/>
+				<p:ajax event="change" listener="#{cc.attrs.iGestioneSettori.onChangeEnteAccesso}" update="pnlOrg" />
+			</p:selectOneRadio>
+			
+			<p:outputPanel id="pnlOrg">
+			  <h:panelGrid columns="10">
+				<h:panelGrid rendered="#{!cc.attrs.iGestioneSettori.enteAccessoAM}" columns="20" cellpadding="0" cellspacing="0" >
+					<h:outputLabel value="Nome organizzazione" />
+					<p:inputText value="#{cc.attrs.iGestioneSettori.newOrganizzazione.nome}"/>
+				</h:panelGrid>
+				
+				<h:panelGrid rendered="#{cc.attrs.iGestioneSettori.enteAccessoAM}" columns="20" cellpadding="0" cellspacing="0" >
+					<h:outputLabel value="Nome organizzazione" />
+					<p:spacer width="10px"/>
+					<p:selectOneMenu value="#{cc.attrs.iGestioneSettori.newOrganizzazione.codRouting}" filter="true" filterMatchMode="contains">
+						<f:selectItem noSelectionOption="true" itemLabel="- seleziona -"/>
+						<f:selectItems value="#{cc.attrs.iGestioneSettori.lstAmEnti}"/>
+						<p:ajax event="change" update="idPnlComuneOrg" listener="#{cc.attrs.iGestioneSettori.onChangeAmEnte}"/>
+					</p:selectOneMenu>
+					<p:spacer width="10px"/>
+			        <h:panelGrid id="idPnlComuneOrg" columns="8">
+						<webredcs:tooltipInfo stringDescr="Codice identificativo univoco utilizzato per il routing: corrisponde al cod.belfiore configurato in AMProfiler e nel JBoss"
+											  rendered="#{cc.attrs.iGestioneSettori.newOrganizzazione.codRouting!=null}" />
+						<h:outputLabel value="#{cc.attrs.iGestioneSettori.newOrganizzazione.codRouting}" rendered="#{cc.attrs.iGestioneSettori.newOrganizzazione.codRouting!=null}" style="font-weight:bold;"/>
+						<p:spacer width="10px"/>
+						
+						<h:outputLabel value="Comune" />
+						<webredcs:tooltipInfo title="Comune di appartenenza" stringDescr="Comune cui fa capo l'organizzazione selezionata. Il dato compare nei flussi in uscita."/>
+						<webred:pnlComune  comuneManBean="#{cc.attrs.iGestioneSettori.newComune}"/>	
+					</h:panelGrid>
+					<p:spacer width="10px"/>
+					<p:selectBooleanCheckbox itemLabel="Ricevi schede di accoglienza in UDC" value="#{cc.attrs.iGestioneSettori.newOrganizzazione.flagRiceviSchedeAccoglienza}"/>
+					
+					
+				
+				</h:panelGrid>
+					<p:spacer width="20px"/>
+					<h:outputLabel value="e-mail" />
+					<p:spacer width="10px"/>
+					<p:inputText value="#{cc.attrs.iGestioneSettori.newOrganizzazione.email}"/>
+					
+					<p:commandButton value="Aggiungi" process="@parent" update="@form" 
+									 icon="ui-icon-plus" action="#{cc.attrs.iGestioneSettori.nuovaOrganizzazione}"/>
+					
+				</h:panelGrid>
+			</p:outputPanel>
+
+			<p:spacer height="10" />
+			
+		    <p:dataTable id="dtOrg" var="org" styleClass="#{'updateOnListaOrganizzazioniChange'}" value="#{cc.attrs.iGestioneSettori.lstOrganizzazioni}" 
+		    	selection="#{cc.attrs.iGestioneSettori.selectedOrganizzazioni}" rowKey="#{org.id}" rows="20" paginatorPosition="bottom" 
+		    	paginator="true" paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+		    	emptyMessage="Nessun elemento trovato">
+		    	<f:facet name="header">Lista Organizzazioni</f:facet>
+		        
+		        <p:ajax event="rowSelect" listener="#{cc.attrs.iGestioneSettori.onOrganizzazioneSelect}" update=":#{p:component('pnlGestSettori')}"/>
+		        
+		        <p:column selectionMode="multiple" style="width:16px;text-align:center"/>
+		        
+		        <p:column headerText="Nome" sortBy="nome" filterBy="#{org.nome}">
+		            <h:outputText value="#{org.nome}" />
+		            <p:spacer width="20px"/>
+		            <p:graphicImage value="#{resource['webred/img/star.jpg']}" width="16px" rendered="#{org.flagCapofila}" title="CAPOFILA"/>
+		        </p:column>
+		        <p:column headerText="Cod. Catastale Comune" sortBy="codCatastale" style="text-align:center" width="50">
+		            <h:outputText value="#{org.codCatastale}"  />
+		        </p:column>
+		         <p:column headerText="Codice Univoco" sortBy="codRouting" style="text-align:center" width="50">
+		            <h:outputText value="#{org.codRouting}"  />
+		        </p:column>
+		        <p:column headerText="Cod. Esportazione flussi" sortBy="codExport" style="text-align:center" width="50">
+		            <h:outputText value="#{org.codExportFlusso}" />
+		        </p:column>
+		        <p:column headerText="Cod.fiscale">
+		            <h:outputText value="#{org.cf}" />
+		        </p:column>	
+		        <p:column headerText="Partita IVA">
+		            <h:outputText value="#{org.piva}" />
+		        </p:column>	    
+		        <p:column headerText="e-mail">
+		            <h:outputText value="#{org.email}" />
+		        </p:column>	        
+				<p:column headerText="Ricevi schede accoglienza UDC" sortBy="flagRiceviSchedeAccoglienza" style="text-align:center" width="50" >
+		           <webred:pnlImgBoolean value="#{org.flagRiceviSchedeAccoglienza}"/>
+		        </p:column>
+		        <p:column headerText="Attivo" sortBy="abilitato" style="text-align:center" width="50">
+		           <webred:pnlImgBoolean value="#{org.orgAttiva}"/>
+		        </p:column>
+		        
+		        <f:facet name="footer">
+			        <p:commandButton value="Carica settori" process="@form" update=":#{p:component('pnlGestSettori')}" icon="ui-icon-search"
+						action="#{cc.attrs.iGestioneSettori.caricaSettori}"/>
+						
+					<p:commandButton value="Attiva" process="@form" update="@(.updateOnListaOrganizzazioniChange)" icon="ui-icon-check"
+						action="#{cc.attrs.iGestioneSettori.attivaOrganizzazioni}">
+						<p:confirm header="Conferma" message="Procedere con l\'attivazione?" icon="ui-icon-alert"/>
+					</p:commandButton>
+					
+					<p:commandButton value="Disattiva" process="@form" update="@(.updateOnListaOrganizzazioniChange)" icon="ui-icon-closethick"
+						action="#{cc.attrs.iGestioneSettori.disattivaOrganizzazioni}">
+						<p:confirm header="Conferma" message="Procedere con la disattivazione?" icon="ui-icon-alert"/>
+					</p:commandButton>
+					
+					<p:commandButton value="Elimina" process="@form" update="@(.updateOnListaOrganizzazioniChange)" icon="ui-icon-trash" 
+						action="#{cc.attrs.iGestioneSettori.eliminaOrganizzazioni}">
+						<p:confirm header="Conferma" message="Procedere con l\'eliminazione?" icon="ui-icon-alert"/>
+					</p:commandButton>
+		        </f:facet>
+		    </p:dataTable>
+			
+			<p:outputPanel id="pnlGestSettori">
+			<p:outputPanel rendered="#{cc.attrs.iGestioneSettori.renderSettori}" >
+				<h:panelGrid columns="1" cellpadding="0" cellspacing="0">
+					<p:spacer height="20" />
+					<h:outputText value="Gestione Settori per Organizzazione: #{cc.attrs.iGestioneSettori.selectedOrganizzazione.nome}" styleClass="bold"/>
+					<p:spacer height="10" />
+				</h:panelGrid>
+				<h:panelGrid columns="2">
+					<h:panelGrid columns="12" cellpadding="0" cellspacing="0" columnClasses="span-2" >
+						<h:outputLabel value="Nome" />
+						<p:inputText value="#{cc.attrs.iGestioneSettori.newSettore.nome}"/>
+						<p:spacer width="10" />
+						<h:outputLabel value="Secondo nome" />
+						<p:inputText value="#{cc.attrs.iGestioneSettori.newSettore.nome2}"/>
+						<p:spacer width="10" />
+						<h:outputLabel value="Secondo Livello"/>
+						<h:panelGrid id="pnl2Liv" columns="2" styleClass="#{'updateOnLista2LivChange'}">
+							<p:selectOneMenu id="som2Liv" value="#{cc.attrs.iGestioneSettori.newSettore.idSecondoLivello}" >
+								<f:selectItem itemLabel="- seleziona -" noSelectionOption="true"/>
+								<f:selectItems value="#{cc.attrs.iGestioneSettori.lst2Liv}"/>
+							</p:selectOneMenu>
+							<p:commandButton title="Inserisci una nuova tipologia di II livello" icon="ui-icon-gear" 
+										     process="@this" oncomplete="wdg2LivModal#{cc.attrs.var}.show();" 
+										     update=":#{p:component('dlg2Liv')}"/>
+						</h:panelGrid>
+						<p:spacer width="10" />
+						<h:outputLabel value="Orari" />
+						<p:inputText value="#{cc.attrs.iGestioneSettori.newSettore.orario}"/>
+						<p:spacer width="10" />
+						<h:outputLabel value="Telefono" />
+						<p:inputText value="#{cc.attrs.iGestioneSettori.newSettore.tel}"/>
+						<p:spacer width="10" />
+						<h:outputLabel value="Cellulare" />
+						<p:inputText value="#{cc.attrs.iGestioneSettori.newSettore.cell}"/>
+						<p:spacer width="10" />
+						<h:outputLabel value="Fax" />
+						<p:inputText value="#{cc.attrs.iGestioneSettori.newSettore.fax}"/>
+						<p:spacer width="10" />
+						<h:outputLabel value="Email" />
+						<p:inputText value="#{cc.attrs.iGestioneSettori.newSettore.email}"/>
+						
+					</h:panelGrid>
+					<h:panelGrid columns="2">
+						<h:outputLabel value="Cat.Sociali gestite" />
+						<p:selectManyCheckbox id="grid" value="#{cc.attrs.iGestioneSettori.lstCatSocialiSel}" layout="grid" columns="2">
+					        <f:selectItems value="#{cc.attrs.iGestioneSettori.lstCatSociali}"/>
+					    </p:selectManyCheckbox>
+				    </h:panelGrid>
+					
+				</h:panelGrid>
+				<h:panelGrid columns="11" cellpadding="0" cellspacing="0" columnClasses="span-2">
+					<h:outputLabel value="Indirizzo" />
+					<p:spacer width="10" />
+					<webred:pnlIndirizzo id="pnlIndirizzo"
+						indirizzoManBean="#{cc.attrs.iGestioneSettori.newIndirizzo}"/>
+				</h:panelGrid>
+				<h:panelGrid columns="4" width="100%">
+				
+					<p:selectBooleanCheckbox itemLabel="Inviante" value="#{cc.attrs.iGestioneSettori.newSettore.flgInviante}"/>
+					<p:selectBooleanCheckbox itemLabel="Inviato a" value="#{cc.attrs.iGestioneSettori.newSettore.flgInviatoA}"/>
+					<p:selectBooleanCheckbox itemLabel="Ente Interlocutore" value="#{cc.attrs.iGestioneSettori.newSettore.flgEnteInterlocutore}"/>
+					<p:selectBooleanCheckbox itemLabel="In carico" value="#{cc.attrs.iGestioneSettori.newSettore.flgInCaricoA}"/>
+					
+					<p:selectBooleanCheckbox itemLabel="Riunione con" value="#{cc.attrs.iGestioneSettori.newSettore.flgRiunioneCon}"/>
+					<p:selectBooleanCheckbox itemLabel="Titolare interventi" value="#{cc.attrs.iGestioneSettori.newSettore.flgIntTitolare}"/>
+					<p:selectBooleanCheckbox itemLabel="Eroga interventi" value="#{cc.attrs.iGestioneSettori.newSettore.flgIntEroga}"/>
+					<p:selectBooleanCheckbox itemLabel="Gestore interventi" value="#{cc.attrs.iGestioneSettori.newSettore.flgIntGestore}"/>
+					<p:commandButton value="Aggiungi" icon="ui-icon-plus" process="@form" update="@form" 
+									 action="#{cc.attrs.iGestioneSettori.aggiungiSettore}"/>
+				
+				</h:panelGrid>
+				
+				<p:spacer height="10" />
+				
+			    <p:dataTable id="dtSett" var="dto" value="#{cc.attrs.iGestioneSettori.lstSettori}"
+			    	selection="#{cc.attrs.iGestioneSettori.selectedSettori}" rowKey="#{dto.settore.id}"
+			    	emptyMessage="Nessun elemento trovato">
+			        
+			        <p:column selectionMode="multiple" style="width:16px;text-align:center"/>
+			        
+			        <p:column headerText="Nome">
+			            <h:outputText value="#{dto.settore.nome}" />
+			        </p:column>
+			        
+			        <p:column headerText="Indirizzo">
+			            <h:outputText value="#{dto.settore.csAAnaIndirizzo.indirizzo} #{dto.settore.csAAnaIndirizzo.civicoNumero}
+			             -  #{dto.settore.csAAnaIndirizzo.comDes}(#{dto.settore.csAAnaIndirizzo.prov})" 
+			             rendered="#{dto.settore.csAAnaIndirizzo != null}"/>
+			        </p:column>
+			        
+			        <p:column headerText="Contatti">
+			            <h:panelGrid columns="2" styleClass="noBorder">
+			              	<h:outputText value="Tel.:" rendered="#{dto.settore.tel!=null}"/>
+			              	<h:outputText value="#{dto.settore.tel}" rendered="#{dto.settore.tel!=null}"/>
+			              	
+			              	<h:outputText value="Cell.:" rendered="#{dto.settore.cell!=null}"/>
+			              	<h:outputText value="#{dto.settore.cell}" rendered="#{dto.settore.cell!=null}"/>
+			              	 
+			              	<h:outputText value="E-mail:" rendered="#{dto.settore.email!=null}" />
+			              	<h:outputText value="#{dto.settore.email}" rendered="#{dto.settore.email!=null}" />
+			              	  
+			              	<h:outputText value="Fax:" rendered="#{dto.settore.fax!=null}"/>
+			              	<h:outputText value="#{dto.settore.fax}" rendered="#{dto.settore.fax!=null}"/>
+			            </h:panelGrid>
+			        </p:column>
+			       
+			        <p:column headerText="Inviante" style="text-align:center" width="50">
+			            <webred:pnlImgBoolean value="#{dto.settore.flgInviante}"/>
+			        </p:column>
+			        <p:column headerText="Inviato a" style="text-align:center" width="50">
+			        	 <webred:pnlImgBoolean value="#{dto.settore.flgInviatoA}"/>
+			        </p:column>
+			        <p:column headerText="Ente Interlocutore" style="text-align:center" width="50">
+			            <webred:pnlImgBoolean value="#{dto.settore.flgEnteInterlocutore}"/>
+			        </p:column>
+			        <p:column headerText="In carico" style="text-align:center" width="50">
+			        	<webred:pnlImgBoolean value="#{dto.settore.flgInCaricoA}"/>
+			        </p:column>
+			        <p:column headerText="Riunione con" style="text-align:center" width="50">
+			         <webred:pnlImgBoolean value="#{dto.settore.flgRiunioneCon}"/>
+			        </p:column>
+			        <p:column headerText="Titolare" style="text-align:center" width="50">
+			          <webred:pnlImgBoolean value="#{dto.settore.flgIntTitolare}"/>
+			        </p:column>
+			        <p:column headerText="Erogante" style="text-align:center" width="50">
+			          <webred:pnlImgBoolean value="#{dto.settore.flgIntEroga}"/>
+			        </p:column>
+	 				<p:column headerText="Gestore" style="text-align:center" width="50">
+	 				 <webred:pnlImgBoolean value="#{dto.settore.flgIntGestore}"/>
+			        </p:column>
+			         <p:column headerText="II Livello" style="text-align:center" >
+			             <h:outputText value="#{dto.settore.csTbSecondoLivello.descrizione}" />
+			        </p:column>
+			        <p:column headerText="Cat.Sociali">
+			        	 <ui:repeat value="#{dto.lstCatSociale}" var="csoc">
+			           	<p:outputLabel value="#{csoc.descrizione}"/><br/>
+			           </ui:repeat>
+			        </p:column>
+			        <p:column headerText="Attivo" style="text-align:center" width="50">
+			            <webred:pnlImgBoolean value="#{dto.settore.abilitato}"/>
+			        </p:column>
+					<f:facet name="footer">
+						<p:commandButton value="Attiva" process="@form" update=":#{p:component('dtSett')}" icon="ui-icon-check"
+							action="#{cc.attrs.iGestioneSettori.attivaSettori}">
+							<p:confirm header="Conferma" message="Procedere con l\'attivazione?" icon="ui-icon-alert"/>
+						</p:commandButton>
+						<p:commandButton value="Disattiva" process="@form" update=":#{p:component('dtSett')}" icon="ui-icon-closethick"
+							action="#{cc.attrs.iGestioneSettori.disattivaSettori}">
+							<p:confirm header="Conferma" message="Procedere con la disattivazione?" icon="ui-icon-alert"/>
+						</p:commandButton>
+						<p:commandButton value="Elimina" process="@form" update=":#{p:component('dtSett')}" icon="ui-icon-trash"
+							action="#{cc.attrs.iGestioneSettori.eliminaSettori}">
+							<p:confirm header="Conferma" message="Procedere con l\'eliminazione?" icon="ui-icon-alert"/>
+						</p:commandButton>
+					</f:facet>
+	
+			    </p:dataTable>
+			    					
+			</p:outputPanel>
+			</p:outputPanel>
+			
+			<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+				<h:panelGrid columns="2" styleClass="centerAlign">
+			       <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>
+			       <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>
+			    </h:panelGrid>     
+		    </p:confirmDialog>	
+		    
+		    <p:dialog dynamic="true" modal="true" id="dlg2Liv"
+				widgetVar="wdg2LivModal#{cc.attrs.var}" width="400"
+				closable="true" header="Secondo Livello">
+			
+				<h:panelGrid columns="3" id="pnlNuovo2Liv" styleClass="#{'updateOnLista2LivChange'}">
+					<h:outputLabel value="Nome"/>
+					<p:inputText id="txt2Liv" value="#{cc.attrs.iGestioneSettori.nuovo2Liv}"/>
+					<p:commandButton id="btnSave2Liv" value="Aggiungi" icon="ui-icon-plus" process="@parent" 
+						actionListener="#{cc.attrs.iGestioneSettori.salva2Liv}"
+						oncomplete="if (args &amp;&amp; !args.validationFailed &amp;&amp; args.saved){ PF('wdg2LivModal#{cc.attrs.var}').hide(); updateLista(); } else {}"/>
+					<p:remoteCommand name="updateLista" process="@this" update="@(.updateOnLista2LivChange)"/>  
+			   	</h:panelGrid>
+			    
+			</p:dialog>
+
+		</composite:implementation>
+	</h:body>
+	
+</html>

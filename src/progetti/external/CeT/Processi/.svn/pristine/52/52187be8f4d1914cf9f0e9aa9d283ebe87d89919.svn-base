@@ -1,0 +1,232 @@
+package it.webred.ct.proc.ario.fonti.soggetto.compravendite;
+
+import java.io.InputStream;
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.ResultSet;
+import java.util.Properties;
+
+import org.apache.log4j.Logger;
+
+import it.webred.ct.data.model.indice.IndicePK;
+import it.webred.ct.data.model.indice.SitSoggettoTotale;
+import it.webred.ct.proc.ario.bean.HashParametriConfBean;
+import it.webred.ct.proc.ario.fonti.DatoDwh;
+import it.webred.ct.proc.ario.fonti.soggetto.Soggetto;
+import it.webred.ct.proc.ario.fonti.soggetto.docfa.SoggettoDichiaranteDocfa;
+import it.webred.ct.proc.ario.normalizzazione.NormalizzaTotali;
+import it.webred.ct.proc.ario.utils.GestioneStringheUtil;
+import it.webred.utils.DateFormat;
+
+public class SoggettoCompravendite extends DatoDwh implements Soggetto{
+
+	private Properties props = null;
+	protected static final Logger log = Logger.getLogger(SoggettoCompravendite.class.getName());
+	
+	
+	public SoggettoCompravendite(){
+		
+		//Caricamento del file di properties dei caricatori		
+		this.props = new Properties();
+		try {
+			InputStream is = this.getClass().getResourceAsStream("/sql/caricatori.sql");
+		    this.props.load(is);                     
+		}catch(Exception e) {
+		    log.error("Eccezione: "+e.getMessage());			   
+		}																
+	}
+	
+	/**
+	 * Metodo che controlla se la tabella del DWH è stata droppata
+	 */
+	@Override
+	public boolean dwhIsDrop(Connection conn) throws Exception {
+		
+		return false;
+	}
+
+	@Override
+	//Metodo che indica se la tabella è gestita o no tramite PROCESSID
+	public boolean existProcessId(){
+		return false;
+	}
+
+
+	//Metodo che restituisce la query di cancellazione tabella Totale
+	public String getDeleteSQL(){
+		
+		String sqlDeleteTot = this.getProperty("SQL_DEL_SOGG_TOTALE");		
+		return sqlDeleteTot;
+	}
+
+	@Override
+	public int getFkEnteSorgente() {
+		
+		return 7;
+	}
+
+	//Metodo che restituisce la query di inserimento in tabella Totale
+	public String getInsertSQL(){
+		
+		String sqlInsertTot = this.getProperty("SQL_INS_SOGG_TOTALE");		
+		return sqlInsertTot;
+	}
+
+	@Override
+	public int getProgEs() {
+		
+		return 1;
+	}
+
+	@Override
+	public String getQuerySQLDeleteProcessId() throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getQuerySQLgetProcessId() throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getQuerySQLNewProcessId() throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getQuerySQLSaveProcessId() throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getQuerySQLUpdateProcessId() throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	//Metodo che restituisce la query di ricerca in tabella Totale
+	public String getSearchSQL(){
+		
+		String sqlSearchTot = this.getProperty("SQL_CERCA_SOGG_TOTALE");		
+		return sqlSearchTot;
+	}
+
+	@Override
+	//Metodo che restituisce le query per il caricamento da DHW
+	public String getSql(String processID) {
+
+		String sqlSoggetto = this.getProperty("SQL_SOGG_COMPRAVENDITE");
+								
+		return sqlSoggetto;
+				
+	}
+
+	@Override
+	//Metodo che restituisce la tabella del DWH
+	public String getTable() {
+		
+		//Tabella del DHW da cui leggere i dati
+		String tabella = "MUI_SOGGETTI";			
+		return tabella;
+	}
+
+	//Metodo che restituisce la query di update in tabella Totale
+	public String getUpdateSQL(){
+		
+		String sqlUpdateTot = this.getProperty("SQL_UPDATE_SOGG_TOTALE");		
+		return sqlUpdateTot;
+	}
+
+	@Override
+	//Metodo che mappa normalizza e salva i dati
+	public void prepareSaveDato(DatoDwh classeFonte, Connection connForInsert, String insSoggettoTotale, ResultSet rs, String codEnte, HashParametriConfBean paramConfBean) throws Exception {
+
+		SitSoggettoTotale sst = new SitSoggettoTotale();
+		NormalizzaTotali nt = new NormalizzaTotali();
+		IndicePK iPk = new IndicePK();
+		
+		try{			
+					
+			sst.setIdStorico(rs.getString("ID_STORICO"));
+			sst.setDtFineVal(rs.getDate("DT_FINE_VAL"));
+			sst.setNome(rs.getString("NOME"));
+			sst.setCognome(rs.getString("COGNOME"));
+			sst.setDenominazione(rs.getString("DENOMINAZIONE"));
+			sst.setSesso(rs.getString("SESSO"));
+			sst.setCodfisc(rs.getString("COD_FISC"));
+			sst.setPi(rs.getString("PI"));
+			
+			Date date = DateFormat.stringToDate(rs.getString("DT_NASCITA"), "ddMMyyyy");									
+			sst.setDtNascita(date);
+			
+			
+			sst.setTipoPersona(rs.getString("TIPO_PERSONA"));
+			sst.setCodProvinciaNascita(rs.getString("COD_PROVINCIA_NASCITA"));
+			sst.setCodComuneNascita(rs.getString("COD_COMUNE_NASCITA"));
+			sst.setDescProvinciaNascita(rs.getString("DESC_PROVINCIA_NASCITA"));
+			sst.setDescComuneNascita(rs.getString("DESC_COMUNE_NASCITA"));
+			sst.setCodProvinciaRes(rs.getString("COD_PROVINCIA_RES"));
+			sst.setCodComuneRes(rs.getString("COD_COMUNE_RES"));
+			sst.setDescProvinciaRes(rs.getString("DESC_PROVINCIA_RES"));
+			sst.setDescComuneRes(rs.getString("DESC_COMUNE_RES"));
+						
+			
+			//Normalizzazione Dati
+			nt.normalizzaSoggetto(sst);
+
+			//Setto indice Soggetto
+			iPk.setIdDwh(rs.getString("ID_DWH"));
+			iPk.setFkEnteSorgente(this.getFkEnteSorgente());
+			iPk.setProgEs(this.getProgEs());							
+			//Calcolo Hash di chiave
+			iPk.setCtrHash(setCtrHashSitSoggettoTotale(sst));		
+			
+			sst.setId(iPk);
+
+			//Salvataggio
+			super.saveSitSoggettoTotale(classeFonte, connForInsert, insSoggettoTotale, sst);
+			
+		}catch (Exception e) {
+			log.warn("Errore:Save Soggetto Compravendite ="+e.getMessage());
+			Exception ea = new Exception("Errore:Save Soggetto Compravendite:"+e.getMessage());
+			throw ea;
+		}
+		
+	}
+
+	@Override 
+	//Metodo che mappa normalizza e aggiorna i dati
+	public void prepareUpdateDato(DatoDwh classeFonte, Connection connForInsert, String insSoggettoTotale, String updateSoggettoTotale, String searchSoggettoTotale, ResultSet rs, String codEnte, HashParametriConfBean paramConfBean) throws Exception {
+		//TODO Metodo non usato nella gestione senza procedID		
+	}
+
+	//Metodo che indica se la query di lettura da DWH ha come parametro il CodiceEnte
+	public boolean queryWithParamCodEnte(){
+		return false;
+	}
+
+	//Metodo che restituisce la query di caricamento letta da file di property
+	private String getProperty(String propName) {
+
+		String p = this.props.getProperty(propName+ "." + this.getFkEnteSorgente());
+		
+		if (p==null)
+			p = this.props.getProperty(propName);
+			
+		return p;
+	}
+	
+	
+	@Override
+	//Metodo che stabilisce se viene o no fornito il codice originario del soggetto
+	public boolean codiceSoggetto(String codEnte, HashParametriConfBean paramConfBean) throws Exception{
+			
+		//La fonte non gestisce il soggetto di origine
+		return false;
+	}
+	
+}

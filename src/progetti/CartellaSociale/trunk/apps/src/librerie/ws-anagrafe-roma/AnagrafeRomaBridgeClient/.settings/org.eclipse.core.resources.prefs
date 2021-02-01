@@ -1,0 +1,14 @@
+eclipse.preferences.version=1
+encoding//src/it/roma/comune/servizi/dto/Componente.java=UTF-8
+encoding//src/it/roma/comune/servizi/dto/DatiAnagrafeRoma.java=UTF-8
+encoding//src/it/roma/comune/servizi/dto/DatiIndirizzo.java=UTF-8
+encoding//src/it/roma/comune/servizi/dto/Famiglia.java=UTF-8
+encoding//src/it/roma/comune/servizi/dto/Genitori.java=UTF-8
+encoding//src/it/roma/comune/servizi/dto/Nascita.java=UTF-8
+encoding//src/it/roma/comune/servizi/dto/Persona.java=UTF-8
+encoding//src/it/roma/comune/servizi/dto/PersonaCompleta.java=UTF-8
+encoding//src/it/roma/comune/servizi/dto/RicercaResult.java=UTF-8
+encoding//src/it/roma/comune/servizi/test/ClientAnagrafeRoma.java=UTF-8
+encoding//src/it/roma/comune/servizi/test/ClientAnagrafeRomaService.java=UTF-8
+encoding//src/it/roma/comune/servizi/test/ClientAnagrafeRomaServiceLocator.java=UTF-8
+encoding//src/it/roma/comune/servizi/test/ClientAnagrafeRomaSoapBindingStub.java=UTF-8

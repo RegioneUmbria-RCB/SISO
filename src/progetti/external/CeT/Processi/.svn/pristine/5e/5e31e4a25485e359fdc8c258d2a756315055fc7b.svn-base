@@ -1,0 +1,4 @@
+tableA.name=RE_CON_LOCAZIONI_MANUALI_1_0
+file.prefix=CONLOC.
+#
+Caricatore.class.noversion=it.webred.rulengine.brick.loadDwh.load.locazioni.conloc.v1.ImportLocazioni

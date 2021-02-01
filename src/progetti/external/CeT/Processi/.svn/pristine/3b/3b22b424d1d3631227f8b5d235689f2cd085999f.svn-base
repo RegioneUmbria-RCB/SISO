@@ -1,0 +1,84 @@
+#dir.files=C:/dati_diogene/cnc/flusso290/
+tableN0.name=RE_CNC_N0_INIZIO_FILE
+tableN1.name=RE_CNC_N1_INIZIO_RUOLO
+tableN2.name=RE_CNC_N2_ANA_INTEST_RUOLO
+tableN3.name=RE_CNC_N3_ANA_COOB_COIN
+tableN4.name=RE_CNC_N4_DATI_CONT
+tableN5.name=RE_CNC_N5_FINE_RUOLO
+tableN9.name=RE_CNC_N9_FINE_FILE
+
+
+tableN0.create_table=CREATE TABLE RE_CNC_N0_INIZIO_FILE \
+(\
+  COD_ENTE_IMPOSITORE  NUMBER(5)             ,\
+  DT_INVIO_FORNITURA   VARCHAR2(10)                     ,\
+  FILE_ID VARCHAR2(1000),\
+  PROCESSID VARCHAR2(1000), \
+  RE_FLAG_ELABORATO VARCHAR2(1), \
+  DT_EXP_DATO DATE)
+
+tableN1.create_table=CREATE TABLE RE_CNC_N1_INIZIO_RUOLO(COD_COMUNE_ISCR_RUOLO  NUMBER(6)           ,PROGRESSIVO_MINUTA     NUMBER(10)              ,COD_TIPO_RUOLO         NUMBER(1)          ,NUMERO_RUOLO           NUMBER(4)              ,RATE_RUOLO             NUMBER(2)              ,COD_RUOLO_COATTIVO     NUMBER(1)           ,COD_SEDE               NUMBER(4)           ,COD_TIPO_COMPENSO      NUMBER(1)           ,FILLER\t\t\t\t VARCHAR(20), COD_RUOLO_ICIAP        VARCHAR2(10)           ,NUMERO_CONVENZIONE     NUMBER(2)              ,COD_ART                VARCHAR2(10)           ,FILE_ID VARCHAR2(1000),PROCESSID VARCHAR2(1000), RE_FLAG_ELABORATO VARCHAR2(1), DT_EXP_DATO DATE)
+
+tableN2.create_table=CREATE TABLE RE_CNC_N2_ANA_INTEST_RUOLO(COD_COMUNE_ISCR_RUOLO      NUMBER(6)       ,PROGRESSIVO_MINUTA         NUMBER(2)          ,COD_PARTITA                VARCHAR2(14)         ,COD_FISCALE                VARCHAR2(16)  ,COD_CONTRIBUENTE           NUMBER(8)       ,COD_CTRL_COD_CONTRIBUENTE  NUMBER(2)       ,COD_INDIRIZZO              NUMBER(6)       ,INDIRIZZO                  VARCHAR2(30)  ,NUMERO_CIVICO              VARCHAR2(5)          ,LETTERA_NUMERO_CIVICO      VARCHAR2(2)   ,KM                         NUMBER(3,3)       ,CAP                        VARCHAR2(5)       ,COD_BELFIORE               VARCHAR2(10)      ,LOCALITA_FRAZIONE          VARCHAR2(21)  ,COD_INDIRIZZO_REP          NUMBER(6)       ,INDIRIZZO_REP              VARCHAR2(30)  ,NUMERO_CIVICO_REP          VARCHAR2(5)         ,LETTERA_NUMERO_CIVICO_REP  VARCHAR2(2)   ,KM_REP                     NUMBER(3,3)        ,CAP_REP                    VARCHAR2(5)       ,COD_BELFIORE_REP           VARCHAR2(10)       ,LOCALITA_FRAZIONE_REP      VARCHAR2(21)  ,COD_NAT_GIURID_INTEST      NUMBER(1)       ,COGNOME                    VARCHAR2(24)  ,NOME                       VARCHAR2(20)  ,COD_SESSO                  VARCHAR2(10)  ,DT_NASCITA                 VARCHAR2(10),COD_BELFIORE_NASCITA       VARCHAR2(10)       ,FILLER\t\t\t\t\t VARCHAR(19), DENOMINAZIONE              VARCHAR2(76)  ,COD_PARTITA_COINTESTATA    VARCHAR2(10)       ,FILE_ID VARCHAR2(1000),PROCESSID VARCHAR2(1000), RE_FLAG_ELABORATO VARCHAR2(1), DT_EXP_DATO DATE)
+
+tableN3.create_table=CREATE TABLE RE_CNC_N3_ANA_COOB_COIN(COD_COMUNE_ISCR_RUOLO      NUMBER(3)       ,PROGRESSIVO_MINUTA         NUMBER(2)          ,COD_PARTITA                VARCHAR2(10)         ,COD_FISCALE                VARCHAR2(16)  ,COD_INDIRIZZO              NUMBER(6)       ,INDIRIZZO                  VARCHAR2(30)  ,NUMERO_CIVICO              NUMBER(5)          ,LETTERA_NUMERO_CIVICO      VARCHAR2(2)   ,KM                         NUMBER(3,3)        ,CAP                        VARCHAR2(5)       ,COD_BELFIORE               VARCHAR2(10)       ,LOCALITA_FRAZIONE          VARCHAR2(21)  ,COD_INDIRIZZO_REP          NUMBER(6)       ,INDIRIZZO_REP              VARCHAR2(30)  ,NUMERO_CIVICO_REP          NUMBER(5)          ,LETTERA_NUMERO_CIVICO_REP  VARCHAR2(2)   ,KM_REP                     NUMBER(3,3)        ,CAP_REP                    VARCHAR2(5)       ,COD_BELFIORE_REP           VARCHAR2(10)      ,LOCALITA_FRAZIONE_REP      VARCHAR2(21)  ,COD_NAT_GIURID_DEB         NUMBER(1)       ,COGNOME                    VARCHAR2(24)  ,NOME                       VARCHAR2(20)  ,COD_SESSO                  VARCHAR2(10)       ,DT_NASCITA                 VARCHAR2(10),COD_BELFIORE_NASCITA       VARCHAR2(10)       ,FILLER\t\t\t\t\t VARCHAR2(20), DENOMINAZIONE              VARCHAR2(76)  ,FILE_ID VARCHAR2(1000),PROCESSID VARCHAR2(1000), RE_FLAG_ELABORATO VARCHAR2(1), DT_EXP_DATO DATE)
+
+tableN4.create_table=CREATE TABLE RE_CNC_N4_DATI_CONT\
+(\
+  COD_COMUNE_ISCR_RUOLO      NUMBER(6)       ,\
+  PROGRESSIVO_MINUTA         NUMBER(2)          ,\
+  COD_PARTITA                VARCHAR2(14)         ,\
+  ANNO_RIF_TRIBUTO           NUMBER(4)          ,\
+  COD_TRIBUTO                VARCHAR2(4)       ,\
+  IMPONIBILE                 NUMBER(13)       ,\
+  IMPOSTA                    NUMBER(13)       ,\
+  SEMESTRI                   NUMBER(2)          ,\
+  DT_DECORRENZA_INTERESSI    VARCHAR2(10),\
+  COD_REPARTO                VARCHAR2(10)       ,\
+  INFO_CARTELLA              VARCHAR2(75)  ,\
+  COD_TIPO_TITOLO            VARCHAR2(33)       ,\
+  TITOLO_E                   VARCHAR2(11) ,\
+  DESCRIZIONE_E              VARCHAR2(15)  ,\
+  COD_S                      VARCHAR2(10)       ,\
+  TITOLO_S                   VARCHAR2(12)  ,\
+  DT_S                       VARCHAR2(10),\
+  TARGA_AUTO_S               VARCHAR2(12)  ,\
+  MATRICOLA_M                VARCHAR2(10)  ,\
+  IMPORTO_TETTO_SOMME_AGG_M  NUMBER(13)       ,\
+  COD_REGIME_SANZION_M       VARCHAR2(10)       ,\
+  FILE_ID VARCHAR2(1000),\
+  PROCESSID VARCHAR2(1000), \
+  RE_FLAG_ELABORATO VARCHAR2(1), \
+  DT_EXP_DATO DATE)
+
+tableN5.create_table=CREATE TABLE RE_CNC_N5_FINE_RUOLO\
+(\
+  COD_COMUNE_ISCR_RUOLO  NUMBER(6)           ,\
+  PROGRESSIVO_MINUTA     NUMBER(2)              ,\
+  TOT_REC                NUMBER(7)              ,\
+  TOT_REC_N2             NUMBER(7)              ,\
+  TOT_REC_N3             NUMBER(7)              ,\
+  TOT_REC_N4             NUMBER(7)              ,\
+  TOT_IMPOSTA            NUMBER(15)           ,\
+  FILE_ID VARCHAR2(1000),\
+  PROCESSID VARCHAR2(1000), \
+  RE_FLAG_ELABORATO VARCHAR2(1), \
+  DT_EXP_DATO DATE)
+
+tableN9.create_table=CREATE TABLE RE_CNC_N9_FINE_FILE\
+(\
+  COD_ENTE_IMPOSITORE  NUMBER(6)             ,\
+  TOT_REC              NUMBER(5)                ,\
+  TOT_REC_N1           NUMBER(7)                ,\
+  TOT_REC_N2           NUMBER(7)                ,\
+  TOT_REC_N3           NUMBER(7)                ,\
+  TOT_REC_N4           NUMBER(7)                ,\
+  TOT_REC_N5           NUMBER(7)                ,\
+  FILE_ID VARCHAR2(1000),\
+  PROCESSID VARCHAR2(1000), \
+  RE_FLAG_ELABORATO VARCHAR2(1), \
+  DT_EXP_DATO DATE)
+  
+ tableN0.create_idx=tableA.idx=CREATE INDEX IDX_CNC_N0 ON RE_CNC_N0_INIZIO_FILE (PROCESSID)
+
+Caricatore.class.noversion=it.webred.rulengine.brick.loadDwh.load.cnc.flusso290.ImportFlusso290

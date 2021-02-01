@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings
+  xmlns="http://java.sun.com/xml/ns/persistence/orm"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
+  version="2.0">
+  
+	<named-query name="Pgt.getLayer">
+		<query>
+			<![CDATA[
+				SELECT p 
+				FROM PgtSqlLayer p
+				ORDER BY p.desLayer
+				]]>
+		</query>
+	</named-query>
+	
+	<named-query name="Pgt.getLayerById">
+		<query>
+			<![CDATA[
+				SELECT p 
+				FROM PgtSqlLayer p
+				WHERE p.id.id = :id
+				]]>
+		</query>
+	</named-query>
+	
+	<named-query name="Pgt.getLayerByPK">
+		<query>
+			<![CDATA[
+				SELECT p 
+				FROM PgtSqlLayer p
+				WHERE p.id.id = :id
+				  AND p.id.standard = :standard
+				]]>
+		</query>
+	</named-query>
+	
+	<named-query name="Pgt.getLayerByTable">
+		<query>
+			<![CDATA[
+				SELECT p 
+				FROM PgtSqlLayer p
+				WHERE p.nameTable = :table
+				]]>
+		</query>
+	</named-query>
+	
+	<named-query name="Pgt.getLayersByFlgDownload">
+		<query>
+			<![CDATA[
+				SELECT p 
+				FROM PgtSqlLayer p
+				WHERE p.flgDownload = :flgDownload
+				]]>
+		</query>
+	</named-query>
+	<named-query name="Pgt.getLayersByTipo">
+		<query>
+			<![CDATA[
+				SELECT p 
+				FROM PgtSqlLayer p
+				WHERE p.tipoLayer = :tipoLayer
+				]]>
+		</query>
+	</named-query>
+	
+	<named-query name="Pgt.getLayersWithoutDeco">
+		<query>
+			<![CDATA[
+				SELECT p 
+				FROM PgtSqlLayer p 
+				WHERE p.id.id not in (select distinct pd.idLayer from PgtSqlDecoLayer pd)
+				]]>
+		</query>
+	</named-query>
+	
+	<named-query name="Pgt.getDecoLayersByIdLayer">
+		<query>
+			<![CDATA[
+				SELECT pd 
+				FROM PgtSqlDecoLayer pd 
+				WHERE pd.idLayer = :idLayer
+				AND pd.standard = :standard
+				]]>
+		</query>
+	</named-query>
+	
+	<named-query name="Pgt.getDecoLayers">
+		<query>
+			<![CDATA[
+				SELECT pd 
+				FROM PgtSqlDecoLayer pd 
+				]]>
+		</query>
+	</named-query>
+	
+	<named-query name="Pgt.getInfoLayersByIdLayer">
+		<query>
+			<![CDATA[
+				SELECT pi
+				FROM PgtSqlInfoLayer pi 
+				WHERE pi.idLayer = :idLayer
+				AND pi.standard = :standard
+				]]>
+		</query>
+	</named-query>
+	
+	<named-query name="Pgt.getInfoLayerByCol">
+		<query>
+			<![CDATA[
+				SELECT pi 
+				FROM PgtSqlInfoLayer pi
+				WHERE pi.idLayer = :idLayer
+				AND pi.standard = :standard
+				AND pi.nameCol = :col
+				]]>
+		</query>
+	</named-query>
+	
+	<named-query name="Pgt.getMaxIdLayer">
+		<query>
+			<![CDATA[
+				SELECT MAX(p.id.id) 
+				FROM PgtSqlLayer p 
+				]]>
+		</query>
+	</named-query>
+	
+	<named-query name="Pgt.getListaSqlVisTemplate">
+		<query>
+			<![CDATA[
+				select tmp 
+				from PgtSqlVisTemplate tmp order by tmp.descrApp
+				]]>
+		</query>
+	</named-query>
+	
+	<named-query name="Pgt.getListaSqlVisLayerByIdLayer">
+		<query>
+			<![CDATA[
+				select lay 
+				from PgtSqlVisLayer lay  
+				where lay.id.idLayer= :idLayer 
+				  and lay.id.stndLayer=:standard
+					
+				]]>
+		</query>
+	</named-query>
+	
+	
+	
+	<named-query name="Pgt.getSqlVisLayerByLayerApp">
+		<query>
+			<![CDATA[
+				select lay 
+				from PgtSqlVisLayer lay , PgtSqlVisTemplate tmp
+				where lay.id.idTmpl= tmp.id 
+				  and tmp.fkAmApplication=:nomeApp 
+				  and lay.id.idLayer=:idLayer
+				  and lay.id.stndLayer=:standard
+					
+				]]>
+		</query>
+	</named-query>
+	
+	<named-query name="Pgt.getListaSqlVisLayerByApp">
+		<query>
+			<![CDATA[
+				select lay 
+				from PgtSqlVisLayer lay , PgtSqlVisTemplate tmp
+				where lay.id.idTmpl= tmp.id and tmp.fkAmApplication=:nomeApp 
+					
+				]]>
+		</query>
+	</named-query>
+	
+</entity-mappings>	

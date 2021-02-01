@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings
+  xmlns="http://java.sun.com/xml/ns/persistence/orm"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
+  version="2.0">
+
+	<!-- Query Bollette -->
+	<named-query name="SitRttBollette.getBollettePagByCF">
+		<query>
+			<![CDATA[
+				SELECT b FROM SitRttBollette b 
+			    WHERE UPPER(b.codSoggetto) = :codFisc AND 
+			    	(b.flNonPagare = 1 OR (b.totPagato IS NOT NULL AND b.totPagato >= b.totBolletta))
+			    AND b.dtFineVal IS NULL
+			    ORDER BY b.dataBolletta DESC
+			 ]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SitRttBollette.getBolletteNonPagByCF">
+		<query>
+			<![CDATA[
+			    SELECT b FROM SitRttBollette b 
+			    WHERE UPPER(b.codSoggetto) = :codFisc AND 
+			    	((b.flNonPagare != 1 OR b.flNonPagare IS NULL) AND 
+					(b.totPagato IS NULL OR b.totPagato < b.totBolletta))
+			    	
+			    AND b.dtFineVal IS NULL
+			    ORDER BY b.dataBolletta DESC
+			 ]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SitRttBollette.getBollettePagByNumBoll">
+		<query>
+			<![CDATA[
+				SELECT b FROM SitRttBollette b 
+				WHERE UPPER(b.numBolletta) = :numBolletta AND
+					(b.flNonPagare = '0' OR (b.totPagato IS NOT NULL AND b.totPagato >= b.totBolletta  ) )
+				AND b.dtFineVal IS NULL
+				ORDER BY b.dataBolletta DESC
+			 ]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SitRttBollette.getBolletteNonPagByNumBoll">
+		<query>
+			<![CDATA[
+				SELECT b FROM SitRttBollette b 
+				WHERE UPPER(b.numBolletta) = :numBolletta and
+					(( b.flNonPagare <> '1' OR b.flNonPagare IS NULL) AND 
+					(b.totPagato IS NULL OR  b.totPagato < b.totBolletta ) )
+				AND b.dtFineVal IS NULL
+				ORDER BY b.dataBolletta DESC
+			 ]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SitRttBollette.getBollettaByCodBoll">
+        <query>
+            <![CDATA[
+                SELECT b FROM SitRttBollette b 
+                WHERE UPPER(b.codBolletta) = :codBolletta
+                AND b.dtFineVal IS NULL
+             ]]>
+        </query>
+    </named-query>
+
+	<!-- Query Dettaglio Bollette -->
+	<named-query name="SitRttDettBollette.getBolletteDettByCodBoll">
+		<query>
+			<![CDATA[
+				SELECT d FROM SitRttDettBollette d 
+				WHERE d.codBolletta = :codBolletta
+				AND d.dtFineVal IS NULL
+				ORDER BY d.dtIniServizio DESC
+			 ]]>
+		</query>
+	</named-query>
+	
+	<!-- Query Rate Bolletta -->
+	<named-query name="SitRttRateBollette.getBolletteRateByCodBoll">
+		<query>
+			<![CDATA[
+				SELECT r FROM SitRttRateBollette r 
+				WHERE r.codBolletta = :codBolletta
+				AND r.dtFineVal IS NULL
+				ORDER BY r.numRata DESC
+			 ]]>
+		</query>
+	</named-query>
+
+</entity-mappings>

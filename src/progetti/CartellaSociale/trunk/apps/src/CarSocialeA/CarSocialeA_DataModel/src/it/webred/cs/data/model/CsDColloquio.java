@@ -1,0 +1,128 @@
+package it.webred.cs.data.model;
+
+import it.webred.cs.data.base.ICsDDiarioChild;
+
+import java.util.Date;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
+
+/**
+ * The persistent class for the CS_D_COLLOQUIO database table.
+ * 
+ */
+@Entity
+@Table(name="CS_D_COLLOQUIO")
+@NamedQuery(name="CsDColloquio.findAll", query="SELECT c FROM CsDColloquio c")
+public class CsDColloquio implements ICsDDiarioChild {
+	private static final long serialVersionUID = 1L;
+
+	@Id
+	@Column(name="DIARIO_ID")
+	private Long diarioId;
+
+	//bi-directional many-to-one association to CsDRelazione
+	@ManyToOne
+	@JoinColumn(name="DIARIO_CONCHI_ID")
+	private CsCDiarioConchi csCDiarioConchi;
+
+	//bi-directional many-to-one association to CsCDiarioDove
+	@ManyToOne
+	@JoinColumn(name="DIARIO_DOVE_ID")
+	private CsCDiarioDove csCDiarioDove;
+	
+	//bi-directional many-to-one association to CsCDiarioDove
+	@ManyToOne
+	@JoinColumn(name="TIPO_COLLOQUIO_ID")
+	private CsCTipoColloquio csCTipoColloquio;
+	
+	@Column(name="TESTO_DIARIO")
+	private String testoDiario;
+
+	@Column(name="RISERVATO")
+	private String riservato;
+	
+	//bi-directional one-to-one association to CsDDiario
+	@OneToOne
+	@JoinColumn(name="DIARIO_ID" )
+	private CsDDiario csDDiario;
+	
+	@Column(name="DIARIO_CONCHI_ALTRO")
+	private String diarioConChiAltro;
+	
+	public CsDColloquio() {
+	}
+
+	public CsCTipoColloquio getCsCTipoColloquio() {
+		return csCTipoColloquio;
+	}
+
+	public void setCsCTipoColloquio(CsCTipoColloquio csCTipoColloquio) {
+		this.csCTipoColloquio = csCTipoColloquio;
+	}
+
+	public CsCDiarioDove getCsCDiarioDove() {
+		return this.csCDiarioDove;
+	}
+
+	public void setCsCDiarioDove(CsCDiarioDove csCDiarioDove) {
+		this.csCDiarioDove = csCDiarioDove;
+	}
+	
+	public Long getDiarioId() {
+		return this.diarioId;
+	}
+
+	public void setDiarioId(Long diarioId) {
+		this.diarioId = diarioId;
+	}
+
+	public CsCDiarioConchi getCsCDiarioConchi() {
+		return this.csCDiarioConchi;
+	}
+
+	public void setCsCDiarioConchi(CsCDiarioConchi csCDiarioConchi) {
+		this.csCDiarioConchi = csCDiarioConchi;
+	}
+
+	public String getTestoDiario() {
+		return this.testoDiario;
+	}
+
+	public void setTestoDiario(String testoDiario) {
+		this.testoDiario = testoDiario;
+	}
+
+	public CsDDiario getCsDDiario() {
+		return csDDiario = (csDDiario==null) ? new CsDDiario() : csDDiario;
+	}
+
+	public void setCsDDiario(CsDDiario csDDiario) {
+		this.csDDiario = csDDiario;
+	}
+	
+	public String getRiservato() {
+		return riservato;
+	}
+
+	public void setRiservato(String riservato) {
+		this.riservato = riservato;
+	}
+
+	public String getDiarioConChiAltro() {
+		return diarioConChiAltro;
+	}
+
+	public void setDiarioConChiAltro(String diarioConChiAltro) {
+		this.diarioConChiAltro = diarioConChiAltro;
+	}
+}

@@ -1,0 +1,102 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Table class="oracle.dbtools.crest.model.design.relational.Table" directorySegmentName="seg_0" id="3263BCE1-8240-E5F3-B88C-268526116083" schemaObject="31789C62-6489-FE63-4664-3CFB4035AC87" name="CS_CFG_IT_RUOLO_TRANSIZIONE">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>CS_SISO</sourceObjSchema>
+<sourceObjName>CS_CFG_IT_RUOLO_TRANSIZIONE</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:18 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>083D59EF-DC1F-FFCF-7BAA-4D2B26D3D038</importedID>
+<parsed>true</parsed>
+<columns itemClass="oracle.dbtools.crest.model.design.relational.Column">
+<Column name="ID" id="3AD2A39C-D272-1555-3923-21E29222DE5B">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>CS_CFG_IT_RUOLO_TRANSIZIONE</sourceObjSchema>
+<sourceObjName>ID</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:18 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>7ADD9B63-819A-F67B-256C-0E32C7F204BA</importedID>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<dataTypePrecision>10</dataTypePrecision>
+<ownDataTypeParameters>,10,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="NOME_RUOLO" id="0CABB3D7-939A-F790-3D85-93214CBD8D26">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>CS_CFG_IT_RUOLO_TRANSIZIONE</sourceObjSchema>
+<sourceObjName>NOME_RUOLO</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:18 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>37312E9D-668A-F8BE-5762-1B62F488E7A0</importedID>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>255 BYTE</dataTypeSize>
+<ownDataTypeParameters>255 BYTE,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="CFG_IT_TRANSIZIONE_ID" id="BF0D2D89-3BD4-4FD7-8400-99D69F999553">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>CS_CFG_IT_RUOLO_TRANSIZIONE</sourceObjSchema>
+<sourceObjName>CFG_IT_TRANSIZIONE_ID</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:18 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>7D8077DC-03EF-8A28-9910-92AED50C184B</importedID>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<dataTypePrecision>10</dataTypePrecision>
+<ownDataTypeParameters>,10,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+<associations>
+<colAssociation fkAssociation="7FB032D0-7A6B-7B3E-869E-12084D1D9039" referredColumn="AF99104F-37B2-5482-3632-31DB1D8A9138"/>
+</associations>
+</Column>
+</columns>
+<indexes itemClass="oracle.dbtools.crest.model.design.relational.Index">
+<ind_PK_UK id="7D98C2DD-6865-BFAD-83A5-66ECA2647AD3" name="CFG_IT_RUOLO_TRANSIZIONE_PK">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>CS_SISO</sourceObjSchema>
+<sourceObjName>CFG_IT_RUOLO_TRANSIZIONE_PK</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:18 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>AEC899B9-6BBC-EC56-CB06-3F209FE631F7</importedID>
+<pk>true</pk>
+<indexState>Primary Constraint</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="3AD2A39C-D272-1555-3923-21E29222DE5B"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="ADC8C5E4-A886-1556-97F7-D59ED62856EC" schemaObject="31789C62-6489-FE63-4664-3CFB4035AC87" name="CFG_IT_RUOLO_TRANSIZIONE_PK">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>CS_SISO</sourceObjSchema>
+<sourceObjName>CFG_IT_RUOLO_TRANSIZIONE_PK</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:18 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>1D378166-2112-05AB-47B9-F6C67FA2736E</importedID>
+<indexState>Unique Plain Index</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="3AD2A39C-D272-1555-3923-21E29222DE5B"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="EF9ACC7B-D886-8F55-6D2E-6DCEEE1E762E" name="FK_TRANSIZIONE">
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:19 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<indexState>Foreign Key</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="BF0D2D89-3BD4-4FD7-8400-99D69F999553"/>
+</indexColumnUsage>
+</ind_PK_UK>
+</indexes>
+</Table>

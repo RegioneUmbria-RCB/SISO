@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="centrodiurno" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="944489e5-316e-4b5d-82a2-c209bc7779e2">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<field name="contributoUtente" class="java.lang.String"/>
+	<field name="quotaUtente" class="java.lang.String"/>
+	<field name="trasporto" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="83" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="76603c33-3f54-4218-a0b1-b364323b7253" x="0" y="0" width="339" height="25"/>
+				<textElement>
+					<font fontName="Arial" size="12" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Centro Diurno Integrato:]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="c1018d00-0096-4f97-b86a-94e54bd382de" x="0" y="25" width="353" height="16"/>
+				<textElement/>
+				<textFieldExpression><![CDATA["Contributo: " + $F{contributoUtente}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="b7322e2d-2034-4128-b2de-0fef595e381c" x="0" y="41" width="353" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA["Quota: " + $F{quotaUtente}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="d5779ecb-9002-4623-a8a8-ff98d153b0ce" x="0" y="61" width="353" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA["Trasporto: " + $F{trasporto}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+</jasperReport>

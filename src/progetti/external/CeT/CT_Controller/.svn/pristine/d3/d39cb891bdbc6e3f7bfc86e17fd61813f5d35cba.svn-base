@@ -1,0 +1,981 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings
+  xmlns="http://java.sun.com/xml/ns/persistence/orm"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
+  version="2.0">
+
+	<!-- Query RCommandType -->
+	<named-query name="Controller.getRCommandType">
+		<query>
+			<![CDATA[
+				select r 
+				from RCommandType r
+				order by r.descr
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="Controller.getUniqueRCommandType">
+		<query>
+			<![CDATA[
+				select r 
+				from RCommandType r
+				where r.id = :idCommandType
+			]]>
+		</query>
+	</named-query>
+	
+
+	<!-- ****************************************************************************************** -->
+	
+	<named-query name="Controller.getCommand">
+		<query>
+			<![CDATA[
+				select rc 
+				from RCommand rc
+				where rc.codCommand = :codCommand
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="Controller.getCommandDummy">
+		<query>
+			<![CDATA[
+				select rc 
+				from RCommand rc, RFontedatiCommand rfc
+				where rc.systemCommand = 3
+				and rc.RCommandType.id = :idCommandType
+				and rfc.id.fkCommand = rc.id
+				and rfc.id.idFonte = :idFonte
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="Controller.getCommandByID">
+		<query>
+			<![CDATA[
+				select rc 
+				from RCommand rc
+				where rc.id = :idCommand
+			]]>
+		</query>
+	</named-query>
+	
+	<!-- recupero del comando RE legato ad una determinata operazione su una FD di un determinato ente -->
+	<named-query name="Controller.getCommands">
+		<query>
+			<![CDATA[
+				select rc 
+				from RCommand rc,  RCommandType rct,  RFontedatiCommand rfc
+				where rfc.id.idFonte = :idFonte
+				and rct.id = :idCommandType
+				and rc.RCommandType.id = rct.id
+				and rc.id = rfc.id.fkCommand
+			]]>
+		</query>
+	</named-query>
+	
+	<!-- recupero del comando RE legate a determinate fonti e commandType-->
+	<named-query name="Controller.getCommandsByType">
+		<query>
+			<![CDATA[
+				select distinct rc 
+				from RCommand rc
+				where rc.RCommandType.id = :idCommandType
+				order by rc.codCommand
+			]]>
+		</query>
+	</named-query>
+	
+	<!-- recupero del comando RE legate a determinate fonti e commandType-->
+	<named-query name="Controller.getCommandsByFontiType">
+		<query>
+			<![CDATA[
+				select distinct rc 
+				from RCommand rc, RFontedatiCommand rfc
+				where rc.id = rfc.id.fkCommand
+				and rfc.id.idFonte IN (:fonti)
+				and rc.RCommandType.id = :idCommandType
+				order by rc.codCommand
+			]]>
+		</query>
+	</named-query>
+	
+	<!-- recupero del comando RE legate a una determinata fonte e più commandType-->
+	<named-query name="Controller.getCommandsByFonteTypes">
+		<query>
+			<![CDATA[
+				select distinct rc 
+				from RCommand rc, RFontedatiCommand rfc
+				where rc.id = rfc.id.fkCommand
+				and rfc.id.idFonte = :fonte
+				and rc.RCommandType.id IN (:idCommandTypes)
+				order by rc.codCommand
+			]]>
+		</query>
+	</named-query>
+	
+		<!-- recupero del comando RE legate a nessuna fonte e ad un commandType-->
+	<named-query name="Controller.getCommandsByTypeWoFonti">
+		<query>
+			<![CDATA[
+				select distinct rc 
+				from RCommand rc
+				where rc.id NOT IN (select rfc.id.fkCommand from RFontedatiCommand rfc)
+				and rc.RCommandType.id = :idCommandType
+				order by rc.codCommand
+			]]>
+		</query>
+	</named-query>
+		 
+	<named-query name="Controller.getFDCommandEnteON">
+		<query>
+			<![CDATA[
+				select rc 
+				from RCommand rc, REnteEsclusioni ree
+				where rc.id = :idCommand
+				and ree.fkCommand = rc.id
+				and (ree.enteOn like :idEnte or ree.enteOn = '*')
+				and ree.enteOff not like :idEnte
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="Controller.getFDCommandEnteOFF">
+		<query>
+			<![CDATA[
+				select rc 
+				from RCommand rc, REnteEsclusioni ree
+				where rc.id = :idCommand
+				and ree.fkCommand = rc.id
+				and (ree.enteOff like :idEnte or ree.enteOff = '*')
+			]]>
+		</query>
+	</named-query>
+	
+	
+	<named-query name="Controller.getCommandFDs">
+		<query>
+			<![CDATA[
+				select rfc 
+				from RFontedatiCommand rfc
+				where rfc.id.fkCommand = :idCommand
+				order by rfc.id.idFonte
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="Controller.getAllRCommands">
+		<query>
+			<![CDATA[
+				select rc 
+				from RCommand rc
+				where rc.systemCommand = 1
+				and rc.RCommandType.id is not null
+				order by rc.RCommandType.id asc
+			]]>
+		</query>
+	</named-query>
+	
+	<!-- ****************************************************************************************** -->
+	
+	
+	<named-query name="Controller.getRAnagStati">
+		<query>
+			<![CDATA[
+				select ras 
+				from RAnagStati ras
+				order by ras.RCommandType.id asc, ras.id asc
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="Controller.getRAnagStatiByFKCommandType">
+		<query>
+			<![CDATA[
+				select ras 
+				from RAnagStati ras
+				where ras.RCommandType.id = :idCommandType
+				order by ras.id
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="Controller.getRAnagStatoByTipoOperazione">
+		<query>
+			<![CDATA[
+				select ras 
+				from RAnagStati ras
+				where ras.RCommandType.id = :idCommandType
+				and ras.tipo = :tipoStato
+				order by ras.id
+			]]>
+		</query>
+	</named-query>
+		
+	<named-query name="Controller.getRAnagStato">
+		<query>
+			<![CDATA[
+				select ras 
+				from RAnagStati ras
+				where ras.id = :idStato
+			]]>
+		</query>
+	</named-query>
+	
+	<!-- ****************************************************************************************** -->
+	
+	<named-query name="Controller.getProcessMonitor">
+		<query>
+			<![CDATA[
+				select rpm 
+				from RProcessMonitor rpm
+				where rpm.id.belfiore = :idEnte
+				and rpm.id.fkCommand = :idCommand
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="Controller.getProcessMonitorByProcessId">
+		<query>
+			<![CDATA[
+				select rpm 
+				from RProcessMonitor rpm
+				where rpm.processid = :processId
+			]]>
+		</query>
+	</named-query>
+	
+	<!-- lista processi che occupano una FD  -->
+	<named-query name="Controller.getLockedProcessMonitor">
+		<query>
+			<![CDATA[
+				select rpm 
+				from RProcessMonitor rpm, RFontedatiCommand rfc
+				where rpm.id.belfiore = :idEnte
+				and rpm.RAnagStato.id in (
+					select ras.id from RAnagStati ras
+					where ras.tipo = :tipoI)
+				and rpm.RCommand.id = rfc.id.fkCommand
+				and rfc.id.idFonte = :idFonte
+			]]>
+		</query>
+	</named-query>
+	
+	<!-- lista processi che di un FD terminati con esito positivo  -->
+	<named-query name="Controller.getPrevProcessMonitor">
+		<query>
+			<![CDATA[
+				select rpm 
+				from RProcessMonitor rpm, RFontedatiCommand rfc
+				where rpm.id.belfiore = :idEnte
+				and rpm.RAnagStato.id in (
+					select ras.id from RAnagStati ras
+					where ras.tipo != :tipoI)
+				and rpm.RCommand.id = rfc.id.fkCommand
+				and rfc.id.idFonte = :idFonte
+				order by istante desc
+			]]>
+		</query>
+	</named-query>
+	
+	
+	<named-query name="Controller.getTrattamentoRunningProcess">
+		<query>
+			<![CDATA[
+				select ras.id,ras.descr,rc.codCommand,rc.id,rc.descr
+				from RCommand rc, RProcessMonitor rpm, RFontedatiCommand rfc, RAnagStati ras
+				where rfc.id.idFonte = :idFonte
+				and rpm.id.belfiore = :idEnte 
+				and rfc.id.fkCommand = rc.id
+				and rpm.id.fkCommand = rfc.id.fkCommand
+				and ras.id = rpm.RAnagStato.id
+				and ras.tipo = :tipoI
+				order by rpm.istante desc
+			]]>
+		</query>
+	</named-query>
+	
+	
+	<!-- ****************************************************************************************** -->
+
+	<!-- lista command launch  -->
+	<named-query name="Controller.getAllCommandLaunch">
+		<query>
+			<![CDATA[
+				select cl
+				from RCommandLaunch cl
+				where cl.belfiore in (:enti)
+				order by cl.dateStart desc
+			]]>
+		</query>
+	</named-query>
+	
+	<!-- lista command launch by belfiore -->
+	<named-query name="Controller.getCommandLaunchByBelfiore">
+		<query>
+			<![CDATA[
+				select cl
+				from RCommandLaunch cl
+				where cl.belfiore = :belfiore
+				order by cl.dateStart desc
+			]]>
+		</query>
+	</named-query>
+	
+		<!-- lista command launch count -->
+	<named-query name="Controller.getAllCommandLaunchCount">
+		<query>
+			<![CDATA[
+				select count(cl)
+				from RCommandLaunch cl
+				where cl.belfiore in (:enti)
+			]]>
+		</query>
+	</named-query>
+	
+	<!-- lista command launch count by belfiore -->
+	<named-query name="Controller.getCommandLaunchCountByBelfiore">
+		<query>
+			<![CDATA[
+				select count(cl)
+				from RCommandLaunch cl
+				where cl.belfiore = :belfiore
+			]]>
+		</query>
+	</named-query>
+
+	<!-- lista command launch by command -->
+	<named-query name="Controller.getCommandLaunch">
+		<query>
+			<![CDATA[
+				select cl
+				from RCommandLaunch cl
+				where cl.fkCommand = :command
+				and cl.belfiore = :belfiore
+				order by cl.dateStart desc
+			]]>
+		</query>
+	</named-query>
+	
+	<!-- lista command launch by scheduler -->
+	<named-query name="Controller.getCommandLaunchByScheduler">
+		<query>
+			<![CDATA[
+				select cl
+				from RCommandLaunch cl
+				where cl.idSched = :idScheduler
+				order by cl.dateStart desc
+			]]>
+		</query>
+	</named-query>
+	
+	<!-- lista log  -->
+	<named-query name="Controller.getCommandAck">
+		<query>
+			<![CDATA[
+				select ca
+				from RCommandAck ca
+				where ca.fkCommandLaunch = :commandlaunch
+				order by ca.id
+			]]>
+		</query>
+	</named-query>
+	
+	<!-- ****************************************************************************************** -->
+	
+	<named-query name="Controller.getScheduledProcessesAll">
+		<query>
+			<![CDATA[
+				select rst 
+				from RSchedulerTime rst
+				where rst.dtEnd > :now
+				order by rst.dtStart asc
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="Controller.getScheduledProcesses">
+		<query>
+			<![CDATA[
+				select rst 
+				from RSchedulerTime rst
+				where rst.dtEnd > :now
+				and rst.belfiore in (:enti)
+				order by rst.dtStart asc
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="Controller.getScheduledProcessesExpired">
+		<query>
+			<![CDATA[
+				select rst 
+				from RSchedulerTime rst
+				where rst.dtEnd < :now
+				and rst.belfiore in (:enti)
+				order by rst.dtStart asc
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="Controller.getScheduledProcessesById">
+		<query>
+			<![CDATA[
+				select rst 
+				from RSchedulerTime rst
+				where rst.id = :id
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="Controller.getScheduledProcessesByEnte">
+		<query>
+			<![CDATA[
+				select rst 
+				from RSchedulerTime rst
+				where rst.belfiore = :idEnte
+				and rst.dtEnd > :now
+				order by rst.dtStart asc
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="Controller.getScheduledProcessesExpiredByEnte">
+		<query>
+			<![CDATA[
+				select rst 
+				from RSchedulerTime rst
+				where rst.belfiore = :idEnte
+				and rst.dtEnd < :now
+				order by rst.dtStart asc
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="Controller.deleteScheduledProcessesById">
+		<query>
+			<![CDATA[
+				delete from RSchedulerTime rst
+				where rst.id = :id
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="Controller.deleteScheduledProcessesExpired">
+		<query>
+			<![CDATA[
+				delete from RSchedulerTime rst
+				where rst.dtEnd < :now
+			]]>
+		</query>
+	</named-query>
+
+	<named-query name="Controller.getScheduledProcess">
+		<query>
+			<![CDATA[
+				select rst 
+				from RSchedulerTime rst
+				where rst.belfiore = :idEnte
+				and rst.RCommand.codCommand = :codComando
+				and rst.dtStart = :dtStart
+			]]>
+		</query>
+	</named-query>
+	
+	<!-- ****************************************************************************************** -->
+
+	<named-query name="Controller.getSingleProcessFromCoda">
+		<query>
+			<![CDATA[
+				select rc 
+				from RCoda rc
+				where rc.istante in (
+					select min(rcd.istante) from RCoda rcd
+				)
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="Controller.getProcessListFromCodaByEnte">
+		<query>
+			<![CDATA[
+				select rc 
+				from RCoda rc
+				where rc.belfiore = :idEnte
+				order by rc.istante asc
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="Controller.getProcessListFromCodaByEnti">
+		<query>
+			<![CDATA[
+				select rc 
+				from RCoda rc
+				where rc.belfiore in (:enti)
+				order by rc.istante asc
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="Controller.getProcessListFromCoda">
+		<query>
+			<![CDATA[
+				select rc 
+				from RCoda rc
+				order by rc.istante asc
+			]]>
+		</query>
+	</named-query>
+	
+	
+	<named-query name="Controller.getEntiRunningQueue">
+		<query>
+			<![CDATA[
+				select distinct rc.belfiore 
+				from RCoda rc
+				order by rc.belfiore asc
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="Controller.deleteEntireQueue">
+		<query>
+			<![CDATA[
+				delete from RCoda
+			]]>
+		</query>
+	</named-query>
+	
+	
+	<!-- ****************************************************************************************** -->
+	
+	<named-query name="Controller.getTracciaStatoByEnte">
+		<query>
+			<![CDATA[
+				select rts 
+				from RTracciaStati rts
+				where rts.id.belfiore = :idEnte
+				order by rts.id.idFonte asc, rts.id.istante desc
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="Controller.getTracciaStatoByEnteFD">
+		<query>
+			<![CDATA[
+				select rts 
+				from RTracciaStati rts
+				where rts.id.belfiore = :idEnte
+				and rts.id.idFonte = :idFonte
+				order by rts.id.istante desc
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="Controller.getTracciaStatoByProcessId">
+		<query>
+			<![CDATA[
+				select rts 
+				from RTracciaStati rts
+				where rts.processid = :processId
+			]]>
+		</query>
+	</named-query>
+	
+	
+	<named-query name="Controller.deleteTracciaStato">
+		<query>
+			<![CDATA[
+				delete from RTracciaStati rts
+				where rts.id.belfiore = :idEnte
+				and rts.id.idFonte = :idFonte
+				and rts.id.istante = :istante
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="Controller.getMinTracciaStatoByEnteFD">
+		<query>
+			<![CDATA[
+				select MIN(rts.id.istante) 
+				from RTracciaStati rts
+				where rts.id.belfiore = :idEnte
+				and rts.id.idFonte = :idFonte
+			]]>
+		</query>
+	</named-query>
+	
+	
+	<!-- ****************************************************************************************** -->
+	
+	<named-query name="Controller.getTracciaFornitureByProcessId">
+		<query>
+			<![CDATA[
+				select rtf 
+				from RTracciaForniture rtf
+				where rtf.processid = :processId
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="Controller.getMinTracciaFornitureByEnteFD">
+		<query>
+			<![CDATA[
+				select MIN(rtf.data) 
+				from RTracciaForniture rtf
+				where rtf.id.belfiore = :idEnte
+				and rtf.id.idFonte = :idFonte
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="Controller.getMaxTracciaFornitureByEnteFD">
+		<query>
+			<![CDATA[
+				select MAX(rtf.data) 
+				from RTracciaForniture rtf
+				where rtf.id.belfiore = :idEnte
+				and rtf.id.idFonte = :idFonte
+			]]>
+		</query>
+	</named-query>
+	
+	<!-- ****************************************************************************************** -->
+	
+	<named-query name="Controller.getTracciaDateByEnteFD">
+		<query>
+			<![CDATA[
+				select rtd 
+				from RTracciaDate rtd
+				where rtd.id.belfiore = :idEnte
+				and rtd.id.idFonte = :idFonte
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="Controller.deleteTracciaDate">
+		<query>
+			<![CDATA[
+				delete from RTracciaDate rtd
+				where rtd.id.belfiore = :idEnte
+				and rtd.id.idFonte = :idFonte
+			]]>
+		</query>
+	</named-query>
+	
+	<!-- ****************************************************************************************** -->
+	
+	<named-query name="Controller.getREventiLaunch">
+		<query>
+			<![CDATA[
+				select rel 
+				from REventiLaunch rel
+				order by rel.istante asc
+			]]>
+		</query>
+	</named-query>
+
+	
+	
+	<named-query name="Controller.deleteEventoLaunch">
+		<query>
+			<![CDATA[
+				delete from REventiLaunch rel
+				where rel.istante = :istante
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="Controller.deleteAllEventi">
+		<query>
+			<![CDATA[
+				delete from REventiLaunch
+			]]>
+		</query>
+	</named-query>
+	
+	
+	<!-- ****************************************************************************************** -->
+	
+	<!-- Evento scatenato da operazioni di una certa tipologia (commandType) -->
+	<named-query name="Controller.getEventiClasseA">
+		<query>
+			<![CDATA[
+				select rae 
+				from RAnagEventi rae, REventiEnte ree
+				where rae.RCommandType.id = :commandType 
+				and rae.afterIdFonte is null 
+				and rae.afterCommand is null 
+				and rae.RAnagStati.id is null
+				and ree.id.belfiore = :idEnte
+				and ree.id.id = rae.id
+				and ree.standard = rae.standard
+			]]>
+		</query>
+	</named-query>
+	
+	
+	<!-- Evento scatenato da operazioni di una certa tipologia (commandType) su una certa fd (idFonte)-->
+	<named-query name="Controller.getEventiClasseB">
+		<query>
+			<![CDATA[
+				select rae
+				from RAnagEventi rae, REventiEnte ree
+				where rae.RCommandType.id = :commandType 
+				and rae.afterIdFonte = :idFonte
+				and rae.afterCommand is null 
+				and rae.RAnagStati.id is null
+				and ree.id.belfiore = :idEnte
+				and ree.id.id = rae.id
+				and ree.standard = rae.standard
+			]]>
+		</query>
+	</named-query>
+	
+	
+	<!-- Evento scatenato da ogni operazioni su una certa fd (idFonte)-->
+	<named-query name="Controller.getEventiClasseC">
+		<query>
+			<![CDATA[
+				select rae 
+				from RAnagEventi rae, REventiEnte ree
+				where rae.RCommandType.id is null
+				and rae.afterIdFonte = :idFonte
+				and rae.afterCommand is null 
+				and rae.RAnagStati.id is null
+				and ree.id.belfiore = :idEnte
+				and ree.id.id = rae.id
+				and ree.standard = rae.standard
+			]]>
+		</query>
+	</named-query>
+	
+	
+	<!-- Evento scatenato dopo l'esecuzione di un preciso comando (commandId)-->
+	<named-query name="Controller.getEventiClasseD">
+		<query>
+			<![CDATA[
+				select rae
+				from RAnagEventi rae, REventiEnte ree
+				where rae.RCommandType.id is null
+				and rae.afterIdFonte is null
+				and rae.afterCommand = :commandId
+				and rae.RAnagStati.id is null
+				and ree.id.belfiore = :idEnte
+				and ree.id.id = rae.id
+				and ree.standard = rae.standard
+			]]>
+		</query>
+	</named-query>
+	
+	
+	<!-- Evento scatenato dopo l'esecuzione di un preciso comando (commandId) concluso con un preciso esito (statoId) -->
+	<named-query name="Controller.getEventiClasseE">
+		<query>
+			<![CDATA[
+				select rae
+				from RAnagEventi rae, REventiEnte ree
+				where rae.RCommandType.id is null
+				and rae.afterIdFonte is null
+				and rae.afterCommand = :commandId
+				and rae.RAnagStati.id = :statoId
+				and ree.id.belfiore = :idEnte
+				and ree.id.id = rae.id
+				and ree.standard = rae.standard
+			]]>
+		</query>
+	</named-query>
+	
+	
+	<!-- Evento scatenato dopo l'esecuzione di un qualsiasi comando con un preciso esito (statoId) -->
+	<named-query name="Controller.getEventiClasseF">
+		<query>
+			<![CDATA[
+				select rae
+				from RAnagEventi rae, REventiEnte ree
+				where rae.RCommandType.id is null
+				and rae.afterIdFonte is null
+				and rae.afterCommand is null
+				and rae.RAnagStati.id = :statoId
+				and ree.id.belfiore = :idEnte
+				and ree.id.id = rae.id
+				and ree.standard = rae.standard
+			]]>
+		</query>
+	</named-query>
+	
+	<!-- Evento scatenato dopo l'esecuzione di un preciso comando (commandId) concluso con un preciso esito (statoId)
+		 di una certa tipologia (commandType) su una certa fd (idFonte)  -->
+	<named-query name="Controller.getEventiClasseG">
+		<query>
+			<![CDATA[
+				select rae
+				from RAnagEventi rae, REventiEnte ree
+				where rae.RCommandType.id = :commandType 
+				and rae.afterIdFonte = :idFonte
+				and rae.afterCommand = :commandId
+				and rae.RAnagStati.id = :statoId
+				and ree.id.belfiore = :idEnte
+				and ree.id.id = rae.id
+				and ree.standard = rae.standard
+			]]>
+		</query>
+	</named-query>
+		
+	<named-query name="Controller.getEventi">
+		<query>
+			<![CDATA[
+				select rae 
+				from RAnagEventi rae
+				order by rae.id asc
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="Controller.getEventiStd">
+		<query>
+			<![CDATA[
+				select rae 
+				from RAnagEventi rae
+				where rae.standard = 'Y'
+				order by rae.id asc
+			]]>
+		</query>
+	</named-query>
+	
+	
+	<named-query name="Controller.deleteEvento">
+		<query>
+			<![CDATA[
+				delete from RAnagEventi rae
+				where rae.id = :idEvento
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="Controller.getEventiEnte">
+		<query>
+			<![CDATA[
+				select rae 
+				from RAnagEventi rae, REventiEnte ree
+				where ree.id.belfiore = :idEnte
+				and rae.id = ree.id.id
+				and rae.standard = ree.standard
+				order by rae.id asc
+			]]>
+		</query>
+	</named-query>
+	
+	
+	<named-query name="Controller.disabilitaEvento">
+		<query>
+			<![CDATA[
+				delete from REventiEnte ree
+				where ree.id.id = :id
+				and ree.id.belfiore = :idEnte
+			]]>
+		</query>
+	</named-query>
+	
+	<!-- ************************************************************* -->
+	
+	<named-query name="Controller.unsubscribe">
+		<query>
+			<![CDATA[
+				delete from RSottoscrittori rs
+				where rs.fkName = :utente
+				and rs.belfiore = :idEnte
+				and rs.fkCodCommand = :codCommand
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="Controller.getSottoscrizioni">
+		<query>
+			<![CDATA[
+				select rs
+				from RSottoscrittori rs
+				where rs.fkName = :utente
+				and rs.belfiore = :idEnte
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="Controller.getSottoscrizione">
+		<query>
+			<![CDATA[
+				select rs
+				from RSottoscrittori rs
+				where rs.fkName = :utente
+				and rs.belfiore = :idEnte
+				and rs.fkCodCommand = :codCommand
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="Controller.getUtentiSottoscritti">
+		<query>
+			<![CDATA[
+				select rs
+				from RSottoscrittori rs
+				where rs.belfiore = :idEnte
+				and rs.fkCodCommand = :codCommand 
+			]]>
+		</query>
+	</named-query>
+
+	
+	<!-- ****************************************************************************************** -->
+
+	<named-query name="Controller.getEnteEsclusioniByCommandType">
+		<query>
+			<![CDATA[
+				SELECT c, e
+				FROM RCommand c, REnteEsclusioni e
+				WHERE c.id = e.fkCommand AND c.RCommandType.id = :idCommandType
+			]]>
+		</query>
+	</named-query>
+	
+	<!-- ****************************************************************************************** -->
+
+	<named-query name="Controller.getConnessioni">
+		<query>
+			<![CDATA[
+				SELECT c
+				FROM RConnection c
+				ORDER BY c.name
+			]]>
+		</query>
+	</named-query>
+	
+	
+	
+	<named-query name="RLogFunzioni.getListaLog">
+		<query>
+			<![CDATA[
+				SELECT f
+				FROM RLogFunzioni f
+				ORDER BY f.dataIni desc
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="RLogFunzioni.getListaLogByNomeFunzione">
+		<query>
+			<![CDATA[
+				SELECT f
+				FROM RLogFunzioni f
+				WHERE f.nomeFunzione = :nomeFunzione
+				ORDER BY f.dataIni desc
+			]]>
+		</query>
+	</named-query>
+	
+	
+</entity-mappings>
+	
+	

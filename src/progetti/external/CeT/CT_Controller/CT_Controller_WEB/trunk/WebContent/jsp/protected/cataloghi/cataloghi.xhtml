@@ -1,0 +1,365 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich">
+
+<ui:composition template="/jsp/protected/layout/layout.xhtml">
+
+	<ui:define name="content">
+
+		<rich:separator lineType="solid" />
+
+		<rich:panel>
+			<h:form id="catForm">
+
+				<h:panelGrid columns="4" style="margin:auto;">
+					<h:outputLabel value="Ente" />
+					<h:selectOneMenu id="ente" value="#{cataloghiBean.enteSelezionato}">
+						<f:selectItems value="#{cataloghiBean.listaEnti}" />
+						<a4j:support event="onchange"
+							action="#{cataloghiBean.doCaricaLayer}"
+							reRender="catFormCat, listTemiTable" />
+					</h:selectOneMenu>
+				</h:panelGrid>
+			</h:form>
+		</rich:panel>
+
+		<rich:spacer height="10px" />
+
+		<rich:panel>
+			<f:facet name="header">
+				<h:outputText value="Gestione cataloghi" />
+			</f:facet>
+
+			<h:form id="catFormCat">
+
+				<a4j:commandLink id="linkShape" ajaxSingle="true"
+					action="#{shapeBean.initPanel}"
+					oncomplete="Richfaces.showModalPanel('panelShape')"
+					reRender="panelShape, listLayer">
+					<a4j:actionparam value="" assignTo="#{shapeBean.idLayerSel}" />
+					<a4j:actionparam value="" assignTo="#{shapeBean.idLayerStandard}" />
+		  		Nuovo Catalogo		 
+				</a4j:commandLink>
+
+				<h:panelGrid columns="2" style="margin:auto;">
+					<h:outputLabel
+						value="Filtrare per cataloghi con decorazione mancante" />
+					<h:selectBooleanCheckbox
+						value="#{cataloghiBean.filtroLayerWithoutDeco}">
+						<a4j:support event="onclick"
+							action="#{cataloghiBean.doCaricaLayer}"
+							reRender="listLayer, listTemiTable"></a4j:support>
+					</h:selectBooleanCheckbox>
+				</h:panelGrid>
+				<rich:spacer height="10px" />
+				<!-- Menu dataTable -->
+				<rich:contextMenu attached="false" id="menu" submitMode="ajax">
+					<rich:menuItem submitMode="none" icon="/images/passed.gif">
+						<a4j:commandLink action="#{cataloghiBean.doCaricaColonne}"
+							reRender="col_tema, col_descr, col_descrinfo, col_info, listTemiTable, listLayer, imgWarn">
+							<h:outputText value="Seleziona" style="font-weight: bold;" />
+							<a4j:actionparam value="{layerSelected}"
+								assignTo="#{cataloghiBean.layerSelezionato}" />
+							<a4j:actionparam value="{idLayerSelected}"
+								assignTo="#{cataloghiBean.idLayerSel}" />
+							<a4j:actionparam value="{idLayerStandard}"
+								assignTo="#{cataloghiBean.idLayerStandard}" />
+						</a4j:commandLink>
+					</rich:menuItem>
+					<rich:menuItem submitMode="none" icon="/images/detail.png">
+						<a4j:commandLink action="#{shapeBean.initPanel}"
+							oncomplete="Richfaces.showModalPanel('panelShape')"
+							reRender="panelShape, catForm3, col_tema, col_descrinfo, col_info, col_descr, listTemiTable, listLayer, imgWarn">
+							<h:outputText value="Modifica" style="font-weight: bold;" />
+							<a4j:actionparam value="{idLayerSelected}"
+								assignTo="#{shapeBean.idLayerSel}" />
+							<a4j:actionparam value="{idLayerStandard}"
+								assignTo="#{shapeBean.idLayerStandard}" />
+						</a4j:commandLink>
+					</rich:menuItem>
+					<rich:menuItem submitMode="none" icon="/images/delete.png">
+						<a4j:commandLink action="#{cataloghiBean.doCancellaCatalogo}"
+							reRender="col_tema, col_descr, col_descrinfo, col_info, listTemiTable,listLayer, imgWarn">
+							<h:outputText value="Elimina" style="font-weight: bold;" />
+							<a4j:actionparam value="{idLayerSelected}"
+								assignTo="#{cataloghiBean.idLayerSel}" />
+							<a4j:actionparam value="{idLayerStandard}"
+								assignTo="#{cataloghiBean.idLayerStandard}" />
+							<a4j:support event="onclick"
+								onsubmit="if (!confirm('Se si proseguer il layer verr&#x00E0; eliminato. Proseguire?')) return false" />
+						</a4j:commandLink>
+					</rich:menuItem>
+					<rich:menuItem submitMode="none" icon="/images/edit.png">
+						<a4j:commandLink action="#{infoCatBean.initPanel}"
+							oncomplete="Richfaces.showModalPanel('panelInfoCat')"
+							reRender="panelInfoCat">
+							<h:outputText value="Gestione informazioni catalogo" style="font-weight: bold;" />
+							<a4j:actionparam value="{layerSelected}"
+								assignTo="#{infoCatBean.layerSelezionato}" />
+							<a4j:actionparam value="{idLayerSelected}"
+								assignTo="#{infoCatBean.idLayerSel}" />
+							<a4j:actionparam value="{idLayerStandard}"
+								assignTo="#{infoCatBean.idLayerStandard}" />
+							<a4j:actionparam value="#{cataloghiBean.enteSelezionato}"
+								assignTo="#{infoCatBean.enteSelezionato}" />
+						</a4j:commandLink>
+					</rich:menuItem>
+				</rich:contextMenu>
+				<!-- Fine menu dataTable-->
+
+				<rich:dataTable width="100%" var="row" rowKeyVar="idx"
+					value="#{cataloghiBean.listaPgtSqlLayer}" id="listLayer"
+					onRowMouseOver="this.style.backgroundColor='#F1F1F1'"
+					onRowMouseOut="this.style.backgroundColor='#{a4jSkin.tableBackgroundColor}'">
+					<f:facet name="header">
+						<h:outputText value="Lista Cataloghi" />
+					</f:facet>
+					<rich:column
+						style="#{row.id.id eq cataloghiBean.idLayerSel and row.id.standard eq cataloghiBean.idLayerStandard ? 'background-color: #D1D1D1;' : ''}">
+						<f:facet name="header">
+							<h:outputText value="Nome Tabella" />
+						</f:facet>
+						<h:outputText value="#{row.nameTable}" />
+					</rich:column>
+					<rich:column
+						style="#{row.id.id eq cataloghiBean.idLayerSel and row.id.standard eq cataloghiBean.idLayerStandard ? 'background-color: #D1D1D1;' : ''}">
+						<f:facet name="header">
+							<h:outputText value="Descrizione Layer" />
+						</f:facet>
+						<h:outputText value="#{row.desLayer}" />
+					</rich:column>
+					<rich:column
+						style="#{row.id.id eq cataloghiBean.idLayerSel and row.id.standard eq cataloghiBean.idLayerStandard ? 'background-color: #D1D1D1;' : ''}">
+						<f:facet name="header">
+							<h:outputText value="Tipo Layer" />
+						</f:facet>
+						<h:outputText value="#{row.tipoLayer}" />
+					</rich:column>
+					<rich:componentControl event="onRowClick" for="menu"
+						operation="show">
+						<f:param name="layerSelected" value="#{row.nameTable}" />
+						<f:param name="idLayerSelected" value="#{row.id.id}" />
+						<f:param name="idLayerStandard" value="#{row.id.standard}" />
+					</rich:componentControl>
+				</rich:dataTable>
+
+				<rich:spacer height="15px" />
+
+			</h:form>
+
+			<rich:spacer height="15px" />
+
+			<h:form id="catForm3">
+				<h:panelGrid columns="8" style="margin:auto;">
+
+					<h:outputLabel value="Campo codice tema" />
+					<h:selectOneMenu id="col_tema"
+						value="#{cataloghiBean.colonnaTemaSelezionata}">
+						<f:selectItem itemLabel="-Seleziona-" itemValue="" />
+						<f:selectItems value="#{cataloghiBean.listaColonneTema}" />
+						<a4j:support event="onchange"
+							action="#{cataloghiBean.doCaricaTemi}"
+							reRender="listTemiTable, imgWarn"></a4j:support>
+					</h:selectOneMenu>
+
+					<h:outputLabel value="Campo tema descrizione" />
+					<h:selectOneMenu id="col_descr"
+						value="#{cataloghiBean.colonnaTemaDescrSelezionata}">
+						<f:selectItem itemLabel="-Seleziona-" itemValue="" />
+						<f:selectItems value="#{cataloghiBean.listaColonneTema}" />
+						<a4j:support event="onchange"
+							action="#{cataloghiBean.doCaricaTemi}"
+							reRender="listTemiTable, imgWarn"></a4j:support>
+					</h:selectOneMenu>
+					<h:panelGrid id="imgWarn" columns="2" style="margin:auto;">
+						<h:graphicImage value="/images/warning.png"
+							rendered="#{!cataloghiBean.codDescrTemaCongruenti}"
+							alt="Attenzione! La selezione corrente di codice-descrizione &#x00E0; incongruente con quella precedentemente salvata" />
+						<h:outputLabel rendered="#{!cataloghiBean.codDescrTemaCongruenti}"
+							value="Attenzione! La selezione corrente di codice-descrizione &#x00E0; incongruente con quella precedentemente salvata" />
+					</h:panelGrid>
+					
+					<h:outputLabel value="Info tabella" title="Informazione visibile direttamente su mappa"/>
+					<h:inputText id="col_descrinfo" value="#{cataloghiBean.descrInfoSelezionata}">
+						<a4j:support event="onblur"
+							action="#{cataloghiBean.doSubmit}"/>
+					</h:inputText>
+					<h:selectOneMenu id="col_info"
+						value="#{cataloghiBean.colonnaInfoSelezionata}">
+						<f:selectItem itemLabel="-Seleziona-" itemValue="" />
+						<f:selectItems value="#{cataloghiBean.listaColonneTema}" />
+						<a4j:support event="onchange"
+							action="#{cataloghiBean.doSubmit}"/>
+					</h:selectOneMenu>
+
+				</h:panelGrid>
+			</h:form>
+
+			<rich:spacer height="15px" />
+
+			<h:form id="catForm4">
+				<rich:dataTable width="100%" var="row" rowKeyVar="idx"
+					value="#{cataloghiBean.listaTemi}" id="listTemiTable"
+					onRowMouseOver="this.style.backgroundColor='#F1F1F1'"
+					onRowMouseOut="this.style.backgroundColor='#{a4jSkin.tableBackgroundColor}'">
+					<f:facet name="header">
+						<h:outputText value="Temi" />
+					</f:facet>
+					<rich:column>
+						<f:facet name="header">
+							<h:outputText value="Nome" />
+						</f:facet>
+						<h:outputText value="#{row.pgtSqlDecoLayer.codut}" />
+					</rich:column>
+					<rich:column>
+						<f:facet name="header">
+							<h:outputText value="Descrizione" />
+						</f:facet>
+						<h:outputText value="#{row.pgtSqlDecoLayer.descrizione}" />
+					</rich:column>
+					<rich:column>
+						<f:facet name="header">
+							<h:outputText value="Occorrenze" />
+						</f:facet>
+						<h:outputText value="#{row.pgtSqlDecoLayer.occorrenze}" />
+					</rich:column>
+					<rich:column>
+						<f:facet name="header">
+							<h:outputText value="Colore" />
+						</f:facet>
+						<h:panelGrid columns="2">
+							<h:inputText id="colore#{idx}"
+								value="#{row.pgtSqlDecoLayer.colore}">
+								<a4j:support event="onclick" reRender="panelColor"
+									oncomplete="Richfaces.showModalPanel('panelColor')">
+									<a4j:actionparam value="#{idx}" name="idxc#{idx}"
+										assignTo="#{cataloghiBean.index}" />
+									<a4j:actionparam value="colore" name="col#{idx}"
+										assignTo="#{cataloghiBean.tipoColore}" />
+								</a4j:support>
+							</h:inputText>
+							<rich:spacer id="colore2#{idx}" width="18px" height="18px"
+								style="border: 1px solid dimgray; background-color: #{row.pgtSqlDecoLayer.colore}" />
+						</h:panelGrid>
+					</rich:column>
+					<rich:column>
+						<f:facet name="header">
+							<h:outputText value="Riempimento" />
+						</f:facet>
+						<h:selectOneMenu value="#{row.pgtSqlDecoLayer.riempimento}">
+							<f:selectItem itemLabel="SI" itemValue="1" />
+							<f:selectItem itemLabel="NO" itemValue="0" />
+						</h:selectOneMenu>
+					</rich:column>
+					<rich:column>
+						<f:facet name="header">
+							<h:outputText value="Spessore" />
+						</f:facet>
+						<h:selectOneMenu value="#{row.pgtSqlDecoLayer.spessore}">
+							<f:selectItem itemLabel="0" itemValue="0" />
+							<f:selectItem itemLabel="1" itemValue="1" />
+							<f:selectItem itemLabel="2" itemValue="2" />
+							<f:selectItem itemLabel="3" itemValue="3" />
+							<f:selectItem itemLabel="4" itemValue="4" />
+							<f:selectItem itemLabel="5" itemValue="5" />
+							<f:selectItem itemLabel="6" itemValue="6" />
+							<f:selectItem itemLabel="7" itemValue="7" />
+							<f:selectItem itemLabel="8" itemValue="8" />
+							<f:selectItem itemLabel="9" itemValue="9" />
+							<f:selectItem itemLabel="10" itemValue="10" />
+						</h:selectOneMenu>
+					</rich:column>
+					<rich:column>
+						<f:facet name="header">
+							<h:outputText value="Colore linea" />
+						</f:facet>
+						<h:panelGrid columns="2">
+							<h:inputText id="colorelinea#{idx}"
+								value="#{row.pgtSqlDecoLayer.colorelinea}">
+								<a4j:support event="onclick" reRender="panelColor"
+									oncomplete="Richfaces.showModalPanel('panelColor')">
+									<a4j:actionparam value="#{idx}" name="idxl#{idx}"
+										assignTo="#{cataloghiBean.index}" />
+									<a4j:actionparam value="colorelinea" name="lin#{idx}"
+										assignTo="#{cataloghiBean.tipoColore}" />
+								</a4j:support>
+							</h:inputText>
+							<rich:spacer id="colorelinea2#{idx}" width="18px" height="18px"
+								style="border: 1px solid dimgray; background-color: #{row.pgtSqlDecoLayer.colorelinea};" />
+						</h:panelGrid>
+					</rich:column>
+				</rich:dataTable>
+
+				<rich:spacer height="15px" />
+
+				<center>
+					<a4j:commandButton value="Salva temi" styleClass="button"
+						action="#{cataloghiBean.doSaveTemi}">
+						<a4j:support event="onclick"
+							onsubmit="if (!confirm('Procedere con il salvataggio?')) return false" />
+					</a4j:commandButton>
+				</center>
+
+			</h:form>
+		</rich:panel>
+		<rich:spacer height="10px" />
+		<!--  modal panel conversione file shape -->
+		<rich:modalPanel id="panelShape" height="750" width="800"
+			style="overflow:auto;">
+			<f:facet name="header">
+				<h:outputText value="#{!shapeBean.modalityUpdate ? 'Nuovo Catalogo': 'Modifica dati layer'}"></h:outputText>
+			</f:facet>
+
+			<f:facet name="controls">
+				<h:panelGroup>
+					<h:graphicImage value="/images/close.png" style="cursor:pointer"
+						id="hidelinkpanelShape" />
+					<rich:componentControl for="panelShape"
+						attachTo="hidelinkpanelShape" operation="hide" event="onclick" />
+				</h:panelGroup>
+			</f:facet>
+			<ui:include src="/jsp/protected/cataloghi/shape.xhtml" />
+		</rich:modalPanel>
+		<!--  modal panel informazioni catalogo -->
+		<rich:modalPanel id="panelInfoCat" height="600" width="800"
+			style="overflow:auto;">
+			<f:facet name="header">
+				<h:outputText value="Gestione informazioni catalogo"></h:outputText>
+			</f:facet>
+
+			<f:facet name="controls">
+				<h:panelGroup>
+					<h:graphicImage value="/images/close.png" style="cursor:pointer"
+						id="hidelinkpanelInfoShape" />
+					<rich:componentControl for="panelInfoCat"
+						attachTo="hidelinkpanelInfoShape" operation="hide" event="onclick" />
+				</h:panelGroup>
+			</f:facet>
+			<ui:include src="/jsp/protected/cataloghi/infoCatalogo.xhtml" />
+		</rich:modalPanel>
+		<!--  modal panel color -->
+		<rich:modalPanel id="panelColor" height="300" width="200"
+			style="overflow:auto;">
+			<f:facet name="header">
+				<h:outputText value="Scelta colore"></h:outputText>
+			</f:facet>
+
+			<f:facet name="controls">
+				<h:panelGroup>
+					<h:graphicImage value="/images/close.png" style="cursor:pointer"
+						id="hidelinkpanelColor" />
+					<rich:componentControl for="panelColor"
+						attachTo="hidelinkpanelColor" operation="hide" event="onclick" />
+				</h:panelGroup>
+			</f:facet>
+			<ui:include src="/jsp/protected/cataloghi/colorPalette.xhtml" />
+		</rich:modalPanel>
+
+	</ui:define>
+
+</ui:composition>
+</html>

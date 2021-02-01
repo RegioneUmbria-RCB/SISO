@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:webred="http://java.sun.com/jsf/composite/webred">
+
+		<h:form id="formAree">
+			
+			<p:outputPanel id="pnlGestioneAree" style="width:100%; ">
+				<h:panelGrid columns="1" cellpadding="0" cellspacing="0" style="vertical-align: left;">
+					<p:commandButton id="cmdNuovo" value="Nuovo" 						action="#{areeController.nuovo()}" process="@this"
+						oncomplete="PF('wdgAreaModal').show();" update="@form">
+					</p:commandButton>
+					<p:spacer height="2" />
+				</h:panelGrid>
+
+				<p:dataTable id="dtAreeId" widgetVar="dtAree"
+					var="rowArea" emptyMessage="Nessun elemento presente"
+					value="#{areeController.aree}"
+					filteredValue="#{areeController.areeFiltered}" rows="10"
+					paginator="true"
+					paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+					rowsPerPageTemplate="5,10,15">
+
+					<f:facet name="header">
+						<p:outputPanel>
+							<h:outputText value="Cerca in tutti i campi:" />
+							<p:inputText id="globalFilter" onkeyup="PF('dtAree').filter();" style="width:160px" placeholder="inserisci parola chiave" />
+						</p:outputPanel>
+					</f:facet>
+
+					<p:column headerText="Descrizione area" width="50"
+						filterBy="#{rowArea.descrizione}"
+						filterMatchMode="contains">
+						<h:outputText value="#{rowArea.descrizione}">
+						</h:outputText>
+					</p:column>
+
+					<p:column headerText="" style="text-align:center;" width="10">
+						<p:commandButton id="cmdButton1"
+							oncomplete="PF('wdgAreaModal').show();" update="@form"
+							title="Modifica" value="Modifica" process="dtAreeId">
+							<f:setPropertyActionListener value="#{rowArea}"
+								target="#{areeController.selectedArea}" />
+						</p:commandButton>
+						<p:spacer width="5" />
+						<p:commandButton id="cmdButton2"
+							oncomplete="PF('confermaEliminaArea').show();"
+							update="@form" title="Elimina" value="Elimina"
+							process="dtAreeId">
+							<f:setPropertyActionListener value="#{rowArea}"
+								target="#{areeController.selectedArea}" />
+						</p:commandButton>
+					</p:column>
+
+				</p:dataTable>
+
+				<p:dialog dynamic="true" modal="true" id="dlgArea"
+					widgetVar="wdgAreaModal" width="600"
+					rendered="#{areeController.selectedArea!=null}"
+					closable="false" resizable="true"
+					header="#{areeController.modalHeader}">
+
+					<h:panelGrid columns="1" id="areaPanel">
+						<h:panelGroup style="display:block;">
+							<h:outputLabel value="Descrizione aree * " />
+							<p:inputText
+								value="#{areeController.selectedArea.descrizione}" />
+						</h:panelGroup>
+					</h:panelGrid>
+
+					<p:spacer height="20" width="100%" />
+
+					<table border="0" width='100%'>
+						<tr>
+							<td><p:spacer height="20" /></td>
+						</tr>
+						<tr>
+							<td style="text-align: center;">
+								<p:commandButton id="cmdSalva" value="Salva"
+										action="#{areeController.salva}"
+										oncomplete="PF('wdgAreaModal').hide();"
+										update="dtAreeId frmMessages" /> 
+								<p:spacer width="15px;" /> 
+								<p:spacer width="15px;" /> 
+								<p:commandButton value="Esci" onclick="PF('confermaEsci').show()" />
+							</td>
+						</tr>
+					</table>
+
+				</p:dialog>
+
+				<p:confirmDialog header="Elimina" widgetVar="confermaEliminaArea" severity="alert" closable="false" message="Procedere con l'eliminazione?">
+					<p:panelGrid style="width: 100%;">
+						<p:row>
+							<p:column style="text-align:center;">
+								<p:commandButton value="SI"
+									onclick="PF('confermaEliminaArea').hide()"
+									action="#{areeController.eliminaArea()}"
+									process="@form" update="dtAreeId frmMessages" />
+								<p:commandButton value="NO"
+									onclick="PF('confermaEliminaArea').hide();" type="button" />
+							</p:column>
+						</p:row>
+					</p:panelGrid>
+				</p:confirmDialog>
+
+			</p:outputPanel>
+		</h:form>
+
+</html>

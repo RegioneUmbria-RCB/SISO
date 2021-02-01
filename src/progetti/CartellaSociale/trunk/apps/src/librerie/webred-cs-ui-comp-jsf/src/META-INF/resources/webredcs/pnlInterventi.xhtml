@@ -1,0 +1,260 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui"
+	xmlns:composite="http://java.sun.com/jsf/composite">
+
+<h:body>
+	<composite:interface componentType="pnlInterventi">
+		<composite:attribute name="styleClass" />
+		<composite:attribute name="iDatiInterventi" type="it.webred.cs.jsf.interfaces.IDatiInterventi" />
+		<composite:attribute name="esciActionUpdate" required="false"/>
+		<composite:attribute name="salvaActionUpdate" required="false"/>
+		<composite:attribute name="initializeStampaListener" method-signature="void action(java.lang.Object)" required="true" default="null" />
+	</composite:interface>
+	<composite:implementation xmlns:webredcs="http://java.sun.com/jsf/composite/webredcs">
+
+		<p:outputPanel id="pnlInterventi">
+			<webredcs:pnlFglIntervento id="dlgFglInt" styleClass="#{cc.attrs.styleClass}"
+				widgetVar="pnlInt#{cc.attrs.iDatiInterventi.fglInterventoBean.widgetVar}"
+				esciActionUpdate = "#{cc.attrs.esciActionUpdate}"
+				salvaActionUpdate = "#{cc.attrs.salvaActionUpdate}, :#{p:component('pnlInterventi')}" />
+
+			<h:panelGrid rendered="#{!empty cc.attrs.iDatiInterventi.fglInterventoBean.lstTipoIntervento}">
+				
+				<p:commandButton id="idBtnNuovoIntervento" process="@this" value="Nuovo Intervento" title="Nuovo Intervento"
+					action="#{cc.attrs.iDatiInterventi.inizializzaNuovoIntervento()}"  disabled="#{cc.attrs.iDatiInterventi.readOnly}"
+					oncomplete="if(args &amp;&amp; args.isShowDialog){updateDialogContent(); PF('pnlInt#{cc.attrs.iDatiInterventi.fglInterventoBean.widgetVar}').show()}" 
+					icon="ui-icon-document-b" />
+				<p:remoteCommand id="rmtBtnNuovoIntervento" name="updateDialogContent" process="@this" update="dlgFglInt:frmDlgFglInterventi" />
+
+
+				<p:spacer height="2"/>
+			</h:panelGrid>
+			<p:dataTable id="dataTableInterventi" emptyMessage="Nessun intervento erogato per il soggetto." value="#{cc.attrs.iDatiInterventi.listaInterventi}" var="int" rowIndexVar="rowIndex" rows="10"
+				paginator="true">
+				<f:facet name="header">Lista Interventi</f:facet>
+
+				<p:column style="width:2%">
+					<p:rowToggler />
+				</p:column>
+				<p:column>
+					<f:facet name="header">Tipo</f:facet>
+					<h:outputText value="#{int.descTipoIntervento}" />
+					<h:outputText value=" (#{int.descTipoInterventoCustom})" rendered="#{int.descTipoInterventoCustom ne null}" />
+				</p:column>
+				<p:column>
+					<f:facet name="header">Categoria</f:facet>
+					<h:outputText value="#{int.relSettCsocTipoInter.csRelSettoreCatsoc.csCCategoriaSociale.descrizione}" />
+				</p:column>
+				<p:column headerText="Modalità">
+					<h:panelGrid columns="3" styleClass="#{cc.attrs.styleClass}">
+						<h:panelGroup>
+							<h:outputText value="Rinnovo" rendered="#{int.flagPrimaErRinnovo eq 'R'}" />
+							<h:outputText value="Prima Erogazione" rendered="#{int.flagPrimaErRinnovo eq 'P'}" />
+						</h:panelGroup>
+					</h:panelGrid>
+				</p:column>
+				<p:column headerText="Data Inizio Erogazione" width="80" style="text-align:center;">
+					<h:panelGroup rendered="#{int.inizioDa ne NULL}">
+						<h:outputText value="Dal " rendered="#{int.inizioA ne NULL}" />
+						<h:outputText value="#{int.inizioDa}">
+							<f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+						</h:outputText>
+					</h:panelGroup>
+					<h:panelGroup rendered="#{int.inizioA ne NULL}">
+						<h:outputText value=" al " />
+						<h:outputText value="#{int.inizioA}">
+							<f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+						</h:outputText>
+					</h:panelGroup>
+				</p:column>
+				<p:column headerText="Data Fine Erogazione" width="80" style="text-align:center;">
+					<h:panelGroup rendered="#{int.fineDa ne NULL}">
+						<h:outputText value="Dal " rendered="#{int.fineA ne NULL}" />
+						<h:outputText value="#{int.fineDa}">
+							<f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+						</h:outputText>
+					</h:panelGroup>
+					<h:panelGroup rendered="#{int.fineA ne NULL}">
+						<h:outputText value=" al " />
+						<h:outputText value="#{int.fineA}">
+							<f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+						</h:outputText>
+					</h:panelGroup>
+				</p:column>
+				<p:column headerText="Una tantum" style="text-align:center;" width="10px;">
+					<h:panelGroup>
+						<p:graphicImage id="imgTantumSi" rendered="#{int.flagUnatantum}" title="Si" value="#{resource['webredcs/img/check.png']}" />
+					</h:panelGroup>
+				</p:column>
+				<p:column headerText="Settore Richiedente">
+					<h:outputText value="#{int.relSettCsocTipoInter.csRelSettoreCatsoc.csOSettore.nome}" />
+				</p:column>
+				
+				<p:column headerText="Storico stati erogazione">
+					<ui:repeat var="dett" value="#{int.listaErogazioni}" >
+					   <h:panelGrid  columns="2" styleClass="interventi-pai" cellpadding="0" border="0">
+					    <h:outputText value="#{dett.dataEsecuzione}">
+							<f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+						</h:outputText>
+						<h:outputText value="#{dett.stato.nome} " />
+						</h:panelGrid>
+					</ui:repeat>
+				</p:column>
+				
+				<!-- INIZIO residuo-evoluzione-pai -->
+				<p:column headerText="Pai">
+					<h:panelGrid columns="1" cellpadding="0" cellspacing="0" border="0"
+						rendered="#{int.csDPai !=null}" styleClass="interventi-pai">
+						<h:outputText value="Tipo [#{int.csDPai.csTbTipoPai.descrizione}]" />
+						<h:panelGroup>
+							<h:outputText value="Dt.att. [" />
+							<h:outputText value="#{int.csDPai.csDDiario.dtAttivazioneDa}">
+								<f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+							</h:outputText>
+							<h:outputText value="]" />
+						</h:panelGroup>
+						<h:panelGroup>
+							<h:outputText value="Dt.chiusura [" />
+							<h:outputText value="#{int.csDPai.csDDiario.dtChiusuraDa}">
+								<f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+							</h:outputText>
+							<h:outputText value="]" />
+						</h:panelGroup>
+					</h:panelGrid>
+				</p:column>
+				<!-- FINE residuo-evoluzione-pai -->
+				
+				
+				<p:column width="200px;">
+					<p:commandButton id="idBtnNuovoFoglioAmm" process="@this" value="Nuovo Foglio Amm." title="Nuovo Foglio Amministrativo" 
+						action="#{cc.attrs.iDatiInterventi.inizializzaNuovoFoglioAmministrativo(int)}" disabled="#{cc.attrs.iDatiInterventi.readOnly}"
+						oncomplete="if(args &amp;&amp; args.isShowDialog){updateDialogContent(); PF('pnlInt#{cc.attrs.iDatiInterventi.fglInterventoBean.widgetVar}').show()}" 
+						icon="ui-icon-circle-plus" rendered="#{!int.interventoChiuso}" />
+					<p:remoteCommand id="rmtBtnNuovoFoglioAmm" name="updateDialogContent" process="@this" update=":#{cc.clientId}:dlgFglInt:frmDlgFglInterventi" />
+				</p:column>
+				<p:rowExpansion>
+					<p:dataTable id="dataTableFogli" var="fog" value="#{int.listaFogli}" rowIndexVar="rowIndex" >
+
+						<p:column headerText="Data Domanda" width="20px;">
+							<h:outputText value="#{fog.csDDiario.dtAmministrativa}">
+								<f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+							</h:outputText>
+						</p:column>
+						<p:column headerText="Tipo Foglio">
+							<h:panelGrid columns="1" styleClass="#{cc.attrs.styleClass}">
+
+								<h:outputText value="Attivazione #{fog.tipoAttivazione}" rendered="#{fog.flagAttSospC eq 'A'}" />
+								<h:outputText value="Sospensione #{fog.descrSospensione}" rendered="#{fog.flagAttSospC eq 'S'}" />
+								<h:outputText value="Chiusura" rendered="#{fog.flagAttSospC eq 'C'}" />
+								<h:outputText value="Valutazione" rendered="#{fog.flagAttSospC eq 'V'}" />
+								<h:outputText value="Inserimento in graduatoria" rendered="#{fog.flagAttSospC eq 'G'}" />
+
+								<h:outputText value=" Motivo: #{fog.csTbMotivoChiusuraInt.descrizione}" rendered="#{fog.flagAttSospC eq 'C'}" />
+
+							</h:panelGrid>
+						</p:column>
+						<p:column headerText="Periodo" style="text-align:center;">
+							<p:outputPanel rendered="#{fog.flagAttSospC eq 'A'}">
+								<h:panelGroup rendered="#{fog.csDDiario.dtAttivazioneDa ne NULL}">
+									<h:outputText value=" Dal " />
+									<h:outputText value="#{fog.csDDiario.dtAttivazioneDa}">
+										<f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+									</h:outputText>
+								</h:panelGroup>
+								<h:panelGroup rendered="#{fog.csDDiario.dtAttivazioneA ne NULL}">
+									<h:outputText value=" al " />
+									<h:outputText value="#{fog.csDDiario.dtAttivazioneA}">
+										<f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+									</h:outputText>
+								</h:panelGroup>
+							</p:outputPanel>
+							<p:outputPanel rendered="#{fog.flagAttSospC eq 'S'}">
+								<h:panelGroup rendered="#{fog.csDDiario.dtSospensioneDa ne NULL}">
+									<h:outputText value=" Dal " />
+									<h:outputText value="#{fog.csDDiario.dtSospensioneDa}">
+										<f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+									</h:outputText>
+								</h:panelGroup>
+								<h:panelGroup rendered="#{fog.csDDiario.dtSospensioneA ne NULL}">
+									<h:outputText value=" al " />
+									<h:outputText value="#{fog.csDDiario.dtSospensioneA}">
+										<f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+									</h:outputText>
+								</h:panelGroup>
+							</p:outputPanel>
+							<p:outputPanel rendered="#{fog.flagAttSospC eq 'C'}">
+								<h:panelGroup rendered="#{fog.csDDiario.dtChiusuraDa ne NULL}">
+									<h:outputText value=" Dal " />
+									<h:outputText value="#{fog.csDDiario.dtChiusuraDa}">
+										<f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+									</h:outputText>
+								</h:panelGroup>
+								<h:panelGroup rendered="#{fog.csDDiario.dtChiusuraA ne NULL}">
+									<h:outputText value=" al " />
+									<h:outputText value="#{fog.csDDiario.dtChiusuraA}">
+										<f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+									</h:outputText>
+								</h:panelGroup>
+							</p:outputPanel>
+						</p:column>
+						<p:column headerText="Respinto" style="text-align:center;" width="10px;">
+							<p:graphicImage id="imgRespSi" rendered="#{fog.flagRespinto eq 1}" value="#{resource['webredcs/img/check.png']}" />
+							<p:tooltip id="toolTipRifiuto" for="imgRespSi">
+								<h:outputText value="#{fog.motivoRespinto}" rendered="#{fog.flagRespinto eq 1}" />
+							</p:tooltip>
+						</p:column>
+						<p:column headerText="Ultima Modifica" style="text-align:center;">
+						<h:outputLabel value="#{cc.attrs.iDatiInterventi.getOpUltimaModifica(fog.csDDiario)} il " />	
+						<h:outputLabel value="#{cc.attrs.iDatiInterventi.getDataUltimaModifica(fog.csDDiario)}">
+							<f:convertDateTime type="date" pattern="dd/MM/yyyy HH:mm:ss" timeZone="Europe/Berlin" />
+						</h:outputLabel>
+						</p:column>
+						<p:column width="100px;">
+							<table id="tbModFoglAmm" border="0" style="margin: auto;">
+								<tr>
+									<td id="tdBtnModFglAmm" style="border: 0; padding: 0;">
+									
+									<p:commandButton id="idBtnModFoglioAmm" process="@this" value="Apri" title="Modifica Foglio Amministrativo" 
+										action="#{cc.attrs.iDatiInterventi.inizializzaModificaFoglioAmministrativo( fog )}"
+										oncomplete="if(args &amp;&amp; args.isShowDialog){updateDialogContent(); PF('pnlInt#{cc.attrs.iDatiInterventi.fglInterventoBean.widgetVar}').show()}" 
+										icon="ui-icon-search" />
+									<p:remoteCommand id="rmtBtnModFoglioAmm" name="updateDialogContent" process="@this" update=":#{cc.clientId}:dlgFglInt:frmDlgFglInterventi" />
+									
+									</td>
+									<td style="border: 0; padding: 0;">
+										<h:commandButton value="Stampa" action="#{cc.attrs.initializeStampaListener}" 
+										    icon="ui-icon-print" styleClass="ui-button ui-widget ui-state-default ui-corner-all"
+											style="padding: .3em 1em; display: block; line-height: 1.4;" />
+									</td>
+								</tr>
+							</table>
+
+							<h:panelGroup rendered="false">
+								<p:commandButton value="Elimina" icon="ui-icon-trash" oncomplete="confermaEliminaFoglio.show()" process="@this" />
+								<p:confirmDialog header="Conferma eliminazione" widgetVar="confermaEliminaFoglio" severity="alert" closable="false" appendTo="@(body)"
+									message="Vuoi eliminare il foglio amministrativo di tipo #{int.descTipoIntervento}?">
+									<table border="0" width="100%">
+										<tr>
+											<td style="text-align: center;">
+												<p:commandButton value="SI" update=":#{p:component('pnlInterventi')}" onclick="PF('confermaEliminaFoglio').hide();" 
+																 process="@this" action="#{fglInterventoBean.eliminaFoglio}" disabled="#{cc.attrs.iDatiInterventi.readOnly}">
+													<f:setPropertyActionListener value="#{fog.diarioId}" target="#{fglInterventoBean.diarioId}" />
+													<f:setPropertyActionListener value="#{int.idIntervento}" target="#{fglInterventoBean.interventoId}" />
+												</p:commandButton>
+												<p:commandButton value="NO" onclick="PF('confermaEliminaFoglio').hide();" type="button" />
+											</td>
+										</tr>
+									</table>
+								</p:confirmDialog>
+							</h:panelGroup>
+						</p:column>
+					</p:dataTable>
+				</p:rowExpansion>
+			</p:dataTable>
+			
+		</p:outputPanel>
+
+	</composite:implementation>
+</h:body>
+
+</html>

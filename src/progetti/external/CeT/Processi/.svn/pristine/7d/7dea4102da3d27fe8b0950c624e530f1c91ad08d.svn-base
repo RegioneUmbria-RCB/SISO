@@ -1,0 +1,22 @@
+#------------------------------------------------------------
+# File di config della regola
+#------------------------------------------------------------
+rengine.rule.class=it.webred.rulengine.brick.bsh.BShellEvaluator
+rengine.rule.cc=BEANSHELL
+rengine.rule.number.params.in=2
+rengine.rule.number.params.out=1
+#--------------------------------------------------------------------------
+# parametri di input: rispecchiano i valori del db sia nel type che nel descr
+#--------------------------------------------------------------------------
+rengine.rule.param.in.1.type=it.webred.rulengine.type.ScriptBeanShell
+rengine.rule.param.in.1.descr=SCRIPT
+rengine.rule.param.in.2.type=it.webred.rulengine.type.ComplexParam
+rengine.rule.param.in.2.descr=PARAMETRI_SCRIPT
+#------------------------------------------------------------
+# parametri di output
+#------------------------------------------------------------
+rengine.rule.param.out.1.type=java.lang.Object
+rengine.rule.param.out.1.descr=RISULTATO_SCRIPT
+#------------------------------------------------------------
+# Definizioni costanti o proprietà aggiuntive della regola
+#------------------------------------------------------------	

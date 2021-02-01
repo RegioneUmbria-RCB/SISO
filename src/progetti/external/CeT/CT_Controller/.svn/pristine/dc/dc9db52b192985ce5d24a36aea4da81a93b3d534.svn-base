@@ -1,0 +1,287 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich">
+
+<ui:composition template="/jsp/protected/layout/layout.xhtml">
+
+	<ui:define name="content">
+
+		<!-- SCHEDULER LOG PAGE -->
+		<a4j:include id="schedulerLogPage"
+			viewId="#{sMonitorBean.schedulerLogPage}" />
+
+		<!-- NEW ACTIVITY PAGE -->
+		<a4j:include id="newAttPage" viewId="#{sNewBean.newAttPage}" />
+
+		<rich:separator lineType="solid" />
+		<rich:panel>
+
+			<h:form id="schForm">
+				<h:panelGrid columns="3">
+
+					<h:graphicImage value="/images/refresh.png" title="Aggiorna"
+						height="16px" style="cursor:pointer; padding-right: 10px;">
+						<a4j:support event="onclick" action="#{sMonitorBean.doCaricaListaSchedulerTime}"
+							reRender="listActivityTable, listActivityExpiredTable">
+						</a4j:support>
+					</h:graphicImage>
+
+					<h:outputLabel value="Filtro per Ente" />
+					<h:selectOneMenu id="ente" value="#{sMonitorBean.enteSelezionato}">
+						<f:selectItem itemLabel="-seleziona-" itemValue="" />
+						<f:selectItems value="#{sMonitorBean.listaEnti}" />
+						<a4j:support event="onchange"
+							action="#{sMonitorBean.doCaricaListaSchedulerTime}"
+							reRender="listActivityTable, listActivityExpiredTable"></a4j:support>
+					</h:selectOneMenu>
+
+				</h:panelGrid>
+
+				<rich:spacer height="10px" />
+
+				<rich:dataTable width="100%" var="row"
+					value="#{sMonitorBean.listaSchedulerDTOAuto}"
+					id="listActivityTable"
+					onRowMouseOver="this.style.backgroundColor='#F1F1F1'"
+					onRowMouseOut="this.style.backgroundColor='#{a4jSkin.tableBackgroundColor}'">
+					<f:facet name="header">
+						<h:outputText value="Calendario delle attivita' programmate" />
+					</f:facet>
+					<rich:column sortBy="#{row.ente}">
+						<f:facet name="header">
+							<h:outputText value="Ente" />
+						</f:facet>
+						<h:outputText value="#{row.ente}" />
+					</rich:column>
+					<rich:column sortBy="#{row.fonte}">
+						<f:facet name="header">
+							<h:outputText value="Fonte dati" />
+						</f:facet>
+						<h:outputText value="#{row.fonte}" />
+					</rich:column>
+					<rich:column sortBy="#{row.rScheduler.RCommand.RCommandType.descr}">
+						<f:facet name="header">
+							<h:outputText value="Tipo operazione" />
+						</f:facet>
+						<h:outputText
+							value="#{row.rScheduler.RCommand.RCommandType.descr}" />
+					</rich:column>
+					<rich:column>
+						<f:facet name="header">
+							<h:outputText value="Comando" />
+						</f:facet>
+						<h:outputText
+							value="#{row.rScheduler.RCommand.codCommand} - #{row.rScheduler.RCommand.descr}" />
+					</rich:column>
+					<rich:column sortBy="#{row.dataProxEx}" sortOrder="ASCENDING">
+						<f:facet name="header">
+							<h:outputText value="Prossima esecuzione programmata" />
+						</f:facet>
+						<h:outputText value="#{row.dataProxEx}" />
+					</rich:column>
+					<rich:column>
+						<f:facet name="header">
+							<h:outputText value="Esecuzione periodica" />
+						</f:facet>
+						<center><h:graphicImage rendered="#{row.periodica}"
+							value="/images/passed.gif" /></center>
+					</rich:column>
+					<rich:column>
+						<f:facet name="header">
+							<h:outputText value="Intervallo" />
+						</f:facet>
+						<h:outputText value="#{row.intervallo}" />
+					</rich:column>
+					<rich:column>
+						<f:facet name="header">
+							<h:outputText value="" />
+						</f:facet>
+						<a4j:commandLink action="#{sMonitorBean.doCaricaLog}"
+							reRender="schedulerLogPage" title="Visualizza Log"
+							oncomplete="Richfaces.showModalPanel('schedulerLogModalBox'); return false;">
+							<h:outputText value="Log" />
+							<a4j:actionparam name="rid" value="#{row.rScheduler.id}"
+								assignTo="#{sMonitorBean.rSchedulerTimeId}" />
+							<a4j:actionparam name="pageschedulerlog"
+								value="/jsp/protected/scheduler/attivitaLog.xhtml"
+								assignTo="#{sMonitorBean.schedulerLogPage}" />
+						</a4j:commandLink>
+					</rich:column>
+					<rich:column>
+						<f:facet name="header">
+							<h:outputText value="" />
+						</f:facet>
+						<center><h:graphicImage value="/images/edit.png"
+							title="Modifica" style="cursor:pointer">
+							<a4j:support event="onclick"
+								action="#{sNewBean.doCaricaSchedulerTime}" reRender="newAttPage"
+								oncomplete="Richfaces.showModalPanel('newAttModalBox'); return false;">
+								<a4j:actionparam name="rid" value="#{row.rScheduler.id}"
+									assignTo="#{sNewBean.rSchedulerTimeId}" />
+								<a4j:actionparam name="pagenewatt"
+									value="/jsp/protected/scheduler/nuovaAttivita.xhtml"
+									assignTo="#{sNewBean.newAttPage}" />
+							</a4j:support>
+						</h:graphicImage></center>
+					</rich:column>
+					<rich:column>
+						<f:facet name="header">
+							<h:outputText value="" />
+						</f:facet>
+						<center><h:graphicImage value="/images/delete.png"
+							title="Elimina" style="cursor:pointer">
+							<a4j:support event="onclick"
+								action="#{sMonitorBean.doDeleteSchedulerTime}"
+								reRender="schForm"
+								onsubmit="if (!confirm('Procedere con l\'eliminazione?')) return false">
+								<a4j:actionparam name="rid" value="#{row.rScheduler.id}"
+									assignTo="#{sMonitorBean.rSchedulerTimeId}" />
+							</a4j:support>
+						</h:graphicImage></center>
+					</rich:column>
+
+					<f:facet name="footer">
+						<a4j:commandLink action="#{sNewBean.doInitNewScheduler}"
+							reRender="newAttPage"
+							oncomplete="Richfaces.showModalPanel('newAttModalBox'); return false;">
+							<h:outputText value="Programma nuova attivita'" />
+							<a4j:actionparam name="pagenewatt"
+								value="/jsp/protected/scheduler/nuovaAttivita.xhtml"
+								assignTo="#{sNewBean.newAttPage}" />
+							<a4j:actionparam name="rid" value="0"
+								assignTo="#{sNewBean.rSchedulerTimeId}" />
+						</a4j:commandLink>
+					</f:facet>
+				</rich:dataTable>
+
+				<rich:spacer height="20px" />
+
+				<rich:togglePanel switchType="ajax"
+					value="#{sMonitorBean.statolistaSchedulerDTOScaduti}"
+					stateOrder="closed,expired">
+
+					<f:facet name="closed">
+						<rich:toggleControl
+							action="#{sMonitorBean.doCaricaListaSchedulerTimeScaduti}"
+							reRender="listActivityExpiredTable">
+							<h:outputText value="Mostra lista attivita' scadute" />
+						</rich:toggleControl>
+					</f:facet>
+
+					<f:facet name="expired">
+
+						<h:panelGrid columns="1" cellpadding="0" cellspacing="0">
+							<rich:toggleControl value="Chiudi" switchToState="closed" />
+
+							<rich:spacer height="5px" />
+
+							<rich:dataTable width="100%" var="row"
+								value="#{sMonitorBean.listaSchedulerDTOScaduti}"
+								id="listActivityExpiredTable"
+								onRowMouseOver="this.style.backgroundColor='#F1F1F1'"
+								onRowMouseOut="this.style.backgroundColor='#{a4jSkin.tableBackgroundColor}'">
+								<f:facet name="header">
+									<h:outputText
+										value="Calendario delle attivita' programmate scadute" />
+								</f:facet>
+								<rich:column sortBy="#{row.ente}">
+									<f:facet name="header">
+										<h:outputText value="Ente" />
+									</f:facet>
+									<h:outputText value="#{row.ente}" />
+								</rich:column>
+								<rich:column sortBy="#{row.fonte}">
+									<f:facet name="header">
+										<h:outputText value="Fonte dati" />
+									</f:facet>
+									<h:outputText value="#{row.fonte}" />
+								</rich:column>
+								<rich:column
+									sortBy="#{row.rScheduler.RCommand.RCommandType.descr}">
+									<f:facet name="header">
+										<h:outputText value="Tipo operazione" />
+									</f:facet>
+									<h:outputText
+										value="#{row.rScheduler.RCommand.RCommandType.descr}" />
+								</rich:column>
+								<rich:column>
+									<f:facet name="header">
+										<h:outputText value="Comando" />
+									</f:facet>
+									<h:outputText
+										value="#{row.rScheduler.RCommand.codCommand} - #{row.rScheduler.RCommand.descr}" />
+								</rich:column>
+								<rich:column sortBy="#{row.dataProxEx}" sortOrder="DESCENDING">
+									<f:facet name="header">
+										<h:outputText value="Ultima esecuzione" />
+									</f:facet>
+									<h:outputText value="#{row.dataProxEx}" />
+								</rich:column>
+								<rich:column>
+									<f:facet name="header">
+										<h:outputText value="Esecuzione periodica" />
+									</f:facet>
+									<center><h:graphicImage rendered="#{row.periodica}"
+										value="/images/passed.gif" /></center>
+								</rich:column>
+								<rich:column>
+									<f:facet name="header">
+										<h:outputText value="Intervallo" />
+									</f:facet>
+									<h:outputText value="#{row.intervallo}" />
+								</rich:column>
+								<rich:column>
+									<f:facet name="header">
+										<h:outputText value="" />
+									</f:facet>
+									<a4j:commandLink action="#{sMonitorBean.doCaricaLog}"
+										reRender="schedulerLogPage" title="Visualizza Log"
+										oncomplete="Richfaces.showModalPanel('schedulerLogModalBox'); return false;">
+										<h:outputText value="Log" />
+										<a4j:actionparam name="rid" value="#{row.rScheduler.id}"
+											assignTo="#{sMonitorBean.rSchedulerTimeId}" />
+										<a4j:actionparam name="pageschedulerlog"
+											value="/jsp/protected/scheduler/attivitaLog.xhtml"
+											assignTo="#{sMonitorBean.schedulerLogPage}" />
+									</a4j:commandLink>
+								</rich:column>
+								<rich:column>
+									<f:facet name="header">
+										<h:outputText value="" />
+									</f:facet>
+									<center><h:graphicImage value="/images/delete.png"
+										title="Elimina" style="cursor:pointer">
+										<a4j:support event="onclick"
+											action="#{sMonitorBean.doDeleteSchedulerTimeExpired}"
+											reRender="schForm"
+											onsubmit="if (!confirm('Procedere con l\'eliminazione?')) return false">
+											<a4j:actionparam name="rid" value="#{row.rScheduler.id}"
+												assignTo="#{sMonitorBean.rSchedulerTimeId}" />
+										</a4j:support>
+									</h:graphicImage></center>
+								</rich:column>
+
+								<f:facet name="footer">
+									<a4j:commandLink action="#{sMonitorBean.doDeleteAllExpired}"
+										reRender="listActivityExpiredTable">
+										<h:outputText value="Elimina tutto" />
+										<a4j:support event="onclick"
+											onsubmit="if (!confirm('Procedere con l\'eliminazione?')) return false">
+										</a4j:support>
+									</a4j:commandLink>
+								</f:facet>
+							</rich:dataTable>
+						</h:panelGrid>
+
+					</f:facet>
+				</rich:togglePanel>
+
+			</h:form>
+		</rich:panel>
+	</ui:define>
+</ui:composition>
+</html>

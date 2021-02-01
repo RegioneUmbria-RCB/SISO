@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?><project-modules id="moduleCoreId" project-version="1.5.0">
+    <wb-module deploy-name="ClientRomaWS">
+        <wb-resource deploy-path="/" source-path="/WebContent" tag="defaultRootSource"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/src"/>
+        <wb-resource deploy-path="/WEB-INF/lib" source-path="/WebContent/WEB-INF/lib"/>
+        <dependent-module archiveName="serializer-2.7.0.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/CT-LIBS/sigess/serializer-2.7.0.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="xmlsec-1.4.0.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/CT-LIBS/sigess/xmlsec-1.4.0.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="log4j-1.2.9.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/CT-LIBS/sigess/log4j-1.2.9.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="java-mail-1.4.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/CT-LIBS/sigess/java-mail-1.4.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="axis-saaj-1.4.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/CT-LIBS/sigess/axis-saaj-1.4.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="addressing-1.0.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/CT-LIBS/sigess/addressing-1.0.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="activation.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/CT-LIBS/sigess/activation.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="wsdl4j-1.5.1.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/CT-LIBS/sigess/wsdl4j-1.5.1.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="axis-jaxrpc-1.4.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/CT-LIBS/sigess/axis-jaxrpc-1.4.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="axis-1.4.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/CT-LIBS/sigess/axis-1.4.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="axis-ant-1.4.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/CT-LIBS/sigess/axis-ant-1.4.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="wss4j-1.5.3.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/CT-LIBS/sigess/wss4j-1.5.3.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="commons-logging-1.0.4.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/CT-LIBS/sigess/commons-logging-1.0.4.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="commons-discovery-0.2.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/CT-LIBS/sigess/commons-discovery-0.2.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="xalan-2.7.0.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/CT-LIBS/sigess/xalan-2.7.0.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="AnagraficaRomaClient.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/AnagraficaRomaClient/AnagraficaRomaClient">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <property name="context-root" value="ClientRomaWS"/>
+        <property name="java-output-path" value="/ClientRomaWS/build/classes"/>
+    </wb-module>
+</project-modules>

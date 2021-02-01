@@ -1,0 +1,698 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings
+  xmlns="http://java.sun.com/xml/ns/persistence/orm"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
+  version="2.0">
+
+	<!-- Query SitDPersona -->
+	<named-query name="SitDPersona.getListaSoggByCF">
+		<query>
+			<![CDATA[
+				SELECT p 
+				FROM SitDPersona p
+				WHERE p.codfisc = :codFisc
+				ORDER BY p.cognome, p.nome, p.dataNascita,p.idExtComuneNascita, p.dtFineVal DESC
+			]]>
+		</query>
+	</named-query>
+
+<named-query name="SitDPersona.getListaSoggByCFAllaData">
+		<query>
+			<![CDATA[
+				SELECT p 
+				FROM SitDPersona p
+				WHERE p.codfisc = :codFisc
+				AND   p.dtInizioVal <= :dtVal
+				AND   (p.dtFineVal  is null or p.dtFineVal >= :dtVal) 
+				ORDER BY p.cognome, p.nome, p.dataNascita,p.idExtComuneNascita
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SitDPersona.getListaSoggByDatiAnaNoDtNas">
+		<query>
+			<![CDATA[
+				SELECT p 
+				FROM SitDPersona p
+				WHERE p.cognome = :cognome
+				AND   p.nome = :nome
+				ORDER BY p.cognome, p.nome, p.dataNascita,p.idExtComuneNascita, p.dtFineVal DESC
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SitDPersona.getListaSoggByDatiAna">
+		<query>
+			<![CDATA[
+				SELECT p 
+				FROM SitDPersona p
+				WHERE p.cognome = :cognome
+				AND   p.nome = :nome
+				AND   p.dataNascita= :dtNas
+				ORDER BY p.cognome, p.nome, p.dataNascita,p.idExtComuneNascita, p.dtFineVal DESC
+			]]>
+		</query>
+	</named-query>
+	<named-query name="SitDPersona.getListaSoggByDatiAnaAllaData">
+		<query>
+			<![CDATA[
+				SELECT p 
+				FROM SitDPersona p
+				WHERE p.cognome = :cognome
+				AND   p.nome = :nome
+				AND   p.dataNascita= :dtNas
+				AND   p.dtInizioVal <= :dtVal
+				AND   p.dtFineVal >= :dtVal 
+				ORDER BY p.cognome, p.nome, p.dataNascita,p.idExtComuneNascita
+			]]>
+		</query>
+	</named-query>
+	<named-query name="SitDPersona.getListaSoggByDatiAnaCompleti">
+		<query>
+			<![CDATA[
+				SELECT p 
+				FROM SitDPersona p
+				WHERE p.cognome = :cognome
+				AND   p.nome = :nome
+				AND   p.dataNascita= :dtNas
+				AND   p.idExtComuneNascita= :idExtComNas
+				ORDER BY p.cognome, p.nome, p.dataNascita,p.idExtComuneNascita, p.dtFineVal DESC
+			]]>
+		</query>
+	</named-query>
+	<named-query name="SitDPersona.getListaSoggByDatiAnaCompletiAllaData">
+		<query>
+			<![CDATA[
+				SELECT p 
+				FROM SitDPersona p
+				WHERE p.cognome = :cognome
+				AND   p.nome = :nome
+				AND   p.dataNascita= :dtNas
+				AND   p.idExtComuneNascita= :idExtComNas
+				AND   p.dtInizioVal <= :dtVal
+				AND   p.dtFineVal >= :dtVal 
+				ORDER BY p.cognome, p.nome, p.dataNascita,p.idExtComuneNascita, p.dtFineVal DESC
+			]]>
+		</query>
+	</named-query>
+	<named-query name="SitDPersona.getListaSoggByDenominazione">
+		<query>
+			<![CDATA[
+				SELECT p 
+				FROM SitDPersona p
+				WHERE UPPER(p.cognome) || ' ' || UPPER(p.nome) LIKE '%'|| UPPER(:denominazione) ||'%'
+				AND   p.dtFineVal IS NULL 
+				ORDER BY p.cognome, p.nome, p.dataNascita,p.idExtComuneNascita
+			]]>
+		</query>
+	</named-query>
+	<named-query name="SitDPersona.getListaSoggByIdExt">
+		<query>
+			<![CDATA[
+				select p 
+				from SitDPersona p
+				where p.idExt = :idExt
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SitDPersona.getSoggById">
+		<query>
+			<![CDATA[
+				select p 
+				from SitDPersona p
+				where p.id = :id
+			]]>
+		</query>
+	</named-query>
+	
+	
+	
+	<!-- Query SitDPersonaCivico -->
+	<named-query name="SitDPersonaCivico.getListaCivByIdPersona">
+		<query>
+			<![CDATA[
+				select pc 
+				from SitDPersonaCivico pc
+				where pc.idExtDPersona = :idExtDPersona
+				order by pc.dtFineVal desc
+			]]>
+		</query>
+	</named-query>
+	
+	<!-- Query SitDCivico -->
+	<named-query name="SitDCivico.getListaCivByIdExt">
+		<query>
+			<![CDATA[
+				select c 
+				from SitDCivico c
+				where c.idExt = :idExt
+			]]>
+		</query>
+	</named-query>
+	
+	<!-- Query SitDCivicoV -->
+	<named-query name="SitDCivicoV.getListaCivByIdExt">
+		<query>
+			<![CDATA[
+				select c 
+				from SitDCivicoV c
+				where c.idExt = :idExt
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SitDCivicoV.getIdCivByIdExtViaCivico">
+		<query>
+			<![CDATA[
+				select c
+				from SitDCivicoV c
+				where c.idExtDVia = :idExtDVia
+				AND   c.civLiv1 = LPAD(:civico, 5, '0')
+				AND  (c.dtFineVal is null or c.dtFineVal > :dtRif)
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SitDCivicoV.getListaCivByIdExtDVia">
+		<query>
+			<![CDATA[
+				select c 
+				from SitDCivicoV c
+				where c.idExtDVia = :idExtDVia
+			]]>
+		</query>
+	</named-query>
+	
+	<!-- Query SitDVia -->
+	<named-query name="SitDVia.getListaVieByIdExt">
+		<query>
+			<![CDATA[
+				select v 
+				from SitDVia v
+				where v.idExt = :idExt
+			]]>
+		</query>
+	</named-query>
+	
+	
+	<named-query name="SitDVia.getViaByPrefissoDescr">
+		<query>
+			<![CDATA[
+				select DISTINCT v 
+				from SitDVia v
+				where v.viasedime IN (:listaPrefissi)
+				AND (v.descrizione = :descrizione 
+				  OR v.descrizione LIKE :descrizione||' %' 
+				  OR v.descrizione LIKE '%.'||:descrizione
+				  OR v.descrizione LIKE '% '||:descrizione
+				  OR v.descrizione LIKE '%.'||:descrizione||' %'
+				  OR v.descrizione LIKE '% '||:descrizione||' %')
+				AND (v.dtFineVal is null or v.dtFineVal > :dtRif)
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SitDVia.getListaVieByDescrizione">
+		<query>
+			<![CDATA[
+				select v 
+				from SitDVia v
+				where UPPER(v.descrizione) like '%'||UPPER(:descrizione)||'%'
+				and v.dtFineVal is null
+			]]>
+		</query>
+	</named-query>
+	
+	<!-- JOIN SitDVia/SitDCivicoV  -->
+	<named-query name="SitDVia_SitDCivico.getIndirizzoByIdCiv">
+		<query>
+			<![CDATA[
+				select v, c.civLiv1, c.civLiv2, c.civLiv3
+				from SitDVia v, SitDCivicoV c
+				where v.idExt = c.idExtDVia
+				and(v.dtFineVal is null or v.dtFineVal > :dtRif)
+				and c.id=:idCivico
+
+			]]>
+		</query>
+	</named-query>
+	<!-- JOIN -->
+	<named-query name="Demografia.getResidentiAlCivico">
+		<query>
+			<![CDATA[
+				select pf.relazPar,  pf.idExtDFamiglia, f.idOrig, p
+				from SitDPersona p, SitDPersonaCivico pc, SitDCivico c, SitDPersFam pf, SitDFamiglia f  
+				where c.idExt=pc.idExtDCivico
+				and p.idExt = pc.idExtDPersona
+				and pf.idExtDPersona=p.idExt
+				and pf.idExtDFamiglia=f.idExt
+				and c.id=:idCivico
+				and (p.dtFineVal is null or p.dtFineVal >= :dtRif)
+				and (c.dtFineVal is null or c.dtFineVal >= :dtRif)
+				and (pf.dtFineVal is null or pf.dtFineVal >= :dtRif)
+				and (pc.dtFineVal is null or pc.dtFineVal >= :dtRif)
+				AND :dtRif BETWEEN  NVL(p.dataNascita,TO_DATE('01/01/1000','DD/MM/YYYY'))  AND NVL(p.dataMor,sysdate) 
+                AND :dtRif BETWEEN  NVL(p.dtInizioDato,TO_DATE('01/01/1000','DD/MM/YYYY')) AND NVL(p.dtFineDato,sysdate)
+			    AND((NVL(p.dataImm,TO_DATE('01/01/1000','DD/MM/YYYY'))< NVL(p.dataEmi,sysdate) AND :dtRif BETWEEN  NVL(p.dataImm,TO_DATE('01/01/1000','DD/MM/YYYY')) AND NVL(p.dataEmi,sysdate)) 
+                    OR 
+                    (NVL(p.dataImm,TO_DATE('01/01/1000','DD/MM/YYYY'))>=NVL(p.dataEmi,sysdate) AND :dtRif >=  NVL(p.dataImm,TO_DATE('01/01/1000','DD/MM/YYYY')) )
+                    )
+				order by f.idOrig, p.cognome, p.nome
+			]]>
+		</query>
+	</named-query>
+	<named-query name="Demografia.getNumFamiglieResidentiAlCivico">
+		<query>
+			<![CDATA[
+				select  count(distinct pf.idExtDFamiglia) 
+				from SitDPersona p, SitDPersonaCivico pc, SitDCivico c, SitDPersFam pf 
+				where c.idExt=pc.idExtDCivico
+				and p.idExt = pc.idExtDPersona
+				and pf.idExtDPersona=p.idExt
+				and c.id=:idCivico
+				and (p.dtFineVal is null or p.dtFineVal >= :dtRif)
+				and (c.dtFineVal is null or c.dtFineVal >= :dtRif)
+				and (pf.dtFineVal is null or pf.dtFineVal >= :dtRif)
+				and (pc.dtFineVal is null or pc.dtFineVal >= :dtRif)
+				AND :dtRif BETWEEN  NVL(p.dataNascita,TO_DATE('01/01/1000','DD/MM/YYYY'))  AND NVL(p.dataMor,sysdate) 
+                AND :dtRif BETWEEN  NVL(p.dtInizioDato,TO_DATE('01/01/1000','DD/MM/YYYY')) AND NVL(p.dtFineDato,sysdate)
+			    AND((NVL(p.dataImm,TO_DATE('01/01/1000','DD/MM/YYYY'))< NVL(p.dataEmi,sysdate) AND :dtRif BETWEEN  NVL(p.dataImm,TO_DATE('01/01/1000','DD/MM/YYYY')) AND NVL(p.dataEmi,sysdate)) 
+                    OR 
+                    (NVL(p.dataImm,TO_DATE('01/01/1000','DD/MM/YYYY'))>=NVL(p.dataEmi,sysdate) AND :dtRif >=  NVL(p.dataImm,TO_DATE('01/01/1000','DD/MM/YYYY')) )
+                    )
+			]]>
+		</query>
+	</named-query>
+	<!-- Query SitComune -->
+	<named-query name="SitComune.getComuni">
+		<query>
+			<![CDATA[
+				SELECT c 
+				FROM SitComune c
+				WHERE c.dtFineVal is null
+				ORDER BY c.descrizione ASC
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SitComune.getComuneAttuale">
+		<query>
+			<![CDATA[
+				SELECT c 
+				FROM SitComune c
+				WHERE c.idExt= :idExt
+				  AND c.dtFineVal is null
+			]]>
+		</query>
+	</named-query>
+	<named-query name="SitComune.getComuneAllaData">
+		<query>
+			<![CDATA[
+				SELECT c 
+				FROM SitComune c
+				WHERE c.idExt= :idExt
+ 				  AND c.dtInizioVal >=:dtRif
+				  AND c.dtFineVal <=:dtRif
+			]]>
+		</query>
+	</named-query>
+	<named-query name="SitComune.getComuneByBelfiore">
+		<query>
+			<![CDATA[
+				SELECT c 
+				FROM SitComune c
+				WHERE c.belfiore = :belfiore
+ 				  AND c.dtFineVal is null
+			]]>
+		</query>
+	</named-query>
+	<named-query name="SitComune.getComuneByDescrizione">
+		<query>
+			<![CDATA[
+				SELECT c 
+				FROM SitComune c
+				WHERE UPPER(c.descrizione) = :descrizione
+ 				  AND c.dtFineVal is null
+			]]>
+		</query>
+	</named-query>
+	<!-- Query SitProvincia -->
+	<named-query name="SitProvincia.getProvincie">
+		<query>
+			<![CDATA[
+				SELECT p 
+				FROM SitProvincia p
+				WHERE p.dtFineVal is null
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SitProvincia.getProvinciaAttuale">
+		<query>
+			<![CDATA[
+				SELECT p 
+				FROM SitProvincia p
+				WHERE p.idExt= :idExt
+				  AND p.dtFineVal is null
+			]]>
+		</query>
+	</named-query>
+	<named-query name="SitProvincia.getProvinciaAllaData">
+		<query>
+			<![CDATA[
+				SELECT p 
+				FROM SitProvincia p
+				WHERE p.idExt= :idExt
+				  AND p.dtInizioVal >=:dtRif
+				  AND p.dtFineVal <=:dtRif
+			]]>
+		</query>
+	</named-query>
+	
+	<!-- Query per AmAnagrafe -->
+	<named-query name="SitDPersona.getAnagrafeByCF">
+		<query>
+			<![CDATA[
+				 SELECT p
+                  FROM SitDPersona p
+                 WHERE p.codfisc = :codFisc
+                   AND p.dtFineVal is null
+                   AND (p.dtMod is null OR p.dtMod = (SELECT MAX(dtMod) FROM SitDPersona WHERE codfisc = :codFisc))
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SitDPersona.getInfoResidenza">
+		<query>
+			<![CDATA[
+				SELECT c, v, cRes
+                  FROM SitDPersona p,
+                       SitDPersonaCivico pc,
+                       SitDCivicoV c,
+                       SitDVia v,
+                       SitEnte cRes
+                 WHERE pc.idExtDPersona = p.idExt
+                   AND pc.idExtDCivico = c.idExt
+                   AND c.idExtDVia = v.idExt
+                   AND cRes.id = 1
+                   AND p.id = :id
+                   AND pc.dtFineVal is null
+                   AND c.dtFineVal is null
+                   AND v.dtFineVal is null
+                   AND p.dtFineVal is null
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SitDPersona.getPersonaFamigliaByCF">
+		<query>
+			<![CDATA[
+				SELECT DISTINCT p2
+            FROM SitDPersFam pf2, 
+                 SitDPersona p2
+              WHERE pf2.idExtDFamiglia =
+                      (SELECT DISTINCT pf1.idExtDFamiglia 
+                         FROM SitDPersona p1, 
+                              SitDPersFam pf1 
+                        WHERE pf1.idExtDPersona = p1.idExt 
+                            AND sysdate BETWEEN  NVL(p1.dtInizioDato,TO_DATE('01/01/1000','DD/MM/YYYY')) AND NVL(p1.dtFineDato,sysdate) 
+                            AND sysdate BETWEEN  NVL(pf1.dtInizioDato,TO_DATE('01/01/1000','DD/MM/YYYY')) AND NVL(pf1.dtFineDato,sysdate)
+                            AND sysdate BETWEEN  NVL(pf1.dtInizioVal,TO_DATE('01/01/1000','DD/MM/YYYY')) AND NVL(pf1.dtFineVal,sysdate)
+                            AND p1.id = :idPersona 
+                            ) 
+                AND pf2.idExtDPersona = p2.idExt 
+                AND sysdate BETWEEN  NVL(p2.dataNascita,TO_DATE('01/01/1000','DD/MM/YYYY')) AND NVL(p2.dataMor,sysdate) 
+                AND sysdate BETWEEN  NVL(p2.dtInizioDato,TO_DATE('01/01/1000','DD/MM/YYYY')) AND NVL(p2.dtFineDato,sysdate)
+			    AND((NVL(p2.dataImm,TO_DATE('01/01/1000','DD/MM/YYYY'))< NVL(p2.dataEmi,sysdate) AND sysdate BETWEEN  NVL(p2.dataImm,TO_DATE('01/01/1000','DD/MM/YYYY')) AND NVL(p2.dataEmi,sysdate)) 
+                     OR NVL(p2.dataImm,TO_DATE('01/01/1000','DD/MM/YYYY'))>=NVL(p2.dataEmi,sysdate))
+			    AND sysdate BETWEEN  NVL(pf2.dtInizioDato,TO_DATE('01/01/1000','DD/MM/YYYY')) AND NVL(pf2.dtFineDato,sysdate)
+			    AND UPPER(p2.codfisc) = :codFisc
+			    AND p2.dtFineVal is null
+                AND (p2.dtMod is null OR p2.dtMod = (SELECT MAX(dtMod) FROM SitDPersona WHERE UPPER(codfisc) = :codFisc))
+			]]>
+		</query>
+	</named-query>
+	
+	<!-- Query SitDPersFam -->
+	
+	<named-query name="SitDPersFam.getPersFamByIdExtDPersonaAllaData">
+		<query>
+			<![CDATA[
+				select pf 
+				from SitDPersFam pf
+				where pf.idExtDPersona = :idExtDPersona
+				and pf.dtInizioVal<=:dtRif and (pf.dtFineVal is null or pf.dtFineVal >= :dtRif) 
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SitDPersona_SitDPersFam.getPersonaRelFamByIdExtDPersonaAllaData">
+		<query>
+			<![CDATA[
+				SELECT DISTINCT p2, pf2.relazPar
+            FROM SitDPersFam pf2, 
+                 SitDPersona p2
+              WHERE pf2.idExtDFamiglia =
+                      (SELECT DISTINCT pf1.idExtDFamiglia 
+                         FROM SitDPersona p1, 
+                              SitDPersFam pf1 
+                        WHERE pf1.idExtDPersona = p1.idExt 
+                            AND :dtRif BETWEEN  NVL(p1.dtInizioDato,TO_DATE('01/01/1000','DD/MM/YYYY')) AND NVL(p1.dtFineDato,sysdate+1) 
+                            AND :dtRif BETWEEN  NVL(pf1.dtInizioDato,TO_DATE('01/01/1000','DD/MM/YYYY')) AND NVL(pf1.dtFineDato,sysdate+1)
+                            AND :dtRif BETWEEN  NVL(pf1.dtInizioVal,TO_DATE('01/01/1000','DD/MM/YYYY')) AND NVL(pf1.dtFineVal,sysdate+1)
+                            AND p1.idExt = :idExtDPersona
+                            ) 
+                AND pf2.idExtDPersona = p2.idExt 
+                AND :dtRif BETWEEN  NVL(p2.dataNascita,TO_DATE('01/01/1000','DD/MM/YYYY')) AND NVL(p2.dataMor,sysdate+1) 
+                AND :dtRif BETWEEN  NVL(p2.dtInizioDato,TO_DATE('01/01/1000','DD/MM/YYYY')) AND NVL(p2.dtFineDato,sysdate+1)
+			    AND((NVL(p2.dataImm,TO_DATE('01/01/1000','DD/MM/YYYY'))< NVL(p2.dataEmi,sysdate+1) AND :dtRif BETWEEN  NVL(p2.dataImm,TO_DATE('01/01/1000','DD/MM/YYYY')) AND NVL(p2.dataEmi,sysdate+1)) 
+                    OR 
+                    (NVL(p2.dataImm,TO_DATE('01/01/1000','DD/MM/YYYY'))>=NVL(p2.dataEmi,sysdate+1) AND :dtRif >=  NVL(p2.dataImm,TO_DATE('01/01/1000','DD/MM/YYYY')) )
+                    )
+			    AND :dtRif BETWEEN  NVL(pf2.dtInizioDato,TO_DATE('01/01/1000','DD/MM/YYYY')) AND NVL(pf2.dtFineDato,sysdate+1)
+			    AND :dtRif BETWEEN  NVL(pf2.dtInizioVal,TO_DATE('01/01/1000','DD/MM/YYYY')) AND NVL(pf2.dtFineVal,sysdate+1)
+			    AND p2.dtFineVal is null
+                AND (p2.dtMod is null OR p2.dtMod = (SELECT MAX(dtMod) FROM SitDPersona WHERE codfisc = p2.codfisc))
+                ORDER BY p2.cognome, p2.nome
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SitDPersona_SitDPersFam.getPersonaRelFamByCodFisAllaData">
+		<query>
+			<![CDATA[
+				SELECT DISTINCT p2, pf2.relazPar
+            FROM SitDPersFam pf2, 
+                 SitDPersona p2
+              WHERE pf2.idExtDFamiglia =
+                      (SELECT DISTINCT pf1.idExtDFamiglia 
+                         FROM SitDPersona p1, 
+                              SitDPersFam pf1 
+                        WHERE pf1.idExtDPersona = p1.idExt 
+                            AND :dtRif BETWEEN  NVL(p1.dtInizioDato,TO_DATE('01/01/1000','DD/MM/YYYY')) AND NVL(p1.dtFineDato,sysdate+1) 
+                            AND :dtRif BETWEEN  NVL(pf1.dtInizioDato,TO_DATE('01/01/1000','DD/MM/YYYY')) AND NVL(pf1.dtFineDato,sysdate+1)
+                            AND :dtRif BETWEEN  NVL(pf1.dtInizioVal,TO_DATE('01/01/1000','DD/MM/YYYY')) AND NVL(pf1.dtFineVal,sysdate+1)
+                            AND p1.codfisc = :codfisc
+                            ) 
+                AND pf2.idExtDPersona = p2.idExt 
+                AND :dtRif BETWEEN  NVL(p2.dataNascita,TO_DATE('01/01/1000','DD/MM/YYYY')) AND NVL(p2.dataMor,sysdate+1) 
+                AND :dtRif BETWEEN  NVL(p2.dtInizioDato,TO_DATE('01/01/1000','DD/MM/YYYY')) AND NVL(p2.dtFineDato,sysdate+1)
+			    AND((NVL(p2.dataImm,TO_DATE('01/01/1000','DD/MM/YYYY'))< NVL(p2.dataEmi,sysdate+1) AND :dtRif BETWEEN  NVL(p2.dataImm,TO_DATE('01/01/1000','DD/MM/YYYY')) AND NVL(p2.dataEmi,sysdate+1)) 
+                    OR 
+                    (NVL(p2.dataImm,TO_DATE('01/01/1000','DD/MM/YYYY'))>=NVL(p2.dataEmi,sysdate+1) AND :dtRif >=  NVL(p2.dataImm,TO_DATE('01/01/1000','DD/MM/YYYY')) )
+                    )
+			    AND :dtRif BETWEEN  NVL(pf2.dtInizioDato,TO_DATE('01/01/1000','DD/MM/YYYY')) AND NVL(pf2.dtFineDato,sysdate+1)
+			    AND :dtRif BETWEEN  NVL(pf2.dtInizioVal,TO_DATE('01/01/1000','DD/MM/YYYY')) AND NVL(pf2.dtFineVal,sysdate+1)
+			    AND p2.dtFineVal is null
+                AND (p2.dtMod is null OR p2.dtMod = (SELECT MAX(dtMod) FROM SitDPersona WHERE codfisc = p2.codfisc))
+                ORDER BY p2.cognome, p2.nome
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SitDPersona.getFamigliaByCF">
+		<query>
+			<![CDATA[
+				SELECT DISTINCT p2
+            FROM SitDPersFam pf2, 
+                 SitDPersona p2
+              WHERE pf2.idExtDFamiglia =
+                      (SELECT DISTINCT pf1.idExtDFamiglia 
+                         FROM SitDPersona p1, 
+                              SitDPersFam pf1 
+                        WHERE pf1.idExtDPersona = p1.idExt 
+                            AND sysdate BETWEEN  NVL(p1.dtInizioDato,TO_DATE('01/01/1000','DD/MM/YYYY')) AND NVL(p1.dtFineDato,sysdate) 
+                            AND sysdate BETWEEN  NVL(pf1.dtInizioDato,TO_DATE('01/01/1000','DD/MM/YYYY')) AND NVL(pf1.dtFineDato,sysdate)
+                            AND sysdate BETWEEN  NVL(pf1.dtInizioVal,TO_DATE('01/01/1000','DD/MM/YYYY')) AND NVL(pf1.dtFineVal,sysdate)
+                            AND p1.codfisc = :codFisc ) 
+                AND pf2.idExtDPersona = p2.idExt 
+                AND sysdate BETWEEN  NVL(p2.dataNascita,TO_DATE('01/01/1000','DD/MM/YYYY')) AND NVL(p2.dataMor,sysdate) 
+                AND sysdate BETWEEN  NVL(p2.dtInizioDato,TO_DATE('01/01/1000','DD/MM/YYYY')) AND NVL(p2.dtFineDato,sysdate)
+			    AND((NVL(p2.dataImm,TO_DATE('01/01/1000','DD/MM/YYYY'))< NVL(p2.dataEmi,sysdate) AND sysdate BETWEEN  NVL(p2.dataImm,TO_DATE('01/01/1000','DD/MM/YYYY')) AND NVL(p2.dataEmi,sysdate)) 
+                	 OR NVL(p2.dataImm,TO_DATE('01/01/1000','DD/MM/YYYY'))>=NVL(p2.dataEmi,sysdate))
+			    AND sysdate BETWEEN  NVL(pf2.dtInizioDato,TO_DATE('01/01/1000','DD/MM/YYYY')) AND NVL(pf2.dtFineDato,sysdate)
+			    AND sysdate BETWEEN  NVL(pf2.dtInizioVal,TO_DATE('01/01/1000','DD/MM/YYYY')) AND NVL(pf2.dtFineVal,sysdate)
+			    AND p2.dtFineVal is null
+                AND (p2.dtMod is null OR p2.dtMod = (SELECT MAX(dtMod) FROM SitDPersona WHERE codfisc = p2.codfisc))
+                ORDER BY p2.cognome, p2.nome
+			]]>
+		</query>
+	</named-query>
+	
+		<named-query name="SitDPersona.getFamigliaByCogNomDtNascita">
+		<query>
+			<![CDATA[
+			SELECT DISTINCT p2
+            FROM SitDPersFam pf2, 
+                 SitDPersona p2
+              WHERE pf2.idExtDFamiglia =
+                      (SELECT DISTINCT pf1.idExtDFamiglia 
+                         FROM SitDPersona p1, 
+                              SitDPersFam pf1 
+                        WHERE pf1.idExtDPersona = p1.idExt 
+                            AND sysdate BETWEEN  NVL(p1.dtInizioDato,TO_DATE('01/01/1000','DD/MM/YYYY')) AND NVL(p1.dtFineDato,sysdate) 
+                            AND sysdate BETWEEN  NVL(pf1.dtInizioDato,TO_DATE('01/01/1000','DD/MM/YYYY')) AND NVL(pf1.dtFineDato,sysdate)
+                            AND sysdate BETWEEN  NVL(pf1.dtInizioVal,TO_DATE('01/01/1000','DD/MM/YYYY')) AND NVL(pf1.dtFineVal,sysdate)
+                            AND UPPER(p1.cognome) = :cognome  AND UPPER(p1.nome) = :nome AND p1.dataNascita = :dtNascita
+                            ) 
+                AND pf2.idExtDPersona = p2.idExt 
+                AND sysdate BETWEEN  NVL(p2.dataNascita,TO_DATE('01/01/1000','DD/MM/YYYY')) AND NVL(p2.dataMor,sysdate) 
+                AND sysdate BETWEEN  NVL(p2.dtInizioDato,TO_DATE('01/01/1000','DD/MM/YYYY')) AND NVL(p2.dtFineDato,sysdate)
+			    AND((NVL(p2.dataImm,TO_DATE('01/01/1000','DD/MM/YYYY'))< NVL(p2.dataEmi,sysdate) AND sysdate BETWEEN  NVL(p2.dataImm,TO_DATE('01/01/1000','DD/MM/YYYY')) AND NVL(p2.dataEmi,sysdate)) 
+                     OR NVL(p2.dataImm,TO_DATE('01/01/1000','DD/MM/YYYY'))>=NVL(p2.dataEmi,sysdate))
+			    AND sysdate BETWEEN  NVL(pf2.dtInizioDato,TO_DATE('01/01/1000','DD/MM/YYYY')) AND NVL(pf2.dtFineDato,sysdate)
+			    AND sysdate BETWEEN  NVL(pf2.dtInizioVal,TO_DATE('01/01/1000','DD/MM/YYYY')) AND NVL(pf2.dtFineVal,sysdate)
+			    AND p2.dtFineVal is null
+                AND (p2.dtMod is null OR p2.dtMod = (SELECT MAX(dtMod) FROM SitDPersona WHERE cognome = p2.cognome and nome = p2.nome and dataNascita = p2.dataNascita))
+                ORDER BY p2.cognome, p2.nome  
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SitDPersFam.getFamiglieTitolariByIdConsSoggTab">
+		<query>
+			<![CDATA[
+				select distinct pf.idExtDFamiglia from SitSoggettoTotale a, SitSoggettoTotale b, SitDPersona p, SitDPersFam pf
+				where a.fkSoggetto = b.fkSoggetto
+				and a.id.fkEnteSorgente = '4' and a.id.progEs = '3'
+				and b.id.fkEnteSorgente = '1' and b.id.progEs = '1'
+				and a.id.idDwh IN (:listaIdConsSoggTab)
+				and b.id.idDwh = p.id
+				and p.idExt = pf.idExtDPersona
+				and (p.dtFineVal is null or p.dtFineVal >= :dtRif)
+				and (pf.dtFineVal is null or pf.dtFineVal >= :dtRif)
+				AND :dtRif BETWEEN  NVL(p.dataNascita,TO_DATE('01/01/1000','DD/MM/YYYY'))  AND NVL(p.dataMor,sysdate) 
+                AND :dtRif BETWEEN  NVL(p.dtInizioDato,TO_DATE('01/01/1000','DD/MM/YYYY')) AND NVL(p.dtFineDato,sysdate)
+			    AND((NVL(p.dataImm,TO_DATE('01/01/1000','DD/MM/YYYY'))< NVL(p.dataEmi,sysdate) AND :dtRif BETWEEN  NVL(p.dataImm,TO_DATE('01/01/1000','DD/MM/YYYY')) AND NVL(p.dataEmi,sysdate)) 
+                    OR 
+                    (NVL(p.dataImm,TO_DATE('01/01/1000','DD/MM/YYYY'))>=NVL(p.dataEmi,sysdate) AND :dtRif >=  NVL(p.dataImm,TO_DATE('01/01/1000','DD/MM/YYYY')) )
+                    )
+			]]>
+		</query>
+	</named-query>
+	<named-query name="SitComune.getDescrizioneComuneProvByIdExt">
+		<query>
+			<![CDATA[
+				 select distinct c.belfiore , c.descrizione, p.sigla, p.descrizione
+				 from SitComune c, SitProvincia p
+               	 where c.idExtDProvincia = p.idExt and c.idExt = :idExtComune 
+                 and c.dtFineVal is null and p.dtFineVal is null
+			]]>
+		</query>
+	</named-query>
+
+	<!-- Query SitStato -->
+	<named-query name="SitStato.verificaNazionalitaByCFAllaData">
+		<query>
+			<![CDATA[
+				SELECT DISTINCT s, p 
+				FROM SitStato s, SitDPersona p
+				WHERE s.descrizione = :descr 
+				AND p.codfisc = :codFisc
+				AND p.idExtStato = s.idExt
+				AND p.dtInizioVal <= :dtRif
+				AND(p.dtFineVal  is null or p.dtFineVal >= :dtRif) 
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SitDPersona.verificaResidenzaByCFAllaData">
+		<query>
+			<![CDATA[
+				SELECT DISTINCT p, pc 
+				FROM SitDPersona p, SitDPersonaCivico pc
+				WHERE p.codfisc = :codFisc
+				AND p.idExt = pc.idExtDPersona
+				AND p.posizAna = 'A'
+				AND :dtRif >= NVL(p.dataInizioResidenza,TO_DATE('00010101','yyyyMMdd'))
+				AND :dtRif BETWEEN NVL(p.dtInizioVal,   TO_DATE('00010101','yyyyMMdd')) AND NVL(p.dtFineVal,  TO_DATE('99991231','yyyyMMdd'))
+				AND :dtRif BETWEEN NVL(p.dataNascita,   TO_DATE('00010101','yyyyMMdd')) AND NVL(p.dataMor,    TO_DATE('99991231','yyyyMMdd'))
+				AND :dtRif BETWEEN NVL(pc.dtInizioDato, TO_DATE('00010101','yyyyMMdd')) AND NVL(pc.dtFineDato,TO_DATE('99991231','yyyyMMdd'))
+				AND (p.dataEmi IS NULL OR 
+   				    (p.dataEmi IS NOT NULL AND p.dataImm is not null AND p.dataImm  < p.dataEmi AND :dtRif BETWEEN p.dataImm AND p.dataEmi) OR
+    				(p.dataEmi IS NOT NULL AND p.dataImm is not null AND p.dataImm  > p.dataEmi AND (:dtRif >= p.dataImm OR :dtRif <= p.dataEmi))
+    				)
+			]]>
+		</query>
+	</named-query>
+	<named-query name="SitDPersona.verificaResidenzaByCogNomDtNascAllaData">
+		<query>
+			<![CDATA[
+				SELECT DISTINCT p, pc 
+				FROM SitDPersona p, SitDPersonaCivico pc
+				WHERE p.cognome = :cognome AND p.nome = :nome AND p.dataNascita= :dtNascita
+				AND p.idExt = pc.idExtDPersona
+				AND p.posizAna = 'A'
+				AND :dtRif >= NVL(p.dataInizioResidenza,TO_DATE('00010101','yyyyMMdd'))
+				AND :dtRif BETWEEN NVL(p.dtInizioVal,   TO_DATE('00010101','yyyyMMdd')) AND NVL(p.dtFineVal,  TO_DATE('99991231','yyyyMMdd'))
+				AND :dtRif BETWEEN NVL(p.dataNascita,   TO_DATE('00010101','yyyyMMdd')) AND NVL(p.dataMor,    TO_DATE('99991231','yyyyMMdd'))
+				AND :dtRif BETWEEN NVL(pc.dtInizioDato, TO_DATE('00010101','yyyyMMdd')) AND NVL(pc.dtFineDato,TO_DATE('99991231','yyyyMMdd'))
+				AND (p.dataEmi IS NULL OR 
+   				    (p.dataEmi IS NOT NULL AND p.dataImm is not null AND p.dataImm  < p.dataEmi AND :dtRif BETWEEN p.dataImm AND p.dataEmi) OR
+    				(p.dataEmi IS NOT NULL AND p.dataImm is not null AND p.dataImm  > p.dataEmi AND (:dtRif >= p.dataImm OR :dtRif <= p.dataEmi))
+    				)
+			]]>
+		</query>
+	</named-query>
+	
+	<!-- Query SitEnte -->
+	<named-query name="SitEnte.getEnteByDescrizione">
+		<query>
+			<![CDATA[
+				SELECT c 
+				FROM SitEnte c
+				WHERE UPPER(c.descrizione) = :descrizione
+			]]>
+		</query>
+	</named-query>
+	
+	<!-- Query SitDCodParentela -->
+	<named-query name="SitDCodParentela.getParentelaByIdPersona">
+		<query>
+			<![CDATA[
+				SELECT DISTINCT cp.value FROM SitDPersFam pf, 
+                 SitDPersona p, 
+                 SitDCodParentela cp WHERE p.id = :id
+                 AND pf.idExtDPersona = p.idExt
+                 AND p.dtFineVal is null
+                 AND sysdate BETWEEN  NVL(pf.dtInizioDato,TO_DATE('01/01/1000','DD/MM/YYYY')) AND NVL(pf.dtFineDato,sysdate)
+			     AND sysdate BETWEEN  NVL(pf.dtInizioVal,TO_DATE('01/01/1000','DD/MM/YYYY')) AND NVL(pf.dtFineVal,sysdate)
+                 AND cp.id = pf.relazPar
+			]]>
+		</query>
+	</named-query>
+	
+		<!-- Query SitDStaciv -->
+	<named-query name="SitDStaciv.getListaValidi">
+		<query>
+			<![CDATA[
+				SELECT s FROM SitDStaciv s where s.dtFineVal is null
+			]]>
+		</query>
+	</named-query>	
+	
+	
+</entity-mappings>
+	

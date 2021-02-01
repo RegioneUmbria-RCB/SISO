@@ -1,0 +1,897 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings
+  xmlns="http://java.sun.com/xml/ns/persistence/orm"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
+  version="2.0">
+
+	<!-- Query DocfaAnomalie -->
+	<named-query name="DocfaAnomalie.getAnomalie">
+		<query>
+			<![CDATA[
+				SELECT d FROM DocfaAnomalie d 
+				WHERE d.tipo is null OR d.tipo = :tipo
+				ORDER BY d.descrizione
+			 ]]>
+		</query>
+	</named-query>
+	
+	<named-query name="DocfaAnomalie.getById">
+		<query>
+			<![CDATA[
+				SELECT d FROM DocfaAnomalie d 
+				WHERE d.id = :id
+			 ]]>
+		</query>
+	</named-query>
+
+	<!-- Query DocfaIciReport -->
+	<named-query name="DocfaIciReport.getForniture">
+		<query>
+			<![CDATA[
+				SELECT DISTINCT d.fornitura 
+				FROM DocfaIciReport d 
+				ORDER BY d.fornitura
+			 ]]>
+		</query>
+	</named-query>
+	
+	<named-query name="DocfaIciReport.getMinMaxDataAggiornamento">
+		<query>
+			<![CDATA[
+				SELECT min(d.dataAggiornamento), max(d.dataAggiornamento) 
+				FROM DocfaIciReport d 
+			 ]]>
+		</query>
+	</named-query>
+	
+	<named-query name="DocfaIciReport.getListaByDocfaTipo">
+		<query>
+			<![CDATA[
+				SELECT d FROM DocfaIciReport d 
+				WHERE d.fornitura = :fornitura
+				AND d.protocolloDocfa = :protocollo
+				AND (d.tipoOperDocfa IS NULL OR d.tipoOperDocfa <> :tipo)
+			 ]]>
+		</query>
+	</named-query>
+	
+	<named-query name="DocfaIciReport.getById">
+		<query>
+			<![CDATA[
+				SELECT d FROM DocfaIciReport d 
+				WHERE d.idRep = :id
+			 ]]>
+		</query>
+	</named-query>
+
+	<named-query name="DocfaIciReport.getVie">
+		<query>
+			<![CDATA[
+				SELECT DISTINCT d.viaDocfa FROM DocfaIciReport d 
+				WHERE UPPER(d.viaDocfa) LIKE '%'||:via||'%'
+			 ]]>
+		</query>
+	</named-query>
+
+	<named-query name="DocfaIciReport.getCount">
+		<query>
+			<![CDATA[
+                SELECT dir.fornitura, COUNT (dir.idRep),
+                         (SELECT COUNT (d.idRep)
+                            FROM DocfaIciReport d
+                           WHERE dir.fornitura = d.fornitura
+                           AND d.flgElaborato = '1'),
+                           (SELECT COUNT (d.idRep)
+                            FROM DocfaIciReport d
+                           WHERE dir.fornitura = d.fornitura
+                           AND d.flgElaborato = '1'
+                           AND d.flgAnomalie = '0'),
+                            (SELECT COUNT (d.idRep)
+                            FROM DocfaIciReport d
+                           WHERE dir.fornitura = d.fornitura
+                           AND d.flgElaborato = '1'
+                           AND d.flgAnomalie = '1')
+                    FROM DocfaIciReport dir
+                GROUP BY dir.fornitura
+                ORDER BY dir.fornitura DESC
+			 ]]>
+		</query>
+	</named-query>
+
+	<named-query name="DocfaIciReport.getIci">
+		<query>
+			<![CDATA[
+				SELECT o, v.prefisso || ' ' || v.descrizione
+			    FROM SitTIciOggetto o,
+			         SitTIciVia v
+			    WHERE o.idExtVia = v.idExt
+			    AND o.foglio = :foglio
+			    AND o.numero = :numero
+			    AND LPAD (NVL (o.sub, '0'), 4, '0') = :sub
+			    ORDER BY o.yeaDen DESC
+			 ]]>
+		</query>
+	</named-query>
+
+	<!-- Query DocfaIciReportSogg -->
+	<named-query name="DocfaIciReportSogg.getSoggetti">
+		<query>
+			<![CDATA[
+				SELECT s FROM DocfaIciReportSogg s 
+				WHERE s.id.fkIdRep = :report
+				ORDER BY s.id.dataInizioPossesso, s.id.dataFinePossesso
+			 ]]>
+		</query>
+	</named-query>
+
+	<named-query name="DocfaIciReportSogg.getSoggettiTitolari">
+		<query>
+			<![CDATA[
+				SELECT s FROM DocfaIciReportSogg s 
+				WHERE s.id.fkIdRep = :report
+				AND s.flgTitolareDataDocfa = '1'
+				ORDER BY s.id.dataInizioPossesso, s.id.dataFinePossesso
+			 ]]>
+		</query>
+	</named-query>
+
+	<named-query name="DocfaIciReportSogg.getCognomi">
+		<query>
+			<![CDATA[
+				SELECT DISTINCT s.ragiSoci 
+				FROM DocfaIciReportSogg s 
+				WHERE UPPER(s.ragiSoci) LIKE :cognome||'%'
+			 ]]>
+		</query>
+	</named-query>
+
+	<named-query name="DocfaIciReportSogg.getNomi">
+		<query>
+			<![CDATA[
+				SELECT DISTINCT s.nome FROM DocfaIciReportSogg s 
+				WHERE UPPER(s.nome) LIKE :nome||'%'
+			 ]]>
+		</query>
+	</named-query>
+
+	<named-query name="DocfaIciReportSogg.getCodFisc">
+		<query>
+			<![CDATA[
+				SELECT DISTINCT s.codiFisc FROM DocfaIciReportSogg s 
+				WHERE UPPER(s.codiFisc) LIKE :codFisc||'%'
+			 ]]>
+		</query>
+	</named-query>
+
+	<named-query name="DocfaIciReportSogg.getIciAnte">
+		<query>
+			<![CDATA[
+				SELECT o, v.prefisso || ' ' || v.descrizione
+			    FROM SitSoggettoTotale a,
+			         SitSoggettoTotale b,
+			         SitTIciSogg s,
+			         SitTIciContrib c,
+			         SitTIciOggetto o,
+			         SitTIciVia v
+			    WHERE a.id.fkEnteSorgente = 4
+			    AND a.id.progEs = 3
+			    AND a.id.idDwh = :catpkid
+			    AND a.fkSoggetto = b.fkSoggetto
+			    AND b.id.fkEnteSorgente = 2
+			    AND o.idExtVia = v.idExt
+			    AND b.id.progEs = 1
+			    AND s.id = b.id.idDwh
+			    AND o.idExt = c.idExtOggIci
+			    AND c.idExtSogg = s.idExt
+			    AND o.yeaDen <= TO_CHAR (TO_DATE (:datadocfa, 'yyyyMMdd'), 'yyyy')
+			    AND (o.foglio = :foglio OR o.foglio IS NULL)
+			    AND (o.numero = :numero OR o.numero IS NULL)
+			    AND (LPAD(NVL (o.sub, '0'), 4, '0') = :sub OR LPAD(NVL (o.sub, '0'), 4, '0') = '0000')
+			    AND NOT (o.foglio = :foglio AND o.numero = :numero AND LPAD(NVL(o.sub,'0'),4,'0') = :sub)
+			 ]]>
+		</query>
+	</named-query>
+
+	<named-query name="DocfaIciReportSogg.getIciPost">
+		<query>
+			<![CDATA[
+				SELECT o,v.prefisso || ' ' || v.descrizione
+			    FROM SitSoggettoTotale a,
+			         SitSoggettoTotale b,
+			         SitTIciSogg s,
+			         SitTIciContrib c,
+			         SitTIciOggetto o,
+			         SitTIciVia v
+			    WHERE a.id.fkEnteSorgente = 4
+			    AND a.id.progEs = 3
+			    AND a.id.idDwh = :catpkid
+			    AND a.fkSoggetto = b.fkSoggetto
+			    AND b.id.fkEnteSorgente = 2
+			    AND o.idExtVia = v.idExt
+			    AND b.id.progEs = 1
+			    AND s.id = b.id.idDwh
+			    AND o.idExt = c.idExtOggIci
+			    AND c.idExtSogg = s.idExt
+			    AND o.yeaDen > TO_CHAR (TO_DATE (:datadocfa, 'yyyyMMdd'), 'yyyy')
+			    AND (o.foglio = :foglio OR o.foglio IS NULL)
+			    AND (o.numero = :numero OR o.numero IS NULL)
+			    AND (LPAD (NVL (o.sub, '0'), 4, '0') = :sub OR LPAD(NVL (o.sub, '0'), 4, '0') = '0000')
+			    AND NOT (o.foglio = :foglio AND o.numero = :numero AND LPAD(NVL(o.sub,'0'),4,'0') = :sub)
+			 ]]>
+		</query>
+	</named-query>
+	
+	<named-query name="DocfaIciReportSogg.getIciAnteUiu">
+		<query>
+			<![CDATA[
+				SELECT o, v.prefisso || ' ' || v.descrizione
+			    FROM SitSoggettoTotale a,
+			         SitSoggettoTotale b,
+			         SitTIciSogg s,
+			         SitTIciContrib c,
+			         SitTIciOggetto o,
+			         SitTIciVia v
+			    WHERE a.id.fkEnteSorgente = 4
+			    AND a.id.progEs = 3
+			    AND a.id.idDwh = :catpkid
+			    AND a.fkSoggetto = b.fkSoggetto
+			    AND b.id.fkEnteSorgente = 2
+			    AND o.idExtVia = v.idExt
+			    AND b.id.progEs = 1
+			    AND s.id = b.id.idDwh
+			    AND o.idExt = c.idExtOggIci
+			    AND c.idExtSogg = s.idExt
+			    AND o.yeaDen <= TO_CHAR (TO_DATE (:datadocfa, 'yyyyMMdd'), 'yyyy')
+			    AND o.foglio = :foglio
+			    AND o.numero = :numero
+			    AND LPAD (NVL (o.sub, '0'), 4, '0') = :sub
+			 ]]>
+		</query>
+	</named-query>
+
+	<named-query name="DocfaIciReportSogg.getIciPostUiu">
+		<query>
+			<![CDATA[
+				SELECT o, v.prefisso || ' ' || v.descrizione
+			    FROM SitSoggettoTotale a,
+			         SitSoggettoTotale b,
+			         SitTIciSogg s,
+			         SitTIciContrib c,
+			         SitTIciOggetto o,
+			         SitTIciVia v
+			    WHERE a.id.fkEnteSorgente = 4
+			    AND a.id.progEs = 3
+			    AND a.id.idDwh = :catpkid
+			    AND a.fkSoggetto = b.fkSoggetto
+			    AND b.id.fkEnteSorgente = 2
+			    AND o.idExtVia = v.idExt
+			    AND b.id.progEs = 1
+			    AND s.id = b.id.idDwh
+			    AND o.idExt = c.idExtOggIci
+			    AND c.idExtSogg = s.idExt
+			    AND o.yeaDen > TO_CHAR (TO_DATE (:datadocfa, 'yyyyMMdd'), 'yyyy')
+			    AND o.foglio = :foglio
+			    AND o.numero = :numero
+			    AND LPAD (NVL (o.sub, '0'), 4, '0') = :sub
+			 ]]>
+		</query>
+	</named-query>
+	
+			<named-query name="DocfaIciReportSogg.getIciAnteCiv">
+		<query>
+			<![CDATA[
+			SELECT o, v.prefisso || ' ' || v.descrizione
+			FROM SitSoggettoTotale aso, 
+				SitSoggettoTotale bso, 
+				SitTIciSogg s, 
+				SitTIciContrib c, 
+				SitTIciOggetto o ,
+				SitTIciVia v
+			WHERE aso.id.fkEnteSorgente = '4' 
+			  AND aso.id.progEs = '3' 
+			  AND aso.id.idDwh = :idDwhOrigineSogg
+			  AND aso.fkSoggetto = bso.fkSoggetto 
+			  AND bso.id.fkEnteSorgente = '2' 
+			  AND bso.id.progEs = '1' 
+			  AND bso.id.idDwh = s.id 
+			  AND c.idExtSogg = s.idExt 
+			  AND o.idExt = c.idExtOggIci  
+			  AND o.yeaDen <= TO_CHAR (TO_DATE (:datadocfa, 'yyyyMMdd'), 'yyyy')
+			  AND o.idExtVia = v.idExt
+			  AND v.id || '|' || NVL(o.numCiv, '') || '|' || NVL(o.espCiv, '') IN 
+				 (SELECT bc.id.idDwh 
+				  FROM SitCivicoTotale ac, 
+				       SitCivicoTotale bc 
+				  WHERE ac.id.fkEnteSorgente = '9' 
+				    AND ac.id.progEs = '3'  
+				    AND ac.fkCivico = bc.fkCivico 
+				    AND bc.id.fkEnteSorgente = '2' 
+				    AND bc.id.progEs = '2' 
+				    AND ac.id.idDwh = :idDwhOrigineCiv)	
+			ORDER BY o.yeaDen desc 
+			 ]]>
+		</query>
+	</named-query>
+
+	<named-query name="DocfaIciReportSogg.getIciPostCiv">
+		<query>
+			<![CDATA[
+			SELECT o, v.prefisso || ' ' || v.descrizione
+			FROM SitSoggettoTotale aso, 
+				SitSoggettoTotale bso, 
+				SitTIciSogg s, 
+				SitTIciContrib c, 
+				SitTIciOggetto o ,
+				SitTIciVia v
+			WHERE aso.id.fkEnteSorgente = '4'
+			  AND aso.id.progEs = '3' 
+			  AND aso.id.idDwh = :idDwhOrigineSogg 
+			  AND aso.fkSoggetto = bso.fkSoggetto 
+			  AND bso.id.fkEnteSorgente = '2' 
+			  AND bso.id.progEs = '1' 
+			  AND bso.id.idDwh = s.id 
+			  AND c.idExtSogg = s.idExt 
+			  AND o.idExt = c.idExtOggIci  
+			  AND o.yeaDen > TO_CHAR (TO_DATE (:datadocfa, 'yyyyMMdd'), 'yyyy')
+			  AND o.idExtVia = v.idExt
+			  AND v.id || '|' || NVL(o.numCiv, '') || '|' || NVL(o.espCiv, '') IN 
+				 (SELECT bc.id.idDwh 
+				  FROM SitCivicoTotale ac, 
+				       SitCivicoTotale bc 
+				  WHERE ac.id.fkEnteSorgente = '9' 
+				    AND ac.id.progEs = '3'  
+				    AND ac.fkCivico = bc.fkCivico 
+				    AND bc.id.fkEnteSorgente = '2' 
+				    AND bc.id.progEs = '2' 
+				    AND ac.id.idDwh = :idDwhOrigineCiv)	
+			ORDER BY o.yeaDen
+			 ]]>
+		</query>
+	</named-query>
+
+	<!-- Query DocfaTarReport -->
+	<named-query name="DocfaTarReport.getForniture">
+		<query>
+			<![CDATA[
+				SELECT DISTINCT d.fornitura 
+				FROM DocfaTarReport d 
+				ORDER BY d.fornitura
+			 ]]>
+		</query>
+	</named-query>
+	
+		<named-query name="DocfaTarReport.getMinMaxDataAggiornamento">
+		<query>
+			<![CDATA[
+				SELECT min(d.dataAggiornamento), max(d.dataAggiornamento) 
+				FROM DocfaTarReport d 
+			 ]]>
+		</query>
+	</named-query>
+	
+	<named-query name="DocfaTarReport.getById">
+		<query>
+			<![CDATA[
+				SELECT d FROM DocfaTarReport d 
+				WHERE d.idRep = :id
+			 ]]>
+		</query>
+	</named-query>
+	
+	<named-query name="DocfaTarReport.getListaByDocfaTipo">
+		<query>
+			<![CDATA[
+				SELECT d FROM DocfaTarReport d 
+				WHERE d.fornitura = :fornitura
+				AND d.protocolloDocfa = :protocollo
+				AND (d.tipoOperDocfa IS NULL OR d.tipoOperDocfa <> :tipo)
+			 ]]>
+		</query>
+	</named-query>
+
+	<named-query name="DocfaTarReport.getVie">
+		<query>
+			<![CDATA[
+				SELECT DISTINCT d.viaDocfa FROM DocfaTarReport d 
+				WHERE UPPER(d.viaDocfa) LIKE '%'||:via||'%'
+			 ]]>
+		</query>
+	</named-query>
+
+	<named-query name="DocfaTarReport.getCount">
+		<query>
+			<![CDATA[
+                SELECT dir.fornitura, COUNT (dir.idRep),
+                         (SELECT COUNT (d.idRep)
+                            FROM DocfaTarReport d
+                           WHERE dir.fornitura = d.fornitura
+                           AND d.flgElaborato = '1'),
+                           (SELECT COUNT (d.idRep)
+                            FROM DocfaTarReport d
+                           WHERE dir.fornitura = d.fornitura
+                           AND d.flgElaborato = '1'
+                           AND d.flgAnomalie = '0'),
+                            (SELECT COUNT (d.idRep)
+                            FROM DocfaTarReport d
+                           WHERE dir.fornitura = d.fornitura
+                           AND d.flgElaborato = '1'
+                           AND d.flgAnomalie = '1')
+                    FROM DocfaTarReport dir
+                GROUP BY dir.fornitura
+                ORDER BY dir.fornitura DESC
+			 ]]>
+		</query>
+	</named-query>
+
+
+	<!-- Query DocfaTarReportSogg -->
+	<named-query name="DocfaTarReportSogg.getSoggetti">
+		<query>
+			<![CDATA[
+				SELECT s FROM DocfaTarReportSogg s 
+				WHERE s.id.fkIdRep = :report
+				ORDER BY s.id.dataInizioPossesso, s.id.dataFinePossesso
+			 ]]>
+		</query>
+	</named-query>
+
+	<named-query name="DocfaTarReportSogg.getSoggettiTitolari">
+		<query>
+			<![CDATA[
+				SELECT s FROM DocfaTarReportSogg s 
+				WHERE s.id.fkIdRep = :report
+				AND s.flgTitolareDataDocfa = '1'
+				ORDER BY s.id.dataInizioPossesso, s.id.dataFinePossesso
+			 ]]>
+		</query>
+	</named-query>
+
+	<named-query name="DocfaTarReportSogg.getCognomi">
+		<query>
+			<![CDATA[
+				SELECT DISTINCT s.ragiSoci FROM DocfaTarReportSogg s 
+				WHERE UPPER(s.ragiSoci) LIKE :cognome||'%'
+			 ]]>
+		</query>
+	</named-query>
+
+	<named-query name="DocfaTarReportSogg.getNomi">
+		<query>
+			<![CDATA[
+				SELECT DISTINCT s.nome FROM DocfaTarReportSogg s 
+				WHERE UPPER(s.nome) LIKE :nome||'%'
+			 ]]>
+		</query>
+	</named-query>
+
+	<named-query name="DocfaTarReportSogg.getCodFisc">
+		<query>
+			<![CDATA[
+				SELECT DISTINCT s.codiFisc FROM DocfaTarReportSogg s 
+				WHERE UPPER(s.codiFisc) LIKE :codFisc||'%'
+			 ]]>
+		</query>
+	</named-query>
+	
+	<named-query name="DocfaTarReportSogg.getTarAnteUiu">
+		<query>
+			<![CDATA[
+				
+				SELECT o , v.prefisso || ' ' || v.descrizione
+				FROM SitSoggettoTotale a,
+			         SitSoggettoTotale b,
+			         SitTTarSogg s,
+			         SitTTarContrib c,
+			         SitTTarOggetto o,
+			         SitTTarVia v
+				WHERE a.id.fkEnteSorgente = :enteSorgenteOrigine 
+				  AND a.id.progEs = :progOrigine 
+				  AND a.id.idDwh = :idDwhOrigineSogg 
+				  AND a.fkSoggetto = b.fkSoggetto 
+				  AND b.id.fkEnteSorgente = '2' 
+				  AND b.id.progEs = '4' 
+				  AND s.id = b.id.idDwh 
+				  AND c.idExtSogg = s.idExt 
+				  AND o.idExt = c.idExtOggRsu  
+				  AND o.datIni < TO_DATE (:dataDocfa, 'yyyyMMdd') 
+				  AND o.foglio = :foglio 
+				  AND o.numero = :numero 
+				  AND LPAD(NVL(o.sub, '0'), 4, '0') = :sub
+				  AND o.idExtVia = v.idExt
+				ORDER BY o.datIni , o.datFin 
+			 ]]>
+		</query>
+	</named-query>
+
+
+	<named-query name="DocfaTarReportSogg.getTarPostUiu">
+		<query>
+			<![CDATA[
+				SELECT o , v.prefisso || ' ' || v.descrizione
+				FROM SitSoggettoTotale a,
+			         SitSoggettoTotale b,
+			         SitTTarSogg s,
+			         SitTTarContrib c,
+			         SitTTarOggetto o,
+			         SitTTarVia v
+				WHERE a.id.fkEnteSorgente = :enteSorgenteOrigine 
+				  AND a.id.progEs = :progOrigine 
+				  AND a.id.idDwh = :idDwhOrigineSogg 
+				  AND a.fkSoggetto = b.fkSoggetto 
+				  AND b.id.fkEnteSorgente = '2' 
+				  AND b.id.progEs = '4' 
+				  AND s.id = b.id.idDwh 
+				  AND c.idExtSogg = s.idExt 
+				  AND o.idExt = c.idExtOggRsu  
+				  AND o.datIni >= TO_DATE (:dataDocfa, 'yyyyMMdd') 
+				  AND o.foglio = :foglio 
+				  AND o.numero = :numero 
+				  AND LPAD(NVL(o.sub, '0'), 4, '0') = :sub
+				  AND o.idExtVia = v.idExt
+				ORDER BY o.datIni , o.datFin 
+			 ]]>
+		</query>
+	</named-query>
+	
+		
+		<named-query name="DocfaTarReportSogg.getTarAnteCiv">
+		<query>
+			<![CDATA[
+			SELECT o , v.prefisso || ' ' || v.descrizione
+			FROM SitSoggettoTotale aso, 
+				SitSoggettoTotale bso, 
+				SitTTarSogg s, 
+				SitTTarContrib c, 
+				SitTTarOggetto o ,
+				SitTTarVia v
+			WHERE aso.id.fkEnteSorgente = :enteSorgenteOrigine 
+			  AND aso.id.progEs = :progOrigine 
+			  AND aso.id.idDwh = :idDwhOrigineSogg  
+			  AND aso.fkSoggetto = bso.fkSoggetto 
+			  AND bso.id.fkEnteSorgente = '2' 
+			  AND bso.id.progEs = '4' 
+			  AND bso.id.idDwh = s.id 
+			  AND c.idExtSogg = s.idExt 
+			  AND o.idExt = c.idExtOggRsu  
+			  AND o.datIni < TO_DATE(:dataDocfa ,'yyyyMMdd')
+			  AND o.idExtVia = v.idExt
+			  AND v.id || '|' || NVL(o.numCiv, '') || '|' || NVL(o.espCiv, '') IN 
+				 (SELECT bc.id.idDwh 
+				  FROM SitCivicoTotale ac, 
+				       SitCivicoTotale bc 
+				  WHERE ac.id.fkEnteSorgente = '9' 
+				    AND ac.id.progEs = '3'  
+				    AND ac.fkCivico = bc.fkCivico 
+				    AND bc.id.fkEnteSorgente = '2' 
+				    AND bc.id.progEs = '3' 
+				    AND ac.id.idDwh = :idDwhOrigineCiv)	
+			ORDER BY o.datIni , o.datFin 
+			 ]]>
+		</query>
+	</named-query>
+
+	<named-query name="DocfaTarReportSogg.getTarPostCiv">
+		<query>
+			<![CDATA[
+			SELECT o , v.prefisso || ' ' || v.descrizione 
+			FROM SitSoggettoTotale aso, 
+				SitSoggettoTotale bso, 
+				SitTTarSogg s, 
+				SitTTarContrib c, 
+				SitTTarOggetto o ,
+				SitTTarVia v
+			WHERE aso.id.fkEnteSorgente = :enteSorgenteOrigine 
+			  AND aso.id.progEs = :progOrigine 
+			  AND aso.id.idDwh = :idDwhOrigineSogg  
+			  AND aso.fkSoggetto = bso.fkSoggetto 
+			  AND bso.id.fkEnteSorgente = '2' 
+			  AND bso.id.progEs = '4' 
+			  AND bso.id.idDwh = s.id 
+			  AND c.idExtSogg = s.idExt 
+			  AND o.idExt = c.idExtOggRsu  
+			  AND o.datIni >= TO_DATE(:dataDocfa ,'yyyyMMdd')
+			  AND o.idExtVia = v.idExt
+			  AND v.id || '|' || NVL(o.numCiv, '') || '|' || NVL(o.espCiv, '') IN 
+				 (SELECT bc.id.idDwh 
+				  FROM SitCivicoTotale ac, 
+				       SitCivicoTotale bc 
+				  WHERE ac.id.fkEnteSorgente = '9' 
+				    AND ac.id.progEs = '3'  
+				    AND ac.fkCivico = bc.fkCivico 
+				    AND bc.id.fkEnteSorgente = '2' 
+				    AND bc.id.progEs = '3' 
+				    AND ac.id.idDwh = :idDwhOrigineCiv)	
+			ORDER BY o.datIni , o.datFin 
+			 ]]>
+		</query>
+	</named-query>
+	
+	<named-query name="DocfaTarReportSogg.getTarAnteUiuUnd">
+		<query>
+			<![CDATA[				
+			SELECT o, v.prefisso || ' ' || v.descrizione
+			FROM SitSoggettoTotale a,
+		         SitSoggettoTotale b,
+		         SitTTarSogg s,
+		         SitTTarContrib c,
+		         SitTTarOggetto o,
+		         SitTTarVia v
+		     WHERE a.id.fkEnteSorgente = :enteSorgenteOrigine 
+				  AND a.id.progEs = :progOrigine 
+				  AND a.id.idDwh = :idDwhOrigineSogg 
+				  AND a.fkSoggetto = b.fkSoggetto 
+				  AND b.id.fkEnteSorgente = '2' 
+				  AND b.id.progEs = '4' 
+				  AND b.id.idDwh = s.id
+				  AND c.idExtSogg = s.idExt 
+				  AND o.idExt = c.idExtOggRsu 
+				  AND o.idExtVia = v.idExt
+				  AND o.datIni < TO_DATE (:dataDocfa, 'YYYYMMDD') 
+				  AND (o.foglio is null OR o.foglio = :foglio) 
+				  AND (o.numero is null OR o.numero = :numero) 
+				  AND (LPAD(NVL (o.sub, '0'), 4, '0') = '0000' OR LPAD(NVL(o.sub,'0'),4,'0') = :sub)
+				  AND NOT (o.foglio = :foglio AND o.numero = :numero AND LPAD(NVL(o.sub,'0'),4,'0') = :sub)
+			ORDER BY o.datIni , o.datFin 
+				
+			 ]]>
+		</query>
+	</named-query>
+	
+	<named-query name="DocfaTarReportSogg.getTarPostUiuUnd">
+		<query>
+			<![CDATA[				
+			SELECT o, v.prefisso || ' ' || v.descrizione
+			FROM SitSoggettoTotale a,
+		         SitSoggettoTotale b,
+		         SitTTarSogg s,
+		         SitTTarContrib c,
+		  		 SitTTarOggetto o,
+		  		 SitTTarVia v
+		     WHERE a.id.fkEnteSorgente = :enteSorgenteOrigine 
+				  AND a.id.progEs = :progOrigine 
+				  AND a.id.idDwh = :idDwhOrigineSogg 
+				  AND a.fkSoggetto = b.fkSoggetto 
+				  AND b.id.fkEnteSorgente = '2' 
+				  AND b.id.progEs = '4' 
+				  AND b.id.idDwh = s.id  
+				  AND c.idExtSogg = s.idExt 
+				  AND o.idExt = c.idExtOggRsu 
+				  AND o.idExtVia = v.idExt
+				  AND o.datIni >= TO_DATE (:dataDocfa, 'YYYYMMDD') 
+				  AND (o.foglio is null OR o.foglio = :foglio) 
+				  AND (o.numero is null OR o.numero = :numero) 
+				  AND (LPAD(NVL (o.sub, '0'), 4, '0') = '0000' OR LPAD(NVL(o.sub,'0'),4,'0') = :sub)
+				  AND NOT (o.foglio = :foglio AND o.numero = :numero AND LPAD(NVL(o.sub,'0'),4,'0') = :sub)
+			ORDER BY o.datIni , o.datFin 
+				
+			 ]]>
+		</query>
+	</named-query>
+	
+	<named-query name="DocfaTarReportSogg.getFamiliariAllaData">
+		<query>
+			<![CDATA[			
+			SELECT DISTINCT p2
+			FROM SitDPersFam pf2, 
+			     SitDPersona p2
+			  WHERE pf2.idExtDFamiglia IN
+					  (SELECT DISTINCT pf1.idExtDFamiglia 
+						 FROM SitDPersona p1, 
+							  SitDPersFam pf1 
+						WHERE pf1.idExtDPersona = p1.idExt 
+							AND TO_DATE(:dataRif ,'YYYYMMDD') BETWEEN  NVL(p1.dtInizioDato,TO_DATE('01/01/1000','DD/MM/YYYY')) AND NVL(p1.dtFineDato,sysdate) 
+							AND TO_DATE(:dataRif ,'YYYYMMDD') BETWEEN  NVL(pf1.dtInizioDato,TO_DATE('01/01/1000','DD/MM/YYYY')) AND NVL(pf1.dtFineDato,sysdate)
+						    AND p1.idExt IN 
+							(SELECT p.idExt 
+							 FROM SitSoggettoTotale a, 
+								  SitSoggettoTotale b, 
+							      SitDPersona p 
+							 WHERE a.id.fkEnteSorgente = :enteSorgenteOrigine
+							   AND a.id.progEs = :progOrigine
+							   AND a.id.idDwh = :idDwhOrigineSogg 
+							   AND a.fkSoggetto = b.fkSoggetto 
+							   AND b.id.fkEnteSorgente = '1' 
+							   AND b.id.progEs = '1' 
+							   AND p.dtFineVal IS NULL 
+							   AND p.id = b.id.idDwh)) 
+			    AND pf2.idExtDPersona = p2.idExt 
+			    AND TO_DATE(:dataRif ,'YYYYMMDD') BETWEEN  NVL(p2.dataNascita,TO_DATE('01/01/1000','DD/MM/YYYY')) AND NVL(p2.dataMor,sysdate) 
+			    AND TO_DATE(:dataRif ,'YYYYMMDD') BETWEEN  NVL(p2.dtInizioDato,TO_DATE('01/01/1000','DD/MM/YYYY')) AND NVL(p2.dtFineDato,sysdate)
+			    AND TO_DATE(:dataRif ,'YYYYMMDD') BETWEEN  NVL(p2.dataImm,TO_DATE('01/01/1000','DD/MM/YYYY')) AND NVL(p2.dataEmi,sysdate) 
+			    AND TO_DATE(:dataRif ,'YYYYMMDD') BETWEEN  NVL(pf2.dtInizioDato,TO_DATE('01/01/1000','DD/MM/YYYY')) AND NVL(pf2.dtFineDato,sysdate)
+			    AND p2.idExt NOT IN 
+			    (SELECT p.idExt 
+			     FROM SitSoggettoTotale a , 
+			     	  SitSoggettoTotale  b, 
+			          SitDPersona p 
+			 	 WHERE a.id.fkEnteSorgente = :enteSorgenteOrigine
+			  	   AND a.id.progEs = :progOrigine
+			       AND a.id.idDwh = :idDwhOrigineSogg 
+			       AND a.fkSoggetto = b.fkSoggetto 
+			       AND b.id.fkEnteSorgente = '1' 
+			       AND b.id.progEs = '1' 
+			       AND p.dtFineVal IS NULL 
+			       AND p.id = b.id.idDwh)
+	
+			 ]]>
+		</query>
+	</named-query>
+		
+	<named-query name="DocfaTarReportSogg.getTarAnte">
+		<query>
+			<![CDATA[
+				SELECT o, v.prefisso || ' ' || v.descrizione
+			    FROM SitSoggettoTotale a,
+			         SitSoggettoTotale b,
+			         SitTTarSogg s,
+			         SitTTarContrib c,
+			         SitTTarOggetto o,
+			         SitTTarVia v
+			    WHERE a.id.fkEnteSorgente = 4
+			    AND a.id.progEs = 3
+			    AND a.id.idDwh = :catpkid
+			    AND a.fkSoggetto = b.fkSoggetto
+			    AND b.id.fkEnteSorgente = 2
+			    AND o.idExtVia = v.idExt
+			    AND b.id.progEs = 4
+			    AND s.id = b.id.idDwh
+			    AND o.idExt = c.idExtOggRsu
+			    AND c.idExtSogg = s.idExt
+			    AND o.datFin <= TO_DATE (:datadocfa, 'yyyyMMdd')
+			    AND (LPAD (o.foglio, 4, '0') = :foglio OR o.foglio IS NULL)
+			    AND (LPAD (o.numero, 5, '0') = :numero OR o.numero IS NULL)
+			    AND LPAD (NVL (o.sub, '0'), 4, '0') = :sub
+			    ORDER BY o.datFin DESC
+			 ]]>
+		</query>
+	</named-query>
+
+	
+	<!-- Query Indirizzi a Catasto -->
+	<named-query name="IndirizzoDTO.getIndirizziCatasto">
+		<query>
+			<![CDATA[
+				SELECT distinct cu.id.pkidCivi, s.prefisso, s.nome, c.civico, s.dataInizioVal, s.dataFineVal
+				FROM SiticiviUiu cu, Sitiuiu u, Siticivi c, Sitidstr s
+				WHERE cu.id.pkidUiu = u.id.pkidUiu
+				AND u.id.codNazionale = :ente
+				AND u.id.foglio = :foglio
+				AND u.id.particella = LPAD (:particella, 5, '0')
+				AND u.id.unimm = :sub
+				AND cu.id.pkidCivi = c.pkidCivi
+				AND cu.id.dataFineVal = TO_DATE ('31-12-9999', 'DD-MM-YYYY')
+				AND c.dataFineVal = TO_DATE ('31-12-9999', 'DD-MM-YYYY')
+				AND c.pkidStra = s.pkidStra
+			 ]]>
+		</query>
+	</named-query>
+
+	<!-- Query Indirizzi Ici -->
+	<named-query name="IndirizzoDTO.getIndirizziIci">
+		<query>
+			<![CDATA[
+				SELECT DISTINCT v.prefisso || ' ' || v.descrizione, ici.numCiv, ici.yeaDen
+		        FROM SitTIciOggetto ici, SitTIciVia v
+		        WHERE LPAD (ici.foglio, 4, '0') = :foglio
+		        AND LPAD (ici.numero, 5, '0') = :particella
+		        AND LPAD (NVL (ici.sub, '0'), 4, '0') = :sub
+		        AND ici.idExtVia = v.idExt
+		        ORDER BY ici.yeaDen
+			 ]]>
+		</query>
+	</named-query>
+
+	<!-- Query Indirizzi Tarsu -->
+	<named-query name="IndirizzoDTO.getIndirizziTarsu">
+		<query>
+			<![CDATA[
+				SELECT DISTINCT v.prefisso || ' ' || v.descrizione, tar.numCiv, tar.datIni, tar.datFin
+		        FROM SitTTarOggetto tar, SitTTarVia v
+		        WHERE LPAD (tar.foglio, 4, '0') = :foglio
+		        AND LPAD (tar.numero, 5, '0') = :particella
+		        AND LPAD (NVL (tar.sub, '0'), 4, '0') = :sub
+		        AND tar.idExtVia = v.idExt
+		        ORDER BY tar.datFin DESC
+			 ]]>
+		</query>
+	</named-query>
+
+	<!-- Query Soggetti Ici -->
+	<named-query name="SoggettoIciDTO.getSoggettiIci">
+		<query>
+			<![CDATA[
+				select 'CONTRIBUENTE' as titolo, s 
+				from SitTIciSogg s, SitTIciContrib c
+   				where s.idExt = c.idExtSogg
+   				and	c.idExtOggIci = :idExt
+				union
+				select 'CONTITOLARE' as titolo, s 
+				from SitTIciSogg s, SitTIciContit c
+				where s.idExt = c.idExtSogg and
+				and	c.idExtOggIci = :idExt
+			 ]]>
+		</query>
+	</named-query>
+	
+	<!-- Query Locazioni da Tarsu -->
+	<named-query name="LocazioniA.getLocazioniDaTarsuBySoggCivicoData">
+		<query>
+			<![CDATA[
+				select distinct a from LocazioniA a, LocazioniB b 
+				where a.anno = b.anno 
+				and a.serie = b.serie 
+				and a.ufficio = b.ufficio 
+				and a.numero = b.numero  
+				and (a.dataInizio IS NULL OR a.dataInizio <= :dtIniTarsu) 
+				and (a.dataFine   IS NULL OR a.dataFine > :dtIniTarsu)
+				and b.ufficio     || '|' ||
+				    b.anno        || '|' ||
+				    b.serie       || '|' ||
+				    b.numero      || '|' ||
+				    b.sottonumero || '|' ||
+				    b.progNegozio || '|' ||
+				    b.progSoggetto IN 
+				(select sb.id.idDwh from SitSoggettoTotale sa, SitSoggettoTotale sb
+				        where sa.fkSoggetto = sb.fkSoggetto
+				        and sa.id.fkEnteSorgente = '2' and sa.id.progEs = '4'
+						and sb.id.fkEnteSorgente = '5' and sb.id.progEs = '2' 
+						and sa.id.idDwh = :idSoggTarsu)
+				and a.ufficio     || '|' || 
+					a.anno  	  || '|' || 
+					a.serie       || '|' ||
+					a.numero      || '|' ||
+				    a.sottonumero || '|' ||
+				    a.progNegozio IN
+				(select cb.id.idDwh from SitCivicoTotale ca, SitCivicoTotale cb
+						where ca.fkCivico = cb.fkCivico 
+						and ca.id.fkEnteSorgente = '2' and ca.id.progEs = '3'
+						and cb.id.fkEnteSorgente = '5' and cb.id.progEs = '1'
+						and ca.id.idDwh IN (
+							select v.id||'|'||o.numCiv||'|'||o.espCiv
+							from SitTTarOggetto o, SitTTarVia v
+							where o.idExtVia = v.idExt and o.idExt = :idExtTarsu))
+			 ]]>
+		</query>
+	</named-query>
+	
+	<named-query name="ConsDecoTab.getTitolaritaDaTarsuBySoggUiuData">
+		<query>
+			<![CDATA[
+			
+			SELECT deco.description
+  			FROM SiticonduzImmAll c, ConsSoggTab s, ConsDecoTab deco
+ 			WHERE deco.id.tablename = 'CONS_ATTI_TAB'
+   			AND deco.id.fieldname = 'TIPO_DOCUMENTO'
+  			AND deco.id.code = c.tipoDocumento
+  			AND c.dataInizio  <= :dtRef
+   			AND c.id.dataFine >= :dtRef
+   			AND c.id.codNazionale = :codEnte
+   			AND c.id.foglio = TO_NUMBER(:foglio)
+   			AND c.id.particella = LPAD(:particella,5,'0')
+   			AND c.id.unimm = TO_NUMBER(:unimm)
+   			AND s.pkCuaa = c.id.pkCuaa
+   			AND s.pkid IN
+   			(select sb.id.idDwh from SitSoggettoTotale sa, SitSoggettoTotale sb
+		        where sa.fkSoggetto = sb.fkSoggetto
+		        and sa.id.fkEnteSorgente = '2' and sa.id.progEs = '4'
+				and sb.id.fkEnteSorgente = '4' and sb.id.progEs = '3' 
+				and sa.id.idDwh = :idSoggTarsu)
+			  
+			 ]]>
+		</query>
+	</named-query>
+	
+	<named-query name="Indice.getAnagrafeDaSoggCat">
+		<query>
+			<![CDATA[
+				select distinct sb.id.idDwh from SitSoggettoTotale sa, SitSoggettoTotale sb
+		        where sa.fkSoggetto = sb.fkSoggetto
+		        and sa.id.fkEnteSorgente = '4' and sa.id.progEs = '3'
+				and sb.id.fkEnteSorgente = '1' and sb.id.progEs = '1' 
+				and sa.id.idDwh = :idDwhSoggCat
+			 ]]>
+		</query>
+	</named-query>
+
+</entity-mappings>

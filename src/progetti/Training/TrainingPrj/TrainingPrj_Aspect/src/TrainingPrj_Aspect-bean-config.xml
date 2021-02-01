@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:faces="http://www.springframework.org/schema/faces"
+	xmlns:webflow="http://www.springframework.org/schema/webflow-config"
+	xmlns:jee="http://www.springframework.org/schema/jee"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:security="http://www.springframework.org/schema/security"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+        http://www.springframework.org/schema/webflow-config
+        http://www.springframework.org/schema/webflow-config/spring-webflow-config-2.0.xsd
+		http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+		http://www.springframework.org/schema/context 
+		http://www.springframework.org/schema/context/spring-context-2.5.xsd
+		http://www.springframework.org/schema/faces 
+		http://www.springframework.org/schema/faces/spring-faces-2.0.xsd
+		http://www.springframework.org/schema/webflow-config 
+		http://www.springframework.org/schema/webflow-config/spring-webflow-config-2.0.xsd
+		http://www.springframework.org/schema/jee 
+		http://www.springframework.org/schema/jee/spring-jee-2.5.xsd
+		http://www.springframework.org/schema/security 
+		http://www.springframework.org/schema/security/spring-security.xsd">
+
+
+	<context:annotation-config />
+   	<context:component-scan base-package="it.webred.cs.sample.aop.aspect"/>
+
+
+
+	<aop:aspectj-autoproxy>
+	</aop:aspectj-autoproxy> 
+
+	<!-- Semplice ADVISOR della classe DependencyBean -->
+  	<bean id="dependencyBeanProxy3" class="org.springframework.aop.framework.ProxyFactoryBean">
+	    <property name="proxyTargetClass" value="true"/>
+    	<property name="target" ref="dependencyBean"/>
+   
+    	<property name="interceptorNames">
+        <list>
+            <value>hijackBeforeMethodBean</value>
+        </list>
+    	</property>
+    	<aop:scoped-proxy/>
+    	
+	</bean>
+	
+  
+<!-- DUE Proxy bean il secondo dei quali  possiede un advisor "advisor" che è un bean con un pointcut sul metodo sayHi -->
+  <bean id="dependencyBeanProxy1" class="org.springframework.aop.framework.ProxyFactoryBean">
+    <property name="target" ref="dependencyBean"/>
+    <property name="proxyTargetClass" value="true"/>
+    
+    <property name="interceptorNames">
+      <list>
+        <value>simpleAdvice2</value>
+      </list>
+    </property>
+    <aop:scoped-proxy/>
+    
+  </bean>
+
+  <bean id="dependencyBeanProxy2" class="org.springframework.aop.framework.ProxyFactoryBean" >
+    <property name="target" ref="dependencyBean"/>
+     <property name="proxyTargetClass" value="false"/>
+    <property name="interceptorNames">
+      <list>
+        <value>advisor</value>
+      </list>
+    </property>
+  </bean>
+
+
+  <bean id="advisor" class="org.springframework.aop.support.DefaultPointcutAdvisor">
+    <property name="advice" ref ="simpleAdvice"/>
+    <property name="pointcut">
+      <bean class="org.springframework.aop.support.JdkRegexpMethodPointcut">
+        <property name="pattern">
+          <value>.*sayHi.*</value>
+        </property>
+      </bean>
+    </property>
+  </bean>
+  
+  
+
+  
+</beans>
+  

@@ -1,0 +1,137 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich">
+
+<!-- INIZIO NUOVA ATTIVITA MODAL BOX -->
+<rich:modalPanel id="newAttModalBox" minHeight="330" minWidth="800"
+	height="330" width="800">
+	<f:facet name="header">
+		<h:outputText value="Gestione attivita'"></h:outputText>
+	</f:facet>
+	<f:facet name="controls">
+		<h:form>
+			<h:panelGroup>
+				<h:graphicImage value="/images/close.png" style="cursor:pointer"
+					id="hidelink">
+					<a4j:support event="onclick" action="#{sNewBean.resetPage}"
+						reRender="newAttPage"
+						oncomplete="javascript:Richfaces.hideModalPanel('newAttModalBox');" />
+				</h:graphicImage>
+			</h:panelGroup>
+		</h:form>
+	</f:facet>
+
+	<h:form id="newAttForm">
+		<rich:spacer height="10px" />
+
+		<h:panelGrid columns="4" width="100%">
+			<h:outputLabel value="Ente" />
+			<h:selectOneMenu id="ente" value="#{sNewBean.ente}"
+				disabled="#{sNewBean.rSchedulerTimeId ne 0}">
+				<f:selectItems value="#{sNewBean.listaEnti}" />
+				<a4j:support event="onchange" action="#{sNewBean.doCaricaFonti}"
+					reRender="fonte, comando"></a4j:support>
+			</h:selectOneMenu>
+
+			<h:outputLabel value="Fonte dati" />
+			<h:selectOneMenu id="fonte" value="#{sNewBean.fonte}"
+				disabled="#{sNewBean.rSchedulerTimeId ne 0}">
+				<f:selectItems value="#{sNewBean.listaFonti}" />
+				<a4j:support event="onchange" action="#{sNewBean.doCaricaComandi}"
+					reRender="comando"></a4j:support>
+			</h:selectOneMenu>
+
+			<h:outputLabel value="Tipo operazione" />
+			<h:selectOneMenu id="tipoOp" value="#{sNewBean.tipoOp}"
+				disabled="#{sNewBean.rSchedulerTimeId ne 0}">
+				<f:selectItems value="#{sNewBean.listaTipoOp}" />
+				<a4j:support event="onchange" action="#{sNewBean.doCaricaComandi}"
+					reRender="comando"></a4j:support>
+			</h:selectOneMenu>
+
+			<h:outputLabel value="Comandi" />
+			<h:selectOneMenu id="comando" value="#{sNewBean.comando}"
+				disabled="#{sNewBean.rSchedulerTimeId ne 0}">
+				<f:selectItems value="#{sNewBean.listaComandi}" />
+			</h:selectOneMenu>
+		</h:panelGrid>
+
+		<rich:spacer height="10px" />
+
+		<h:panelGrid columns="1" width="100%">
+			<h:selectOneRadio value="#{sNewBean.tipoEsecuzione}"
+				layout="pageDirection">
+				<f:selectItem itemLabel="Esecuzione automatica" itemValue="A" />
+				<f:selectItem itemLabel="Avviso (esecuzione manuale)" itemValue="M" />
+			</h:selectOneRadio>
+		</h:panelGrid>
+
+		<rich:spacer height="10px" />
+
+		<h:panelGrid columns="4" width="65%">
+			<h:selectBooleanCheckbox id="cbx" value="#{sNewBean.intervallo}">
+				<a4j:support event="onclick"
+					reRender="newAttForm"/>
+			</h:selectBooleanCheckbox>
+			<h:outputLabel
+				value="Ripeti periodicamente esecuzione a intervalli di" />
+			<h:selectOneMenu id="valoreint" value="#{sNewBean.valoreIntervallo}">
+				<f:selectItems value="#{sNewBean.listaValoreIntervallo}" />
+			</h:selectOneMenu>
+			<h:selectOneMenu id="tipoint" value="#{sNewBean.tipoIntervallo}">
+				<f:selectItems value="#{sNewBean.listaTipoIntervallo}" />
+			</h:selectOneMenu>
+		</h:panelGrid>
+
+		<rich:spacer height="10px" />
+
+		<h:panelGrid columns="2" width="56%">
+			<h:outputLabel value="Imposta inizio esecuzione in data:" />
+			<rich:calendar value="#{sNewBean.dataInizio}" popup="true"
+				enableManualInput="true" direction="top-right"
+				datePattern="dd/MM/yyyy HH:mm" showApplyButton="true"
+				cellWidth="24px" cellHeight="22px" style="width:200px" />
+		</h:panelGrid>
+
+		<rich:spacer height="10px" />
+
+		<h:panelGrid columns="2" width="57%">
+			<h:outputLabel value="Imposta fine esecuzione in data:" rendered="#{sNewBean.intervallo}"/>
+			<rich:calendar value="#{sNewBean.dataFine}" popup="true"
+				enableManualInput="true" direction="top-right"
+				datePattern="dd/MM/yyyy HH:mm" showApplyButton="true"
+				cellWidth="24px" cellHeight="22px" style="width:200px" rendered="#{sNewBean.intervallo}"/>
+		</h:panelGrid>
+
+		<rich:spacer height="15px" />
+		<h:panelGrid id="pnlBtn" columns="1" style="text-align:center;"
+			width="100%">
+
+			<h:panelGroup>
+				<a4j:commandButton value="Salva" id="btnConferma"
+					reRender="schForm, newAttPage" styleClass="button"
+					action="#{sNewBean.doSalvaSchedulerTime}"
+					oncomplete="Richfaces.hideModalPanel('newAttModalBox'); return false;">
+					<a4j:support event="onclick"
+						onsubmit="if (!confirm('Procedere con il salvataggio?')) return false" />
+				</a4j:commandButton>
+
+				<rich:spacer width="15px" />
+
+				<a4j:commandButton value="Annulla" id="btnEsci" styleClass="button"
+					action="#{sNewBean.resetPage}" reRender="schForm, newAttPage"
+					onclick="Richfaces.hideModalPanel('newAttModalBox'); return false;">
+				</a4j:commandButton>
+			</h:panelGroup>
+
+		</h:panelGrid>
+	</h:form>
+
+</rich:modalPanel>
+<!-- FINE NUOVA ATTIVITA MODAL BOX -->
+
+</html>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-modules id="moduleCoreId" project-version="1.5.0">
+    <wb-module deploy-name="CeT_Support_EJB">
+        <wb-resource deploy-path="/" source-path="/ejbModule"/>
+        <dependent-module deploy-path="/" handle="module:/resource/CeT_Support_EJBClient/CeT_Support_EJBClient">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <property name="java-output-path" value="/CeT_Support_EJB/build/classes"/>
+        <property name="ClientProject" value="CeT_Support_EJBClient"/>
+        <property name="ClientJARURI" value="CeT_Support_EJBClient.jar"/>
+    </wb-module>
+</project-modules>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings
+  xmlns="http://java.sun.com/xml/ns/persistence/orm"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
+  version="2.0">
+
+	<named-query name="CartellaSociale.getInterventiByCF">
+		<query>
+			<![CDATA[
+				SELECT DISTINCT int.descrizione, intu.dtInizioVal, intu.dtFineVal , intu.importoIntervento, com.denominazione 
+				FROM AssInterventi int, AssInterventiUtenti intu, AssComuni com
+				WHERE intu.codFisc = :codFisc
+				AND int.codIntervento=intu.codIntervento 
+				AND com.belfiore=intu.codEnteErogante
+				ORDER BY intu.dtInizioVal DESC, int.descrizione
+			 ]]>
+		</query>
+	</named-query>
+
+</entity-mappings>

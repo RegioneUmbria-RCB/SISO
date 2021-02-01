@@ -1,0 +1,257 @@
+<?xml version="1.0"?>
+<j:jelly trim="false" xmlns:define="jelly:define" xmlns:j="jelly:core"
+	     xmlns:x="jelly:xml" xmlns:re="reTagLib" xmlns:log="jelly:log">
+	
+	<define:taglib uri="reTagLib">
+		<define:jellybean name="bridge" className="it.webred.rulengine.chains.bridge.JellyCommandBridge" />
+	</define:taglib>
+	
+	<!-- ELIMINAZIONE RECORD CON CHIAVE FITTIZIA BENE  -->
+	<j:set var='pardel1a' encode='true'>
+		<complexParam>
+		  
+	   		<param type="it.webred.rulengine.type.ComplexParam" name="sql">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[UPDSQL_DEL_a1]]</param></complexParam> ]]>
+	   		</param>
+	   		
+	   	</complexParam>
+	</j:set>
+	<re:bridge codiceComando="COMANDOSQL" context="${ctx}" connessione="VIRGILIO" var="cmddel1a" parametro="${pardel1a}" />
+	
+	<j:set var='pardel2a' encode='true'>
+		<complexParam>
+		  
+	   		<param type="it.webred.rulengine.type.ComplexParam" name="sql">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[UPDSQL_DEL_a2]]</param></complexParam> ]]>
+	   		</param>
+	   		
+	   	</complexParam>
+	</j:set>
+	<re:bridge codiceComando="COMANDOSQL" context="${ctx}" connessione="VIRGILIO" var="cmddel2a" parametro="${pardel2a}" />
+	
+	<j:set var='pardel3a' encode='true'>
+		<complexParam>
+		  
+	   		<param type="it.webred.rulengine.type.ComplexParam" name="sql">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[UPDSQL_DEL_a3]]</param></complexParam> ]]>
+	   		</param>
+	   		
+	   	</complexParam>
+	</j:set>
+	<re:bridge codiceComando="COMANDOSQL" context="${ctx}" connessione="VIRGILIO" var="cmddel3a" parametro="${pardel3a}" />
+
+	<j:set var='pardel4a' encode='true'>
+		<complexParam>
+		  
+	   		<param type="it.webred.rulengine.type.ComplexParam" name="sql">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[UPDSQL_DEL_a4]]</param></complexParam> ]]>
+	   		</param>
+	   		
+	   	</complexParam>
+	</j:set>
+	<re:bridge codiceComando="COMANDOSQL" context="${ctx}" connessione="VIRGILIO" var="cmddel4a" parametro="${pardel4a}" />
+	
+	<j:set var='pardel5a' encode='true'>
+		<complexParam>
+		  
+	   		<param type="it.webred.rulengine.type.ComplexParam" name="sql">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[UPDSQL_DEL_a5]]</param></complexParam> ]]>
+	   		</param>
+	   		
+	   	</complexParam>
+	</j:set>
+	<re:bridge codiceComando="COMANDOSQL" context="${ctx}" connessione="VIRGILIO" var="cmddel5a" parametro="${pardel5a}" />
+	
+	<j:set var='pardel6a' encode='true'>
+		<complexParam>
+		  
+	   		<param type="it.webred.rulengine.type.ComplexParam" name="sql">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[UPDSQL_DEL_a6]]</param></complexParam> ]]>
+	   		</param>
+	   		
+	   	</complexParam>
+	</j:set>
+	<re:bridge codiceComando="COMANDOSQL" context="${ctx}" connessione="VIRGILIO" var="cmddel6a" parametro="${pardel6a}" />
+	
+	<!-- AGGIORNAMENTO RECORD ELIMINATI BENE E DERIVATI-->
+	<j:set var='parupd1a' encode='true'>
+		<complexParam>
+		  
+	   		<param type="it.webred.rulengine.type.ComplexParam" name="sql">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[UPDSQL_UPD_a1]]</param></complexParam> ]]>
+	   		</param>
+	   		
+	   	</complexParam>
+	</j:set>
+	<re:bridge codiceComando="COMANDOSQL" context="${ctx}" connessione="VIRGILIO" var="cmdupd1a" parametro="${pardel1a}" />
+	
+	<j:set var='parupd2a' encode='true'>
+		<complexParam>
+		  
+	   		<param type="it.webred.rulengine.type.ComplexParam" name="sql">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[UPDSQL_UPD_a2]]</param></complexParam> ]]>
+	   		</param>
+	   		
+	   	</complexParam>
+	</j:set>
+	<re:bridge codiceComando="COMANDOSQL" context="${ctx}" connessione="VIRGILIO" var="cmdupd2a" parametro="${parupd2a}" />
+	
+	<j:set var='parupd3a' encode='true'>
+		<complexParam>
+		  
+	   		<param type="it.webred.rulengine.type.ComplexParam" name="sql">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[UPDSQL_UPD_a3]]</param></complexParam> ]]>
+	   		</param>
+	   		
+	   	</complexParam>
+	</j:set>
+	<re:bridge codiceComando="COMANDOSQL" context="${ctx}" connessione="VIRGILIO" var="cmdupd3a" parametro="${parupd3a}" />
+
+	<j:set var='parupd4a' encode='true'>
+		<complexParam>
+		  
+	   		<param type="it.webred.rulengine.type.ComplexParam" name="sql">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[UPDSQL_UPD_a4]]</param></complexParam> ]]>
+	   		</param>
+	   		
+	   	</complexParam>
+	</j:set>
+	<re:bridge codiceComando="COMANDOSQL" context="${ctx}" connessione="VIRGILIO" var="cmdupd4a" parametro="${parupd4a}" />
+	
+	<j:set var='parupd5a' encode='true'>
+		<complexParam>
+		  
+	   		<param type="it.webred.rulengine.type.ComplexParam" name="sql">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[UPDSQL_UPD_a5]]</param></complexParam> ]]>
+	   		</param>
+	   		
+	   	</complexParam>
+	</j:set>
+	<re:bridge codiceComando="COMANDOSQL" context="${ctx}" connessione="VIRGILIO" var="cmdupd5a" parametro="${parupd5a}" />
+	
+	<j:set var='parupd6a' encode='true'>
+		<complexParam>
+		  
+	   		<param type="it.webred.rulengine.type.ComplexParam" name="sql">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[UPDSQL_UPD_a6]]</param></complexParam> ]]>
+	   		</param>
+	   		
+	   	</complexParam>
+	</j:set>
+	<re:bridge codiceComando="COMANDOSQL" context="${ctx}" connessione="VIRGILIO" var="cmdupd6a" parametro="${parupd6a}" />
+
+	<!-- AGGIORNAMENTO BENE E DERIVATI  -->
+	<j:set var='parsqlbene' encode='true'>
+		<complexParam>
+		  
+	   		<param type="it.webred.rulengine.type.ComplexParam" name="sql">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[QUERYSQL_BENE_E_DERIVATI]]</param></complexParam> ]]>
+	   		</param>
+	   		
+	   	</complexParam>
+	</j:set>
+	<re:bridge codiceComando="SELECTSQL" context="${ctx}" connessione="VIRGILIO" var="cmdsqlbene" parametro="${parsqlbene}" />
+
+	<j:set var='pariterbene' encode='true'>
+		<complexParam>
+			
+			<param type="" name="sqlrs">${cmdsqlbene.risultati.RESULTSET}</param>
+			
+			<param type="it.webred.rulengine.type.ComplexParam" name="xml">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[RSITRSCRIPT_BENE]]</param></complexParam> ]]>
+	   		</param>
+			
+	   	</complexParam>
+	</j:set>
+	<re:bridge codiceComando="RSITERATOR" context="${ctx}" connessione="VIRGILIO" var="cmditerbene" parametro="${pariterbene}" />
+	
+	<!-- INDIRIZZI -->
+	<j:set var='pardel1b' encode='true'>
+		<complexParam>
+	   		<param type="it.webred.rulengine.type.ComplexParam" name="sql">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[UPDSQL_DEL_b1]]</param></complexParam> ]]>
+	   		</param>
+	   	</complexParam>
+	</j:set>
+	<re:bridge codiceComando="COMANDOSQL" context="${ctx}" connessione="VIRGILIO" var="cmddel1b" parametro="${pardel1b}" />
+	
+	<j:set var='parupd1b' encode='true'>
+		<complexParam>
+	   		<param type="it.webred.rulengine.type.ComplexParam" name="sql">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[UPDSQL_UPD_b1]]</param></complexParam> ]]>
+	   		</param>
+	   	</complexParam>
+	</j:set>
+	<re:bridge codiceComando="COMANDOSQL" context="${ctx}" connessione="VIRGILIO" var="cmdupd1b" parametro="${parupd1b}" />
+	
+	<j:set var='parsqlindirizzi' encode='true'>
+		<complexParam>
+		  
+	   		<param type="it.webred.rulengine.type.ComplexParam" name="sql">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[QUERYSQL_INDIRIZZI]]</param></complexParam> ]]>
+	   		</param>
+	   		
+	   	</complexParam>
+	</j:set>
+	<re:bridge codiceComando="SELECTSQL" context="${ctx}" connessione="VIRGILIO" var="cmdsqlindirizzi" parametro="${parsqlindirizzi}" />
+
+	<j:set var='pariterindirizzi' encode='true'>
+		<complexParam>
+			
+			<param type="" name="sqlrs">${cmdsqlindirizzi.risultati.RESULTSET}</param>
+			
+			<param type="it.webred.rulengine.type.ComplexParam" name="xml">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[RSITRSCRIPT_INDIRIZZO]]</param></complexParam> ]]>
+	   		</param>
+			
+	   	</complexParam>
+	</j:set>
+	<re:bridge codiceComando="RSITERATOR" context="${ctx}" connessione="VIRGILIO" var="cmditerindirizzi" parametro="${pariterindirizzi}" />
+	
+		<!-- MAPPALI -->
+	<j:set var='pardel1c' encode='true'>
+		<complexParam>
+	   		<param type="it.webred.rulengine.type.ComplexParam" name="sql">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[UPDSQL_DEL_c1]]</param></complexParam> ]]>
+	   		</param>
+	   	</complexParam>
+	</j:set>
+	<re:bridge codiceComando="COMANDOSQL" context="${ctx}" connessione="VIRGILIO" var="cmddel1c" parametro="${pardel1c}" />
+	
+	<j:set var='parupd1c' encode='true'>
+		<complexParam>
+	   		<param type="it.webred.rulengine.type.ComplexParam" name="sql">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[UPDSQL_UPD_c1]]</param></complexParam> ]]>
+	   		</param>
+	   	</complexParam>
+	</j:set>
+	<re:bridge codiceComando="COMANDOSQL" context="${ctx}" connessione="VIRGILIO" var="cmdupd1c" parametro="${parupd1c}" />
+	
+	<j:set var='parsqlmappali' encode='true'>
+		<complexParam>
+		  
+	   		<param type="it.webred.rulengine.type.ComplexParam" name="sql">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[QUERYSQL_MAPPALI]]</param></complexParam> ]]>
+	   		</param>
+	   		
+	   	</complexParam>
+	</j:set>
+	<re:bridge codiceComando="SELECTSQL" context="${ctx}" connessione="VIRGILIO" var="cmdsqlmappali" parametro="${parsqlmappali}" />
+
+	<j:set var='paritermappali' encode='true'>
+		<complexParam>
+			
+			<param type="" name="sqlrs">${cmdsqlmappali.risultati.RESULTSET}</param>
+			
+			<param type="it.webred.rulengine.type.ComplexParam" name="xml">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[RSITRSCRIPT_MAPPALE]]</param></complexParam> ]]>
+	   		</param>
+			
+	   	</complexParam>
+	</j:set>
+	<re:bridge codiceComando="RSITERATOR" context="${ctx}" connessione="VIRGILIO" var="cmditermappali" parametro="${paritermappali}" />
+	
+	
+	<re:bridge codiceComando="R-RIVERSA" context="${ctx}" connessione="VIRGILIO" var="cmd5" />
+ 
+</j:jelly>

@@ -1,0 +1,15 @@
+#--------------------------------------------------------------
+# File di configurazione in cui sono indicato i valori dei soli
+# parametri di contesto della catena jelly da passare alla 
+# regola 
+#------------------------------------------------------------
+# Numero di parametri previsti in input
+rengine.jchain.in.nof=2
+#------------------------------------------------------------
+# Le coppie chiavi/valore hanno come key lo stesso nome 
+# indicato nello script jelly xml
+#------------------------------------------------------------
+rengine.jchain.in.1.key=QUERYSQL_1
+rengine.jchain.in.1.value=select TO_CHAR(ncivnciv) ID_ORIG,ncivnciv, to_char(NCIVNUME) NUMERO, NCIVBARR BARRATO, NCIVSCALA SCALA, TO_CHAR(nciv_cviacodi) CODICE_VIA, CARONTE_DATA_INIZIO_VAL DT_EXP_DATO, NCIVDATAIN DT_INI_VAL_DATO, NCIVDATAIN, TO_CHAR(NCIVCAP) CAP, NCIVDATAFI DT_FINE_VAL_DATO from DS_D_NUMERI_CIVICI_1_0 WHERE CARONTE_FLAG_ELABORATO =0
+rengine.jchain.in.2.key=RSITRSCRIPT_1
+rengine.jchain.in.2.value=<RsIterator> <key table="DS_D_NUMERI_CIVICI_1_0"> <column name="ID_ORIG"/> <column name="DT_EXP_DATO"/> </key> <commands> <command name="it.webred.rulengine.brick.loadDwh.base.LoadSitDCivico" livelloAnomalie="2"> <param id="field" value="ID_ORIG" dest="ID_ORIG" type="java.lang.String"/> <param id="const" value="1" dest="FK_ENTE_SORGENTE" type="java.lang.Integer"/> <param id="const" value="" dest="ID_ORIG_D_SEZIONE_ELETTORALE" type="java.lang.String"/> <param id="const" value="1" dest="FK_ENTE_SORGENTE" type="java.lang.Integer"/> <param id="const" dest="CIVICO_COMPOSTO" type="it.webred.rulengine.type.ComplexParam"> <![CDATA[ <complexParam> <param name="numero"> [[NUMERO]] </param> <param name="barrato"> [[BARRATO]] </param> <param name="scala"> [[SCALA]] </param> </complexParam> ]]> </param> <param id="field" value="CODICE_VIA" dest="ID_ORIG_D_VIA" type="java.lang.String"/> <param id="field" value="CAP" dest="CAP" type="java.lang.String"/> <param id="const" value="" dest="ID_ORIG_D_FRAZIONE" type="java.lang.String"/> <param id="field" value="DT_EXP_DATO" dest="DT_EXP_DATO" type="java.sql.Timestamp"/> <param id="field" value="DT_INI_VAL_DATO" dest="DT_INI_VAL_DATO" type="java.sql.Timestamp"/> <param id="field" value="DT_FINE_VAL_DATO" dest="DT_FINE_VAL_DATO" type="java.sql.Timestamp"/> <param id="const" value="0" dest="FLAG_DT_VAL_DATO" type="java.lang.Integer"/> </command> <command name="it.webred.rulengine.brick.core.EseguiSql"> <param id="const" dest="SQL" type="java.lang.String"> <![CDATA[ update DS_D_NUMERI_CIVICI_1_0 SET CARONTE_FLAG_ELABORATO = 1 WHERE ncivnciv=? AND CARONTE_DATA_INIZIO_VAL=? ]]> </param> <param id="const" dest="PARAMETRI" type="it.webred.rulengine.type.ComplexParam"> <![CDATA[ <complexParam> <param name="param1"> [[NCIVNCIV]] </param> <param name="param2"> [[DT_EXP_DATO]] </param> </complexParam> ]]> </param> </command> </commands> </RsIterator>

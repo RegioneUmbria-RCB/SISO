@@ -1,0 +1,84 @@
+<?xml version="1.0"?>
+<j:jelly trim="false" xmlns:define="jelly:define" xmlns:j="jelly:core" xmlns:x="jelly:xml" xmlns:re="reTagLib" xmlns:log="jelly:log">
+	
+	<define:taglib uri="reTagLib">
+		<define:jellybean name="bridge" className="it.webred.rulengine.chains.bridge.JellyCommandBridge" />
+	</define:taglib>
+	
+	<!-- BENI PRINCIPALI -->	
+	<j:set var='parsqlconf' encode='true'>
+		<complexParam>
+		  
+	   		<param type="it.webred.rulengine.type.ComplexParam" name="sql">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[QUERYSQL_CONF]]</param></complexParam> ]]>
+	   		</param>
+	   		
+	   	</complexParam>
+	</j:set>
+	<re:bridge codiceComando="SELECTSQL" context="${ctx}" connessione="VIRGILIO" var="cmdsqlconf" parametro="${parsqlconf}" />
+	
+	<j:set var='pariterconf' encode='true'>
+		<complexParam>
+			
+			<param type="" name="sqlrs">${cmdsqlconf.risultati.RESULTSET}</param>
+			
+			<param type="it.webred.rulengine.type.ComplexParam" name="xml">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[RSITRSCRIPT_CONF]]</param></complexParam> ]]>
+	   		</param>
+			
+	   	</complexParam>
+	</j:set>
+	<re:bridge codiceComando="RSITERATOR" context="${ctx}" connessione="VIRGILIO" var="cmditerconf" parametro="${pariterconf}" />
+	
+	<!-- BENI DERIVATI -->
+	<j:set var='parsqlderi' encode='true'>
+		<complexParam>
+		  
+	   		<param type="it.webred.rulengine.type.ComplexParam" name="sql">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[QUERYSQL_DERI]]</param></complexParam> ]]>
+	   		</param>
+	   		
+	   	</complexParam>
+	</j:set>
+	<re:bridge codiceComando="SELECTSQL" context="${ctx}" connessione="VIRGILIO" var="cmdsqlderi" parametro="${parsqlderi}" />
+	
+	<j:set var='pariterderi' encode='true'>
+		<complexParam>
+			
+			<param type="" name="sqlrs">${cmdsqlderi.risultati.RESULTSET}</param>
+			
+			<param type="it.webred.rulengine.type.ComplexParam" name="xml">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[RSITRSCRIPT_DERI]]</param></complexParam> ]]>
+	   		</param>
+			
+	   	</complexParam>
+	</j:set>
+	<re:bridge codiceComando="RSITERATOR" context="${ctx}" connessione="VIRGILIO" var="cmditerderi" parametro="${pariterderi}" />
+	
+	<!-- BENI DOCUMENTI -->
+	<j:set var='parsqldocu' encode='true'>
+		<complexParam>
+		  
+	   		<param type="it.webred.rulengine.type.ComplexParam" name="sql">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[QUERYSQL_DOCU]]</param></complexParam> ]]>
+	   		</param>
+	   		
+	   	</complexParam>
+	</j:set>
+	<re:bridge codiceComando="SELECTSQL" context="${ctx}" connessione="VIRGILIO" var="cmdsqldocu" parametro="${parsqldocu}" />
+	
+	<j:set var='pariterdocu' encode='true'>
+		<complexParam>
+			
+			<param type="" name="sqlrs">${cmdsqldocu.risultati.RESULTSET}</param>
+			
+			<param type="it.webred.rulengine.type.ComplexParam" name="xml">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[RSITRSCRIPT_DOCU]]</param></complexParam> ]]>
+	   		</param>
+			
+	   	</complexParam>
+	</j:set>
+	<re:bridge codiceComando="RSITERATOR" context="${ctx}" connessione="VIRGILIO" var="cmditerdocu" parametro="${pariterdocu}" />
+	
+ 
+</j:jelly>

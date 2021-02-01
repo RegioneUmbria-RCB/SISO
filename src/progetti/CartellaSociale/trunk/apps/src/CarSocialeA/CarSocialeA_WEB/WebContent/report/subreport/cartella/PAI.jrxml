@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="5" bottomMargin="5" uuid="03109260-e34d-4ca3-b686-899bd9f4b710">
+	<property name="ireport.zoom" value="1.4641000000000006"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<field name="tipoProgetto" class="java.lang.String"/>
+	<field name="progetto" class="java.lang.String"/>
+	<field name="dtAttivazione" class="java.lang.String"/>
+	<field name="dtChiusuraPrevista" class="java.lang.String"/>
+	<field name="obiettiviBreveTer" class="java.lang.String"/>
+	<field name="obiettiviMedioTer" class="java.lang.String"/>
+	<field name="SUBREPORT_DIR" class="java.lang.String"/>
+	<field name="obiettiviLungoTer" class="java.lang.String"/>
+	<field name="raggiuntiBreve" class="java.lang.String"/>
+	<field name="raggiuntiMedio" class="java.lang.String"/>
+	<field name="raggiuntiLungo" class="java.lang.String"/>
+	<field name="verificaOgni" class="java.lang.String"/>
+	<field name="dtUltimoMonitor" class="java.lang.String"/>
+	<field name="attivitaCollegate" class="java.lang.Object"/>
+	<field name="erogazioniPai" class="java.lang.Object"/>
+	<field name="affido" class="java.lang.Object"/>
+	<field name="motivazioniProgetto" class="java.lang.String"/>
+	<background>
+		<band/>
+	</background>
+	<title>
+		<band height="26">
+			<staticText>
+				<reportElement positionType="Float" mode="Opaque" x="0" y="0" width="553" height="24" backcolor="#CCCCCC" uuid="ffbd68c7-d806-4fc5-8df7-debec6deefeb"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PAI]]></text>
+			</staticText>
+		</band>
+	</title>
+	<detail>
+		<band height="258" splitType="Stretch">
+			<staticText>
+				<reportElement x="1" y="5" width="91" height="20" uuid="4fe6ad8b-ed77-4002-adbc-ccb8499bc794"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Tipo Progetto]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="92" y="5" width="150" height="20" uuid="69c5cd03-d84d-4efa-b41c-a0cd2cd024cc"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{tipoProgetto}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="321" y="5" width="100" height="20" uuid="453b0b58-1140-44a6-ac60-6930ca182c47"/>
+				<textElement>
+					<font isBold="false"/>
+				</textElement>
+				<text><![CDATA[Progetto]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="421" y="5" width="100" height="20" uuid="17f5ca17-04d3-4291-a5b3-57c16c84e4c6"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{progetto}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="25" width="100" height="20" uuid="5451652e-bc75-4988-9348-1950fcaee54e"/>
+				<text><![CDATA[Data Attivazione]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="100" y="25" width="110" height="20" uuid="fbb81e9d-cfc2-4828-ab3c-f17a326f4bf4"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{dtAttivazione}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="321" y="25" width="110" height="20" uuid="b04f7561-6d65-476f-aa91-b69133e52c49"/>
+				<text><![CDATA[Data Chiusura Prevista]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="431" y="25" width="100" height="20" uuid="1a27ba35-8af8-4165-a066-30c79106b8bc"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{dtChiusuraPrevista}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="1" y="48" width="129" height="20" uuid="02685a96-82d8-41df-9738-633e65766299"/>
+				<textElement>
+					<font isBold="false"/>
+				</textElement>
+				<text><![CDATA[Obiettivi di breve termine]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="1" y="69" width="552" height="20" uuid="84754702-7c10-4c12-ae38-b0e69344fa4b"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{obiettiviBreveTer}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="0" y="99" width="130" height="20" uuid="5ca35aa3-8341-4497-b72d-f3fe7a95d659"/>
+				<text><![CDATA[Obiettivi di medio termine]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="2" y="118" width="551" height="20" uuid="549874d0-e408-45f8-b308-97bac68ab18e"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{obiettiviMedioTer}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="0" y="149" width="115" height="20" uuid="9082e06e-cc98-4015-91fe-7748d6059fbb"/>
+				<text><![CDATA[Obiettivi di lungo termine]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="3" y="170" width="550" height="20" uuid="04c2c244-3b3d-4ad1-8210-85db7e6f1b79"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{obiettiviLungoTer}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="389" y="49" width="162" height="20" uuid="0feb9264-571a-47d5-85a1-fd0898862058"/>
+				<textElement textAlignment="Right">
+					<font isBold="false" isItalic="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($F{raggiuntiBreve})]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="0" y="232" width="100" height="20" uuid="3056b613-375e-40b2-a328-ea170df5e4d6"/>
+				<text><![CDATA[Verifica Ogni :]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" x="100" y="232" width="126" height="20" uuid="242b6bb8-e903-465e-8e05-2a90bb43e9a6"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{verificaOgni}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="279" y="232" width="125" height="20" uuid="6caa2f4b-966d-4e75-866f-dfe354f4ae85"/>
+				<text><![CDATA[Data ultimo monitoraggio]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" x="404" y="232" width="100" height="20" uuid="052844a8-9353-4220-bc58-0bd4b28dde60"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{dtUltimoMonitor}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="391" y="99" width="162" height="20" uuid="98727ea6-7410-43fd-8d85-7a04779ad90d"/>
+				<textElement textAlignment="Right">
+					<font isBold="false" isItalic="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($F{raggiuntiMedio})]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="389" y="149" width="162" height="20" uuid="bf3a8191-091f-4a65-92f0-c089fc8055f7"/>
+				<textElement textAlignment="Right">
+					<font isBold="false" isItalic="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{raggiuntiLungo}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="191" width="115" height="20" uuid="c5f07137-4a8c-4d99-9205-703e6abd3c32"/>
+				<text><![CDATA[Motivazioni progetto]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="3" y="209" width="550" height="20" uuid="6682d385-36f6-4f66-b094-3fe7246b1352"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{motivazioniProgetto}]]></textFieldExpression>
+			</textField>
+		</band>
+		<band height="38" splitType="Immediate">
+			<subreport>
+				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="-20" y="0" width="517" height="36" isRemoveLineWhenBlank="true" uuid="e34b0838-46e2-401e-a41a-92249ae8d780">
+					<printWhenExpression><![CDATA[$F{affido} != null]]></printWhenExpression>
+				</reportElement>
+				<subreportParameter name="affido">
+					<subreportParameterExpression><![CDATA[$F{affido}]]></subreportParameterExpression>
+				</subreportParameter>
+				<dataSourceExpression><![CDATA[$F{affido}]]></dataSourceExpression>
+				<subreportExpression><![CDATA[$F{SUBREPORT_DIR} + "affido.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+		<band height="37" splitType="Immediate">
+			<subreport>
+				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="-20" y="0" width="517" height="36" isRemoveLineWhenBlank="true" uuid="845c1f03-5d5f-40e7-9a23-dc581e50237d">
+					<printWhenExpression><![CDATA[$F{erogazioniPai} != null]]></printWhenExpression>
+				</reportElement>
+				<subreportParameter name="erogazioniPai">
+					<subreportParameterExpression><![CDATA[$F{erogazioniPai}]]></subreportParameterExpression>
+				</subreportParameter>
+				<dataSourceExpression><![CDATA[$F{erogazioniPai}]]></dataSourceExpression>
+				<subreportExpression><![CDATA[$F{SUBREPORT_DIR} + "erogazioniPai.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+		<band height="37" splitType="Immediate">
+			<subreport>
+				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="-20" y="0" width="517" height="36" isRemoveLineWhenBlank="true" uuid="ddad88d8-7c04-4d14-a9df-18fe371443eb">
+					<printWhenExpression><![CDATA[$F{attivitaCollegate} != null]]></printWhenExpression>
+				</reportElement>
+				<subreportParameter name="attivitaCollegate">
+					<subreportParameterExpression><![CDATA[$F{attivitaCollegate}]]></subreportParameterExpression>
+				</subreportParameter>
+				<dataSourceExpression><![CDATA[$F{attivitaCollegate}]]></dataSourceExpression>
+				<subreportExpression><![CDATA[$F{SUBREPORT_DIR} + "attivitaProPai.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+		<band height="11">
+			<line>
+				<reportElement x="0" y="0" width="555" height="1" uuid="1ded5c6c-a1aa-489b-95db-7e85dcd15c8a"/>
+				<graphicElement>
+					<pen lineStyle="Dotted" lineColor="#CCCCCC"/>
+				</graphicElement>
+			</line>
+		</band>
+	</detail>
+</jasperReport>

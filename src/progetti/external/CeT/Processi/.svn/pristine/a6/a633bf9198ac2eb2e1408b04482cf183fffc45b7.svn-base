@@ -1,0 +1,19 @@
+#--------------------------------------------------------------
+# File di configurazione in cui sono indicato i valori dei soli
+# parametri di contesto della catena jelly da passare alla 
+# regola 
+#------------------------------------------------------------
+# Numero di parametri previsti in input
+rengine.jchain.in.nof=4
+#------------------------------------------------------------
+# Le coppie chiavi/valore hanno come key lo stesso nome 
+# indicato nello script jelly xml
+#------------------------------------------------------------
+rengine.jchain.in.1.key=QUERYSQL_1
+rengine.jchain.in.1.value=truncate table red_an_aux_impon_impos
+rengine.jchain.in.2.key=QUERYSQL_2
+rengine.jchain.in.2.value=insert into red_an_aux_impon_impos SELECT r.ide_telematico, r.codice_fiscale_dic, t.tipo_modello,r.CODICE_QUADRO, CASE WHEN r.codice_quadro IN ('PL01400100001', 'PL01400200001','DB00100100001', 'RN00400100001','RN00600200001', 'RN01600100001') THEN r.valore_contabile ELSE null END AS imponibile, CASE WHEN r.codice_quadro NOT IN('PL01400100001', 'PL01400200001','DB00100100001', 'RN00400100001','RN00600200001', 'RN01600100001') THEN r.valore_contabile ELSE null END AS imposta, r.anno_imposta, d.codice_cat_1,d.codice_cat_2,d.codice_cat_3,d.codice_cat_attuale,'1' FROM red_an_redditi_dichiarati r, red_an_trascodifica t,red_an_domicilio_fiscale d,red_an_dati_anagrafici a WHERE r.anno_imposta = t.anno_imposta AND r.codice_quadro = t.codice_riga AND r.ide_telematico = d.ide_telematico AND r.codice_fiscale_dic = d.codice_fiscale AND r.ide_telematico = a.ide_telematico AND r.codice_fiscale_dic = a.codice_fiscale AND ((t.codice_riga = 'PL01400100001' AND t.tipo_modello = '3') OR (t.codice_riga = 'PL01400200001' AND t.tipo_modello = '3') OR (t.codice_riga = 'PL05100100001' AND t.tipo_modello = '3') OR (t.codice_riga = 'PL05100200001' AND t.tipo_modello = '3') OR (t.codice_riga = 'DB00100100001' AND t.tipo_modello = 'S') OR (t.codice_riga = 'DB00100500001' AND t.tipo_modello = 'S') OR (t.codice_riga = 'RN00400100001' AND t.tipo_modello = 'U') OR (t.codice_riga = 'RN02600100001' AND t.tipo_modello = 'U') OR (t.codice_riga = 'RN00600200001' AND t.tipo_modello = '6') OR (t.codice_riga = 'RN01100100001' AND t.tipo_modello = '6') OR (t.codice_riga = 'RN01600100001' AND t.tipo_modello = '8') OR (t.codice_riga = 'RN02100100001' AND t.tipo_modello = '8'))
+rengine.jchain.in.3.key=QUERYSQL_3
+rengine.jchain.in.3.value=update red_an_aux_impon_impos set flg_validita = '0' where anno_imposta || tipo_modello || ide_telematico || codice_fiscale || codice_quadro in( SELECT x1.anno_imposta|| x1.tipo_modello|| x1.ide_telematico|| x1.codice_fiscale|| x1.codice_quadro FROM red_an_aux_impon_impos x1, red_an_aux_impon_impos x2 WHERE x1.codice_fiscale = x2.codice_fiscale AND x1.codice_quadro = x2.codice_quadro AND x1.ide_telematico != x2.ide_telematico)
+rengine.jchain.in.4.key=QUERYSQL_4
+rengine.jchain.in.4.value=update red_an_aux_impon_impos set flg_validita = '1' where anno_imposta|| tipo_modello|| ide_telematico|| codice_fiscale|| codice_quadro in(SELECT x1.anno_imposta|| x1.tipo_modello|| max(x1.ide_telematico)|| x1.codice_fiscale|| x1.codice_quadro FROM red_an_aux_impon_impos x1, red_an_aux_impon_impos x2 WHERE x1.codice_fiscale = x2.codice_fiscale AND x1.codice_quadro = x2.codice_quadro AND x1.ide_telematico != x2.ide_telematico GROUP BY x1.ANNO_IMPOSTA, x1.TIPO_MODELLO, x1.codice_fiscale, x1.codice_quadro)

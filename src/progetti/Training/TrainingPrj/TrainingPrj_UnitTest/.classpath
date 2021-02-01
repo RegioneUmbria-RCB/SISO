@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jre6"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/TrainingPrj_EJBClient"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/TrainingPrj_EJB"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/WebredEJBUtility"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/TrainingPrj_EJB2"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/TrainingPrj_EJB2Client"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
+	<classpathentry kind="lib" path="/CT-LIBS/apache-log4j/log4j-1.2.17.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

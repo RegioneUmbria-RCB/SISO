@@ -1,0 +1,79 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<ui:composition template="/jsp/protected/layout/layout.xhtml">
+
+	<ui:define name="content">
+
+				<p:panel id="palel1" header="" styleClass="breadcrumb">	
+					<h:panelGrid id="panelG1" columns="1">
+							<p:outputLabel>#{msgs['cs.home.breadcrumb']}</p:outputLabel>
+					</h:panelGrid>
+				</p:panel>
+				
+				<p:panel id="palel2" header="">
+				
+					<h:form id="newElementForm">
+						<h:panelGrid id="panelG2" columns="4">
+							<p:outputLabel value="#{msgs['cs.home.newperiod']}" />
+							
+							<p:commandButton icon="ui-icon-plusthick" action="#{homeCsBean.goNewPeriod}">
+							</p:commandButton>
+						</h:panelGrid> 
+					</h:form>
+				
+					<h:form id="filterForm">
+					
+						<p:remoteCommand name="onSelectedAuthority" update="lblPeriod, slcPeriod" />
+						
+						<p:remoteCommand name="onSelectedPeriod" update=":dataForm:periodDataTable" />
+					
+						<h:panelGrid id="panelG3" columns="4" style="margin-top: 10px;">
+								<p:outputLabel>#{msgs['cs.home.authority']}</p:outputLabel>
+								
+								<p:selectOneMenu id="slcAuthority" value="#{homeCsBean.selectedAuthority}">
+									<f:selectItem itemLabel="#{msgs['cs.selection']}" itemDisabled="true" />
+	            					<f:selectItems value="#{homeCsBean.selectableAuthorities}" />
+	            					<p:ajax listener="#{homeCsBean.onSelectionAuthority}" oncomplete="onSelectedAuthority()" />
+								</p:selectOneMenu>
+								
+								<p:outputLabel id="lblPeriod" style="padding-left:50px;">#{msgs['cs.home.period']}</p:outputLabel>
+								
+								<p:selectOneMenu id="slcPeriod" value="#{homeCsBean.selectedPeriod}">
+									<f:selectItem itemLabel="#{msgs['cs.selection']}" itemDisabled="true" />
+	            					<f:selectItems value="#{homeCsBean.selectablePeriods}" />
+	            					<p:ajax listener="#{homeCsBean.onSelectionPeriod}" oncomplete="onSelectedPeriod()" />
+								</p:selectOneMenu>
+						</h:panelGrid>
+					</h:form>
+					
+					<h:form id="dataForm">
+						<div style="margin-top: 10px;">
+							<p:outputLabel style="font-weight: bold;">Elenco Periodi</p:outputLabel>
+							<p:dataTable id="periodDataTable" value="#{homeCsBean.periodDataList}" var="period"
+								emptyMessage="Nessun elemento trovato" style="margin-top: 5px;">
+								<p:column headerText="#{msgs['cs.home.period']}">
+									<h:outputText value="#{period.time}" />
+								</p:column>
+								<p:column headerText="#{msgs['cs.home.authority']}">
+									<h:outputText value="#{period.authority}" />
+								</p:column>
+								<p:column>
+									<p:commandButton value="#{msgs['cs.update']}">
+									</p:commandButton>
+								</p:column>
+								<p:column>
+									<p:commandButton value="#{msgs['cs.delete']}">
+									</p:commandButton>
+								</p:column>
+							</p:dataTable>
+						</div>
+					</h:form>
+				</p:panel>
+			
+	</ui:define>
+</ui:composition>
+</html>

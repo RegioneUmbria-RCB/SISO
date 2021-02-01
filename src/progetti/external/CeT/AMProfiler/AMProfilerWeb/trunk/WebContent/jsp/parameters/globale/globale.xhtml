@@ -1,0 +1,69 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich">
+
+	<rich:dataTable width="100%" var="row"
+		value="#{globaleBean.listaKeyValue}" id="listParamTable"
+		onRowMouseOver="this.style.backgroundColor='#F1F1F1'"
+		onRowMouseOut="this.style.backgroundColor='#{a4jSkin.tableBackgroundColor}'">
+		<rich:column width="3%">
+			<f:facet name="header">
+			</f:facet>
+			<center><h:graphicImage value="/img/warning.png"
+				rendered="#{row.mustBeSet and empty row.amKeyValueExt.valueConf}" title="Da valorizzare" /></center>
+		</rich:column>
+		<rich:column>
+			<f:facet name="header">
+				<h:outputText value="Nome parametro" />
+			</f:facet>
+			<h:outputLabel style="font-weight: normal;" rendered="#{not row.mustBeSet}"
+				value="#{row.amKeyValueExt.keyConf}" />
+			<h:outputLabel style="font-weight: bold;" rendered="#{row.mustBeSet}"
+				title="obbligatorio" value="#{row.amKeyValueExt.keyConf}" />
+		</rich:column>
+		<rich:column width="60%">
+			<f:facet name="header">
+				<h:outputText value="Valore parametro" />
+			</f:facet>
+			<h:inputText title="#{row.descrizione}"
+				rendered="#{empty row.mappedClass}"
+				style="font-weight: normal; width: 99%;"
+				value="#{row.amKeyValueExt.valueConf}" />
+
+			<a4j:repeat rendered="#{not empty row.mappedClass}" rowKeyVar="keyIndex" 
+				value="#{row.listaAssistedValue}" var="assistVal">
+				<h:outputLabel style="font-weight: normal;"
+					value="#{assistVal.label}" />
+				<div style="float: left; margin-left: 5px;"/>
+
+				<h:selectOneMenu value="#{assistVal.selected}">
+					<f:selectItems value="#{assistVal.listaItem}" />
+					<a4j:support event="onchange"
+						action="#{globaleBean.doUpdateSelect}" reRender="listParamTable">
+						<a4j:actionparam value="#{row.amKeyValueExt.keyConf}" name="keySelected"
+								assignTo="#{globaleBean.keySelected}"/>
+						<a4j:actionparam value="#{keyIndex}" name="keyindex"
+								assignTo="#{globaleBean.keyIndex}"/>
+					</a4j:support>
+				</h:selectOneMenu>
+				<div style="float: left; margin-left: 5px;"/>
+			</a4j:repeat>
+		</rich:column>
+	</rich:dataTable>
+
+	<rich:spacer height="10px" />
+
+	<h:panelGrid columns="1" cellpadding="0" cellspacing="0">
+		<a4j:commandButton value="Salva"
+			action="#{globaleBean.doSaveParam}" reRender="glbForm">
+			<a4j:support event="onclick"
+				onsubmit="if (!confirm('Procedere con il salvataggio?')) return false" />
+		</a4j:commandButton>
+		
+	</h:panelGrid>
+
+</html>

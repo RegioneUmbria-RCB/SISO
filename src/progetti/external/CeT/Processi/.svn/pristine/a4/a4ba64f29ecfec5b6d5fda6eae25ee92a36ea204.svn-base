@@ -1,0 +1,22 @@
+##### LISTA DEGLI ENTI SORGENTI  #######
+# Il properties contiene la lista degli enti sorgenti disponibili per il caricamento.
+# Ogni elemento presente nel properties verrà caricato e ne verranno generate le varie tipologie (SOGGETTO, CIVICO ... )
+# Tali valori rappresenteranno la seconda parte della chiave usata nell'hashMap che serve per instanziare le classi
+# Es. di chiave -->   oggettodemografia0
+########################################
+
+#ES_DEMOGRAFIA=1
+#ES_TRIBUTI=2
+#ES_CONCESSIONI_EDILIZIE=3
+#ES_CATASTO=4
+#ES_LOCAZIONI=5
+#ES_SUCCESSIONI=6
+#ES_COMPRAVENDITE=7
+#ES_DOCFA=9
+#ES_FORNITURE_ELETTRICHE=10
+#ES_REDDITI=11
+#ES_GAS=12
+#ES_LICCOMMERCIALI=13
+#ES_COSAP=14
+#ES_PUBBLICITA=27
+#ES_ECOGRAFICO=29

@@ -1,0 +1,103 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich">
+
+<!-- INIZIO NUOVO STATO FONTI MODAL BOX -->
+<rich:modalPanel id="newStatoFontiModalBox" minHeight="290"
+	minWidth="550" height="290" width="550">
+	<f:facet name="header" >
+		<h:outputText value="#{statoFontiBean.tracciaCorrente == null ? 'Nuovo stato fonte dati' : 'Modifica note'}"></h:outputText>
+	</f:facet>
+	<f:facet name="controls">
+		<h:form>
+			<h:panelGroup>
+				<h:graphicImage value="/images/close.png" style="cursor:pointer"
+					id="hidelink">
+					<a4j:support event="onclick" action="#{statoFontiBean.resetPage}"
+						reRender="newStatoFontiPage"
+						oncomplete="javascript:Richfaces.hideModalPanel('newStatoFontiModalBox');" />
+				</h:graphicImage>
+			</h:panelGroup>
+		</h:form>
+	</f:facet>
+
+	<h:form id="newStatoForm">
+		<rich:spacer height="20px" />
+
+		<h:panelGrid columns="2" rendered="#{statoFontiBean.tracciaCorrente == null}">
+
+			<h:outputLabel value="Stato" />
+			<h:selectOneMenu id="lisStati"
+				value="#{statoFontiBean.statoSelezionato}">
+				<f:selectItems value="#{statoFontiBean.listaStati}" />
+				<a4j:support event="onchange"
+					action="#{statoFontiBean.doCaricaNote}" reRender="note" />
+			</h:selectOneMenu>
+
+			<rich:spacer height="10px" />
+			<h:outputLabel value="" />
+
+			<h:outputLabel value="Note" />
+			<h:inputTextarea id="note"
+				value="#{statoFontiBean.newTracciaStati.note}" rows="6" cols="80" />
+
+			<rich:spacer height="10px" />
+			<h:outputLabel value="" />
+
+			<h:outputLabel value="Data aggiornamento" />
+			<rich:calendar value="#{statoFontiBean.dataSelezionata}" popup="true"
+				enableManualInput="true" direction="top-right"
+				datePattern="dd/MM/yyyy HH:mm" showApplyButton="true"
+				cellWidth="24px" cellHeight="22px" style="width:200px" />
+		</h:panelGrid>
+		
+		<h:panelGrid columns="2" rendered="#{statoFontiBean.tracciaCorrente != null}">
+
+			<h:outputLabel value="Note" />
+			<h:inputTextarea id="noteAgg"
+				value="#{statoFontiBean.tracciaCorrente.note}" rows="6" cols="80" />
+				
+		</h:panelGrid>
+
+		<rich:spacer height="15px" />
+		<h:panelGrid id="pnlBtn" columns="1" style="text-align:center;"
+			width="100%">
+
+			<h:panelGroup>
+				<a4j:commandButton value="Salva" id="btnConferma"
+					rendered="#{statoFontiBean.tracciaCorrente == null}"
+					reRender="stFontiForm, newStatoFontiPage" styleClass="button"
+					action="#{statoFontiBean.doSalvaTracciaStato}"
+					oncomplete="Richfaces.hideModalPanel('newStatoFontiModalBox'); return false;">
+					<a4j:support event="onclick"
+						onsubmit="if (!confirm('Procedere con il salvataggio?')) return false" />
+				</a4j:commandButton>
+				
+				<a4j:commandButton value="Salva" id="btnAggiornaNote"
+					rendered="#{statoFontiBean.tracciaCorrente != null}"
+					reRender="stFontiForm, newStatoFontiPage" styleClass="button"
+					action="#{statoFontiBean.doAggiornaNote}"
+					oncomplete="Richfaces.hideModalPanel('newStatoFontiModalBox'); return false;">
+					<a4j:support event="onclick"
+						onsubmit="if (!confirm('Procedere con il salvataggio?')) return false" />
+				</a4j:commandButton>
+
+				<rich:spacer width="15px" />
+
+				<a4j:commandButton value="Annulla" id="btnEsci" styleClass="button"
+					action="#{statoFontiBean.resetPage}" reRender="newStatoFontiPage"
+					onclick="Richfaces.hideModalPanel('newStatoFontiModalBox'); return false;">
+				</a4j:commandButton>
+			</h:panelGroup>
+
+		</h:panelGrid>
+	</h:form>
+
+</rich:modalPanel>
+<!-- FINE NUOVA ATTIVITA MODAL BOX -->
+
+</html>

@@ -1,0 +1,41 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+     	xmlns:h="http://java.sun.com/jsf/html"
+		xmlns:f="http://java.sun.com/jsf/core"
+		xmlns:ui="http://java.sun.com/jsf/facelets"
+		xmlns:p="http://primefaces.org/ui"
+	  	xmlns:composite="http://java.sun.com/jsf/composite"
+	  	xmlns:webred="http://java.sun.com/jsf/composite/webred">
+      
+	<h:head>
+		<title>Componente scelta casella di testo comune / nazione</title>
+	</h:head>
+	<h:body>
+		<composite:interface componentType="pnlComuneNazione">
+			<composite:attribute name="comuneNazioneManBean" type="it.webred.jsf.interfaces.IComuneNazione" />
+			<composite:attribute name="pnlToUpdate" />
+			<composite:attribute name="disabled" type="boolean" default="false"/>
+		</composite:interface>
+		<composite:implementation>
+		
+			<span id="#{cc.clientId}">
+				<p:selectOneButton value="#{cc.attrs.comuneNazioneManBean.value}"  disabled="#{cc.attrs.disabled}">
+					<f:selectItem itemLabel="Comune" itemValue="#{cc.attrs.comuneNazioneManBean.comuneValue}" />  
+					<f:selectItem itemLabel="Stato estero" itemValue="#{cc.attrs.comuneNazioneManBean.nazioneValue}" />
+					
+					<p:ajax event="change" process="@this" update="pnlDettaglio" listener="#{cc.attrs.comuneNazioneManBean.comuneNazioneValueChangeListener}"/>
+					
+					<f:param name="pnlToUpdateId" value="#{cc.attrs.pnlToUpdate}" />
+				</p:selectOneButton>
+			    <h:panelGroup id="pnlDettaglio">				
+					<h:outputText value="#{cc.attrs.comuneNazioneManBean.extraLabel}" />					
+				
+					<webred:pnlComune comuneManBean="#{cc.attrs.comuneNazioneManBean.comuneMan}" rendered="#{cc.attrs.comuneNazioneManBean.comuneRendered}"  disabled="#{cc.attrs.disabled}"/>
+
+					<webred:pnlNazione nazioneManBean="#{cc.attrs.comuneNazioneManBean.nazioneMan}" rendered="#{not cc.attrs.comuneNazioneManBean.comuneRendered}"  disabled="#{cc.attrs.disabled}"/>
+				</h:panelGroup>		
+			</span>					
+		</composite:implementation>
+	</h:body>
+		
+</html>

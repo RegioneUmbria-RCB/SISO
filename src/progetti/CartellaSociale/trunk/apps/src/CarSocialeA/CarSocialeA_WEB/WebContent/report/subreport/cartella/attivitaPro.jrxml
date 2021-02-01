@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="5" bottomMargin="5" whenResourceMissingType="Empty" uuid="03109260-e34d-4ca3-b686-899bd9f4b710">
+	<property name="ireport.zoom" value="1.2100000000000002"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String">
+		<defaultValueExpression><![CDATA["subreport\\"]]></defaultValueExpression>
+	</parameter>
+	<field name="dtAttivita" class="java.lang.String"/>
+	<field name="numOperatori" class="java.lang.String"/>
+	<field name="dtProssimaAttDal" class="java.lang.String"/>
+	<field name="eseguitaRichiestaIndagine" class="java.lang.String"/>
+	<field name="oreImpiegateTot" class="java.lang.String"/>
+	<field name="dtProssimaAttAl" class="java.lang.String"/>
+	<field name="SUBREPORT_DIR" class="java.lang.String"/>
+	<field name="analisiPro" class="java.lang.String"/>
+	<field name="tipoAttivita_1" class="java.lang.Object"/>
+	<field name="tipoAttivita_2" class="java.lang.Object"/>
+	<field name="tipoAttivita_3" class="java.lang.Object"/>
+	<field name="lstProblematiche" class="java.lang.Object"/>
+	<field name="lstInterventi" class="java.lang.Object"/>
+	<background>
+		<band/>
+	</background>
+	<title>
+		<band height="28">
+			<staticText>
+				<reportElement positionType="Float" mode="Opaque" x="0" y="0" width="553" height="24" backcolor="#CCCCCC" uuid="ffbd68c7-d806-4fc5-8df7-debec6deefeb"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Attività Professionali]]></text>
+			</staticText>
+		</band>
+	</title>
+	<detail>
+		<band height="116" splitType="Immediate">
+			<staticText>
+				<reportElement x="0" y="10" width="91" height="20" uuid="4fe6ad8b-ed77-4002-adbc-ccb8499bc794"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Data attività]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="102" y="10" width="150" height="20" uuid="69c5cd03-d84d-4efa-b41c-a0cd2cd024cc"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{dtAttivita}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="264" y="10" width="149" height="20" uuid="eb701129-4911-43a6-a655-25d9759537f1"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Eseguita da richiesta indagine]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="413" y="10" width="140" height="20" uuid="2010e199-4a63-4ba7-ab52-47ef48d1743b"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{eseguitaRichiestaIndagine}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="30" width="115" height="20" uuid="46968cd6-5611-40d4-aed5-1a5e59d8dc90"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[N° operatori coinvolti]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="126" y="30" width="126" height="20" uuid="3a18b453-1b56-4701-bd75-2cd50f213ced"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{numOperatori}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="264" y="30" width="103" height="20" uuid="1da30e8d-02ce-49da-a193-e2a706f7506d"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Ore impiegate totali]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="367" y="30" width="181" height="20" uuid="b19eeb94-fc9b-4e33-9fc5-12fa6308d617"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{oreImpiegateTot}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="-2" y="50" width="125" height="20" uuid="ce3c623b-3b9d-492b-90f0-b1e74e9a5675"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Data prossima attività dal]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="126" y="50" width="126" height="20" uuid="0e3f3ec7-bdf6-4422-9970-d5cc81740887"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{dtProssimaAttDal}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="264" y="50" width="29" height="20" uuid="4484b905-0d38-44b3-98e4-2dfbadbb5cb3"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[al]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="296" y="50" width="117" height="20" uuid="356c90bc-10e2-4092-9248-2cdc04311daf"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{dtProssimaAttAl}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="115" y="88" width="88" height="20" uuid="9d9a79d1-ed9b-4d9f-81f5-15713d703b13"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{analisiPro}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="88" width="115" height="20" uuid="e4a50d8b-e4aa-4607-85c4-0a9a3be0f847"/>
+				<text><![CDATA[Analisi Problematiche:]]></text>
+			</staticText>
+		</band>
+		<band height="43" splitType="Immediate">
+			<printWhenExpression><![CDATA[$F{tipoAttivita_1} != null]]></printWhenExpression>
+			<subreport>
+				<reportElement x="-21" y="0" width="517" height="36" isRemoveLineWhenBlank="true" uuid="ddad88d8-7c04-4d14-a9df-18fe371443eb">
+					<printWhenExpression><![CDATA[$F{tipoAttivita_1} != null]]></printWhenExpression>
+				</reportElement>
+				<subreportParameter name="tipoAttivita_1">
+					<subreportParameterExpression><![CDATA[$F{tipoAttivita_1}]]></subreportParameterExpression>
+				</subreportParameter>
+				<dataSourceExpression><![CDATA[$F{tipoAttivita_1}]]></dataSourceExpression>
+				<subreportExpression><![CDATA[$F{SUBREPORT_DIR} + "tipoAttivita_1.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+		<band height="38" splitType="Immediate">
+			<printWhenExpression><![CDATA[$F{tipoAttivita_2} != null]]></printWhenExpression>
+			<subreport>
+				<reportElement x="-21" y="0" width="517" height="36" isRemoveLineWhenBlank="true" uuid="845c1f03-5d5f-40e7-9a23-dc581e50237d">
+					<printWhenExpression><![CDATA[$F{tipoAttivita_2} != null]]></printWhenExpression>
+				</reportElement>
+				<subreportParameter name="tipoAttivita_2">
+					<subreportParameterExpression><![CDATA[$F{tipoAttivita_2}]]></subreportParameterExpression>
+				</subreportParameter>
+				<dataSourceExpression><![CDATA[$F{tipoAttivita_2}]]></dataSourceExpression>
+				<subreportExpression><![CDATA[$F{SUBREPORT_DIR} + "tipoAttivita_2.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+		<band height="44" splitType="Immediate">
+			<printWhenExpression><![CDATA[$F{tipoAttivita_3} != null]]></printWhenExpression>
+			<subreport>
+				<reportElement x="-19" y="5" width="517" height="36" isRemoveLineWhenBlank="true" uuid="e34b0838-46e2-401e-a41a-92249ae8d780">
+					<printWhenExpression><![CDATA[$F{tipoAttivita_3} != null]]></printWhenExpression>
+				</reportElement>
+				<subreportParameter name="tipoAttivita_3">
+					<subreportParameterExpression><![CDATA[$F{tipoAttivita_3}]]></subreportParameterExpression>
+				</subreportParameter>
+				<dataSourceExpression><![CDATA[$F{tipoAttivita_3}]]></dataSourceExpression>
+				<subreportExpression><![CDATA[$F{SUBREPORT_DIR} + "tipoAttivita_3.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+		<band height="42">
+			<subreport>
+				<reportElement x="-21" y="0" width="517" height="40" uuid="ac61ad10-962a-4134-9cfc-ce083dc2dd83">
+					<printWhenExpression><![CDATA[$F{lstProblematiche} != null]]></printWhenExpression>
+				</reportElement>
+				<dataSourceExpression><![CDATA[$F{lstProblematiche}]]></dataSourceExpression>
+				<subreportExpression><![CDATA[$F{SUBREPORT_DIR} + "problematiche.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+		<band height="57">
+			<subreport>
+				<reportElement x="-21" y="2" width="517" height="52" uuid="7703ed4b-a098-4201-ad44-9d09c17f2787">
+					<printWhenExpression><![CDATA[$F{lstInterventi} != null]]></printWhenExpression>
+				</reportElement>
+				<dataSourceExpression><![CDATA[$F{lstInterventi}]]></dataSourceExpression>
+				<subreportExpression><![CDATA[$F{SUBREPORT_DIR} + "tipiInterventoProposti.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</detail>
+</jasperReport>

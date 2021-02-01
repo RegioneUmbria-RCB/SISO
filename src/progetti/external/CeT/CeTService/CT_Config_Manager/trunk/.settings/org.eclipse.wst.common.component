@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-modules id="moduleCoreId" project-version="1.5.0">
+    <wb-module deploy-name="CT_Config_Manager">
+        <wb-resource deploy-path="/" source-path="/ejbModule"/>
+        <property name="java-output-path" value="/CT_Config_Manager/build/classes"/>
+        <property name="ClientProject" value="CT_Config_ManagerClient"/>
+        <property name="ClientJARURI" value="CT_Config_ManagerClient.jar"/>
+    </wb-module>
+</project-modules>

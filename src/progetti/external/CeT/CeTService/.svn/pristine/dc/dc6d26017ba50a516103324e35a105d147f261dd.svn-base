@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings
+  xmlns="http://java.sun.com/xml/ns/persistence/orm"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
+  version="2.0">
+
+	<!-- Query Fascia Eta -->
+	<named-query name="SitCresFasciaEta.getFasce">
+		<query>
+			<![CDATA[
+				select f 
+				from SitCresFasciaEta f
+				order by f.idfascia asc
+			 ]]>
+		</query>
+	</named-query>
+	
+	<!-- Query Centro -->
+	<named-query name="SitCresCentro.getCentriByFascia">
+		<query>
+			<![CDATA[
+				select c 
+				from SitCresCentro c
+				where c.fasciaEta = :fascia
+				and aData > :data
+				order by c.descrizione asc
+			 ]]>
+		</query>
+	</named-query>
+	
+	<!-- Query Turno -->
+	<named-query name="SitCresTurno.getTurniByCentro">
+		<query>
+			<![CDATA[
+				select t 
+				from SitCresTurno t
+				where t.fkIdcres = :centro
+				order by t.numTurno asc
+			 ]]>
+		</query>
+	</named-query>
+	
+	<!-- Query Fermata -->
+	<named-query name="SitCresFermata.getFermateByCentro">
+		<query>
+			<![CDATA[
+				select f
+				from SitCresFermata f, SitCresFermataCentro fc
+				where fc.id.fkIdcres = :centro
+				and fc.id.fkCresFermata = f.idCresFermata
+				order by f.descrizione asc
+			 ]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SitCresFermata.getFermate">
+		<query>
+			<![CDATA[
+				select f
+				from SitCresFermata f
+				order by f.descrizione asc
+			 ]]>
+		</query>
+	</named-query>
+
+</entity-mappings>

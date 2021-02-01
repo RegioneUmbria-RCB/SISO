@@ -1,0 +1,193 @@
+<?xml version='1.0'?>
+
+<!-- The XML based JAAS login configuration read by the
+org.jboss.security.auth.login.XMLLoginConfig mbean. Add
+an application-policy element for each security domain.
+
+The outline of the application-policy is:
+<application-policy name="security-domain-name">
+  <authentication>
+    <login-module code="login.module1.class.name" flag="control_flag">
+      <module-option name = "option1-name">option1-value</module-option>
+      <module-option name = "option2-name">option2-value</module-option>
+      ...
+    </login-module>
+
+    <login-module code="login.module2.class.name" flag="control_flag">
+      ...
+    </login-module>
+    ...
+  </authentication>
+</application-policy>
+
+$Id: login-config.xml 87078 2009-04-09 14:23:47Z bstansberry@jboss.com $
+$Revision: 87078 $
+-->
+
+<policy>
+  <!-- Used by clients within the application server VM such as
+  mbeans and servlets that access EJBs.
+  -->
+  <application-policy name="client-login">
+    <authentication>
+      <login-module code="org.jboss.security.ClientLoginModule"
+        flag="required">
+         <!-- Any existing security context will be restored on logout -->
+         <module-option name="restore-login-identity">true</module-option>
+      </login-module>
+    </authentication>
+  </application-policy>
+
+  <!-- Security domains for testing new jca framework -->
+  <application-policy name="HsqlDbRealm">
+    <authentication>
+      <login-module code="org.jboss.resource.security.ConfiguredIdentityLoginModule"
+        flag="required">
+        <module-option name="principal">sa</module-option>
+        <module-option name="userName">sa</module-option>
+        <module-option name="password"></module-option>
+        <module-option name="managedConnectionFactoryName">jboss.jca:service=LocalTxCM,name=DefaultDS</module-option>
+      </login-module>
+    </authentication>
+  </application-policy>
+
+  <application-policy name="JmsXARealm">
+    <authentication>
+      <login-module code="org.jboss.resource.security.ConfiguredIdentityLoginModule"
+        flag="required">
+        <module-option name="principal">guest</module-option>
+        <module-option name="userName">guest</module-option>
+        <module-option name="password">guest</module-option>
+        <module-option name="managedConnectionFactoryName">jboss.jca:service=TxCM,name=JmsXA</module-option>
+      </login-module>
+    </authentication>
+  </application-policy>
+
+  <!-- A template configuration for the jmx-console web application. This
+    defaults to the UsersRolesLoginModule the same as other and should be
+    changed to a stronger authentication mechanism as required.
+  -->
+  <application-policy name="jmx-console">
+    <authentication>
+      <login-module code="org.jboss.security.auth.spi.UsersRolesLoginModule"
+        flag="required">
+        <module-option name="usersProperties">props/jmx-console-users.properties</module-option>
+        <module-option name="rolesProperties">props/jmx-console-roles.properties</module-option>
+      </login-module>
+    </authentication>
+  </application-policy>
+
+  <!-- A template configuration for the web-console web application. This
+    defaults to the UsersRolesLoginModule the same as other and should be
+    changed to a stronger authentication mechanism as required.
+  -->
+  <application-policy name="web-console">
+    <authentication>
+      <login-module code="org.jboss.security.auth.spi.UsersRolesLoginModule"
+        flag="required">
+        <module-option name="usersProperties">web-console-users.properties</module-option>
+        <module-option name="rolesProperties">web-console-roles.properties</module-option>
+      </login-module>
+    </authentication>
+  </application-policy>
+
+  <!--
+    A template configuration for the JBossWS security domain.
+    This defaults to the UsersRolesLoginModule the same as other and should be
+    changed to a stronger authentication mechanism as required.
+  -->
+  <application-policy name="JBossWS">
+    <authentication>
+      <login-module code="org.jboss.security.auth.spi.UsersRolesLoginModule"
+        flag="required">
+        <module-option name="usersProperties">props/jbossws-users.properties</module-option>
+        <module-option name="rolesProperties">props/jbossws-roles.properties</module-option>
+        <module-option name="unauthenticatedIdentity">anonymous</module-option>
+      </login-module>
+    </authentication>
+  </application-policy>
+
+  <!-- The default login configuration used by any security domain that
+  does not have a application-policy entry with a matching name
+  -->
+  <application-policy name="other">
+    <!-- A simple server login module, which can be used when the number
+    of users is relatively small. It uses two properties files:
+    users.properties, which holds users (key) and their password (value).
+    roles.properties, which holds users (key) and a comma-separated list of
+    their roles (value).
+    The unauthenticatedIdentity property defines the name of the principal
+    that will be used when a null username and password are presented as is
+    the case for an unuathenticated web client or MDB. If you want to
+    allow such users to be authenticated add the property, e.g.,
+    unauthenticatedIdentity="nobody"
+    -->
+    <authentication>
+      <login-module code="org.jboss.security.auth.spi.UsersRolesLoginModule"
+        flag="required"/>
+    </authentication>
+  </application-policy>
+  
+  <application-policy name="AM-Policy">
+        <authentication>
+            <login-module code="org.jboss.security.auth.spi.DatabaseServerLoginModule" flag="required">
+                <module-option name="dsJndiName">java:/jdbc/AMProfiler</module-option>
+                <module-option name="principalsQuery">
+                    select pwd from am_user where name=?
+				</module-option>
+                
+				<!--
+				<module-option name="rolesQuery">
+					<![CDATA[
+						select distinct ai.FK_AM_APPLICATION rname, 'Roles'
+						from AM_ITEM_ROLE ir 
+						LEFT JOIN AM_USER_IR uir on uir.FK_AM_ITEM_ROLE=IR.ID
+						LEFT JOIN AM_USER u on uir.FK_AM_USER=u.NAME
+						LEFT JOIN AM_APPLICATION_ITEM ai ON ir.FK_AM_APPLICATION_ITEM = ai.ID
+						where u.NAME=? 
+						and u.DISABLE_CAUSE IS NULL
+					]]>
+				</module-option>
+				-->
+				
+                <module-option name="rolesQuery">
+					<![CDATA[
+						select distinct rname, 'Roles'from (
+                        select distinct ai.FK_AM_APPLICATION rname, u.NAME uname, u.DISABLE_CAUSE udiscause
+                        from AM_AI_ROLE air 
+                        LEFT JOIN AM_USER_AIR uair on uair.FK_AM_AI_ROLE=air.ID
+                        LEFT JOIN AM_USER u on uair.FK_AM_USER=u.NAME
+                        LEFT JOIN AM_APPLICATION_ITEM ai ON air.FK_AM_APPLICATION_ITEM = ai.ID
+                        UNION
+                        select distinct ai.FK_AM_APPLICATION rname, u.NAME uname, u.DISABLE_CAUSE udiscause
+                        from AM_AI_ROLE air 
+                        LEFT JOIN AM_GROUP_AIR gair on gair.FK_AM_AI_ROLE=air.ID
+                        LEFT JOIN AM_GROUP g on gair.FK_AM_GROUP=g.NAME
+                        LEFT JOIN AM_USER_GROUP ug on ug.FK_AM_GROUP=g.NAME
+                        LEFT JOIN AM_USER u on ug.FK_AM_USER=u.NAME
+                        LEFT JOIN AM_APPLICATION_ITEM ai ON air.FK_AM_APPLICATION_ITEM = ai.ID
+                        )
+                        where uname=?
+                        and udiscause IS NULL
+                        
+                        UNION SELECT 'AmProfiler', 'Roles' from dual
+					]]>
+				</module-option>
+				<module-option name="securityDomain">java:/jaas/AM-Policy</module-option>
+				<module-option name="hashAlgorithm">MD5</module-option>
+				<module-option name="hashEncoding">HEX</module-option>
+			</login-module>
+			<!-- <login-module code="it.webred.AMProfiler.servlet.Auth" flag="sufficient" >
+                <module-option name="dsJndiName">java:/jdbc/AMProfiler</module-option>
+                <module-option name="principalsQuery">
+                    select pwd from am_user where name=?
+				</module-option>
+		        <module-option name="hashAlgorithm">MD5</module-option>
+				<module-option name="hashEncoding">HEX</module-option>
+		      </login-module> -->
+        </authentication>
+    </application-policy>
+    
+
+</policy>
+

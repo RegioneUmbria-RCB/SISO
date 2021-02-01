@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings
+  xmlns="http://java.sun.com/xml/ns/persistence/orm"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
+  version="2.0">
+	
+	<!-- Query AmUser -->
+	<named-query name="AmUser.getUserByUsername">
+		<query>
+			<![CDATA[
+				select u 
+				from AmUser u
+				where UPPER(u.name) = :username
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="AmUser.getUsersByEnteInizialiGruppo">
+		<query>
+			<![CDATA[
+	            select u  
+                from AmUser u, AmGroup g, AmUserGroup ug
+                where g.name like :gruppo
+                and u.name = ug.id.fkAmUser
+                and ug.id.fkAmGroup = g.name
+                and g.fkAmComune = :ente
+			]]>
+		</query>
+	</named-query>
+                
+	
+	<named-query name="AmUser.getUsersByEnte">
+		<query>
+			<![CDATA[
+				select u 
+				from AmUser u 
+				where u.name in (
+					select uu.name
+					from AmUser uu, AmGroup g, AmUserGroup ug
+					where uu.name = ug.id.fkAmUser
+					and ug.id.fkAmGroup = g.name
+					and g.fkAmComune = :ente)
+				or u.name in (
+					select ua.id.fkAmUser
+					from AmUserAir ua
+					where ua.id.fkAmComune = :ente)
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="AmUser.deleteUserByUserName">
+		<query>
+			<![CDATA[
+				DELETE FROM AmUser u
+				WHERE u.name = :username
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="AmAnagrafica.deleteUserByUserName">
+		<query>
+			<![CDATA[
+				DELETE FROM AmAnagrafica u
+				WHERE u.amUser.name = :username
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="AmUser.deleteUserAirByAmAiRole">
+		<query>
+			<![CDATA[
+				DELETE FROM AmUserAir u
+				WHERE u.id.fkAmAiRole = :id
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="AmUser.deleteUserGroupByGroup">
+		<query>
+			<![CDATA[
+				DELETE FROM AmUserGroup u
+				WHERE u.id.fkAmGroup = :group
+				AND u.id.fkAmUser = :user
+			]]>
+		</query>
+	</named-query>
+	
+	
+	<!-- Query AmAiRole -->
+	<named-query name="AmAiRole.getRoleByEnteAppUser">
+		<query>
+			<![CDATA[
+				select distinct role from AmAiRole role where role.id IN(
+				
+				select r.id from AmAiRole r, AmApplicationItem i, AmUserAir u 
+				where u.id.fkAmUser = :username and u.id.fkAmAiRole = r.id 
+				and i.fkAmApplication = :application and i.id = r.fkAmApplicationItem
+				and u.id.fkAmComune = :ente)
+				
+				or role.id IN(
+				
+				select r.id from AmAiRole r, AmApplicationItem i, AmGroupAir ga, AmUserGroup ug, AmGroup g 
+				where ug.id.fkAmUser = :username and ga.id.fkAmAiRole = r.id 
+				and ug.id.fkAmGroup = ga.id.fkAmGroup and g.name = ug.id.fkAmGroup
+				and i.fkAmApplication = :application and i.id = r.fkAmApplicationItem
+				and g.fkAmComune = :ente
+				)
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="AmAiRole.getRoleByEnteItemUser">
+		<query>
+			<![CDATA[	
+				select distinct role from AmAiRole role where role.id IN(
+				
+				select r.id from AmAiRole r, AmApplicationItem i, AmUserAir u 
+				where UPPER(u.id.fkAmUser) = :username and u.id.fkAmAiRole = r.id 
+				and i.fkAmItem = :item and i.id = r.fkAmApplicationItem
+				and u.id.fkAmComune = :ente)
+				
+				or role.id IN(
+				
+				select r.id from AmAiRole r, AmApplicationItem i, AmGroupAir ga, AmUserGroup ug, AmGroup g 
+				where UPPER(ug.id.fkAmUser) = :username and ga.id.fkAmAiRole = r.id 
+				and ug.id.fkAmGroup = ga.id.fkAmGroup and g.name = ug.id.fkAmGroup
+				and i.fkAmItem = :item and i.id = r.fkAmApplicationItem
+				and g.fkAmComune = :ente
+				)
+			]]>
+		</query>
+	</named-query>
+	
+	<!-- Query AmPermission -->
+	<named-query name="AmPermission.getPermissionByEnteItemUser">
+		<query>
+			<![CDATA[
+				select distinct perm from AmPermission perm where perm.name IN(
+				
+					select p.name from AmUserAir ua, AmPermissionAir pa, AmPermission p
+					where ua.id.fkAmAiRole = pa.id.fkAmAiRole
+					and pa.id.fkAmPermission = p.name
+					and ua.id.fkAmUser = :username
+					and ua.id.fkAmComune = :ente
+					and p.fkAmItem = :item)
+					
+				or perm.name IN(
+					
+					select p.name from AmUserGroup ug, AmGroupAir ga, AmGroup g, AmPermissionAir pa, AmPermission p
+					where ga.id.fkAmAiRole = pa.id.fkAmAiRole
+					and ug.id.fkAmGroup = ga.id.fkAmGroup
+					and pa.id.fkAmPermission = p.name
+					and g.name = ug.id.fkAmGroup
+					and ug.id.fkAmUser = :username
+					and g.fkAmComune = :ente
+					and p.fkAmItem = :item)
+				
+				order by perm.name
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="AmUserUfficio.getUfficioByUser">
+		<query>
+			<![CDATA[
+				SELECT u FROM AmUserUfficio u
+				WHERE u.fkAmUser = :user
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="AmUserGroup.getListaUtenti">
+		<query>
+			<![CDATA[
+				SELECT u FROM AmUserGroup u
+				WHERE u.id.fkAmGroup = :group
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="AmGroup.getGroupByName">
+		<query>
+			<![CDATA[
+				SELECT g FROM AmGroup g
+				WHERE g.name = :name
+			]]>
+		</query>
+	</named-query>
+	<named-query name="AmUserGroup.getGruppiUtente">
+		<query>
+			<![CDATA[
+				select g
+				from AmUserGroup a, AmGroup g
+				where g.name=a.id.fkAmGroup and a.id.fkAmUser = :username
+			]]>
+		</query>
+	</named-query>
+	
+	
+</entity-mappings>
+	

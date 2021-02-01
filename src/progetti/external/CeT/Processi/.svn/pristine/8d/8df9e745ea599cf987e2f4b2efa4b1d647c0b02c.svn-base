@@ -1,0 +1,13 @@
+tableA.name=RE_DEMOG_VIE_1_0
+file.prefix=ANA_VIE_
+#
+Caricatore.class.noversion=it.webred.rulengine.brick.loadDwh.load.demografia.vie.v1.ImportDemogVie
+#
+#------------------------
+# Tracciato record v 1.0
+#------------------------
+nof.fields=3
+#indice inizio incluso, lunghezza (come substring java)
+field.1.range=0:5
+field.2.range=5:15
+field.3.range=20:50

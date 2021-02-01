@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<j:jelly trim="false" xmlns:define="jelly:define" xmlns:j="jelly:core"
+	     xmlns:x="jelly:xml" xmlns:re="reTagLib" xmlns:log="jelly:log">
+	
+	<define:taglib uri="reTagLib">
+		<define:jellybean name="bridge" className="it.webred.rulengine.chains.bridge.JellyCommandBridge" />
+	</define:taglib>
+	
+	<re:bridge codiceComando="R-SUAP" context="${ctx}" connessione="DWH" var="cmd1" />
+		
+</j:jelly>

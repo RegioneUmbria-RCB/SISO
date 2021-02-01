@@ -1,0 +1,147 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich">
+
+<!-- INIZIO NUOVA ATTIVITA MODAL BOX -->
+<rich:modalPanel id="newEvtModalBox" minHeight="350" minWidth="800"
+	height="350" width="800">
+	
+	<f:facet name="header">
+		<h:outputText value="Definizione nuovo evento"></h:outputText>
+	</f:facet>
+	<f:facet name="controls">
+		<h:form>
+			<h:panelGroup>
+				<h:graphicImage value="/images/close.png" style="cursor:pointer"
+					id="hidelink">
+					<a4j:support event="onclick" action="#{eNewBean.resetPage}"
+						reRender="newEvtPage"
+						oncomplete="javascript:Richfaces.hideModalPanel('newEvtModalBox');" />
+				</h:graphicImage>
+			</h:panelGroup>
+		</h:form>
+	</f:facet>
+	
+	
+	<h:form id="newEvtForm">
+		<rich:spacer height="10px" />
+		
+		<h:panelGrid columns="4" width="100%">
+			<h:outputLabel value="Ente" />
+			<h:selectOneMenu id="ente" value="#{eNewBean.ente}">
+				<f:selectItems value="#{eNewBean.listaEnti}" />
+				<a4j:support event="onchange" action="#{eNewBean.doCaricaFonti}"
+					reRender="fonte, dopoFD, comando"></a4j:support>
+			</h:selectOneMenu>
+			
+			
+			<h:outputLabel value="Fonte dati" />
+			<h:selectOneMenu id="fonte" value="#{eNewBean.fonte}">
+				<f:selectItems value="#{eNewBean.listaFonti}" />
+				<a4j:support event="onchange" action="#{eNewBean.doCaricaComandi}"
+					reRender="comando"></a4j:support>
+			</h:selectOneMenu>
+			
+			
+			<h:outputLabel value="Tipo operazione" />
+			<h:selectOneMenu id="tipoOp" value="#{eNewBean.tipoOp}">
+				<f:selectItems value="#{eNewBean.listaTipoOp}" />
+				<a4j:support event="onchange" action="#{eNewBean.doCaricaComandi}"
+					reRender="comando"></a4j:support>
+			</h:selectOneMenu>
+
+			<h:outputLabel value="Comando evento" />
+			<h:selectOneMenu id="comando" value="#{eNewBean.comando}">
+				<f:selectItems value="#{eNewBean.listaComandi}" />
+			</h:selectOneMenu>
+			
+		</h:panelGrid>
+
+
+		<rich:spacer height="50px" />
+
+		
+		<h:panelGrid columns="2" width="100%" style="border:1px solid #c7c7c7;">
+			<h:outputLabel value="Requisiti evento" style="font-weight:bold;"/>
+			<h:outputLabel value="Individuare la casistica da associare al processo scelto"/>
+			
+			<rich:spacer height="10px" /><rich:spacer height="10px"  />
+			
+			<h:outputLabel value="Operazione"/>
+			<h:selectOneMenu id="dopoOPER" value="#{eNewBean.dopoOper}"
+							 disabled="#{eNewBean.operDisabled}">
+				<f:selectItem itemLabel="-" itemValue="0"/>
+				<f:selectItems value="#{eNewBean.listaTipoOp}" />
+				
+				<a4j:support event="onchange" action="#{eNewBean.doCaricaComandiAfter}"
+							 reRender="dopoCMD, dopoSTATO"></a4j:support>
+			</h:selectOneMenu>
+			
+			<h:outputLabel value="Fonte Dati"  />
+			<h:selectOneMenu id="dopoFD" value="#{eNewBean.dopoFd}"
+							disabled="#{eNewBean.fdDisabled}">
+				<f:selectItem itemLabel="-" itemValue="0"/>
+				<f:selectItems value="#{eNewBean.listaFonti}" />
+				
+				<a4j:support event="onchange" action="#{eNewBean.doCaricaComandiAfter}"
+							 reRender="dopoCMD, dopoSTATO"></a4j:support>
+			</h:selectOneMenu>
+			
+			<rich:spacer height="10px" /><rich:spacer height="10px"  />
+			
+			<h:outputLabel value="Comando" />
+			<h:selectOneMenu id="dopoCMD" value="#{eNewBean.dopoCmd}" 
+							 disabled="#{eNewBean.cdmDisabled}">
+				<f:selectItem itemLabel="-" itemValue="0"/>
+				<f:selectItems value="#{eNewBean.listaComandiAfter}" />
+				
+				<a4j:support event="onchange" action="#{eNewBean.changeCmd}"
+							 reRender="dopoOPER, dopoFD, dopoSTATO"></a4j:support>
+			</h:selectOneMenu>
+			
+			<h:outputLabel value="Stato" />
+			<h:selectOneMenu id="dopoSTATO" value="#{eNewBean.dopoStato}" 
+								disabled="#{eNewBean.statoDisabled}">
+				<f:selectItem itemLabel="-" itemValue="0"/>
+				<f:selectItems value="#{eNewBean.listaStatiAfter}" />
+
+				<a4j:support event="onchange" action="#{eNewBean.changeStato}"
+							 reRender="dopoOPER, dopoFD"></a4j:support>
+			</h:selectOneMenu>
+
+			
+		</h:panelGrid>
+		
+		<rich:spacer height="15px" />
+		
+		<h:panelGrid id="pnlBtn" columns="1" style="text-align:center;" width="100%">
+
+			<h:panelGroup>
+				<a4j:commandButton value="Salva" id="btnConferma"
+					reRender="evForm" styleClass="button"
+					action="#{eNewBean.doSalvaEvento}"
+					oncomplete="Richfaces.hideModalPanel('newEvtModalBox'); return false;">
+					<a4j:support event="onclick"
+						onsubmit="if (!confirm('Procedere con il salvataggio?')) return false" />
+				</a4j:commandButton>
+
+				<rich:spacer width="15px" />
+
+				<a4j:commandButton value="Annulla" id="btnEsci" styleClass="button"
+					action="#{eNewBean.resetPage}" reRender="evForm"
+					onclick="Richfaces.hideModalPanel('newEvtModalBox'); return false;">
+				</a4j:commandButton>
+			</h:panelGroup>
+
+		</h:panelGrid>
+		
+	</h:form>
+	
+</rich:modalPanel>
+
+
+</html>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app id="WebApp_ID" version="2.5"
+ xmlns="http://java.sun.com/xml/ns/javaee"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+ <display-name>CT_Controller_Listener</display-name>
+ 
+ <listener>
+  <listener-class>it.webred.ct.rulengine.listener.ProcessAgentListener</listener-class>
+ </listener>
+ 
+ <listener>
+  <listener-class>it.webred.ct.rulengine.listener.QueueMonitorListener</listener-class>
+ </listener>
+ 
+ <listener>
+  <listener-class>it.webred.ct.rulengine.listener.SchedulerListener</listener-class>
+ </listener>
+ 
+ <listener>
+  <listener-class>it.webred.ct.rulengine.listener.EventLaunchListener</listener-class>
+ </listener>
+ 
+ <listener>
+  <listener-class>it.webred.ct.rulengine.listener.SynchronizerListener</listener-class>
+ </listener>
+ 
+ <login-config>
+  <auth-method>BASIC</auth-method>
+ </login-config>
+</web-app>

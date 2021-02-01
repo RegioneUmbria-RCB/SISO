@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="aac40627-9034-4852-841a-125bbd13a786">
+	<property name="ireport.zoom" value="1.0000000000000002"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<field name="tipoIntervento" class="java.lang.String"/>
+	<field name="tipoInterventoCustom" class="java.lang.String"/>
+	<field name="dataUltimaErogazione" class="java.lang.String"/>
+	<field name="statoUltimaErog" class="java.lang.String"/>
+	<background>
+		<band/>
+	</background>
+	<title>
+		<band height="59">
+			<staticText>
+				<reportElement mode="Opaque" x="1" y="0" width="555" height="20" backcolor="#CCCCCC" uuid="0ee27a88-6bd2-4246-9be7-87f53b1c9d78"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="html">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Erogazioni Collegate]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="1" y="25" width="162" height="34" uuid="2d013f28-ecdb-4e39-bcdd-92a9477f7f6c"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true" isItalic="false"/>
+				</textElement>
+				<text><![CDATA[Tipo Intervento]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="163" y="25" width="167" height="34" uuid="431c48a4-a5b3-4bb1-b133-ccf4627c7759"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true" isItalic="false"/>
+				</textElement>
+				<text><![CDATA[Tipo Intervento custom]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="332" y="25" width="95" height="34" uuid="9d0e97be-0729-49d6-a772-f2a79f0e7074"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true" isItalic="false"/>
+				</textElement>
+				<text><![CDATA[Data ultima erogazione]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="428" y="25" width="126" height="34" uuid="17e967cb-f56b-486d-b9e3-9acf897fa0fc"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true" isItalic="false"/>
+				</textElement>
+				<text><![CDATA[Stato ultima erogazione]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band/>
+	</pageHeader>
+	<columnHeader>
+		<band/>
+	</columnHeader>
+	<detail>
+		<band height="23" splitType="Prevent">
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="1" y="0" width="162" height="20" uuid="f18c7cd9-ee35-434a-a26d-abf0f8eb6b3c"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{tipoIntervento}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="163" y="0" width="167" height="20" isRemoveLineWhenBlank="true" uuid="545ff3ee-6c5e-44a2-9484-4449cd566074">
+					<printWhenExpression><![CDATA[$F{tipoInterventoCustom}!=null]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{tipoInterventoCustom}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="335" y="0" width="89" height="20" uuid="e1eac401-c07f-40d6-b6b4-a0929e4cff0c"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{dataUltimaErogazione}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="432" y="0" width="98" height="20" uuid="f75dc1c5-e3fc-4e25-8aa7-bed57264e0ff"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{statoUltimaErog}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

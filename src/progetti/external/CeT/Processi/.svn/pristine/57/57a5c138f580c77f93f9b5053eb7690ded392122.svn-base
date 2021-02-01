@@ -1,0 +1,31 @@
+DIPENDENZE GENARIO
+
+
+Java Build Path
+
+- Project:
+	- CT_Config_Data_Model
+	- CT_Config_Manager
+	- CT_Config_ManagerClient
+	- Indice_Data_Model
+	- REGeneric
+	- REProcess
+	- webredutils
+			
+	
+- Libraries:
+	 commons-beanutils.jar		(REGeneric/lib)
+	 commons-codec.jar			(REGeneric/lib)
+	 commons-dbutils.jar		(REGeneric/lib)
+	 jdom-1.0.jar				(REGeneric/lib)
+	 simmetrics.jar				(REGeneric/lib)
+			 
+	 EAR Libraries
+	 JBoss 5.1 Runtime
+	 JRE System Library
+	
+			 
+N.B.
+Ricordarsi di inserire il simmetric.jar sotto il progetto REGeneric e di renderlo visibile (inserirlo) anche all'interno dell'EAR nel quale sarà inserito Genario
+selezionando in REGeneric la spunta  del jar in Java EE Module Dependencies ed inserendolo sotto la Java Build Path Libraries.
+			

@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<faces-config version="1.2" xmlns="http://java.sun.com/xml/ns/javaee"
+ xmlns:xi="http://www.w3.org/2001/XInclude"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_1_2.xsd">
+ <managed-bean>
+  <managed-bean-name>applicationBean</managed-bean-name>
+  <managed-bean-class>it.webred.AMProfiler.parameters.application.ApplicationBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+ <managed-bean>
+  <managed-bean-name>instanceBean</managed-bean-name>
+  <managed-bean-class>it.webred.AMProfiler.parameters.instance.InstanceBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+ <managed-bean>
+  <managed-bean-name>comuneBean</managed-bean-name>
+  <managed-bean-class>it.webred.AMProfiler.parameters.comune.ComuneBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+ <managed-bean>
+  <managed-bean-name>nuovoComuneBean</managed-bean-name>
+  <managed-bean-class>it.webred.AMProfiler.parameters.comune.NuovoComuneBean</managed-bean-class>
+  <managed-bean-scope>request</managed-bean-scope>
+ </managed-bean>
+ <managed-bean>
+  <managed-bean-name>nuovaInstanceBean</managed-bean-name>
+  <managed-bean-class>it.webred.AMProfiler.parameters.instance.NuovaInstanceBean</managed-bean-class>
+  <managed-bean-scope>request</managed-bean-scope>
+ </managed-bean>
+ <managed-bean>
+  <managed-bean-name>fonteBean</managed-bean-name>
+  <managed-bean-class>it.webred.AMProfiler.parameters.fonte.FonteBean</managed-bean-class>
+  <managed-bean-scope>request</managed-bean-scope>
+ </managed-bean>
+ <managed-bean>
+  <managed-bean-name>globaleBean</managed-bean-name>
+  <managed-bean-class>it.webred.AMProfiler.parameters.globale.GlobaleBean</managed-bean-class>
+  <managed-bean-scope>request</managed-bean-scope>
+ </managed-bean>
+ <application>
+  <view-handler>com.sun.facelets.FaceletViewHandler</view-handler>
+ </application>
+</faces-config>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jboss-deployment-structure>
+  <!-- By default, we'll make all artifacts in this ear visible to each other by setting isolation to false -->
+  <ear-subdeployments-isolated>false</ear-subdeployments-isolated>
+  <deployment>   
+    <dependencies> 
+      <module name="deployment.CT_Service_Client.ear" export="true"/>
+      <module name="it.webred.ct.common" slot="main"/>
+      <module name="com.oracle.ojdbc" slot="main"/>
+      <module name="com.oracle.spatial" slot="main"/>
+    </dependencies> 
+  </deployment> 
+</jboss-deployment-structure>

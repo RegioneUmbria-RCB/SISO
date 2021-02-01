@@ -1,0 +1,9 @@
+sql.prefisso_via=SELECT prefisso FROM SITIDSTR where prefisso is not null \
+             union \
+             select prefisso from load_strade  where prefisso is not null \
+             UNION \
+             select VIASEDIME FROM SIT_D_VIA where viasedime is not null \
+             UNION \
+             select VIASEDIME FROM SIT_T_VIE where viasedime is not null
+				             
+			

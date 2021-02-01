@@ -1,0 +1,218 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+     	xmlns:h="http://java.sun.com/jsf/html"
+		xmlns:f="http://java.sun.com/jsf/core"
+		xmlns:ui="http://java.sun.com/jsf/facelets"
+		xmlns:p="http://primefaces.org/ui"
+	  	xmlns:composite="http://java.sun.com/jsf/composite"
+	  	xmlns:webredcs="http://java.sun.com/jsf/composite/webredcs"
+	  	xmlns:webred="http://java.sun.com/jsf/composite/webred">
+      
+	<h:head>
+		<title>Dati Soggetto Git</title>
+	</h:head>
+	<h:body>
+		<composite:interface componentType="pnlSoggettoGit">
+			<composite:attribute name="iSoggettoGit" type="it.webred.cs.jsf.interfaces.ISoggettoGit"/>
+		</composite:interface>
+		<composite:implementation>
+	
+			<h:panelGrid columns="1">
+				<h:outputText value="Componenti Famiglia" style="font-weight: bold;"/>	
+				<p:spacer height="10"/>
+			</h:panelGrid>
+				
+			<h:panelGrid columns="1" rendered="#{empty cc.attrs.iSoggettoGit.datiSoggettoGit.listaFamiglia}">
+				<h:outputText value="Nessun dato disponibile"/>
+			</h:panelGrid>	
+		
+			<p:accordionPanel value="#{cc.attrs.iSoggettoGit.datiSoggettoGit.listaFamiglia}" var="componente">
+				<p:tab>
+					<f:facet name="title">
+						<h:outputText value="#{componente.persona.cognome} #{componente.persona.nome}"/>
+					</f:facet>
+			
+					<h:panelGrid columns="1" cellpadding="10">
+						<h:outputText value="Dati anagrafici" styleClass="bold" style="text-decoration: underline;"/>	
+					</h:panelGrid>
+					<h:panelGrid columns="5" cellpadding="2">
+						<h:outputText value="Cognome" styleClass="bold"/>
+						<h:outputText value="#{componente.persona.cognome}"/>
+						<p:spacer width="30"/>
+						<h:outputText value="Nome" styleClass="bold"/>
+						<h:outputText value="#{componente.persona.nome}"/>
+						
+						<h:outputText value="Codice fiscale" styleClass="bold"/>
+						<h:outputText value="#{componente.persona.codfisc}"/>  
+						<p:spacer width="30"/>
+						<h:outputText value="Sesso" styleClass="bold"/>
+						<h:outputText value="#{componente.persona.sesso}"/>
+						
+						<h:outputText value="Data di nascita" styleClass="bold"/>
+						<h:outputText value="#{componente.persona.dataNascita}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</h:outputText>  
+						<p:spacer width="30"/>
+						<h:outputText value="Comune di nascita" styleClass="bold"/>
+						<h:outputText value="#{componente.comuneNascita} (#{componente.provinciaNascita})"/>
+					</h:panelGrid>
+					
+					<p:spacer height="10"/>
+					
+					<h:panelGrid columns="1" cellpadding="10">
+						<h:outputText value="Dati residenza" styleClass="bold" style="text-decoration: underline;"/>		
+					</h:panelGrid>
+					<h:panelGrid columns="5" cellpadding="2">
+						<h:outputText value="Indirizzo" styleClass="bold"/>
+						<h:outputText value="#{componente.viaResidenza}"/> 
+						<p:spacer width="30"/>
+						<h:outputText value="Civico" styleClass="bold"/>
+						<h:outputText value="#{componente.civicoResidenza}"/>
+						
+						<h:outputText value="Comune" styleClass="bold"/>
+						<h:outputText value="#{componente.comuneResidenza} (#{componente.provinciaResidenza})"/>  
+						<p:spacer width="30"/>
+						<h:outputText value="CAP" styleClass="bold"/>
+						<h:outputText value="#{componente.capResidenza}"/>
+					</h:panelGrid>
+					
+					<p:spacer height="10"/>
+					
+
+					<p:dataTable var="immobile" value="#{componente.listaCespiti}" emptyMessage="Nessun elemento trovato">
+					      <f:facet name="header">
+				            Lista immobili
+				          </f:facet>
+				        <p:column>
+				         
+				            <div class="block">
+			            	<h:outputText value="Tipo patrimonio" styleClass="bold span-3 column"/>
+							<h:outputText value="#{immobile.tipoPatrimonio}" styleClass="span-2 column"/>
+		
+							<h:outputText value="Comune" styleClass="bold span-3 column"/>
+							<h:outputText value="#{immobile.comune}" styleClass="span-2 column"/>
+		
+							<h:outputText value="Indirizzo" styleClass="bold span-3 column"/>
+							<h:outputText value="#{immobile.indirizzo} #{immobile.civico}" styleClass="span-4 column"/> 
+							
+							<p:graphicImage value="/webredcs/img/home.png" height="20px" title="Casa di abitazione"
+								rendered="#{immobile.abitazione}" styleClass="span-2 column"/> 
+							</div>
+							
+							<p:spacer height="10"/>
+							
+							<div class="block">
+							<h:outputText value="Foglio" styleClass="bold span-3 column"/>
+							<h:outputText value="#{immobile.foglio}" styleClass="span-2 column"/> 
+							 
+							<h:outputText value="Particella" styleClass="bold span-3 column"/>
+							<h:outputText value="#{immobile.particella}" styleClass="span-2 column"/>
+							
+							<h:outputText value="Subalterno" styleClass="bold span-3 column"/>
+							<h:outputText value="#{immobile.sub}" styleClass="span-2 column"/>
+							</div>
+							
+							<p:spacer height="10"/>
+							
+							<div class="block">
+							<h:outputText value="Quota posseduta" styleClass="bold span-3 column"/>
+							<h:outputText value="#{immobile.quotaPosseduta}" styleClass="span-2 column">
+							    <f:convertNumber maxFractionDigits="2" type="number"/>
+							</h:outputText> 
+							 
+							<h:outputText value="Rendita catastale" styleClass="bold span-3 column"/>
+							<h:outputText value="#{immobile.renditaCatastale}" styleClass="span-2 column">
+								<f:convertNumber currencySymbol="€" type="currency"/>
+							</h:outputText>
+							</div>
+							
+							<p:spacer height="5"/>
+				            
+				        </p:column>
+			        </p:dataTable>
+			        
+			       	<p:spacer height="10"/>
+		
+			       	 <p:dataList var="locazione" value="#{componente.listaLocazioni}" type="definition" emptyMessage="Nessun elemento trovato">
+				        <f:facet name="header">
+				            Lista Locazioni
+				        </f:facet>
+						    
+				            <h:panelGrid columns="6" cellpadding="2" width="100%">
+				            <h:outputText value="Indirizzo" styleClass="bold"/>
+							<h:outputText value="#{locazione.locazioneA.indirizzo}" /> 
+							
+							<h:outputText value="Data registrazione" styleClass="bold"/>
+							<h:outputText value="#{locazione.locazioneA.dataRegistrazione}" >
+								<f:convertDateTime pattern="dd/MM/yyyy" />
+							</h:outputText> 
+							
+							<h:outputText value="Data stipula" styleClass="bold span-2 column"/>
+							<h:outputText value="#{locazione.locazioneA.dataStipula}" >
+								<f:convertDateTime pattern="dd/MM/yyyy" />
+							</h:outputText>
+							
+							<h:outputText value="Tipo soggetto" styleClass="bold"/>
+							<h:outputText value="#{locazione.tipoSoggetto}" />
+							
+							<h:outputText value="Oggetto locazione" styleClass="bold"/>
+							<h:outputText value="#{locazione.oggettoLocazione}" />
+							
+							<h:outputText value="Importo canone" styleClass="bold"/>
+							<h:outputText value="#{locazione.importoCanone}">
+								<f:convertNumber currencySymbol="€" type="currency"/>
+							</h:outputText>
+							</h:panelGrid>
+							
+							<p:spacer height="10"/>
+							
+							<p:dataTable var="locImm" value="#{locazione.listaLocImmobili}" rendered="#{not empty locazione.listaLocImmobili}">
+								<p:column headerText="Indirizzo">
+									<h:outputText value="#{locImm.indirizzo}"/> 
+								</p:column>
+								<p:column headerText="Foglio">
+									<h:outputText value="#{locImm.foglio}"/> 
+								</p:column>
+								<p:column headerText="Particella">
+									<h:outputText value="#{locImm.particella}"/> 
+								</p:column>
+								<p:column headerText="Subalterno">
+									<h:outputText value="#{locImm.subalterno}"/> 
+								</p:column>
+							</p:dataTable>
+						
+						<p:separator/>
+				   </p:dataList>
+			        
+			        <p:spacer height="10"/>
+					
+					<ui:repeat value="#{componente.listaRedditiByModello}" var="redditiModello">
+						<p:dataTable var="reddito" value="#{redditiModello.listaRedditi}" emptyMessage="Nessun elemento trovato">
+					        <f:facet name="header">
+					           <h:outputText value="#{redditiModello.descrizione}"/>
+				            </f:facet>
+					        <p:column>			            
+					            <p:spacer height="5"/>
+					            
+					            <div class="block">	
+								
+								<h:outputText value="#{reddito.descrizione}" styleClass="span-12 column"/> 
+								
+								<h:outputText value="Valore" styleClass="bold span-2 column"/>
+								<h:outputText value="#{reddito.reddito.valoreContabile}" styleClass="span-2 column"/>
+								</div>
+								
+								<p:spacer height="5"/>
+					            
+					        </p:column>
+				        </p:dataTable>
+				
+						<p:spacer height="10"/>
+					</ui:repeat>
+				</p:tab>
+			</p:accordionPanel>
+
+		</composite:implementation>
+	</h:body>
+	
+</html>

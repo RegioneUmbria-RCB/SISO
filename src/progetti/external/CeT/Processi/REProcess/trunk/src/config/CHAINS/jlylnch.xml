@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<j:jelly trim="false" xmlns:define="jelly:define" xmlns:j="jelly:core"
+	     xmlns:x="jelly:xml" xmlns:re="reTagLib" xmlns:log="jelly:log">
+	
+	<define:taglib uri="reTagLib">
+		<define:jellybean name="bridge" className="it.webred.rulengine.chains.bridge.JellyCommandBridge" />
+	</define:taglib>
+	
+	<j:set var='par' encode='true'>
+		<complexParam>
+	   		<param type="java.lang.String" name="jparam1">parametro fisso</param>
+	   		
+	   		<param type="it.webred.rulengine.type.ComplexParam" name="jparam2">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx1">[[JCHAINP_1]]</param></complexParam> ]]>
+	   		</param>
+	   		
+	   	</complexParam>
+	</j:set>
+
+	<re:bridge codiceComando="UPPSTR" context="${ctx}" var="cmd1" parametro="${par}" />
+	
+	
+	<j:set var='par2' encode='true'>
+		<complexParam>
+	   		<param type="java.lang.String" name="jparam3">${cmd1.risultati.PRINT}</param>
+	   	</complexParam>
+	</j:set>
+	
+	<re:bridge codiceComando="PNTSTR" context="${ctx}" var="cmd1" parametro="${par2}" />
+
+	
+</j:jelly>

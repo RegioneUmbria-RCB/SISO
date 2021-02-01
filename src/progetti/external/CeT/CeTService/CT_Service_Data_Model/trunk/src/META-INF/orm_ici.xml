@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings
+  xmlns="http://java.sun.com/xml/ns/persistence/orm"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
+  version="2.0">
+
+	<!-- Query SitTIciSogg -->
+	<named-query name="SitTIciSogg.getSoggettoById">
+		<query>
+			<![CDATA[
+				select o 
+				from SitTIciSogg o
+				where o.id = :id
+				and o.dtFineVal is null
+			]]>
+		</query>
+	</named-query>
+	<named-query name="SitTIciSogg.getListaSoggIciByCF">
+		<query>
+			<![CDATA[
+				select o 
+				from SitTIciSogg o
+				where o.codFisc = :codFisc
+				and o.dtFineVal is null
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SitTIciSogg.getListaSoggIciByPI">
+		<query>
+			<![CDATA[
+				select o 
+				from SitTIciSogg o
+				where o.partIva = :partIva
+				and o.dtFineVal is null
+			]]>
+		</query>
+	</named-query>
+	<!-- Query SitTIciOggetto -->
+	
+	<named-query name="SitTIciOggetto.getListaProvenienza">
+		<query>
+			<![CDATA[
+				select distinct o.provenienza
+				from SitTIciOggetto o
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SitTIciOggetto.getOggettiByIdSogg" >
+		<query>
+			<![CDATA[
+				SELECT o, v.id.tipoSoggetto  
+				FROM 
+					SitTIciOggetto o, 
+					 VTIciSoggAll v 
+				WHERE  o.idExt=v.id.idExtOggIci
+				AND    v.id.id=:idSogg
+				and o.dtFineVal is null
+				ORDER BY o.sez, o.foglio, o.numero, o.sub, o.yeaRif desc, o.yeaDen desc
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SitTIciOggetto.getOggettiDistintiByIdSogg" >
+		<query>
+			<![CDATA[
+				SELECT distinct o  
+				FROM 
+					SitTIciOggetto o, 
+					 VTIciSoggAll v 
+				WHERE  o.idExt=v.id.idExtOggIci
+				AND    v.id.id=:idSogg
+				and o.dtFineVal is null
+				ORDER BY o.sez, o.foglio, o.numero, o.sub, o.yeaRif desc, o.yeaDen desc
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SitTIciOggetto.getOggettiByFabbricato" >
+		<query>
+			<![CDATA[
+				SELECT o
+				FROM 
+					SitTIciOggetto o
+				WHERE  o.provenienza=:provenienza 
+				  AND  LPAD(o.foglio, 4,'0') =  LPAD(:foglio, 4,'0')
+				  AND  LPAD(o.numero,5,'0') = LPAD(:particella,5,'0')
+				  and o.dtFineVal is null
+  			     ORDER BY o.sez, o.foglio, o.numero, o.sub, o.yeaRif desc, o.yeaDen desc, o.cat
+			]]>
+		</query>
+	</named-query>
+	<named-query name="SitTIciOggetto.getOggettiBySezFabbricato" >
+		<query>
+			<![CDATA[
+				SELECT o
+				FROM 
+					SitTIciOggetto o
+				WHERE  o.provenienza=:provenienza
+				  AND o.sez=:sezione  
+				  AND  LPAD(o.foglio, 4,'0') =  LPAD(:foglio, 4,'0')
+				  AND  LPAD(o.numero,5,'0') = LPAD(:particella,5,'0')
+				  and o.dtFineVal is null
+  			     ORDER BY o.sez, o.foglio, o.numero, o.sub, o.yeaRif desc, o.yeaDen desc, o.cat
+			]]>
+		</query>
+	</named-query>
+	<named-query name="SitTIciOggetto.getOggettiByFPS" >
+		<query>
+			<![CDATA[
+				SELECT o
+				FROM 
+					SitTIciOggetto o
+				WHERE  o.provenienza=:provenienza 
+				  AND  LPAD(o.foglio, 4,'0') =  LPAD(:foglio, 4,'0')
+				  AND  LPAD(o.numero,5,'0') = LPAD(:particella,5,'0')
+				  AND  LPAD(o.sub,4,'0') = LPAD(:sub,4,'0')
+				  and o.dtFineVal is null
+  			     ORDER BY o.sez, o.foglio, o.numero, o.sub, o.yeaRif desc, o.yeaDen desc
+			]]>
+		</query>
+	</named-query>
+	<named-query name="SitTIciOggetto.getOggettiBySezFPS" >
+		<query>
+			<![CDATA[
+				SELECT o
+				FROM 
+					SitTIciOggetto o
+				WHERE  o.provenienza=:provenienza
+				  AND o.sez=:sezione  
+				  AND  LPAD(o.foglio, 4,'0') =  LPAD(:foglio, 4,'0')
+				  AND  LPAD(o.numero,5,'0') = LPAD(:particella,5,'0')
+				  AND  LPAD(o.sub,4,'0') = LPAD(:sub,4,'0')
+				  and o.dtFineVal is null
+  			     ORDER BY o.sez, o.foglio, o.numero, o.sub, o.yeaRif desc, o.yeaDen desc
+			]]>
+		</query>
+	</named-query>
+	
+<!-- Query VTIciSoggAll -->
+<named-query name="VTIciSoggAll.getSoggettiByOgg" >
+		<query>
+			<![CDATA[
+				SELECT v 
+				FROM VTIciSoggAll v 
+				WHERE v.id.idExtOggIci=:idOgg
+				ORDER BY v.id.tipoSoggetto
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="VTIciSoggAll.getSoggettiByFPSOgg" >
+		<query>
+			<![CDATA[
+				SELECT v 
+				FROM VTIciSoggAll v, SitTIciOggetto o
+				WHERE v.id.idExtOggIci = o.idExt
+				AND o.foglio = :foglio 
+				AND o.numero = :particella
+				AND o.sub = LPAD(:sub,4,'0')
+				and o.dtFineVal is null
+				ORDER BY v.id.tipoSoggetto
+			]]>
+		</query>
+	</named-query>
+	
+	<!-- Query SitTIciVersamenti-->
+	<named-query name="SitTIciVersamenti.getSommaVersamenti" >
+		<query>
+			<![CDATA[
+			   SELECT v.yeaRif, SUM(v.impPagEu)
+				 FROM SitTIciVersamenti v, SitTIciSogg s
+       			WHERE  v.idExtSoggIci = s.idExt 
+       			  AND s.id=:id 
+       			  and s.dtFineVal is null
+    	     GROUP BY v.yeaRif
+    	     ORDER BY v.yeaRif desc
+			]]>
+		</query>
+	</named-query>
+	<!-- Query SitTTarVia -->
+	<named-query name="SitTIciVia.getViaByIdExt">
+		<query>
+			<![CDATA[
+				SELECT v 
+				FROM SitTIciVia v
+				where v.idExt = :idExt
+				and v.dtFineVal is null
+			]]>
+		</query>
+	</named-query>
+	
+</entity-mappings>
+	

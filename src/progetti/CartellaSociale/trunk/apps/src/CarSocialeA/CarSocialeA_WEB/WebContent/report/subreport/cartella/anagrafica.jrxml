@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="5" bottomMargin="5" uuid="47e49e72-220a-47c1-ac67-3999bd953d79">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<field name="cognome" class="java.lang.String"/>
+	<field name="nome" class="java.lang.String"/>
+	<field name="dataNascita" class="java.lang.String"/>
+	<field name="luogoNascita" class="java.lang.String"/>
+	<field name="sesso" class="java.lang.String"/>
+	<field name="codFiscale" class="java.lang.String"/>
+	<field name="cittadinanza" class="java.lang.String"/>
+	<field name="residenza" class="java.lang.String"/>
+	<field name="statoCivile" class="java.lang.String"/>
+	<field name="status" class="java.lang.String"/>
+	<field name="medico" class="java.lang.String"/>
+	<field name="telefono" class="java.lang.String"/>
+	<field name="cellulare" class="java.lang.String"/>
+	<field name="email" class="java.lang.String"/>
+	<field name="catSociale" class="java.lang.String"/>
+	<field name="assSociale" class="java.lang.String"/>
+	<field name="dataPIC" class="java.lang.String"/>
+	<field name="infoMedico" class="java.lang.String"/>
+	<background>
+		<band/>
+	</background>
+	<title>
+		<band height="246">
+			<staticText>
+				<reportElement x="0" y="0" width="91" height="20" uuid="ecf987b6-de21-4e42-be39-a10cf4b37720"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Cognome]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="264" y="0" width="91" height="20" uuid="999c71bb-2c13-4e6c-8299-6cfa56d7e8a1"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Nome]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="102" y="0" width="150" height="20" uuid="f9ae20f2-a141-4684-93e2-2c19dea3033a"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cognome}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="367" y="0" width="168" height="20" uuid="d9a29000-8922-4f1c-a9b9-1f82919e07a0"/>
+				<textElement markup="html">
+					<font size="10" isBold="true" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nome}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="40" width="91" height="20" uuid="fadab467-5fa3-4209-860e-13028967dfa7"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Data di nascita]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="264" y="40" width="91" height="20" uuid="cfd43cb5-49f2-4cda-acc3-890a79fbfbe2"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Luogo di nascita]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="264" y="20" width="38" height="20" uuid="ffead407-2006-4c90-b2fb-03ea1ac68d24"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Sesso]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="20" width="91" height="20" uuid="98c2654d-2a46-47fc-a5b2-47b04da898e3"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Codice fiscale]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="1" y="60" width="91" height="20" uuid="b7ec40fb-1ee4-4a37-9136-e1a5630b15ff"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Cittadinanza]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="80" width="91" height="20" uuid="863d3946-d209-4f57-bf37-1d79cba42d7d"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Residenza]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="100" width="91" height="20" uuid="dfc0f55f-2a03-4897-a99a-f93203a3fa3b"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Stato civile]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="264" y="100" width="91" height="20" uuid="a6a65a55-9833-436b-ad5b-20378a72e3ff"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Status]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="201" width="91" height="20" uuid="35b5190b-298e-4f43-b85e-2ec9103283b3"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Medico curante]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="1" y="120" width="91" height="20" uuid="23dd9271-beaa-49ea-a0bf-619fdb41d455"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Telefono]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="265" y="120" width="91" height="20" uuid="06425f58-8dc8-4a8b-ad3c-313ccb147517"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Cellulare]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="1" y="140" width="91" height="20" uuid="f1c108be-2b26-4dcd-8dea-2cd97c5a0fbd"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Email]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="102" y="40" width="150" height="20" uuid="02b89582-a800-4719-890c-ce998eb83d88"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{dataNascita}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="367" y="40" width="181" height="20" uuid="b28e43bd-1623-4e2d-9b7e-38b50720e719"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{luogoNascita}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="314" y="20" width="221" height="20" uuid="d08eeb3e-ec25-46f5-9073-6761f9be0e69"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{sesso}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="102" y="20" width="150" height="20" uuid="daf3b347-571a-4a4c-84ad-4c1919052a72"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{codFiscale}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="104" y="60" width="444" height="20" uuid="bf3a7788-9366-4e98-8dcf-8265d58f23e0"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cittadinanza}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="102" y="80" width="446" height="20" uuid="2ab6e17c-eb8a-4f17-9b48-9c16818b42c8"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{residenza}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="102" y="100" width="150" height="20" uuid="d9adad2b-62a3-4e2d-a869-f6098feb0dfe"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{statoCivile}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="367" y="100" width="181" height="20" uuid="ee321171-ced7-4bea-b0f9-a6fdd94eb525"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{status}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="103" y="201" width="445" height="20" uuid="b7138922-e143-45f6-9f54-ef32d4fc8048"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{medico}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="103" y="120" width="150" height="20" uuid="c3009210-641c-4445-b6d7-6445388b2280"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{telefono}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="368" y="120" width="181" height="20" uuid="c39e8bec-1be9-45db-a0fa-54df83685d0f"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cellulare}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="103" y="140" width="446" height="20" uuid="8b3dde6b-01bd-4535-8d6e-2a64f8145009"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{email}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="103" y="180" width="150" height="20" uuid="3c04444f-fd70-434a-a53f-94eebebd73da"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{assSociale}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="368" y="180" width="181" height="20" uuid="af835865-9cc1-4fad-bfa6-7d3166d40409"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{dataPIC}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="1" y="180" width="91" height="20" uuid="feef71ef-b1c2-4fa9-af44-3b230253b7f4"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Assistente sociale]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="265" y="180" width="91" height="20" uuid="865160a2-0760-4815-ab6e-f16f23e0b9ad"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Data PIC]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="1" y="160" width="91" height="20" uuid="2d254805-d717-4656-b25f-1a94b3825ca6"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Area prevalente]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="103" y="160" width="446" height="20" uuid="aceacfb1-5535-4591-97e5-77b84bbbca08"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{catSociale}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="102" y="220" width="445" height="20" isRemoveLineWhenBlank="true" uuid="321ff846-e5a8-499d-9ad1-623d73ead9a5"/>
+				<textElement>
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{infoMedico}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band/>
+	</pageHeader>
+	<columnHeader>
+		<band/>
+	</columnHeader>
+</jasperReport>

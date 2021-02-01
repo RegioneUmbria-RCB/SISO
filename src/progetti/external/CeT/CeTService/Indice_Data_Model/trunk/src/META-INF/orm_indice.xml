@@ -1,0 +1,1306 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings
+  xmlns="http://java.sun.com/xml/ns/persistence/orm"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
+  version="2.0">
+
+   <package>it.webred.ct.data.model.indice</package>
+   <access>FIELD</access>
+   
+   	<!-- Query SitEnteSorgente -->
+	<named-query name="SitEnteSorgente.getEntiSorgenti">
+		<query>
+			<![CDATA[
+				select o 
+				from SitEnteSorgente o
+				order by o.descrizione
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SitEnteSorgente.getEnteSorgente">
+		<query>
+			<![CDATA[
+				select o 
+				from SitEnteSorgente o
+				where o.id = :id
+			]]>
+		</query>
+	</named-query>
+
+	<!-- Query SitViaTotale -->
+	<named-query name="SitViaTotale.getViaTotaleByHashByEs">
+		<query>
+			<![CDATA[
+				select o 
+				from SitViaTotale o
+				where o.id.ctrHash LIKE :hash
+				and o.id.fkEnteSorgente = :enteSorgente
+				and o.id.progEs = :progEs
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SitViaTotale.getViaTotaleNativaByHash">
+		<query>
+			<![CDATA[
+				select o 
+				from SitViaTotale o
+				where o.id.ctrHash LIKE :hash
+				and o.relDescr LIKE 'NATIVA'
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SitViaTotale.getViaTotaleByUnico">
+		<query>
+			<![CDATA[
+				select o 
+				from SitViaTotale o
+				where o.fkVia = :idUnico
+			]]>
+		</query>
+	</named-query>
+	
+		<named-query name="SitViaTotale.getViaTotaleByUnicoFonte">
+		<query>
+			<![CDATA[
+				select o 
+				from SitViaTotale o
+				where o.fkVia = :idUnico
+				and o.id.fkEnteSorgente = TO_NUMBER(:enteSorgente)
+				and o.id.progEs = TO_NUMBER(:progEs)
+			]]>
+		</query>
+	</named-query>
+	
+	<!-- Query SitViaUnico -->
+	<named-query name="SitViaUnico.deleteById">
+		<query>
+			<![CDATA[
+				DELETE FROM SitViaUnico o 
+				WHERE o.idVia = :id
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SitViaUnico.getViaUnicoById">
+		<query>
+			<![CDATA[
+				select o 
+				from SitViaUnico o
+				where o.idVia = :id
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SitViaUnico.getListaViaUnicoByDescr">
+		<query>
+			<![CDATA[
+				SELECT v FROM SitViaUnico v
+                WHERE (v.sedime IN (:listaPrefissi)
+                AND (v.indirizzo = :descrizione 
+                  OR v.indirizzo LIKE :descrizione||' %' 
+                  OR v.indirizzo LIKE '%.'||:descrizione
+                  OR v.indirizzo LIKE '% '||:descrizione
+                  OR v.indirizzo LIKE '%.'||:descrizione||' %' 
+                  OR v.indirizzo LIKE '% '||:descrizione||' %'))
+                OR
+                ((v.sedime = '-' OR v.sedime =' ') AND v.indirizzo LIKE :toponimo||' %' 
+                	AND (v.indirizzo LIKE '%.'||:descrizione
+	                  OR v.indirizzo LIKE '% '||:descrizione
+	                  OR v.indirizzo LIKE '%.'||:descrizione||' %' 
+	                  OR v.indirizzo LIKE '% '||:descrizione||' %'))
+                ORDER BY v.indirizzo
+			]]>
+		</query>
+	</named-query>
+	
+	<!-- Query SitCivicoTotale -->
+	<named-query name="SitCivicoTotale.getCivicoTotaleByHashByEs">
+		<query>
+			<![CDATA[
+				select o 
+				from SitCivicoTotale o
+				where o.id.ctrHash LIKE :hash
+				and o.id.fkEnteSorgente = :enteSorgente
+				and o.id.progEs = :progEs
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SitCivicoTotale.getCivicoTotaleNativaByHash">
+		<query>
+			<![CDATA[
+				select o 
+				from SitCivicoTotale o
+				where o.id.ctrHash LIKE :hash
+				and o.relDescr LIKE 'NATIVA'
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SitCivicoTotale.getCivicoTotaleByUnico">
+		<query>
+			<![CDATA[
+				select o 
+				from SitCivicoTotale o
+				where o.fkCivico = :idUnico
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SitCivicoTotale.getCivicoTotaleByViaUnico">
+		<query>
+			<![CDATA[
+				select o 
+				from SitCivicoTotale o
+				where o.fkVia = :idVia
+			]]>
+		</query>
+	</named-query>
+	<named-query name="SitCivicoTotale.getCivicoTotaleByViaUnicoCivico">
+		<query>
+			<![CDATA[
+				select o 
+				from SitCivicoTotale o
+				where o.fkVia = TO_NUMBER(:idVia)
+				and o.civLiv1 = LPAD(:civico,8,'0')
+				and o.id.fkEnteSorgente = TO_NUMBER(:enteSorgente)
+				and o.id.progEs = TO_NUMBER(:progressivo)
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SitCivicoTotale.getCivicoTotaleByViaTotale">
+		<query>
+			<![CDATA[
+				select o 
+				from SitCivicoTotale o
+				where o.idOrigViaTotale LIKE :idVia
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SitCivicoTotale.getCivicoTotaleByVieUnicoCivico">
+		<query>
+			<![CDATA[
+				SELECT t
+				  FROM SitCivicoTotale t, SitCivicoUnico u
+				 WHERE t.fkCivico = u.idCivico
+				   AND (u.fkVia = :idVia1 OR u.fkVia = :idVia2)
+				   AND u.civico = :civico
+			]]>
+		</query>
+	</named-query>
+	
+	<!-- Query SitCivicoUnico -->
+	<named-query name="SitCivicoUnico.deleteById">
+		<query>
+			<![CDATA[
+				DELETE FROM SitCivicoUnico o 
+				WHERE o.idCivico = :id
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SitCivicoUnico.deleteByIdVia1IdVia2">
+		<query>
+			<![CDATA[
+				DELETE FROM SitCivicoUnico o 
+				WHERE o.fkVia = :idVia1
+				OR o.fkVia = :idVia2
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SitCivicoUnico.getCivicoUnicoById">
+		<query>
+			<![CDATA[
+				select o 
+				from SitCivicoUnico o
+				where o.idCivico = :id
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SitCivicoUnico.getCivicoUnicoByViaUnico">
+		<query>
+			<![CDATA[
+				select o 
+				from SitCivicoUnico o
+				where o.fkVia = :idVia
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SitCivicoUnico.getDistinctCivicoByVieUniche">
+		<query>
+			<![CDATA[
+				select distinct(o.civico) 
+				from SitCivicoUnico o
+				where o.fkVia = :idVia1
+				or o.fkVia = :idVia2
+			]]>
+		</query>
+	</named-query>
+	
+	<!-- Query SitOggettoTotale -->
+	<named-query name="SitOggettoTotale.getOggettoTotaleByHashByEs">
+		<query>
+			<![CDATA[
+				select o 
+				from SitOggettoTotale o
+				where o.id.ctrHash LIKE :hash
+				and o.id.fkEnteSorgente = :enteSorgente
+				and o.id.progEs = :progEs
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SitOggettoTotale.getOggettoTotaleNativaByHash">
+		<query>
+			<![CDATA[
+				select o 
+				from SitOggettoTotale o
+				where o.id.ctrHash LIKE :hash
+				and o.relDescr LIKE 'NATIVA'
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SitOggettoTotale.getOggettoTotaleByUnico">
+		<query>
+			<![CDATA[
+				select o 
+				from SitOggettoTotale o
+				where o.fkOggetto = :idUnico
+			]]>
+		</query>
+	</named-query>
+	
+	<!-- Query SitOggettoUnico -->
+	<named-query name="SitOggettoUnico.deleteById">
+		<query>
+			<![CDATA[
+				DELETE FROM SitOggettoUnico o 
+				WHERE o.idOggetto = :id
+			]]>
+		</query>
+	</named-query>
+	
+	<!-- Query SitSoggettoTotale -->
+	<named-query name="SitSoggettoTotale.getSoggettoTotaleByHashByEs">
+		<query>
+			<![CDATA[
+				select o 
+				from SitSoggettoTotale o
+				where o.id.ctrHash LIKE :hash
+				and o.id.fkEnteSorgente = :enteSorgente
+				and o.id.progEs = :progEs
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SitSoggettoTotale.getSoggettoTotaleNativaByHash">
+		<query>
+			<![CDATA[
+				select o 
+				from SitSoggettoTotale o
+				where o.id.ctrHash LIKE :hash
+				and o.relDescr LIKE 'NATIVA'
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SitSoggettoTotale.getSoggettoTotaleByUnico">
+		<query>
+			<![CDATA[
+				select o 
+				from SitSoggettoTotale o
+				where o.fkSoggetto = :idUnico
+			]]>
+		</query>
+	</named-query>
+	
+	<!-- Query SitSoggettoUnico -->
+	<named-query name="SitSoggettoUnico.deleteById">
+		<query>
+			<![CDATA[
+				DELETE FROM SitSoggettoUnico o 
+				WHERE o.idSoggetto = :id
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SitSoggettoUnico.getSoggettoUnicoById">
+		<query>
+			<![CDATA[
+				select o 
+				from SitSoggettoUnico o
+				where o.idSoggetto = :id
+			]]>
+		</query>
+	</named-query>
+
+
+	
+   <entity class="SitCivicoTotale">
+   	 <table name="SIT_CIVICO_TOTALE"/>
+   	 <attributes>
+   	 	<embedded-id name="id">
+   	 	</embedded-id>
+   	 	<basic name="civLiv1">
+   	 		<column name="CIV_LIV1"/>
+   	 	</basic>
+   	 	<basic name="civLiv2">
+   	 		<column name="CIV_LIV2"/>
+   	 	</basic>
+   	 	<basic name="civLiv3">
+   	 		<column name="CIV_LIV3"/>
+   	 	</basic>
+   	 	<basic name="fkVia">
+   	 		<column name="FK_VIA"/>
+   	 	</basic>
+   	 	<basic name="idOrigViaTotale">
+   	 		<column name="ID_ORIG_VIA_TOTALE"/>
+   	 	</basic>
+   	 	<basic name="note">
+   	 		<column name="NOTE"/>
+   	 	</basic>
+   	 	<basic name="rating">
+   	 		<column name="RATING"/>
+   	 	</basic>
+   	 	<basic name="relDescr">
+   	 		<column name="REL_DESCR"/>
+   	 	</basic>
+   	 	<basic name="fkCivico">
+   	 		<column name="FK_CIVICO"/>
+   	 	</basic>
+   	 	<basic name="validato">
+   	 		<column name="VALIDATO"/>
+   	 	</basic>
+   	 	<basic name="stato">
+   	 		<column name="STATO"/>
+   	 	</basic>
+   	 	<basic name="anomalia">
+   	 		<column name="ANOMALIA"/>
+   	 	</basic>
+   	 	<basic name="codiceCivOrig">
+   	 		<column name="CODICE_CIVICO"/>
+   	 	</basic>
+   	 	<basic name="idStorico">
+   	 		<column name="ID_STORICO"/>
+   	 	</basic>
+   	 	<basic name="dataFineVal">
+   	 		<column name="DT_FINE_VAL"/>
+   	 	</basic>
+   	 	<basic name="codiceCivOrig">
+   	 		<column name="CODICE_CIVICO"/>
+   	 	</basic>   	 			   	 		
+ 	 	<transient name="civicoComp"/>   	   	 	 	 		   	 	   	 	   	 	
+   	 </attributes>
+  </entity>
+   <entity class="SitCivicoUnico">
+   	<table name="SIT_CIVICO_UNICO">
+   	</table>
+   	<attributes>
+   		<id name="idCivico">
+   			<column name="ID_CIVICO"/>
+   			<generated-value strategy="SEQUENCE" generator="GEN_CIVICO_UNICO"/>
+   			<sequence-generator name="GEN_CIVICO_UNICO" sequence-name="SEQ_CIVICO_UNICO"/>
+   		</id>
+   		<basic name="civico">
+   			<column name="CIVICO"/>
+   		</basic>
+   		<basic name="dtIns">
+   			<column name="DT_INS"/>
+   			<temporal>DATE</temporal>
+   		</basic>
+   		<basic name="validato">
+   			<column name="VALIDATO"/>
+   		</basic>
+   		<basic name="fkVia">
+   			<column name="FK_VIA"/>
+   		</basic>
+   		<basic name="codiceCivOrig">
+   			<column name="CODICE_CIVICO"/>
+   		</basic>
+   		<basic name="rating">
+   			<column name="RATING"/>
+   		</basic>
+   	</attributes>
+   </entity>
+   <entity class="SitOggettoTotale">
+   	<table name="SIT_OGGETTO_TOTALE">
+   	</table>
+   	<attributes>
+   		<embedded-id name="id">
+   		</embedded-id>
+   		<basic name="categoria">
+   		</basic>
+   		<basic name="classe">
+   		</basic>
+   		<basic name="dtInizioVal">
+   			<column name="DT_INIZIO_VAL"/>
+   			<temporal>DATE</temporal>
+   		</basic>
+   		<basic name="fkOggetto">
+   			<column name="FK_OGGETTO"/>
+   		</basic>
+   		<basic name="foglio">
+   		</basic>
+   		<basic name="foglioUrbano">
+   			<column name="FOGLIO_URBANO"/>
+   		</basic>
+   		<basic name="interno">
+   			<column name="INTERNO"/>
+   		</basic>
+   		<basic name="note">
+   			<column name="NOTE"/>
+   		</basic>
+   		<basic name="particella">
+   			<column name="PARTICELLA"/>
+   		</basic>
+   		<basic name="piano">
+   			<column name="PIANO"/>
+   		</basic>
+   		<basic name="rating">
+   			<column name="RATING"/>
+   		</basic>
+   		<basic name="relDescr">
+   			<column name="REL_DESCR"/>
+   		</basic>
+   		<basic name="rendita">
+   			<column name="RENDITA"/>
+   		</basic>
+   		<basic name="scala">
+   			<column name="SCALA"/>
+   		</basic>
+   		<basic name="sub">
+   			<column name="SUB"/>
+   		</basic>
+   		<basic name="superficie">
+   			<column name="SUPERFICIE"/>
+   		</basic>
+   		<basic name="zona">
+   			<column name="ZONA"/>
+   		</basic>
+   		<basic name="validato">
+   			<column name="VALIDATO"/>
+   		</basic>
+   		<basic name="stato">
+   			<column name="STATO"/>
+   		</basic>
+   		<basic name="anomalia">
+   			<column name="ANOMALIA"/>
+   		</basic>   		
+   		<basic name="attendibilita">
+   			<column name="ATTENDIBILITA"/>
+   		</basic>
+   		<basic name="anomalia">
+   			<column name="ANOMALIA"/>
+   		</basic>
+   		<basic name="codiceOggOrig">
+   			<column name="CODICE_OGGETTO"/>
+   		</basic>
+   		<basic name="idStorico">
+   			<column name="ID_STORICO"/>
+   		</basic>
+   		<basic name="dtFineVal">
+   			<column name="DT_FINE_VAL"/>
+   		</basic>
+   		<basic name="sezione">
+   			<column name="SEZIONE"/>
+   		</basic>
+   		
+   		<basic name="processId">
+   			<column name="PROCESSID"/>
+   		</basic>
+   		<basic name="dtInizioDato">
+   			<column name="DT_INIZIO_DATO"/>
+   			<temporal>DATE</temporal>
+   		</basic>
+   		<basic name="dtFineDato">
+   			<column name="DT_FINE_DATO"/>
+   			<temporal>DATE</temporal>
+   		</basic>
+   		<basic name="dtExpDato">
+   			<column name="DT_EXP_DATO"/>
+   			<temporal>DATE</temporal>
+   		</basic>
+   		<basic name="provenienza">
+   			<column name="PROVENIENZA"/>   			
+   		</basic>
+   		<basic name="dataRegistrazione">
+   			<column name="DATA_REGISTRAZIONE"/>
+   			<temporal>DATE</temporal>
+   		</basic>   	
+   		
+   		<basic name="field1">
+   			<column name="FIELD1"/>   			
+   		</basic>
+   		<basic name="field2">
+   			<column name="FIELD2"/>   			
+   		</basic>
+   		<basic name="field3">
+   			<column name="FIELD3"/>   			
+   		</basic>
+   		<basic name="field4">
+   			<column name="FIELD4"/>   			
+   		</basic>
+   		<basic name="field5">
+   			<column name="FIELD5"/>   			
+   		</basic>
+   		<basic name="field6">
+   			<column name="FIELD6"/>   			
+   		</basic>
+   		<basic name="field7">
+   			<column name="FIELD7"/>   			
+   		</basic>
+   		<basic name="field8">
+   			<column name="FIELD8"/>   			
+   		</basic>
+   		<basic name="field9">
+   			<column name="FIELD9"/>   			
+   		</basic>
+   		<basic name="field10">
+   			<column name="FIELD10"/>   			
+   		</basic>
+   		<basic name="field11">
+   			<column name="FIELD11"/>   			
+   		</basic>
+   		<basic name="field12">
+   			<column name="FIELD12"/>   			
+   		</basic>
+   		<basic name="field13">
+   			<column name="FIELD13"/>   			
+   		</basic>
+   		<basic name="field14">
+   			<column name="FIELD14"/>   			
+   		</basic>
+   		<basic name="field15">
+   			<column name="FIELD15"/>   			
+   		</basic>
+   		<basic name="field16">
+   			<column name="FIELD16"/>   			
+   		</basic>
+   		<basic name="field17">
+   			<column name="FIELD17"/>   			
+   		</basic>
+   		<basic name="field18">
+   			<column name="FIELD18"/>   			
+   		</basic>
+   		<basic name="field19">
+   			<column name="FIELD19"/>   			
+   		</basic>
+   		<basic name="field20">
+   			<column name="FIELD20"/>   			
+   		</basic>
+   		<basic name="field21">
+   			<column name="FIELD21"/>   			
+   		</basic>
+   		<basic name="field22">
+   			<column name="FIELD22"/>   			
+   		</basic>
+   		<basic name="field23">
+   			<column name="FIELD23"/>   			
+   		</basic>
+   		<basic name="field24">
+   			<column name="FIELD24"/>   			
+   		</basic>
+   		<basic name="field25">
+   			<column name="FIELD25"/>   			
+   		</basic>
+   		<basic name="field26">
+   			<column name="FIELD26"/>   			
+   		</basic>
+   		<basic name="field27">
+   			<column name="FIELD27"/>   			
+   		</basic>
+   		<basic name="field28">
+   			<column name="FIELD28"/>   			
+   		</basic>
+   		<basic name="field29">
+   			<column name="FIELD29"/>   			
+   		</basic>
+   		<basic name="field30">
+   			<column name="FIELD30"/>   			
+   		</basic>
+   		<basic name="field31">
+   			<column name="FIELD31"/>   			
+   		</basic>
+   			
+   	</attributes>
+   </entity>
+   <entity class="SitOggettoUnico">
+   	<table name="SIT_OGGETTO_UNICO">
+   	</table>
+   	<attributes>
+   		<id name="idOggetto">
+   			<column name="ID_OGGETTO"/>
+   			<generated-value strategy="SEQUENCE" generator="GEN_OGGETTO_UNICO"/>
+   			<sequence-generator name="GEN_OGGETTO_UNICO" sequence-name="SEQ_OGGETTO_UNICO"/>
+   		</id>
+   		<basic name="dtIns">
+   			<column name="DT_INS"/>
+   			<temporal>DATE</temporal>
+   		</basic>
+   		<basic name="foglio">
+   			<column name="FOGLIO"/>
+   		</basic>
+   		<basic name="particella">
+   			<column name="PARTICELLA"/>
+   		</basic>
+   		<basic name="sub">
+   			<column name="SUB"/>
+   		</basic>
+   		<basic name="validato">
+   			<column name="VALIDATO"></column>
+   		</basic>
+   		<basic name="codiceOggOrig">
+   			<column name="CODICE_OGGETTO"></column>
+   		</basic>
+   		<basic name="sezione">
+   			<column name="SEZIONE"/>
+   		</basic>
+   		<basic name="rating">
+   			<column name="RATING"/>
+   		</basic>
+   	</attributes>
+   </entity>
+ 
+   <entity class="SitFabbricatoTotale">
+   	<table name="SIT_FABBRICATO_TOTALE">
+   	</table>
+   	<attributes>
+   		<embedded-id name="id">
+   		</embedded-id>
+   		<basic name="categoria">
+   		</basic>
+   		<basic name="classe">
+   		</basic>
+   		<basic name="dtInizioVal">
+   			<column name="DT_INIZIO_VAL"/>
+   			<temporal>DATE</temporal>
+   		</basic>
+   		<basic name="fkFabbricato">
+   			<column name="FK_FABBRICATO"/>
+   		</basic>
+   		<basic name="foglio">
+   		</basic>
+   		<basic name="foglioUrbano">
+   			<column name="FOGLIO_URBANO"/>
+   		</basic>
+   		<basic name="interno">
+   			<column name="INTERNO"/>
+   		</basic>
+   		<basic name="note">
+   			<column name="NOTE"/>
+   		</basic>
+   		<basic name="particella">
+   			<column name="PARTICELLA"/>
+   		</basic>
+   		<basic name="piano">
+   			<column name="PIANO"/>
+   		</basic>
+   		<basic name="rating">
+   			<column name="RATING"/>
+   		</basic>
+   		<basic name="relDescr">
+   			<column name="REL_DESCR"/>
+   		</basic>
+   		<basic name="rendita">
+   			<column name="RENDITA"/>
+   		</basic>
+   		<basic name="scala">
+   			<column name="SCALA"/>
+   		</basic>   		
+   		<basic name="superficie">
+   			<column name="SUPERFICIE"/>
+   		</basic>
+   		<basic name="zona">
+   			<column name="ZONA"/>
+   		</basic>
+   		<basic name="validato">
+   			<column name="VALIDATO"/>
+   		</basic>
+   		<basic name="stato">
+   			<column name="STATO"/>
+   		</basic>
+   		<basic name="anomalia">
+   			<column name="ANOMALIA"/>
+   		</basic>
+   		<basic name="codiceFabbOrig">
+   			<column name="CODICE_FABBRICATO"/>
+   		</basic>
+   		<basic name="attendibilita">
+   			<column name="ATTENDIBILITA"/>
+   		</basic>
+   		<basic name="anomalia">
+   			<column name="ANOMALIA"/>
+   		</basic>   		
+   		<basic name="idStorico">
+   			<column name="ID_STORICO"/>
+   		</basic>
+   		<basic name="dtFineVal">
+   			<column name="DT_FINE_VAL"/>
+   		</basic>
+   		<basic name="sezione">
+   			<column name="SEZIONE"/>
+   		</basic>
+   		
+   		<basic name="processId">
+   			<column name="PROCESSID"/>
+   		</basic>
+   		<basic name="dtInizioDato">
+   			<column name="DT_INIZIO_DATO"/>
+   			<temporal>DATE</temporal>
+   		</basic>
+   		<basic name="dtFineDato">
+   			<column name="DT_FINE_DATO"/>
+   			<temporal>DATE</temporal>
+   		</basic>
+   		<basic name="dtExpDato">
+   			<column name="DT_EXP_DATO"/>
+   			<temporal>DATE</temporal>
+   		</basic>
+   		<basic name="provenienza">
+   			<column name="PROVENIENZA"/>   			
+   		</basic>
+   		<basic name="dataRegistrazione">
+   			<column name="DATA_REGISTRAZIONE"/>
+   			<temporal>DATE</temporal>
+   		</basic>   	
+   		
+   		<basic name="field1">
+   			<column name="FIELD1"/>   			
+   		</basic>
+   		<basic name="field2">
+   			<column name="FIELD2"/>   			
+   		</basic>
+   		<basic name="field3">
+   			<column name="FIELD3"/>   			
+   		</basic>
+   		<basic name="field4">
+   			<column name="FIELD4"/>   			
+   		</basic>
+   		<basic name="field5">
+   			<column name="FIELD5"/>   			
+   		</basic>
+   		<basic name="field6">
+   			<column name="FIELD6"/>   			
+   		</basic>
+   		<basic name="field7">
+   			<column name="FIELD7"/>   			
+   		</basic>
+   		<basic name="field8">
+   			<column name="FIELD8"/>   			
+   		</basic>
+   		<basic name="field9">
+   			<column name="FIELD9"/>   			
+   		</basic>
+   		<basic name="field10">
+   			<column name="FIELD10"/>   			
+   		</basic>
+   		<basic name="field11">
+   			<column name="FIELD11"/>   			
+   		</basic>
+   		<basic name="field12">
+   			<column name="FIELD12"/>   			
+   		</basic>
+   		<basic name="field13">
+   			<column name="FIELD13"/>   			
+   		</basic>
+   		<basic name="field14">
+   			<column name="FIELD14"/>   			
+   		</basic>
+   		<basic name="field15">
+   			<column name="FIELD15"/>   			
+   		</basic>
+   		<basic name="field16">
+   			<column name="FIELD16"/>   			
+   		</basic>
+   		<basic name="field17">
+   			<column name="FIELD17"/>   			
+   		</basic>
+   		<basic name="field18">
+   			<column name="FIELD18"/>   			
+   		</basic>
+   		<basic name="field19">
+   			<column name="FIELD19"/>   			
+   		</basic>
+   		<basic name="field20">
+   			<column name="FIELD20"/>   			
+   		</basic>
+   		<basic name="field21">
+   			<column name="FIELD21"/>   			
+   		</basic>
+   		<basic name="field22">
+   			<column name="FIELD22"/>   			
+   		</basic>
+   		<basic name="field23">
+   			<column name="FIELD23"/>   			
+   		</basic>
+   		<basic name="field24">
+   			<column name="FIELD24"/>   			
+   		</basic>
+   		<basic name="field25">
+   			<column name="FIELD25"/>   			
+   		</basic>
+   		<basic name="field26">
+   			<column name="FIELD26"/>   			
+   		</basic>
+   		<basic name="field27">
+   			<column name="FIELD27"/>   			
+   		</basic>
+   		<basic name="field28">
+   			<column name="FIELD28"/>   			
+   		</basic>
+   		<basic name="field29">
+   			<column name="FIELD29"/>   			
+   		</basic>
+   		<basic name="field30">
+   			<column name="FIELD30"/>   			
+   		</basic>
+   		<basic name="field31">
+   			<column name="FIELD31"/>   			
+   		</basic>
+   			
+   	</attributes>
+   </entity>
+   <entity class="SitFabbricatoUnico">
+   	<table name="SIT_FABBRICATO_UNICO">
+   	</table>
+   	<attributes>
+   		<id name="idFabbricato">
+   			<column name="ID_FABBRICATO"/>
+   			<generated-value strategy="SEQUENCE" generator="GEN_FABBRICATO_UNICO"/>
+   			<sequence-generator name="GEN_FABBRICATO_UNICO" sequence-name="SEQ_FABBRICATO_UNICO"/>
+   		</id>
+   		<basic name="dtIns">
+   			<column name="DT_INS"/>
+   			<temporal>DATE</temporal>
+   		</basic>
+   		<basic name="foglio">
+   			<column name="FOGLIO"/>
+   		</basic>
+   		<basic name="particella">
+   			<column name="PARTICELLA"/>
+   		</basic>   		
+   		<basic name="validato">
+   			<column name="VALIDATO"></column>
+   		</basic>
+   		<basic name="codiceFabbOrig">
+   			<column name="CODICE_FABBRICATO"></column>
+   		</basic>
+   		<basic name="sezione">
+   			<column name="SEZIONE"/>
+   		</basic>
+   		<basic name="rating">
+   			<column name="RATING"/>
+   		</basic>
+   	</attributes>
+   </entity>    
+   
+   <entity class="SitSoggettoTotale">
+   	<table name="SIT_SOGGETTO_TOTALE">
+   	</table>
+   	<attributes>
+   		<embedded-id name="id">
+   		</embedded-id>
+   		<basic name="codComuneNascita">
+   			<column name="COD_COMUNE_NASCITA"/>
+   		</basic>
+   		<basic name="codComuneRes">
+   			<column name="COD_COMUNE_RES"/>
+   		</basic>
+   		<basic name="codProvinciaNascita">
+   			<column name="COD_PROVINCIA_NASCITA"></column>
+   		</basic>
+   		<basic name="codProvinciaRes">
+   			<column name="COD_PROVINCIA_RES"/>
+   		</basic>
+   		<basic name="codfisc">
+   			<column name="CODFISC"/>
+   		</basic>
+   		<basic name="cognome">
+   			<column name="COGNOME"/>
+   		</basic>
+   		<basic name="denominazione">
+   			<column name="DENOMINAZIONE"/>
+   		</basic>
+   		<basic name="descComuneNascita">
+   			<column name="DESC_COMUNE_NASCITA"></column>
+   		</basic>
+   		<basic name="descComuneRes">
+   			<column name="DESC_COMUNE_RES"/>
+   		</basic>
+   		<basic name="descProvinciaNascita">
+   			<column name="DESC_PROVINCIA_NASCITA"/>
+   		</basic>
+   		<basic name="descProvinciaRes">
+   			<column name="DESC_PROVINCIA_RES"></column>
+   		</basic>
+   		<basic name="dtInizioVal">
+   			<column name="DT_INIZIO_VAL"/>
+   			<temporal>DATE</temporal>
+   		</basic>
+   		<basic name="dtNascita">
+   			<column name="DT_NASCITA"></column>
+   			<temporal>DATE</temporal>
+   		</basic>
+   		<basic name="nome">
+   			<column name="NOME"></column>
+   		</basic>
+   		<basic name="note">
+   			<column name="NOTE"/>
+   		</basic>
+   		<basic name="pi">
+   			<column name="PI"/>
+   		</basic>
+   		<basic name="rating">
+   			<column name="RATING"/>
+   		</basic>
+   		<basic name="relDescr">
+   			<column name="REL_DESCR"></column>
+   		</basic>
+   		<basic name="sesso">
+   			<column name="SESSO"/>
+   		</basic>
+   		<basic name="tipoPersona">
+   			<column name="TIPO_PERSONA"/>
+   		</basic>
+   		<basic name="fkSoggetto">
+   			<column name="FK_SOGGETTO"/>
+   		</basic>
+   		<basic name="validato">
+   			<column name="VALIDATO"/>
+   		</basic>
+   		<basic name="stato">
+   			<column name="STATO"/>
+   		</basic>
+   		<basic name="idStorico">
+   			<column name="ID_STORICO"/>
+   		</basic>
+   		<basic name="dtFineVal">
+   			<column name="DT_FINE_VAL"/>
+   		</basic>
+   		<basic name="codiceSoggOrig">
+   			<column name="CODICE_SOGGETTO"/>
+   		</basic>  
+   		 		   		 		
+   		<basic name="processId">
+   			<column name="PROCESSID"/>
+   		</basic>
+   		<basic name="dtInizioDato">
+   			<column name="DT_INIZIO_DATO"/>
+   			<temporal>DATE</temporal>
+   		</basic>
+   		<basic name="dtFineDato">
+   			<column name="DT_FINE_DATO"/>
+   			<temporal>DATE</temporal>
+   		</basic>
+   		<basic name="dtExpDato">
+   			<column name="DT_EXP_DATO"/>
+   			<temporal>DATE</temporal>
+   		</basic>
+   		<basic name="provenienza">
+   			<column name="PROVENIENZA"/>
+   		</basic>
+   		<basic name="flagRuntimeNonAgganciato">
+   			<column name="FLAG_RUNTIME_NON_AGGANCIATO"/>
+   		</basic>   		
+   		<basic name="provenienza">
+   			<column name="PROVENIENZA"/>
+   		</basic>
+   		<basic name="dataRegistrazione">
+   			<column name="DATA_REGISTRAZIONE"/>
+   			<temporal>DATE</temporal>
+   		</basic>  
+   		<basic name="field1">
+   			<column name="FIELD1"/>
+   		</basic>
+   		<basic name="field2">
+   			<column name="FIELD2"/>
+   		</basic>
+   		<basic name="field3">
+   			<column name="FIELD3"/>
+   		</basic>
+   		<basic name="field4">
+   			<column name="FIELD4"/>
+   		</basic>
+   		<basic name="field5">
+   			<column name="FIELD5"/>
+   		</basic>
+   		<basic name="field6">
+   			<column name="FIELD6"/>
+   		</basic>
+   		<basic name="field7">
+   			<column name="FIELD7"/>
+   		</basic>
+   		<basic name="field8">
+   			<column name="FIELD8"/>
+   		</basic>
+   		<basic name="field9">
+   			<column name="FIELD9"/>
+   		</basic>   		
+   		<basic name="field10">
+   			<column name="FIELD10"/>
+   		</basic>
+   		<basic name="field11">
+   			<column name="FIELD11"/>
+   		</basic>
+   		<basic name="field12">
+   			<column name="FIELD12"/>
+   		</basic>
+   		<basic name="field13">
+   			<column name="FIELD13"/>
+   		</basic>
+   		<basic name="field14">
+   			<column name="FIELD14"/>
+   		</basic>
+   		<basic name="field15">
+   			<column name="FIELD15"/>
+   		</basic>
+   		<basic name="field16">
+   			<column name="FIELD16"/>
+   		</basic>
+   		<basic name="field17">
+   			<column name="FIELD17"/>
+   		</basic>
+   		<basic name="field18">
+   			<column name="FIELD18"/>
+   		</basic>
+   		<basic name="field19">
+   			<column name="FIELD19"/>
+   		</basic>
+   		<basic name="field20">
+   			<column name="FIELD20"/>
+   		</basic>
+   		<basic name="field21">
+   			<column name="FIELD21"/>
+   		</basic>
+   		<basic name="field22">
+   			<column name="FIELD22"/>
+   		</basic>
+   		<basic name="field23">
+   			<column name="FIELD23"/>
+   		</basic>
+   		<basic name="field24">
+   			<column name="FIELD24"/>
+   		</basic>
+   	</attributes>
+   </entity>
+   <entity class="SitSoggettoUnico">
+   	<table name="SIT_SOGGETTO_UNICO">
+   	</table>
+   	<attributes>
+   		<id name="idSoggetto">
+   			<column name="ID_SOGGETTO"/>
+   			<generated-value strategy="SEQUENCE" generator="GEN_SOGG_UNICO"/>
+   			<sequence-generator name="GEN_SOGG_UNICO" sequence-name="SEQ_SOGG_UNICO"/>
+   		</id>
+   		<basic name="codComuneNascita">
+   			<column name="COD_COMUNE_NASCITA"/>
+   		</basic>
+   		<basic name="codComuneRes">
+   			<column name="COD_COMUNE_RES"/>
+   		</basic>
+   		<basic name="codProvinciaNascita">
+   			<column name="COD_PROVINCIA_NASCITA"/>
+   		</basic>
+   		<basic name="codProvinciaRes">
+   			<column name="COD_PROVINCIA_RES"/>
+   		</basic>
+   		<basic name="codfisc">
+   			<column name="CODFISC"/>
+   		</basic>
+   		<basic name="cognome">
+   			<column name="COGNOME"/>
+   		</basic>
+   		<basic name="ctrlUtil">
+   			<column name="CTRL_UTIL"/>
+   		</basic>
+   		<basic name="denominazione">
+   			<column name="DENOMINAZIONE"/>
+   		</basic>
+   		<basic name="descComuneNascita">
+   			<column name="DESC_COMUNE_NASCITA"/>
+   		</basic>
+   		<basic name="descComuneRes">
+   			<column name="DESC_COMUNE_RES"/>
+   		</basic>
+   		<basic name="descProvinciaNascita">
+   			<column name="DESC_PROVINCIA_NASCITA"/>
+   		</basic>
+   		<basic name="descProvinciaRes">
+   			<column name="DESC_PROVINCIA_RES"/>
+   		</basic>
+   		<basic name="dtIns">
+   			<column name="DT_INS"/>
+   			<temporal>DATE</temporal>
+   		</basic>
+   		<basic name="dtNascita">
+   			<column name="DT_NASCITA"/>
+   			<temporal>DATE</temporal>
+   		</basic>
+   		<basic name="nome">
+   			<column name="NOME"/>
+   		</basic>
+   		<basic name="pi">
+   			<column name="PI"/>
+   		</basic>
+   		<basic name="sesso">
+   			<column name="SESSO"/>
+   		</basic>
+   		<basic name="tipoPersona">
+   			<column name="TIPO_PERSONA"/>
+   		</basic>
+   		<basic name="validato">
+   			<column name="VALIDATO"/>
+   		</basic>
+   		<basic name="rating">
+   			<column name="RATING"/>
+   		</basic>   		
+   		<basic name="codiceSoggettoOrig">
+   			<column name="CODICE_SOGGETTO"/>
+   		</basic>  
+   		<basic name="fonteRif">
+   			<column name="FONTE_RIF"/>
+   		</basic>
+   	</attributes>
+   </entity>
+   <entity class="SitViaTotale">
+   	<table name="SIT_VIA_TOTALE">
+   	</table>
+   	<attributes>
+   		<embedded-id name="id">
+   		</embedded-id>
+   		<basic name="dtFineVal">
+   			<column name="DT_FINE_VAL"/>
+   			<temporal>DATE</temporal>
+   		</basic>
+   		<basic name="fkVia">
+   			<column name="FK_VIA"/>
+   		</basic>
+   		<basic name="idStorico">
+   			<column name="ID_STORICO"/>
+   		</basic>
+   		<basic name="indirizzo">
+   			<column name="INDIRIZZO"/>
+   		</basic>
+   		<basic name="note">
+   			<column name="NOTE"/>
+   		</basic>
+   		<basic name="rating">
+   			<column name="RATING"/>
+   		</basic>
+   		<basic name="relDescr">
+   			<column name="REL_DESCR"/>
+   		</basic>
+   		<basic name="sedime">
+   			<column name="SEDIME"/>
+   		</basic>
+   		<basic name="validato">
+   			<column name="VALIDATO"/>
+   		</basic>
+   		<basic name="stato">
+   			<column name="STATO"></column>
+   		</basic>
+   		<basic name="anomalia">
+   			<column name="ANOMALIA"></column>
+   		</basic>
+   		<basic name="codiceViaOrig">
+   			<column name="CODICE_VIA"></column>
+   		</basic>
+ 
+   	</attributes>
+   </entity>
+   <entity class="SitViaUnico">
+   <table name="SIT_VIA_UNICO">
+   	</table>
+   	<attributes>
+   		<id name="idVia">
+   			<column name="ID_VIA"/>
+   			<generated-value strategy="SEQUENCE" generator="GEN_VIA_UNICO"/>
+   			<sequence-generator name="GEN_VIA_UNICO" sequence-name="SEQ_VIA_UNICO"/>
+   		</id>
+   		<basic name="dtIns">
+   			<column name="DT_INS"></column>
+   			<temporal>DATE</temporal>
+   		</basic>
+   		<basic name="indirizzo">
+   			<column name="INDIRIZZO"/>
+   		</basic>
+   		<basic name="sedime">
+   			<column name="SEDIME"/>
+   		</basic>
+   		<basic name="validato">
+   			<column name="VALIDATO"/>
+   		</basic>
+   		<basic name="codiceViaOrig">
+   			<column name="CODICE_VIA"/>
+   		</basic>
+   	</attributes>
+   </entity>
+   <entity class="SitEnteSorgente">
+   <table name="SIT_ENTE_SORGENTE"></table>
+   	<attributes>
+   		<id name="id">
+   			<column name="ID"/>
+   			<generated-value />
+   		</id>
+   		<basic name="civiciRiferimento">
+   			<column name="CIVICI_RIFERIMENTO"/>
+   		</basic>
+   		<basic name="codSorgente">
+   			<column name="COD_SORGENTE"/>
+   		</basic>
+   		<basic name="descrizione">
+   			<column name="DESCRIZIONE"></column>
+   		</basic>
+   		<basic name="disabilitaStorico">
+   			<column name="DISABILITA_STORICO"/>
+   		</basic>
+   		<basic name="fkEnte">
+   			<column name="FK_ENTE"/>
+   		</basic>
+   		<basic name="fornituraInReplace">
+   			<column name="FORNITURA_IN_REPLACE"/>
+   		</basic>
+   		<basic name="oggettiRiferimento">
+   			<column name="OGGETTI_RIFERIMENTO"/>
+   		</basic>
+   		<basic name="soggettiRiferimento">
+   			<column name="SOGGETTI_RIFERIMENTO"/>
+   		</basic>
+   		<basic name="tipoFonte">
+   			<column name="TIPO_FONTE"/>
+   		</basic>
+   		<basic name="vieRiferimento">
+   			<column name="VIE_RIFERIMENTO"/>
+   		</basic>
+   	</attributes>
+   </entity>
+   <embeddable class="IndicePK">
+		<attributes>
+			<basic name="ctrHash">
+				<column name="CTR_HASH"/>
+			</basic>
+			<basic name="fkEnteSorgente">
+				<column name="FK_ENTE_SORGENTE"/>
+			</basic>
+			<basic name="idDwh">
+				<column name="ID_DWH"></column>
+			</basic>
+			<basic name="progEs">
+				<column name="PROG_ES"/>
+			</basic>
+		</attributes>
+	</embeddable>
+
+
+</entity-mappings>
+	

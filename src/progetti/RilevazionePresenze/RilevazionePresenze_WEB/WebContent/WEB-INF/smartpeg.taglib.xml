@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<facelet-taglib version="2.0" xmlns="http://java.sun.com/xml/ns/javaee"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facelettaglibrary_2_0.xsd">
+ <namespace>http://java.sun.com/jsf/composite/smartpeg</namespace>
+ <tag>
+  <tag-name>helloComponent</tag-name>
+  <component>
+   <component-type>HelloComponent</component-type>
+   <renderer-type>HelloComponent</renderer-type>
+   <handler-class/>
+  </component>
+  <attribute>
+   <name>id</name>
+   <required>false</required>
+   <type>java.lang.String</type>
+  </attribute>
+  <attribute>
+   <name>message</name>
+   <required>false</required>
+   <type>java.lang.String</type>
+  </attribute>
+  <attribute>
+   <name>time</name>
+   <required>false</required>
+   <type>java.util.Date</type>
+  </attribute>
+ </tag>
+ <tag>
+  <tag-name>buttonPanel</tag-name>
+  <source>tags/buttonpanel.xhtml</source>
+ </tag>
+</facelet-taglib>

@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="riferimenti" language="groovy" pageWidth="555" pageHeight="802" columnWidth="555" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="91bfdc5c-d54f-4594-a43f-aaf6121deb93">
+	<property name="ireport.zoom" value="1.771561000000001"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="bordo">
+		<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+			<topPen lineWidth="1.0" lineStyle="Solid"/>
+			<leftPen lineWidth="1.0"/>
+			<bottomPen lineWidth="1.0"/>
+			<rightPen lineWidth="1.0" lineStyle="Solid"/>
+		</box>
+	</style>
+	<style name="table">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TH" mode="Opaque" backcolor="#F6D981">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="settore" style="table_TH" fontSize="10" isItalic="false" isUnderline="false" isStrikeThrough="false"/>
+	<style name="table 2">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 2_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 2_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 2_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<field name="cognome_rif" class="java.lang.String"/>
+	<field name="nome_rif" class="java.lang.String"/>
+	<field name="sesso_rif" class="java.lang.String"/>
+	<field name="data_nascita_rif" class="java.lang.String"/>
+	<field name="luogo_nascita_rif" class="java.lang.String"/>
+	<field name="sc_rif" class="java.lang.String"/>
+	<field name="indirizzo_rif" class="java.lang.String"/>
+	<field name="tel_rif" class="java.lang.String"/>
+	<field name="cel_rif" class="java.lang.String"/>
+	<field name="email_rif" class="java.lang.String"/>
+	<field name="parentela_rif" class="java.lang.String"/>
+	<field name="problemi_rif" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="189">
+			<staticText>
+				<reportElement mode="Transparent" x="0" y="120" width="166" height="19" forecolor="#000000" backcolor="#FFFFFF" uuid="d8ba8f51-e50b-443e-89b1-dd527a060c8f"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle" markup="none">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[e-mail]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="0" y="100" width="166" height="19" forecolor="#000000" backcolor="#FFFFFF" uuid="7569ce5f-fe8d-40e5-a963-025e418a8085"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle" markup="none">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Telefono /  Cellulare]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="0" y="159" width="166" height="19" forecolor="#000000" backcolor="#FFFFFF" uuid="e9de4f83-ac36-4969-a877-afd3eb46a439"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle" markup="none">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Eventuali problemi]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="0" y="81" width="166" height="19" forecolor="#000000" backcolor="#FFFFFF" uuid="c3db467e-9a03-45ef-87aa-3092975a53cc"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle" markup="none">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Indirizzo]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="0" y="43" width="166" height="19" forecolor="#000000" backcolor="#FFFFFF" uuid="f48e6173-bc17-4cf6-bbae-7b3188c057ac"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle" markup="none">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Data e luogo di nascita]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="0" y="24" width="166" height="19" forecolor="#000000" backcolor="#FFFFFF" uuid="4f0c8329-1644-404a-a5cb-cdedbcd3bca3"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle" markup="none">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Sesso]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="0" y="4" width="166" height="19" forecolor="#000000" backcolor="#FFFFFF" uuid="d7954f84-0c5b-4774-8c51-31666b6ffa3f"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle" markup="none">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Cognome e Nome]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="0" y="140" width="166" height="19" forecolor="#000000" backcolor="#FFFFFF" uuid="e86709db-9541-41c6-aa63-52916410cc22"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle" markup="none">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Relazione]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="0" y="62" width="166" height="19" forecolor="#000000" backcolor="#FFFFFF" uuid="830f0b62-66f6-41ac-bb00-b6cbfd61f0fd"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle" markup="none">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Stato civile]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement style="bordo" mode="Transparent" x="175" y="43" width="334" height="19" forecolor="#000000" backcolor="#FFFFFF" uuid="cc4ded48-d1d0-4bba-84ec-3ff94dd3448c"/>
+				<textElement verticalAlignment="Middle">
+					<font size="11" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{data_nascita_rif}+" "+$F{luogo_nascita_rif}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="bordo" mode="Transparent" x="175" y="100" width="334" height="19" forecolor="#000000" backcolor="#FFFFFF" uuid="4cf55a35-436c-458d-93a3-f3fa4e8c36a2"/>
+				<textElement verticalAlignment="Middle">
+					<font size="11" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{tel_rif} +"  "+ $F{cel_rif}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="bordo" mode="Transparent" x="175" y="159" width="334" height="19" forecolor="#000000" backcolor="#FFFFFF" uuid="e6ca6a06-a092-4610-bb21-62e9420f31b7"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement verticalAlignment="Middle">
+					<font size="11" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{problemi_rif}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="bordo" mode="Transparent" x="175" y="119" width="334" height="21" forecolor="#000000" backcolor="#FFFFFF" uuid="d86e5744-b06c-4f43-ae66-09b27704eb60"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement verticalAlignment="Middle">
+					<font size="11" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{email_rif}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="bordo" mode="Transparent" x="175" y="5" width="334" height="19" forecolor="#000000" backcolor="#FFFFFF" uuid="ecbc54d6-c08f-4776-a1a2-a77e1f44c799"/>
+				<textElement verticalAlignment="Middle">
+					<font size="11" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cognome_rif}+" "+$F{nome_rif}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="bordo" mode="Transparent" x="175" y="24" width="334" height="19" forecolor="#000000" backcolor="#FFFFFF" uuid="2b772805-8872-4a6e-a5e9-450bc378f37f"/>
+				<textElement verticalAlignment="Middle">
+					<font size="11" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{sesso_rif}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="bordo" mode="Transparent" x="175" y="81" width="334" height="19" forecolor="#000000" backcolor="#FFFFFF" uuid="8f24ca89-df00-44ef-89d6-27f49e6f62cc"/>
+				<textElement verticalAlignment="Middle">
+					<font size="11" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{indirizzo_rif}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="bordo" mode="Transparent" x="175" y="62" width="334" height="19" forecolor="#000000" backcolor="#FFFFFF" uuid="73b79064-6a70-419e-bc2e-f334cdbf5a89"/>
+				<textElement verticalAlignment="Middle">
+					<font size="11" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{sc_rif}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="bordo" mode="Transparent" x="175" y="140" width="334" height="19" forecolor="#000000" backcolor="#FFFFFF" uuid="d3102233-73b7-4244-892a-39115263926d"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement verticalAlignment="Middle">
+					<font size="11" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{parentela_rif}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="-1" y="182" width="509" height="2" uuid="b4919442-8dc4-4ead-86b0-a05950391722"/>
+				<graphicElement>
+					<pen lineColor="#CCCCCC"/>
+				</graphicElement>
+			</line>
+		</band>
+	</detail>
+</jasperReport>

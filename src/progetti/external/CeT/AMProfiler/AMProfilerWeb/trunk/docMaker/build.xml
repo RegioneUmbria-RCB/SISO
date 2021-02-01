@@ -1,0 +1,49 @@
+<project name="pdfdoclet-example" default="make-pdf" basedir=".">
+
+    <!-- ************************************************************************ -->
+    <!-- Configuration properties                                                 -->
+    <!-- ************************************************************************ -->
+
+    <property name="jar.dir"  value="${basedir}/jar" />
+
+
+    <!-- project name above is available in property "ant.project.name" -->
+    <property name="project.name" value="${ant.project.name}"/>
+    <property name="version.id" value="@VERSION-ID@"/>
+
+    <!-- name of the java library -->
+    <property name="library.name" value="pdfdoclet"/>
+
+    <!-- javadoc example packages     -->
+    <property name="javadoc.laby.packages" value="com.jlaby.*" /> 
+    <property name="javadoc.html.packages" value="cvu.*" />
+    <property name="javadoc.packages" value="it.webred.*" />
+
+    <!-- 3rt party libraries                         -->
+    <property name="pdfdoclet.lib" value="pdfdoclet-1.0.2-all.jar" />
+
+
+    <path id="libs"> 
+        <pathelement location="${java.class.path}"/>
+        <pathelement location="${classdir}"/>
+    	<pathelement location="${jar.dir}/servlet-api.jar"/>
+        <fileset dir="${basedir}/../WebContent/WEB-INF/lib/">
+            <include name="**/*.jar"/>
+        </fileset>
+    </path>
+
+
+
+	
+    <target name="make-pdf"  description="Creates project ajvadoc pdf" >
+    	<echo message="Dir......${basedir}"/>
+    	<javadoc classpathref="libs"  doclet="com.tarsec.javadoc.pdfdoclet.PDFDoclet"
+            docletpath="${jar.dir}/${pdfdoclet.lib}"
+            packagenames="${javadoc.packages}"
+        	overview="${basedir}/overview.html"
+            sourcepath="${basedir}/../JavaSource"
+            additionalparam="-pdf ${basedir}/AMProfiler_java_doc.pdf -config ${basedir}/config.properties"
+            private="yes" />
+    </target>
+
+</project>

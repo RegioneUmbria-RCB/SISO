@@ -1,0 +1,296 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Table class="oracle.dbtools.crest.model.design.relational.Table" directorySegmentName="seg_0" id="384FFD68-DBB8-E3BA-BDAA-4EFC50565798" schemaObject="31789C62-6489-FE63-4664-3CFB4035AC87" name="CS_C_COMUNITA">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>CS_SISO</sourceObjSchema>
+<sourceObjName>CS_C_COMUNITA</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:18 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>BA9D31A3-CC62-3401-9FB6-3E47C935D712</importedID>
+<existDependencyGenerateInDDl>true</existDependencyGenerateInDDl>
+<parsed>true</parsed>
+<columns itemClass="oracle.dbtools.crest.model.design.relational.Column">
+<Column name="SETTORE_ID" id="74BF202A-BE72-3918-2EA6-59D62CD9B25E">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>CS_C_COMUNITA</sourceObjSchema>
+<sourceObjName>SETTORE_ID</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:18 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>35F3E421-CE76-67BB-9304-106E1CB5D18D</importedID>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<dataTypeSize>22</dataTypeSize>
+<ownDataTypeParameters>22,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+<associations>
+<colAssociation fkAssociation="7E894E88-4626-F334-4DAE-CEF80FACF568" referredColumn="D5940400-8A78-EB68-6D1D-E6F0C702E9D7"/>
+</associations>
+</Column>
+<Column name="SOGGGIU_RAGSOC" id="373F8E21-72C9-CDC3-F097-F9DD92E277BF">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>CS_C_COMUNITA</sourceObjSchema>
+<sourceObjName>SOGGGIU_RAGSOC</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:18 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>7216BD62-DE77-1AEE-4BE4-45CCB1D0670D</importedID>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>1000 BYTE</dataTypeSize>
+<ownDataTypeParameters>1000 BYTE,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="ANA_INDIRIZZO_ID" id="ADF737CC-CAF3-C32C-94B3-4C7BF6B52EE1">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>CS_C_COMUNITA</sourceObjSchema>
+<sourceObjName>ANA_INDIRIZZO_ID</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:18 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>23F598B8-EC3B-711C-ECC2-76BCD75E9CE9</importedID>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<dataTypePrecision>10</dataTypePrecision>
+<ownDataTypeParameters>,10,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+<associations>
+<colAssociation fkAssociation="2A27701A-E2AE-5615-371D-37BBAE45A2D8" referredColumn="17431F62-BCF7-7B22-1B13-97F11B3F0006"/>
+</associations>
+</Column>
+<Column name="USER_INS" id="678B8A3B-F52D-2731-483F-CA4C37832CE5">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>CS_C_COMUNITA</sourceObjSchema>
+<sourceObjName>USER_INS</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:18 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>F50612EA-DF75-A4A8-87B3-43C1550B1BF8</importedID>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>50 BYTE</dataTypeSize>
+<ownDataTypeParameters>50 BYTE,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="DT_INS" id="4196E66C-E972-BD2F-7B5B-38A4CCCDBCF6">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>CS_C_COMUNITA</sourceObjSchema>
+<sourceObjName>DT_INS</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:18 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>501F7363-93A3-7179-27E8-4B120D883ADC</importedID>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT007</logicalDatatype>
+<dataTypeSize>7</dataTypeSize>
+<ownDataTypeParameters>7,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="USR_MOD" id="1217E94A-F1DB-C5C7-57EF-8655A922CEF9">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>CS_C_COMUNITA</sourceObjSchema>
+<sourceObjName>USR_MOD</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:18 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>8CFA2466-DCD3-EE91-7B88-917217F5C412</importedID>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>50 BYTE</dataTypeSize>
+<ownDataTypeParameters>50 BYTE,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="DT_MOD" id="3F749E21-454E-0500-F455-E754BD941AE7">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>CS_C_COMUNITA</sourceObjSchema>
+<sourceObjName>DT_MOD</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:18 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>EB36DF92-A4A6-16E7-668B-13A656B9F69B</importedID>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT007</logicalDatatype>
+<dataTypeSize>7</dataTypeSize>
+<ownDataTypeParameters>7,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="TIPO_COMUNITA_ID" id="8278A644-BA42-1387-8D9E-97FF5BC1CDBB">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>CS_C_COMUNITA</sourceObjSchema>
+<sourceObjName>TIPO_COMUNITA_ID</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:18 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>089713DE-66B4-415F-9FCF-C450DA822328</importedID>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<dataTypePrecision>10</dataTypePrecision>
+<ownDataTypeParameters>,10,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+<associations>
+<colAssociation fkAssociation="6DBAB2CD-348D-177F-793A-1F2C3CBE112E" referredColumn="FED6920F-B1A1-B2E8-6D50-295E78104BEF"/>
+</associations>
+</Column>
+<Column name="FASCIA_ETA" id="7E8E28B3-5084-9DEB-12AD-DF0702607C3A">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>CS_C_COMUNITA</sourceObjSchema>
+<sourceObjName>FASCIA_ETA</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:18 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>AAC5315E-299E-9E59-AF54-E248C8E6A0A4</importedID>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>100 BYTE</dataTypeSize>
+<ownDataTypeParameters>100 BYTE,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="SESSO" id="6964C988-D59F-684F-E2CF-5483474BD91A">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>CS_C_COMUNITA</sourceObjSchema>
+<sourceObjName>SESSO</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:18 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>6AC6795F-1B17-919F-B310-819CF74C7FCC</importedID>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>3 BYTE</dataTypeSize>
+<ownDataTypeParameters>3 BYTE,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="COSTI" id="11D165A9-1BC9-26C6-2FD3-99AEA4FD43F7">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>CS_C_COMUNITA</sourceObjSchema>
+<sourceObjName>COSTI</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:18 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>B70B4D30-BD7D-781F-EFD6-1FF92BD459C2</importedID>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>100 BYTE</dataTypeSize>
+<ownDataTypeParameters>100 BYTE,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="PSICO_TERAP" id="4D5594CF-3161-DCC8-E37D-2670E0A7D150">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>CS_C_COMUNITA</sourceObjSchema>
+<sourceObjName>PSICO_TERAP</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:18 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>55F6ABF4-9E2B-DFE5-1320-A103981FD05D</importedID>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<dataTypePrecision>1</dataTypePrecision>
+<ownDataTypeParameters>,1,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+</columns>
+<indexes itemClass="oracle.dbtools.crest.model.design.relational.Index">
+<ind_PK_UK id="33EB0ED7-DC6F-56A4-636A-2A422027267A" name="CS_C_COMUNITA_PK">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>CS_SISO</sourceObjSchema>
+<sourceObjName>CS_C_COMUNITA_PK</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:18 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>31FD9A1E-C7C8-7D8B-5CFF-5C0BA7E6288F</importedID>
+<pk>true</pk>
+<indexState>Primary Constraint</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="74BF202A-BE72-3918-2EA6-59D62CD9B25E"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="0DFFCB3F-3EC1-6F6E-6A58-AB9C684C75B6" schemaObject="31789C62-6489-FE63-4664-3CFB4035AC87" name="CS_C_COMUNITA_PK">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>CS_SISO</sourceObjSchema>
+<sourceObjName>CS_C_COMUNITA_PK</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:18 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>09A82724-FC8A-7952-8AC7-299EA8B2C722</importedID>
+<indexState>Unique Plain Index</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="74BF202A-BE72-3918-2EA6-59D62CD9B25E"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="2C55E1D4-22B9-72FF-70F1-966D1B3C0FCF" schemaObject="871EA441-DAD7-5670-6F21-DFBE48E4DCD4" name="IDX_CS_C_COMUNITA_ANAINDID">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>CS_DEV2</sourceObjSchema>
+<sourceObjName>IDX_CS_C_COMUNITA_ANAINDID</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2016-01-21 16:42:56 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>ADDD7B54-F629-90CD-E2B1-22622F9F9EB6</importedID>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="ADF737CC-CAF3-C32C-94B3-4C7BF6B52EE1"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="2169E3F0-B79A-61B8-093F-02212AEB328E" schemaObject="871EA441-DAD7-5670-6F21-DFBE48E4DCD4" name="IDX_CS_C_COMUNITA_TIPOCOM_ID">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>CS_DEV2</sourceObjSchema>
+<sourceObjName>IDX_CS_C_COMUNITA_TIPOCOM_ID</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2016-01-21 16:42:56 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>A7E631CD-502D-4BB0-18D3-CC55D4F053CE</importedID>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="8278A644-BA42-1387-8D9E-97FF5BC1CDBB"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="2F75A808-DB7F-A890-DC87-39878AF73CB1" name="CS_C_COMU_CS_TB_TIPOCOM_FK">
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:19 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<indexState>Foreign Key</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="8278A644-BA42-1387-8D9E-97FF5BC1CDBB"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="18234B0C-EB4C-DF0D-9AD7-C08923294231" name="CS_C_COM_SETTORE_FK">
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:19 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<indexState>Foreign Key</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="74BF202A-BE72-3918-2EA6-59D62CD9B25E"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="CA93159F-16B0-9A22-9267-3EB3D7C8D0F0" name="CS_C_COMUNITA_ANAIND_FK">
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:19 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<indexState>Foreign Key</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="ADF737CC-CAF3-C32C-94B3-4C7BF6B52EE1"/>
+</indexColumnUsage>
+</ind_PK_UK>
+</indexes>
+</Table>

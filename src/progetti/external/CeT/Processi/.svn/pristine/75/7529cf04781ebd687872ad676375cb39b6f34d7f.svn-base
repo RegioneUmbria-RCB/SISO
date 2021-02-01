@@ -1,0 +1,178 @@
+package it.webred.rulengine.brick.elab.cartellaSociale;
+
+import java.sql.Connection;
+import java.text.SimpleDateFormat;
+import java.util.List;
+import java.util.Properties;
+
+import org.apache.log4j.Logger;
+
+import it.webred.rulengine.Command;
+import it.webred.rulengine.Context;
+import it.webred.rulengine.Rule;
+import it.webred.rulengine.brick.bean.ApplicationAck;
+import it.webred.rulengine.brick.bean.CommandAck;
+import it.webred.rulengine.brick.bean.ErrorAck;
+import it.webred.rulengine.exception.CommandException;
+import it.webred.rulengine.impl.bean.BeanCommand;
+
+public class GeolocalizzazioneIndirizzi extends Command implements Rule {
+
+	private static final Logger log = Logger.getLogger(GeolocalizzazioneIndirizzi.class.getName());
+	private Connection conn = null;
+	private String enteID;
+//	private SimpleDateFormat SDF = new SimpleDateFormat("dd/MM/yyyy");
+
+	public GeolocalizzazioneIndirizzi(BeanCommand bc) {
+		super(bc);
+	}
+
+	public GeolocalizzazioneIndirizzi(BeanCommand bc, Properties jrulecfg) {
+		super(bc, jrulecfg);
+	}
+
+	@Override
+	public CommandAck run(Context ctx) throws CommandException {
+		log.debug("Cartella Sociale - Geolocalizzazione Indirizzi run()");
+		CommandAck retAck = null;
+		enteID = ctx.getBelfiore();
+		log.debug("ENTE IN ELABORAZIONE (DA CTX): " + enteID);
+		conn = ctx.getConnection((String) ctx.get("connessione"));
+
+		try {
+
+			log.info("Database Username: " + conn.getMetaData().getUserName());
+
+//			this.getJellyParam(ctx);
+
+			// geolocalizzaIndirizzi(conn);
+
+			ArgoDbClient argoDbClient = new ArgoDbClient(conn);
+			List<IndirizziZoneDto> addressBatch = argoDbClient.findUnmappedAddresses();
+
+			GoogleGeocodeClient geocodeClient = new GoogleGeocodeClient();
+			geocodeClient.geoLocalize(addressBatch);
+
+			argoDbClient.updateMappedAddresses(addressBatch);
+
+			retAck = new ApplicationAck("ESECUZIONE OK");
+			return retAck;
+
+		}
+//		catch (SQLException e) {
+//			log.error("ERRORE SQL " + e, e);
+//			ErrorAck ea = new ErrorAck(e);
+//			return ea;
+//		}
+		catch (DataAccessException dae) {
+			log.error("ERRORE nell'accesso ai dati " + dae, dae);
+			ErrorAck ea = new ErrorAck(dae);
+			return ea;
+		}
+		catch (Exception eg) {
+			log.error("ERRORE Generico " + eg, eg);
+			ErrorAck ea = new ErrorAck(eg);
+			return ea;
+		}
+	}
+
+//	private void geolocalizzaIndirizzi(Connection conn) throws Exception {
+//
+//		long dataModifica = new Date().getTime();
+//
+//		// In alternativa si possono implementare i servizi in
+//		// ARGO_EJBClient/ARGO_EJB e richiamare quelli tramite il ServiceLocator!
+//
+//		PreparedStatement pst = null;
+//		ResultSet rs = null;
+//
+//		String SQL = "";
+//
+//		try {
+//
+//			log.debug("Query SQL da eseguire:\n" + SQL);
+//			pst = conn.prepareStatement(SQL);
+//
+//			// TODO
+//			
+//
+//		}
+//		catch (SQLException e) {
+//			log.error("ERRORE SQL elaboraIndirizzi " + e, e);
+//			throw e;
+//		}
+//		catch (Exception eg) {
+//			log.error("ERRORE elaboraIndirizzi " + eg, eg);
+//			throw eg;
+//		}
+//		finally {
+//			try {
+//				DbUtils.close(rs);
+//				DbUtils.close(pst);
+//
+//			}
+//			catch (SQLException sqle) {
+//				log.error("ERRORE CHIUSURA OGGETTI SQL", sqle);
+//			}
+//		}
+//	}
+
+//	public static boolean compare(String str1, String str2) {
+//		return (str1 == null ? str2 == null : str1.equals(str2));
+//	}
+//
+//	public static boolean compare(Integer str1, Integer str2) {
+//		boolean uguali = (str1 == null ? str2 == null : str1.equals(str2));
+//
+//		// log.info(str1+" e "+ str2+ " >>" +uguali);
+//
+//		return uguali;
+//	}
+
+//	private void getJellyParam(Context ctx) throws Exception {
+//		try {
+//
+//			int index = 1;
+//			log.info("**************************************************************rengine.rule.param.in." + index
+//					+ ".descr");
+//
+//		}
+//		catch (Exception e) {
+//			log.error("Exception: " + e.getMessage());
+//			throw e;
+//		}
+//	}
+
+//	private String getJellyParam(Context ctx, int index, String desc) throws Exception {
+//
+//		String variabile = "";
+//
+//		log.info("rengine.rule.param.in." + index + ".descr");
+//
+//		ComplexParam paramSql = (ComplexParam) ctx
+//				.get(_jrulecfg.getProperty("rengine.rule.param.in." + index + ".descr"));
+//
+//		HashMap<String, ComplexParamP> p = paramSql.getParams();
+//		Set set = p.entrySet();
+//		Iterator it = set.iterator();
+//		int i = 1;
+//		while (it.hasNext()) {
+//			Entry entry = (Entry) it.next();
+//			ComplexParamP cpp = (ComplexParamP) entry.getValue();
+//			Object o = TypeFactory.getType(cpp.getValore(), cpp.getType());
+//			variabile = o.toString();
+//		}
+//
+//		log.info("Query " + desc + " da eseguire:" + variabile);
+//
+//		return variabile;
+//	}
+//
+//	private String replaceApici(String s) {
+//		if (s != null)
+//			return s.replaceAll("'", "''");
+//		else
+//			return s;
+//	}
+
+}

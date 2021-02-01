@@ -1,0 +1,17 @@
+#--------------------------------------------------------------
+# File di configurazione in cui sono indicato i valori dei soli
+# parametri di contesto della catena jelly da passare alla 
+# regola 
+#------------------------------------------------------------
+# Numero di parametri previsti in input
+rengine.jchain.in.nof=3
+#------------------------------------------------------------
+# Le coppie chiavi/valore hanno come key lo stesso nome 
+# indicato nello script jelly xml
+#------------------------------------------------------------
+rengine.jchain.in.1.key=NOME_TRACCIATO
+rengine.jchain.in.1.value=Docfa_1.0.xml
+rengine.jchain.in.2.key=TRACCIATO_XML
+rengine.jchain.in.2.value=<?xml version="1.0" encoding="UTF-8"?><configurazione>    <nomeDS>Docfa</nomeDS>    <versione>1.0</versione>    <caricatore>it.webred.rulengine.brick.loadDwh.load.docfa.CaricatoreDocfa</caricatore>    <separatore/>    <driver/>    <gestoreDataEstrazione/>    <stringaConnessione/>    <sourceTab>DIR_FILES</sourceTab>    <tracciato/></configurazione>
+rengine.jchain.in.3.key=ELENCO_DATE_FORNITURA
+rengine.jchain.in.3.value=

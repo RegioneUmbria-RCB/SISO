@@ -1,0 +1,1 @@
+C:\Progra~1\Java\jdk1.7.0_60\bin\xjc -xmlschema PSA_InvioPrestazioni.xsd -d ../../java -p com.osmosit.siso.flussoinps.psa_invioprestazioni

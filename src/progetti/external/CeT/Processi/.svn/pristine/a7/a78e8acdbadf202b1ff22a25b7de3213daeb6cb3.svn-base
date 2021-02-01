@@ -1,0 +1,24 @@
+#--------------------------------------------------------------
+# File di configurazione in cui sono indicato i valori dei soli
+# parametri di contesto della catena jelly da passare alla 
+# regola 
+#------------------------------------------------------------
+# Numero di parametri previsti in input
+rengine.jchain.in.nof=6
+#------------------------------------------------------------
+# Le coppie chiavi/valore hanno come key lo stesso nome 
+# indicato nello script jelly xml
+#------------------------------------------------------------
+rengine.jchain.in.1.key=SQL_DELETE_SITIDSTR
+rengine.jchain.in.1.value=delete from sitidstr
+rengine.jchain.in.2.key=SQL_LOAD_SITIDSTR
+rengine.jchain.in.2.value=insert into sitidstr select distinct to_number(id_orig), viasedime, v.descrizione, e.codent, sysdate, to_date('99991231','yyyymmdd'),'LOADER','SC',to_number(id_orig), null, null, null, null from sit_d_via v, sit_ente e where v.descrizione is not null
+rengine.jchain.in.3.key=SQL_VERIFICA_CIVICI_DOPPI
+rengine.jchain.in.3.value= select distinct to_number(substr(eco.fk_strade,5,length(eco.fk_strade))), eco.descrizione_civico, count(*) from ec_top_civici eco group by to_number(substr(eco.fk_strade,5,length(eco.fk_strade))), eco.descrizione_civico having count(*)>1
+rengine.jchain.in.4.key=SQL_TRUNCATE_SITILOC_UIU
+rengine.jchain.in.4.value=truncate table sitiloc_uiu
+rengine.jchain.in.5.key=SQL_DELETE_SITICIVI
+rengine.jchain.in.5.value=delete from siticivi
+rengine.jchain.in.6.key=SQL_LOAD_SITICIVI
+rengine.jchain.in.6.value=insert into siticivi select null, to_number(substr(eco.fk_strade,5,length(eco.fk_strade))), ECO.FK_COMUNI_BELF,eco.descrizione_civico, sysdate, to_date('99991231','yyyymmdd'), 'LOADER', SHAPE, null, null, null, null from ec_top_civici eco where to_number(substr(eco.fk_strade,5,length(eco.fk_strade)))<>0
+

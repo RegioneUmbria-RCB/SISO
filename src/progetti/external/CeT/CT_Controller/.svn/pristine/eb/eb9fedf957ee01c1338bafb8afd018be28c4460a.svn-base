@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PROCESS model-entity="JSFProcess">
+ <PROCESS-ITEM NAME="rules:*" PATH="*" SHAPE="32,17,0,0" model-entity="JSFProcessGroup">
+  <PROCESS-ITEM ID="rules:*:0" NAME="item" PATH="*" model-entity="JSFProcessItem">
+   <PROCESS-ITEM-OUTPUT ID="home::#jsp#protected#layout#layout.xhtml"
+    NAME="output" PATH="/jsp/protected/layout/layout.xhtml"
+    TARGET="rules:#jsp#protected#layout#layout.xhtml" TITLE="home" model-entity="JSFProcessItemOutput"/>
+   <PROCESS-ITEM-OUTPUT
+    ID="controller.status::#jsp#protected#home.xhtml" NAME="output1"
+    PATH="/jsp/protected/home.xhtml"
+    TARGET="rules:#jsp#protected#home.xhtml" TITLE="controller.status" model-entity="JSFProcessItemOutput"/>
+   <PROCESS-ITEM-OUTPUT
+    ID="controller.scheduler::#jsp#protected#scheduler#attivita.xhtml"
+    NAME="output2" PATH="/jsp/protected/scheduler/attivita.xhtml"
+    TARGET="rules:#jsp#protected#scheduler#attivita.xhtml"
+    TITLE="controller.scheduler" model-entity="JSFProcessItemOutput"/>
+   <PROCESS-ITEM-OUTPUT
+    ID="controller.eventi::#jsp#protected#eventi#attivita.xhtml"
+    NAME="output3" PATH="/jsp/protected/eventi/attivita.xhtml"
+    TARGET="rules:#jsp#protected#eventi#attivita.xhtml"
+    TITLE="controller.eventi" model-entity="JSFProcessItemOutput"/>
+   <PROCESS-ITEM-OUTPUT
+    ID="controller.queue::#jsp#protected#queue#coda.xhtml"
+    NAME="output5" PATH="/jsp/protected/queue/coda.xhtml"
+    TARGET="rules:#jsp#protected#queue#coda.xhtml"
+    TITLE="controller.queue" model-entity="JSFProcessItemOutput"/>
+   <PROCESS-ITEM-OUTPUT
+    ID="controller.monitor::#jsp#protected#monitor#monitor.xhtml"
+    NAME="output6" PATH="/jsp/protected/monitor/monitor.xhtml"
+    TARGET="rules:#jsp#protected#monitor#monitor.xhtml"
+    TITLE="controller.monitor" model-entity="JSFProcessItemOutput"/>
+   <PROCESS-ITEM-OUTPUT
+    ID="controller.statofonti::#jsp#protected#fonti#statoFonti.xhtml"
+    NAME="output7" PATH="/jsp/protected/fonti/statoFonti.xhtml"
+    TARGET="rules:#jsp#protected#fonti#statoFonti.xhtml"
+    TITLE="controller.statofonti" model-entity="JSFProcessItemOutput"/>
+   <PROCESS-ITEM-OUTPUT
+    ID="controller.abcomandi::#jsp#protected#abcomandi#abComandi.xhtml"
+    NAME="output4" PATH="/jsp/protected/abcomandi/abComandi.xhtml"
+    TARGET="rules:#jsp#protected#abcomandi#abComandi.xhtml"
+    TITLE="controller.abcomandi" model-entity="JSFProcessItemOutput"/>
+   <PROCESS-ITEM-OUTPUT
+    ID="controller.cataloghi::#jsp#protected#cataloghi#cataloghi.xhtml"
+    NAME="output8" PATH="/jsp/protected/cataloghi/cataloghi.xhtml"
+    TARGET="rules:#jsp#protected#cataloghi#cataloghi.xhtml"
+    TITLE="controller.cataloghi" model-entity="JSFProcessItemOutput"/>
+   <PROCESS-ITEM-OUTPUT
+    ID="controller.audit::#jsp#protected#audit#audit.xhtml"
+    NAME="output9" PATH="/jsp/protected/audit/audit.xhtml"
+    TARGET="rules:#jsp#protected#audit#audit.xhtml"
+    TITLE="controller.audit" model-entity="JSFProcessItemOutput"/>
+   <PROCESS-ITEM-OUTPUT
+    ID="controller.utilities::#jsp#protected#utilities#utilities.xhtml"
+    NAME="output10" PATH="/jsp/protected/utilities/utilities.xhtml"
+    TARGET="rules:#jsp#protected#utilities#utilities.xhtml"
+    TITLE="controller.utilities" model-entity="JSFProcessItemOutput"/>
+  </PROCESS-ITEM>
+ </PROCESS-ITEM>
+ <PROCESS-ITEM NAME="rules:#jsp#protected#layout#layout.xhtml"
+  PATH="/jsp/protected/layout/layout.xhtml" SHAPE="240,33,0,0" model-entity="JSFProcessGroup"/>
+ <PROCESS-ITEM NAME="rules:#jsp#protected#scheduler#attivita.xhtml"
+  PATH="/jsp/protected/scheduler/attivita.xhtml" SHAPE="256,177,0,0" model-entity="JSFProcessGroup"/>
+ <PROCESS-ITEM NAME="rules:#jsp#protected#queue#coda.xhtml"
+  PATH="/jsp/protected/queue/coda.xhtml" SHAPE="304,497,0,0" model-entity="JSFProcessGroup"/>
+ <PROCESS-ITEM NAME="rules:#jsp#protected#fonti#statoFonti.xhtml"
+  PATH="/jsp/protected/fonti/statoFonti.xhtml" SHAPE="304,721,0,0" model-entity="JSFProcessGroup"/>
+ <PROCESS-ITEM NAME="rules:#jsp#protected#monitor#monitor.xhtml"
+  PATH="/jsp/protected/monitor/monitor.xhtml" SHAPE="304,609,0,0" model-entity="JSFProcessGroup"/>
+ <PROCESS-ITEM NAME="rules:#jsp#protected#home.xhtml"
+  PATH="/jsp/protected/home.xhtml" SHAPE="304,385,0,0" model-entity="JSFProcessGroup"/>
+ <PROCESS-ITEM NAME="rules:#jsp#protected#eventi#attivita.xhtml"
+  PATH="/jsp/protected/eventi/attivita.xhtml" SHAPE="304,385,0,0" model-entity="JSFProcessGroup"/>
+ <PROCESS-ITEM NAME="rules:#jsp#protected#cataloghi#cataloghi.xhtml"
+  PATH="/jsp/protected/cataloghi/cataloghi.xhtml" SHAPE="304,1073,0,0" model-entity="JSFProcessGroup"/>
+ <PROCESS-ITEM NAME="rules:#jsp#protected#abcomandi#abComandi.xhtml"
+  PATH="/jsp/protected/abcomandi/abComandi.xhtml" SHAPE="304,513,0,0" model-entity="JSFProcessGroup"/>
+ <PROCESS-ITEM NAME="rules:#jsp#protected#audit#audit.xhtml"
+  PATH="/jsp/protected/audit/audit.xhtml" SHAPE="304,545,0,0" model-entity="JSFProcessGroup"/>
+ <PROCESS-ITEM NAME="rules:#jsp#protected#utilities#utilities.xhtml"
+  PATH="/jsp/protected/utilities/utilities.xhtml" SHAPE="304,577,0,0" model-entity="JSFProcessGroup"/>
+</PROCESS>

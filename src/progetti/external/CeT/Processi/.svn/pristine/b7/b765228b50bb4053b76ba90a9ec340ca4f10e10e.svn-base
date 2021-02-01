@@ -1,0 +1,15 @@
+#--------------------------------------------------------------
+# File di configurazione in cui sono indicato i valori dei soli
+# parametri di contesto della catena jelly da passare alla 
+# regola 
+#------------------------------------------------------------
+# Numero di parametri previsti in input
+rengine.jchain.in.nof=2
+#------------------------------------------------------------
+# Le coppie chiavi/valore hanno come key lo stesso nome 
+# indicato nello script jelly xml
+#------------------------------------------------------------
+rengine.jchain.in.1.key=QUERYSQL_1
+rengine.jchain.in.1.value=SELECT TO_CHAR(CSTACODI) CSTACODI, CSTADESC, CARONTE_DATA_INIZIO_VAL DT_EXP_DATO FROM DS_D_STATI_TERRITORI_1_0 WHERE CARONTE_FLAG_ELABORATO = 0
+rengine.jchain.in.2.key=RSITRSCRIPT_1
+rengine.jchain.in.2.value=<RsIterator> <key table="DS_D_STATI_TERRITORI_1_0"> <column name="CSTACODI"/> <column name="DT_EXP_DATO"/> </key> <commands> <command name="it.webred.rulengine.brick.loadDwh.base.LoadSitStato" livelloAnomalie="2"> <param id="field" value="CSTACODI" dest="ID_ORIG" type="java.lang.String"/> <param id="const" value="1" dest="FK_ENTE_SORGENTE" type="java.lang.Integer"/> <param id="field" value="CSTADESC" dest="DESCRIZIONE" type="java.lang.String"/> <param id="field" value="DT_EXP_DATO" dest="DT_EXP_DATO" type="java.sql.Timestamp"/> <param id="const" value="" dest="DT_INI_VAL_DATO" type="java.sql.Timestamp"/> <param id="const" value="" dest="DT_FINE_VAL_DATO" type="java.sql.Timestamp"/> <param id="const" value="0" dest="FLAG_DT_VAL_DATO" type="java.lang.Integer"/> </command> <command name="it.webred.rulengine.brick.core.EseguiSql"> <param id="const" dest="SQL" type="java.lang.String"> <![CDATA[ update DS_D_STATI_TERRITORI_1_0 SET CARONTE_FLAG_ELABORATO = 1 WHERE CSTACODI=? AND CARONTE_DATA_INIZIO_VAL=? ]]> </param> <param id="const" dest="PARAMETRI" type="it.webred.rulengine.type.ComplexParam"> <![CDATA[ <complexParam> <param name="param1"> [[CSTACODI]] </param> <param name="param2"> [[DT_EXP_DATO]] </param> </complexParam> ]]> </param> </command> </commands> </RsIterator>

@@ -1,0 +1,101 @@
+#dir.files=C:/dati_diogene/CONCESSIONI/
+tableA.name=RE_CONCESSIONI_A
+tableB.name=RE_CONCESSIONI_B
+tableC.name=RE_CONCESSIONI_C
+tableD.name=RE_CONCESSIONI_D
+tableE.name=RE_CONCESSIONI_E
+tableA.create_table=CREATE TABLE RE_CONCESSIONI_A  (Chiave varchar2(50),concessione_numero varchar2(20)\t,progressivo_numero varchar2(15)\t,progressivo_anno varchar2(4),\tprotocollo_data varchar2(10)\t,protocollo_numero varchar2(20),\ttipo_intervento varchar2(300),\toggetto varchar2(500)\t,procedimento varchar2(255)\t,codice_via varchar2(50)\t,indirizzo varchar2(250)\t,civico varchar2(20)\t,barrato varchar2(10)\t,zona varchar2(255)\t,data_rilascio varchar2(10),\tdata_inizio_lavori varchar2(10)\t,data_fine_lavori varchar2(10) ,data_proroga_lavori varchar2(10),\tposizione_codice varchar2(20),\tposizione_descrizione varchar2(200),\tposizione_data varchar2(10),\tPROCESSID VARCHAR2(1000), RE_FLAG_ELABORATO VARCHAR2(1), DT_EXP_DATO DATE)
+tableB.create_table=CREATE TABLE RE_CONCESSIONI_B (\
+Chiave    varchar2(50),\
+Chiave_relazione    varchar2(50),\
+tipo_soggetto    varchar2(1),\
+tipo_persona    varchar2(1),\
+codice_fiscale    varchar2(16),\
+cognome    varchar2(200),\
+nome    varchar2(200),\
+Denominazione_RagSoc    varchar2(200),\
+titolo    varchar2(100),\
+data_nascita    varchar2(10),\
+comune_nascita    varchar2(100),\
+provincia_nascita    varchar2(20),\
+indirizzo_residenza    varchar2(100),\
+civico_residenza    varchar2(30),\
+cap_residenza    varchar2(20),\
+comune_residenza    varchar2(100),\
+provincia_residenza    varchar2(20),\
+data_inizio_residenza    varchar2(10),\
+tel    varchar2(50),\
+fax    varchar2(50),\
+email    varchar2(100),\
+piva    varchar2(100),\
+indirizzo_studio    varchar2(255),\
+cap_studio    varchar2(20),\
+comune_studio    varchar2(100),\
+provincia_studio    varchar2(20),\
+albo    varchar2(100),\
+rag_Soc_ditta    varchar2(2000),\
+cf_ditta    varchar2(255),\
+pi_ditta    varchar2(255),\
+indirizzo_ditta    varchar2(100),\
+cap_ditta    varchar2(100),\
+comune_ditta    varchar2(100),\
+provincia_ditta    varchar2(20),\
+qualita    varchar2(100),\
+PROCESSID VARCHAR2(1000), RE_FLAG_ELABORATO VARCHAR2(1), DT_EXP_DATO DATE)
+tableC.create_table=CREATE TABLE RE_CONCESSIONI_C \
+( Chiave     VARCHAR2(50),\
+Chiave_relazione VARCHAR2(50),\
+dest_uso VARCHAR2(255),\
+zone_omogenee VARCHAR2(255),\
+zone_funzionali VARCHAR2(255),\
+vincoli VARCHAR2(255),\
+sup_eff_lotto VARCHAR2(15),\
+sup_edificabile VARCHAR2(15),\
+sup_lorda_pav VARCHAR2(15),\
+sup_occupata VARCHAR2(15),\
+sup_coperta VARCHAR2(15),\
+sup_filtrante VARCHAR2(15),\
+vol_virtuale VARCHAR2(15),\
+vol_fisico_istat VARCHAR2(15),\
+vol_totale VARCHAR2(15),\
+parcheggio_n_posti VARCHAR2(10),\
+parcheggio_sup VARCHAR2(15),\
+vani VARCHAR2(10),\
+num_abitazioni VARCHAR2(10),\
+data_agibilita VARCHAR2(10),\
+data_abitabilita VARCHAR2(10),\
+PROCESSID VARCHAR2(1000), RE_FLAG_ELABORATO VARCHAR2(1), DT_EXP_DATO DATE)
+tableD.create_table=CREATE TABLE RE_CONCESSIONI_D \
+(Chiave    VARCHAR2(50),\
+Chiave_relazione    VARCHAR2(50),\
+foglio    VARCHAR2(100),\
+particella    VARCHAR2(1500),\
+subalterno    VARCHAR2(100),\
+tipo    VARCHAR2(7),\
+sezione    VARCHAR2(3),\
+codice_Fabbricato    VARCHAR2(50),\
+chiave_relazione_E    VARCHAR2(50),\
+PROCESSID VARCHAR2(1000), RE_FLAG_ELABORATO VARCHAR2(1), DT_EXP_DATO DATE)
+tableE.create_table=CREATE TABLE RE_CONCESSIONI_E \
+(Chiave    VARCHAR2(    50    ),\
+Chiave_A    VARCHAR2(    50    ),\
+Chiave_D    VARCHAR2(    50    ),\
+sedime    VARCHAR2(    100    ),\
+indirizzo    VARCHAR2(    1000    ),\
+codice_via    VARCHAR2(    100    ),\
+civico    VARCHAR2(    255    ),\
+civico2    VARCHAR2(    255    ),\
+civico3    VARCHAR2(    255    ),\
+descrizione    VARCHAR2(    1000    ),\
+PROCESSID VARCHAR2(1000), RE_FLAG_ELABORATO VARCHAR2(1), DT_EXP_DATO DATE)
+tableA.idx=CREATE INDEX IDX_RE_CONCESSIONI_A ON RE_CONCESSIONI_A (CHIAVE)
+tableB.idx=CREATE INDEX IDX_RE_CONCESSIONI_B ON RE_CONCESSIONI_B (CHIAVE)
+tableC.idx=CREATE INDEX IDX_RE_CONCESSIONI_C ON RE_CONCESSIONI_C (CHIAVE)
+tableD.idx=CREATE INDEX IDX_RE_CONCESSIONI_D ON RE_CONCESSIONI_D (CHIAVE)
+tableE.idx=CREATE INDEX IDX_RE_CONCESSIONI_E ON RE_CONCESSIONI_E (CHIAVE)
+sql.RE_CONCESSIONI_A=SELECT Chiave,concessione_numero,progressivo_numero,progressivo_anno,util.fchar_to_date (protocollo_data, 'DD/MM/YYYY') protocollo_data ,protocollo_numero,tipo_intervento,oggetto,procedimento,codice_via,indirizzo,civico,barrato,zona,util.fchar_to_date (data_rilascio, 'DD/MM/YYYY') data_rilascio,util.fchar_to_date (data_inizio_lavori, 'DD/MM/YYYY') data_inizio_lavori,util.fchar_to_date (data_fine_lavori, 'DD/MM/YYYY') data_fine_lavori,util.fchar_to_date (data_proroga_lavori, 'DD/MM/YYYY') data_proroga_lavori,PROCESSID, RE_FLAG_ELABORATO, DT_EXP_DATO FROM RE_CONCESSIONI_A WHERE RE_FLAG_ELABORATO \= '0' ORDER BY DT_EXP_DATO
+sql.RE_CONCESSIONI_B=select Chiave    , Chiave_relazione    ,tipo_soggetto    , tipo_persona    ,codice_fiscale    , cognome    ,nome    ,Denominazione_RagSoc    ,titolo   ,util.fchar_to_date (data_NASCITA, 'DD/MM/YYYY') data_nascita,    comune_nascita    , provincia_nascita    ,indirizzo_residenza    ,civico_residenza    ,cap_residenza    ,comune_residenza    ,provincia_residenza    ,data_inizio_residenza    ,tel    ,fax    ,email    ,piva    ,indirizzo_studio    ,cap_studio    ,comune_studio    ,provincia_studio    ,albo    ,rag_Soc_ditta    ,cf_ditta    ,pi_ditta    ,indirizzo_ditta    ,cap_ditta    ,comune_ditta    ,provincia_ditta    ,qualita,\tPROCESSID, RE_FLAG_ELABORATO, DT_EXP_DATO FROM RE_CONCESSIONI_B WHERE RE_FLAG_ELABORATO \= '0' ORDER BY DT_EXP_DATO
+sql.RE_CONCESSIONI_C=SELECT Chiave    ,Chiave_relazione    ,dest_uso    ,zone_omogenee    ,zone_funzionali    ,vincoli    ,sup_eff_lotto    ,sup_edificabile    ,sup_lorda_pav    ,sup_occupata    ,sup_coperta    ,sup_filtrante    ,vol_virtuale    ,vol_fisico_istat    ,vol_totale    ,parcheggio_n_posti    ,parcheggio_sup    ,vani    ,num_abitazioni    ,data_agibilita    ,data_abitabilita\t,PROCESSID, RE_FLAG_ELABORATO, DT_EXP_DATO FROM RE_CONCESSIONI_C WHERE RE_FLAG_ELABORATO \= '0' ORDER BY DT_EXP_DATO
+sql.RE_CONCESSIONI_D=SELECT Chiave,Chiave_relazione,foglio,particella,subalterno,tipo,sezione,codice_Fabbricato,PROCESSID, RE_FLAG_ELABORATO, DT_EXP_DATO FROM RE_CONCESSIONI_D WHERE RE_FLAG_ELABORATO \= '0' ORDER BY DT_EXP_DATO
+sql.RE_CONCESSIONI_E=SELECT Chiave\t, Chiave_A\t,FILLER Chiave_D\t,sedime\t,indirizzo\t,codice_via\t,civico\t,civico2\t,civico3\t,descrizione, PROCESSID, RE_FLAG_ELABORATO, DT_EXP_DATO FROM RE_CONCESSIONI_E WHERE RE_FLAG_ELABORATO \= '0' ORDER BY DT_EXP_DATO
+

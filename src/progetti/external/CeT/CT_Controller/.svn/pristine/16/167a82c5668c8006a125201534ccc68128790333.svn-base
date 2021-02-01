@@ -1,0 +1,84 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich">
+
+<rich:dataTable width="100%" var="row"
+	value="#{cMonitorBean.listaCommand}" id="listCommandTable"
+	onRowMouseOver="this.style.backgroundColor='#F1F1F1'"
+	onRowMouseOut="this.style.backgroundColor='#{a4jSkin.tableBackgroundColor}'">
+	<rich:column>
+		<f:facet name="header">
+			<h:outputText value="" />
+		</f:facet>
+		<center><h:graphicImage rendered="#{row.running}"
+			value="/images/wait.gif" /></center>
+	</rich:column>
+	<rich:column>
+		<f:facet name="header">
+			<h:outputText value="Descrizione" />
+		</f:facet>
+		<h:outputText value="#{row.rCommand.descr}" />
+	</rich:column>
+	<rich:column>
+		<f:facet name="header">
+			<h:outputText value="Codice" />
+		</f:facet>
+		<h:outputText value="#{row.rCommand.codCommand}" />
+	</rich:column>
+	<rich:column>
+		<f:facet name="header">
+			<h:outputText value="" />
+		</f:facet>
+		<center><a4j:commandButton value="Invio"
+			rendered="#{row.status eq 'F'}" styleClass="greenButton"
+			disabled="#{!row.processable}" action="#{cMonitorBean.submit}"
+			reRender="prcForm, cmdForm">
+			<a4j:actionparam name="idcommand" value="#{row.rCommand.id}"
+				assignTo="#{cMonitorBean.commandIdSelezionato}" />
+			<a4j:support event="onclick"
+				onsubmit="if (!confirm('Procedere con l\'operazione?')) return false" />
+		</a4j:commandButton> <a4j:commandButton value="Invio" rendered="#{row.status eq 'I'}"
+			styleClass="yellowButton" disabled="#{!row.processable}"
+			action="#{cMonitorBean.submit}" reRender="prcForm, cmdForm">
+			<a4j:actionparam name="idcommand" value="#{row.rCommand.id}"
+				assignTo="#{cMonitorBean.commandIdSelezionato}" />
+			<a4j:support event="onclick"
+				onsubmit="if (!confirm('Procedere con l\'operazione?')) return false" />
+		</a4j:commandButton> <a4j:commandButton value="Invio" rendered="#{row.status eq 'E'}"
+			styleClass="redButton" disabled="#{!row.processable}"
+			action="#{cMonitorBean.submit}" reRender="prcForm, cmdForm">
+			<a4j:actionparam name="idcommand" value="#{row.rCommand.id}"
+				assignTo="#{cMonitorBean.commandIdSelezionato}" />
+			<a4j:support event="onclick"
+				onsubmit="if (!confirm('Procedere con l\'operazione?')) return false" />
+		</a4j:commandButton> <a4j:commandButton value="Invio" rendered="#{row.status eq 'W'}"
+			styleClass="orangeButton" disabled="#{!row.processable}"
+			action="#{cMonitorBean.submit}" reRender="prcForm, cmdForm">
+			<a4j:actionparam name="idcommand" value="#{row.rCommand.id}"
+				assignTo="#{cMonitorBean.commandIdSelezionato}" />
+			<a4j:support event="onclick"
+				onsubmit="if (!confirm('Procedere con l\'operazione?')) return false" />
+		</a4j:commandButton> <br />
+		<rich:spacer height="15px" /><a4j:commandLink
+			action="#{cMonitorBean.doCaricaLog}" reRender="commandLogPage"
+			title="Visualizza Log"
+			oncomplete="Richfaces.showModalPanel('commandLogModalBox'); return false;">
+			<h:outputText value="#{row.description}" />
+			<a4j:actionparam name="idcommand" value="#{row.rCommand.id}"
+				assignTo="#{cMonitorBean.commandIdSelezionato}" />
+			<a4j:actionparam name="pagecommandlog"
+				value="/jsp/protected/monitor/commandLog.xhtml"
+				assignTo="#{cMonitorBean.commandLogPage}" />
+			<a4j:actionparam name="meseCorr" value="#{cMonitorBean.meseCorr}"
+				assignTo="#{cMonitorBean.meseSelezionato}" />
+			<a4j:actionparam name="annoCorr" value="#{cMonitorBean.annoCorr}"
+				assignTo="#{cMonitorBean.annoSelezionato}" />
+		</a4j:commandLink></center>
+	</rich:column>
+</rich:dataTable>
+
+</html>

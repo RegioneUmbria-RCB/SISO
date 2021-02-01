@@ -1,0 +1,106 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich">
+
+<rich:modalPanel id="utilitiesLogModalBox" minHeight="780" minWidth="900"
+	height="780" width="900">
+
+	<f:facet name="header">
+		<h:outputText value="Log Esecuzione - Funzione #{ut.funzioneCorrente}"></h:outputText>
+	</f:facet>
+
+	<f:facet name="controls">
+		<h:form>
+			<h:panelGroup>
+				<h:graphicImage value="/images/close.png" style="cursor:pointer"
+					id="hidelink">
+					<a4j:support event="onclick" action="#{utBean.resetPage}"
+						reRender="utilitiesLogPage"
+						oncomplete="javascript:Richfaces.hideModalPanel('utilitiesLogModalBox');" />
+				</h:graphicImage>
+			</h:panelGroup>
+		</h:form>
+	</f:facet>
+
+	<h:form id="utilitiesLogForm">
+		<rich:spacer height="10px" />
+			
+				<rich:extendedDataTable width="100%" height="980px" var="log" 
+					value="#{funzBean.listaLog}" enableContextMenu="false" rows="20"
+					onRowMouseOver="this.style.backgroundColor='#F1F1F1'"
+					onRowMouseOut="this.style.backgroundColor='#{a4jSkin.tableBackgroundColor}'">
+
+					<rich:column width="30px" >
+						<h:graphicImage width="20px"
+							rendered="#{log.stato eq '124'}"
+							value="/images/greencircle.png" style="padding-right: 5px;"
+							title="Elaborazione conclusa correttamente" />
+						<h:graphicImage width="20px"
+							rendered="#{log.stato eq '126'}"
+							value="/images/yellowcircle.png" style="padding-right: 5px;"
+							title="In esecuzione" />
+						<h:graphicImage width="20px"
+							rendered="#{log.stato eq '125'}"
+							value="/images/redcircle.png" style="padding-right: 5px;"
+							title="Elaborazione conclusa con errori" />
+					</rich:column>
+					<rich:column width="120px" >
+						<f:facet name="header">
+							<h:outputText value="Funzione" />
+						</f:facet>
+						<h:outputText value="#{log.nomeFunzione}"/>
+					</rich:column>
+					<rich:column  width="200px">
+						<f:facet name="header">
+							<h:outputText value="Parametri" />
+						</f:facet>
+						
+						<a4j:repeat value="#{log.parametri}" var="item">
+							<h:outputText value="#{item}" /><br></br>
+						</a4j:repeat>
+						
+					</rich:column>
+					<rich:column width="120px" >
+						<f:facet name="header">
+							<h:outputText value="Inizio Esecuzione" />
+						</f:facet>
+						<h:outputText value="#{log.dataInizio}">
+							<f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" timeZone="CET" />
+						</h:outputText>
+					</rich:column>
+					<rich:column width="120px" >
+						<f:facet name="header">
+							<h:outputText value="Fine Esecuzione" />
+						</f:facet>
+						<h:outputText value="#{log.dataFine}">
+							<f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" timeZone="CET" />
+						</h:outputText>
+					</rich:column>
+					<rich:column width="200px" >
+						<f:facet name="header">
+							<h:outputText value="Messaggio" />
+						</f:facet>
+						<h:outputText value="#{log.note}" />
+					</rich:column>
+					<rich:column width="80px" >
+						<f:facet name="header">
+							<h:outputText value="Operatore" />
+						</f:facet>
+						<h:outputText value="#{log.operatore}" />
+					</rich:column>
+					
+		
+					<f:facet name="footer">
+						<rich:datascroller id="tableScroller" />
+					</f:facet>
+					
+				</rich:extendedDataTable>
+	</h:form>
+
+</rich:modalPanel>
+
+</html>

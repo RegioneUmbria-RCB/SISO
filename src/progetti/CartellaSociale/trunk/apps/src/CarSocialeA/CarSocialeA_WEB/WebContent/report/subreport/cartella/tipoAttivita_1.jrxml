@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="aac40627-9034-4852-841a-125bbd13a786">
+	<property name="ireport.zoom" value="0.7513148009015778"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<field name="socioAmbientale" class="java.lang.String"/>
+	<field name="parentale" class="java.lang.String"/>
+	<field name="sanitaria" class="java.lang.String"/>
+	<field name="orgServizio" class="java.lang.String"/>
+	<field name="proposta" class="java.lang.String"/>
+	<background>
+		<band/>
+	</background>
+	<detail>
+		<band height="273" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="0" width="238" height="20" uuid="f326d9fb-37f8-4ba0-89e0-b2bf9861cea3"/>
+				<textElement>
+					<font size="12" isBold="false" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Situazione Socio Ambientale:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="0" y="20" width="412" height="20" uuid="578b23bc-093f-4d8e-8de7-043e07ccc8e6"/>
+				<textFieldExpression><![CDATA[$F{socioAmbientale}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="0" y="60" width="238" height="20" uuid="b79bee31-e89c-4da9-acdc-8fc215ef30b4"/>
+				<textElement>
+					<font size="12" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Situazione Parentale:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="0" y="80" width="412" height="20" uuid="99293f5d-9ec1-4abc-88a5-c6aa4ee647af"/>
+				<textFieldExpression><![CDATA[$F{parentale}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="0" y="116" width="238" height="20" uuid="4fc4c609-3e11-4c4e-ad5e-ea448399651c"/>
+				<textElement>
+					<font size="12" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Situazione Sanitaria:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="0" y="136" width="412" height="20" uuid="baac9065-b0be-4c56-b775-7ca657ed37c1"/>
+				<textFieldExpression><![CDATA[$F{sanitaria}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="0" y="173" width="152" height="20" uuid="e18a7d24-cd1b-4204-8d91-a3df0c90180d"/>
+				<textElement>
+					<font size="12" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Proposta:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="0" y="193" width="412" height="20" uuid="0f5f0581-9993-4ed8-9d12-ebf310c3a165"/>
+				<textFieldExpression><![CDATA[$F{proposta}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="0" y="225" width="238" height="20" uuid="ed9300e9-eeac-451f-9578-d6866f5ee55a"/>
+				<textElement>
+					<font size="12" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Organizzazione servizio:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="0" y="245" width="412" height="20" uuid="ea50179f-af4a-4135-89d7-6ce7422704a2"/>
+				<textFieldExpression><![CDATA[$F{orgServizio}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

@@ -1,0 +1,812 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="aac40627-9034-4852-841a-125bbd13a786">
+	<property name="ireport.zoom" value="1.9487171000000014"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="1056"/>
+	<style name="table">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1_TH" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1_CH" mode="Opaque" backcolor="#FFBFBF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 2">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 2_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 2_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 2_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 3">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 3_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 3_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 3_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 4">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 4_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 4_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 4_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 5">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 5_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 5_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 5_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<field name="statoAffido" class="java.lang.String"/>
+	<field name="affidoProf" class="java.lang.String"/>
+	<field name="adottabile" class="java.lang.String"/>
+	<field name="naturaAccoglienza" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="numDecreto" class="java.lang.String"/>
+	<field name="dataDecreto" class="java.lang.String"/>
+	<field name="collocamento" class="java.lang.String"/>
+	<field name="entitaAffido" class="java.lang.String"/>
+	<field name="affidoParziale" class="java.lang.String"/>
+	<field name="convivGenitoriConAffid" class="java.lang.String"/>
+	<field name="frequenzaContattiMinFamOrig" class="java.lang.String"/>
+	<field name="impFamigliaOrig" class="java.lang.String"/>
+	<field name="impFamigliaAffid" class="java.lang.String"/>
+	<field name="impMinore" class="java.lang.String"/>
+	<field name="impServizioSoc" class="java.lang.String"/>
+	<field name="impAltriSoggetti" class="java.lang.String"/>
+	<field name="famOrigAllontanam" class="java.lang.String"/>
+	<field name="famOrigGenSconosc" class="java.lang.String"/>
+	<field name="famOrigFuoriReg" class="java.lang.String"/>
+	<field name="famOrigInterv" class="java.lang.String"/>
+	<field name="famAffMotivaz" class="java.lang.String"/>
+	<field name="famAffInBancaDati" class="java.lang.String"/>
+	<field name="famAffIdoneita" class="java.lang.String"/>
+	<field name="famAffAffidatari" class="java.lang.String"/>
+	<field name="famAffConoscDaMin" class="java.lang.String"/>
+	<field name="famAffFuoriReg" class="java.lang.String"/>
+	<field name="prezenzaRetiFam" class="java.lang.String"/>
+	<field name="tabella_1" class="java.lang.Object"/>
+	<field name="tabella_2" class="java.lang.Object"/>
+	<field name="tabella_3" class="java.lang.Object"/>
+	<field name="SUBREPORT_DIR" class="java.lang.String"/>
+	<field name="famAffCaratter" class="java.lang.String"/>
+	<field name="formeAffidamento" class="java.lang.String"/>
+	<field name="affidamentoLungoTermine" class="java.lang.String"/>
+	<field name="modalitaRapportoNucleoOrigine" class="java.lang.String"/>
+	<field name="frequenzaContattiAff" class="java.lang.String"/>
+	<field name="modalitaRapportoOrigAff" class="java.lang.String"/>
+	<field name="modalitaRappEsperienzaOrig" class="java.lang.String"/>
+	<field name="modalitaRappEsperienzaFamAff" class="java.lang.String"/>
+	<field name="noteGestioneSanita" class="java.lang.String"/>
+	<field name="famOrigContributoAlleSpese" class="java.lang.String"/>
+	<field name="famOrigNoteContributoAlleSpese" class="java.lang.String"/>
+	<background>
+		<band/>
+	</background>
+	<detail>
+		<band height="340" splitType="Stretch">
+			<staticText>
+				<reportElement positionType="Float" x="0" y="0" width="68" height="20" uuid="9b40009b-c984-4dc6-8c68-1850c118c270"/>
+				<textElement>
+					<font isBold="false"/>
+				</textElement>
+				<text><![CDATA[Stato Affido]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" x="68" y="0" width="100" height="20" uuid="5fb3bdc7-a5fa-4d26-9e0c-ad8a85779be2"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{statoAffido}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="168" y="1" width="100" height="20" uuid="fba6d2c5-6a59-4629-97c8-e088e861a16b"/>
+				<textElement>
+					<font isBold="false"/>
+				</textElement>
+				<text><![CDATA[Affido Professionale]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" x="268" y="1" width="33" height="20" uuid="557d6bd7-71c8-4835-89f6-6c778544db38"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{affidoProf}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="301" y="1" width="47" height="20" uuid="a1ea086d-cdd3-4556-aae9-76685bd0419d"/>
+				<textElement>
+					<font isBold="false"/>
+				</textElement>
+				<text><![CDATA[Adottabile]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="349" y="1" width="19" height="20" uuid="8b820189-b3a7-46be-b86f-61ccbedd191d"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{adottabile}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="368" y="1" width="90" height="20" uuid="3889803e-e1a8-4739-87af-f093da52dc0b"/>
+				<textElement>
+					<font isBold="false"/>
+				</textElement>
+				<text><![CDATA[Natura Accoglienza]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" x="460" y="0" width="93" height="20" uuid="9766c915-dd1d-4c24-9542-23d2d3fb9e24"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{naturaAccoglienza}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="3" y="29" width="100" height="20" uuid="730b7cdf-9251-4d6d-91b8-5ea1f01c64f6"/>
+				<textElement>
+					<font isBold="false"/>
+				</textElement>
+				<text><![CDATA[N° Decreto]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="100" y="29" width="100" height="20" isRemoveLineWhenBlank="true" uuid="633a0bf7-9e94-43dc-a709-7f772d8a2719"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{numDecreto}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="272" y="29" width="76" height="20" uuid="2ec65852-d866-4828-be30-85120fa67c6a"/>
+				<textElement>
+					<font isBold="false"/>
+				</textElement>
+				<text><![CDATA[Data Decreto]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" x="348" y="29" width="100" height="20" isRemoveLineWhenBlank="true" uuid="a9d6c0dc-072a-4531-9841-17ff1fc7ca1f"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{dataDecreto}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="0" y="52" width="79" height="20" uuid="9bffb1b8-4769-4f17-b974-cf29db7113ac"/>
+				<textElement>
+					<font isBold="false"/>
+				</textElement>
+				<text><![CDATA[Collocamento]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" x="79" y="52" width="133" height="20" isRemoveLineWhenBlank="true" uuid="239b392b-3f6e-478c-945c-2301d4510bdc"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{collocamento}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="272" y="52" width="100" height="20" uuid="cb974a08-bb5b-4e93-a390-187f98d0bf77"/>
+				<textElement>
+					<font isBold="false"/>
+				</textElement>
+				<text><![CDATA[Entità Affido]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" x="372" y="52" width="180" height="20" isRemoveLineWhenBlank="true" uuid="6e2f2328-c4b6-4a1f-8b6b-9c56e5f81b52"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{entitaAffido}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="0" y="72" width="100" height="20" uuid="4c649865-ddb4-44b8-ad21-df230db68abb"/>
+				<textElement>
+					<font isBold="false"/>
+				</textElement>
+				<text><![CDATA[Affido Parziale :]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" x="104" y="72" width="100" height="20" isRemoveLineWhenBlank="true" uuid="cbacd7a5-25a3-4d5e-924f-8c43c9291623"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{affidoParziale}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="311" y="113" width="151" height="20" uuid="b81eabe4-1409-49a9-a033-d5df2feedf92"/>
+				<textElement>
+					<font isBold="false"/>
+				</textElement>
+				<text><![CDATA[Convivenza genitori con affidatari]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" x="462" y="113" width="90" height="20" isRemoveLineWhenBlank="true" uuid="08a4d12f-f67b-493f-a96e-a046a63f03e9"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{convivGenitoriConAffid}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="272" y="72" width="124" height="20" uuid="d6ffd677-3e33-496b-af8c-61aa61ec02f1"/>
+				<textElement>
+					<font isBold="false"/>
+				</textElement>
+				<text><![CDATA[Presenza reti di famiglie]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" x="396" y="72" width="76" height="20" isRemoveLineWhenBlank="true" uuid="88f57e2f-1a50-46f6-ad18-b6e1a85a6ed4"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{prezenzaRetiFam}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="0" y="161" width="100" height="27" uuid="fc46afbb-329e-45cd-a364-e0975352667a"/>
+				<textElement>
+					<font isBold="false"/>
+				</textElement>
+				<text><![CDATA[Frequenza contatti ]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" x="103" y="161" width="134" height="32" isRemoveLineWhenBlank="true" uuid="f899e36b-cf56-4ef1-a89e-d940e16b3d10"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{frequenzaContattiMinFamOrig}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="2" y="22" width="553" height="1" uuid="ee340a4f-c771-42e6-924f-7b3bf1b9f81e"/>
+				<graphicElement>
+					<pen lineStyle="Dotted"/>
+				</graphicElement>
+			</line>
+			<textField>
+				<reportElement x="100" y="92" width="437" height="21" uuid="5833cf5c-0ad5-43b5-806d-6e44cc182ac7"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{formeAffidamento}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="92" width="100" height="21" uuid="b9c9ff33-8878-45b0-b397-5bf3c3668bbf"/>
+				<text><![CDATA[Forme di Affidamento :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="2" y="113" width="286" height="20" uuid="253ba7f6-c8dc-421b-9d7e-ac6e8e8542fa"/>
+				<text><![CDATA[Affidamento a lungo termine o a tempo indeterminato (sine die)]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="288" y="113" width="23" height="20" uuid="1800dc6a-00a8-40b7-b25b-a71ee8f57ce2"/>
+				<textFieldExpression><![CDATA[$F{affidamentoLungoTermine}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" mode="Opaque" x="4" y="142" width="549" height="19" backcolor="#CCCCCC" uuid="4bcedc19-d49d-4736-a99f-79c767ca8f0a">
+					<printWhenExpression><![CDATA[$F{tabella_1} != null]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Rapporti fra Bambino e Nucleo di Origine]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" mode="Opaque" x="0" y="193" width="552" height="19" backcolor="#CCCCCC" uuid="e8312c7b-58da-45a0-9933-5c3d81920e5f">
+					<printWhenExpression><![CDATA[$F{tabella_1} != null]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Rapporti fra Nucleo di Origine e Affidatari]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="237" y="161" width="87" height="26" uuid="ac6fc144-befb-431c-bd1f-e05409e1d6ff"/>
+				<text><![CDATA[Modalita Rapporto]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="324" y="159" width="225" height="28" uuid="62a1ca54-07eb-441a-9a5a-d6fc94094098"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{modalitaRapportoNucleoOrigine}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="2" y="212" width="100" height="27" uuid="19f93f31-4b5d-4f19-b849-8673919f9830"/>
+				<text><![CDATA[Frequenza contatti ]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="100" y="212" width="137" height="27" uuid="d42cf010-16a2-40d9-88d1-55a43ee6a567"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{frequenzaContattiAff}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="237" y="212" width="91" height="27" uuid="1702183d-e8a9-43ec-b695-17e43df966d5"/>
+				<text><![CDATA[Modalita Rapporto]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="324" y="212" width="228" height="27" uuid="e67801cc-9506-4a56-a087-7a05907976c3"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{modalitaRapportoOrigAff}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" mode="Opaque" x="0" y="239" width="552" height="19" backcolor="#CCCCCC" uuid="0423a439-97d5-4952-a2f2-5f0f85dfa237">
+					<printWhenExpression><![CDATA[$F{tabella_1} != null]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Modalità di rapporto con gli ambiti di esperienza del bambini (scuola ed extrascolastici)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="258" width="152" height="20" uuid="a6b06905-ce6c-4d9e-91c4-b20017053072"/>
+				<text><![CDATA[Da parte del nucleo di origine]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="152" y="258" width="401" height="20" uuid="5a5f6e9a-1504-42e9-9de3-bbc52724d798"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{modalitaRappEsperienzaOrig}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="275" width="152" height="20" uuid="a4fc7113-cf1f-493a-8688-ec555e5fa0d1"/>
+				<text><![CDATA[Da parte della famiglia affidataria]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="152" y="278" width="403" height="20" uuid="ae0f13b9-1968-4794-9464-5e45f9ff7480"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{modalitaRappEsperienzaFamAff}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="-4" y="298" width="553" height="1" uuid="705726cf-dc84-4b0d-a238-bbca39bf1758"/>
+				<graphicElement>
+					<pen lineStyle="Dotted"/>
+				</graphicElement>
+			</line>
+			<staticText>
+				<reportElement x="1" y="304" width="151" height="34" uuid="faa9172b-a983-4a11-8429-918c957748c6"/>
+				<text><![CDATA[Note sulla gestione degli aspetti sanitari del minore]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="152" y="304" width="397" height="34" uuid="5cf207b5-fa10-4ea2-a365-36a890afe4ab"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{modalitaRappEsperienzaFamAff}]]></textFieldExpression>
+			</textField>
+		</band>
+		<band height="67">
+			<printWhenExpression><![CDATA[$F{tabella_1} != null]]></printWhenExpression>
+			<staticText>
+				<reportElement positionType="Float" mode="Opaque" x="2" y="0" width="553" height="19" backcolor="#CCCCCC" uuid="f68f2375-a4c5-4cd4-86cd-a2202ff3f920">
+					<printWhenExpression><![CDATA[$F{tabella_1} != null]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Soggetti Affido]]></text>
+			</staticText>
+			<subreport>
+				<reportElement x="-10" y="19" width="482" height="36" isRemoveLineWhenBlank="true" uuid="ed4e40c4-4613-4f4f-a4ee-4bed196c0f27">
+					<printWhenExpression><![CDATA[$F{tabella_1} != null]]></printWhenExpression>
+				</reportElement>
+				<subreportParameter name="tabella_1">
+					<subreportParameterExpression><![CDATA[$F{tabella_1}]]></subreportParameterExpression>
+				</subreportParameter>
+				<dataSourceExpression><![CDATA[$F{tabella_1}]]></dataSourceExpression>
+				<subreportExpression><![CDATA[$F{SUBREPORT_DIR} + "tabelle.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+		<band height="227">
+			<staticText>
+				<reportElement positionType="Float" mode="Opaque" x="0" y="3" width="555" height="19" backcolor="#CCCCCC" uuid="5e4cfed7-26b1-4cb7-a87c-ecb62ea5f920">
+					<printWhenExpression><![CDATA[$F{impFamigliaOrig} != null || $F{impServizioSoc} != null || $F{impMinore} != null || $F{impFamigliaAffid} != null || $F{impAltriSoggetti}]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Funzioni e interventi degli attori coinvolti]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="3" y="144" width="133" height="20" uuid="27ca2742-043b-422f-91cc-622a16d52b7c">
+					<printWhenExpression><![CDATA[$F{impServizioSoc} != null]]></printWhenExpression>
+				</reportElement>
+				<textElement>
+					<font isBold="false"/>
+				</textElement>
+				<text><![CDATA[Servizio sociale]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="4" y="105" width="100" height="20" uuid="ae6ef3a8-1c62-48e8-9d1c-94423559b132">
+					<printWhenExpression><![CDATA[$F{impMinore} != null]]></printWhenExpression>
+				</reportElement>
+				<textElement>
+					<font isBold="false"/>
+				</textElement>
+				<text><![CDATA[Minore]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="3" y="86" width="549" height="16" isRemoveLineWhenBlank="true" uuid="34776e19-fd75-4dc8-98df-ab0c4cb3272c">
+					<printWhenExpression><![CDATA[$F{impFamigliaAffid} != null]]></printWhenExpression>
+				</reportElement>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{impFamigliaAffid}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="2" y="47" width="550" height="15" isRemoveLineWhenBlank="true" uuid="633a46d9-4950-4c46-9e39-0faac48333cb"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{impFamigliaOrig}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="0" y="202" width="552" height="17" isRemoveLineWhenBlank="true" uuid="a5b968c8-6577-4459-913b-c2b9d1121cf3">
+					<printWhenExpression><![CDATA[$F{impAltriSoggetti}  != null]]></printWhenExpression>
+				</reportElement>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{impAltriSoggetti}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="2" y="26" width="198" height="20" uuid="516debe9-f34c-424d-adc0-42fa0a5f5748">
+					<printWhenExpression><![CDATA[$F{impFamigliaOrig} != null]]></printWhenExpression>
+				</reportElement>
+				<textElement>
+					<font isBold="false"/>
+				</textElement>
+				<text><![CDATA[Famiglia Origine]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="3" y="66" width="132" height="20" uuid="7a109580-1bab-4477-9c28-f66d5fd032b2">
+					<printWhenExpression><![CDATA[$F{impFamigliaAffid} != null]]></printWhenExpression>
+				</reportElement>
+				<textElement>
+					<font isBold="false"/>
+				</textElement>
+				<text><![CDATA[Famiglia Affidataria]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="4" y="182" width="118" height="20" uuid="f9d36960-8383-49fa-83bc-cc317e153423">
+					<printWhenExpression><![CDATA[$F{impAltriSoggetti} != null]]></printWhenExpression>
+				</reportElement>
+				<textElement>
+					<font isBold="false"/>
+				</textElement>
+				<text><![CDATA[Altri soggetti]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="6" y="126" width="551" height="17" isRemoveLineWhenBlank="true" uuid="80489dd5-69a5-48bd-9e5e-c70998fbe4c0">
+					<printWhenExpression><![CDATA[$F{impMinore} != null]]></printWhenExpression>
+				</reportElement>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{impMinore}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="2" y="164" width="553" height="16" isRemoveLineWhenBlank="true" uuid="e66ad4cf-1ecd-478b-8ba2-7dc88634c695">
+					<printWhenExpression><![CDATA[$F{impServizioSoc} != null]]></printWhenExpression>
+				</reportElement>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{impServizioSoc}]]></textFieldExpression>
+			</textField>
+		</band>
+		<band height="111" splitType="Stretch">
+			<staticText>
+				<reportElement positionType="Float" mode="Opaque" x="0" y="3" width="555" height="19" backcolor="#CCCCCC" uuid="6aaf296e-b8d9-4101-9b5f-ea619ad58548">
+					<printWhenExpression><![CDATA[$F{tabella_2} != null]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Famiglia Origine]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="1" y="67" width="78" height="20" uuid="3ba3c21d-154e-4f49-981a-3e439f1f8553"/>
+				<textElement>
+					<font isBold="false"/>
+				</textElement>
+				<text><![CDATA[Allontanamento]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" x="345" y="67" width="31" height="20" isRemoveLineWhenBlank="true" uuid="a20a3c84-66a7-432f-b91d-4eef0be6c8dd"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{famOrigFuoriReg}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="222" y="67" width="46" height="20" isRemoveLineWhenBlank="true" uuid="39b0aa25-157d-4554-8c26-191e8f51b958"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{famOrigGenSconosc}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="122" y="67" width="100" height="20" uuid="3ee0bc36-27aa-4f27-96f4-580cc0e4f4ff"/>
+				<textElement>
+					<font isBold="false"/>
+				</textElement>
+				<text><![CDATA[Genitori sconosciuti]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="278" y="67" width="67" height="20" uuid="c5eb93f3-eebd-4bcb-b755-561a4cfcee8e"/>
+				<textElement>
+					<font isBold="false"/>
+				</textElement>
+				<text><![CDATA[Fuori regione]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="458" y="67" width="45" height="20" isRemoveLineWhenBlank="true" uuid="d374410b-2fa7-428a-85ce-c4f33d360fbc"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{famOrigInterv}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="394" y="67" width="54" height="20" uuid="0c49d711-103f-46f9-903d-389941806da0"/>
+				<textElement>
+					<font isBold="false"/>
+				</textElement>
+				<text><![CDATA[Interventi ]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" x="79" y="67" width="25" height="20" isRemoveLineWhenBlank="true" uuid="f8c7a2ce-b166-4185-9858-988946f22d40"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{famOrigAllontanam}]]></textFieldExpression>
+			</textField>
+			<subreport>
+				<reportElement x="-20" y="25" width="516" height="36" isRemoveLineWhenBlank="true" uuid="41751cf8-eb6b-4982-bab1-53ffdc4a3696">
+					<printWhenExpression><![CDATA[$F{tabella_2} != null]]></printWhenExpression>
+				</reportElement>
+				<subreportParameter name="tabella_2">
+					<subreportParameterExpression><![CDATA[$F{tabella_2}]]></subreportParameterExpression>
+				</subreportParameter>
+				<dataSourceExpression><![CDATA[$F{tabella_2}]]></dataSourceExpression>
+				<subreportExpression><![CDATA[$F{SUBREPORT_DIR} + "tabelle.jasper"]]></subreportExpression>
+			</subreport>
+			<staticText>
+				<reportElement x="2" y="87" width="245" height="20" uuid="51131441-5479-4cdf-8133-04f85a957add"/>
+				<text><![CDATA[Contributo alle spese da parte della famiglia di origine]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="243" y="87" width="32" height="20" uuid="7b80315d-9447-44de-8c66-d51110dede44"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{famOrigContributoAlleSpese}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="275" y="87" width="100" height="20" uuid="75a768a8-13e4-4576-972a-dee43db0d15d"/>
+				<text><![CDATA[Note sul contributo ]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="368" y="87" width="181" height="20" uuid="7e0af46c-0f03-4e01-90cc-26a266dfd381"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{famOrigNoteContributoAlleSpese}]]></textFieldExpression>
+			</textField>
+		</band>
+		<band height="210">
+			<textField>
+				<reportElement positionType="Float" x="415" y="162" width="43" height="20" isRemoveLineWhenBlank="true" uuid="922313f0-708a-4aae-8932-aaaa7cdf678b"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{famAffConoscDaMin}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="6" y="81" width="100" height="20" uuid="6bd49429-3ed9-4210-a2ce-118a074ccb36">
+					<printWhenExpression><![CDATA[$F{famAffCaratter} != null]]></printWhenExpression>
+				</reportElement>
+				<textElement>
+					<font isBold="false"/>
+				</textElement>
+				<text><![CDATA[Caratteristiche]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="275" y="163" width="137" height="20" uuid="027720dd-ef14-40e6-bd4e-238616d12aee"/>
+				<textElement>
+					<font isBold="false"/>
+				</textElement>
+				<text><![CDATA[F.A. conosciuta dal minore]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="3" y="187" width="79" height="20" uuid="28993469-5dcb-45c6-8721-c0ddc614ddf8"/>
+				<textElement>
+					<font isBold="false"/>
+				</textElement>
+				<text><![CDATA[Fuori regione]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="275" y="142" width="100" height="20" uuid="124d10e9-68d0-4945-bd67-e72c0bd36bbc"/>
+				<textElement>
+					<font isBold="false"/>
+				</textElement>
+				<text><![CDATA[Idoneità]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" x="82" y="187" width="100" height="20" isRemoveLineWhenBlank="true" uuid="428d1d46-1ca3-46b6-b60e-8af8c92e333d"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{famAffFuoriReg}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="3" y="142" width="149" height="20" uuid="8dfd6579-e86e-4419-9e53-a109b1e3ae9e"/>
+				<textElement>
+					<font isBold="false"/>
+				</textElement>
+				<text><![CDATA[Inserita in banca dati famiglie : ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" mode="Opaque" x="2" y="3" width="555" height="19" backcolor="#CCCCCC" uuid="780760bc-5ff1-4eb7-9804-32fd84b065a4">
+					<printWhenExpression><![CDATA[$F{tabella_3} != null]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Famiglia affidataria]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="278" y="81" width="100" height="20" uuid="9ddda2e0-11b6-4ae2-80ff-7daa3432564a">
+					<printWhenExpression><![CDATA[$F{famAffMotivaz} != null]]></printWhenExpression>
+				</reportElement>
+				<textElement>
+					<font isBold="false"/>
+				</textElement>
+				<text><![CDATA[Motivazione]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement positionType="Float" x="380" y="81" width="178" height="50" isRemoveLineWhenBlank="true" uuid="da32edf7-f256-4d54-aa5f-92b1e863d65f"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{famAffMotivaz}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="106" y="81" width="167" height="50" isRemoveLineWhenBlank="true" uuid="ff19cb44-6cc2-4aad-b79b-3cafd9d3ad5f"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{famAffCaratter}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="5" y="163" width="66" height="20" uuid="3dab5fe9-befa-4e87-88b0-b4f22f1a8aef"/>
+				<textElement>
+					<font isBold="false"/>
+				</textElement>
+				<text><![CDATA[Affidatari]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" x="152" y="142" width="119" height="20" isRemoveLineWhenBlank="true" uuid="1060bcf5-e592-4151-b9c5-deaf38c630b0"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{famAffInBancaDati}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="375" y="142" width="162" height="20" isRemoveLineWhenBlank="true" uuid="56e2e06c-1f7d-4caf-b43a-ea46519e5c0f"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{famAffIdoneita}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="71" y="163" width="100" height="20" isRemoveLineWhenBlank="true" uuid="c97dc860-21aa-434c-9276-41180f34972a"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{famAffAffidatari}]]></textFieldExpression>
+			</textField>
+			<subreport>
+				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="-20" y="27" width="527" height="36" isRemoveLineWhenBlank="true" uuid="89c9e189-c5f6-4cec-b139-9bb93e575aaf">
+					<printWhenExpression><![CDATA[$F{tabella_3} != null]]></printWhenExpression>
+				</reportElement>
+				<subreportParameter name="tabella_3">
+					<subreportParameterExpression><![CDATA[$F{tabella_3}]]></subreportParameterExpression>
+				</subreportParameter>
+				<dataSourceExpression><![CDATA[$F{tabella_3}]]></dataSourceExpression>
+				<subreportExpression><![CDATA[$F{SUBREPORT_DIR} + "tabelle.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</detail>
+</jasperReport>

@@ -1,0 +1,454 @@
+package it.webred.rulengine.brick.elab.anaSan;
+
+import java.io.File;
+import java.io.PrintWriter;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Properties;
+
+import org.apache.commons.dbutils.DbUtils;
+import org.apache.log4j.Logger;
+
+import it.webred.ct.config.model.AmKeyValueExt;
+import it.webred.ct.config.parameters.ParameterService;
+import it.webred.rulengine.Command;
+import it.webred.rulengine.Context;
+import it.webred.rulengine.Rule;
+import it.webred.rulengine.ServiceLocator;
+import it.webred.rulengine.Utils;
+import it.webred.rulengine.brick.bean.ApplicationAck;
+import it.webred.rulengine.brick.bean.CommandAck;
+import it.webred.rulengine.brick.bean.ErrorAck;
+import it.webred.rulengine.exception.CommandException;
+import it.webred.rulengine.impl.bean.BeanCommand;
+import it.webred.utils.StringUtils;
+
+public class CreaFileAnagrafeSanitaria extends Command implements Rule {
+	
+	private static final Logger log = Logger.getLogger(CreaFileAnagrafeSanitaria.class.getName());
+	
+	private static final String DEF_DIR_EXP = "expFileAnaSan";
+	private static final String ID_FONTE = "1";
+	
+	private static final String DEF_ANA_SAN_DRIVER_CLASS = "oracle.jdbc.driver.OracleDriver";
+	private static final String DEF_ANA_SAN_CONN_STRING = "jdbc:oracle:thin:@172.29.0.2:1521:MDBWEB";
+	private static final String DEF_ANA_SAN_USER_NAME = "mdbweb";
+	private static final String DEF_ANA_SAN_PASSWORD = "mdbweb";
+	
+	//TODO SELECT MAX(PROCESSID) FROM RE_DEMOG_ANAGRAFE_2_1 per prendere solo l'ultimo: inserire una proprietà in AM_KEY_VALUE?
+	private static final String SQL_SELECT_PROCESSID = "SELECT DISTINCT PROCESSID FROM RE_DEMOG_ANAGRAFE_2_1 ORDER BY PROCESSID";
+	
+	private static final String SQL_SELECT = "SELECT T.*, V.SEDIME, V.DESCRIZIONE, V.SEDIME || ' ' || V. DESCRIZIONE AS INDIRIZZO, " + 
+											"NVL(T.CODICE_FISCALE, T.COGNOME_NOME || '|' || T.SESSO || '|' || T.DATA_NASCITA || '|' || T.COMUNE_NASCITA_COD) AS CHIAVE_PERS " +
+											"FROM RE_DEMOG_ANAGRAFE_2_1 T " +
+											"LEFT JOIN RE_DEMOG_VIE_1_0 V ON V.CODICE_VIA = T.CODICE_VIA AND V.PROCESSID = T.PROCESSID " +
+											"WHERE T.PROCESSID = ? AND T.FLAG_STATO <> 'X' " +
+											"ORDER BY NVL(T.CODICE_FISCALE, T.COGNOME_NOME || '|' || T.SESSO || '|' || T.DATA_NASCITA || '|' || T.COMUNE_NASCITA_COD), T.PROG";
+	
+	private static final String SQL_SELECT_COD_BELFIORE = "SELECT COD_NAZIONALE FROM AM_TAB_COMUNI WHERE COD_ISTAT_COMUNE = ?";
+	
+	private static final String SQL_CTRL_STRADARIO_ANA_SAN_COD = "SELECT * " +
+															"FROM SA_STRADARIO, SA_COMUNE " +
+															"WHERE ST_COMUNE = CM_ID AND CM_CFIS = ? AND LPAD(ST_STRADA, 8, '0') = LPAD(?, 8, '0')";
+	
+	private static final String SQL_CTRL_STRADARIO_ANA_SAN_DESCR = "SELECT * " +
+															"FROM SA_STRADARIO, SA_COMUNE " +
+															"WHERE ST_COMUNE = CM_ID AND CM_CFIS = ? AND ST_INDIR = ?";
+
+	
+	/**
+	 * @param bc
+	 */
+	public CreaFileAnagrafeSanitaria(BeanCommand bc){
+		super(bc);
+	}
+	
+	public CreaFileAnagrafeSanitaria(BeanCommand bc, Properties jrulecfg) {
+		super(bc, jrulecfg);
+		System.setProperty("oracle.jdbc.V8Compatible", "true");
+	}
+	
+	@Override
+	public CommandAck run(Context ctx) throws CommandException {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		
+		PreparedStatement pstmtInt = null;
+		ResultSet rsInt = null;
+		
+		Connection connAnaSan = null;
+		PreparedStatement pstmtAnaSan = null;
+		ResultSet rsAnaSan = null;
+		
+		try {
+			ParameterService ps = (ParameterService)ServiceLocator.getInstance().getService("CT_Service", "CT_Config_Manager", "ParameterBaseService");
+			
+			AmKeyValueExt param = ps.getAmKeyValueExtByKeyFonteComune("dir.exp.file.anasan", ctx.getBelfiore(), ID_FONTE);
+			String expPath = param == null ? null : param.getValueConf();
+			if (expPath == null || expPath.trim().equals("")) {
+				expPath = Utils.getConfigProperty("dir.files.datiDiogene") + File.separator + ctx.getBelfiore() + File.separator + DEF_DIR_EXP;
+			}
+			
+			param = ps.getAmKeyValueExtByKeyFonteComune("anasan.driverClass", ctx.getBelfiore(), ID_FONTE);
+			String anaSanDriCla = param == null ? null : param.getValueConf();
+			if (anaSanDriCla == null || anaSanDriCla.trim().equals("")) {
+				anaSanDriCla = DEF_ANA_SAN_DRIVER_CLASS;
+			}
+			
+			param = ps.getAmKeyValueExtByKeyFonteComune("anasan.connString", ctx.getBelfiore(), ID_FONTE);
+			String anaSanConStr = param == null ? null : param.getValueConf();
+			if (anaSanConStr == null || anaSanConStr.trim().equals("")) {
+				anaSanConStr = DEF_ANA_SAN_CONN_STRING;
+			}
+			
+			param = ps.getAmKeyValueExtByKeyFonteComune("anasan.userName", ctx.getBelfiore(), ID_FONTE);
+			String anaSanUsrNam = param == null ? null : param.getValueConf();
+			if (anaSanUsrNam == null || anaSanUsrNam.trim().equals("")) {
+				anaSanUsrNam = DEF_ANA_SAN_USER_NAME;
+			}
+			
+			param = ps.getAmKeyValueExtByKeyFonteComune("anasan.password", ctx.getBelfiore(), ID_FONTE);
+			String anaSanPwd = param == null ? null : param.getValueConf();
+			if (anaSanPwd == null || anaSanPwd.trim().equals("")) {
+				anaSanPwd = DEF_ANA_SAN_PASSWORD;
+			}
+			
+			conn = ctx.getConnection("DWH_" + ctx.getBelfiore());
+			
+			Class.forName(anaSanDriCla);
+			connAnaSan = DriverManager.getConnection(anaSanConStr, anaSanUsrNam, anaSanPwd);
+			
+			File dir = new File(expPath);
+			if (!dir.exists()) {
+				if (!dir.mkdir()) {
+					String errMsg = "Impossibile creare il percorso di destinazione del file";
+					log.error("Errore: " + errMsg);
+					ErrorAck ea = new ErrorAck(errMsg);
+					return (ea);
+				}
+			}
+			
+			pstmt = conn.prepareStatement(SQL_SELECT_PROCESSID);
+			rs = pstmt.executeQuery();
+			ArrayList<String> pids = new ArrayList<String>();
+			while (rs.next()) {
+				pids.add(rs.getString("PROCESSID"));
+			}
+			DbUtils.close(rs);
+			DbUtils.close(pstmt);
+			
+			for (String pid : pids) {
+				
+				PrintWriter writer = null;
+				PrintWriter writerOk = null;
+				PrintWriter writerKo = null;
+				String codComuneExp = null;
+				Date dtNow = new Date();
+			    
+				pstmt = conn.prepareStatement(SQL_SELECT);
+				pstmt.setString(1, pid);
+				rs = pstmt.executeQuery();
+				
+				String chiavePers = null;
+				String linePers = null;
+				String codEvePers = "   ";
+				String dtEveCod = "        ";
+				String dtEveAll = "        ";
+				String statoPers = null;
+				String indirPers = null;
+				
+				int prog = 0;
+				int progOk = 0;
+				int progKo = 0;
+				
+				boolean newLine = false;
+				boolean newLineOk = false;
+				boolean newLineKo = false;				
+				
+				while (rs.next()) {
+					if (writer == null && writerOk == null && writerKo == null && codComuneExp == null) {
+						pstmtInt = conn.prepareStatement(SQL_SELECT_COD_BELFIORE);
+						pstmtInt.setString(1, getStrValue(rs, "COMUNE_INVIO_COD", null, true, 6, ' ', true));
+						rsInt = pstmtInt.executeQuery();
+						while (rsInt.next()) {
+							codComuneExp = getStrValue(rsInt, "COD_NAZIONALE", null, true, 4, ' ', true);
+						}						
+						DbUtils.close(rsInt);
+						DbUtils.close(pstmtInt);
+						
+						File file = new File(dir, codComuneExp + "_" + new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss_SSS").format(dtNow) + "_totale.txt");
+						writer = new PrintWriter(file);
+						File fileOk = new File(dir, codComuneExp + "_" + new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss_SSS").format(dtNow) + "_ok.txt");
+						writerOk = new PrintWriter(fileOk);
+						File fileKo = new File(dir, codComuneExp + "_" + new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss_SSS").format(dtNow) + "_scarti.txt");
+						writerKo = new PrintWriter(fileKo);
+					}
+					
+					if (chiavePers != null && !chiavePers.equals(rs.getString("CHIAVE_PERS"))) {
+						//inserisco la persona precedente
+						String line = getStrValue(null, null, ++prog, true, 7, '0', true) +
+										linePers.substring(0, 131) +
+										codEvePers +
+										(dtEveCod == null || dtEveCod.trim().equals("") ? dtEveAll : dtEveCod) +
+										linePers.substring(142);
+						String[] ctrlStrAnaSan = ctrlStrAnaSan(codComuneExp, statoPers, line, indirPers, connAnaSan, pstmtAnaSan, rsAnaSan);
+						boolean isOk = ctrlStrAnaSan[0].equalsIgnoreCase("OK");
+						String codOk = ctrlStrAnaSan[1];
+						line = line.substring(0, 14) + getStrValue(null, null, codOk, true, 5, '0', true) + line.substring(19);
+						if (newLine) {
+							writer.println();
+						}
+						writer.print(line);
+						newLine = true;
+						if (isOk) {
+							if (newLineOk) {
+								writerOk.println();
+							}
+							writerOk.print(getStrValue(null, null, ++progOk, true, 7, '0', true) + line.substring(7));
+							newLineOk = true;
+						} else {
+							if (newLineKo) {
+								writerKo.println();
+							}
+							writerKo.print(getStrValue(null, null, ++progKo, true, 7, '0', true) + line.substring(7));
+							newLineKo = true;
+						}
+						codEvePers = "   ";
+						dtEveCod = "        ";
+						dtEveAll = "        ";
+					}
+
+					linePers = getLineFromRecord(rs);
+					
+					String codEve = linePers.substring(131, 134).trim().toUpperCase();
+					String dtEve = linePers.substring(134, 142).trim();
+					if (codEve.trim().equals("NAS") || codEve.trim().equals("IMM") || codEve.trim().equals("EMI") || codEve.trim().equals("MOR")) {
+						codEvePers = codEve;
+						dtEveCod = dtEve;
+					}
+					dtEveAll = dtEve;
+
+					chiavePers = rs.getString("CHIAVE_PERS");
+					statoPers = rs.getString("FLAG_STATO");
+					indirPers = rs.getString("INDIRIZZO");
+				}
+				
+				//inserisco l'ultimo
+				if (chiavePers != null) {
+					String line = getStrValue(null, null, ++prog, true, 7, '0', true) +
+							linePers.substring(0, 131) +
+							codEvePers +
+							(dtEveCod == null || dtEveCod.trim().equals("") ? dtEveAll : dtEveCod) +
+							linePers.substring(142);					
+					String[] ctrlStrAnaSan = ctrlStrAnaSan(codComuneExp, statoPers, line, indirPers, connAnaSan, pstmtAnaSan, rsAnaSan);
+					boolean isOk = ctrlStrAnaSan[0].equalsIgnoreCase("OK");
+					String codOk = ctrlStrAnaSan[1];
+					line = line.substring(0, 14) + getStrValue(null, null, codOk, true, 5, '0', true) + line.substring(19);
+					if (newLine) {
+						writer.println();
+					}
+					writer.print(line);
+					newLine = true;
+					if (isOk) {
+						if (newLineOk) {
+							writerOk.println();
+						}
+						writerOk.print(getStrValue(null, null, ++progOk, true, 7, '0', true) + line.substring(7));
+						newLineOk = true;
+					} else {
+						if (newLineKo) {
+							writerKo.println();
+						}
+						writerKo.print(getStrValue(null, null, ++progKo, true, 7, '0', true) + line.substring(7));
+						newLineKo = true;
+					}
+				}				
+
+				writerKo.close();
+				writerOk.close();
+				writer.close();
+				DbUtils.close(rs);
+				DbUtils.close(pstmt);
+			}
+			
+			conn.commit();
+			
+		} catch (Exception e) {
+			try {
+				conn.rollback();
+			} catch (SQLException e1) {
+				log.error(e1);
+			}
+			
+			log.error("Errore: ", e);
+			ErrorAck ea = new ErrorAck(e.getMessage());
+			return (ea);
+		} finally {
+			try {
+				DbUtils.close(rsAnaSan);
+				DbUtils.close(pstmtAnaSan);
+				DbUtils.close(connAnaSan);
+				
+				DbUtils.close(rsInt);
+				DbUtils.close(pstmtInt);
+				
+				DbUtils.close(rs);
+				DbUtils.close(pstmt);
+				DbUtils.close(conn);
+			} catch (SQLException e) {
+				log.error(e);
+			}
+		}		
+		
+		return (new ApplicationAck("CREAZIONE FILE ESEGUITA CON SUCCESSO"));
+	}
+	
+	protected String getLineFromRecord(ResultSet rs) throws Exception {
+		String line = "";
+		
+		String[] cognomeNome = getStrValue(rs, "COGNOME_NOME", null, false, 0, ' ', false).split("/");
+		String cognome = cognomeNome != null && cognomeNome.length > 0 ? cognomeNome[0].trim() : "";
+		String nome = cognomeNome != null && cognomeNome.length > 1 ? cognomeNome[1].trim() : "";
+		String dtNascita = getStrValue(rs, "DATA_NASCITA", null, true, 8, '0', true);
+		String comNasCod = getStrValue(rs, "COMUNE_NASCITA_COD", null, true, 6, ' ', true);
+		String codFis = getStrValue(rs, "CODICE_FISCALE", null, true, 16, ' ', false);		
+		if (comNasCod == null || comNasCod.substring(0, 3).equals("000")) {
+			comNasCod = "000000";
+		} else if (comNasCod != null && comNasCod.substring(0, 3).trim().equals("")) {
+			comNasCod = "   000";
+		} else if (comNasCod != null && codFis != null && codFis.substring(11, 12).equalsIgnoreCase("Z")) {
+			comNasCod = comNasCod.substring(0, 3) + "000";
+		}
+		String staCiv = getStrValue(rs, "STATO_CIVILE", null, true, 2, '0', true);
+		if (staCiv == null || staCiv.trim().equals("") || staCiv.trim().equals("00")) {
+			staCiv = "09";
+		}
+		String codEve = getStrValue(rs, "CODICE_EVENTO", null, true, 3, ' ', false);
+		if (codEve != null) {
+			codEve = codEve.toUpperCase();
+		}
+		if (codEve == null || (!codEve.trim().equals("NAS") && !codEve.trim().equals("IMM") && !codEve.trim().equals("EMI") && !codEve.trim().equals("MOR"))) {
+			codEve = "   ";
+		}
+		String dtEvento = getStrValue(rs, "DATA_EVENTO", null, true, 8, '0', true);
+		String codProvEve = getStrValue(rs, "PROVINCIA_EVENTO_COD", null, true, 3, ' ', false);
+		String codComEve = getStrValue(rs, "COMUNE_EVENTO_COD", null, true, 6, ' ', true).substring(3);
+		if (codProvEve == null || codProvEve.trim().equals("") || codProvEve.equals("000")) {
+			codComEve = "000";
+		}
+		String codIstatNaz = getStrValue(rs, "NAZIONALITA_ISTAT", null, true, 3, ' ', false);
+		if (codIstatNaz != null && (codIstatNaz.trim().equals("0") || codIstatNaz.trim().equals("1"))) {
+			codIstatNaz = "   ";
+		}
+		
+		line = getStrValue(rs, "COMUNE_INVIO_COD", null, true, 6, ' ', true) + //EQUIVALE A COMUNE RESIDENZA?
+				"#" +
+				getStrValue(rs, "CODICE_VIA", null, true, 5, ' ', false) +
+				"," +
+				getStrValue(rs, "NUMERO_CIVICO", null, true, 23, ' ', false) +
+				getStrValue(rs, "COMUNE_INVIO_CAP", null, true, 5, ' ', false) + //CAP_RESIDENZA? C'È SOLO COMUNE_INVIO_CAP
+				getStrValue(null, null, cognome, true, 25, ' ', false) +
+				getStrValue(null, null, nome, true, 25, ' ', false) +
+				getStrValue(rs, "SESSO", null, true, 1, ' ', false) +
+				dtNascita.substring(6) + dtNascita.substring(4, 6) + dtNascita.substring(0, 4) +
+				comNasCod +
+				codFis +
+				staCiv +
+				" " +
+				"00" +
+				"0000" +
+				codEve +
+				dtEvento.substring(6) + dtEvento.substring(4, 6) + dtEvento.substring(0, 4) +
+				codProvEve +
+				codComEve +
+				"       " +
+				"#" +
+				codIstatNaz +
+				"    " +
+				getStrValue(rs, "NUMERO_FAMIGLIA", null, true, 10, '0', true) +
+				getStrValue(rs, "FLAG_RUOLO_FAMIGLIA", null, true, 1, ' ', false) +
+				" ";
+				
+		return line;
+	}
+	
+	protected String getStrValue(ResultSet rs, String fieldName, Object paramObj, boolean doPaddingOrSubstr, int n, char c, boolean paddingLeft) throws Exception {
+		Object obj = null;
+		String retVal = "";
+		
+		if (rs == null || fieldName == null || fieldName.trim().equals("")) {
+			obj = paramObj;
+		} else {
+			obj = rs.getObject(fieldName);
+		}		
+		
+		if (obj == null) {
+			obj = "";
+		}
+		
+		//TODO ALTRI TIPI DATI???
+		
+		//default (e String)
+		retVal = obj.toString();
+		
+		if (doPaddingOrSubstr) {
+			if (retVal.length() < n) {
+				retVal = StringUtils.padding(retVal, n, c, paddingLeft);
+			} else if (retVal.length() > n) {
+				if (paddingLeft) {
+					retVal = retVal.substring(retVal.length() - n);
+				} else {
+					retVal = retVal.substring(0, n);
+				}
+			}
+		}
+		
+		return retVal;
+	}
+	
+	protected String[] ctrlStrAnaSan(String codComuneExp, String stato, String line, String indirizzo, Connection connAnaSan, PreparedStatement pstmtAnaSan, ResultSet rsAnaSan) throws Exception {
+		//controllo vie solo per stato = "A"
+		if (stato == null || !stato.toUpperCase().equals("A")) {
+			return new String[]{"OK", line.substring(14, 19).trim()};
+		}
+		
+		//se il codice via è presente in anagrafe sanitaria, va bene, a prescindere che sia uguale o meno la descrizione
+		pstmtAnaSan = connAnaSan.prepareStatement(SQL_CTRL_STRADARIO_ANA_SAN_COD);
+		pstmtAnaSan.setString(1, codComuneExp);
+		pstmtAnaSan.setString(2, line.substring(14, 19).trim());
+		rsAnaSan = pstmtAnaSan.executeQuery();
+		boolean ok = rsAnaSan.next();
+		DbUtils.close(rsAnaSan);
+		DbUtils.close(pstmtAnaSan);
+		if (ok) {
+			return new String[]{"OK", line.substring(14, 19).trim()};
+		}
+		
+		//se in anagrafe sanitaria è presente la descrizione con un codice diverso, prendo il codice dell'anagrafe sanitaria
+		pstmtAnaSan = connAnaSan.prepareStatement(SQL_CTRL_STRADARIO_ANA_SAN_DESCR);
+		pstmtAnaSan.setString(1, codComuneExp);
+		pstmtAnaSan.setString(2, indirizzo);
+		rsAnaSan = pstmtAnaSan.executeQuery();
+		String codAnaSan = null;
+		while (rsAnaSan.next()) {
+			codAnaSan = rsAnaSan.getString("ST_STRADA");
+		}
+		DbUtils.close(rsAnaSan);
+		DbUtils.close(pstmtAnaSan);
+		if (codAnaSan != null) {
+			codAnaSan = codAnaSan.trim();
+			return new String[]{"OK", codAnaSan};
+		}
+		
+		//se in anagrafe sanitaria non sono presenti né codice né descrizione, prendo il codice della fornitura
+		return new String[]{"OK", line.substring(14, 19).trim()};
+	}
+	
+}

@@ -1,0 +1,69 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui" xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:webred="http://java.sun.com/jsf/composite/webred">
+
+<h:head>
+	<title>Note</title>
+</h:head>
+<h:body>
+	<composite:interface componentType="pnlConsensoPrivacy">
+		<composite:attribute name="iConsensoPrivacy" type="it.webred.cs.jsf.interfaces.IConsensoPrivacy" required="true"/>
+		<composite:attribute name="filePrivacy" />
+		<composite:attribute name ="readOnly"   required="false" default="false"/>
+		<composite:attribute name="canPrint"    required="false" default="true" />
+		<composite:attribute name="salvaDopo"   required="false" default="false" />
+		<composite:attribute name="pnlToUpdate" required="false"/>
+		<composite:attribute name="styleClassUpdateOnSave" required="false" default="updateOnSave"/>
+	</composite:interface>
+	<composite:implementation>
+    
+    <p:outputPanel id="pnlInfoPrivacy" styleClass="#{cc.attrs.styleClassUpdateOnSave}" rendered="#{cc.attrs.iConsensoPrivacy!=null}" >
+		<h:panelGrid id="pnlViewPrivacy" columns="3">
+			
+			<webred:iconaConsensoPrivacy labelPrivacy="#{cc.attrs.iConsensoPrivacy.privacy}" utenteAnonimo="#{cc.attrs.iConsensoPrivacy.utenteAnonimo}"  />
+			
+			<p:outputLabel  value="Modulo privacy non sottoscritto"      rendered="#{cc.attrs.iConsensoPrivacy.privacy==null and not cc.attrs.iConsensoPrivacy.utenteAnonimo }" style="font-weight:bold;color:red;" />
+	    	<p:outputLabel  value="Modulo privacy non sottoscrivibile"   rendered="#{cc.attrs.iConsensoPrivacy.privacy==null and cc.attrs.iConsensoPrivacy.utenteAnonimo }" style="font-weight:bold;color:orange;" />
+	     	<p:outputLabel  value="#{cc.attrs.iConsensoPrivacy.privacy}" rendered="#{cc.attrs.iConsensoPrivacy.privacy!=null}" style="font-weight:bold;"/>
+			
+			<p:commandButton value="Modulo Privacy"  ajax="false" 
+							 title="Download PDF del Modulo Privacy" icon="ui-icon-arrowthickstop-1-s" 
+							 rendered="#{!cc.attrs.readOnly and cc.attrs.iConsensoPrivacy.privacy==null}"
+							 disabled="#{!cc.attrs.canPrint}" onclick="PrimeFaces.monitorDownload(start, stop);" >
+				<p:fileDownload value="#{cc.attrs.filePrivacy}" />
+			</p:commandButton>
+		</h:panelGrid>
+		<h:panelGrid id="pnlAddPrivacy" columns="5" rendered="#{!cc.attrs.readOnly and cc.attrs.iConsensoPrivacy.privacy==null}">
+			
+			<p:selectBooleanCheckbox itemLabel="Sottoscrivi in data " 
+					disabled="#{cc.attrs.iConsensoPrivacy.disabilitaSottoscrizione}" 
+					value="#{cc.attrs.iConsensoPrivacy.privacySottoscrivi}">
+					<p:ajax event="change" process="@this" update="#{cc.attrs.pnlToUpdate}, somCPI"  />
+			</p:selectBooleanCheckbox>
+
+			<webred:pnlData  dataValue="#{cc.attrs.iConsensoPrivacy.privacyDate}" dataPattern="dd/MM/yyyy" 
+						     disabled="#{cc.attrs.iConsensoPrivacy.disabilitaSottoscrizione}" dataPatternLabel="gg/mm/aaaa" />
+		
+			<p:outputLabel value=" autorizzando la condivisione con i Centri per l'impiego"
+						   title="L'utente o il suo nucleo familiare risulta beneficiario di Reddito di Cittadinanza " 
+						   rendered="#{cc.attrs.iConsensoPrivacy.beneficiarioRdC}"/>
+			<p:selectOneMenu id="somCPI" value="#{cc.attrs.iConsensoPrivacy.condividiCentriImpiego}" 
+							 disabled="#{cc.attrs.iConsensoPrivacy.disabilitaSottoscrizione or !cc.attrs.iConsensoPrivacy.privacySottoscrivi}"
+							 rendered="#{cc.attrs.iConsensoPrivacy.beneficiarioRdC}">
+				<f:selectItem noSelectionOption="true" itemLabel="- seleziona - "/>
+				<f:selectItem itemLabel="SI" itemValue="SI"/>
+				<f:selectItem itemLabel="NO" itemValue="NO"/>
+			</p:selectOneMenu>
+		
+			<p:commandButton id="btnPrivacySalva" value="Salva sottoscrizione" title="Salva la sottoscrizione del modulo privacy" 
+							 rendered="#{!cc.attrs.salvaDopo}" disabled="#{cc.attrs.iConsensoPrivacy.disabilitaSottoscrizione}" 
+							 action="#{cc.attrs.iConsensoPrivacy.salva}" process="pnlInfoPrivacy"
+							 oncomplete="if (args &amp;&amp; !args.validationFailed &amp;&amp; args.saved){ updatePrivacy();} else {}"/>
+			<p:remoteCommand name="updatePrivacy" process="@this" update="@(.#{cc.attrs.styleClassUpdateOnSave})"  />  
+		</h:panelGrid>
+	  </p:outputPanel>
+	</composite:implementation>
+</h:body>
+
+</html>

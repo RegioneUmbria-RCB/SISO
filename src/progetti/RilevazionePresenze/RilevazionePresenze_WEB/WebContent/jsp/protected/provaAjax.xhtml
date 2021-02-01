@@ -1,0 +1,133 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<ui:composition
+	template="/jsp/protected/template/common/commonLayout.xhtml">
+
+	<ui:define name="content">
+
+		
+		<h:form id="formStrutture">
+			<p:commandButton value="test messaggio" action="#{struttureController.addMessage}" />
+			<h2>EJB + Data Model Test:</h2>
+			<h:outputLabel>#{struttureController.strutture.size()}</h:outputLabel>
+			<br />
+			<h:commandButton value="Leggi da DB" type="submit"
+				action="#{struttureController.readStrutture}" />
+			<br />
+			
+		    <p:dataTable id="singleDT" var="strutta" value="#{struttureController.strutture}" rowKey="#{strutta.id}">
+		        <f:facet name="header">
+		            Single with Row Click <p:outputLabel id="lblselezionata" value="#{struttureController.selectedStruttura.nomeStruttura}">
+		             <p:autoUpdate /> 
+		         </p:outputLabel>
+		        </f:facet>
+		        <p:column headerText="Id">
+		            <h:outputText value="#{strutta.id}" />
+		        </p:column>
+		        <p:column headerText="Nome">
+		            <h:outputText value="#{strutta.nomeStruttura}" />
+		        </p:column>
+		        <p:column>
+			        <p:commandButton process="singleDT" update="@id(strutturaDetail)" value="SetProperty" oncomplete="PF('strutturaDialog').show()">
+			            <f:setPropertyActionListener value="#{strutta}" target="#{struttureController.selectedStruttura}"/>
+			        </p:commandButton>    
+			    </p:column>
+		        <f:facet name="footer">
+		            <p:commandButton process="singleDT" update="@form" icon="pi pi-search" value="View" oncomplete="PF('strutturaDialog').show()" />		            
+		        </f:facet>
+		    </p:dataTable>		
+
+			<p:dataGrid var="strutta" value="#{struttureController.strutture}"
+				columns="3" layout="grid" rows="12" paginator="true" id="struttureGrid" >
+
+				<f:facet name="header">
+				            Struttura selezionata: <p:outputLabel id="lblselezionata" value="#{struttureController.selectedStruttura.nomeStruttura}" styleClass="pippo" />
+				</f:facet>
+
+				<p:panel header="#{strutta.id}" style="text-align:center">
+					<h:panelGrid columns="1" style="width:100%">
+
+						<h:outputText value="#{strutta.nomeStruttura}" />
+						
+						<p:commandButton process="struttureGrid" update="@(.pippo)" oncomplete="PF('strutturaDialog').show()" icon="pi pi-search" value="BOTTONE" title="Vedi Dettaglio">
+			                <f:setPropertyActionListener value="#{strutta}" target="#{struttureController.selectedStruttura}" />
+			            </p:commandButton>
+			            
+						<p:commandButton process="struttureGrid"  update="@(.pippo)" oncomplete="PF('strutturaDialog').show()" icon="pi pi-search" value="ACTION" title="Vedi Dettaglio" 
+								actionListener="#{struttureController.setSelectedStruttura(strutta)}">			                
+			            </p:commandButton>			            
+			            
+
+						<p:commandLink process="struttureGrid" update="@form" oncomplete="PF('strutturaDialog').show();" title="Vedi Dettaglio">
+							<h:outputText value="Apri Dettaglio #{strutta.nomeStruttura}" style="margin:0 auto;" />
+							
+							<f:setPropertyActionListener value="#{strutta}"
+								target="#{struttureController.selectedStruttura}" />
+						</p:commandLink>
+					</h:panelGrid>
+				</p:panel>
+			</p:dataGrid>
+				<br/>
+				Elenco strutture:
+				<br/>		
+			<p:dialog header="Strutture Info" widgetVar="strutturaDialog"
+				modal="true" showEffect="fade" hideEffect="fade" resizable="false">
+				<p:autoUpdate />
+				<p:outputPanel id="strutturaDetail" style="text-align:center;">
+					<p:panelGrid columns="2" columnClasses="label,value">
+						<f:facet name="header">
+							<p:graphicImage id="imgInfo" value="/images/info_small.png"
+								styleClass="infoSmall" />
+						</f:facet>
+
+						<h:outputText value="Id:" />
+						<h:outputText value="#{struttureController.selectedStruttura.id}" />
+
+						<h:outputText value="Nome Struttura:" />
+						<h:outputText
+							value="#{struttureController.selectedStruttura.nomeStruttura}" />
+
+						<h:outputText value="Indirizzo:" />
+						<h:outputText value="#{struttureController.selectedStruttura.indirizzo}" />
+
+
+					</p:panelGrid>
+				</p:outputPanel>
+			</p:dialog>
+
+		     <p:dataTable widgetVar="dataTableStrutture" var="rowStruttura" emptyMessage="Nessun elemento presente"
+				value="#{struttureController.strutture}"
+				filteredValue="#{struttureController.struttureFiltered}">
+		        
+		        <f:facet name="header">
+		            <p:outputPanel>
+		                <h:outputText value="Cerca in tutti i campi 2:" />
+		                <p:inputText id="globalFilter" onkeyup="PF('dataTableStrutture').filter();" style="width:150px" placeholder="inserisci parola chiave"/>
+		            </p:outputPanel>
+		        </f:facet>		        
+		        
+				<p:column headerText="Nome" width="30" >	
+					<h:outputText value="#{rowStruttura.nomeStruttura}">
+					</h:outputText>	
+				</p:column>
+				
+				<p:column headerText="Indirizzo"   width="20"  >	
+					<h:outputText value="#{rowStruttura.indirizzo}" />
+				</p:column>
+								
+			</p:dataTable>	
+
+
+		</h:form>
+	</ui:define>
+
+	<ui:define name="footer">
+		<h2>This is PUBLIC PAGE Footer</h2>
+	</ui:define>
+
+</ui:composition>
+</html>

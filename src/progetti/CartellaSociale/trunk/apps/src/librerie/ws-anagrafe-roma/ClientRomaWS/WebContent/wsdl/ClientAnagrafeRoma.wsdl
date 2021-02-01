@@ -1,0 +1,458 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="http://test.servizi.comune.roma.it" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:impl="http://test.servizi.comune.roma.it" xmlns:intf="http://test.servizi.comune.roma.it" xmlns:tns1="http://dto.servizi.comune.roma.it" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<!--WSDL created by Apache Axis version: 1.4
+Built on Apr 22, 2006 (06:55:48 PDT)-->
+ <wsdl:types>
+  <schema elementFormDefault="qualified" targetNamespace="http://test.servizi.comune.roma.it" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://dto.servizi.comune.roma.it"/>
+   <element name="ricercaPerCodiceIndividuale">
+    <complexType>
+     <sequence>
+      <element name="chiaveCifratura" type="xsd:string"/>
+      <element name="wsURL" type="xsd:string"/>
+      <element name="codiceIndividuale" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="ricercaPerCodiceIndividualeResponse">
+    <complexType>
+     <sequence>
+      <element name="ricercaPerCodiceIndividualeReturn" type="tns1:RicercaResult"/>
+     </sequence>
+    </complexType>
+   </element>
+   <complexType name="ArrayOf_tns1_Persona">
+    <sequence>
+     <element maxOccurs="unbounded" minOccurs="0" name="item" type="tns1:Persona"/>
+    </sequence>
+   </complexType>
+   <complexType name="ArrayOf_tns1_Componente">
+    <sequence>
+     <element maxOccurs="unbounded" minOccurs="0" name="item" type="tns1:Componente"/>
+    </sequence>
+   </complexType>
+   <element name="eseguiRicercaStatoFamigliaConv">
+    <complexType>
+     <sequence>
+      <element name="chiaveCifratura" type="xsd:string"/>
+      <element name="wsURL" type="xsd:string"/>
+      <element name="codiceIndividuale" type="xsd:string"/>
+      <element name="codiceFiscale" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="eseguiRicercaStatoFamigliaConvResponse">
+    <complexType>
+     <sequence>
+      <element name="eseguiRicercaStatoFamigliaConvReturn" type="tns1:RicercaResult"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="verificaDatiAnagrafici">
+    <complexType>
+     <sequence>
+      <element name="chiaveCifratura" type="xsd:string"/>
+      <element name="URL" type="xsd:string"/>
+      <element name="cognome" type="xsd:string"/>
+      <element name="nome" type="xsd:string"/>
+      <element name="sesso" type="xsd:string"/>
+      <element name="annoNascita" type="xsd:string"/>
+      <element name="meseNascita" type="xsd:string"/>
+      <element name="giornoNascita" type="xsd:string"/>
+      <element name="codiceFiscale" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="verificaDatiAnagraficiResponse">
+    <complexType>
+     <sequence>
+      <element name="verificaDatiAnagraficiReturn" type="tns1:RicercaResult"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="verificaDatiAnagraficiCompleta">
+    <complexType>
+     <sequence>
+      <element name="chiaveCifratura" type="xsd:string"/>
+      <element name="URL" type="xsd:string"/>
+      <element name="cognome" type="xsd:string"/>
+      <element name="nome" type="xsd:string"/>
+      <element name="sesso" type="xsd:string"/>
+      <element name="annoNascita" type="xsd:string"/>
+      <element name="meseNascita" type="xsd:string"/>
+      <element name="giornoNascita" type="xsd:string"/>
+      <element name="codiceFiscale" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="verificaDatiAnagraficiCompletaResponse">
+    <complexType>
+     <sequence>
+      <element name="verificaDatiAnagraficiCompletaReturn" type="tns1:RicercaResult"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="eseguiRicercaAnagraficaEstesa">
+    <complexType>
+     <sequence>
+      <element name="chiaveCifratura" type="xsd:string"/>
+      <element name="wsURL" type="xsd:string"/>
+      <element name="cognome" type="xsd:string"/>
+      <element name="nome" type="xsd:string"/>
+      <element name="sesso" type="xsd:string"/>
+      <element name="annoIniziale" type="xsd:string"/>
+      <element name="annoFinale" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="eseguiRicercaAnagraficaEstesaResponse">
+    <complexType>
+     <sequence>
+      <element name="eseguiRicercaAnagraficaEstesaReturn" type="tns1:RicercaResult"/>
+     </sequence>
+    </complexType>
+   </element>
+  </schema>
+  <schema elementFormDefault="qualified" targetNamespace="http://dto.servizi.comune.roma.it" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://test.servizi.comune.roma.it"/>
+   <complexType name="DatiAnagrafeRoma">
+    <sequence>
+     <element name="codiceIndividuale" nillable="true" type="xsd:string"/>
+     <element name="descrizione" nillable="true" type="xsd:string"/>
+     <element name="flagPresenzaInFamiglia" nillable="true" type="xsd:string"/>
+     <element name="flagVivoResidente" nillable="true" type="xsd:string"/>
+     <element name="residente" nillable="true" type="xsd:string"/>
+     <element name="vivo" nillable="true" type="xsd:string"/>
+    </sequence>
+   </complexType>
+   <complexType name="Genitori">
+    <sequence>
+     <element name="madre" nillable="true" type="xsd:string"/>
+     <element name="nominativoMadre" nillable="true" type="xsd:string"/>
+     <element name="nominativoPadre" nillable="true" type="xsd:string"/>
+     <element name="padre" nillable="true" type="xsd:string"/>
+    </sequence>
+   </complexType>
+   <complexType name="Nascita">
+    <sequence>
+     <element name="anno" nillable="true" type="xsd:string"/>
+     <element name="codiceComuneISTAT" nillable="true" type="xsd:string"/>
+     <element name="codiceProvinciaISTAT" nillable="true" type="xsd:string"/>
+     <element name="codiceStatoISTAT" nillable="true" type="xsd:string"/>
+     <element name="genitori" nillable="true" type="tns1:Genitori"/>
+     <element name="giorno" nillable="true" type="xsd:string"/>
+     <element name="mese" nillable="true" type="xsd:string"/>
+     <element name="nomeComune" nillable="true" type="xsd:string"/>
+     <element name="nomeStato" nillable="true" type="xsd:string"/>
+     <element name="siglaProvincia" nillable="true" type="xsd:string"/>
+    </sequence>
+   </complexType>
+   <complexType name="DatiIndirizzo">
+    <sequence>
+     <element name="cap" nillable="true" type="xsd:string"/>
+     <element name="indirizzoBreve" nillable="true" type="xsd:string"/>
+     <element name="interno" nillable="true" type="xsd:string"/>
+     <element name="municipio" nillable="true" type="xsd:string"/>
+     <element name="numero" nillable="true" type="xsd:string"/>
+     <element name="piano" nillable="true" type="xsd:string"/>
+     <element name="scala" nillable="true" type="xsd:string"/>
+     <element name="toponimo" nillable="true" type="xsd:string"/>
+    </sequence>
+   </complexType>
+   <complexType name="PersonaCompleta">
+    <sequence>
+     <element name="codiceFiscale" nillable="true" type="xsd:string"/>
+     <element name="codiceStatoISTAT" nillable="true" type="xsd:string"/>
+     <element name="cognome" nillable="true" type="xsd:string"/>
+     <element name="descrizioneCittadinanza" nillable="true" type="xsd:string"/>
+     <element name="nome" nillable="true" type="xsd:string"/>
+     <element name="sesso" nillable="true" type="xsd:string"/>
+     <element name="statoCivile" nillable="true" type="xsd:string"/>
+    </sequence>
+   </complexType>
+   <complexType name="Persona">
+    <sequence>
+     <element name="datiAnagrafeRoma" nillable="true" type="tns1:DatiAnagrafeRoma"/>
+     <element name="datiDiNascita" nillable="true" type="tns1:Nascita"/>
+     <element name="datiIndirizzo" nillable="true" type="tns1:DatiIndirizzo"/>
+     <element name="personaCompleta" nillable="true" type="tns1:PersonaCompleta"/>
+    </sequence>
+   </complexType>
+   <complexType name="Componente">
+    <sequence>
+     <element name="codiceIndividuale" nillable="true" type="xsd:string"/>
+     <element name="datiAnagrafeRoma" nillable="true" type="tns1:DatiAnagrafeRoma"/>
+     <element name="nascita" nillable="true" type="tns1:Nascita"/>
+     <element name="personaCompleta" nillable="true" type="tns1:PersonaCompleta"/>
+     <element name="rapportoParentela" nillable="true" type="xsd:string"/>
+    </sequence>
+   </complexType>
+   <complexType name="Famiglia">
+    <sequence>
+     <element name="codiceFamiglia" nillable="true" type="xsd:string"/>
+     <element name="componenti" nillable="true" type="impl:ArrayOf_tns1_Componente"/>
+     <element name="datiIndirizzo" nillable="true" type="tns1:DatiIndirizzo"/>
+     <element name="flagFamigliaConvivenza" nillable="true" type="xsd:string"/>
+    </sequence>
+   </complexType>
+   <complexType name="RicercaResult">
+    <sequence>
+     <element name="elencoPersona" nillable="true" type="impl:ArrayOf_tns1_Persona"/>
+     <element name="esito" nillable="true" type="xsd:string"/>
+     <element name="famiglia" nillable="true" type="tns1:Famiglia"/>
+    </sequence>
+   </complexType>
+  </schema>
+ </wsdl:types>
+
+   <wsdl:message name="eseguiRicercaStatoFamigliaConvRequest">
+
+      <wsdl:part element="impl:eseguiRicercaStatoFamigliaConv" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="verificaDatiAnagraficiResponse">
+
+      <wsdl:part element="impl:verificaDatiAnagraficiResponse" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="verificaDatiAnagraficiRequest">
+
+      <wsdl:part element="impl:verificaDatiAnagrafici" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="ricercaPerCodiceIndividualeResponse">
+
+      <wsdl:part element="impl:ricercaPerCodiceIndividualeResponse" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="eseguiRicercaAnagraficaEstesaResponse">
+
+      <wsdl:part element="impl:eseguiRicercaAnagraficaEstesaResponse" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="eseguiRicercaStatoFamigliaConvResponse">
+
+      <wsdl:part element="impl:eseguiRicercaStatoFamigliaConvResponse" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="verificaDatiAnagraficiCompletaRequest">
+
+      <wsdl:part element="impl:verificaDatiAnagraficiCompleta" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="verificaDatiAnagraficiCompletaResponse">
+
+      <wsdl:part element="impl:verificaDatiAnagraficiCompletaResponse" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="ricercaPerCodiceIndividualeRequest">
+
+      <wsdl:part element="impl:ricercaPerCodiceIndividuale" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="eseguiRicercaAnagraficaEstesaRequest">
+
+      <wsdl:part element="impl:eseguiRicercaAnagraficaEstesa" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:portType name="ClientAnagrafeRoma">
+
+      <wsdl:operation name="ricercaPerCodiceIndividuale">
+
+         <wsdl:input message="impl:ricercaPerCodiceIndividualeRequest" name="ricercaPerCodiceIndividualeRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:ricercaPerCodiceIndividualeResponse" name="ricercaPerCodiceIndividualeResponse">
+
+       </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="eseguiRicercaStatoFamigliaConv">
+
+         <wsdl:input message="impl:eseguiRicercaStatoFamigliaConvRequest" name="eseguiRicercaStatoFamigliaConvRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:eseguiRicercaStatoFamigliaConvResponse" name="eseguiRicercaStatoFamigliaConvResponse">
+
+       </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="verificaDatiAnagrafici">
+
+         <wsdl:input message="impl:verificaDatiAnagraficiRequest" name="verificaDatiAnagraficiRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:verificaDatiAnagraficiResponse" name="verificaDatiAnagraficiResponse">
+
+       </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="verificaDatiAnagraficiCompleta">
+
+         <wsdl:input message="impl:verificaDatiAnagraficiCompletaRequest" name="verificaDatiAnagraficiCompletaRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:verificaDatiAnagraficiCompletaResponse" name="verificaDatiAnagraficiCompletaResponse">
+
+       </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="eseguiRicercaAnagraficaEstesa">
+
+         <wsdl:input message="impl:eseguiRicercaAnagraficaEstesaRequest" name="eseguiRicercaAnagraficaEstesaRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:eseguiRicercaAnagraficaEstesaResponse" name="eseguiRicercaAnagraficaEstesaResponse">
+
+       </wsdl:output>
+
+      </wsdl:operation>
+
+   </wsdl:portType>
+
+   <wsdl:binding name="ClientAnagrafeRomaSoapBinding" type="impl:ClientAnagrafeRoma">
+
+      <wsdlsoap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+
+      <wsdl:operation name="ricercaPerCodiceIndividuale">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="ricercaPerCodiceIndividualeRequest">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="ricercaPerCodiceIndividualeResponse">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="eseguiRicercaStatoFamigliaConv">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="eseguiRicercaStatoFamigliaConvRequest">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="eseguiRicercaStatoFamigliaConvResponse">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="verificaDatiAnagrafici">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="verificaDatiAnagraficiRequest">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="verificaDatiAnagraficiResponse">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="verificaDatiAnagraficiCompleta">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="verificaDatiAnagraficiCompletaRequest">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="verificaDatiAnagraficiCompletaResponse">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="eseguiRicercaAnagraficaEstesa">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="eseguiRicercaAnagraficaEstesaRequest">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="eseguiRicercaAnagraficaEstesaResponse">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+   </wsdl:binding>
+
+   <wsdl:service name="ClientAnagrafeRomaService">
+
+      <wsdl:port binding="impl:ClientAnagrafeRomaSoapBinding" name="ClientAnagrafeRoma">
+
+         <wsdlsoap:address location="http://localhost:8099/ClientRomaWS/services/ClientAnagrafeRoma"/>
+
+      </wsdl:port>
+
+   </wsdl:service>
+
+</wsdl:definitions>

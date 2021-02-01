@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings
+  xmlns="http://java.sun.com/xml/ns/persistence/orm"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
+  version="2.0">
+  
+	<named-query name="SitLicenzeCommercioVie.getViaByIdExt">
+		<query>
+			<![CDATA[
+				SELECT v 
+				FROM SitLicenzeCommercioVie v
+				WHERE v.idExt = :idExt
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SitLicenzeCommercioVie.getViaByDescrizione">
+		<query>
+			<![CDATA[
+				SELECT DISTINCT v 
+				FROM SitLicenzeCommercioVie v
+				WHERE (v.sedime = :toponimo AND v.indirizzo = :via)
+				OR (v.sedime = :toponimo AND v.indirizzo LIKE '%.'||:via)
+				OR (v.sedime = :toponimo AND v.indirizzo = '% '||:via||' %')
+				OR (v.indirizzo LIKE :toponimo||' %' AND v.indirizzo LIKE '% '||:via||' %')
+				AND (v.dtFineVal is NULL OR v.dtFineVal > :dtRif)
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SitLicenzeCommercio.getLicenzeByIdExtViaCivico">
+		<query>
+			<![CDATA[
+				SELECT DISTINCT v 
+				FROM SitLicenzeCommercio v
+				WHERE v.idExtVie = :idExtVia
+				AND v.civico = :civico
+				AND (v.dtFineVal is NULL OR v.dtFineVal > :dtRif)
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SitLicenzeCommercio.getLicenzeByIdViaUnicoCivico">
+		<query>
+			<![CDATA[
+				SELECT DISTINCT v 
+				FROM SitLicenzeCommercio v, SitCivicoTotale c
+				WHERE c.fkVia = TO_NUMBER(:idViaUnico)
+				AND c.civLiv1 = LPAD(:civico,8,'0')
+				AND c.id.fkEnteSorgente = '13'
+				AND c.id.progEs = '1'
+				AND c.id.idDwh = v.id
+				AND (v.dtFineVal is NULL OR v.dtFineVal > :dtRif)
+			]]>
+		</query>
+	</named-query>
+		
+</entity-mappings>

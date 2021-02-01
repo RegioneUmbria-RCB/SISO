@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings
+  xmlns="http://java.sun.com/xml/ns/persistence/orm"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
+  version="2.0">
+
+	<!-- Query Istituti -->
+	<named-query name="SitSclIstituti.getTipiIstituto">
+		<query>
+			<![CDATA[
+				select distinct i.tipoIstituto 
+				from SitSclIstituti i
+				order by i.tipoIstituto
+			 ]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SitSclIstituti.getIstitutiByTipo">
+		<query>
+			<![CDATA[
+				select i 
+				from SitSclIstituti i
+				where i.tipoIstituto = :tipo
+				order by i.nomeIstituto
+			 ]]>
+		</query>
+	</named-query>
+	
+	<!-- Query Classi -->
+	<named-query name="SitSclClassi.getClassiByIstituto">
+		<query>
+			<![CDATA[
+				select c 
+				from SitSclClassi c
+				where c.codIstituto = :istituto
+				order by c.nrSezione, c.sezioneClasse asc
+			 ]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SitSclClassi.getAnniByIstituto">
+		<query>
+			<![CDATA[
+				select distinct c.nrSezione 
+				from SitSclClassi c
+				where c.codIstituto = :istituto
+				order by c.nrSezione asc
+			 ]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SitSclClassi.getSezioniByIstitutoAnno">
+		<query>
+			<![CDATA[
+				select distinct c.sezioneClasse
+				from SitSclClassi c
+				where c.codIstituto = :istituto
+				and c.nrSezione = :anno
+				order by c.sezioneClasse asc
+			 ]]>
+		</query>
+	</named-query>
+
+</entity-mappings>

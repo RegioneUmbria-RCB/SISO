@@ -1,0 +1,13 @@
+#--------------------------------------------------------------
+# File di configurazione in cui sono indicato i valori dei soli
+# parametri di contesto della catena jelly da passare alla 
+# regola 
+#------------------------------------------------------------
+# Numero di parametri previsti in input
+rengine.jchain.in.nof=1
+#------------------------------------------------------------
+# Le coppie chiavi/valore hanno come key lo stesso nome 
+# indicato nello script jelly xml
+#------------------------------------------------------------
+rengine.jchain.in.1.key=SQL_CREATE_SIT_RUOLO_TAR_PDF
+rengine.jchain.in.1.value=CREATE TABLE SIT_RUOLO_TAR_PDF(ID                  INTEGER,CODFISC             VARCHAR2(16 CHAR),CU                  INTEGER,ANNO                INTEGER,MESE                INTEGER,TIPO_TRIBUTO \t   VARCHAR2 (10 BYTE), NOME_FILE           VARCHAR2 (100 BYTE),DT_ELAB             DATE DEFAULT SYSDATE )

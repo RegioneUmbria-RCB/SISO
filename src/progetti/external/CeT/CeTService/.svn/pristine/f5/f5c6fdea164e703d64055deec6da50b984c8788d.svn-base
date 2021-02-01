@@ -1,0 +1,98 @@
+sql.data.riferimento.aggiornamento.1=select MAX(DT_INIZIO_VAL) as data_agg from SIT_D_PERSONA where DT_INIZIO_VAL is not null
+sql.data.riferimento.aggiornamento.2=SELECT TO_DATE (DECODE ('3112' || (yea_den),'3112', NULL,'3112' || (yea_den)),'ddmmyyyy')as data_agg FROM (select max(yea_den) yea_den from sit_t_ici_oggetto WHERE yea_den IS NOT NULL AND yea_den != '0')
+sql.data.riferimento.aggiornamento.3=SELECT MAX(PROTOCOLLO_DATA) as data_agg FROM SIT_C_CONCESSIONI WHERE PROTOCOLLO_DATA < SYSDATE
+sql.data.riferimento.aggiornamento.4=select Max(To_Date(dt_rif,'DD/MM/YYYY')) as data_agg from load_cat_prm_incr where dt_carico = (select max(dt_carico) from load_cat_prm_incr);
+sql.data.riferimento.aggiornamento.5=SELECT TO_DATE (DECODE ('3112' || (anno),'3112', NULL,'3112' || (anno)),'ddmmyyyy')as data_agg FROM (select max(anno) anno from LOCAZIONI_A WHERE anno IS NOT NULL )
+sql.data.riferimento.aggiornamento.6=SELECT TO_DATE (DECODE ('3112' || (anno),'3112', NULL,'3112' || (anno)),'ddmmyyyy')as data_agg FROM (SELECT max(anno) anno FROM ((SELECT '20'||anno anno FROM successioni_a WHERE anno IS NOT NULL and SUBSTR(anno,0,1) < 8 UNION SELECT '19'||anno anno FROM successioni_a WHERE anno IS NOT NULL and SUBSTR(anno,0,1) >= 8)) where anno is not null)
+sql.data.riferimento.aggiornamento.7=select max(to_date(data_finale,'ddmmyyyy')) as data_agg from MUI_fornitura
+sql.data.riferimento.aggiornamento.9=select last_day(max(fornitura)) as data_agg from docfa_dati_generali
+sql.data.riferimento.aggiornamento.10=SELECT TO_DATE (DECODE ('3112' || (anno_riferimento_dati),'3112', NULL,'3112' || (anno_riferimento_dati)),'ddmmyyyy')  AS data_agg FROM (SELECT MAX(anno_riferimento_dati) anno_riferimento_dati FROM SIT_ENEL_UTENZA)
+sql.data.riferimento.aggiornamento.11=SELECT TO_DATE (DECODE ('3112' ||  (anno_imposta),'3112', NULL,'3112' ||  (anno_imposta)),'ddmmyyyy') AS data_agg FROM (SELECT max (anno_imposta) ANNO_IMPOSTA FROM red_dati_anagrafici)
+sql.data.riferimento.aggiornamento.12=SELECT TO_DATE (DECODE ('3112' ||  (anno_riferimento),'3112', NULL,'3112' ||  (anno_riferimento)),'ddmmyyyy') AS data_agg from (  select max(anno_riferimento) anno_riferimento FROM sit_u_gas)
+sql.data.riferimento.aggiornamento.13=SELECT MAX(DATA_RILASCIO)   as data_agg FROM SIT_LICENZE_COMMERCIO WHERE DATA_RILASCIO < SYSDATE
+sql.data.riferimento.aggiornamento.14=SELECT MAX(DT_INI_VALIDITA) as data_agg FROM SIT_T_COSAP_TASSA     WHERE DT_INI_VALIDITA < SYSDATE
+sql.data.riferimento.aggiornamento.17=SELECT UTIL.FCHAR_TO_DATE(MAX(data_MULTA),'yyyymmdd') as data_agg FROM SIT_TRFF_MULTE
+sql.data.riferimento.aggiornamento.18=SELECT MAX(data_bolletta) as data_agg FROM SIT_RTT_bollette
+sql.data.riferimento.aggiornamento.24=SELECT TO_DATE(max(data_pregeo)) as data_agg FROM PREGEO_INFO
+sql.data.riferimento.aggiornamento.27=SELECT MAX(dt_inizio)) as data_agg FROM sit_pub_prat_testata WHERE dt_inizio < SYSDATE
+sql.data.riferimento.aggiornamento.33=select max(dt_fornitura) as data_agg from sit_t_f24_testata
+
+sql.data.riferimento.inizio.1=select min(DT_INIZIO_VAL) as data_ini from SIT_D_PERSONA where DT_INIZIO_VAL is not null
+sql.data.riferimento.inizio.2=SELECT TO_DATE (DECODE ('0101' || (yea_den),'0101', NULL,'0101' || (yea_den)),'ddmmyyyy') FROM (select min(yea_den) yea_den from sit_t_ici_oggetto WHERE yea_den IS NOT NULL AND yea_den != '0')
+sql.data.riferimento.inizio.3=SELECT MIN(PROTOCOLLO_DATA) as data_ini FROM SIT_C_CONCESSIONI WHERE PROTOCOLLO_DATA > TO_DATE('01011000','DDMMYYYY')
+sql.data.riferimento.inizio.4=select Min(To_Date(dt_rif,'DD/MM/YYYY')) as data_ini  from load_cat_prm_incr where dt_carico = (select min(dt_carico) from load_cat_prm_incr);
+sql.data.riferimento.inizio.5=SELECT TO_DATE (DECODE ('0101' || (anno),'0101', NULL,'0101' || (anno)),'ddmmyyyy') as data_ini FROM (select min(anno) anno from LOCAZIONI_A where anno is not null)
+sql.data.riferimento.inizio.6=SELECT TO_DATE (DECODE ('0101' || (anno),'0101', NULL,'0101' || (anno)),'ddmmyyyy') as data_ini FROM (select min(anno) anno from ((SELECT '20'||anno anno FROM successioni_a WHERE anno IS NOT NULL and SUBSTR(anno,0,1) < 8 UNION SELECT '19'||anno anno FROM successioni_a WHERE anno IS NOT NULL and SUBSTR(anno,0,1) >= 8)) where anno is not null)
+sql.data.riferimento.inizio.7=select min(to_date(data_iniziale,'ddmmyyyy')) as data_ini from MUI_fornitura
+sql.data.riferimento.inizio.9=select min(fornitura) as data_ini from docfa_dati_generali
+sql.data.riferimento.inizio.10=SELECT TO_DATE (DECODE ('0101' || (anno_riferimento_dati),'0101', NULL,'0101' || (anno_riferimento_dati)),'ddmmyyyy')  AS data_ini FROM (SELECT MIN(anno_riferimento_dati) anno_riferimento_dati FROM SIT_ENEL_UTENZA)
+sql.data.riferimento.inizio.11=SELECT TO_DATE (DECODE ('0101' ||  (anno_imposta),'0101', NULL,'0101' ||  (anno_imposta)),'ddmmyyyy') AS data_ini FROM (SELECT MIN (anno_imposta) ANNO_IMPOSTA FROM red_dati_anagrafici)
+sql.data.riferimento.inizio.12=SELECT TO_DATE (DECODE ('0101' ||  (anno_riferimento),'0101', NULL,'0101' ||  (anno_riferimento)),'ddmmyyyy') AS data_ini from (  select min(anno_riferimento) anno_riferimento FROM sit_u_gas)
+sql.data.riferimento.inizio.13=SELECT MIN(DATA_RILASCIO)   as data_ini FROM SIT_LICENZE_COMMERCIO WHERE DATA_RILASCIO > TO_DATE('01011000','DDMMYYYY')
+sql.data.riferimento.inizio.14=SELECT MIN(DT_INI_VALIDITA) as data_ini FROM SIT_T_COSAP_TASSA     WHERE DT_INI_VALIDITA > TO_DATE('01011000','DDMMYYYY')
+sql.data.riferimento.inizio.17=SELECT UTIL.FCHAR_TO_DATE(min(data_MULTA),'yyyymmdd') as data_ini FROM SIT_TRFF_MULTE
+sql.data.riferimento.inizio.18=SELECT min(data_bolletta) as data_ini FROM SIT_RTT_bollette
+sql.data.riferimento.inizio.24=SELECT TO_DATE(min(data_pregeo)) as data_ini FROM PREGEO_INFO
+sql.data.riferimento.inizio.27=SELECT MIN(dt_inizio)) as data_ini FROM sit_pub_prat_testata WHERE dt_inizio < SYSDATE
+sql.data.riferimento.inizio.33=select min(dt_fornitura) as data_ini from  sit_t_f24_testata
+
+# sql.data.riferimento.1.OLD=select min(DT_INIZIO_VAL) as data_ini,MAX(DT_INIZIO_VAL) as data_agg from SIT_D_PERSONA where DT_INIZIO_VAL is not null
+# se c'è la demografia ascot, prende come date di riferimento gli estremi dei caricamenti ascot conclusi con esito positivo
+# quindi sostituita da:
+# sql.data.riferimento.1=select data_ini, data_agg from ( \
+# 						select sel.*, rownum as n from ( \
+# 						select min(DT_INIZIO_VAL) as data_ini, max(DT_INIZIO_VAL) as data_agg, 0 as ascot \
+# 						from SIT_D_PERSONA \
+# 						where DT_INIZIO_VAL is not null \
+# 						union all \
+# 						select min(trunc(DT_START)) as data_ini, max(trunc(DT_START)) as data_agg, \
+# 						case WHEN (min(trunc(DT_START)) is null) THEN -1 else 1 end as ascot \
+# 						from C_EXEC_PROCESSO \
+# 						where FK_COD_LISTA \= 'REP_DEMOG_ASCOT' \
+# 						and STATO \= 'Concluso' \
+# 						and ESITO \= 'Positivo' \
+# 						order by ascot desc) sel) \
+# 						where n \= 1
+# la data iniziale è la minima data di inizio residenza (SIT_D_PERSONA o SIT_D_PERSONA_CIVICO), quindi sostituita da:
+sql.data.riferimento.1=select data_ini, data_agg from ( \
+						select sel.*, rownum as n from ( \
+						select max(data_ini) as data_ini, max(data_agg) as data_agg, max(ascot) as ascot from ( \
+						select null as data_ini, max(DT_INIZIO_VAL) as data_agg, 0 as ascot \
+						from SIT_D_PERSONA \
+						where DT_INIZIO_VAL is not null \
+						union all \
+						select nvl(min(P.DATA_INIZIO_RESIDENZA), min(C.DT_INIZIO_DATO)) as data_ini, null as data_agg, 0 as ascot \
+						from SIT_D_PERSONA P, SIT_D_PERSONA_CIVICO C \
+						where P.ID_EXT \= C.ID_EXT_D_PERSONA) \
+						union all \
+						select max(data_ini) as data_ini, max(data_agg) as data_agg, max(ascot) as ascot from ( \
+						select null as data_ini, max(trunc(DT_START)) as data_agg, \
+						case WHEN (min(trunc(DT_START)) is null) THEN -1 else 1 end as ascot \
+						from C_EXEC_PROCESSO \
+						where FK_COD_LISTA \= 'REP_DEMOG_ASCOT' \
+						and STATO \= 'Concluso' \
+						and ESITO \= 'Positivo' \
+						and substr(FK_EXEC_LISTAP, 0, 4) \= (select CODENT from SIT_ENTE) \
+						union all \
+						select nvl(min(P.DATA_INIZIO_RESIDENZA), min(C.DT_INIZIO_DATO)) as data_ini, null as data_agg, -1 as ascot \
+						from SIT_D_PERSONA P, SIT_D_PERSONA_CIVICO C \
+						where P.ID_EXT \= C.ID_EXT_D_PERSONA) \
+						order by ascot desc) sel) \
+						where n \= 1
+sql.data.riferimento.2=SELECT TO_DATE (DECODE ('0101' || (yea_min),'0101', NULL,'0101' || (yea_min)),'ddmmyyyy')as data_ini, TO_DATE (DECODE ('3112' || (yea_max),'3112', NULL,'3112' || (yea_max)),'ddmmyyyy')as data_agg FROM (select min(yea_den)yea_min, max(yea_den) yea_max from sit_t_ici_oggetto WHERE yea_den IS NOT NULL AND yea_den != '0')
+sql.data.riferimento.3=select data_ini, data_agg from(SELECT MAX(PROTOCOLLO_DATA) as data_agg FROM SIT_C_CONCESSIONI WHERE PROTOCOLLO_DATA < SYSDATE),(SELECT MIN(PROTOCOLLO_DATA) as data_ini FROM SIT_C_CONCESSIONI WHERE PROTOCOLLO_DATA > TO_DATE('01011000','DDMMYYYY'))
+sql.data.riferimento.4=SELECT Min(To_Date(p_min.dt_rif,'DD/MM/YYYY')) AS data_ini,Max(To_Date(p_max.dt_rif,'DD/MM/YYYY')) AS data_agg FROM load_cat_prm_incr p_min, load_cat_prm_incr p_max WHERE p_min.dt_carico = (select min(dt_carico) from load_cat_prm_incr) AND p_max.dt_carico = (select max(dt_carico) from load_cat_prm_incr)
+sql.data.riferimento.5=SELECT TO_DATE(DECODE ('0101' || anno_min,'0101', NULL,'0101' || anno_min),'ddmmyyyy') as data_ini, TO_DATE(DECODE ('3112' || anno_max,'3112', NULL,'3112' || anno_max),'ddmmyyyy') as data_agg FROM (select max(anno) anno_max, min(anno) anno_min from LOCAZIONI_A WHERE anno IS NOT NULL )
+sql.data.riferimento.6=select min(UTIL.fchar_to_date(data_apertura,'YYYY-MM-DD')) as data_ini, max(UTIL.fchar_to_date(data_apertura,'YYYY-MM-DD')) as data_agg from successioni_a
+sql.data.riferimento.7=select min(to_date(data_iniziale,'ddmmyyyy')) as data_ini,max(to_date(data_finale,'ddmmyyyy')) as data_agg from MUI_fornitura
+sql.data.riferimento.9=select min(fornitura) as data_ini,last_day(max(fornitura)) as data_agg from docfa_dati_generali
+sql.data.riferimento.10=SELECT TO_DATE (DECODE ('0101' || (anno_riferimento_dati_min),'0101', NULL,'0101' || (anno_riferimento_dati_min)),'ddmmyyyy')  AS data_ini,TO_DATE (DECODE ('3112' || (anno_riferimento_dati_max),'3112', NULL,'3112' || (anno_riferimento_dati_max)),'ddmmyyyy')  AS data_agg FROM (SELECT MIN(anno_riferimento_dati) anno_riferimento_dati_min FROM SIT_ENEL_UTENZA),(SELECT MAX(anno_riferimento_dati) anno_riferimento_dati_max FROM SIT_ENEL_UTENZA)
+sql.data.riferimento.11=SELECT TO_DATE (DECODE ('0101' ||  (anno_imposta_min),'0101', NULL,'0101' ||  (anno_imposta_min)),'ddmmyyyy')AS data_ini,TO_DATE (DECODE ('3112' ||  (anno_imposta_max),'3112', NULL,'3112' ||  (anno_imposta_max)),'ddmmyyyy')AS data_agg FROM (SELECT MIN (anno_imposta) ANNO_IMPOSTA_min FROM red_dati_anagrafici ),(SELECT max (anno_imposta) ANNO_IMPOSTA_max FROM red_dati_anagrafici )
+sql.data.riferimento.12=SELECT TO_DATE (DECODE ('0101' ||  (anno_riferimento_min),'0101', NULL,'0101' ||  (anno_riferimento_min)),'ddmmyyyy') AS data_ini,TO_DATE (DECODE ('3112' ||  (anno_riferimento_max),'3112', NULL,'3112' ||  (anno_riferimento_max)),'ddmmyyyy') AS data_agg from (  select min(anno_riferimento) anno_riferimento_min FROM sit_u_gas ),(  select max(anno_riferimento) anno_riferimento_max FROM sit_u_gas )
+sql.data.riferimento.13=select data_ini, data_agg from(SELECT MAX(DATA_RILASCIO) as data_agg FROM SIT_LICENZE_COMMERCIO WHERE DATA_RILASCIO < SYSDATE),(SELECT MIN(DATA_RILASCIO) as data_ini FROM SIT_LICENZE_COMMERCIO WHERE DATA_RILASCIO > TO_DATE('01011000','DDMMYYYY'))
+sql.data.riferimento.14=select data_ini, data_agg from(SELECT MAX(DT_INI_VALIDITA) as data_agg  FROM SIT_T_COSAP_TASSA  WHERE DT_INI_VALIDITA < SYSDATE),(SELECT MIN(DT_INI_VALIDITA) as data_ini FROM SIT_T_COSAP_TASSA WHERE DT_INI_VALIDITA > TO_DATE('01011000','DDMMYYYY'))
+sql.data.riferimento.17=select UTIL.FCHAR_TO_DATE(min(data_multa),'YYYYMMDD')  as data_ini, UTIL.FCHAR_TO_DATE(MAX(data_multa),'YYYYMMDD')   as data_agg from sit_TRFF_MULTE
+sql.data.riferimento.18=select min(data_bolletta)  as data_ini, max(data_bolletta)  as data_agg from sit_rtt_bollette
+sql.data.riferimento.24=select TO_DATE(min(data_fornitura)) as data_ini, TO_DATE(max(data_fornitura)) as data_agg from PREGEO_FORNITURE
+sql.data.riferimento.27=select min(dt_inizio) as data_ini, max(dt_inizio) as data_agg from sit_pub_prat_testata WHERE dt_inizio < SYSDATE
+sql.data.riferimento.33=select min(dt_fornitura) as data_ini, max(dt_fornitura) as data_agg from sit_t_f24_testata

@@ -1,0 +1,202 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Table class="oracle.dbtools.crest.model.design.relational.Table" directorySegmentName="seg_2" id="2DCEA7C5-1879-8858-D1DD-7C437B9E0401" schemaObject="31789C62-6489-FE63-4664-3CFB4035AC87" name="BCP_CS_A_SCUOLA">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>CS_SISO</sourceObjSchema>
+<sourceObjName>BCP_CS_A_SCUOLA</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-07-20 09:02:32 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>C981149D-EDF5-4822-A039-D2C4574532DD</importedID>
+<allowColumnReorder>false</allowColumnReorder>
+<existDependencyGenerateInDDl>true</existDependencyGenerateInDDl>
+<parsed>true</parsed>
+<columns itemClass="oracle.dbtools.crest.model.design.relational.Column">
+<Column name="ID" id="9FE19049-B869-5C7A-1D58-F87E1C367472">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>BCP_CS_A_SCUOLA</sourceObjSchema>
+<sourceObjName>ID</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-07-20 09:02:32 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>76C61C39-3819-C396-BDB6-0600280EB7CF</importedID>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<dataTypePrecision>10</dataTypePrecision>
+<ownDataTypeParameters>,10,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="SOGGETTO_ID" id="A568D3DA-8280-E52B-7E07-AAC325800E45">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>BCP_CS_A_SCUOLA</sourceObjSchema>
+<sourceObjName>SOGGETTO_ID</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-07-20 09:02:32 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>3BA1178D-C543-293C-1630-E011A761CC5B</importedID>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="ANNO" id="E629CB82-3AF4-C0C9-AFF4-66B6CA485D57">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>BCP_CS_A_SCUOLA</sourceObjSchema>
+<sourceObjName>ANNO</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-07-20 09:02:32 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>FBEA226F-1B15-FF46-9DA4-3A73667BFDF0</importedID>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>50 BYTE</dataTypeSize>
+<ownDataTypeParameters>50 BYTE,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="TIPO" id="768FD261-6CB0-8890-BA3C-552D511D5225">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>BCP_CS_A_SCUOLA</sourceObjSchema>
+<sourceObjName>TIPO</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-07-20 09:02:32 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>5F6F4B81-D6D7-BA57-FB92-8DDF0B302C81</importedID>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>50 BYTE</dataTypeSize>
+<ownDataTypeParameters>50 BYTE,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="NOME" id="EB651DDA-DBCE-E036-F962-A668C191FC1E">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>BCP_CS_A_SCUOLA</sourceObjSchema>
+<sourceObjName>NOME</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-07-20 09:02:32 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>C7E050BA-2570-D8B1-FA01-E0AE73DE1095</importedID>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>100 BYTE</dataTypeSize>
+<ownDataTypeParameters>100 BYTE,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="GRADO" id="FC08D833-E07B-0EFE-AC85-9CDE67876272">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>BCP_CS_A_SCUOLA</sourceObjSchema>
+<sourceObjName>GRADO</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-07-20 09:02:32 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>C4B613C5-DDCB-3768-59EF-C17138425AE8</importedID>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>50 BYTE</dataTypeSize>
+<ownDataTypeParameters>50 BYTE,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="PROGETTO" id="E206A740-ED26-294D-349D-AF05F7E4D253">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>BCP_CS_A_SCUOLA</sourceObjSchema>
+<sourceObjName>PROGETTO</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-07-20 09:02:32 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>C496773C-0BB3-A554-C653-3E5C74D51466</importedID>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>100 BYTE</dataTypeSize>
+<ownDataTypeParameters>100 BYTE,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="FERMO" id="DCAD36E6-C2B9-2860-4CED-0A6EBBF2C061">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>BCP_CS_A_SCUOLA</sourceObjSchema>
+<sourceObjName>FERMO</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-07-20 09:02:32 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>B245B1FD-F3EC-CC7C-E1F5-83DC9DDD4513</importedID>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT025</logicalDatatype>
+<dataTypeSize>1 BYTE</dataTypeSize>
+<ownDataTypeParameters>1 BYTE,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="USER_INS" id="A629F6D3-A5E8-B4C6-D876-6DFA768ABEB8">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>BCP_CS_A_SCUOLA</sourceObjSchema>
+<sourceObjName>USER_INS</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-07-20 09:02:32 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>CF3E7CCA-5953-EEBF-AA7D-DE3BF6108AE6</importedID>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>50 BYTE</dataTypeSize>
+<ownDataTypeParameters>50 BYTE,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="DT_INS" id="384ECF39-3D67-C771-AAD3-3FC9CA301EF9">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>BCP_CS_A_SCUOLA</sourceObjSchema>
+<sourceObjName>DT_INS</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-07-20 09:02:32 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>FF339883-F587-A2BF-89AE-A6B4CFF09F45</importedID>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT007</logicalDatatype>
+<dataTypeSize>7</dataTypeSize>
+<ownDataTypeParameters>7,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="USR_MOD" id="0211D7C2-4AED-6AA9-78CB-2E20B6B88788">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>BCP_CS_A_SCUOLA</sourceObjSchema>
+<sourceObjName>USR_MOD</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-07-20 09:02:32 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>C3E90F2E-30EA-5BE9-8A3C-F3C6D4846EA7</importedID>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>50 BYTE</dataTypeSize>
+<ownDataTypeParameters>50 BYTE,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="DT_MOD" id="DEAEF61E-C3BA-93C7-3B5A-A3D1FC7DDC1A">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>BCP_CS_A_SCUOLA</sourceObjSchema>
+<sourceObjName>DT_MOD</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-07-20 09:02:32 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>BC0CED0A-4C1A-DF9D-103E-00084F67784F</importedID>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT007</logicalDatatype>
+<dataTypeSize>7</dataTypeSize>
+<ownDataTypeParameters>7,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+</columns>
+</Table>

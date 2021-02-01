@@ -1,0 +1,1172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings
+  xmlns="http://java.sun.com/xml/ns/persistence/orm"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
+  version="2.0">
+	
+	<!-- Query Sitidstr, SitiCivi -->
+	<named-query name="Sitidstr_SitiCivi.getListaIndirizziByIdUiu">
+		<query>
+			<![CDATA[
+			SELECT TRIM(d.prefisso||' '||d.nome), c.civico
+			FROM SiticiviUiu cuiu, Siticivi c, Sitidstr d, Siticomu comu
+			WHERE (comu.codiFiscLuna = :codNazionale OR comu.codNazionale = :codNazionale )
+				AND comu.codNazionale = c.codNazionale 
+				AND cuiu.id.pkidUiu = TO_NUMBER(:pkIdUiu) 
+				AND cuiu.id.pkidCivi = c.pkidCivi 
+				AND cuiu.id.dataFineVal = TO_DATE('99991231', 'yyyymmdd') 
+				AND c.pkidStra = d.pkidStra 
+				AND c.dataFineVal  = TO_DATE('99991231', 'yyyymmdd')  
+				AND d.dataFineVal  = TO_DATE('99991231', 'yyyymmdd') 
+			ORDER BY TRIM(d.prefisso||' '||d.nome), c.civico 
+			]]>
+		</query>
+	</named-query>
+	
+	<!-- Query Sitidstr -->
+	<named-query name="Sitidstr.getListaVieLike">
+		<query>
+			<![CDATA[
+				SELECT v FROM Sitidstr v
+				WHERE v.dataFineVal = TO_DATE('99991231', 'yyyymmdd') 
+				AND v.codNazionale = :cod_nazionale 
+				AND v.prefisso||' '||v.nome LIKE '%'||:via||'%' 
+				ORDER BY v.nome
+			]]>
+		</query>
+	</named-query>
+
+	<named-query name="Sitidstr.getListaVieByCodiceVia">
+		<query>
+			<![CDATA[
+				SELECT v FROM Sitidstr v
+				WHERE v.dataFineVal = TO_DATE('99991231', 'yyyymmdd') 
+				AND v.codNazionale = :cod_nazionale 
+				AND v.numero = :codiceVia 
+				ORDER BY v.nome
+			]]>
+		</query>
+	</named-query>
+
+	<named-query name="Sitidstr.getViaByPrefissoDescr">
+		<query>
+			<![CDATA[
+				SELECT v FROM Sitidstr v
+				WHERE v.dataFineVal = TO_DATE('99991231', 'yyyymmdd') 
+				AND v.codNazionale = :codNazionale 
+				AND v.prefisso IN (:listaPrefissi)
+				AND (v.nome = :descrizione 
+				  OR v.nome LIKE :descrizione||' %' 
+				  OR v.nome LIKE '%.'||:descrizione
+				  OR v.nome LIKE '% '||:descrizione
+				  OR v.nome LIKE '%.'||:descrizione||' %' 
+				  OR v.nome LIKE '% '||:descrizione||' %')
+				ORDER BY v.nome
+			]]>
+		</query>
+	</named-query>
+	
+
+	<!-- Query Siticivi -->
+	<named-query name="Siticivi.getListaCivici">
+		<query>
+			<![CDATA[SELECT c FROM Siticivi c 
+					WHERE c.dataFineVal = TO_DATE('99991231', 'yyyymmdd') 
+					AND c.codNazionale = :codNazionale 
+					AND c.pkidStra = :pkIdStra
+					ORDER BY c.civico ]]>
+		</query>
+	</named-query>
+	
+	<named-query name="Siticivi.getListaCiviciLike">
+		<query>
+			<![CDATA[SELECT c FROM Siticivi c 
+					WHERE c.dataFineVal = TO_DATE('99991231', 'yyyymmdd') 
+					AND c.codNazionale = :codNazionale 
+					AND c.pkidStra = :pkIdStra
+					AND c.civico LIKE '%'||:civico||'%'
+					ORDER BY c.civico ]]>
+		</query>
+	</named-query>
+	
+	<named-query name="Siticivi.getCivico">
+		<query>
+			<![CDATA[SELECT c FROM Siticivi c 
+					WHERE c.dataFineVal = TO_DATE('99991231', 'yyyymmdd') 
+					AND c.codNazionale = :codNazionale 
+					AND c.pkidStra = TO_NUMBER(:pkIdStra)
+					AND c.civico = :civico
+			]]>
+		</query>
+	</named-query>
+
+	<!-- Query SitiediVani -->
+	<named-query name="SitiediVani.getDettaglioVaniC340ByFPS">
+		<query>
+			<![CDATA[
+				SELECT s FROM SitiediVani s , Siticomu c
+				WHERE c.codNazionale = :codNazionale
+				AND c.codNazionale = S.codNazionale
+				AND s.foglio = TO_NUMBER(:foglio)
+				AND s.particella = lpad(:particella,5,'0') 
+				AND s.unimm = TO_NUMBER(:subalterno)
+				AND s.dataFineVal = :dtVal
+				ORDER BY s.vano
+			]]>
+		</query>
+	</named-query>
+	<named-query name="SitiediVani.getDettaglioVaniC340ByFPSAllaData">
+			<query>
+				<![CDATA[
+					SELECT s FROM SitiediVani s , Siticomu c
+					WHERE c.codNazionale = :codNazionale
+					AND c.codNazionale = S.codNazionale
+					AND s.foglio = TO_NUMBER(:foglio)
+					AND s.particella = lpad(:particella,5,'0') 
+					AND s.unimm = TO_NUMBER(:subalterno)
+					AND s.dataFineVal >=:dtVal
+					AND s.dataInizioVal <=:dtVal
+					ORDER BY s.vano
+				]]>
+			</query>
+	</named-query>
+	
+	<!-- Query Siticomu -->
+	<named-query name="Siticomu.getSitiComuByCodNazionale">
+		<query>
+		<![CDATA[SELECT c 
+				FROM Siticomu c 
+				WHERE (c.codNazionale = :cod_nazionale_1 OR c.codiFiscLuna = :cod_nazionale_2)]]>
+		</query>
+	</named-query>
+	
+	<named-query name="Siticomu.getListaSitiComuLikeDescr">
+		<query>
+		<![CDATA[SELECT c 
+				FROM Siticomu c 
+				WHERE c.nome LIKE :descr||'%'
+		  ]]>
+		</query>
+	</named-query>
+    
+    <named-query name="Siticomu.getSitiComuByCodiFiscLuna">
+		<query>
+		<![CDATA[SELECT c 
+				FROM Siticomu c 
+				WHERE  c.codiFiscLuna = :codNazionale
+		]]>
+		</query>
+	</named-query>
+	<!-- Query Sitiuiu -->
+	<named-query name="Sitiuiu.getImmobileByID">
+		<query>
+			<![CDATA[SELECT s FROM Sitiuiu s WHERE s.id.pkidUiu = TO_NUMBER(:idUiu)]]>
+		</query>
+	</named-query>
+	
+	<named-query name="Sitiuiu.getListaSitiuiuByFPS">
+		<query>
+			<![CDATA[SELECT s FROM Sitiuiu s 
+					 WHERE s.id.foglio = TO_NUMBER(:foglio)
+					 AND s.id.particella = LPAD(:particella,5,'0')
+					 AND s.id.unimm = TO_NUMBER(:unimm) 
+					 ORDER BY s.id.dataFineVal DESC]]>
+		</query>
+	</named-query>
+	<named-query name="Sitiuiu.getListaSitiuiuByFPSAllaData">
+		<query>
+			<![CDATA[SELECT s FROM Sitiuiu s 
+					 WHERE s.id.foglio = TO_NUMBER(:foglio)
+					 AND s.id.particella = LPAD(:particella,5,'0')
+					 AND s.id.unimm = TO_NUMBER(:unimm) 
+					 AND s.dataInizioVal <= :dtRif
+					 AND s.id.dataFineVal >= :dtRif
+					 ORDER BY s.id.dataFineVal DESC]]>
+		</query>
+	</named-query>
+	<named-query name="Sitiuiu.getListaSitiuiuByFPS_PostDtRif">
+		<query>
+			<![CDATA[SELECT s FROM Sitiuiu s 
+					 WHERE s.id.foglio = TO_NUMBER(:foglio)
+					 AND s.id.particella = LPAD(:particella,5,'0')
+					 AND s.id.unimm = TO_NUMBER(:unimm) 
+					 AND s.dataInizioVal >= :dtRif
+					 AND s.id.dataFineVal > :dtRif
+					 ORDER BY s.dataInizioVal, s.id.dataFineVal]]>
+		</query>
+	</named-query>
+	
+	<named-query name="Sitiuiu.getListaSitiuiuByFP">
+		<query>
+			<![CDATA[SELECT s FROM Sitiuiu s 
+					 WHERE s.id.foglio = TO_NUMBER(:foglio)
+					 AND s.id.particella = LPAD(:particella,5,'0')
+					 ORDER BY s.id.unimm, s.id.dataFineVal DESC]]>
+		</query>
+	</named-query>
+	
+	<named-query name="Sitiuiu.getListaSitiuiuByFPAllaData">
+		<query>
+			<![CDATA[SELECT s FROM Sitiuiu s 
+					 WHERE s.id.foglio = TO_NUMBER(:foglio)
+					 AND s.id.particella = LPAD(:particella,5,'0')
+					 AND s.dataInizioVal <= :dtRif
+					 AND s.id.dataFineVal >= :dtRif
+					 ORDER BY s.id.unimm, s.id.dataFineVal DESC]]>
+		</query>
+	</named-query>
+
+	<named-query name="Sitiuiu.getDettaglioImmobileByID">
+		<query>
+			<![CDATA[
+				SELECT uiu 
+				FROM Sitiuiu uiu
+				WHERE uiu.id.pkidUiu = TO_NUMBER(:idUiu)
+				AND uiu.id.codNazionale in
+				(select comu.codNazionale from Siticomu comu where comu.codiFiscLuna = :codNazionaleComu)
+			]]>
+		</query>
+	</named-query>
+
+	<named-query name="Sitiuiu.getImmobiliAltreDateValiditaByFPS_ID">
+		<query><![CDATA[
+		SELECT s 
+		FROM Sitiuiu s 
+		WHERE s.id.foglio = TO_NUMBER(:foglio) 
+		AND s.id.particella = LPAD(:particella ,5,'0') 
+		AND s.id.unimm = TO_NUMBER(:unimm)
+		AND s.id.pkidUiu <> TO_NUMBER(:idUiu)
+		]]></query>
+	</named-query>
+	<!-- Alessandra -->
+	<named-query name="Sitiuiu.getDatiUiAllaData">
+		<query>
+			<![CDATA[
+				SELECT u FROM Sitiuiu u, Siticomu c 
+				WHERE
+					 c.codiFiscLuna =:codEnte
+				 AND u.id.codNazionale= c.codNazionale
+				 AND (c.idSezc is null or c.idSezc=:sezione)
+				 AND u.id.foglio = TO_NUMBER(:foglio) 
+				 AND u.id.particella = LPAD(:particella ,5,'0') 
+				 AND u.id.unimm = TO_NUMBER(:unimm)
+				 AND u.dataInizioVal <= :dtVal
+				 AND u.id.dataFineVal >= :dtVal  
+			]]>
+		</query>
+	</named-query>
+	<named-query name="Sitiuiu.getListaUiAllaData">
+		<query>
+			<![CDATA[
+				SELECT u FROM Sitiuiu u, Siticomu c 
+				WHERE
+					 c.codiFiscLuna =:codEnte
+				 AND u.id.codNazionale= c.codNazionale
+				 AND (c.idSezc is null or c.idSezc=:sezione)
+				 AND u.id.foglio = TO_NUMBER(:foglio) 
+				 AND u.id.particella = LPAD(:particella ,5,'0') 
+				 AND u.dataInizioVal <= :dtVal
+				 AND u.id.dataFineVal >= :dtVal  
+				 ORDER BY u.id.unimm
+			]]>
+		</query>
+	</named-query>
+	<named-query name="Sitiuiu.listaUIByParticella">
+		<query>
+			<![CDATA[
+				SELECT u FROM Sitiuiu u, Siticomu c 
+				WHERE
+					 c.codiFiscLuna =:codEnte
+				 AND u.id.codNazionale= c.codNazionale
+				 AND (c.idSezc is null or c.idSezc=:sezione)
+				 AND u.id.foglio = TO_NUMBER(:foglio) 
+				 AND u.id.particella = LPAD(:particella ,5,'0') 
+			]]>
+		</query>
+	</named-query>
+	<!-- Query ConsSoggTab -->
+	<named-query name="ConsSoggTab.getSoggettoByCF">
+		<query>
+			<![CDATA[SELECT s FROM ConsSoggTab s 
+						WHERE s.flagPersFisica = 'P' 
+						AND s.dataFine = TO_DATE('99991231', 'yyyymmdd') 
+						AND s.codiFisc LIKE :codfisc||'%'
+						ORDER BY s.ragiSoci, s.nome
+			]]>	
+	    </query>
+	</named-query>
+
+	<named-query name="ConsSoggTab.getSoggettoByPIVA">
+		<query>
+			<![CDATA[SELECT s FROM ConsSoggTab s 
+						WHERE s.flagPersFisica = 'G'
+						AND s.dataFine = TO_DATE('99991231', 'yyyymmdd') 
+						AND s.codiPiva = :piva]]>	
+	    </query>
+	</named-query>
+
+	<named-query name="ConsSoggTab.getListaSoggettiByCognomeNomeDtNasc">
+			<query>
+				<![CDATA[ SELECT s FROM ConsSoggTab s  
+							WHERE s.flagPersFisica = 'P'
+							AND s.dataFine = TO_DATE('99991231', 'yyyymmdd') 
+							AND s.ragiSoci = :cognome 
+							AND s.nome = :nome
+							AND s.dataNasc = :dtNasc 			   		
+							ORDER BY s.ragiSoci, s.nome ]]>	
+		    </query>
+		</named-query>
+
+	<named-query name="ConsSoggTab.getListaSoggettiByCognome">
+		<query>
+			<![CDATA[ SELECT s FROM ConsSoggTab s  
+						WHERE s.flagPersFisica = 'P'
+						AND s.dataFine = TO_DATE('99991231', 'yyyymmdd') 
+						AND s.ragiSoci ||' '|| s.nome LIKE :cognome||'%' 			   		
+						ORDER BY s.ragiSoci, s.nome ]]>	
+	    </query>
+	</named-query>
+	<named-query name="ConsSoggTab.getListaSoggettiByDenominazione">
+		<query>
+			<![CDATA[SELECT s FROM ConsSoggTab s  
+						WHERE s.flagPersFisica = 'G'
+						AND s.dataFine = TO_DATE('99991231', 'yyyymmdd') 
+						AND s.ragiSoci LIKE '%'||:denominazione||'%' 
+						ORDER BY s.ragiSoci]]>	
+	    </query>
+	</named-query>
+	<named-query name="ConsSoggTab.getSoggettoByID">
+		<query>
+			<![CDATA[SELECT s FROM ConsSoggTab s  
+						WHERE s.pkid=:pkid]]>	
+	    </query>
+	</named-query>
+	<named-query name="ConsSoggTab.getSoggettoByPkCuaa">
+		<query>
+			<![CDATA[SELECT s FROM ConsSoggTab s  
+						WHERE s.pkCuaa=:pkCuaa 
+						ORDER BY s.dataFine desc]]>	
+	    </query>
+	</named-query>
+	
+	<named-query name="ConsSoggTab.getTitolariSuCivico">
+		<query>
+			<![CDATA[select distinct s 
+					from Sitiuiu u, SiticiviUiu civi, SiticonduzImmAll c, ConsSoggTab s
+					where u.id.pkidUiu = civi.id.pkidUiu
+					and civi.id.pkidCivi = TO_NUMBER(:pkIdCivico)
+					and u.id.dataFineVal >= :dtRif
+					and u.id.codNazionale = c.id.codNazionale
+					and u.id.foglio = c.id.foglio 
+					and u.id.particella = c.id.particella
+					and u.id.unimm = c.id.unimm
+					and c.tipoTitolo = '1'
+             		and s.pkCuaa = c.id.pkCuaa
+					and :dtRif BETWEEN s.dataInizio and s.dataFine 
+					and :dtRif BETWEEN c.dataInizio and c.id.dataFine]]>	
+	    </query>
+	</named-query>
+	
+		<named-query name="ConsSoggTab.getTitolariSuCivicoByPkIdStraCivico">
+		<query>
+			<![CDATA[select distinct s 
+					from Sitiuiu u, SiticiviUiu civi, SiticonduzImmAll c, ConsSoggTab s, Siticivi civico
+					where u.id.pkidUiu = civi.id.pkidUiu
+					and civi.id.pkidCivi = civico.id.pkidCivi
+					and civico.pkidStra = TO_NUMBER(:pkIdStra)
+					and civico.civico = :civico
+					and u.id.dataFineVal >= :dtRif
+					and u.id.codNazionale = c.id.codNazionale
+					and u.id.foglio = c.id.foglio 
+					and u.id.particella = c.id.particella
+					and u.id.unimm = c.id.unimm
+					and c.tipoTitolo = '1'
+             		and s.pkCuaa = c.id.pkCuaa
+             		and :dtRif BETWEEN civico.dataInizioVal and civico.dataFineVal
+					and :dtRif BETWEEN civico.dataInizioVal and civico.dataFineVal
+					and :dtRif BETWEEN s.dataInizio and s.dataFine 
+					and :dtRif BETWEEN c.dataInizio and c.id.dataFine]]>	
+	    </query>
+	</named-query>
+	
+	
+	<!-- Query Sitideco -->
+	<named-query name="Sitideco.getAllCategorieSitiuiu">
+		<query>
+			<![CDATA[
+				SELECT d FROM Sitideco d 
+				WHERE d.id.tablename='SITIUIU' 
+				AND d.id.fieldname ='CATEGORIA' 
+				ORDER BY d.id.code
+			]]>
+		</query>
+	</named-query>
+
+	<named-query name="Sitideco.getCategoriaSitiuiu">
+		<query>
+			<![CDATA[
+				SELECT d FROM Sitideco d 
+				WHERE d.id.tablename='SITIUIU' 
+				AND d.id.fieldname ='CATEGORIA' 
+				AND d.id.code = :categoriaSitiuiu
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="Sitideco.getCategorieSitiuiuLike">
+		<query>
+			<![CDATA[
+				SELECT d FROM Sitideco d 
+				WHERE d.id.tablename='SITIUIU' 
+				AND d.id.fieldname ='CATEGORIA' 
+				AND d.id.code LIKE :categoriaSitiuiu||'%'
+				ORDER BY d.id.code
+			]]>
+		</query>
+	</named-query>
+	
+	<!-- Queery ConsDecoTab -->
+	<named-query name="ConsDecoTab.decodeTipoDocumento">
+		<query>
+			<![CDATA[
+				SELECT d FROM ConsDecoTab d 
+				WHERE d.id.tablename='CONS_ATTI_TAB' 
+				AND d.id.fieldname ='TIPO_DOCUMENTO' 
+				AND d.id.code = :codice
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="ConsDecoTab.decodeTipoTitolo">
+		<query>
+			<![CDATA[
+				SELECT d FROM ConsDecoTab d 
+				WHERE d.id.tablename='CONS_ATTI_TAB' 
+				AND d.id.fieldname ='TIPO_TITOLO' 
+				AND d.id.code = :codice
+			]]>
+		</query>
+	</named-query>
+
+	<!-- Query SitRepTarsu -->
+	<named-query name="SitRepTarsu.getReportTarsu">
+		<query>
+			<![CDATA[
+			SELECT rep 
+			FROM SitRepTarsu rep 
+			WHERE  rep.id.pkidUiu = TO_NUMBER(:idUiu)
+			ORDER BY rep.denominazione
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SitRepTarsu.getReportTarsuByFPSData">
+		<query>
+			<![CDATA[
+			SELECT rep 
+			FROM SitRepTarsu rep 
+			WHERE  rep.foglio = TO_NUMBER(:foglio) 
+			AND rep.particella = LPAD(:particella ,5,'0') 
+			AND rep.unimm = TO_NUMBER(:unimm)
+			AND TO_CHAR(rep.dataInizioVal,'yyyyMMdd') = :dtVal
+			ORDER BY rep.denominazione
+			]]>
+		</query>
+	</named-query>
+	
+	<!-- Query AnagSoggetti -->
+	<!-- Alessandra -->
+	<named-query name="AnagSoggetti.getIdByCF">
+		<query>
+			<![CDATA[
+			SELECT a.codSoggetto FROM AnagSoggetti a
+			 WHERE a.codFiscale=:codFiscale
+		 ORDER BY  a.dataFineVal DESC
+			]]>
+		</query>
+	</named-query>
+	<named-query name="AnagSoggetti.getIdByCFAllaData">
+		<query>
+			<![CDATA[
+			SELECT a.codSoggetto FROM AnagSoggetti a
+			 WHERE a.codFiscale=:codFiscale
+			   AND a.dataInizioVal <=:dtVal
+			   AND a.dataFineVal >=:dtVal
+			]]>
+		</query>
+	</named-query>
+	<named-query name="AnagSoggetti.getIdPFByDatiAnaAllaData">
+		<query>
+			<![CDATA[
+			SELECT a.codSoggetto FROM AnagSoggetti a
+			 WHERE a.denominazione=:denom
+			   AND a.dNascita=:dtNas	
+			   AND  flagPersFisica =:flPF 
+			   AND a.dataInizioVal <=:dtVal
+			   AND a.dataFineVal >=:dtVal
+			]]>
+		</query>
+	</named-query>
+	<named-query name="AnagSoggetti.getIdPFByDatiAna">
+		<query>
+			<![CDATA[
+			SELECT a.codSoggetto FROM AnagSoggetti a
+			 WHERE a.denominazione=:denom
+			   AND a.dNascita=:dtNas	
+			   AND  flagPersFisica =:flPF 
+		  ORDER BY  a.dataFineVal DESC
+			]]>
+		</query>
+	</named-query>
+	<named-query name="AnagSoggetti.getIdByPIAllaData">
+		<query>
+			<![CDATA[
+			SELECT a.codSoggetto FROM AnagSoggetti a
+			 WHERE a.partIva=:partIva
+			   AND a.dataInizioVal <=:dtVal
+			   AND a.dataFineVal >=:dtVal
+			]]>
+		</query>
+	</named-query>
+	<named-query name="AnagSoggetti.getIdByPI">
+		<query>
+			<![CDATA[
+			SELECT a.codSoggetto FROM AnagSoggetti a
+			 WHERE a.partIva=:partIva
+		  ORDER BY  a.dataFineVal DESC
+			]]>
+		</query>
+	</named-query>
+	<named-query name="AnagSoggetti.getIdPGByDatiAnaAllaData">
+		<query>
+			<![CDATA[
+			SELECT a.codSoggetto FROM AnagSoggetti a
+			 WHERE a.denominazione=:denom
+			   AND  flagPersFisica  =:flPG
+			   AND a.dataInizioVal <=:dtVal
+			   AND a.dataFineVal >=:dtVal
+			]]>
+		</query>
+	</named-query>
+	<named-query name="AnagSoggetti.getIdPGByDatiAna">
+		<query>
+			<![CDATA[
+			SELECT a.codSoggetto FROM AnagSoggetti a
+			 WHERE  a.denominazione=:denom
+			   AND flagPersFisica  =:flPG
+		 ORDER BY  a.dataFineVal DESC
+			]]>
+		</query>
+	</named-query>
+	<!-- Query SiticonduzImmAll -->
+	<!-- Alessandra -->
+	<named-query name="SiticonduzImmAll.getImmByIdSogg">
+		<query>
+			<![CDATA[
+			SELECT i 
+			FROM 		SiticonduzImmAll i, Siticomu c
+			WHERE
+						c.codiFiscLuna=:codEnte
+			AND 		c.codNazionale =i.id.codNazionale
+			AND 		i.id.pkCuaa=:idSogg
+		 	ORDER BY 	i.id.codNazionale, i.id.foglio, i.id.particella, i.id.unimm, i.id.dataFine  desc
+			]]>
+		</query>
+	</named-query>
+	<named-query name="SiticonduzImmAll.getImmByIdSoggAllaData">
+		<query>
+			<![CDATA[
+			SELECT i 
+			FROM 	SiticonduzImmAll i, Siticomu c
+			WHERE
+					c.codiFiscLuna=:codEnte
+			AND 	c.codNazionale =i.id.codNazionale
+			AND 	i.id.pkCuaa=:idSogg
+		    AND 	i.dataInizio <=:dtVal
+		    AND 	i.id.dataFine >=:dtVal
+		    ORDER BY 	i.id.codNazionale, i.id.foglio, i.id.particella, i.id.unimm
+			]]>
+		</query>
+	</named-query>
+	<named-query name="SiticonduzImmAll.getImmByIdSoggInRangeDate">
+		<query>
+			<![CDATA[
+			SELECT i 
+			FROM 	SiticonduzImmAll i, Siticomu c
+			WHERE
+					c.codiFiscLuna=:codEnte
+			AND 	c.codNazionale =i.id.codNazionale
+			AND 	i.id.pkCuaa=:idSogg
+		    AND (
+		          (i.dataInizio <= :dtRifA  AND i.dataInizio  >= :dtRifDa)
+		       OR (i.id.dataFine<= :dtRifA  AND i.id.dataFine >=:dtRifDa)
+		       OR (i.dataInizio >= :dtRifDa AND i.id.dataFine <=:dtRifA)
+		       OR (i.dataInizio <= :dtRifDa AND i.id.dataFine >=:dtRifA)
+		    )
+		    ORDER BY i.id.codNazionale, i.id.foglio, i.id.particella, i.id.unimm, i.id.dataFine desc
+			]]>
+		</query>
+	</named-query>
+	<named-query name="SiticonduzImmAll.getDatiBySoggUiAllaData">
+		<query>
+			<![CDATA[
+			SELECT i 
+			FROM 	SiticonduzImmAll i, Siticomu c
+			WHERE
+					c.codiFiscLuna=:codEnte
+			AND 	c.codNazionale =i.id.codNazionale
+			AND    (c.idSezc is null OR c.idSezc=:sezione)
+			AND 	i.id.pkCuaa=:idSogg
+			AND 	i.id.foglio = TO_NUMBER(:foglio) 
+			AND 	i.id.particella = LPAD(:particella ,5,'0') 
+			AND 	i.id.unimm = TO_NUMBER(:unimm)
+		    AND 	i.dataInizio <=:dtVal
+		    AND     i.id.dataFine >=:dtVal
+			]]>
+			
+		</query>
+	</named-query>
+	<named-query name="SiticonduzImmAll.getDatiBySoggFabbricatoAllaData">
+		<query>
+			<![CDATA[
+			SELECT i 
+			FROM 	SiticonduzImmAll i, Siticomu c
+			WHERE
+					c.codiFiscLuna=:codEnte
+			AND 	c.codNazionale =i.id.codNazionale
+			AND    (c.idSezc is null OR c.idSezc=:sezione)
+			AND 	i.id.pkCuaa=:idSogg
+			AND 	i.id.foglio = TO_NUMBER(:foglio) 
+			AND 	i.id.particella = LPAD(:particella ,5,'0') 
+		    AND 	i.dataInizio <=:dtVal
+		    AND     i.id.dataFine >=:dtVal
+			]]>
+			
+		</query>
+	</named-query>
+	<named-query name="SiticonduzImmAll.getImmByIdSoggCedutiInRangeDate">
+		<query>
+			<![CDATA[
+			SELECT i FROM SiticonduzImmAll i, Siticomu c
+			WHERE
+				c.codiFiscLuna=:codEnte
+			AND c.codNazionale =i.id.codNazionale
+			AND i.id.pkCuaa=:idSogg
+		    AND i.id.dataFine >=:dtRifDa
+		    AND i.id.dataFine <=:dtRifA
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="ConsSoggTab.getTitolariUiuAllaDataByFPS">
+		<query>
+			<![CDATA[
+			SELECT DISTINCT c.tipoTitolo, deco.description,
+							c.percPoss, c.dataInizio, c.id.dataFine, s
+  			FROM SiticonduzImmAll c, ConsSoggTab s, ConsDecoTab deco
+ 			WHERE deco.id.tablename = 'CONS_ATTI_TAB'
+   			AND deco.id.fieldname = 'TIPO_DOCUMENTO'
+  			AND deco.id.code = c.tipoDocumento
+ 			AND c.dataInizio <= :dtRef
+   			AND c.id.dataFine  >= :dtRef
+   			AND c.id.codNazionale = :codEnte
+   			AND c.id.foglio = TO_NUMBER(:foglio)
+   			AND c.id.particella = LPAD(:particella,5,'0')
+   			AND c.id.unimm = TO_NUMBER(:unimm)
+   			AND (s.dataFine IS NULL OR s.dataFine >= sysdate)
+   			AND s.pkCuaa = c.id.pkCuaa
+   			ORDER BY c.id.dataFine DESC
+			 ]]>
+		</query>
+	</named-query>
+	
+	<named-query name="ConsSoggTab.getIntervalliProprietaUiuByFPS">
+		<query>
+			<![CDATA[
+			SELECT DISTINCT TO_CHAR(c.dataInizio,'dd/MM/yyyy'), TO_CHAR(c.id.dataFine,'dd/MM/yyyy'), c.dataInizio, c.id.dataFine
+  			FROM SiticonduzImmAll c, ConsSoggTab s
+ 			WHERE c.tipoTitolo= '1'
+   			AND c.id.codNazionale = :codEnte
+   			AND c.id.foglio = TO_NUMBER(:foglio)
+   			AND c.id.particella = LPAD(:particella,5,'0')
+   			AND c.id.unimm = TO_NUMBER(:unimm)
+   			AND (s.dataFine IS NULL OR s.dataFine >= sysdate)
+   			AND s.pkCuaa = c.id.pkCuaa
+   			ORDER BY c.dataInizio, c.id.dataFine
+			 ]]>
+		</query>
+	</named-query>
+	
+		<named-query name="ConsSoggTab.getTitolariUiuByFPS">
+		<query>
+			<![CDATA[
+			SELECT DISTINCT c.tipoTitolo, deco.description,
+							c.percPoss, c.dataInizio, c.id.dataFine, s
+  			FROM SiticonduzImmAll c, ConsSoggTab s, ConsDecoTab deco, Siticomu comu
+ 			WHERE deco.id.tablename = 'CONS_ATTI_TAB'
+   			AND deco.id.fieldname = 'TIPO_DOCUMENTO'
+  			AND deco.id.code = c.tipoDocumento
+   			AND c.id.codNazionale = comu.codNazionale 
+   			AND (comu.codNazionale=:codEnte OR comu.codiFiscLuna=:codEnte)
+   			AND c.id.foglio = TO_NUMBER(:foglio)
+   			AND c.id.particella = LPAD(:particella,5,'0')
+   			AND c.id.unimm = TO_NUMBER(:unimm)
+   			AND (s.dataFine IS NULL OR s.dataFine >= sysdate)
+   			AND s.pkCuaa = c.id.pkCuaa
+   			ORDER BY  c.id.dataFine DESC
+			 ]]>
+		</query>
+	</named-query>
+	
+	<named-query name="ConsSoggTab.getIntervalliProprietaTerrByFPS">
+		<query>
+			<![CDATA[
+			SELECT DISTINCT TO_CHAR(cc.dataInizio,'dd/MM/yyyy'), TO_CHAR(cc.id.dataFine,'dd/MM/yyyy'), cc.dataInizio, cc.id.dataFine
+  			FROM ConsConsTab cc, ConsSoggTab s
+ 			WHERE cc.tipoTitolo= '1'
+   			AND cc.id.codNazionale = :codEnte
+   			AND cc.id.foglio = TO_NUMBER(:foglio)
+   			AND cc.id.particella = LPAD(:particella,5,'0')
+   			AND cc.id.sub = :sub
+   			AND (s.dataFine IS NULL OR s.dataFine >= sysdate)
+   			AND s.pkCuaa = cc.id.pkCuaa
+   			ORDER BY cc.dataInizio, cc.id.dataFine
+			 ]]>
+		</query>
+	</named-query>
+	
+	
+	<!-- Query LoadCatUiuId -->
+	<named-query name="LoadCatUiuId.getLoadCatUiuIdCollegate">
+		<query>
+			<![CDATA[
+				SELECT DISTINCT uc 
+				FROM  LoadCatUiuId uc  
+	   			WHERE uc.id.codiFiscLuna = :codEnte 
+	   			AND NOT (uc.foglio  = LPAD(:foglio,4,'0')  
+	                 AND uc.mappale = LPAD(:particella,5,'0')   
+	                 AND NVL(uc.sub,'0000') = LPAD(NVL(:subalterno,'0'),4,'0'))
+	   			AND  uc.id.idImm in  
+	       		 (SELECT DISTINCT iu.id.idImm 
+	       		  FROM LoadCatUiuId iu   
+	        	  WHERE iu.id.codiFiscLuna = :codEnte
+	              AND iu.foglio  = LPAD(:foglio,4,'0')  
+	              AND iu.mappale = LPAD(:particella,5,'0')   
+	              AND NVL(iu.sub,'0000')= LPAD(NVL(:subalterno,'0'),4,'0'))
+	   			ORDER BY uc.foglio,uc.mappale,uc.sub 
+			]]>
+		</query>
+	</named-query>
+	
+   <named-query name="LoadCatUiuId.getPrincipaleGraffata">
+		<query>
+			<![CDATA[
+		      SELECT DISTINCT 
+                 c.codNazionale,
+                 lc.sez AS SEZIONE,
+                 lc.foglio,
+                 lc.mappale,
+                 ' ' AS subalterno,
+                 lc.sub AS UNIMM
+   			   FROM LoadCatUiuId lc, Siticomu c
+               WHERE c.sezioneCensuaria = lc.sez
+               AND c.codiFiscLuna = lc.id.codiFiscLuna
+               AND lc.graffato = 'N'
+               AND lc.id.idImm in 
+               (SELECT  lc1.id.idImm FROM LoadCatUiuId lc1, Siticomu c1
+	               	WHERE  c1.sezioneCensuaria = lc1.sez AND c1.codiFiscLuna = lc1.id.codiFiscLuna
+	               	AND lc1.graffato='Y'
+	               	AND c1.codNazionale = :codEnte
+	               	AND lc1.foglio = LPAD(:foglio,4,'0')
+	               	AND lc1.mappale = LPAD(:particella,5,'0')
+	               	AND LPAD(NVL(lc1.sub,'0'),4,'0') = LPAD(NVL(:subalterno,'0'),4,'0')
+               ) ORDER BY foglio, mappale, sub
+		]]>
+		</query>
+	</named-query>
+	<named-query name="LoadCatUiuId.getListaGraffatiPrincipale">
+		<query>
+			<![CDATA[
+			  SELECT DISTINCT
+                c.codNazionale,
+                c.codiFiscLuna,
+                lc.sez AS SEZIONE,
+                lc.foglio,
+                lc.mappale,
+                ' ' AS SUBALTERNO,
+                lc.sub AS UNIMM
+                FROM LoadCatUiuId lc, Siticomu c
+                WHERE c.sezioneCensuaria = lc.sez
+                AND c.codiFiscLuna = lc.id.codiFiscLuna
+                AND graffato = 'Y'
+                AND lc.id.idImm in 
+                (SELECT  lc1.id.idImm FROM LoadCatUiuId lc1, Siticomu c1
+                	WHERE  c1.sezioneCensuaria = lc1.sez AND c1.codiFiscLuna = lc1.id.codiFiscLuna
+                	AND lc1.graffato='N'
+                	AND c1.codNazionale = :codEnte
+                	AND lc1.foglio = LPAD(:foglio,4,'0')
+                	AND lc1.mappale = LPAD(:particella,5,'0')
+                	AND LPAD(NVL(lc1.sub,'0'),4,'0') = LPAD(NVL(:subalterno,'0'),4,'0')
+               ) ORDER BY foglio, mappale, sub
+			]]>
+		</query>
+	</named-query>
+	
+	
+	<!-- Query Sititrkc-->
+	
+	<named-query name="Sititrkc.getTerreniByFPAllaData">
+		<query>
+			<![CDATA[
+			SELECT  t 
+			FROM 	Sititrkc t, Siticomu c
+		    WHERE  	c.codiFiscLuna=:codNazionale
+		      AND   c.codNazionale = t.id.codNazionale 
+		      AND  (c.idSezc is null or c.idSezc=:sezione)
+			  AND   t.id.foglio = TO_NUMBER(:foglio) 
+			  AND   t.id.particella = LPAD(:particella ,5,'0') 
+			  AND   t.id.dataFine >= :dtVal  
+			  AND   NVL(upper(t.annotazioni),'-') <> :annotazione
+		ORDER BY 	t.id.sub, t.id.dataFine desc
+			
+			]]>
+		</query>
+	</named-query>	
+	<named-query name="Sititrkc.getTerreniByFP">
+		<query>
+			<![CDATA[
+			SELECT  t 
+			FROM 	Sititrkc t, Siticomu c
+		    WHERE  	c.codiFiscLuna=:codNazionale
+		      AND   c.codNazionale = t.id.codNazionale 
+		      AND  (c.idSezc is null or c.idSezc=:sezione)
+		      AND   t.id.foglio = TO_NUMBER(:foglio) 
+			  AND   t.id.particella = LPAD(:particella ,5,'0') 
+			  AND   NVL(upper(t.annotazioni),'-') <> :annotazione
+		ORDER BY 	t.id.sub, t.id.dataFine desc 
+			
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="Sititrkc.getStoricoTerreniByFPS">
+		<query>
+			<![CDATA[
+			SELECT  t 
+			FROM 	Sititrkc t, Siticomu c
+		    WHERE  	(c.codiFiscLuna=:codNazionale OR c.codNazionale=:codNazionale)
+		      AND   c.codNazionale = t.id.codNazionale 
+		      AND  (c.idSezc is null or c.idSezc=:sezione)
+			  AND   t.id.foglio = TO_NUMBER(:foglio) 
+			  AND   t.id.particella = LPAD(:particella ,5,'0') 
+			  AND   NVL(t.id.sub,' ') = NVL(:sub, ' ')
+			  AND   NVL(upper(t.annotazioni),'-') <> :annotazione
+		 ORDER BY	t.id.dataFine desc, t.dataAggi desc 
+			
+			]]>
+		</query>
+	</named-query>
+		
+	<!-- Query Sititrkc-ConsConsTab -->
+	<!-- Alessandra -->
+	<named-query name="Sititrkc_ConsCons.getTerreniByIdSogg">
+		<query>
+			<![CDATA[
+			SELECT 
+				   t,
+				   c.idSezc , 
+				   cc.dataInizio , 
+				   cc.id.dataFine, 
+				   cc.tipoDocumento
+			FROM 	Sititrkc t, ConsConsTab cc, Siticomu c
+		    WHERE
+		    	    	t.id.codNazionale = cc.id.codNazionale 
+				    AND c.codNazionale = t.id.codNazionale 
+				    AND t.id.foglio = cc.id.foglio 
+				    AND t.id.particella = cc.id.particella 
+				    AND t.id.sub = cc.id.sub 
+				    AND cc.dataInizio < t.id.dataFine
+				    AND  cc.id.dataFine > t.dataAggi 
+				    AND t.id.dataFine=:dtFinFtz 
+				    AND cc.id.pkCuaa =:idSogg
+				    AND NVL(UPPER(t.annotazioni),'-') <> :annotazione
+			ORDER BY 
+					t.id.foglio,t.id.particella,t.id.sub, cc.id.dataFine desc 
+			
+			]]>
+		</query>
+	</named-query>	
+	<!-- Alessandra -->
+	<named-query name="Sititrkc_ConsCons.getTerreniByIdSoggAllaData">
+		<query>
+			<![CDATA[
+			SELECT 
+				   t,
+				   c.idSezc , 
+				   cc.dataInizio , 
+				   cc.id.dataFine,
+				   cc.tipoDocumento, cc.percPoss
+			FROM 	Sititrkc t, ConsConsTab cc, Siticomu c
+		    WHERE
+		    	    	t.id.codNazionale = cc.id.codNazionale 
+				    AND c.codNazionale = t.id.codNazionale 
+				    AND t.id.foglio = cc.id.foglio 
+				    AND t.id.particella = cc.id.particella 
+				    AND t.id.sub = cc.id.sub 
+				    AND cc.dataInizio < t.id.dataFine
+				    AND  cc.id.dataFine > t.dataAggi 
+				    AND t.id.dataFine=:dtFinFtz 
+				    AND cc.id.pkCuaa =:idSogg
+				    AND cc.id.dataFine >= :dtVal 
+				    AND NVL(UPPER(t.annotazioni),'-') <> :annotazione
+			ORDER BY 
+					t.id.foglio,t.id.particella,t.id.sub, cc.id.dataFine desc 
+			
+			]]>
+		</query>
+	</named-query>	
+	
+	
+	
+	<!-- Alessandra -->
+	<named-query name="Sititrkc_ConsCons.getTerreniByIdSoggCedutiInRangeDate">
+		<query>
+			<![CDATA[
+			SELECT 
+				   t,
+				   c.idSezc, 
+				   cc.dataInizio, 
+				   cc.id.dataFine,
+				   cc.tipoDocumento, cc.percPoss
+			FROM 	Sititrkc t, ConsConsTab cc, Siticomu c
+		    WHERE
+			        t.id.codNazionale = cc.id.codNazionale 
+				    AND c.codNazionale = t.id.codNazionale 
+				    AND t.id.foglio = cc.id.foglio 
+				    AND t.id.particella = cc.id.particella 
+				    AND t.id.sub = cc.id.sub 
+				    AND cc.dataInizio < t.id.dataFine 
+				    AND  cc.id.dataFine > t.dataAggi 
+				    AND t.id.dataFine=:dtFinFtz 
+				    AND cc.id.pkCuaa =:idSogg
+				    AND cc.id.dataFine >= :dtRifDa
+				    AND cc.id.dataFine <= :dtRifA 
+				    AND NVL(UPPER(t.annotazioni),'-') <> :annotazione
+			ORDER BY 
+					cc.id.dataFine desc,t.id.foglio,t.id.particella
+			
+			]]>
+		</query>
+	</named-query>	
+	
+	<!-- Query Sititrkc-ConsUfreTab -->
+	<!-- Alessandra --> 
+	<named-query name="Sititrkc_ConsUfre.getTerreniByIdSogg" >
+		<query>
+			<![CDATA[
+				SELECT 
+						t,
+						c.idSezc,
+						cu.dataInizio , 
+						cu.id.dataFine, 
+				   		cu.tipoDocumento 
+				FROM 	Sititrkc t , ConsUfreTab cu, Siticomu c
+				WHERE 
+						t.id.codNazionale = cu.id.codNazionale 
+						and c.codNazionale = t.id.codNazionale
+						and t.id.foglio = cu.id.foglio 
+						and t.id.particella = cu.id.particella 
+						and t.id.sub = cu.id.sub
+						and cu.dataInizio < t.id.dataFine 
+						and cu.id.dataFine > t.dataAggi 
+						and t.id.dataFine=:dtFinFtz 
+						and cu.id.pkCuaa = :idSogg
+						and NVL(UPPER(t.annotazioni),'-') <> :annotazione
+				ORDER BY 
+						 t.id.foglio,t.id.particella, t.id.sub, cu.id.dataFine desc
+				
+			]]>
+		</query>
+	</named-query>
+	<named-query name="Sititrkc_ConsUfre.getTerreniByIdSoggAllaData" >
+		<query>
+			<![CDATA[
+				SELECT 
+						t,
+						c.idSezc,
+						cu.dataInizio , 
+						cu.id.dataFine, 
+				   		cu.tipoDocumento, cu.percPoss
+				FROM 	Sititrkc t , ConsUfreTab cu, Siticomu c
+				WHERE 
+						t.id.codNazionale = cu.id.codNazionale 
+						and c.codNazionale = t.id.codNazionale
+						and t.id.foglio = cu.id.foglio 
+						and t.id.particella = cu.id.particella 
+						and t.id.sub = cu.id.sub
+						and cu.dataInizio < t.id.dataFine 
+						and cu.id.dataFine > t.dataAggi 
+						and t.id.dataFine=:dtFinFtz 
+						and cu.id.pkCuaa = :idSogg
+						and cu.id.dataFine >= :dtVal
+						AND NVL(UPPER(t.annotazioni),'-') <> :annotazione
+				ORDER BY 
+						t.id.foglio,t.id.particella, t.id.sub, cu.id.dataFine desc
+				
+			]]>
+		</query>
+	</named-query>
+	
+	
+	
+	
+	<named-query name="Sititrkc.getTerreniGeneratori" >
+		<query>
+			<![CDATA[
+				SELECT
+				st.id.trkcId,
+				st.id.codNazionale,
+				c.idSezc AS SEZIONE,
+				st.id.foglio AS FOGLIO,
+				st.id.particella AS PARTICELLA,
+				st.id.sub as SUBALTERNO,
+				(select min(u.dataAggi) from Sititrkc u where st.id.codNazionale = u.id.codNazionale and st.id.foglio=u.id.foglio 
+				                        and st.id.particella=u.id.particella and NVL(u.id.sub,' ')=NVL(st.id.sub,' ')
+				                        and NVL(upper(u.annotazioni),'-') <> :annotazione
+				                        ) as dtInizioVal,
+				(select max(u.id.dataFine) from Sititrkc u where st.id.codNazionale = u.id.codNazionale and st.id.foglio=u.id.foglio 
+				                        and st.id.particella=u.id.particella and NVL(u.id.sub,' ')=NVL(st.id.sub,' ')
+				                         and NVL(upper(u.annotazioni),'-') <> :annotazione
+				                        ) as dtFineVal,
+				st.ideMutaIni,
+				st.ideMutaFine 
+				from Sititrkc  st, Siticomu c
+				where (c.codNazionale = :codEnte OR c.codiFiscLuna = :codEnte) 
+				and  st.id.codNazionale = c.codNazionale 
+				AND  NVL(upper(st.annotazioni),'-') <> :annotazione
+				and st.ideMutaFine = :ideMutaIniDerivato 
+				order by c.idSezc, st.id.foglio, st.id.particella , st.id.sub
+								
+			]]>
+		</query>
+	</named-query>
+	
+		<named-query name="Sititrkc.getTerreniDerivati" >
+		<query>
+			<![CDATA[
+				SELECT 
+				st.id.trkcId,
+				st.id.codNazionale,
+				c.idSezc,
+				st.id.foglio,
+				st.id.particella ,
+				st.id.sub,
+				(select min(u.dataAggi) from Sititrkc u where st.id.codNazionale = u.id.codNazionale and st.id.foglio=u.id.foglio 
+				                        and st.id.particella=u.id.particella and NVL(u.id.sub,' ')=NVL(st.id.sub,' ')
+				                         and NVL(upper(u.annotazioni),'-') <> :annotazione) as dtInizioVal,
+				(select max(u.id.dataFine) from Sititrkc u where st.id.codNazionale = u.id.codNazionale and st.id.foglio=u.id.foglio 
+				                        and st.id.particella=u.id.particella and NVL(u.id.sub,' ')=NVL(st.id.sub,' ')
+				                         and NVL(upper(u.annotazioni),'-') <> :annotazione) as dtFineVal,
+				st.ideMutaIni,
+				st.ideMutaFine 
+				from Sititrkc st ,Siticomu c
+				where (c.codNazionale = :codEnte OR c.codiFiscLuna = :codEnte) 
+				and  st.id.codNazionale = c.codNazionale 
+				AND  NVL(upper(st.annotazioni),'-') <> :annotazione
+				and st.ideMutaIni = :ideMutaFineOrig 
+				and not exists (select 1 from  Sititrkc b 
+				where b.ideMutaFine IS NULL 
+				and st.ideMutaFine IS NOT NULL 
+				and st.ideMutaIni = b.ideMutaIni 
+				and st.id.codNazionale = b.id.codNazionale
+				and st.id.particella = b.id.particella 
+				and NVL(st.id.foglio,'') = NVL(b.id.foglio,'')
+				and NVL(st.id.sub,'') = NVL(b.id.sub,'')) 
+				order by c.idSezc, st.id.foglio, st.id.particella , st.id.sub
+				
+			]]>
+		</query>
+	</named-query>
+	
+	 <named-query name="Sitiuiu.getMinMaxDateValUiu" >
+		<query>
+			<![CDATA[
+					select min(u.dataInizioVal) AS DATA_INIZIO, max(u.id.dataFineVal) AS DATA_FINE
+					from Sitiuiu u , Siticomu c
+					where (c.codNazionale= :codNazionale) 
+					and c.codNazionale=u.id.codNazionale
+					and u.id.foglio = LTRIM(:foglio,'0')
+					and u.id.particella = LPAD(:particella,5,'0') 
+					and NVL(u.id.sub,'') = NVL(:sub,'') 
+					and LPAD(NVL(u.id.unimm,'0'),4,'0') = LPAD(NVL(:unimm,'0'),4,'0') 
+			]]>
+		</query>
+	</named-query>
+	
+	  <named-query name="Sititrkc.getMinMaxDateValTerreno" >
+		<query>
+			<![CDATA[
+					select min(u.dataAggi) AS DATA_INIZIO, max(u.id.dataFine) AS DATA_FINE
+					from Sititrkc u , Siticomu c
+					where (c.codNazionale= :codNazionale)
+					and c.codNazionale=u.id.codNazionale
+					and u.id.foglio = TO_NUMBER(:foglio)
+					and u.id.particella = :particella 
+					and NVL(u.id.sub,' ') = NVL(:sub,' ') 
+					and NVL(upper(u.annotazioni),'-') <> :annotazione
+			]]>
+		</query>
+	</named-query>
+	
+	<!--  GIULIA -->
+	<named-query name="SitiCodsQual" >
+		<query>
+			<![CDATA[
+				SELECT q.descQual
+				FROM SitiCodsQual q
+				WHERE q.codiQual= :codiQual
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SitiCodsQual.lista" >
+		<query>
+			<![CDATA[
+				SELECT DISTINCT q.codiQual, q.descQual
+				FROM SitiCodsQual q
+				ORDER BY q.descQual
+			]]>
+		</query>
+	</named-query>
+	
+	
+	<!-- MATTEO -->
+	<named-query name="SpProf.getParticellaSitipart">
+		<query>
+			<![CDATA[
+				SELECT sp FROM Sitipart sp, Siticomu sc
+				WHERE sp.id.foglio = :foglio
+				AND sp.id.particella = :particella
+				AND sc.codNazionale = sp.id.codNazionale
+				AND sc.codiFiscLuna = :codiFiscLuna
+				AND sp.id.dataFineVal = :maxdate
+			]]>
+		</query>
+	</named-query>
+	
+	
+	<named-query name="SpProf.getParticellaSitisuolo">
+		<query>
+			<![CDATA[
+				SELECT ss FROM Sitisuolo ss, Siticomu sc
+				WHERE ss.id.foglio = :foglio
+				AND ss.id.particella = :particella
+				AND sc.codNazionale = ss.id.codNazionale
+				AND sc.codiFiscLuna = :codiFiscLuna
+				AND ss.id.dataFineVal = :maxdate
+			]]>
+		</query>
+	</named-query>
+
+</entity-mappings>

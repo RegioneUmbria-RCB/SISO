@@ -1,0 +1,36 @@
+#---------------------------------------------
+# File di configurazione listeners di sistema
+#---------------------------------------------
+#
+#-----------------
+# Eventi
+#-----------------
+event.launch.listener.active=Y
+# Tempo in millisecondi
+event.launch.timer.delay=30000
+event.launch.timer.period=30000
+#-----------------
+# Process agent
+#-----------------
+process.agent.listener.active=Y
+# Tempo in millisecondi
+process.agent.timer.delay=60000
+process.agent.timer.period=60000
+#-----------------
+# Scheduler
+#-----------------
+sched.listener.active=Y
+#-----------------
+# Queue
+#-----------------
+queue.monitor.listener.active=Y
+# Tempo in millisecondi
+queue.monitor.timer.delay=60000
+queue.monitor.timer.period=60000
+#-----------------
+# Synchronizer:  serve a risincronizzare i job in memoria di Quartz dopo che si è passati dalla gestioen su db a quella RAM
+#-----------------
+synchronizer.listener.active=Y
+# Tempo in millisecondi
+synchronizer.timer.delay=600000
+synchronizer.timer.period=600000

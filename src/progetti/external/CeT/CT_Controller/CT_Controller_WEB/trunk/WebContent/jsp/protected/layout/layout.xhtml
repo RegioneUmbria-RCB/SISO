@@ -1,0 +1,387 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=8" />
+<title>Controller</title>
+<link rel="icon" href="#{request.contextPath}/favicon.ico" type="image/x-icon" />
+<link rel="shortcut icon" href="#{request.contextPath}/favicon.ico" type="image/x-icon" />
+<link rel="stylesheet" type="text/css"
+	href="${facesContext.externalContext.requestContextPath}/css/style.css" />
+<script
+	src="${facesContext.externalContext.requestContextPath}/js/fontcolo.js"
+	type="text/javascript"></script>
+</head>
+
+<body>
+
+	<script type="text/javascript">
+	function homeHover(){	
+		document.getElementById("menuForm:homelink").className = 'homeClassHover';	
+	}
+	function homeOut(){	
+		document.getElementById("menuForm:homelink").className = 'homeClassOut';	
+	}
+	</script>
+
+	<div id="header">
+		<h:panelGrid
+			style="text-align: center; border: 1px solid #C0C0C0; border-bottom:0"
+			cellpadding="0" cellspacing="0" bgcolor="white" width="100%">
+			<h:graphicImage value="/images/controller.png" />
+		</h:panelGrid>
+	</div>
+	<div id="menu">
+		<h:form id="menuForm">
+			<rich:toolBar>
+
+				<rich:dropDownMenu onmouseover="javascript:homeHover();"
+					onmouseout="javascript:homeOut();" verticalOffset="-3">
+					<f:facet name="label">
+						<h:panelGroup>
+							<h:graphicImage value="/images/home_icon.png">
+								<a4j:support event="onclick"
+									action="#{statusDataProviderImpl.goStatus}">
+									<a4j:actionparam name="home" value="home"
+										assignTo="#{pageUiBean.currentPage}" />
+								</a4j:support>
+							</h:graphicImage>
+							<rich:spacer width="2px" />
+							<h:outputLabel value="Home" id="homelink"
+								styleClass="homeClassOut">
+								<a4j:support event="onclick"
+									action="#{statusDataProviderImpl.goStatus}">
+									<a4j:actionparam name="home" value="home"
+										assignTo="#{pageUiBean.currentPage}" />
+								</a4j:support>
+							</h:outputLabel>
+						</h:panelGroup>
+					</f:facet>
+				</rich:dropDownMenu>
+
+				<rich:dropDownMenu onmouseover="javascript:homeHover();"
+					onmouseout="javascript:homeOut();">
+					<f:facet name="label">
+						<h:panelGroup>
+							<h:graphicImage value="/images/agenda_icon.png">
+								<a4j:support event="onclick"
+									action="#{sMonitorBean.goScheduler}">
+									<a4j:actionparam name="sched" value="scheduler"
+										assignTo="#{pageUiBean.currentPage}" />
+								</a4j:support>
+							</h:graphicImage>
+							<h:outputLabel value="Agenda delle attività" id="agendalink"
+								styleClass="homeClassOut">
+								<a4j:support event="onclick"
+									action="#{sMonitorBean.goScheduler}">
+									<a4j:actionparam name="sched" value="scheduler"
+										assignTo="#{pageUiBean.currentPage}" />
+								</a4j:support>
+							</h:outputLabel>
+						</h:panelGroup>
+					</f:facet>
+				</rich:dropDownMenu>
+
+				<rich:dropDownMenu onmouseover="javascript:homeHover();"
+					onmouseout="javascript:homeOut();" verticalOffset="-3">
+					<f:facet name="label">
+						<h:panelGroup>
+							<h:graphicImage value="/images/eventi_icon.png">
+								<a4j:support event="onclick" action="#{eMonitorBean.goEventi}">
+									<a4j:actionparam name="evt" value="eventi"
+										assignTo="#{pageUiBean.currentPage}" />
+								</a4j:support>
+							</h:graphicImage>
+							<rich:spacer width="2px" />
+							<h:outputLabel value="Eventi" id="eventilink"
+								styleClass="homeClassOut">
+								<a4j:support event="onclick" action="#{eMonitorBean.goEventi}">
+									<a4j:actionparam name="evt" value="eventi"
+										assignTo="#{pageUiBean.currentPage}" />
+								</a4j:support>
+							</h:outputLabel>
+						</h:panelGroup>
+					</f:facet>
+				</rich:dropDownMenu>
+
+				<rich:dropDownMenu onmouseover="javascript:homeHover();"
+					onmouseout="javascript:homeOut();" verticalOffset="-3">
+					<f:facet name="label">
+						<h:panelGroup>
+							<h:graphicImage value="/images/monitor_icon.png">
+								<a4j:support event="onclick" action="#{pMonitorBean.goMonitor}">
+									<a4j:actionparam name="monitor" value="monitor"
+										assignTo="#{pageUiBean.currentPage}" />
+								</a4j:support>
+							</h:graphicImage>
+							<rich:spacer width="2px" />
+							<h:outputLabel value="Monitor delle attività" id="monitorlink"
+								styleClass="homeClassOut">
+								<a4j:support event="onclick" action="#{pMonitorBean.goMonitor}">
+									<a4j:actionparam name="monitor" value="monitor"
+										assignTo="#{pageUiBean.currentPage}" />
+								</a4j:support>
+							</h:outputLabel>
+						</h:panelGroup>
+					</f:facet>
+				</rich:dropDownMenu>
+
+				<rich:dropDownMenu onmouseover="javascript:homeHover();"
+					onmouseout="javascript:homeOut();" verticalOffset="-3">
+					<f:facet name="label">
+						<h:panelGroup>
+							<h:graphicImage value="/images/coda_icon.png">
+								<a4j:support event="onclick" action="#{queueBean.goQueue}">
+									<a4j:actionparam name="queue" value="queue"
+										assignTo="#{pageUiBean.currentPage}" />
+								</a4j:support>
+							</h:graphicImage>
+							<rich:spacer width="2px" />
+							<h:outputLabel value="Coda di esecuzione" id="codalink"
+								styleClass="homeClassOut">
+								<a4j:support event="onclick" action="#{queueBean.goQueue}">
+									<a4j:actionparam name="queue" value="queue"
+										assignTo="#{pageUiBean.currentPage}" />
+								</a4j:support>
+							</h:outputLabel>
+						</h:panelGroup>
+					</f:facet>
+				</rich:dropDownMenu>
+
+				<rich:dropDownMenu onmouseover="javascript:homeHover();"
+					onmouseout="javascript:homeOut();" verticalOffset="-3">
+					<f:facet name="label">
+						<h:panelGroup>
+							<h:graphicImage value="/images/statofonti_icon.png">
+								<a4j:support event="onclick"
+									action="#{statoFontiBean.goStatoFonti}">
+									<a4j:actionparam name="fonti" value="statofonti"
+										assignTo="#{pageUiBean.currentPage}" />
+								</a4j:support>
+							</h:graphicImage>
+							<rich:spacer width="2px" />
+							<h:outputLabel value="Stato fonti" id="stfontilink"
+								styleClass="homeClassOut">
+								<a4j:support event="onclick"
+									action="#{statoFontiBean.goStatoFonti}">
+									<a4j:actionparam name="fonti" value="statofonti"
+										assignTo="#{pageUiBean.currentPage}" />
+								</a4j:support>
+							</h:outputLabel>
+						</h:panelGroup>
+					</f:facet>
+				</rich:dropDownMenu>
+
+				<rich:dropDownMenu onmouseover="javascript:homeHover();"
+					onmouseout="javascript:homeOut();" verticalOffset="-3">
+					<f:facet name="label">
+						<h:panelGroup>
+							<h:graphicImage value="/images/ab_comandi_icon.png">
+								<a4j:support event="onclick"
+									action="#{abComandiBean.goAbComandi}">
+									<a4j:actionparam name="abcomandi" value="abcomandi"
+										assignTo="#{pageUiBean.currentPage}" />
+								</a4j:support>
+							</h:graphicImage>
+							<rich:spacer width="2px" />
+							<h:outputLabel value="Abilitazione comandi" id="abcomandilink"
+								styleClass="homeClassOut">
+								<a4j:support event="onclick"
+									action="#{abComandiBean.goAbComandi}">
+									<a4j:actionparam name="abcomandi" value="abcomandi"
+										assignTo="#{pageUiBean.currentPage}" />
+								</a4j:support>
+							</h:outputLabel>
+						</h:panelGroup>
+					</f:facet>
+				</rich:dropDownMenu>
+
+				<rich:dropDownMenu onmouseover="javascript:homeHover();"
+					onmouseout="javascript:homeOut();" verticalOffset="-3">
+					<f:facet name="label">
+						<h:panelGroup>
+							<h:graphicImage value="/images/cataloghi_icon.png">
+								<a4j:support event="onclick"
+									action="#{cataloghiBean.goCataloghi}">
+									<a4j:actionparam name="cataloghi" value="cataloghi"
+										assignTo="#{pageUiBean.currentPage}" />
+								</a4j:support>
+							</h:graphicImage>
+							<rich:spacer width="2px" />
+							<h:outputLabel value="Cataloghi" id="cataloghilink"
+								styleClass="homeClassOut">
+								<a4j:support event="onclick"
+									action="#{cataloghiBean.goCataloghi}">
+									<a4j:actionparam name="cataloghi" value="cataloghi"
+										assignTo="#{pageUiBean.currentPage}" />
+								</a4j:support>
+							</h:outputLabel>
+						</h:panelGroup>
+					</f:facet>
+				</rich:dropDownMenu>
+
+				<rich:dropDownMenu onmouseover="javascript:homeHover();"
+					onmouseout="javascript:homeOut();" verticalOffset="-3">
+					<f:facet name="label">
+						<h:panelGroup>
+							<h:graphicImage value="/images/audit_icon.png">
+								<a4j:support event="onclick"
+									action="#{ricercaAuditBean.goAudit}">
+									<a4j:actionparam name="audit" value="audit"
+										assignTo="#{pageUiBean.currentPage}" />
+								</a4j:support>
+							</h:graphicImage>
+							<rich:spacer width="2px" />
+							<h:outputLabel value="Audit" id="auditlink"
+								styleClass="homeClassOut">
+								<a4j:support event="onclick"
+									action="#{ricercaAuditBean.goAudit}">
+									<a4j:actionparam name="audit" value="audit"
+										assignTo="#{pageUiBean.currentPage}" />
+								</a4j:support>
+							</h:outputLabel>
+						</h:panelGroup>
+					</f:facet>
+				</rich:dropDownMenu>
+				
+				<rich:dropDownMenu onmouseover="javascript:homeHover();"
+					onmouseout="javascript:homeOut();" verticalOffset="-3">
+					<f:facet name="label">
+						<h:panelGroup>
+							<h:graphicImage width="20px" height="20px" value="/images/gear.png">
+								<a4j:support event="onclick"
+									action="#{utBean.goUtilities}">
+									<a4j:actionparam name="ut" value="utilities"
+										assignTo="#{pageUiBean.currentPage}" />
+								</a4j:support>
+							</h:graphicImage>
+							<rich:spacer width="2px" />
+							<h:outputLabel value="Funzioni di Gestione" id="utlink"
+								styleClass="homeClassOut">
+								<a4j:support event="onclick"
+									action="#{utBean.goUtilities}">
+									<a4j:actionparam name="ut" value="utilities"
+										assignTo="#{pageUiBean.currentPage}" />
+								</a4j:support>
+							</h:outputLabel>
+						</h:panelGroup>
+					</f:facet>
+				</rich:dropDownMenu>
+
+			</rich:toolBar>
+		</h:form>
+	</div>
+
+	<a4j:include id="userPage" viewId="/jsp/protected/user/user.xhtml" />
+
+	<rich:spacer height="5px" />
+
+	<!-- LOADING BOX -->
+	<a4j:status id="modalStatus"
+		onstart="Richfaces.showModalPanel('ajaxLoadingModalBox',{width:250, top:100})"
+		onstop="Richfaces.hideModalPanel('ajaxLoadingModalBox')">
+	</a4j:status>
+
+	<rich:modalPanel id="ajaxLoadingModalBox" minHeight="100"
+		minWidth="450" height="100" width="250" zindex="2000">
+		<f:facet name="header">
+			<h:outputText value="Richiesta in corso"></h:outputText>
+		</f:facet>
+		<center>
+
+			<h:outputText value="Attendere prego" style="font-size:15px"></h:outputText>
+			<br /> <br />
+			<h:graphicImage value="/images/wait.gif" />
+
+		</center>
+	</rich:modalPanel>
+	<!-- FINE LOADING BOX -->
+
+	<rich:messages passedLabel="Operazione completata" layout="list" showDetail="true" >
+		<f:facet name="infoMarker">
+			<h:graphicImage value="/images/passed.gif"
+				style="padding-right: 5px;" />
+		</f:facet>
+		<f:facet name="errorMarker">
+			<h:graphicImage value="/images/error.gif" style="padding-right: 5px;" />
+		</f:facet>
+	</rich:messages>
+
+	<h:panelGrid columns="22" cellpadding="0" cellspacing="0"
+		styleClass="pagemenu">
+		<!-- HOME -->
+		<center>
+			<h:graphicImage rendered="#{pageUiBean.currentPage eq 'home'}"
+				styleClass="currentpage" value="/images/home_mini.png" />
+		</center>
+
+		<!-- SCHEDULER -->
+		<center>
+			<h:graphicImage rendered="#{pageUiBean.currentPage eq 'scheduler'}"
+				styleClass="currentpage" value="/images/agenda_mini.png" />
+		</center>
+
+		<!-- EVENTI -->
+		<center>
+			<h:graphicImage rendered="#{pageUiBean.currentPage eq 'eventi'}"
+				styleClass="currentpage" value="/images/eventi_mini.png" />
+		</center>
+
+		<!-- MONITOR -->
+		<center>
+			<h:graphicImage rendered="#{pageUiBean.currentPage eq 'monitor'}"
+				styleClass="currentpage" value="/images/monitor_mini.png" />
+		</center>
+
+		<!-- CODA -->
+		<center>
+			<h:graphicImage rendered="#{pageUiBean.currentPage eq 'queue'}"
+				styleClass="currentpage" value="/images/coda_mini.png" />
+		</center>
+
+		<!-- STATO FONTI -->
+		<center>
+			<h:graphicImage rendered="#{pageUiBean.currentPage eq 'statofonti'}"
+				styleClass="currentpage" value="/images/statofonti_mini.png" />
+		</center>
+
+		<!-- ABILITAZIONE COMANDI -->
+		<center>
+			<h:graphicImage rendered="#{pageUiBean.currentPage eq 'abcomandi'}"
+				styleClass="currentpage" value="/images/ab_comandi_mini.png" />
+		</center>
+
+		<!-- CATALOGHI -->
+		<center>
+			<h:graphicImage rendered="#{pageUiBean.currentPage eq 'cataloghi'}"
+				styleClass="currentpage" value="/images/cataloghi_mini.png" />
+		</center>
+
+		<!-- AUDIT -->
+		<center>
+			<h:graphicImage rendered="#{pageUiBean.currentPage eq 'audit'}"
+				styleClass="currentpage" value="/images/audit_mini.png" />
+		</center>
+		
+		<!-- UTILITIES -->
+		<center>
+			<h:graphicImage rendered="#{pageUiBean.currentPage eq 'utilities'}"
+				styleClass="currentpage" value="/images/funzioni_mini.png" />
+		</center>
+
+	</h:panelGrid>
+
+	<div id="content">
+		<ui:insert name="content">
+
+		</ui:insert>
+	</div>
+
+</body>
+
+</html>

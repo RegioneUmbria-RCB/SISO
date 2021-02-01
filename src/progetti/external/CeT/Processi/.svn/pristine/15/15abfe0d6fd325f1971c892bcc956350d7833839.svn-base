@@ -1,0 +1,23 @@
+#--------------------------------------------------------------
+# File di configurazione in cui sono indicato i valori dei soli
+# parametri di contesto della catena jelly da passare alla 
+# regola 
+#------------------------------------------------------------
+# Numero di parametri previsti in input
+rengine.jchain.in.nof=6
+#------------------------------------------------------------
+# Le coppie chiavi/valore hanno come key lo stesso nome 
+# indicato nello script jelly xml
+#------------------------------------------------------------
+rengine.jchain.in.1.key=SERVER
+rengine.jchain.in.1.value=
+rengine.jchain.in.2.key=PORT
+rengine.jchain.in.2.value=
+rengine.jchain.in.3.key=MITTENTE
+rengine.jchain.in.3.value=
+rengine.jchain.in.4.key=DESTINATARIO
+rengine.jchain.in.4.value=
+rengine.jchain.in.5.key=SOGGETTO
+rengine.jchain.in.5.value=
+rengine.jchain.in.6.key=MESSAGGIO
+rengine.jchain.in.6.value=

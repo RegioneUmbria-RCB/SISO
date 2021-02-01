@@ -1,0 +1,3 @@
+Manifest-Version: 1.0
+Class-Path: CT_Config_ManagerClient.jar 
+ CT_Service_Data_AccessClient.jar

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings
+  xmlns="http://java.sun.com/xml/ns/persistence/orm"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
+  version="2.0">
+
+	<named-query name="RedAnFabbricati.getQuadroRBFabbricatiByKeyAnno">
+		<query>
+			<![CDATA[
+				select ran
+				from RedAnFabbricati ran
+				where ran.ideTelematico = :ideTel
+				and ran.codiceFiscale = :codFis 
+				and ran.annoImposta = :anno				
+				order by ran.modulo, ran.numFabb, ran.continuazione desc
+			 ]]>
+		</query>
+	</named-query>
+	
+</entity-mappings>

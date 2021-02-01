@@ -1,0 +1,78 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=8" />
+<title>Controller</title>
+<link rel="stylesheet" type="text/css"
+	href="${facesContext.externalContext.requestContextPath}/css/style.css" />
+</head>
+
+<body>
+
+<script type="text/javascript">
+	function openControllerWindow() {
+		window.open("/Controller", "controllerPopup", "toolbar=no,scrollbars=yes,resizable=yes,width=1024,height=768");
+		return false;
+	}
+</script>
+
+<div id="header">
+	<rich:panel>
+		<center>
+			<h:graphicImage value="/images/controller.png" rendered="#{param.diagHeader != 'true'}"/>
+			<h:graphicImage value="/images/diagnostiche.png" rendered="#{param.diagHeader == 'true'}"/>
+		</center>
+	</rich:panel>
+</div>
+<rich:separator lineType="solid" />
+
+<a4j:include id="userPage" viewId="/jsp/protected/user/user.xhtml" />
+
+<rich:spacer height="5px" />
+
+<!-- LOADING BOX -->
+<a4j:status
+	onstart="Richfaces.showModalPanel('ajaxLoadingModalBox',{width:250, top:100})"
+	onstop="Richfaces.hideModalPanel('ajaxLoadingModalBox')">
+</a4j:status>
+
+<rich:modalPanel id="ajaxLoadingModalBox" minHeight="100" minWidth="450"
+	height="100" width="250" zindex="2000">
+	<f:facet name="header">
+		<h:outputText value="Richiesta in corso"></h:outputText>
+	</f:facet>
+	<center>
+
+		<h:outputText value="Attendere prego" style="font-size:15px"></h:outputText>
+		<br /><br />
+		<h:graphicImage value="/images/wait.gif"/>
+
+	</center>
+</rich:modalPanel>
+<!-- FINE LOADING BOX -->
+
+<rich:messages passedLabel="Operazione completata" layout="list" showDetail="true" >
+	<f:facet name="infoMarker">
+		<h:graphicImage value="/images/passed.gif" style="padding-right: 5px;" />
+	</f:facet>
+	<f:facet name="errorMarker">
+		<h:graphicImage value="/images/error.gif" style="padding-right: 5px;" />
+	</f:facet>
+</rich:messages>
+
+
+<rich:spacer height="5px" />
+
+<div id="content"><ui:insert name="content">
+
+</ui:insert></div>
+
+</body>
+
+</html>

@@ -1,0 +1,4 @@
+			<!--test3-->
+			<Context docBase="AMProfiler" path="/AMProfiler" reloadable="true">
+					 <Resource driverClassName="oracle.jdbc.driver.OracleDriver" logAbandoned="true" maxActive="8" maxIdle="4" maxWait="5000" name="jdbc/AMProfiler" removeAbandonedTimeout="60" type="javax.sql.DataSource" url="jdbc:oracle:thin:@praga:1521:praga" username="am" password="am"/>
+			</Context>

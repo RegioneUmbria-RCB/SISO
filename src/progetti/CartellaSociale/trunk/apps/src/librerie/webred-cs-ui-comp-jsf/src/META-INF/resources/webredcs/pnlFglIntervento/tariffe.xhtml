@@ -1,0 +1,335 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:webred="http://java.sun.com/jsf/composite/webred"
+	xmlns:webredcs="http://java.sun.com/jsf/composite/webredcs">
+
+	<p:growl id="growl3" life="2000" />
+	
+	<h:panelGrid columns="2" styleClass="#{'updateOnListaErogazioniChange'}">
+		
+		<p:outputLabel value="Unità di misura " for="selectUnitaDiMisura"  styleClass="#{'updateFlagAttivazioneChange '}"/>
+		<p:selectOneMenu id="selectUnitaDiMisura" style="width:150px" 
+				disabled="#{fglInterventoBean.selectUnitaDiMisuraDisabled}"
+				value="#{fglInterventoBean.datiTariffeInterventoBean.selUnitaMisura}"
+				required="#{fglInterventoBean.unitaMisuraRequired}"
+				requiredMessage="'Unità di misura' è un campo obbligatorio"
+				styleClass="#{'updateFlagAttivazioneChange updateOnListaErogazioniChange'}" >
+			<f:selectItem itemLabel="- seleziona -"  noSelectionOption="true" />	
+			<f:selectItems value="#{fglInterventoBean.datiTariffeInterventoBean.lstCsTbUnitaMisuraForInsert}" var="item" itemLabel="#{item.valore}" itemValue="#{item.id}" />
+			<p:ajax event="change" update="@(.updateOnUnitaMisuraChange) pnlQuotaDett" process="@this" listener="#{fglInterventoBean.datiTariffeInterventoBean.selectedUnitaMisuraChange(fglInterventoBean.erogazioneInterventoBean)}"/>
+		</p:selectOneMenu>	
+	
+	</h:panelGrid>
+	 
+	<p:spacer height="20px"/>
+	
+	<h:panelGrid columns="7" id ="pnlTariffa" styleClass="#{'updateOnSelectTariffa'}" style="display: inline-block;">
+	
+		<h:panelGrid columns="3" styleClass="#{'updateOnListaErogazioniChange'}"> 
+		
+			<p:outputLabel id="lblInputTariffaUnitaria" value="Tariffa unitaria"  />
+			<p:inputText id="inputTariffaUnitaria"   
+						disabled="#{fglInterventoBean.tariffaDisabled}" 
+						style="width: 50px;" value="#{fglInterventoBean.datiTariffeInterventoBean.csIQuota.tariffa}"
+						styleClass="#{'updateOnUnitaMisuraChange updateFlagAttivazioneChange updateOnListaErogazioniChange updateOnRowTariffaSelect'}"
+						required="#{fglInterventoBean.unitaMisuraRequired}"
+						requiredMessage="Tariffe: 'Tariffa unitaria' è un campo obbligatorio"
+						converterMessage="Il campo Tariffa unitaria non è corretto:inserire valore numerico intero o decimale (es.12.34)" >  
+		          		<p:ajax event="blur" update="@(.updateOnTariffaUnitariaChange)" process="@this" 
+		          		        listener="#{fglInterventoBean.erogazioneInterventoBean.onUpdateTariffa(fglInterventoBean.datiTariffeInterventoBean.csIQuota.tariffa, fglInterventoBean.datiTariffeInterventoBean.csIQuota.oreMinuti)}"/>
+		   </p:inputText>
+		    <h:outputText value=" € "/>
+		</h:panelGrid>
+		    
+	    <p:spacer width="10px"/>
+		
+		<p:outputLabel value="Descrizione Tariffa" />
+		<p:inputText id="inputDescrizioneTariffa" 
+				disabled="#{fglInterventoBean.tariffaDisabled}"
+				style="text-transform: uppercase; width:200px;" value="#{fglInterventoBean.datiTariffeInterventoBean.csIQuota.descTariffa}" maxlength="4000"
+				styleClass="#{'updateOnUnitaMisuraChange updateOnRowTariffaSelect'}"/>
+	  <!-- SISO-469 -->		
+	  <h:panelGrid columns="3" styleClass="#{'updateOnListaErogazioniChange'}"> 				
+		<p:panel header="Seleziona" id="fldseTariffa" styleClass="#{'updateOnUnitaMisuraChange'}" 
+		         toggleable="true" collapsed="true" >
+		<p:dataTable id="dataTableTariffe"
+				styleClass="#{'updateOnSelezionatariffa'}"
+				emptyMessage="Nessun dato da visualizzare"
+				value="#{fglInterventoBean.datiTariffeInterventoBean.lstVArCTariffa}"
+				var="rigaTariffa" rowIndexVar="rowIndex" rowKey="#{rigaTariffa.id}" 
+				selection="#{fglInterventoBean.datiTariffeInterventoBean.selectedTariffa}" selectionMode="single" disabledSelection="#{fglInterventoBean.tariffaDisabled}">
+				
+		<p:ajax event="rowSelect" listener="#{fglInterventoBean.datiTariffeInterventoBean.onRowSelect}" update="@(.updateOnRowTariffaSelect)" process="@this"  /> 
+				<p:column headerText="Descrizione" width="20" style="text-align:center;">
+					<h:outputText
+					value="#{rigaTariffa.descTariffa}" />
+				</p:column>
+				<p:column headerText="Unita di misura" style="text-align:center;">
+					<h:outputText value="#{rigaTariffa.unitaMisuraDesc}" />
+				</p:column>
+				<p:column headerText="Tariffa" style="text-align:center;">
+					<h:outputText
+						value="#{rigaTariffa.tariffa} €" />			
+				</p:column>
+		
+				<p:column headerText="dalla Data" style="text-align:center;">
+					<h:outputText value="#{rigaTariffa.dataDa}">
+						<f:convertDateTime pattern="dd/MM/yyyy" />
+					</h:outputText>
+				</p:column>
+				<p:column headerText="alla Data" style="text-align:center;">
+					<h:outputText value="#{rigaTariffa.dataA}">
+						<f:convertDateTime pattern="dd/MM/yyyy" />
+					</h:outputText>
+				</p:column>			
+			</p:dataTable>	 
+		 </p:panel>
+		</h:panelGrid>	
+	    <!-- FINE SISO-469 -->		
+</h:panelGrid> 
+<p:tooltip for="inputTariffaUnitaria" value="Ex: 1999.99" trackMouse="true"/> 
+		
+		<p:spacer height="10px"/>
+
+<h:panelGrid columns="4" cellspacing="10" styleClass="#{'updateOnListaErogazioniChange'}"> 
+		
+		
+	<h:panelGrid columns="2" >
+		<p:outputLabel value="Frequenza del servizio " for="selectFrequenzaDelServizio" />	
+		<!-- SISO-556 aggiunto tooltipInfo -->		
+		<webredcs:tooltipInfo title="Frequenza del servizio" valueList="#{fglInterventoBean.datiTariffeInterventoBean.frequenzaValueList}"   />
+	</h:panelGrid>
+		
+	<p:selectOneRadio id="selectFrequenzaDelServizio" layout="grid" columns="1"
+					  value="#{fglInterventoBean.datiTariffeInterventoBean.frequenzaAccessoAlServizio}"
+					  disabled="#{fglInterventoBean.frequenzaAccessoAlServizioDisabled}" 
+					  required="true" 
+					  requiredMessage="Tariffe: 'Frequenza del servizio' è un campo obbligatorio"	
+					  styleClass="#{'updateOnListaErogazioniChange'}" >
+		<f:selectItems value="#{fglInterventoBean.datiTariffeInterventoBean.tipiFrequenzaServizio}" 
+            var="tipoAccesso" 
+            itemValue="#{tipoAccesso.codice}" 
+            itemLabel="#{tipoAccesso.descrizione}" />
+        <p:ajax event="change" update="@(.updateOnFrequenzaDelServizioChange)" process="@this" listener="#{fglInterventoBean.datiTariffeInterventoBean.frequenzaDelServizioChange()}"/>
+    </p:selectOneRadio>
+    <p:spacer width="30px"/>
+	<h:panelGrid columns="4" >
+	
+	    <p:outputLabel for="inputQuotaFrequenzaServizio" styleClass="#{'updateOnUnitaMisuraChange'}"
+	         value="#{fglInterventoBean.datiTariffeInterventoBean.csIQuota.csTbUnitaMisura.valore!=null ? fglInterventoBean.datiTariffeInterventoBean.csIQuota.csTbUnitaMisura.valore : '- seleziona unità di misura -' }" />
+	
+	    <p:inputText id="inputQuotaFrequenzaServizio" 
+	                value="#{fglInterventoBean.datiTariffeInterventoBean.csIQuota.csIQuotaRipartiz.valQuotaPeriodo}" 
+		        	styleClass="#{'updateOnFrequenzaDelServizioChange updateOnListaErogazioniChange'}" style="width:90px;" 
+		        		disabled="#{fglInterventoBean.valQuotaPeriodoDisabled}">        
+	        	<f:convertNumber type="number" maxFractionDigits="0"/>
+	    </p:inputText>
+	
+	
+	
+		<p:outputLabel value="fruizione " for="selectFrequenzaCadenzaDelServizio" 
+					   styleClass="#{'updateOnFrequenzaDelServizioChange updateOnListaErogazioniChange updateOnFlagRendicontoChange'}" />		
+		<p:selectOneMenu id="selectFrequenzaCadenzaDelServizio" 
+				value="#{fglInterventoBean.datiTariffeInterventoBean.csIQuota.csIQuotaRipartiz.flagPeriodoRipartiz}" 
+				styleClass="#{'updateOnFrequenzaDelServizioChange updateOnListaErogazioniChange updateOnFlagRendicontoChange'}"
+				required="#{fglInterventoBean.datiTariffeInterventoBean.isRendicontoPeriodico()}"
+				requiredMessage="Se l'erogazione è di tipo periodico: specificare il campo 'fruizione'"
+		        disabled="#{fglInterventoBean.flagPeriodoRipartizDisabled}" >		
+		        		
+        	<f:selectItem itemLabel="- seleziona -" noSelectionOption="true" />
+        	<f:selectItems value="#{fglInterventoBean.datiTariffeInterventoBean.tipiFrequenzaServizioCadenza}" 
+        			var="tipoFrequenza" 
+        			itemValue="#{tipoFrequenza.codice}" 
+        			itemLabel="#{tipoFrequenza.descrizione}" />
+        	<p:ajax event="change" update="@(.updateOnFlagPeriodoRipartizChange)" process="@this" listener="#{fglInterventoBean.datiTariffeInterventoBean.flagPeriodoRipartizChange()}"/>
+        </p:selectOneMenu>
+	    
+	    <p:outputLabel value="n. giorni/settimana" for="inputNumgiorniSettimana" />
+	 		<p:spinner id="inputNumgiorniSettimana" 
+			value="#{fglInterventoBean.datiTariffeInterventoBean.csIQuota.csIQuotaRipartiz.nGgSettimanali}"
+			disabled="#{fglInterventoBean.numeroGiorniSettimanaliDisabled}"
+			styleClass="#{'updateOnUnitaMisuraChange updateOnFlagPeriodoRipartizChange updateOnFrequenzaDelServizioChange updateOnListaErogazioniChange'}" size="4" min="0" max="7" />
+				
+				
+		<h:panelGrid columns="2">
+				<p:outputLabel value="Rendiconto" for="selectRendiconto" />		
+				<webredcs:tooltipInfo title="Rendiconto"  
+				 		valueList="#{fglInterventoBean.datiTariffeInterventoBean.rendicontoValueList}" />
+		</h:panelGrid>
+		
+		<p:selectOneRadio id="selectRendiconto" value="#{fglInterventoBean.datiTariffeInterventoBean.csIQuota.csIQuotaRipartiz.flagRendiconto}" 
+		        layout="grid" columns="1" required="true" requiredMessage="Tariffe: 'Rendiconto' è un campo obbligatorio" 
+				disabled="#{fglInterventoBean.flagRendicontoDisabled}"
+				styleClass="#{'updateOnFlagPeriodoRipartizChange updateOnFrequenzaDelServizioChange updateOnListaErogazioniChange'}">
+			<f:selectItems value="#{fglInterventoBean.datiTariffeInterventoBean.tipiRendicontazione}" 
+	            var="tipoRendicontazione" 
+	            itemValue="#{tipoRendicontazione.codice}" 
+	            itemLabel="#{tipoRendicontazione.descrizione}" />
+	        <p:ajax event="change" update="@(.updateOnFlagRendicontoChange)" process="@this"></p:ajax>    
+	    </p:selectOneRadio>
+	    
+	</h:panelGrid>
+</h:panelGrid>
+	
+       <p:spacer height="20px"/>
+       
+	   <h:panelGrid columns="7"> 
+	
+<!-- 		<h:outputText value="Spesa Prevista  "/>
+		<p:inputText id="inputSpesaPrevista" disabled="true" style="width: 50px;"
+		     value="#{fglInterventoBean.datiTariffeInterventoBean.spesaPrevista}" 
+		     styleClass="#{'updateOnTariffaUnitariaChange updateOnAggiungiRigaQuota updateOnUnitaMisuraChange'}"
+		     converterMessage="Il campo Spesa Prevista non è corretto:inserire valore numerico intero o decimale (es.12.34)">   
+        </p:inputText> 
+		<h:outputText value=" € di cui"/> -->
+		
+        <h:outputText  value=" Compartecipazione dell’utente € " />
+		<p:inputText id="inputSpesaPrevistaDiCui" style="width: 50px;"
+					 disabled="#{fglInterventoBean.datiTariffeInterventoBean.solaLettura}"
+		             value="#{fglInterventoBean.datiTariffeInterventoBean.csIQuota.compUtente}"
+		             converterMessage="Il campo 'di cui' non è corretto:inserire valore numerico intero o decimale (es.12.34)" >  
+        </p:inputText>
+																					  
+        
+        <h:outputText  value=" con quota " />
+        <p:selectOneMenu value="#{fglInterventoBean.datiTariffeInterventoBean.csIQuota.flagPeriodoComp}"
+        				 disabled="#{fglInterventoBean.datiTariffeInterventoBean.solaLettura}">
+        	<f:selectItem itemLabel="- seleziona -" noSelectionOption="true"/>
+        	<f:selectItems value="#{fglInterventoBean.datiTariffeInterventoBean.tipiCadenzaQuota}" var="tipo" itemValue="#{tipo.codice}" itemLabel="#{tipo.descrizione}" />
+        </p:selectOneMenu>
+        <h:outputText  value="pari a" for="inputCompartecipazioneValore"/>
+        <p:inputText id="inputCompartecipazioneValore" 
+        	style="text-transform: uppercase; width:50px;"
+        	disabled="#{fglInterventoBean.datiTariffeInterventoBean.solaLettura}" 
+			value="#{fglInterventoBean.datiTariffeInterventoBean.csIQuota.compUtentePeriodo}"
+			converterMessage="Il campo 'pari a' non è corretto:inserire valore numerico intero o decimale (es.12.34)" > 
+        </p:inputText>
+																						   
+        <h:outputText value="€"/>
+	</h:panelGrid>
+	
+<!--  	<p:tooltip for="inputSpesaPrevista" value="Ex: 1999.99" trackMouse="true"/>	  -->
+	<p:tooltip for="inputSpesaPrevistaDiCui" value="Ex: 1999.99" trackMouse="true"/>
+	<p:tooltip for="inputCompartecipazioneValore" value="Ex: 1999.99" trackMouse="true"/> 
+        
+
+	            		
+
+	<h:panelGrid columns="3" >
+		<p:outputLabel value="N. totale di accessi al servizio" for="inputNumAccessiAlServizio" />
+		<webredcs:tooltipInfo title="N. totale di accessi al servizio" stringDescr="#{fglInterventoBean.datiTariffeInterventoBean.tooltipNumTotaleGiorni}" />
+        <p:spinner id="inputNumAccessiAlServizio" size="4"
+                   disabled="#{fglInterventoBean.datiTariffeInterventoBean.solaLettura}"
+                   value="#{fglInterventoBean.datiTariffeInterventoBean.csIQuota.csIQuotaRipartiz.nTotAccessiServizio}"/>	
+	</h:panelGrid>
+	
+	<p:spacer height="10px"/>
+	
+	<p:fieldset legend="Quantità Programmata">
+    <h:panelGrid columns="2" width="100%">
+    
+    	<p:outputLabel styleClass="#{'updateOnUnitaMisuraChange'}"
+    			value="#{fglInterventoBean.datiTariffeInterventoBean.tipoQuotaAssegnazione.descrizione} (#{fglInterventoBean.datiTariffeInterventoBean.csIQuota.csTbUnitaMisura.valore})" />
+    
+<!--    SISO-536 - viene abilitato solo il tipo quota ASSEGNAZIONE
+	    <p:selectOneRadio id="flagAssegnazDiminuz" disabled="#{fglInterventoBean.datiTariffeInterventoBean.solaLettura}"
+   	    				  value="#{fglInterventoBean.datiTariffeInterventoBean.csIRigaQuotaNew.flagAssegnazDiminuz}" 
+	                      styleClass="#{'updateOnUnitaMisuraChange'}" layout="grid" columns="1">
+	        <f:selectItems value="#{fglInterventoBean.datiTariffeInterventoBean.tipiQuota}" 
+	            var="tipoRigaQuota" 
+	            itemValue="#{tipoRigaQuota.codice}" 
+	            itemLabel="#{tipoRigaQuota.descrizione} (#{fglInterventoBean.datiTariffeInterventoBean.csIQuota.csTbUnitaMisura.valore})" />
+	    </p:selectOneRadio>  -->
+    
+    	<h:panelGrid columns="6">  
+    	<p:outputPanel id="pnlQuotaDett" styleClass="#{'updateOnUnitaMisuraChange'}">
+    		<p:outputLabel styleClass="#{'updateOnUnitaMisuraChange'}" 
+	    	value="#{fglInterventoBean.datiTariffeInterventoBean.csIQuota.csTbUnitaMisura.valore!=null ? fglInterventoBean.datiTariffeInterventoBean.csIQuota.csTbUnitaMisura.valore : '- seleziona unità di misura -'} " />
+			<p:inputText id="inputRigaQuota" styleClass="#{'updateOnAggiungiRigaQuota'}"   
+			        rendered="#{!fglInterventoBean.datiTariffeInterventoBean.csIQuota.oreMinuti}"
+			        disabled="#{fglInterventoBean.datiTariffeInterventoBean.solaLettura}"
+					style="width:90px;" value="#{fglInterventoBean.datiTariffeInterventoBean.csIRigaQuotaNew.csIValQuota.valQuota}"
+					converterMessage="Inserire valore numerico intero o decimale (es.12.34)">  
+	         </p:inputText>
+    	     <h:panelGrid id="pnlOreMinutiTar" columns="3"  rendered="#{fglInterventoBean.datiTariffeInterventoBean.csIQuota.oreMinuti}"  >  
+			   <p:inputText id="qntOreTar"  style="width:25px; text-align: right;" maxlength="2" styleClass="#{'updateOnAggiungiRigaQuota'}"
+			       value="#{fglInterventoBean.datiTariffeInterventoBean.oreErogazioneProgrammata}"
+			       converterMessage="Il campo Ore non è corretto:inserire valore numerico intero"  
+			       rendered="#{fglInterventoBean.datiTariffeInterventoBean.csIQuota.oreMinuti}"> 
+               </p:inputText> :
+			   <p:inputText id="qntMinutiTar" maxlength="2"   value="#{fglInterventoBean.datiTariffeInterventoBean.minutiErogazioneProgrammata}"
+                      style="width:25px;"  rendered="#{fglInterventoBean.datiTariffeInterventoBean.csIQuota.oreMinuti}" 
+                      converterMessage="Il campo Minuti non è corretto:inserire valore numerico intero compreso tra 0 e 59"> 
+                </p:inputText>
+ 			</h:panelGrid>
+    	</p:outputPanel>
+		    <p:outputLabel id="labelDataInizio" for="inputDataInizio" value="Dalla data" />
+		    <h:panelGroup styleClass="#{'updateOnAggiungiRigaQuota'}">	
+				<webred:pnlData id="inputDataInizio" 
+				    disabled="#{fglInterventoBean.datiTariffeInterventoBean.solaLettura}"
+					dataValue="#{fglInterventoBean.datiTariffeInterventoBean.csIRigaQuotaNew.dataDa}"
+					dataPattern="dd/MM/yyyy" 
+					dataPatternLabel="gg/mm/aaaa" />
+		    </h:panelGroup>
+		    
+
+		    
+	    	<p:outputLabel value="Motivo/Note: " />
+			<p:inputText id="inputRigaMotivoNote" styleClass="#{'updateOnAggiungiRigaQuota'}"
+					style="text-transform: uppercase; width:200px;"
+					disabled="#{fglInterventoBean.datiTariffeInterventoBean.solaLettura}" 
+					value="#{fglInterventoBean.datiTariffeInterventoBean.csIRigaQuotaNew.csIValQuota.note}" maxlength="4000"/>
+			
+			<p:spacer width="10"/>
+			 <p:commandButton id="buttonAggiungiRigaQuota" title="Aggiungi" value="Aggiungi"
+				actionListener="#{fglInterventoBean.datiTariffeInterventoBean.aggiungiRigaQuota()}"
+				disabled="#{fglInterventoBean.datiTariffeInterventoBean.solaLettura}"
+				process="@parent" icon="ui-icon-circle-plus" update="@(.updateOnAggiungiRigaQuota)"/>    
+		
+		</h:panelGrid>
+		
+	</h:panelGrid>
+	
+	<p:dataTable id="dataTableRigheQuote" styleClass="#{'updateOnAggiungiRigaQuota'}" 
+		emptyMessage="Nessun dato da visualizzare" 
+		value="#{fglInterventoBean.datiTariffeInterventoBean.lstCsIRigheQuota()}" var="rigaQuota" rowIndexVar="rowIndex" >
+		<f:facet name="header">Entità del servizio</f:facet>
+		<p:column headerText="Tipo" width="20" style="text-align:center;">
+			<h:outputText value="#{rigaQuota.flagAssegnazDiminuz eq 'A' ? '+' : (rigaQuota.flagAssegnazDiminuz eq 'D' ? '-' : rigaQuota.flagAssegnazDiminuz)}" />
+			<f:facet name="footer">Totale</f:facet>
+		</p:column>
+		<p:column headerText="Quota" style="text-align:center;">
+			<h:outputText value="#{rigaQuota.csIValQuota.valQuota}" />
+			<f:facet name="footer">#{fglInterventoBean.datiTariffeInterventoBean.totaleQuote}</f:facet>
+		</p:column>
+		
+		
+		<p:column headerText="Spesa" style="text-align:center;">
+			<h:outputText value="#{fglInterventoBean.datiTariffeInterventoBean.spesaRigaQuota(rigaQuota)}" /> 
+			<f:facet name="footer">#{fglInterventoBean.datiTariffeInterventoBean.totaleSpese}</f:facet>
+		</p:column>
+		
+		<p:column headerText="dalla Data" style="text-align:center;">
+			<h:outputText value="#{rigaQuota.dataDa}">
+				<f:convertDateTime pattern="dd/MM/yyyy"/>
+			</h:outputText>
+		</p:column>
+		<p:column headerText="Motivo/Note">
+			<h:outputText value="#{rigaQuota.csIValQuota.note}" />
+		</p:column>
+		<p:column width="50">
+			<p:commandButton id="buttonRimuoviRigaQuota" title="Elimina" 
+				actionListener="#{fglInterventoBean.datiTariffeInterventoBean.rimuoviRigaQuota(rigaQuota)}"
+				disabled="#{fglInterventoBean.datiTariffeInterventoBean.solaLettura}"
+				icon="ui-icon-trash" 
+				update="@(.updateOnAggiungiRigaQuota)"
+				process="@this" />
+		</p:column>
+	</p:dataTable>
+	</p:fieldset>
+	
+</html>

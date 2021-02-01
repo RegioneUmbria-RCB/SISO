@@ -1,0 +1,5 @@
+tableRiga.name=SIT_T_ICI_DM_RIGA
+tableAnagrafica.name=SIT_T_ICI_DM_ANAG
+tableContabile.name=SIT_T_ICI_DM_VERS
+tableViolazione.name=SIT_T_ICI_DM_VIOLAZIONE
+Caricatore.class.noversion=it.webred.rulengine.brick.loadDwh.load.versamenti.dm.ici.v1.ImportVersIci

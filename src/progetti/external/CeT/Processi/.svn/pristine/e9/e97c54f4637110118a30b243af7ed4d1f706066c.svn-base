@@ -1,0 +1,5 @@
+tableA.name=RE_REDDITI_2006_1_0
+file.year=2006
+file.prefix=DICHSINT.
+#
+Caricatore.class.noversion=it.webred.rulengine.brick.loadDwh.load.redditi.r2006.v1.ImportRedditi

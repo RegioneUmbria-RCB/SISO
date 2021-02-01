@@ -1,0 +1,163 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich">
+
+<!-- INIZIO DETTAGLIO STATO FONTI MODAL BOX -->
+<rich:modalPanel id="dettStatoFontiModalBox" minHeight="500"
+	minWidth="800" height="500" width="800">
+	<f:facet name="header">
+		<h:outputText value="Storico stato fonte dati"></h:outputText>
+	</f:facet>
+	<f:facet name="controls">
+		<h:form>
+			<h:panelGroup>
+				<h:graphicImage value="/images/close.png" style="cursor:pointer"
+					id="hidelink">
+					<a4j:support event="onclick" action="#{statoFontiBean.resetPage}"
+						reRender="dettStatoFontiPage"
+						oncomplete="javascript:Richfaces.hideModalPanel('dettStatoFontiModalBox');" />
+				</h:graphicImage>
+			</h:panelGroup>
+		</h:form>
+	</f:facet>
+
+	<h:form id="dettStatoForm">
+		<rich:spacer height="20px" />
+
+		<rich:extendedDataTable width="100%" height="400px" var="row"
+			value="#{statoFontiBean.listaStatoDettaglio}" id="listDettTable"
+			enableContextMenu="false"
+			onRowMouseOver="this.style.backgroundColor='#F1F1F1'"
+			onRowMouseOut="this.style.backgroundColor='#{a4jSkin.tableBackgroundColor}'">
+
+			<rich:column sortable="false" width="100%">
+				<f:facet name="header">
+					<h:outputText value="Dettaglio stato della fonte dati"></h:outputText>
+				</f:facet>
+
+				<div style="float: left;">
+					<h:outputText value="Data:" style="font-weight: bold;" />
+					<h:outputText value="#{row.dataAgg}" style="padding-right: 20px;">
+					</h:outputText>
+					<h:outputText value="ProcessID:" style="font-weight: bold;" />
+					<h:outputText value="#{row.rTracciaStati.processid}" style="padding-right: 20px;"/>
+					<h:outputText value="Note:" style="font-weight: bold;" />
+					<h:outputText value="#{row.rTracciaStati.note}" />
+				</div>
+
+				<div style="float: right;">
+					<h:graphicImage value="/images/delete.png" rendered="#{row.rTracciaStati.processid == null}"
+							title="Elimina" style="cursor:pointer">
+							<a4j:support event="onclick"
+								action="#{statoFontiBean.doDeleteTracciaStati}"
+								reRender="dettStatoForm, stFontiForm"
+								onsubmit="if (!confirm('Procedere con l\'eliminazione?')) return false">
+								<a4j:actionparam name="rid" value="#{row.rTracciaStati.id.istante}"
+									assignTo="#{statoFontiBean.istanteSelezionato}" />
+							</a4j:support>
+						</h:graphicImage>
+				</div>
+
+				<br />
+				<br />
+
+				<rich:togglePanel switchType="client" stateOrder="closed,sintesi">
+
+					<f:facet name="closed">
+						<rich:toggleControl>
+							<h:outputText value="Apri" />
+						</rich:toggleControl>
+					</f:facet>
+
+					<f:facet name="sintesi">
+
+						<h:panelGrid columns="4">
+							<rich:toggleControl value="Chiudi" switchToState="closed" />
+
+							<rich:dataTable width="100%" var="row2"
+								value="#{row.listaSintesiProcessi}"
+								onRowMouseOver="this.style.backgroundColor='#F1F1F1'"
+								onRowMouseOut="this.style.backgroundColor='#{a4jSkin.tableBackgroundColor}'">
+
+								<rich:column>
+									<f:facet name="header">
+										<h:outputText value="Tabella" />
+									</f:facet>
+									<h:outputText value="#{row2.id.nomeTabella}" />
+								</rich:column>
+								<rich:column>
+									<f:facet name="header">
+										<h:outputText value="Inseriti" />
+									</f:facet>
+									<h:outputText value="#{row2.inseriti}" />
+								</rich:column>
+								<rich:column>
+									<f:facet name="header">
+										<h:outputText value="Aggiornati" />
+									</f:facet>
+									<h:outputText value="#{row2.aggiornati}" />
+								</rich:column>
+								<rich:column>
+									<f:facet name="header">
+										<h:outputText value="Sostituiti" />
+									</f:facet>
+									<h:outputText value="#{row2.sostituiti}" />
+								</rich:column>
+
+							</rich:dataTable>
+							
+							<rich:spacer height="20px" width="10px"/>
+							
+							<rich:dataTable width="100%" var="row3"
+								value="#{row.listaForniture}"
+								onRowMouseOver="this.style.backgroundColor='#F1F1F1'"
+								onRowMouseOut="this.style.backgroundColor='#{a4jSkin.tableBackgroundColor}'">
+
+								<rich:column>
+									<f:facet name="header">
+										<h:outputText value="Nome file" />
+									</f:facet>
+									<h:outputText value="#{row3.nomeFile}" />
+								</rich:column>
+								<rich:column>
+									<f:facet name="header">
+										<h:outputText value="Data fornitura"/>
+									</f:facet>
+									<h:outputText value="#{row3.data}">
+										<f:convertDateTime pattern="dd/MM/yyyy" timeZone="CET" />
+									</h:outputText>
+								</rich:column>
+
+							</rich:dataTable>
+						</h:panelGrid>
+
+					</f:facet>
+				</rich:togglePanel>
+
+			</rich:column>
+
+		</rich:extendedDataTable>
+
+
+		<rich:spacer height="15px" />
+		<h:panelGrid id="pnlBtn" columns="1" style="text-align:center;"
+			width="100%">
+
+			<h:panelGroup>
+				<a4j:commandButton value="Chiudi" id="btnEsci" styleClass="button"
+					action="#{statoFontiBean.resetPage}" reRender="dettStatoFontiPage"
+					onclick="Richfaces.hideModalPanel('dettStatoFontiModalBox'); return false;">
+				</a4j:commandButton>
+			</h:panelGroup>
+
+		</h:panelGrid>
+	</h:form>
+
+</rich:modalPanel>
+<!-- FINE DETTAGLIO STATO FONTI MODAL BOX -->
+
+</html>

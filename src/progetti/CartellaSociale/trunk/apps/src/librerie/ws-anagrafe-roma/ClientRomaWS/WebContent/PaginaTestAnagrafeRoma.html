@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Test della ricerca anagrafica - Roma </title>
+</head>
+<body>
+    <form action="TestClientRomaWS.jsp" method="GET">
+	   Codice inidividuale: <input type="text" name="p_individuale">
+	   <br/>
+          Nome: <input type="text" name="p_nome">
+   		 <br />
+         Cognome: <input type="text" name="p_cognome" />
+         <br />
+         Sesso: <input type="text" name="p_sesso" />
+         <br />
+         AnnoNascita: <input type="text" name="p_annoNascita" />
+          <br />   
+              AnnoIniziale: <input type="text" name="p_annoIniziale" />
+                <br />   
+              AnnoFinale: <input type="text" name="p_annoFinale" />
+          <br />      
+         MeseNascita: <input type="text" name="p_meseNascita" />
+          <br />      
+         GiornoNascita: <input type="text" name="p_giornoNascita" />
+           <br />      
+         codiceFiscale: <input type="text" name="p_codiceFiscale" />
+            <br />      
+         TipoRichiesta:     <select name = "tipoRicerca">
+					            <option value = "BASE" selected>Ricerca base</option>
+					            <option value = "ESTESA">Ricerca Estesa</option>
+					            <option value = "CODICE_INDIVIDUALE">Ricerca per Codice Individuale</option>
+								<option value = "STATO_FAMIGLIA">Test Stato Famiglia</option>
+					         </select>
+    <input type="submit" value="Invia" />
+    </form>
+    </body>
+</html>

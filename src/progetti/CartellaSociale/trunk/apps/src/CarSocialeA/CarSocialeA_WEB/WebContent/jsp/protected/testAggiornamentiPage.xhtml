@@ -1,0 +1,46 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:webredcs="http://java.sun.com/jsf/composite/webredcs">
+
+<ui:composition template="/jsp/protected/layout/layout.xhtml">
+	<ui:define name="content">
+		<h:form id="testPage">
+		 
+			<h1>Pagina di test Aggiornamenti AnagraficiCaso</h1>
+			
+			
+				
+		 
+			
+			<table width="100%">
+				<tbody>
+					<tr>
+						<td width="20%">
+							<p:panel header="Lista dei casi" >
+								 
+				
+								<table width="100%">
+									<tbody>
+										<tr>
+											<td>
+												<h:outputLabel id="nomeCasoLabel" styleClass="label" value="Popola tabella AnagCasoGit"/>
+											</td>
+											<td>
+												<p:commandButton value="Inserisci aggiornamenti" actionListener="#{aggAnagraficaCasoGitTestBean.salvaAggiornamento}" />
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</p:panel>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</h:form>
+	</ui:define>
+</ui:composition>
+</html>

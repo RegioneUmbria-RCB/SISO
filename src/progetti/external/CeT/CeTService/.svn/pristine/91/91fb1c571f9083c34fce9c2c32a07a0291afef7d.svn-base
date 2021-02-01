@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings
+  xmlns="http://java.sun.com/xml/ns/persistence/orm"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
+  version="2.0">
+
+	<!-- Query RedDatiAnagrafici -->
+	<named-query name="RedDatiAnagrafici.getListaSoggettiByCF">
+		<query>
+			<![CDATA[
+				SELECT  a 
+				  FROM RedDatiAnagrafici a
+				 WHERE a.codiceFiscaleDic = :codFis
+			  ORDER BY a.annoImposta DESC
+			]]>
+		</query>
+	</named-query>
+	<named-query name="RedDatiAnagrafici.getListaSoggettiPFByDatiAna">
+		<query>
+			<![CDATA[
+				SELECT  a 
+				  FROM RedDatiAnagrafici a
+				 WHERE a.cognome= :cognome
+				   AND a.nome= :nome
+				   AND a.dataNascita = :dtNas
+				   AND a.comuneNascita = :codComNas
+              ORDER BY a.codiceFiscaleDic, a.annoImposta DESC
+			]]>
+		</query>
+	</named-query>
+	<named-query name="RedDatiAnagrafici.getListaSoggettiPGByDatiAna">
+		<query>
+			<![CDATA[
+				SELECT  a 
+				  FROM RedDatiAnagrafici a
+				 WHERE a.denominazione= :denom
+	   		  ORDER BY a.codiceFiscaleDic, a.annoImposta DESC
+			]]>
+		</query>
+	</named-query>
+	<named-query name="RedDatiAnagrafici.getSoggettoByKey">
+		<query>
+			<![CDATA[
+				SELECT  a 
+				  FROM RedDatiAnagrafici a
+				 WHERE a.ideTelematico = :ideTel 
+				   AND a.codiceFiscaleDic = :codFis
+			]]>
+		</query>
+	</named-query>
+	<named-query name="RedDomicilioFiscale.getDomicilioByKey">
+		<query>
+			<![CDATA[
+				SELECT  d 
+				  FROM RedDomicilioFiscale d
+				 WHERE d.id.ideTelematico = :ideTel 
+				   AND d.id.codiceFiscaleDic = :codFis
+			]]>
+		</query>
+	</named-query>
+	<named-query name="RedRedditiDichiarati.getRedditiByKey">
+		<query>
+			<![CDATA[
+				SELECT  r
+				  FROM RedRedditiDichiarati r
+				 WHERE r.id.ideTelematico = :ideTel 
+				   AND r.id.codiceFiscaleDic = :codFis
+			]]>
+		</query>
+	</named-query>
+	<named-query name="RedRedditiDichiarati.getRedditiByKeyAnno">
+		<query>
+			<![CDATA[
+				SELECT  r
+				  FROM RedRedditiDichiarati r
+				 WHERE r.id.ideTelematico = :ideTel 
+				   AND r.id.codiceFiscaleDic = :codFis
+				   AND r.id.annoImposta = :anno
+			]]>
+		</query>
+	</named-query>
+	<named-query name="RedRedditiDichiarati.getAnnoUltimiRedditiByCF">
+		<query>
+			<![CDATA[
+				SELECT MAX(r.id.annoImposta)
+				  FROM RedRedditiDichiarati r
+				 WHERE r.id.codiceFiscaleDic = :codFis
+			]]>
+		</query>
+	</named-query>
+	<named-query name="RedDescrizione.getDescrizioneByKey">
+		<query>
+			<![CDATA[
+				SELECT  d
+				  FROM RedDescrizione d
+				 WHERE d.id.ideTelematico = :ideTel 
+				   AND d.id.codiceFiscaleDic = :codFis
+			]]>
+		</query>
+	</named-query>
+	<named-query name="RedTrascodifica.getTrascodificaByKey">
+		<query>
+			<![CDATA[
+				SELECT  r
+				  FROM RedTrascodifica r
+				 WHERE r.id.annoImposta = :anno 
+				   AND r.id.codiceRiga= :codRig
+				   AND r.id.tipoModello= :tipMod
+			]]>
+		</query>
+	</named-query>
+</entity-mappings>

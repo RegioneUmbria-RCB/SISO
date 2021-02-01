@@ -1,0 +1,43 @@
+#--------------------------------------------------------------
+# File di configurazione in cui sono indicato i valori dei soli
+# parametri di contesto della catena jelly da passare alla 
+# regola 
+#------------------------------------------------------------
+# Numero di parametri previsti in input
+rengine.jchain.in.nof=4
+#------------------------------------------------------------
+# Le coppie chiavi/valore hanno come key lo stesso nome 
+# indicato nello script jelly xml
+# tabDerivatiBene = {"DM_B_BENE_INV","DM_B_FASCICOLO","DM_B_TIPO_USO","DM_E_EVENTO","DM_B_INDIRIZZO","DM_B_MAPPALE","DM_B_INFO","DM_B_TITOLO","DM_B_TERRENO"};
+#------------------------------------------------------------
+rengine.jchain.in.1.key=QUERYSQL_CONF
+rengine.jchain.in.1.value=select C.* from DM_CONF_CARICAMENTO C
+rengine.jchain.in.2.key=RSITRSCRIPT_CONF
+rengine.jchain.in.2.value=<RsIterator><key table\="DM_CONF_CARICAMENTO"><column name\="ID" /></key><commands>\\<command name\="DEM_B_PRIN"><param id\="field" value\="DATO" dest\="DATO" type\="java.lang.String" /><param id\="field" value\="PROVENIENZA" dest\="PROVENIENZA" type\="java.lang.String" /><param id\="field" value\="TIPO" dest\="TIPO" type\="java.lang.String" /><param id\="field" value\="VISTA" dest\="VISTA" type\="java.lang.String" /><param id\="field" value\="DT_ELAB" dest\="DT_ELAB" type\="java.sql.Timestamp" /></command></commands></RsIterator>
+rengine.jchain.in.3.key=QUERYSQL_DERI
+rengine.jchain.in.3.value=select C.* from DM_CONF_CARICAMENTO C
+rengine.jchain.in.4.key=RSITRSCRIPT_DERI
+rengine.jchain.in.4.value=<RsIterator><key table\="DM_CONF_CARICAMENTO"><column name\="ID" /></key><commands>\\<command name\="DEM_B_DERI">\
+<param id\="field" value\="DATO" dest\="DATO" type\="java.lang.String" />\
+<param id\="field" value\="FLAG_SOSTITUISCI" dest\="FLAG_SOSTITUISCI" type\="java.lang.Integer" />\
+<param id\="field" value\="FLAG_ACCODA" dest\="FLAG_ACCODA" type\="java.lang.Integer" />\
+<param id\="field" value\="FLAG_ACCODA_E_ANNULLA" dest\="FLAG_ACCODA_E_ANNULLA" type\="java.lang.Integer" />\
+<param id\="field" value\="PROVENIENZA" dest\="PROVENIENZA" type\="java.lang.String" />\
+<param id\="field" value\="TIPO" dest\="TIPO" type\="java.lang.String" />\
+<param id\="field" value\="VISTA" dest\="VISTA" type\="java.lang.String" />\
+<param id\="field" value\="DESCRIZIONE" dest\="DESCRIZIONE" type\="java.lang.String" />\
+<param id\="field" value\="FLAG_AGGIORNA" dest\="FLAG_AGGIORNA" type\="java.lang.Integer" />\
+<param id\="field" value\="VISTA_S" dest\="VISTA_S" type\="java.lang.String" />\
+<param id\="field" value\="DT_ELAB" dest\="DT_ELAB" type\="java.sql.Timestamp" /></command></commands></RsIterator>
+#-------------------------------------------------------------------------------
+#QUESTA PARTE E' RELATIVA ALLA ACQUISIZIONE DEI FILE DEI DOCUMENTI CHE E' STATA
+#SVILUPPATA MA MAI TESTATA ... PER ATTIVARLA INCREMENTARE IL NUMERO PARAMETRI A 6
+#-------------------------------------------------------------------------------
+rengine.jchain.in.5.key=QUERYSQL_DOCU
+rengine.jchain.in.5.value=select DD.* from DM_CONF_DOC_DIR DD
+rengine.jchain.in.6.key=RSITRSCRIPT_DOCU
+rengine.jchain.in.6.value=<RsIterator><key table\="DM_CONF_DOC_DIR"><column name\="ID" /></key><commands>\\<command name\="DEM_B_DOCU">\
+<param id\="field" value\="CODICE" dest\="CODICE" type\="java.lang.String" />\
+<param id\="field" value\="DESCRIZIONE" dest\="DESCRIZIONE" type\="java.lang.String" />\
+<param id\="field" value\="PERCORSO" dest\="PERCORSO" type\="java.lang.String" />\
+<param id\="field" value\="ABILITATO" dest\="ABILITATO" type\="java.lang.Integer" /></command></commands></RsIterator>

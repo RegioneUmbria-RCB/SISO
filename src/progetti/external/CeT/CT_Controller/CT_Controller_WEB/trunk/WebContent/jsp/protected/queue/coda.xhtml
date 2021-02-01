@@ -1,0 +1,106 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich">
+
+<ui:composition template="/jsp/protected/layout/layout.xhtml">
+
+	<ui:define name="content">
+
+		<rich:separator lineType="solid" />
+		<rich:panel>
+
+			<h:form id="queueForm">
+				<h:panelGrid columns="3">
+
+					<h:graphicImage value="/images/refresh.png" title="Aggiorna"
+						height="16px" style="cursor:pointer; padding-right: 10px;">
+						<a4j:support event="onclick"
+							reRender="listQueueTable">
+						</a4j:support>
+					</h:graphicImage>
+
+					<h:outputLabel value="Filtro per Ente" />
+					<h:selectOneMenu id="ente" value="#{queueBean.enteSelezionato}">
+						<f:selectItem itemLabel="-seleziona-" itemValue="" />
+						<f:selectItems value="#{queueBean.listaEnti}" />
+						<a4j:support event="onchange"
+							action="#{queueBean.doCaricaListaQueue}"
+							reRender="listQueueTable"></a4j:support>
+					</h:selectOneMenu>
+
+				</h:panelGrid>
+
+				<rich:spacer height="10px" />
+
+				<rich:dataTable width="100%" var="row"
+					value="#{queueBean.listaCoda}"
+					id="listQueueTable"
+					onRowMouseOver="this.style.backgroundColor='#F1F1F1'"
+					onRowMouseOut="this.style.backgroundColor='#{a4jSkin.tableBackgroundColor}'">
+					<f:facet name="header">
+						<h:outputText value="Coda dei processi" />
+					</f:facet>
+					<rich:column>
+						<f:facet name="header">
+							<h:outputText value="Ente" />
+						</f:facet>
+						<h:outputText value="#{row.ente}" />
+					</rich:column>
+					<rich:column>
+						<f:facet name="header">
+							<h:outputText value="Codice comando" />
+						</f:facet>
+						<h:outputText value="#{row.rCoda.RCommand.codCommand}" />
+					</rich:column>
+					<rich:column>
+						<f:facet name="header">
+							<h:outputText value="descrizione" />
+						</f:facet>
+						<h:outputText value="#{row.rCoda.RCommand.descr}" />
+					</rich:column>
+					<rich:column>
+						<f:facet name="header">
+							<h:outputText value="Nome Job" />
+						</f:facet>
+						<h:outputText value="#{row.rCoda.jobname}" />
+					</rich:column>
+					<rich:column>
+						<f:facet name="header">
+							<h:outputText value="Tentativo N." />
+						</f:facet>
+						<h:outputText value="0" rendered="#{row.rCoda.numTentativo == null}"/><h:outputText value="#{row.rCoda.numTentativo}" rendered="#{row.rCoda.numTentativo != null}"/><h:outputText value=" di #{row.rCoda.maxTentativi}" />
+					</rich:column>
+					<rich:column>
+						<f:facet name="header">
+							<h:outputText value="Inizio esecuzione" />
+						</f:facet>
+						<h:outputText value="#{row.inizioEsec}">
+							<f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" timeZone="CET"/>
+						</h:outputText>
+					</rich:column>
+					<rich:column>
+						<f:facet name="header">
+							<h:outputText value="" />
+						</f:facet>
+						<center><h:graphicImage value="/images/delete.png"
+							title="Elimina" style="cursor:pointer">
+							<a4j:support event="onclick"
+								action="#{queueBean.doDeleteQueue}" reRender="queueForm"
+								onsubmit="if (!confirm('Procedere con l\'eliminazione?')) return false">
+								<a4j:actionparam name="rid" value="#{row.rCoda.istante}"
+									assignTo="#{queueBean.rCodaId}" />
+							</a4j:support>
+						</h:graphicImage></center>
+					</rich:column>
+
+				</rich:dataTable>
+
+			</h:form>
+		</rich:panel>
+	</ui:define>
+</ui:composition>
+</html>

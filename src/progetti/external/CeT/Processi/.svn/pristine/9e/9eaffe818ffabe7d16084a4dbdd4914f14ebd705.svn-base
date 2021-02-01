@@ -1,0 +1,4 @@
+tableA.name=RE_LOCAZIONI_1_1
+file.prefix=ACCLOC.
+#
+Caricatore.class.noversion=it.webred.rulengine.brick.loadDwh.load.locazioni.accloc.v1.ImportLocazioni

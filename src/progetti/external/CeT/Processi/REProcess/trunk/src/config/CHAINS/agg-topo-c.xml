@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+<j:jelly trim="false" xmlns:define="jelly:define" xmlns:j="jelly:core"
+	     xmlns:x="jelly:xml" xmlns:re="reTagLib" xmlns:log="jelly:log">
+	
+	<define:taglib uri="reTagLib">
+		<define:jellybean name="bridge" className="it.webred.rulengine.chains.bridge.JellyCommandBridge" />
+	</define:taglib>
+	
+	<j:set var='par1' encode='true'>
+		<complexParam>
+			<param type="it.webred.rulengine.type.ComplexParam" name="sql1">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[SQL_DATA_INI_RIF]]</param></complexParam> ]]>
+	   		</param>
+	   		<param type="it.webred.rulengine.type.ComplexParam" name="sql2">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[SQL_CREATE_RE_WS_STRADA]]</param></complexParam> ]]>
+	   		</param>
+	   		<param type="it.webred.rulengine.type.ComplexParam" name="sql3">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[SQL_CREATE_RE_WS_CIVICO]]</param></complexParam> ]]>
+	   		</param>
+	   	</complexParam>
+	</j:set>
+
+	<re:bridge codiceComando="C-WS-TOPO" context="${ctx}" connessione="SITI" var="cmd1" parametro="${par1}"/>
+	
+	<j:set var='par2' encode='true'>
+		<complexParam>
+			<param type="it.webred.rulengine.type.ComplexParam" name="sql1">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[SQL_STRADE_TO_DELETE]]</param></complexParam> ]]>
+	   		</param>
+	   		<param type="it.webred.rulengine.type.ComplexParam" name="sql2">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[SQL_STRADE_TO_UPDATE]]</param></complexParam> ]]>
+	   		</param>
+	   		<param type="it.webred.rulengine.type.ComplexParam" name="sql3">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[SQL_INSERT_SIT_CORRELAZIONE_VARIAZIONI]]</param></complexParam> ]]>
+	   		</param>
+	   		<param type="it.webred.rulengine.type.ComplexParam" name="sql4">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[SQL_MERGE_AGGR_TOPO]]</param></complexParam> ]]>
+	   		</param>
+	   		<param type="it.webred.rulengine.type.ComplexParam" name="sql5">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[SQL_MERGE_AGGR_LOCALIZZA]]</param></complexParam> ]]>
+	   		</param>
+	   		<param type="it.webred.rulengine.type.ComplexParam" name="sql6">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[SQL_CIV_TO_UPDATE]]</param></complexParam> ]]>
+	   		</param>
+	   		<param type="it.webred.rulengine.type.ComplexParam" name="sql7">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[SQL_SITIPART_RELATE]]</param></complexParam> ]]>
+	   		</param>
+	   		<param type="it.webred.rulengine.type.ComplexParam" name="sql8">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[SQL_SITIUIU]]</param></complexParam> ]]>
+	   		</param>
+	   		<param type="it.webred.rulengine.type.ComplexParam" name="sql9">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[SQL_INSERT_SITICIVI_UIU]]</param></complexParam> ]]>
+	   		</param>
+	   		<param type="it.webred.rulengine.type.ComplexParam" name="sql10">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[SQL_SITICIVI_RELATE]]</param></complexParam> ]]>
+	   		</param>
+	   		<param type="it.webred.rulengine.type.ComplexParam" name="sql11">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[SQL_PRESENZA_SITILOC_UIU_PRINCIPALE]]</param></complexParam> ]]>
+	   		</param>
+	   		
+	   	</complexParam>
+	</j:set>
+	
+	<re:bridge codiceComando="C-UPD-TOPO" context="${ctx}" connessione="SITI" var="cmd2" parametro="${par2}"/>
+
+
+</j:jelly>

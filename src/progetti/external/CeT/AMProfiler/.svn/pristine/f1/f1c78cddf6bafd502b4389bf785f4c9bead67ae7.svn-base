@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?><project-modules id="moduleCoreId" project-version="1.5.0">
+    <wb-module deploy-name="AmProfiler">
+        <wb-resource deploy-path="/" source-path="/EarContent"/>
+        <wb-resource deploy-path="/" source-path="/EarContent/lib"/>
+        <dependent-module archiveName="AmProfilerEjb.jar" deploy-path="/" handle="module:/resource/AmProfilerEjb/AmProfilerEjb">
+            <dependent-object/>
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="AmProfilerDataModel.jar" deploy-path="/lib" handle="module:/resource/AmProfilerDataModel/AmProfilerDataModel">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="AmProfilerEjbClient.jar" deploy-path="/lib" handle="module:/resource/AmProfilerEjbClient/AmProfilerEjbClient">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="AMProfiler.war" deploy-path="/" handle="module:/resource/AMProfilerWeb/AMProfilerWeb">
+            <dependent-object/>
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="WsAvvocaturaClient_v1.0.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/avvocatura/WsAvvocaturaClient_v1.0.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="log4j-1.2.17.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/apache-log4j/log4j-1.2.17.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="commons-dbutils-1.1.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/apache-commons/main/commons-dbutils-1.1.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="audit.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/cet-lib/audit.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="jackson-core-2.2.3.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/json/jackson-core-2.2.3.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="jackson-databind-2.2.3.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/json/jackson-databind-2.2.3.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="jackson-annotations-2.2.3.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/json/jackson-annotations-2.2.3.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="webredutils.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/cet-lib/webredutils.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="AMProfilerWeb_DTO.jar" deploy-path="/lib" handle="module:/resource/AMProfilerWeb_DTO/AMProfilerWeb_DTO">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+    </wb-module>
+</project-modules>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings
+  xmlns="http://java.sun.com/xml/ns/persistence/orm"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
+  version="2.0">
+  
+<!-- Query SitTCosapContrib -->
+	<named-query name="SitTCosapContrib.getSoggettoById">
+		<query>
+			<![CDATA[
+				select s 
+				from SitTCosapContrib s
+				where s.id = :id
+			]]>
+		</query>
+	</named-query>
+	<named-query name="SitTCosapContrib.getSoggettiByIdExt">
+		<query>
+			<![CDATA[
+				select distinct s.cogDenom, s.nome, s.codiceFiscale, s.partitaIva 
+				from SitTCosapContrib s
+				where s.idExt = :idExt
+			]]>
+		</query>
+	</named-query>
+	<!-- Query SitTCosapTassa -->
+	<named-query name="SitTCosapTassa.getOggettiByIdSogg">
+		<query>
+			<![CDATA[
+				SELECT o 
+				FROM  SitTCosapTassa o, SitTCosapContrib s
+				WHERE o.idExtContrib = s.idExt
+				AND   s.id= :id
+				ORDER BY o.zona, o.foglio, o.particella, o.subalterno, o.dtRichiesta, o.dtIniValidita, o.dtIniValiditaTariffa
+			]]>
+		</query>
+	</named-query>
+	<named-query name="SitTCosapTassa.getOggettoById">
+		<query>
+			<![CDATA[
+				select t 
+				from SitTCosapTassa t
+				where t.id = :id
+			]]>
+		</query>
+	</named-query>
+	<named-query name="SitTCosapTassa.getOggettiDettaglio">
+		<query>
+			<![CDATA[
+				select t 
+				from SitTCosapTassa t
+				where t.numeroDocumento = :numeroDocumento
+				and t.annoDocumento = :annoDocumento
+				and t.codiceImmobile= :codiceImmobile
+				and t.tipoOccupazione= :tipoOccupazione
+				ORDER by t.dtIniValiditaTariffa DESC
+			]]>
+		</query>
+	</named-query>
+</entity-mappings>

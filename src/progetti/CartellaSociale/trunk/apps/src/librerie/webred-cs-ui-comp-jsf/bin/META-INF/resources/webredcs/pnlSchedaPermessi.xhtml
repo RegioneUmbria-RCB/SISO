@@ -1,0 +1,267 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+     	xmlns:h="http://java.sun.com/jsf/html"
+		xmlns:f="http://java.sun.com/jsf/core"
+		xmlns:ui="http://java.sun.com/jsf/facelets"
+		xmlns:p="http://primefaces.org/ui"
+	  	xmlns:composite="http://java.sun.com/jsf/composite"
+	  	xmlns:webred="http://java.sun.com/jsf/composite/webred" 	
+	  	xmlns:webredcs="http://java.sun.com/jsf/composite/webredcs">
+      
+	<h:head>
+		<title>Operatori</title>
+	</h:head>
+	<h:body>
+		<composite:interface componentType="pnlSchedaPermessi">
+			<composite:attribute name="iSchedaPermessi" type="it.webred.cs.jsf.interfaces.ISchedaPermessi"/>
+			<composite:attribute name="disabled" default="false"/>
+		</composite:interface>
+		<composite:implementation>
+		     		
+			
+			
+			<h:panelGrid >
+			
+		
+			<!-- SISO-812 -->
+	        <h:panelGrid columns="2">
+			<h:outputText value="Gestione Permessi"/>
+		            	<p:selectOneButton id="btnGestionePermessi" value="#{cc.attrs.iSchedaPermessi.gestisciPermessi}" >
+		            		<f:selectItems value="#{cc.attrs.iSchedaPermessi.lstGestPermessi}"/>
+		            	<p:ajax event="change"  update="pnlSelectOperatore, pnlLabelsPermessi"  listener="#{cc.attrs.iSchedaPermessi.renderedFiltri}" />
+				     	</p:selectOneButton>
+		    </h:panelGrid> 	
+		    <br/>
+	         <h:panelGrid columns="2" id="pnlLabelsPermessi">
+				    <span class="ui-messages-info-icon"/>
+				    <h:outputLabel  value="Attenzione! L'operatore responsabile del caso non deve essere inserito, verrà aggiornato automaticamente alla 'presa in carico'"  
+				                   style="font-weight:bold;color:#1c94c4;" rendered="#{cc.attrs.iSchedaPermessi.gestisciPermessi eq cc.attrs.iSchedaPermessi.OPERATORI}"/>
+				                   
+				     <h:outputLabel  value=""  
+				                   style="font-weight:bold;color:#1c94c4;" rendered="#{cc.attrs.iSchedaPermessi.gestisciPermessi eq cc.attrs.iSchedaPermessi.SECONDOLIVELLO}"/>
+				                   
+				     <h:outputLabel  value=""  
+				                   style="font-weight:bold;color:#1c94c4;" rendered="#{cc.attrs.iSchedaPermessi.gestisciPermessi eq cc.attrs.iSchedaPermessi.ORGANIZZAZIONE}"/>
+		    </h:panelGrid>	  
+		
+			
+				<p:dialog header="Chiudi alla data:"
+					widgetVar="confermaChiudi" modal="true"
+					closable="false" resizable="false">
+					<p:outputPanel id="pnlConfermaChiudi">
+						<table border="0">
+							<tr>
+								<td style="text-align: center;">
+									<p:calendar value="#{cc.attrs.iSchedaPermessi.compSelezionato.dataTemp}"
+										pattern="dd/MM/yyyy" converterMessage="Data non valida" showOn="button">
+									    <f:attribute name="startDate" value="#{cc.attrs.iSchedaPermessi.compSelezionato.dataInizio}" />
+									    <f:validator validatorId="dateRangeValidator" />
+									</p:calendar>
+									<p:spacer width="10"/>
+		        					<h:outputText value="(gg/mm/aaaa)" style="font-size: 12px;" /> 
+								</td>
+							</tr>
+							<tr><td><p:spacer height="10"/></td></tr>
+							<tr>
+								<td style="text-align: center;">
+									<p:commandButton value="Conferma" partialSubmit="true" process="pnlConfermaChiudi"
+										oncomplete="if (args &amp;&amp; !args.validationFailed) PF('confermaChiudi').hide()"
+										update="pnlSelectOperatore, tblOperatori" action="#{cc.attrs.iSchedaPermessi.chiudiSelezionato}"/>
+									<p:commandButton value="Annulla"
+										onclick="PF('confermaChiudi').hide();" type="button" />
+								</td>
+							</tr>
+						</table>
+					</p:outputPanel>
+				</p:dialog>
+
+		    	<p:confirmDialog header="Elimina"
+					widgetVar="confermaElimina" severity="alert"
+					closable="false"
+					message="Procedere con l'eliminazione?">
+					<p:panelGrid>
+						<p:row>
+							<p:column style="text-align: center;">
+								<p:commandButton value="SI" update="tblOperatori, pnlSelectOperatore"
+									action="#{cc.attrs.iSchedaPermessi.eliminaSelezionato}"
+									onclick="PF('confermaElimina').hide()" process="@this">
+								</p:commandButton>
+								<p:commandButton value="NO"
+									onclick="PF('confermaElimina').hide();" type="button" />
+							</p:column>
+						</p:row>
+					</p:panelGrid>
+				</p:confirmDialog> 
+		
+		   
+		   </h:panelGrid>
+		
+		  
+		  <p:spacer height="15px"/>
+		   
+		   
+		   	
+			<p:outputPanel id="pnlSelectOperatore" >
+            	<h:panelGrid id="pnlOrganizzazione" columns="3" style="display: inline-block; vertical-align: top;" rendered="#{cc.attrs.iSchedaPermessi.renderedFiltriOrganizzazione or cc.attrs.iSchedaPermessi.renderedFiltriSecondoLivello}">
+	            	<h:outputText value="Organizzazione" />
+	            	<p:spacer width="10px"/>
+					<p:selectOneMenu value="#{cc.attrs.iSchedaPermessi.idEnte}" disabled="#{cc.attrs.disabled}">
+            			<f:selectItem noSelectionOption="true" itemLabel="- seleziona -"/>
+            			<f:selectItems value="#{cc.attrs.iSchedaPermessi.lstOrganizzazioni}"/>
+            			<p:ajax event="change" update="somSettore,pnlOperatore" listener="#{cc.attrs.iSchedaPermessi.onChangeOrganizzazione()}"/>
+	            	</p:selectOneMenu>
+            	</h:panelGrid>
+            	<h:panelGrid id="pnlSettore" rendered="#{cc.attrs.iSchedaPermessi.renderedFiltriSecondoLivello or cc.attrs.iSchedaPermessi.renderedFiltriOrganizzazione }" columns="3" style="display: inline-block; vertical-align: top;" >
+	            	<h:outputText value="Settore" />
+	            	<p:spacer width="10px"/>
+					<p:selectOneMenu id="somSettore" value="#{cc.attrs.iSchedaPermessi.idSettore}" disabled="#{cc.attrs.disabled}">
+						<f:selectItem noSelectionOption="true" itemLabel="- seleziona -"/>
+	            		<f:selectItems value="#{cc.attrs.iSchedaPermessi.lstSettori}"/>
+	            		<p:ajax event="change" update="pnlOperatore" listener="#{cc.attrs.iSchedaPermessi.resetOperatore}"/>
+	            	</p:selectOneMenu>
+            	</h:panelGrid>
+            	<h:panelGrid columns="3" id="pnlTipo" rendered="#{cc.attrs.iSchedaPermessi.renderedFiltriOperatore}" style="display: inline-block; vertical-align: top;">
+					<h:outputText value="Tipo" />
+					<p:spacer width="10px"/>
+					<p:selectOneMenu value="#{cc.attrs.iSchedaPermessi.idTipoOperatore}" disabled="#{cc.attrs.disabled}">
+	            		<f:selectItem noSelectionOption="true" itemLabel="- seleziona -"/>
+	            		<f:selectItems value="#{cc.attrs.iSchedaPermessi.lstTipoOperatore}"/>
+	            		<p:ajax event="change" update="pnlOperatore" listener="#{cc.attrs.iSchedaPermessi.resetOperatore}"/>
+	            	</p:selectOneMenu>
+            	</h:panelGrid>
+            	<h:panelGrid columns="3" rendered="#{cc.attrs.iSchedaPermessi.renderedFiltriOperatore}">
+            		<h:outputText value="Operatore" />
+	            	<h:panelGrid id="pnlOperatore" columns="3">
+						<h:outputText value="scegli da anagrafica"  />
+						<p:selectOneMenu id="somOperatore" value="#{cc.attrs.iSchedaPermessi.itemSelezionato}" 
+										 filter="true" filterMatchMode="contains" disabled="#{cc.attrs.disabled}">
+		            			 <f:selectItem itemLabel="- seleziona -" itemValue="" />
+							     <f:selectItems value="#{cc.attrs.iSchedaPermessi.lstItems}" var="itm" itemLabel="#{itm.value}" itemValue="#{itm.key}|#{itm.value}"/>
+							     <p:ajax event="change" update="pnlDescOperatore, btnGestioneFascicolo" 
+							     		 listener="#{cc.attrs.iSchedaPermessi.resetInsOperatore}"/>
+		            	</p:selectOneMenu>
+		            	<p:outputLabel value="oppure inserisci nome"/>
+		            	<h:panelGrid id="pnlDescOperatore" columns="3">
+		            		<p:inputText  disabled="#{!(cc.attrs.iSchedaPermessi.itemSelezionato==null or cc.attrs.iSchedaPermessi.itemSelezionato eq '') or cc.attrs.disabled}" 
+		            	              value="#{cc.attrs.iSchedaPermessi.insOperatore}" size="50" onblur="value=value.toUpperCase()" />
+		            	    <p:outputLabel value="Contatti (tel/email)"/>
+		            		<p:inputText  disabled="#{!(cc.attrs.iSchedaPermessi.itemSelezionato==null or cc.attrs.iSchedaPermessi.itemSelezionato eq '') or cc.attrs.disabled}" 
+		            	              value="#{cc.attrs.iSchedaPermessi.contattiOperatore}" />
+		                </h:panelGrid>
+		            	<h:outputLabel value="Abilita gestione fascicolo" />
+		            	<h:panelGrid columns="2">
+		            	<p:selectOneButton id="btnGestioneFascicolo" value="#{cc.attrs.iSchedaPermessi.gestisciFascicolo}"  
+		            					   disabled="#{cc.attrs.disabled or cc.attrs.iSchedaPermessi.disableFlagFasc}"
+		            					 
+		            					   >
+		            					   <!-- and  !cc.attrs.iSchedaPermessi.tabellaResponsabile(row)  
+		            					    rendered="#{cc.attrs.iSchedaPermessi.gestisciFascicolo eq cc.attrs.iSchedaPermessi.OPERATORI and  !cc.attrs.iSchedaPermessi.itemSelezionato eq ''
+												and (!cc.attrs.iSchedaPermessi.itemSelezionato eq '')}"-->
+		            		<f:selectItems value="#{cc.attrs.iSchedaPermessi.lstGestFascicolo}"/>
+				     	</p:selectOneButton>
+				     	
+		            	<webredcs:tooltipInfo stringDescr="Il permesso si attiva solo per gli operatori che già hanno accesso al fascicolo del caso, in base alla profilazione di sistema" />
+	            		</h:panelGrid>
+	            		 
+		            </h:panelGrid>
+		            	
+		            
+		            <!-- SISO-812 -->
+				  </h:panelGrid>
+				  <p:selectBooleanCheckbox id="chkNascondiInfoInput" itemLabel="Nascondi informazioni" 
+				  			rendered="#{cc.attrs.iSchedaPermessi.renderedFiltriSecondoLivello or cc.attrs.iSchedaPermessi.renderedFiltriOrganizzazione }"
+				  			value="#{cc.attrs.iSchedaPermessi.nascondiInformazioni}"/>
+		          <p:tooltip id="toolTipNascondiInfo" for="chkNascondiInfoInput" value="#{cc.attrs.iSchedaPermessi.nascondiInformazioniHelp}" />
+		          <p:spacer width="10px"/>	
+		          <p:commandButton action="#{cc.attrs.iSchedaPermessi.aggiungiSelezionato}" disabled="#{cc.attrs.disabled}"
+						value="Aggiungi" update="tblOperatori,pnlSelectOperatore" process="pnlSelectOperatore"/>
+						
+				  	
+						<p:dataTable id="tblOperatori" var="row" rowIndexVar="rowKey"
+						value="#{cc.attrs.iSchedaPermessi.lstComponents}"
+					    rendered="#{not empty cc.attrs.iSchedaPermessi.lstComponents}"
+						rowStyleClass="#{row.attivo ? '' : 'inattivo'}"  >
+						
+						<f:facet name="header">  
+				            <p:outputLabel value="Lista Operatori"/>
+				        </f:facet>
+				        
+				          <p:column headerText="" style="text-align:center;" width="20" >
+							<p:graphicImage value="/webredcs/img/person.png" styleClass="person" title="Responsabile" rendered="#{cc.attrs.iSchedaPermessi.tabellaResponsabile(row)}"/>
+						</p:column>
+						
+						<p:column headerText="Tipo">
+							<h:outputText value="#{row.tipo}" />
+						</p:column>
+						
+						<p:column headerText="Tipologia">
+							<h:outputText  value="#{row.tipologia}"/> 
+						</p:column>
+						<p:column headerText="Dettaglio Tipologia">
+							<h:outputText value="#{row.descrizione}" />
+						</p:column>
+						
+						<p:column headerText="Contatti">
+							<h:outputText value="#{cc.attrs.iSchedaPermessi.tabellaContatti(row)}" />
+						</p:column>
+						<p:column width="300" headerText="Gestione fascicolo" style="text-align: center" >
+							<p:selectOneButton value="#{row.gestisciFascicolo}" 
+												
+												 disabled="#{cc.attrs.disabled or cc.attrs.iSchedaPermessi.disableFlagFasc}"
+												rendered="#{row.tipologia eq cc.attrs.iSchedaPermessi.OPERATORI and  !cc.attrs.iSchedaPermessi.tabellaResponsabile(row) 
+												and !cc.attrs.iSchedaPermessi.tabellaOperTipo2(row) }">
+					           	<f:selectItems value="#{cc.attrs.iSchedaPermessi.lstGestFascicolo}"/>
+					        </p:selectOneButton>
+						<!-- row.tipologia eq 'OPERATORI' 
+						and !row.responsabile and !row.operTipo2 
+						(not empty row.responsabile and !row.responsabile)
+						disabled="#{cc.attrs.disabled}"
+						-->
+						</p:column>
+						<p:column headerText="Nascondi informazioni" style="text-align: center" >
+						   <p:selectBooleanCheckbox id="chkNascondiInfoOut" value="#{row.nascondiInformazioni}" disabled="true" />
+						   <p:tooltip id="toolTipNascondiInfoOut" for="chkNascondiInfoOut" value="#{cc.attrs.iSchedaPermessi.nascondiInformazioniHelp}" />
+						</p:column>
+						<p:column headerText="Dalla data" style="text-align: center" width="80">
+							<p:calendar value="#{row.dataInizio}" pattern="dd/MM/yyyy" size="11"
+								converterMessage="Data non valida" disabled="#{cc.attrs.disabled or cc.attrs.iSchedaPermessi.tabellaResponsabile(row)}">
+								<p:ajax event="dateSelect"/>
+							</p:calendar>
+						</p:column>
+						<p:column headerText="Alla data" style="text-align: center" width="80">
+							<p:calendar value="#{row.dataFine}" pattern="dd/MM/yyyy" disabled="#{cc.attrs.disabled}" size="11"
+							    converterMessage="Data non valida" rendered="#{row.finito}">
+							    <f:attribute name="startDate" value="#{row.dataInizio}" />
+							    <f:validator validatorId="dateRangeValidator" />
+							    <p:ajax event="dateSelect" update="@parent:@parent"/>
+							</p:calendar>
+							<h:outputText value="ATTIVO" rendered="#{!row.finito}"/>
+						</p:column>
+						<p:column headerText="Inserimento" rendered="false">
+							<h:outputText value="#{row.usrInserimento} " ></h:outputText>
+					       <h:outputText value="#{row.dataInserimento}" rendered ="#{row.dataInserimento != null}" >
+					         <f:convertDateTime pattern="dd/MM/yyyy hh:mm" /></h:outputText>
+						</p:column>
+					  <p:column width="120">
+							<p:commandButton value="Chiudi" oncomplete="confermaChiudi#{cc.attrs.var}.show()" 
+								rendered="#{!row.finito and !cc.attrs.iSchedaPermessi.tabellaResponsabile(row)}" process=":#{p:component('tblOperatori')}" disabled="#{cc.attrs.disabled}" >
+								<f:setPropertyActionListener value="#{row}" target="#{cc.attrs.iSchedaPermessi.compSelezionato}"/>
+								<f:setPropertyActionListener value="#{rowKey}" target="#{cc.attrs.iSchedaPermessi.indexSelezionato}"/>
+							</p:commandButton>
+						    <p:spacer width="5"/>
+							<p:commandButton title="Elimina" onclick="confermaElimina#{cc.attrs.var}.show()" icon="ui-icon-trash" 
+								process="@this" disabled="#{cc.attrs.disabled}" rendered="#{!cc.attrs.iSchedaPermessi.tabellaResponsabile(row)}">
+								<f:setPropertyActionListener value="#{row}" target="#{cc.attrs.iSchedaPermessi.compSelezionato}"/>
+								<f:setPropertyActionListener value="#{rowKey}" target="#{cc.attrs.iSchedaPermessi.indexSelezionato}"/>
+							</p:commandButton>
+						</p:column>
+					</p:dataTable>
+			</p:outputPanel>
+			
+					
+			
+			
+		</composite:implementation>
+	</h:body>
+	
+</html>

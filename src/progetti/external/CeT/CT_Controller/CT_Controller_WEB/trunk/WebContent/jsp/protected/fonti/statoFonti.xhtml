@@ -1,0 +1,308 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich">
+
+<ui:composition template="/jsp/protected/layout/layout.xhtml">
+
+	<ui:define name="content">
+
+		<!-- NUOVO STATO FONTI PAGE -->
+		<a4j:include id="newStatoFontiPage"
+			viewId="#{statoFontiBean.newStatoFontiPage}" />
+
+		<!-- DETTAGLIO STATO FONTI PAGE -->
+		<a4j:include id="dettStatoFontiPage"
+			viewId="#{statoFontiBean.dettStatoFontiPage}" />
+			
+		<!-- DATE FONTI PAGE -->
+		<a4j:include id="dateFontiPage"
+			viewId="#{statoFontiBean.dateFontiPage}" />
+
+		<rich:separator lineType="solid" />
+		<rich:panel>
+
+			<h:form id="stFontiForm">
+				<h:panelGrid columns="3">
+
+					<h:graphicImage value="/images/refresh.png" title="Aggiorna"
+						height="16px" style="cursor:pointer; padding-right: 10px;">
+						<a4j:support event="onclick"
+							action="#{statoFontiBean.doCaricaStatoFonti}"
+							reRender="stFontiForm">
+						</a4j:support>
+					</h:graphicImage>
+
+					<h:outputLabel value="Ente" />
+					<h:selectOneMenu id="ente"
+						value="#{statoFontiBean.enteSelezionato}">
+						<f:selectItems value="#{statoFontiBean.listaEnti}" />
+						<a4j:support event="onchange"
+							action="#{statoFontiBean.doCaricaStatoFonti}"
+							reRender="stFontiForm"></a4j:support>
+					</h:selectOneMenu>
+
+				</h:panelGrid>
+
+				<rich:spacer height="10px" />
+
+				<rich:dataTable width="100%" var="row"
+					value="#{statoFontiBean.listaStatoInt}" id="listFontiIntTable"
+					onRowMouseOver="this.style.backgroundColor='#F1F1F1'"
+					onRowMouseOut="this.style.backgroundColor='#{a4jSkin.tableBackgroundColor}'">
+					<f:facet name="header">
+						<h:outputText value="Stato delle fonti dati interne" />
+					</f:facet>
+					<rich:column>
+						<f:facet name="header">
+							<h:outputText value="Fonte dati" />
+						</f:facet>
+						<h:outputText value="#{row.fonte}" />
+					</rich:column>
+					<rich:column>
+						<f:facet name="header">
+							<h:outputText value="Data di riferimento" />
+						</f:facet>
+					    <h:outputText value="Da " rendered="#{row.dataRifInizio != null || row.dataRifAgg != null}">
+						</h:outputText>
+						<h:outputText value="#{row.dataRifInizio}"
+							rendered="#{row.dataRifInizio != null}">
+						</h:outputText>
+						<h:outputText value="-"
+							rendered="#{row.dataRifInizio == null and row.dataRifAgg != null}">
+						</h:outputText>
+						<h:outputText value=" a " rendered="#{row.dataRifInizio != null || row.dataRifAgg != null}">
+						</h:outputText>
+						<h:outputText value="#{row.dataRifAgg}"
+							rendered="#{row.dataRifAgg != null}">
+						</h:outputText>
+						<h:outputText value="-"
+							rendered="#{row.dataRifInizio != null and row.dataRifAgg == null}">
+						</h:outputText>
+					</rich:column>
+					<rich:column>
+						<f:facet name="header">
+							<h:outputText value="Data inizio" />
+						</f:facet>
+						<h:outputText value="#{row.dataInizio}">
+						</h:outputText>
+					</rich:column>
+					<rich:column>
+						<f:facet name="header">
+							<h:outputText value="Data aggiornamento" />
+						</f:facet>
+						<h:outputText value="#{row.dataAgg}">
+						</h:outputText>
+					</rich:column>
+					<rich:column>
+						<f:facet name="header">
+							<h:outputText value="Note" />
+						</f:facet>
+						<h:outputText value="#{row.rTracciaStati.note}" />
+					</rich:column>
+					<rich:column>
+						<f:facet name="header">
+							<h:outputText value="" />
+						</f:facet>
+						<center><h:graphicImage value="/images/calendar.png"
+							title="Modifica data di riferimento" style="cursor:pointer">
+							<a4j:support event="onclick" action="#{statoFontiBean.doCaricaStatoFontiDate}"
+								reRender="dateFontiPage"
+								oncomplete="Richfaces.showModalPanel('dateFontiModalBox'); return false;">
+								<a4j:actionparam name="fontesel" value="#{row.idFonte}"
+									assignTo="#{statoFontiBean.fonteSelezionata}" />
+								<a4j:actionparam name="pagedateSF"
+									value="/jsp/protected/fonti/dateFonti.xhtml"
+									assignTo="#{statoFontiBean.dateFontiPage}" />
+							</a4j:support>
+						</h:graphicImage></center>
+					</rich:column>
+					<rich:column>
+						<f:facet name="header">
+							<h:outputText value="" />
+						</f:facet>
+						<center><h:graphicImage value="/images/edit.png"
+							rendered="#{row.rTracciaStati != null}"
+							title="Modifica note" style="cursor:pointer">
+							<a4j:support event="onclick" action="#{statoFontiBean.doInitUpdate}"
+								reRender="newStatoFontiPage"
+								oncomplete="Richfaces.showModalPanel('newStatoFontiModalBox'); return false;">
+								<a4j:actionparam name="fontesel" value="#{row.idFonte}"
+									assignTo="#{statoFontiBean.fonteSelezionata}" />
+								<a4j:actionparam name="pagenewSF"
+									value="/jsp/protected/fonti/nuovoStatoFonti.xhtml"
+									assignTo="#{statoFontiBean.newStatoFontiPage}" />
+							</a4j:support>
+						</h:graphicImage></center>
+					</rich:column>
+					<rich:column>
+						<f:facet name="header">
+							<h:outputText value="" />
+						</f:facet>
+						<center><h:graphicImage value="/images/add.png"
+							title="Nuovo" style="cursor:pointer">
+							<a4j:support event="onclick" action="#{statoFontiBean.doInitNew}"
+								reRender="newStatoFontiPage"
+								oncomplete="Richfaces.showModalPanel('newStatoFontiModalBox'); return false;">
+								<a4j:actionparam name="fontesel" value="#{row.idFonte}"
+									assignTo="#{statoFontiBean.fonteSelezionata}" />
+								<a4j:actionparam name="pagenewSF"
+									value="/jsp/protected/fonti/nuovoStatoFonti.xhtml"
+									assignTo="#{statoFontiBean.newStatoFontiPage}" />
+							</a4j:support>
+						</h:graphicImage></center>
+					</rich:column>
+					<rich:column>
+						<f:facet name="header">
+							<h:outputText value="" />
+						</f:facet>
+						<center><h:graphicImage value="/images/detail.png"
+							title="Storico" style="cursor:pointer">
+							<a4j:support event="onclick" action="#{statoFontiBean.doCaricaStatoFontiDettaglio}"
+								reRender="dettStatoFontiPage"
+								oncomplete="Richfaces.showModalPanel('dettStatoFontiModalBox'); return false;">
+								<a4j:actionparam name="fontesel" value="#{row.idFonte}"
+									assignTo="#{statoFontiBean.fonteSelezionata}" />
+								<a4j:actionparam name="pagedettSF"
+									value="/jsp/protected/fonti/dettaglioStatoFonti.xhtml"
+									assignTo="#{statoFontiBean.dettStatoFontiPage}" />
+							</a4j:support>
+						</h:graphicImage></center>
+					</rich:column>
+				</rich:dataTable>
+
+				<rich:spacer height="10px" />
+
+				<rich:dataTable width="100%" var="row"
+					value="#{statoFontiBean.listaStatoExt}" id="listFontiExtTable"
+					onRowMouseOver="this.style.backgroundColor='#F1F1F1'"
+					onRowMouseOut="this.style.backgroundColor='#{a4jSkin.tableBackgroundColor}'">
+					<f:facet name="header">
+						<h:outputText value="Stato delle fonti dati esterne" />
+					</f:facet>
+					<rich:column>
+						<f:facet name="header">
+							<h:outputText value="Fonte dati" />
+						</f:facet>
+						<h:outputText value="#{row.fonte}" />
+					</rich:column>
+					<rich:column>
+						<f:facet name="header">
+							<h:outputText value="Data di riferimento" />
+						</f:facet>
+						<h:outputText value="Da " rendered="#{row.dataRifInizio != null || row.dataRifAgg != null}">
+						</h:outputText>
+						<h:outputText value="#{row.dataRifInizio}"
+							rendered="#{row.dataRifInizio != null}">
+						</h:outputText>
+						<h:outputText value="-"
+							rendered="#{row.dataRifInizio == null and row.dataRifAgg != null}">
+						</h:outputText>
+						<h:outputText value=" a " rendered="#{row.dataRifInizio != null || row.dataRifAgg != null}">
+						</h:outputText>
+						<h:outputText value="#{row.dataRifAgg}"
+							rendered="#{row.dataRifAgg != null}">
+						</h:outputText>
+						<h:outputText value="-"
+							rendered="#{row.dataRifInizio != null and row.dataRifAgg == null}">
+						</h:outputText>
+					</rich:column>
+					<rich:column>
+						<f:facet name="header">
+							<h:outputText value="Data inizio" />
+						</f:facet>
+						<h:outputText value="#{row.dataInizio}">
+						</h:outputText>
+					</rich:column>
+					<rich:column>
+						<f:facet name="header">
+							<h:outputText value="Data aggiornamento" />
+						</f:facet>
+						<h:outputText value="#{row.dataAgg}">
+						</h:outputText>
+					</rich:column>
+					<rich:column>
+						<f:facet name="header">
+							<h:outputText value="Note" />
+						</f:facet>
+						<h:outputText value="#{row.rTracciaStati.note}" />
+					</rich:column>
+					<rich:column>
+						<f:facet name="header">
+							<h:outputText value="" />
+						</f:facet>
+						<center><h:graphicImage value="/images/calendar.png"
+							title="Modifica data di riferimento" style="cursor:pointer">
+							<a4j:support event="onclick" action="#{statoFontiBean.doCaricaStatoFontiDate}"
+								reRender="dateFontiPage"
+								oncomplete="Richfaces.showModalPanel('dateFontiModalBox'); return false;">
+								<a4j:actionparam name="fontesel" value="#{row.idFonte}"
+									assignTo="#{statoFontiBean.fonteSelezionata}" />
+								<a4j:actionparam name="pagedateSF"
+									value="/jsp/protected/fonti/dateFonti.xhtml"
+									assignTo="#{statoFontiBean.dateFontiPage}" />
+							</a4j:support>
+						</h:graphicImage></center>
+					</rich:column>
+					<rich:column>
+						<f:facet name="header">
+							<h:outputText value="" />
+						</f:facet>
+						<center><h:graphicImage value="/images/edit.png"
+							rendered="#{row.rTracciaStati != null}"
+							title="Modifica note" style="cursor:pointer">
+							<a4j:support event="onclick" action="#{statoFontiBean.doInitUpdate}"
+								reRender="newStatoFontiPage"
+								oncomplete="Richfaces.showModalPanel('newStatoFontiModalBox'); return false;">
+								<a4j:actionparam name="fontesel" value="#{row.idFonte}"
+									assignTo="#{statoFontiBean.fonteSelezionata}" />
+								<a4j:actionparam name="pagenewSF"
+									value="/jsp/protected/fonti/nuovoStatoFonti.xhtml"
+									assignTo="#{statoFontiBean.newStatoFontiPage}" />
+							</a4j:support>
+						</h:graphicImage></center>
+					</rich:column>
+					<rich:column>
+						<f:facet name="header">
+							<h:outputText value="" />
+						</f:facet>
+						<center><h:graphicImage value="/images/add.png"
+							title="Nuovo" style="cursor:pointer">
+							<a4j:support event="onclick" action="#{statoFontiBean.doInitNew}"
+								reRender="newStatoFontiPage"
+								oncomplete="Richfaces.showModalPanel('newStatoFontiModalBox'); return false;">
+								<a4j:actionparam name="fontesel" value="#{row.idFonte}"
+									assignTo="#{statoFontiBean.fonteSelezionata}" />
+								<a4j:actionparam name="pagenewSF"
+									value="/jsp/protected/fonti/nuovoStatoFonti.xhtml"
+									assignTo="#{statoFontiBean.newStatoFontiPage}" />
+							</a4j:support>
+						</h:graphicImage></center>
+					</rich:column>
+					<rich:column>
+						<f:facet name="header">
+							<h:outputText value="" />
+						</f:facet>
+						<center><h:graphicImage value="/images/detail.png"
+							title="Storico" style="cursor:pointer">
+							<a4j:support event="onclick" action="#{statoFontiBean.doCaricaStatoFontiDettaglio}"
+								reRender="dettStatoFontiPage"
+								oncomplete="Richfaces.showModalPanel('dettStatoFontiModalBox'); return false;">
+								<a4j:actionparam name="fontesel" value="#{row.idFonte}"
+									assignTo="#{statoFontiBean.fonteSelezionata}" />
+								<a4j:actionparam name="pagedettSF"
+									value="/jsp/protected/fonti/dettaglioStatoFonti.xhtml"
+									assignTo="#{statoFontiBean.dettStatoFontiPage}" />
+							</a4j:support>
+						</h:graphicImage></center>
+					</rich:column>
+				</rich:dataTable>
+
+			</h:form>
+		</rich:panel>
+	</ui:define>
+</ui:composition>
+</html>

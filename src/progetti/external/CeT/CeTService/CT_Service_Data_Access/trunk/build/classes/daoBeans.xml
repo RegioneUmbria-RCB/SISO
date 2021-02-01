@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:faces="http://www.springframework.org/schema/faces"
+	xmlns:webflow="http://www.springframework.org/schema/webflow-config"
+	xmlns:jee="http://www.springframework.org/schema/jee"
+	xmlns:security="http://www.springframework.org/schema/security"
+	xsi:schemaLocation="
+        http://www.springframework.org/schema/webflow-config
+        http://www.springframework.org/schema/webflow-config/spring-webflow-config-2.0.xsd
+		http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+		http://www.springframework.org/schema/context 
+		http://www.springframework.org/schema/context/spring-context-2.5.xsd
+		http://www.springframework.org/schema/faces 
+		http://www.springframework.org/schema/faces/spring-faces-2.0.xsd
+		http://www.springframework.org/schema/webflow-config 
+		http://www.springframework.org/schema/webflow-config/spring-webflow-config-2.0.xsd
+		http://www.springframework.org/schema/jee 
+		http://www.springframework.org/schema/jee/spring-jee-2.5.xsd
+		http://www.springframework.org/schema/security 
+		http://www.springframework.org/schema/security/spring-security.xsd">
+	   	
+	   		
+	   <!-- Qui vanno aggiunti i DAO  -->
+	   	<context:annotation-config />
+	   	<!-- context:load-time-weaver/-->
+	   	<bean id="condonoDAO" class="it.webred.ct.data.access.basic.condono.dao.CondonoJPAImpl"/>
+	   	<bean id="catastoDAO" class="it.webred.ct.data.access.basic.catasto.dao.CatastoJPAImpl"/>
+	   	<bean id="anagrafeDAO" class="it.webred.ct.data.access.basic.anagrafe.dao.AnagrafeJPAImpl"/>
+	   	<bean id="iciDAO" class="it.webred.ct.data.access.basic.ici.dao.IciJPAImpl"/>
+	   	<bean id="tarsuDAO" class="it.webred.ct.data.access.basic.tarsu.dao.TarsuJPAImpl"/>
+	   	<bean id="docfaDAO" class="it.webred.ct.data.access.basic.docfa.dao.DocfaJPAImpl"/>
+	   	<bean id="commonDAO" class="it.webred.ct.data.access.basic.common.dao.CommonJPAImpl"/>
+	   	<bean id="IndiceRicercaDAO" class="it.webred.ct.data.access.basic.indice.ricerca.dao.IndiceCorrelazioneJPAImpl"/>
+	   	<bean id="IndiceCorrelazioneIndirettaDAO" class="it.webred.ct.data.access.basic.indice.ricerca.dao.IndiceCorrelazioneIndirettaJPAImpl"/>	
+	   	<bean id="locazioniDAO" class="it.webred.ct.data.access.basic.locazioni.dao.LocazioniJPAImpl"/>
+	   	<bean id="cosapDAO" class="it.webred.ct.data.access.basic.cosap.dao.CosapJPAImpl"/>
+	   	<bean id="redditiDAO" class="it.webred.ct.data.access.basic.redditi.dao.RedditiJPAImpl"/>
+	   	<bean id="flusso290DAO" class="it.webred.ct.data.access.basic.cnc.flusso290.dao.Flusso290JPAImpl" />
+	   	<bean id="flusso750DAO" class="it.webred.ct.data.access.basic.cnc.flusso750.dao.Flusso750JPAImpl" />
+	   	<bean id="flussoStatoRiscossioneDAO" class="it.webred.ct.data.access.basic.cnc.statoriscossione.dao.StatoRiscossioneJPAImpl" />
+	   	<bean id="compravenditeMuiDAO" class="it.webred.ct.data.access.basic.compravendite.dao.CompravenditeMuiJPAImpl"/>
+	   	<bean id="concEdilizieDAO" class="it.webred.ct.data.access.basic.concedilizie.dao.ConcessioniEdilizieJPAImpl"/>
+	   	<bean id="pregeoDAO" class="it.webred.ct.data.access.basic.pregeo.dao.PregeoJPAImpl"/>
+	   	<bean id="CivicoDAO" class="it.webred.ct.data.access.basic.indice.civico.dao.CivicoJPAImpl" />
+	   	<bean id="ViaDAO" class="it.webred.ct.data.access.basic.indice.via.dao.ViaJPAImpl" />
+	   	<bean id="SoggettoDAO" class="it.webred.ct.data.access.basic.indice.soggetto.dao.SoggettoJPAImpl" />
+	   	<bean id="OggettoDAO" class="it.webred.ct.data.access.basic.indice.oggetto.dao.OggettoJPAImpl" />
+	    <bean id="processiDAO" class="it.webred.ct.data.access.basic.processi.dao.ProcessiJPAImpl"/>
+	    <bean id="docfaIciReportDAO" class="it.webred.ct.data.access.basic.diagnostiche.ici.dao.DocfaIciReportJPAImpl"/>
+	    <bean id="docfaTarReportDAO" class="it.webred.ct.data.access.basic.diagnostiche.tarsu.dao.DocfaTarReportJPAImpl"/>
+	    <bean id="pgtDAO" class="it.webred.ct.data.access.basic.pgt.dao.PgtJPAImpl"/>
+	    <bean id="trafficoDAO" class="it.webred.ct.data.access.basic.traffico.dao.TrafficoJPAImpl"/>
+	    <bean id="scuoleDAO" class="it.webred.ct.data.access.basic.scuole.dao.ScuoleJPAImpl"/>
+	    <bean id="centriEstiviDAO" class="it.webred.ct.data.access.basic.centriestivi.dao.CentriEstiviJPAImpl"/>
+	    <bean id="datiTecniciFabbricatoDAO" class="it.webred.ct.data.access.basic.datitecnicifabbricato.dao.DatiTecniciFabbricatoJPAImpl"/>
+		<bean id="retteDAO" class="it.webred.ct.data.access.basic.rette.dao.RetteJPAImpl"/>
+	    <bean id="segnalazioneQualificataDAO" class="it.webred.ct.data.access.basic.segnalazionequalificata.dao.SegnalazioneQualificataJPAImpl"/>
+	    <bean id="licCommercioDAO" class="it.webred.ct.data.access.basic.licenzecommercio.dao.LicenzeCommercioJPAImpl"/>
+		<bean id="fontiDAO" class="it.webred.ct.data.access.basic.fonti.dao.FontiJPAImpl"/>
+		<bean id="concEdiCatDcfDAO" class="it.webred.ct.data.access.aggregator.catastoDocfaConcedilizie.dao.CatastoDocfaConcedilizieJPAImpl"/>
+		<bean id="c336PraticaDAO" class="it.webred.ct.data.access.basic.c336.dao.C336PraticaJPAImpl"/>
+		<bean id="c336GesPraticaDAO" class="it.webred.ct.data.access.basic.c336.dao.C336GesPraticaJPAImpl"/>
+		<bean id="fabbricatoDAO" class="it.webred.ct.data.access.basic.fabbricato.dao.FabbricatoJPAImpl"/>
+		<bean id="cncDAO" class="it.webred.ct.data.access.basic.cnc.dao.CNCJPAImpl"/>
+		<bean id="iseeDAO" class="it.webred.ct.data.access.aggregator.isee.dao.IseeJPAImpl"/>
+		<bean id="acquaDAO" class="it.webred.ct.data.access.basic.acqua.dao.AcquaJPAImpl"/>
+		<bean id="csDAO" class="it.webred.ct.data.access.basic.cartellasociale.dao.CartellaSocialeJPAImpl"/>
+		<bean id="imuDAO" class="it.webred.ct.data.access.basic.imu.dao.SaldoImuJPAImpl"/>
+		<bean id="pratichePortaleDAO" class="it.webred.ct.data.access.basic.praticheportale.dao.PratichePortaleJPAImpl"/>	
+		<bean id="f24DAO" class="it.webred.ct.data.access.basic.f24.dao.F24JPAImpl"/>	
+		<bean id="redditiAnDAO" class="it.webred.ct.data.access.basic.redditianalitici.dao.RedditiAnJPAImpl"/>
+		<bean id="rtaresDAO" class="it.webred.ct.data.access.basic.ruolo.tares.dao.RTaresJPAImpl"/>
+		<bean id="rtarsuDAO" class="it.webred.ct.data.access.basic.ruolo.tarsu.dao.RTarsuJPAImpl"/>
+		<bean id="ruoloDAO" class="it.webred.ct.data.access.basic.ruolo.dao.RuoloJPAImpl"/>
+		<bean id="icidmDAO" class="it.webred.ct.data.access.basic.versamenti.iciDM.dao.VersIciDmJPAImpl"/>
+		<bean id="fornitureElettricheDAO" class="it.webred.ct.data.access.basic.fornitureelettriche.dao.FornitureElettricheJPAImpl"/>
+		<bean id="fornitureGasDAO" class="it.webred.ct.data.access.basic.fornituregas.dao.FornitureGasJPAImpl"/>
+		<bean id="successioniDAO" class="it.webred.ct.data.access.basic.successioni.dao.SuccessioniJPAImpl"/>
+		<bean id="bolliVeicoliDAO" class="it.webred.ct.data.access.basic.bolliVeicoli.dao.BolliVeicoliJPAImpl"/>
+		
+	</beans>

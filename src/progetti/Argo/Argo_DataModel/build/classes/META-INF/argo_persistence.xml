@@ -1,0 +1,60 @@
+<persistence xmlns="http://java.sun.com/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
+             version="2.0">
+             
+		<persistence-unit name="Argo_DataModel" transaction-type="JTA">
+		<provider>org.hibernate.ejb.HibernatePersistence</provider>  
+		<mapping-file>META-INF/orm_argo.xml</mapping-file>
+
+		<class>it.umbriadigitale.argo.data.cs.data.ArCsSoggettoCs</class>
+		<class>it.umbriadigitale.argo.data.cs.data.ArCsDatoCs</class>
+		<class>it.umbriadigitale.argo.data.cs.data.ArDato</class>
+		<class>it.umbriadigitale.argo.data.cs.data.ArCFonteinfo</class>
+		<class>it.umbriadigitale.argo.data.cs.data.ArPeriodo</class>
+		<class>it.umbriadigitale.argo.data.cs.data.ArSpazio</class>
+		<class>it.umbriadigitale.argo.data.cs.data.ArCsTrasfFondi</class>
+		<class>it.umbriadigitale.argo.data.cs.data.ArCsConsuntivoServ</class>
+		<class>it.umbriadigitale.argo.data.cs.data.ArQClasse</class>
+		<class>it.umbriadigitale.argo.data.cs.data.ArCsAreat</class>
+		<class>it.umbriadigitale.argo.data.cs.data.ArQModello</class>
+		<class>it.umbriadigitale.argo.data.cs.data.ArTClasse</class>
+		<class>it.umbriadigitale.argo.data.cs.data.ArFfServizioClasse</class>
+		<class>it.umbriadigitale.argo.data.cs.data.ArFfServizio</class>
+		<class>it.umbriadigitale.argo.data.cs.data.ArFfLineafin</class>
+		<class>it.umbriadigitale.argo.data.cs.data.ArFfFondo</class>
+		<class>it.umbriadigitale.argo.data.cs.data.ArFfProgetto</class>
+		<class>it.umbriadigitale.argo.data.cs.data.ArFfTbOrigine</class>
+		<class>it.umbriadigitale.argo.data.cs.data.ArOOrganizzazione</class>
+		<class>it.umbriadigitale.argo.data.cs.data.ArOOrganizzazioneFse</class>
+		<class>it.umbriadigitale.argo.data.cs.data.ArOOrganizzazioneEst</class>
+		<class>it.umbriadigitale.argo.data.cs.data.ArFfServizioAreat</class>
+		<class>it.umbriadigitale.argo.data.cs.data.ArFfServizioTerriotorio</class>
+		<class>it.umbriadigitale.argo.data.cs.data.ArFfErogante</class>
+		<class>it.umbriadigitale.argo.data.cs.data.ArFfCapitolo</class>
+		<class>it.umbriadigitale.argo.data.cs.data.ArOOrgImpExp</class>
+		<class>it.umbriadigitale.argo.data.cs.data.FseChkAteco</class>
+		<class>it.umbriadigitale.argo.data.cs.data.FseChkDimensioneAzienda</class>
+		<class>it.umbriadigitale.argo.data.cs.data.FseChkFormaGiuridicaRna</class>
+		<class>it.umbriadigitale.argo.data.cs.data.FseChkItComune</class>				
+		<class>it.umbriadigitale.argo.data.cs.data.FseChkGruppoVulPart</class>						
+	    <class>it.umbriadigitale.argo.data.cs.data.FseChkLocalizzazioneGeog</class>
+	    <class>it.umbriadigitale.argo.data.cs.data.FseChkStatoPartecipante</class>
+	    <class>it.umbriadigitale.argo.data.cs.data.FseChkTipoOrarioLavoro</class>
+	    <class>it.umbriadigitale.argo.data.cs.data.FseChkTitoloStudio</class>
+	    <class>it.umbriadigitale.argo.data.cs.data.FseChkResidenza</class>
+	    <class>it.umbriadigitale.argo.data.cs.data.ImportSiruProgettiAttivita</class>
+	    			
+		<properties>
+			<!-- property name="hibernate.dialect" value="org.hibernate.dialect.Oracle9iDialect" /-->
+			<property name="hibernate.dialect" value="it.webred.ct.data.spatial.OracleSpatialDialect" />
+			
+			<!-- <property name="hibernate.hbm2ddl.auto" value="update"/>  -->
+			 <property name="javax.persistence.validation.mode" value="NONE" />    
+            <property name="hibernate.show_sql" value="true" />   <!-- RIMETTERE A TRUE PER VISUALIZZARE IL LOG --> 
+            <property name="hibernate.format_sql" value="true" /> <!-- RIMETTERE A TRUE PER VISUALIZZARE IL LOG --> 
+            
+		    <property name="hibernate.transaction.jta.platform" value="org.hibernate.service.jta.platform.internal.JBossAppServerJtaPlatform" /> 
+		</properties>
+	</persistence-unit>
+</persistence>

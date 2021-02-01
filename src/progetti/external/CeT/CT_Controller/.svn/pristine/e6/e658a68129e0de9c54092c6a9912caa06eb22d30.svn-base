@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-modules id="moduleCoreId" project-version="1.5.0">
+    <wb-module deploy-name="CT_Controller">
+        <wb-resource deploy-path="/" source-path="/EarContent"/>
+        <dependent-module archiveName="CT_Controller_Listener.war" deploy-path="/" handle="module:/resource/CT_Controller_Listener/CT_Controller_Listener">
+            <dependent-object/>
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="CT_Controller_WEB.war" deploy-path="/" handle="module:/resource/CT_Controller_WEB/CT_Controller_WEB">
+            <dependent-object/>
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="REGeneric.jar" deploy-path="/lib" handle="module:/resource/REGeneric/REGeneric">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="REProcess.jar" deploy-path="/lib" handle="module:/resource/REProcess/REProcess">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="CT_Controller_Data_Model.jar" deploy-path="/lib" handle="module:/resource/CT_Controller_Data_Model/CT_Controller_Data_Model">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="datarouter.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/cet-lib/datarouter.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="commons-compress-1.3.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/apache-compress/commons-compress-1.3.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="sigmaTerDownload-1.1.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/sigmaTer/sigmaTerDownload-1.1.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        
+        <dependent-module archiveName="jcl104-over-slf4j-1.4.2.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/slf4j/jcl104-over-slf4j-1.4.2.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="log4j-over-slf4j-1.4.2.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/slf4j/log4j-over-slf4j-1.4.2.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="slf4j-jdk14-1.4.2.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/slf4j/slf4j-jdk14-1.4.2.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="slf4j-jcl-1.4.2.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/slf4j/slf4j-jcl-1.4.2.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="slf4j-nop-1.4.2.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/slf4j/slf4j-nop-1.4.2.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="slf4j-log4j12-1.4.2.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/slf4j/slf4j-log4j12-1.4.2.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="slf4j-simple-1.4.2.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/slf4j/slf4j-simple-1.4.2.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="slf4j-api-1.4.2.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/slf4j/slf4j-api-1.4.2.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+
+        <dependent-module archiveName="aopalliance.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/aopalliance/1.0/aopalliance.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="cglib-2.2.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/cglib/2.2/cglib-2.2.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="cetsecutil.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/cet-lib/cetsecutil.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="asm-all-3.3.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/asm/3.3/asm-all-3.3.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="poi-3.8-20120326.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/apache-poi/poi-3.8-20120326.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="poi-ooxml-3.8-20120326.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/apache-poi/poi-ooxml-3.8-20120326.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="poi-ooxml-schemas-3.8-20120326.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/apache-poi/poi-ooxml-schemas-3.8-20120326.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="xmlbeans-2.3.0.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/apache-poi/xmlbeans-2.3.0.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="MuiFornituraParsing.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/cet-lib/MuiFornituraParsing.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="loadCatastoXml-1.5-javadoc.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/loadCatasto/loadCatastoXml-1.5-javadoc.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="loadCatastoXml-1.5.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/loadCatasto/loadCatastoXml-1.5.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="commons-jelly-tags-log-1.0.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/apache-commons/main/commons-jelly-tags-log-1.0.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="commons-jelly-tags-define-1.0.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/apache-commons/main/commons-jelly-tags-define-1.0.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="commons-jelly-1.0.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/apache-commons/main/commons-jelly-1.0.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="commons-jelly-tags-xml-1.1.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/apache-commons/main/commons-jelly-tags-xml-1.1.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="Genario.jar" deploy-path="/lib" handle="module:/resource/Genario/Genario">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="CT_Controller_EJBClient.jar" deploy-path="/lib" handle="module:/resource/CT_Controller_EJBClient/CT_Controller_EJBClient">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="CT_Controller_EJB.jar" deploy-path="/" handle="module:/resource/CT_Controller_EJB/CT_Controller_EJB">
+            <dependent-object/>
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="commons-lang.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/apache-commons/main/commons-lang.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="WsSITClient_v2.0.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/wsToponomastica/WsSITClient_v2.0.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="webredutils.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/cet-lib/webredutils.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="htmlunit-2.13.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/htmlUnit/htmlunit-2.13.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="jnet.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/htmlUnit/jnet.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="jcert.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/htmlUnit/jcert.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="cssparser-0.9.11.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/htmlUnit/cssparser-0.9.11.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="htmlunit-core-js-2.13.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/htmlUnit/htmlunit-core-js-2.13.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="sac-1.3.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/htmlUnit/sac-1.3.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="commons-io-2.4.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/htmlUnit/commons-io-2.4.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="serializer-2.7.1.jar" deploy-path="/" handle="module:/classpath/lib/CT-LIBS/htmlUnit/serializer-2.7.1.jar">
+            <dependent-object/>
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="xml-apis-1.4.01.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/htmlUnit/xml-apis-1.4.01.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="httpmime-4.3.1.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/htmlUnit/httpmime-4.3.1.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="nekohtml-1.9.19.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/htmlUnit/nekohtml-1.9.19.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="jetty-http-8.1.12.v20130726.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/htmlUnit/jetty-http-8.1.12.v20130726.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="jsse.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/htmlUnit/jsse.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="httpcore-4.3.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/htmlUnit/httpcore-4.3.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="commons-logging-1.1.3.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/htmlUnit/commons-logging-1.1.3.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="xercesImpl-2.11.0.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/htmlUnit/xercesImpl-2.11.0.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="httpclient-4.3.1.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/htmlUnit/httpclient-4.3.1.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="commons-lang3-3.1.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/htmlUnit/commons-lang3-3.1.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="jetty-websocket-8.1.12.v20130726.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/htmlUnit/jetty-websocket-8.1.12.v20130726.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="commons-codec-1.8.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/htmlUnit/commons-codec-1.8.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="jetty-util-8.1.12.v20130726.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/htmlUnit/jetty-util-8.1.12.v20130726.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="commons-collections-3.2.1.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/htmlUnit/commons-collections-3.2.1.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="xalan-2.7.1.jar" deploy-path="/" handle="module:/classpath/lib/CT-LIBS/htmlUnit/xalan-2.7.1.jar">
+            <dependent-object/>
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="jetty-io-8.1.12.v20130726.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/htmlUnit/jetty-io-8.1.12.v20130726.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+    </wb-module>
+</project-modules>

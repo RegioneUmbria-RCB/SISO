@@ -1,0 +1,101 @@
+<?xml version="1.0"?>
+<j:jelly trim="false" xmlns:define="jelly:define" xmlns:j="jelly:core"
+	     xmlns:x="jelly:xml" xmlns:re="reTagLib" xmlns:log="jelly:log">
+	
+	<define:taglib uri="reTagLib">
+		<define:jellybean name="bridge" className="it.webred.rulengine.chains.bridge.JellyCommandBridge" />
+	</define:taglib>
+	
+	<!-- 0 -->
+	<re:bridge codiceComando="TXT-RD04FD" context="${ctx}" connessione="DWH" var="cmd00" />
+	
+	<re:bridge codiceComando="TXT-RD05FD" context="${ctx}" connessione="DWH" var="cmd01" />
+	
+	<re:bridge codiceComando="TXT-RD06FD" context="${ctx}" connessione="DWH" var="cmd02" />
+
+	<re:bridge codiceComando="TXT-RD07FD" context="${ctx}" connessione="DWH" var="cmd03" />
+	
+	<re:bridge codiceComando="TXT-RD08FD" context="${ctx}" connessione="DWH" var="cmd04" />
+	
+	<re:bridge codiceComando="TXT-RD09FD" context="${ctx}" connessione="DWH" var="cmd05" />
+	
+	<re:bridge codiceComando="TXT-RD10FD" context="${ctx}" connessione="DWH" var="cmd06" />
+	
+	<re:bridge codiceComando="TXT-RD11FD" context="${ctx}" connessione="DWH" var="cmd07" />
+	
+	<re:bridge codiceComando="TXT-RD12FD" context="${ctx}" connessione="DWH" var="cmd08" />
+	
+	<re:bridge codiceComando="TXT-RD13FD" context="${ctx}" connessione="DWH" var="cmd09" />
+
+	<!-- 1 -->
+	<j:set var='par1' encode='true'>
+		<complexParam>
+			<param type="java.lang.Integer" name="ANNO">2004</param>		  
+	   	</complexParam>
+	</j:set>
+	<re:bridge codiceComando="C_REDDITI" context="${ctx}" connessione="DWH" var="cmd1" parametro="${par1}"/>
+	
+	<j:set var='par2' encode='true'>
+		<complexParam>
+			<param type="java.lang.Integer" name="ANNO">2005</param>		  
+	   	</complexParam>
+	</j:set>
+	<re:bridge codiceComando="C_REDDITI" context="${ctx}" connessione="DWH" var="cmd2" parametro="${par2}"/>
+	
+	<j:set var='par3' encode='true'>
+		<complexParam>
+			<param type="java.lang.Integer" name="ANNO">2006</param>		  
+	   	</complexParam>
+	</j:set>
+	<re:bridge codiceComando="C_REDDITI" context="${ctx}" connessione="DWH" var="cmd3" parametro="${par3}"/>
+	
+	<j:set var='par4' encode='true'>
+		<complexParam>
+			<param type="java.lang.Integer" name="ANNO">2007</param>		  
+	   	</complexParam>
+	</j:set>
+	<re:bridge codiceComando="C_REDDITI" context="${ctx}" connessione="DWH" var="cmd4" parametro="${par4}"/>
+	
+	<j:set var='par5' encode='true'>
+		<complexParam>
+			<param type="java.lang.Integer" name="ANNO">2008</param>		  
+	   	</complexParam>
+	</j:set>
+	<re:bridge codiceComando="C_REDDITI" context="${ctx}" connessione="DWH" var="cmd5" parametro="${par5}"/>
+	
+	<j:set var='par6' encode='true'>
+		<complexParam>
+			<param type="java.lang.Integer" name="ANNO">2009</param>		  
+	   	</complexParam>
+	</j:set>
+	<re:bridge codiceComando="C_REDDITI" context="${ctx}" connessione="DWH" var="cmd6" parametro="${par6}"/>
+		 
+ 	<j:set var='par7' encode='true'>
+		<complexParam>
+			<param type="java.lang.Integer" name="ANNO">2010</param>		  
+	   	</complexParam>
+	</j:set>
+	<re:bridge codiceComando="C_REDDITI" context="${ctx}" connessione="DWH" var="cmd7" parametro="${par7}"/>
+	
+	<j:set var='par8' encode='true'>
+		<complexParam>
+			<param type="java.lang.Integer" name="ANNO">2011</param>		  
+	   	</complexParam>
+	</j:set>
+	<re:bridge codiceComando="C_REDDITI" context="${ctx}" connessione="DWH" var="cmd8" parametro="${par8}"/>
+	
+	<j:set var='par9' encode='true'>
+		<complexParam>
+			<param type="java.lang.Integer" name="ANNO">2012</param>		  
+	   	</complexParam>
+	</j:set>
+	<re:bridge codiceComando="C_REDDITI" context="${ctx}" connessione="DWH" var="cmd9" parametro="${par9}"/>
+	
+	<j:set var='par10' encode='true'>
+		<complexParam>
+			<param type="java.lang.Integer" name="ANNO">2013</param>		  
+	   	</complexParam>
+	</j:set>
+	<re:bridge codiceComando="C_REDDITI" context="${ctx}" connessione="DWH" var="cmd10" parametro="${par10}"/>
+		 
+</j:jelly>

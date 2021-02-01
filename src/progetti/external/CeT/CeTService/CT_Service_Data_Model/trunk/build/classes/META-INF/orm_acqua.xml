@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings
+  xmlns="http://java.sun.com/xml/ns/persistence/orm"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
+  version="2.0">
+
+	<!-- Query Utente -->
+	<named-query name="SitAcquaUtente.getUtenteByCF">
+		<query>
+			<![CDATA[
+				SELECT t FROM SitAcquaUtente t 
+			    WHERE UPPER(t.codFiscale) = UPPER(:codFisc)
+			    	AND t.dtFineVal IS NULL
+			 ]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SitAcquaUtente.getUtenteByPI">
+		<query>
+			<![CDATA[
+				SELECT t FROM SitAcquaUtente t 
+			    WHERE UPPER(t.partIva) = UPPER(:pIva)
+			    	AND t.dtFineVal IS NULL
+			 ]]>
+		</query>
+	</named-query>
+
+	<!-- Query Utenze -->
+	<named-query name="SitAcquaUtenze.getUtenzeByCF">
+		<query>
+			<![CDATA[
+				SELECT z FROM SitAcquaUtenze z, SitAcquaUtente t 
+			    WHERE UPPER(t.codFiscale) = UPPER(:codFisc)
+			    	AND t.idExt = z.idExtUtente
+			    	AND t.dtFineVal IS NULL AND z.dtFineVal IS NULL
+			    ORDER BY z.codServizio
+			 ]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SitAcquaUtenze.getUtenzeByPI">
+		<query>
+			<![CDATA[
+				SELECT z FROM SitAcquaUtenze z, SitAcquaUtente t 
+			    WHERE UPPER(t.partIva) = UPPER(:pIva)
+			    	AND t.idExt = z.idExtUtente
+			    	AND t.dtFineVal IS NULL AND z.dtFineVal IS NULL
+			    ORDER BY z.codServizio
+			 ]]>
+		</query>
+	</named-query>
+
+	<!-- Query Catasto -->
+	<named-query name="SitAcquaCatasto.getCatastoByCodServizio">
+		<query>
+			<![CDATA[
+				SELECT c FROM SitAcquaCatasto c 
+			    WHERE c.codServizio = :codServizio
+			    	AND c.dtFineVal IS NULL
+			    ORDER BY c.sezione,c.foglio,c.particella,c.subalterno
+			 ]]>
+		</query>
+	</named-query>
+
+</entity-mappings>

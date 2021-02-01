@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="AMProfiler" default="axis-deploy" basedir=".">
+
+    <target name="init">
+    	<property name="libdir" value="${basedir}/lib"/>
+    	<property name="classdir" value="${basedir}/../../build"/>
+		<property name="cvs.root" value=":pserver:makerelease:makerelease@172.16.2.188:/cvs_repos"/>
+    	<path id="libs"> 
+            <fileset dir="${libdir}">
+                <include name="*.jar"/>
+            </fileset>
+            <pathelement location="${java.class.path}"/>
+            <pathelement location="${classdir}"/>
+        </path>  
+    </target>
+    	
+      
+	<target depends="init" name="setAxisCP">
+
+		<path id="cpAxisDeploy">
+<!--
+	    	<path id="lib-for-deploy"> 
+	            <fileset dir="${basedir}/ws/libs-required">
+	                <include name="*.jar"/>
+	            </fileset>
+	    		<path refid="libs"/>
+	        </path> 
+-->
+	 	</path>		
+	</target>
+	
+	
+
+	<target depends="setAxisCP"  name="axis-deploy">
+
+		<taskdef name="admin" classpathref="cpAxisDeploy"
+		classname="org.apache.axis.tools.ant.axis.AdminClientTask"/>
+			<admin
+			port="8080"
+			hostname="127.0.0.1"
+			servletpath="AMProfiler/services/AdminService" 
+			xmlfile="${basedir}/ws/deploy.wsdd"
+			username="admin"
+			password="admin"
+			debug="true"
+			/>
+	</target> 
+	
+	<target depends="setAxisCP"  name="axis-undeploy">
+
+		<taskdef name="admin" classpathref="cpAxisDeploy"
+		classname="org.apache.axis.tools.ant.axis.AdminClientTask"/>
+			<admin
+			port="8080"
+			hostname="127.0.0.1"
+			servletpath="AMProfiler/services/AdminService" 
+			xmlfile="${basedir}/ws/undeploy.wsdd"
+			username="admin"
+			password="admin"
+			debug="true"
+			/>
+	</target> 	
+ 
+
+</project>

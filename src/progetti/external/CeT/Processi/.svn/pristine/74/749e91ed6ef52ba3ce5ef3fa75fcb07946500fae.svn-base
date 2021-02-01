@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.0"
+	xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd">
+	
+	<persistence-unit name="RE_JPA">
+		<jta-data-source>java:/jdbc/REngineDS</jta-data-source>
+		
+		<mapping-file>META-INF/orm_rengine.xml</mapping-file>
+		
+		<class>it.webred.rulengine.db.model.RRule</class>
+	    <class>it.webred.rulengine.db.model.RCommand</class>
+	    <class>it.webred.rulengine.db.model.RCommandType</class>
+	    <class>it.webred.rulengine.db.model.RCommandAck</class>
+	    <class>it.webred.rulengine.db.model.RCommandLaunch</class>
+	    <class>it.webred.rulengine.db.model.RConnection</class>
+	    <class>it.webred.rulengine.db.model.RChain</class>
+	    <class>it.webred.rulengine.db.model.RAbNormal</class>
+	    
+	
+		<properties>
+			<property name="hibernate.dialect" value="org.hibernate.dialect.Oracle9iDialect" />
+			<property name="hibernate.show_sql" value="false" />
+			<property name="jboss.entity.manager.jndi.name" value="java:jboss/RE_JPA" />
+			<property name="jboss.entity.manager.factory.jndi.name" value="java:jboss/RE_JPAFactory" />
+		</properties>
+
+	</persistence-unit>
+	
+</persistence>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings
+  xmlns="http://java.sun.com/xml/ns/persistence/orm"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
+  version="2.0">
+
+	<!-- Query Multe -->
+	<named-query name="Condono.getInfoCondono">
+		<query>
+			<![CDATA[
+				SELECT m FROM CondonoPratica m , CondonoCoordinate c
+				WHERE c.id.codcondono=m.codicecondono
+				AND   m.pgdata <= :pgData
+				AND  LPAD(c.id.foglio, 4,'0') =  LPAD(:foglio, 4,'0')
+				AND  LPAD(c.id.mappale,5,'0') = LPAD(:particella,5,'0')
+			 ]]>
+		</query>
+	</named-query>
+
+</entity-mappings>

@@ -1,0 +1,32 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+     	xmlns:h="http://java.sun.com/jsf/html"
+		xmlns:f="http://java.sun.com/jsf/core"
+		xmlns:ui="http://java.sun.com/jsf/facelets"
+		xmlns:p="http://primefaces.org/ui"
+	  	xmlns:composite="http://java.sun.com/jsf/composite">
+      
+	<h:head>
+		<title>News stato rilasci</title>
+	</h:head>
+	<h:body>
+		<composite:interface componentType="pnlNews">
+			<composite:attribute name="iNews" type="it.webred.cs.jsf.interfaces.INews" />
+			<composite:attribute name="renderGoogleDoc" default="true"/>
+		</composite:interface>
+	
+		<composite:implementation>
+			 <p:outputPanel deferred="true" deferredMode="load" rendered="#{cc.attrs.iNews.messaggioNews!=null}">
+			    <p:graphicImage id="idImgNews" value="#{resource['webredcs/img/exclamation.gif']}" height="40px"/>
+			    <p:spacer width="20px"/>
+			    <p:outputLabel value="#{cc.attrs.iNews.messaggioNews}" style="font-weight: bold; font-size:20px !important; color:#8B0000; "  />
+			  </p:outputPanel>
+			  <p:outputPanel deferred="true" deferredMode="load" rendered="#{cc.attrs.renderGoogleDoc}">
+			  <p:layoutUnit position="west" size="250" style="border: none;"> 
+					<iframe  src="#{cc.attrs.iNews.googleDoc}" frameborder="0" width="960" height="569" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"/>
+		      </p:layoutUnit>   	
+		      </p:outputPanel>	
+		</composite:implementation>
+	</h:body>
+		
+</html>

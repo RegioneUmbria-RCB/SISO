@@ -1,0 +1,37 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<OSDM_Design class="oracle.dbtools.crest.model.design.Design" name="CS" id="92828518-FDF2-9FC0-8903-79B9B4C1F09E" version="3.5">
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:49:03 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<capitalNames>false</capitalNames>
+<designId>92828518-FDF2-9FC0-8903-79B9B4C1F09E</designId>
+<usedDesignStorageDescriptors>
+<designDescr class="oracle.dbtools.crest.model.design.Design$DesignStorageDesc" id="F3C98C28-A43E-F8B6-E84F-C3CB99803209">
+<designStoragePath>C:\Users\marcoultra\Documents\sviluppo\eclipse-workspaces\kepler-workspaces\SISO\SISO\progetti\CartellaSociale\trunk\allocated-baseline\trunk\functional-baseline\trunk\Modello Dati\CS</designStoragePath>
+</designDescr>
+<designDescr class="oracle.dbtools.crest.model.design.Design$DesignStorageDesc" id="EC38D009-FD2F-2877-4DE7-A56BDC4F3C5B">
+<designStoragePath>C:\Users\marcoultra\AppData\Roaming\SQL Developer\mywork\MODEL</designStoragePath>
+</designDescr>
+<designDescr class="oracle.dbtools.crest.model.design.Design$DesignStorageDesc" id="8A165D35-BFB9-7BDE-E5F9-AC316D2A629E">
+<designStoragePath>C:\Users\marcoultra\AppData\Roaming\SQL Developer\mywork\MODEL</designStoragePath>
+</designDescr>
+<designDescr class="oracle.dbtools.crest.model.design.Design$DesignStorageDesc" id="6129616A-4CDC-484D-DAF4-AD079427603B">
+<designStoragePath>C:\Users\marcoultra\AppData\Roaming\SQL Developer\mywork\MODEL</designStoragePath>
+</designDescr>
+<designDescr class="oracle.dbtools.crest.model.design.Design$DesignStorageDesc" id="3B85B0A3-260B-C9F3-2111-1DDCB59C3FCB">
+<designStoragePath>C:\Users\marcoultra\AppData\Roaming\SQL Developer\mywork\MODEL</designStoragePath>
+</designDescr>
+<designDescr class="oracle.dbtools.crest.model.design.Design$DesignStorageDesc" id="874F78CD-F538-35ED-1EBD-55BBFD7EC0C0">
+<designStoragePath>C:\Users\marcoultra\AppData\Roaming\SQL Developer\mywork\MODEL</designStoragePath>
+</designDescr>
+<designDescr class="oracle.dbtools.crest.model.design.Design$DesignStorageDesc" id="C091163A-27C5-E324-1EFE-9EF8FD17978C">
+<designStoragePath>C:\Users\marcoultra\AppData\Roaming\SQL Developer\mywork\MODEL</designStoragePath>
+</designDescr>
+<designDescr class="oracle.dbtools.crest.model.design.Design$DesignStorageDesc" id="92828518-FDF2-9FC0-8903-79B9B4C1F09E">
+<designStoragePath>C:\Users\marcoultra\AppData\Roaming\SQL Developer\mywork\MODEL\CS</designStoragePath>
+</designDescr>
+<designDescr class="oracle.dbtools.crest.model.design.Design$DesignStorageDesc" id="DBE04B43-4A2B-97AC-01DF-9A07789FCAFB">
+<designStoragePath>C:\Users\marcoultra\AppData\Roaming\SQL Developer\mywork\MODEL</designStoragePath>
+</designDescr>
+</usedDesignStorageDescriptors>
+</OSDM_Design>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:webred="http://java.sun.com/jsf/composite/webred"
+	xmlns:webredcs="http://java.sun.com/jsf/composite/webredcs">
+
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+	<link rel="stylesheet" type="text/css"
+		href="${facesContext.externalContext.requestContextPath}/css/style.css" />
+	<script type="text/javascript"
+		src="${facesContext.externalContext.requestContextPath}/js/it.js" />
+</h:head>
+
+<body>
+	<ui:composition>
+
+		
+
+		<h:panelGroup layout="block" id="header">
+			<div class="block">
+					<p:layout style="min-width:300px;min-height:100px;">
+					    <p:layoutUnit position="center">
+					        <h1>Rilevazione Presenze</h1>
+					    </p:layoutUnit>
+					</p:layout>
+				<div class="column">
+<!-- 					<p:graphicImage id="imgLogo" value="/images/logo.png" height="70" -->
+<!-- 						cache="false" /> -->
+					<p:spacer width="20px" />
+					</div>
+
+			</div>
+		</h:panelGroup>
+
+		<ui:fragment id="linea">
+			<div class="post">
+				<h2 class="title ui-widget-header ui-corner-all"></h2>
+			</div>
+		</ui:fragment>
+
+	</ui:composition>
+</body>
+</html>

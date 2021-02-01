@@ -1,0 +1,45 @@
+<persistence xmlns="http://java.sun.com/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
+             version="2.0">
+	
+	<persistence-unit name="Controller_Model">
+	
+		<jta-data-source>java:/jdbc/REngineDS</jta-data-source>
+		
+		<mapping-file>META-INF/orm.xml</mapping-file>
+		<class>it.webred.ct.rulengine.controller.model.RTracciaStatiPK</class>
+		<class>it.webred.ct.rulengine.controller.model.RTracciaStati</class>
+		<class>it.webred.ct.rulengine.controller.model.RTracciaDatePK</class>
+		<class>it.webred.ct.rulengine.controller.model.RTracciaDate</class>
+		<class>it.webred.ct.rulengine.controller.model.RTracciaForniturePK</class>
+		<class>it.webred.ct.rulengine.controller.model.RTracciaForniture</class>
+		<class>it.webred.ct.rulengine.controller.model.RSchedulerTime</class>
+		<class>it.webred.ct.rulengine.controller.model.RProcessMonitorPK</class>
+		<class>it.webred.ct.rulengine.controller.model.RProcessMonitor</class>
+		<class>it.webred.ct.rulengine.controller.model.RFontedatiCommandPK</class>
+		<class>it.webred.ct.rulengine.controller.model.RFontedatiCommand</class>
+		<class>it.webred.ct.rulengine.controller.model.REventiLaunch</class>
+		<class>it.webred.ct.rulengine.controller.model.REnteEsclusioni</class>
+		<class>it.webred.ct.rulengine.controller.model.RCommandType</class>
+		<class>it.webred.ct.rulengine.controller.model.RCommandLaunch</class>
+		<class>it.webred.ct.rulengine.controller.model.RCommandAck</class>
+		<class>it.webred.ct.rulengine.controller.model.RCommand</class>
+		<class>it.webred.ct.rulengine.controller.model.RCoda</class>
+		<class>it.webred.ct.rulengine.controller.model.RAnagStati</class>
+		<class>it.webred.ct.rulengine.controller.model.RAnagEventi</class>
+		<class>it.webred.ct.rulengine.controller.model.REventiEnte</class>
+		<class>it.webred.ct.rulengine.controller.model.REventiEntePK</class>
+		<class>it.webred.ct.rulengine.controller.model.RSottoscrittori</class>
+		<class>it.webred.ct.rulengine.controller.model.RConnection</class>
+		<class>it.webred.ct.rulengine.controller.model.DiaCatalogo</class>
+		<class>it.webred.ct.rulengine.controller.model.DiaCatalogoTipoInfo</class>
+		<class>it.webred.ct.rulengine.controller.model.RLogFunzioni</class>
+		
+	    <properties>
+		      <property name="hibernate.dialect" value="org.hibernate.dialect.Oracle9iDialect"/>
+		      <property name="hibernate.show_sql" value="false"/>
+	    </properties>
+	</persistence-unit>
+	
+</persistence>

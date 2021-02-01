@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings
+  xmlns="http://java.sun.com/xml/ns/persistence/orm"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
+  version="2.0">
+
+	<!-- Query SOfAmbitoAccertamento -->
+	<named-query name="SOfAmbitoAccertamento.getAmbitiAccertamento">
+		<query>
+			<![CDATA[
+				SELECT a
+				FROM SOfAmbitoAccertamento a
+				ORDER BY a.id
+			 ]]>
+		</query>
+	</named-query>
+
+	<!-- Query SOfPratica -->
+	<named-query name="SOfPratica.getOperatori">
+		<query>
+			<![CDATA[
+				SELECT DISTINCT p.operatoreId
+				FROM SOfPratica p
+				ORDER BY p.operatoreId
+			 ]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SOfPratica.getResCognomi">
+		<query>
+			<![CDATA[
+				SELECT DISTINCT p.resCognome 
+				FROM SOfPratica p
+				WHERE UPPER(p.resCognome) LIKE  :cognome||'%'
+				ORDER BY p.resCognome
+			 ]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SOfPratica.getResNomi">
+		<query>
+			<![CDATA[
+				SELECT DISTINCT p.resNome 
+				FROM SOfPratica p
+				WHERE UPPER(p.resNome) LIKE  :nome||'%'
+				ORDER BY p.resNome
+			 ]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SOfPratica.getResCodiFisc">
+		<query>
+			<![CDATA[
+				SELECT DISTINCT p.resCodiFisc 
+				FROM SOfPratica p
+				WHERE UPPER(p.resCodiFisc) LIKE  :codifisc||'%'
+				ORDER BY p.resCodiFisc
+			 ]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SOfPratica.getAccCodiFisc">
+		<query>
+			<![CDATA[
+				SELECT DISTINCT p.accCodiFisc 
+				FROM SOfPratica p
+				WHERE UPPER(p.accCodiFisc) LIKE  :codifisc||'%'
+				ORDER BY p.accCodiFisc
+			 ]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SOfPratica.getAccCognomi">
+		<query>
+			<![CDATA[
+				SELECT DISTINCT p.accCognome 
+				FROM SOfPratica p
+				WHERE UPPER(p.accCognome) LIKE  :cognome||'%'
+				ORDER BY p.accCognome
+			 ]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SOfPratica.getAccNomi">
+		<query>
+			<![CDATA[
+				SELECT DISTINCT p.accNome 
+				FROM SOfPratica p
+				WHERE UPPER(p.accNome) LIKE  :nome||'%'
+				ORDER BY p.accNome
+			 ]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SOfPratica.getDenominazioni">
+		<query>
+			<![CDATA[
+				SELECT DISTINCT p.accDenominazione
+				FROM SOfPratica p
+				WHERE UPPER(p.accDenominazione) LIKE  :denominazione||'%'
+				ORDER BY p.accDenominazione
+			 ]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SOfPratica.getPraticaById">
+		<query>
+			<![CDATA[
+				SELECT p FROM SOfPratica p
+				WHERE p.id = TO_NUMBER(:idPratica)
+				ORDER BY p.accDataInizio
+			 ]]>
+		</query>
+	</named-query>
+
+	
+	<!-- Query SOfAmbitoAccertamento -->
+	<named-query name="SOfAmbitoAccertamento.getAmbitiAccertamentoPratica">
+		<query>
+			<![CDATA[
+				SELECT a 
+				FROM SOfAmbitoAccertamento a, SOfPratAmbito p
+				WHERE p.id.fkAmbito = a.id
+				AND p.id.fkPratica = TO_NUMBER(:idPratica)
+				ORDER BY a.id
+			 ]]>
+		</query>
+	</named-query>
+	
+	<!-- Query SOfPratFonti -->
+	<named-query name="SOfPratFonti.getFonti">
+		<query>
+			<![CDATA[
+				SELECT DISTINCT f.id.fkFonte
+				FROM SOfPratFonte f
+				WHERE f.id.fkPratica = TO_NUMBER(:idPratica)
+				ORDER BY f.id.fkFonte
+			 ]]>
+		</query>
+	</named-query>
+	
+	
+	<!-- Query SOfPratAllegato -->
+	<named-query name="SOfPratAllegato.getAllegatiPratica">
+		<query>
+			<![CDATA[
+				SELECT a
+				FROM SOfPratAllegato a
+				WHERE a.fkPratica = TO_NUMBER(:idPratica)
+				ORDER BY a.id
+			 ]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SOfPratAllegato.deleteByID">
+		<query>
+			<![CDATA[
+				DELETE FROM SOfPratAllegato p
+				WHERE p.id = TO_NUMBER(:idAll)
+		]]>
+		</query>
+	</named-query>
+
+	<named-query name="SOfPratAllegato.deleteByIdPra">
+		<query>
+		<![CDATA[
+			DELETE FROM SOfPratAllegato p
+			WHERE p.fkPratica = TO_NUMBER(:idPra)
+	]]>
+	</query>
+	</named-query>
+
+	<named-query name="SOfPratFonte.deleteByIdPra">
+		<query>
+		<![CDATA[
+			DELETE FROM SOfPratFonte p
+			WHERE p.id.fkPratica = TO_NUMBER(:idPra)
+	]]>
+	</query>
+	</named-query>
+
+	<named-query name="SOfPratAmbito.deleteByIdPra">
+		<query>
+		<![CDATA[
+			DELETE FROM SOfPratAmbito p
+			WHERE p.id.fkPratica = TO_NUMBER(:idPra)
+	]]>
+	</query>
+	</named-query>
+
+	<named-query name="SOfPratica.deleteByID">
+		<query>
+		<![CDATA[
+			DELETE FROM SOfPratica p
+			WHERE p.id = TO_NUMBER(:idPra)
+	]]>
+	</query>
+	</named-query>
+	
+</entity-mappings>

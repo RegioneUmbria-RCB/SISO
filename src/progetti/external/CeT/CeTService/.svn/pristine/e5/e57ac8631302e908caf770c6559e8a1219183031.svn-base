@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-modules id="moduleCoreId" project-version="1.5.0">
+    <wb-module deploy-name="CT_Service_Client">
+        <wb-resource deploy-path="/" source-path="/EarContent" tag="defaultRootSource"/>
+        <dependent-module archiveName="CT_Service_Data_Model.jar" deploy-path="/lib" handle="module:/resource/CT_Service_Data_Model/CT_Service_Data_Model">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="CT_Config_ManagerClient.jar" deploy-path="/lib" handle="module:/resource/CT_Config_ManagerClient/CT_Config_ManagerClient">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="CT_Config_Data_Model.jar" deploy-path="/lib" handle="module:/resource/CT_Config_Data_Model/CT_Config_Data_Model">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="CT_Service_Aggregator_EJBClient.jar" deploy-path="/lib" handle="module:/resource/CT_Service_Aggregator_EJBClient/CT_Service_Aggregator_EJBClient">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="CT_Service_Data_AccessClient.jar" deploy-path="/lib" handle="module:/resource/CT_Service_Data_AccessClient/CT_Service_Data_AccessClient">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="CT_Service_Deployer.war" deploy-path="/" handle="module:/resource/CT_Service_Deployer/CT_Service_Deployer">
+            <dependent-object/>
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="audit.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/cet-lib/audit.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+    </wb-module>
+</project-modules>

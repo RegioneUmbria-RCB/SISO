@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings
+  xmlns="http://java.sun.com/xml/ns/persistence/orm"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
+  version="2.0">
+
+	<!-- Join Locazioni_a/ Locazioni_B -->
+	<named-query name="Locazioni_A.getLocazioniByCF">
+		<query>
+			<![CDATA[
+				SELECT a 
+				FROM LocazioniA a, LocazioniB b 
+				WHERE a.ufficio = b.ufficio
+				  AND a.anno = b.anno
+				  AND a.serie = b.serie
+				  AND a.numero = b.numero
+				  AND b.codicefiscale=:codFis
+				ORDER BY a.dataInizio, a.dataFine, a.dataStipula 
+			]]>
+		</query>
+	</named-query>
+	
+	<!-- Join Locazioni_a/ Locazioni_I -->
+	<named-query name="Locazioni_A.getLocazioniByCoord">
+		<query>
+			<![CDATA[
+				SELECT a 
+				FROM LocazioniA a, LocazioniI i 
+				WHERE a.ufficio = i.ufficio
+				  AND a.anno = i.anno
+				  AND a.serie = i.serie
+				  AND a.numero = i.numero
+				  AND i.sezUrbana = :sezUrbana
+				  AND i.foglio = :foglio
+				  AND i.particella = :particella
+				  AND i.subalterno = :subalterno
+				ORDER BY i.sezUrbana, i.foglio, i.particella, i.subalterno 
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="Locazioni_A.getLocazioniByCFAllaData">
+		<query>
+			<![CDATA[
+				SELECT a 
+				FROM LocazioniA a, LocazioniB b 
+				WHERE a.ufficio = b.ufficio
+				  AND a.anno = b.anno
+				  AND a.serie = b.serie
+				  AND a.numero = b.numero
+				  AND b.codicefiscale=:codFis
+				  AND (a.dataFine is null OR  a.dataFine >= :dtRif)
+				ORDER BY a.dataInizio, a.dataFine, a.dataStipula 
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="Locazioni_A.getLocazioniByInquilinoCF">
+		<query>
+			<![CDATA[
+				SELECT a 
+				FROM LocazioniA a, LocazioniB b 
+				WHERE a.ufficio = b.ufficio
+				  AND a.anno = b.anno
+				  AND a.serie = b.serie
+				  AND a.numero = b.numero
+				  AND b.codicefiscale=:codFis
+				  AND b.tipoSoggetto = :tipoSogg
+				ORDER BY a.dataInizio, a.dataFine, a.dataStipula 
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="Locazioni_A.getLocazioniByInquilinoCFAllaData">
+		<query>
+			<![CDATA[
+				SELECT a 
+				FROM LocazioniA a, LocazioniB b 
+				WHERE a.ufficio = b.ufficio
+				  AND a.anno = b.anno
+				  AND a.serie = b.serie
+				  AND a.numero = b.numero
+				  AND b.codicefiscale=:codFis
+				  AND (a.dataFine is null OR  a.dataFine >= :dtRif)
+				  AND b.tipoSoggetto = :tipoSogg
+				ORDER BY a.dataInizio, a.dataFine, a.dataStipula 
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="Locazioni_B.getSoggByKey">
+		<query>
+			<![CDATA[
+				SELECT b 
+				FROM LocazioniB b 
+				WHERE b.ufficio = :ufficio
+				  AND b.anno = :anno
+				  AND b.serie = :serie
+				  AND b.numero = :numero
+				  and b.progSoggetto= :progSogg
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="Locazioni_B.getSoggByKeyCodFisc">
+		<query>
+			<![CDATA[
+				SELECT b 
+				FROM LocazioniB b 
+				WHERE b.ufficio = :ufficio
+				  AND b.anno = :anno
+				  AND b.serie = :serie
+				  AND b.numero = :numero
+				  and b.codicefiscale= :codFisc
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="LocazioniA.getLocazioniCivicoAllaDataByDesc">
+		<query>
+			<![CDATA[
+				SELECT a 
+				FROM LocazioniA a 
+				WHERE a.indirizzo LIKE :toponimo||' %'
+				AND  a.indirizzo LIKE '% '||:via||' %' 
+				AND (a.indirizzo LIKE '% '||:civico||' %' OR a.indirizzo LIKE '% '||:civico)
+				AND (a.dataFine is null OR  a.dataFine >= :dtRif)
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="LocazioniA.getLocazioniCivicoAllaData">
+		<query>
+			<![CDATA[
+				SELECT DISTINCT a 
+				FROM LocazioniA a, SitCivicoTotale ct
+				WHERE ct.civLiv1 = LPAD(:civico, 8, '0')
+				AND ct.fkVia = TO_NUMBER(:idViaUnico)
+				AND ct.id.fkEnteSorgente = '5' AND ct.id.progEs = '1'
+				AND ct.id.idDwh = a.id.ufficio||'|'||a.id.anno||'|'||a.id.serie||'|'||a.id.numero||'|'||a.sottonumero||'|'||a.progNegozio
+				AND (a.dataFine is null OR  a.dataFine >= :dtRif)
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="Locazioni_A.getOggByKey">
+		<query>
+			<![CDATA[
+				SELECT a 
+				FROM LocazioniA a 
+				WHERE a.ufficio = :ufficio
+				  AND a.anno = :anno
+				  AND a.serie = :serie
+				  AND a.numero = :numero
+			 
+			]]>
+		</query>
+	</named-query>
+	<named-query name="Locazioni_A.getOggByKeyAllaData">
+		<query>
+			<![CDATA[
+				SELECT a 
+				FROM LocazioniA a 
+				WHERE a.ufficio = :ufficio
+				  AND a.anno = :anno
+				  AND a.serie = :serie
+				  AND a.numero = :numero
+				  AND (a.dataFine is null OR  a.dataFine >= :dtRif)
+			]]>
+		</query>
+	</named-query>
+	<named-query name="Locazioni_B.getInquiliniByOgg">
+		<query>
+			<![CDATA[
+				SELECT a 
+				FROM LocazioniB a 
+				WHERE a.ufficio = :ufficio
+				  AND a.anno = :anno
+				  AND a.serie = :serie
+				  AND a.numero = :numero
+				  AND a.tipoSoggetto = :tipoSogg
+			]]>
+		</query>
+	</named-query>
+	<named-query name="Locazioni_B.getSoggByChiave">
+		<query>
+			<![CDATA[
+				SELECT a 
+				FROM LocazioniB a 
+				WHERE a.ufficio = :ufficio
+				  AND a.anno = :anno
+				  AND a.serie = :serie
+				  AND a.numero = :numero
+			]]>
+		</query>
+	</named-query>
+	
+	<!-- Locazioni_I -->
+	<named-query name="Locazioni_I.getImmobiliByKey">
+		<query>
+			<![CDATA[
+				SELECT a 
+				FROM LocazioniI a 
+				WHERE a.ufficio = :ufficio
+				  AND a.anno = :anno
+				  AND a.serie = :serie
+				  AND a.numero = :numero
+			]]>
+		</query>
+	</named-query>
+	</entity-mappings>

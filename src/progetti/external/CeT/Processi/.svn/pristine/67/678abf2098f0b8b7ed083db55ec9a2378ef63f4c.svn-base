@@ -1,0 +1,34 @@
+# Factory builder per i parser dei singoli record
+# Il file deve essere composto da chiave iniziale del record e full path name della classe
+N0=it.webred.rulengine.brick.loadDwh.load.cnc.flusso290.record.N0RecordParser
+N1=it.webred.rulengine.brick.loadDwh.load.cnc.flusso290.record.N1RecordParser
+N2=it.webred.rulengine.brick.loadDwh.load.cnc.flusso290.record.N2RecordParser
+N3=it.webred.rulengine.brick.loadDwh.load.cnc.flusso290.record.N3RecordParser
+N4=it.webred.rulengine.brick.loadDwh.load.cnc.flusso290.record.N4RecordParser
+N5=it.webred.rulengine.brick.loadDwh.load.cnc.flusso290.record.N5RecordParser
+N9=it.webred.rulengine.brick.loadDwh.load.cnc.flusso290.record.N9RecordParser
+
+# Flusso 750
+00C=it.webred.rulengine.brick.loadDwh.load.cnc.flusso750.record.R00CRecordParser
+R3A=it.webred.rulengine.brick.loadDwh.load.cnc.flusso750.record.R3ARecordParser
+R3Z=it.webred.rulengine.brick.loadDwh.load.cnc.flusso750.record.R3ZRecordParser
+R5A=it.webred.rulengine.brick.loadDwh.load.cnc.flusso750.record.R5ARecordParser
+R5B=it.webred.rulengine.brick.loadDwh.load.cnc.flusso750.record.R5BRecordParser
+R5Z=it.webred.rulengine.brick.loadDwh.load.cnc.flusso750.record.R5ZRecordParser
+R7A=it.webred.rulengine.brick.loadDwh.load.cnc.flusso750.record.R7ARecordParser
+R7B=it.webred.rulengine.brick.loadDwh.load.cnc.flusso750.record.R7BRecordParser
+R7C=it.webred.rulengine.brick.loadDwh.load.cnc.flusso750.record.R7CRecordParser
+R7D=it.webred.rulengine.brick.loadDwh.load.cnc.flusso750.record.R7DRecordParser
+R7E=it.webred.rulengine.brick.loadDwh.load.cnc.flusso750.record.R7ERecordParser
+R7F=it.webred.rulengine.brick.loadDwh.load.cnc.flusso750.record.R7FRecordParser
+R7G=it.webred.rulengine.brick.loadDwh.load.cnc.flusso750.record.R7GRecordParser
+R7H=it.webred.rulengine.brick.loadDwh.load.cnc.flusso750.record.R7HRecordParser
+R7K=it.webred.rulengine.brick.loadDwh.load.cnc.flusso750.record.R7KRecordParser
+99C=it.webred.rulengine.brick.loadDwh.load.cnc.flusso750.record.R99CRecordParser
+
+
+# Stato riscossione
+FR0=it.webred.rulengine.brick.loadDwh.load.cnc.statoriscossione.record.FR0RecordParser
+FR3=it.webred.rulengine.brick.loadDwh.load.cnc.statoriscossione.record.FR3RecordParser
+FR4=it.webred.rulengine.brick.loadDwh.load.cnc.statoriscossione.record.FR4RecordParser
+FR5=it.webred.rulengine.brick.loadDwh.load.cnc.statoriscossione.record.FR5RecordParser

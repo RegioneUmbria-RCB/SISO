@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<j:jelly trim="false" xmlns:define="jelly:define" xmlns:j="jelly:core"
+	xmlns:x="jelly:xml" xmlns:re="reTagLib" xmlns:log="jelly:log">
+
+	<define:taglib uri="reTagLib">
+		<define:jellybean name="bridge" className="it.webred.rulengine.chains.bridge.JellyCommandBridge" />
+	</define:taglib>
+	
+	<!-- 1 -->	
+	<j:set var='par1' encode='true'>
+		<complexParam>
+			<param type="it.webred.rulengine.type.ComplexParam" name="sql1">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[SQL_DELETE_SITIDSTR]]</param></complexParam> ]]>
+	   		</param>
+	   		<param type="it.webred.rulengine.type.ComplexParam" name="sql2">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[SQL_LOAD_SITIDSTR]]</param></complexParam> ]]>
+	   		</param>
+	   	</complexParam>
+	</j:set>
+		
+	<re:bridge codiceComando="E-ECOGSTRA" context="${ctx}" connessione="DWH" var="cmd1" parametro="${par1}" /> 
+	
+	<j:set var='par2' encode='true'>
+		<complexParam>
+			<param type="it.webred.rulengine.type.ComplexParam" name="sql1">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[SQL_VERIFICA_CIVICI_DOPPI]]</param></complexParam> ]]>
+	   		</param>
+	   		<param type="it.webred.rulengine.type.ComplexParam" name="sql2">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[SQL_TRUNCATE_SITILOC_UIU]]</param></complexParam> ]]>
+	   		</param>
+			<param type="it.webred.rulengine.type.ComplexParam" name="sql33">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[SQL_DELETE_SITICIVI]]</param></complexParam> ]]>
+	   		</param>
+	   		<param type="it.webred.rulengine.type.ComplexParam" name="sql4">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[SQL_LOAD_SITICIVI]]</param></complexParam> ]]>
+	   		</param>
+	   	</complexParam>
+	</j:set>
+		
+	<re:bridge codiceComando="E-ECOGCIVI" context="${ctx}" connessione="DWH" var="cmd2" parametro="${par2}"/>
+
+
+</j:jelly>

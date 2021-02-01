@@ -1,0 +1,65 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+     	xmlns:h="http://java.sun.com/jsf/html"
+		xmlns:f="http://java.sun.com/jsf/core"
+		xmlns:ui="http://java.sun.com/jsf/facelets"
+		xmlns:p="http://primefaces.org/ui"
+	  	xmlns:composite="http://java.sun.com/jsf/composite"
+	  	xmlns:webred="http://java.sun.com/jsf/composite/webred">
+      
+	<h:head>
+		<title>Componente pannello residenza</title>
+	</h:head>
+	<h:body>
+		<composite:interface componentType="pnlResidenza">
+			<composite:attribute name="residenzaManBean" type="it.webred.jsf.interfaces.IResidenza" />
+			<composite:attribute name="labelStyle" />
+			<composite:attribute name="panelStyleClass"/>
+			<composite:attribute name="codiceFiscale"/>
+			<composite:attribute name="disableModifica" default="false"/>
+		</composite:interface>
+		<composite:implementation>
+			<style type="text/css">
+				.gestione_icon {
+				    background-image: url("#{resource['webred/img/gestione.png']}") !important;
+				}
+			</style>
+		
+				<h:panelGroup id="tblGestionendirizzi">
+				<table border="0">
+				<tr>
+					<td>
+					<h:panelGroup id="pnlIndirizzoAttivo">
+						<h:outputText value="#{cc.attrs.residenzaManBean.indirizzoResidenzaAttivo.csAAnaIndirizzo.indirizzo}, #{cc.attrs.residenzaManBean.getCivicoFromNumeroAltro(cc.attrs.residenzaManBean.indirizzoResidenzaAttivo.csAAnaIndirizzo.civicoNumero, cc.attrs.residenzaManBean.indirizzoResidenzaAttivo.csAAnaIndirizzo.civicoAltro)} - #{cc.attrs.residenzaManBean.indirizzoResidenzaAttivo.csAAnaIndirizzo.comDes} (#{cc.attrs.residenzaManBean.indirizzoResidenzaAttivo.csAAnaIndirizzo.statoDes})"
+						rendered="#{cc.attrs.residenzaManBean.indirizzoResidenzaAttivo != null}" id="lblAttivo"/>
+						<h:outputText value="#{cc.attrs.residenzaManBean.textIfActiveEmpty}" rendered="#{cc.attrs.residenzaManBean.indirizzoResidenzaAttivo == null}"/>
+					</h:panelGroup>
+				
+					</td>
+					<td><p:spacer width="10"/> </td>
+					<td>
+				
+					<p:commandButton process="@this" value="Gestisci" icon="gestione_icon" title="#{cc.attrs.residenzaManBean.buttonTooltip}"
+						update="pnlGestionendirizzi, tblGestionendirizzi" disabled="#{cc.attrs.disableModifica}" 
+						oncomplete="PF('#{cc.attrs.residenzaManBean.widgetVar}').show()">
+						<f:setPropertyActionListener value="#{cc.attrs.codiceFiscale}" target="#{cc.attrs.residenzaManBean.codiceFiscale}"/>
+						<f:setPropertyActionListener value="" target="#{cc.attrs.residenzaManBean.warningMessage}"/>
+					</p:commandButton>
+					
+					</td>
+					<td><p:spacer width="5"/> </td>
+					<td>
+						<p:graphicImage value="/webred/img/warning.png" height="20px" title="#{cc.attrs.residenzaManBean.warningMessage}"
+							rendered="#{cc.attrs.residenzaManBean.warningMessage != null and cc.attrs.residenzaManBean.warningMessage ne ''}"/>
+					</td>
+				</tr>
+				</table>
+				</h:panelGroup>
+			
+				<h:panelGroup id="pnlGestionendirizzi">
+				<webred:modalIndirizzi id="gestioneIndirizzi" residenzaManBean="#{cc.attrs.residenzaManBean}" pnlToUpdate="#{p:component('pnlIndirizzoAttivo')}" panelStyleClass="#{cc.attrs.panelStyleClass}"/>
+				</h:panelGroup>
+		</composite:implementation>
+	</h:body>
+		
+</html>

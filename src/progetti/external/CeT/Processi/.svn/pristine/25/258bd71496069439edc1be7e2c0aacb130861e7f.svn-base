@@ -1,0 +1,15 @@
+#--------------------------------------------------------------
+# File di configurazione in cui sono indicato i valori dei soli
+# parametri di contesto della catena jelly da passare alla 
+# regola 
+#------------------------------------------------------------
+# Numero di parametri previsti in input
+rengine.jchain.in.nof=2
+#------------------------------------------------------------
+# Le coppie chiavi/valore hanno come key lo stesso nome 
+# indicato nello script jelly xml
+#------------------------------------------------------------
+rengine.jchain.in.1.key=QUERYSQL_1
+rengine.jchain.in.1.value=SELECT TO_CHAR (posifami.rpof_rfamnumf) id_orig_d_famiglia, TO_CHAR (posifami.rpof_persnind) id_orig_d_persona, posifami.rpofdata, posifami.rpofdatfin, resi_indirizzo.rinddata, resi_indirizzo.rinddafi, CASE WHEN NVL (posifami.rpofdata, TO_DATE ('01-01-1001', 'dd-mm-yyyy') ) < NVL (resi_indirizzo.rinddata, TO_DATE ('01-01-1001', 'dd-mm-yyyy') ) THEN resi_indirizzo.rinddata ELSE posifami.rpofdata END dt_ini_val_dato, CASE WHEN NVL (posifami.rpofdatfin, TO_DATE ('31-12-9999', 'dd-mm-yyyy') ) < NVL (resi_indirizzo.rinddafi, TO_DATE ('31-12-9999', 'dd-mm-yyyy') ) THEN posifami.rpofdatfin ELSE resi_indirizzo.rinddafi END dt_fine_val_dato, d_c.crepdesc relaz_par, TO_CHAR (resi_indirizzo.rind_ncivnciv) id_orig_d_civico, posifami.caronte_data_inizio_val dt_exp_dato, rpof_rfamnumf, rpof_persnind, rpofdata FROM ds_d_resi_posifami_1_0 posifami, ds_d_codi_relpar_1_0 d_c, ds_d_resi_indirizzo_1_0 resi_indirizzo WHERE posifami.rpof_crepcodi = d_c.crepcodi(+) AND rpof_rfamnumf = resi_indirizzo.rind_rfamnumf(+) AND NVL (posifami.rpofdata, TO_DATE ('01-01-1001', 'dd-mm-yyyy')) < NVL (resi_indirizzo.rinddafi, TO_DATE ('31-12-9999', 'dd-mm-yyyy')) AND NVL (posifami.rpofdatfin, TO_DATE ('31-12-9999', 'dd-mm-yyyy')) >= NVL (resi_indirizzo.rinddata, TO_DATE ('01-01-1001', 'dd-mm-yyyy')) ORDER BY id_orig_d_persona, DT_INI_VAL_DATO, DT_FINE_VAL_DATO NULLS FIRST
+rengine.jchain.in.2.key=RSITRSCRIPT_1
+rengine.jchain.in.2.value=<RsIterator> <key table="DS_D_RESI_POSIFAMI_1_0"> <column name="RPOF_RFAMNUMF"/> <column name="RPOF_PERSNIND"/> <column name="RPOFDATA"/> <column name="DT_EXP_DATO"/> </key> <commands> <command name="it.webred.rulengine.brick.loadDwh.base.LoadSitDPersonaCivico" livelloAnomalie="1"> <param id="field" value="id_orig_d_persona" dest="ID_ORIG" type="java.lang.String"/> <param id="const" value="1" dest="FK_ENTE_SORGENTE" type="java.lang.Integer"/> <param id="field" value="id_orig_d_persona" dest="ID_ORIG_D_PERSONA" type="java.lang.String"/> <param id="field" value="ID_ORIG_D_CIVICO" dest="ID_ORIG_D_CIVICO" type="java.lang.String"/> <param id="field" value="DT_EXP_DATO" dest="DT_EXP_DATO" type="java.sql.Timestamp"/> <param id="field" value="DT_INI_VAL_DATO" dest="DT_INI_VAL_DATO" type="java.sql.Timestamp"/> <param id="field" value="DT_FINE_VAL_DATO" dest="DT_FINE_VAL_DATO" type="java.sql.Timestamp"/> <param id="const" value="0" dest="FLAG_DT_VAL_DATO" type="java.lang.Integer"/> </command> </commands> </RsIterator>

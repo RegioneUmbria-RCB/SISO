@@ -1,0 +1,10 @@
+#Valori delle percentuali usati negli algoritmi di confronto similarità delle stringhe
+
+#Algoritmo di Smith (Default 0.90)
+smithwaterman.perc.limite.fix=0.90
+#Algoritmo di TagLink (Default 0.85)
+taglink.perc.limite.fix=0.85
+#Algoritmo di Jako (Default 0.88)
+jako.perc.limite.fix=0.88
+#Algoritmo di Trigrammi (Default 0.78)
+trig.perc.limite.fix=0.78

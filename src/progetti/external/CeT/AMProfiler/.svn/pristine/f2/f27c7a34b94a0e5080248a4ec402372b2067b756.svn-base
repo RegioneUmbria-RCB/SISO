@@ -1,0 +1,44 @@
+<persistence xmlns="http://java.sun.com/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
+             version="2.0">	
+   <persistence-unit name="AmProfilerDataModel">
+		<jta-data-source>java:/AMProfiler</jta-data-source>
+		<mapping-file>META-INF/orm_amprofiler.xml</mapping-file>
+		<mapping-file>META-INF/orm_login.xml</mapping-file>	
+		<class>it.webred.amprofiler.model.AmUser</class>
+		<class>it.webred.amprofiler.model.AmAnagrafica</class>
+		<class>it.webred.amprofiler.model.AmAiRole</class>
+		<class>it.webred.amprofiler.model.AmApplication</class>
+		<class>it.webred.amprofiler.model.AmApplicationItem</class>
+		<class>it.webred.amprofiler.model.AmGroup</class>
+		<class>it.webred.amprofiler.model.AmGroupAir</class>
+		<class>it.webred.amprofiler.model.AmGroupAirPK</class>
+		<class>it.webred.amprofiler.model.AmInstance</class>
+		<class>it.webred.amprofiler.model.AmInstanceComune</class>
+		<class>it.webred.amprofiler.model.AmInstanceComunePK</class>
+		<class>it.webred.amprofiler.model.AmItem</class>
+		<class>it.webred.amprofiler.model.AmRole</class>
+		<class>it.webred.amprofiler.model.AmSection</class>
+		<class>it.webred.amprofiler.model.AmUserAir</class>
+		<class>it.webred.amprofiler.model.AmUserAirPK</class>
+		<class>it.webred.amprofiler.model.AmUserGroup</class>
+		<class>it.webred.amprofiler.model.AmUserGroupPK</class>
+		<class>it.webred.amprofiler.model.AmPermission</class>
+		<class>it.webred.amprofiler.model.AmPermissionAir</class>
+		<class>it.webred.amprofiler.model.AmPermissionAirPK</class>
+		<class>it.webred.amprofiler.model.VComuniUtentiInstance</class>
+		<class>it.webred.amprofiler.model.VComuniUtentiInstancePK</class>
+		<class>it.webred.amprofiler.model.AmUserUfficio</class>
+		<class>it.webred.amprofiler.model.perm.Ente</class>
+		<class>it.webred.amprofiler.model.perm.PermAccesso</class>
+		<class>it.webred.amprofiler.model.perm.PermEnte</class>
+		<class>it.webred.amprofiler.model.perm.Permission</class>
+		<class>it.webred.amprofiler.model.perm.PwdUpdDate</class>
+	    <properties>
+		      <!-- property name="hibernate.dialect" value="org.hibernate.dialect.OracleDialect"/ -->
+		      <property name="hibernate.dialect" value="org.hibernate.dialect.Oracle9iDialect"/>
+		      <property name="hibernate.show_sql" value="true"/>
+	    </properties>
+	</persistence-unit>
+</persistence>

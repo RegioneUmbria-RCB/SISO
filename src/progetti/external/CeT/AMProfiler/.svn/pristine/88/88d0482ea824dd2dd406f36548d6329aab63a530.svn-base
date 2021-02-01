@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings
+  xmlns="http://java.sun.com/xml/ns/persistence/orm"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
+  version="2.0">
+
+	<named-query name="Login.getGruppi">
+		<query>
+			<![CDATA[
+				select g 
+				from AmGroup g, AmUserGroup ug
+				where ug.id.fkAmUser = :username
+				and g.fkAmComune = :ente
+				and ug.id.fkAmGroup = g.name
+				order by g.name
+			]]>
+		</query>
+	</named-query>
+
+<named-native-query name="Login.getPermission" result-set-mapping="permMap" >
+    <query>
+		<![CDATA[
+			select DISTINCT 'permission@-@'|| ISTANZA ||'@-@'|| SEL.FK_AM_ITEM ||'@-@'|| p.NAME PERMISSION , 1 as val
+                                    from (
+                                    select distinct air.ID ID_AIR,  i.NAME ISTANZA  , AI.FK_AM_ITEM,  u.NAME uname, u.DISABLE_CAUSE udiscause, ic.FK_AM_COMUNE comune, a.FLG_DATA_ROUTER dr
+                                    from AM_AI_ROLE air
+                                    LEFT JOIN AM_USER_AIR uair on uair.FK_AM_AI_ROLE=air.ID 
+                                    LEFT JOIN AM_USER u on uair.FK_AM_USER=u.NAME
+                                    LEFT JOIN AM_INSTANCE_COMUNE ic1 on uair.fk_am_comune = ic1.fk_am_comune
+                                    LEFT JOIN AM_APPLICATION_ITEM ai ON air.FK_AM_APPLICATION_ITEM = ai.ID
+                                    LEFT JOIN AM_APPLICATION a ON ai.FK_AM_APPLICATION = a.NAME
+                                    LEFT JOIN AM_INSTANCE i ON ai.FK_AM_APPLICATION = i.FK_AM_APPLICATION
+                                    LEFT JOIN AM_INSTANCE_COMUNE ic ON i.NAME = ic.FK_AM_INSTANCE                                    
+                                    where (ic1.fk_am_comune = ic.fk_am_comune 
+                                    and ic1.fk_am_instance = ic.fk_am_instance) or u.name ='profiler'
+                                    UNION
+                                    select distinct air.ID ID_AIR, i.NAME ISTANZA , AI.FK_AM_ITEM,  u.NAME uname, u.DISABLE_CAUSE udiscause, ic.FK_AM_COMUNE comune, a.FLG_DATA_ROUTER dr
+                                    from AM_AI_ROLE air
+                                    LEFT JOIN AM_GROUP_AIR gair on gair.FK_AM_AI_ROLE=air.ID
+                                    LEFT JOIN AM_GROUP g on gair.FK_AM_GROUP=g.NAME
+                                    LEFT JOIN AM_USER_GROUP ug on ug.FK_AM_GROUP=g.NAME
+                                    LEFT JOIN AM_USER u on ug.FK_AM_USER=u.NAME
+                                    LEFT JOIN AM_APPLICATION_ITEM ai ON air.FK_AM_APPLICATION_ITEM = ai.ID
+                                    LEFT JOIN AM_APPLICATION a ON ai.FK_AM_APPLICATION = a.NAME
+                                    LEFT JOIN AM_INSTANCE i ON ai.FK_AM_APPLICATION = i.FK_AM_APPLICATION
+                                    LEFT JOIN AM_INSTANCE_COMUNE ic ON i.NAME = ic.FK_AM_INSTANCE
+                                    ) sel ,
+                                    AM_PERMISSION_AIR PAIR, AM_PERMISSION P
+                                    where PAIR.FK_AM_AI_ROLE = sel.id_air
+                                    and PAIR.FK_AM_PERMISSION = P.NAME
+                                    AND P.FK_AM_ITEM =  SEL.FK_AM_ITEM
+                                    and udiscause IS NULL
+                                    and uname= :username
+                                    and (dr = 'N' or comune = :ente)
+				]]>
+		</query>
+		
+	</named-native-query>
+	
+	<named-native-query name="Login.getPermissionByGroup" result-set-mapping="permMap" >
+    <query>
+		<![CDATA[
+			select DISTINCT 'permission@-@'|| ISTANZA ||'@-@'|| SEL.FK_AM_ITEM ||'@-@'|| p.NAME PERMISSION , 1 as val
+                                    from (
+                                    select distinct air.ID ID_AIR, i.NAME ISTANZA, g.name GROUPNAME, AI.FK_AM_ITEM, ic.FK_AM_COMUNE comune, a.FLG_DATA_ROUTER dr
+                                    from AM_AI_ROLE air
+                                    LEFT JOIN AM_GROUP_AIR gair on gair.FK_AM_AI_ROLE=air.ID
+                                    LEFT JOIN AM_GROUP g on gair.FK_AM_GROUP=g.NAME
+                                    LEFT JOIN AM_APPLICATION_ITEM ai ON air.FK_AM_APPLICATION_ITEM = ai.ID
+                                    LEFT JOIN AM_APPLICATION a ON ai.FK_AM_APPLICATION = a.NAME
+                                    LEFT JOIN AM_INSTANCE i ON ai.FK_AM_APPLICATION = i.FK_AM_APPLICATION
+                                    LEFT JOIN AM_INSTANCE_COMUNE ic ON i.NAME = ic.FK_AM_INSTANCE
+                                    ) sel ,
+                                    AM_PERMISSION_AIR PAIR, AM_PERMISSION P
+                                    where PAIR.FK_AM_AI_ROLE = sel.id_air
+                                    and PAIR.FK_AM_PERMISSION = P.NAME
+                                    AND P.FK_AM_ITEM =  SEL.FK_AM_ITEM
+                                    AND GROUPNAME = :gruppo
+                                    and (dr = 'N' or comune = :ente)
+				]]>
+		</query>
+		
+	</named-native-query>
+	
+	<named-native-query name="Login.getPermissionAccesso" result-set-mapping="enteMap">
+	 <query>
+		<![CDATA[
+	 		select distinct ente FROM (
+			select FK_AM_COMUNE ente, FK_AM_USER FROM AM_GROUP G, AM_USER U, AM_USER_GROUP UG 
+			WHERE u.name=UG.FK_AM_USER AND G.NAME=UG.FK_AM_GROUP
+			union
+			select FK_AM_COMUNE , FK_AM_USER
+			from am_user_air
+			) 
+			WHERE FK_AM_USER=:username
+		]]>
+		</query>
+	</named-native-query>
+	
+	<named-native-query name="Login.getPermissionAccessoUtente" result-set-mapping="accessoMap">
+	 <query>
+		<![CDATA[
+	 		select case when (u.PERM_RANGE_IP is not null or u.PERM_ORA_DA is not null or u.PERM_ORA_A is not null) then '1' else null end id,
+	 		u.PERM_RANGE_IP ipRange,u.PERM_ORA_DA oraDa,u.PERM_ORA_A oraA
+			from am_user u
+			where u.name = :username
+		]]>
+		</query>
+	</named-native-query>
+	
+	<named-native-query name="Login.getPermissionAccessoGruppo" result-set-mapping="accessoMap">
+	 <query>
+		<![CDATA[
+			select case when (g.PERM_RANGE_IP is not null or g.PERM_ORA_DA is not null or g.PERM_ORA_A is not null) then '1' else null end id, 
+			g.PERM_RANGE_IP ipRange,g.PERM_ORA_DA oraDa,g.PERM_ORA_A oraA
+			from am_user u, am_user_group ug, am_group g
+			where u.name = :username
+			and g.FK_AM_COMUNE = :ente
+			and ug.FK_AM_USER = u.NAME
+			and ug.FK_AM_GROUP = g.NAME
+		]]>
+		</query>
+	</named-native-query>			
+	
+	<named-native-query name="Login.getEnte" result-set-mapping="enteMap">
+	 <query>
+		<![CDATA[
+			select ente FROM (
+			select distinct ente, descrizione FROM (
+			            select FK_AM_COMUNE ente, c.DESCRIZIONE, FK_AM_USER FROM AM_GROUP G, AM_USER U, AM_USER_GROUP UG, AM_COMUNE C 
+			            WHERE u.name=UG.FK_AM_USER AND G.NAME=UG.FK_AM_GROUP and g.FK_AM_COMUNE = c.BELFIORE
+			            union
+			            select ua.FK_AM_COMUNE,c.DESCRIZIONE, ua.FK_AM_USER
+			            from am_user_air ua, AM_COMUNE c where ua.FK_AM_COMUNE = c.BELFIORE 
+			            ) 
+			            WHERE FK_AM_USER=:username
+			            ORDER BY descrizione asc)
+		]]>
+		</query>
+	</named-native-query>	
+	
+	<named-native-query name="Login.getEntiByUtente" result-set-mapping="entiByUtenteMap">
+	 <query>
+		<![CDATA[
+			select ente, descrizione FROM (
+			select distinct ente, descrizione FROM (
+			            select FK_AM_COMUNE ente, c.DESCRIZIONE, FK_AM_USER FROM AM_GROUP G, AM_USER U, AM_USER_GROUP UG, AM_COMUNE C 
+			            WHERE u.name=UG.FK_AM_USER AND G.NAME=UG.FK_AM_GROUP and g.FK_AM_COMUNE = c.BELFIORE
+			            union
+			            select ua.FK_AM_COMUNE,c.DESCRIZIONE, ua.FK_AM_USER
+			            from am_user_air ua, AM_COMUNE c where ua.FK_AM_COMUNE = c.BELFIORE 
+			            ) 
+			            WHERE FK_AM_USER=:username
+			            ORDER BY descrizione asc)
+		]]>
+		</query>
+	</named-native-query>	
+	
+	<named-native-query name="Login.isPwdValida" result-set-mapping="pwdUpdMap">
+	 <query>
+		<![CDATA[
+	 		SELECT DT_UPD_PWD data FROM AM_USER U WHERE NAME = :username
+		]]>
+		</query>
+	</named-native-query>	
+	
+	<sql-result-set-mapping name="permMap">
+		<entity-result entity-class="it.webred.amprofiler.model.perm.Permission"/>		
+	</sql-result-set-mapping>
+
+	<sql-result-set-mapping name="enteMap">
+		<entity-result entity-class="it.webred.amprofiler.model.perm.PermEnte"/>		
+	</sql-result-set-mapping>
+	
+	<sql-result-set-mapping name="entiByUtenteMap">
+		<entity-result entity-class="it.webred.amprofiler.model.perm.Ente"/>		
+	</sql-result-set-mapping>
+
+	<sql-result-set-mapping name="pwdUpdMap">
+		<entity-result entity-class="it.webred.amprofiler.model.perm.PwdUpdDate"/>		
+	</sql-result-set-mapping>
+	
+	<sql-result-set-mapping name="accessoMap">
+		<entity-result entity-class="it.webred.amprofiler.model.perm.PermAccesso"/>		
+	</sql-result-set-mapping>
+
+</entity-mappings>
+	

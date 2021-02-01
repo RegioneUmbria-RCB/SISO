@@ -1,0 +1,18 @@
+#------------------------------------------------------------
+# File di config della regola
+#------------------------------------------------------------
+rengine.rule.class=it.webred.rulengine.brick.dia.ConfrontoConduttCatNonPresICIDiagnosticsExportNuovo
+rengine.rule.cc=D-CFR-1303
+rengine.rule.number.params.in=1
+rengine.rule.number.params.out=0
+#--------------------------------------------------------------------------
+# parametri di input: rispecchiano i valori del db sia nel type che nel descr
+#--------------------------------------------------------------------------
+rengine.rule.param.in.1.type=java.util.Date
+rengine.rule.param.in.1.descr=DATA_RIF
+#------------------------------------------------------------
+# parametri di output
+#------------------------------------------------------------
+#------------------------------------------------------------
+# Definizioni costanti o proprietà aggiuntive della regola
+#------------------------------------------------------------	

@@ -1,0 +1,49 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:webred="http://java.sun.com/jsf/composite/webred">
+
+<ui:composition template="/jsp/protected/layout/layout.xhtml">
+
+	<ui:define name="content">
+		<h:form id="frmScheda">
+			<p:panel header="Inserisci scheda minore | minore disabile | adulto | adulto disabile | anziano" footer="Inserimento scheda" toggleable="true">
+				<p:tabView>
+					<p:tab title="Anagrafica">
+						<webred:pnlAna iDatiAna="#{manDatiAnaBean}" />
+					</p:tab>
+					<p:tab title="Dati Sociali">
+						<h:outputText value="TODO Dati Sociali" />
+					</p:tab>
+					<p:tab title="Dati Disabilità">
+						<h:outputText value="TODO Dati Disabilità" />
+					</p:tab>
+					<p:tab title="Dati Tribunale">
+						<h:outputText value="TODO Dati Tribunale" />
+					</p:tab>
+					<p:tab title="Servizi">
+						<h:outputText value="TODO Servizi" />
+					</p:tab>
+					<p:tab title="Contributi - Buoni">
+						<h:outputText value="TODO Contributi - Buoni" />
+					</p:tab>
+					<p:tab title="Operatori">
+						<h:outputText value="TODO Operatori" />
+					</p:tab>
+					<p:tab title="UOIL - SPR">
+						<h:outputText value="TODO UOIL - SPR" />
+					</p:tab>
+					<p:tab title="Note">
+						<h:outputText value="TODO Note" />
+					</p:tab>
+				</p:tabView>
+			</p:panel>			
+		</h:form>
+	</ui:define>
+
+</ui:composition>
+
+</html>

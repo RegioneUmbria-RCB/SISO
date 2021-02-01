@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app id="WebApp_ID" version="2.5"
+ xmlns="http://java.sun.com/xml/ns/javaee"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+
+  <display-name>argo</display-name>
+	
+	
+    <context-param>
+    	<param-name>resteasy.servlet.mapping.prefix</param-name>
+    	<param-value>/rest</param-value>
+	</context-param>
+	
+	
+	  <context-param> 
+	     <param-name>javax.faces.DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE</param-name>
+	     <param-value>true</param-value>
+	  </context-param>	
+	  <!-- http://www.primefaces.org/themes.html -->
+	  <context-param>
+		<param-name>primefaces.THEME</param-name>
+		<param-value>blitzer</param-value>
+	  </context-param>
+
+		<context-param>
+		    <param-name>javax.faces.FACELETS_REFRESH_PERIOD</param-name>
+		    <param-value>600</param-value>
+		</context-param>
+		<context-param>
+		  <param-name>javax.faces.PROJECT_STAGE</param-name>
+		  <param-value>Production</param-value>
+		</context-param>
+
+	<listener>
+	  <listener-class>it.umbriadigitale.argo.web.timertask.ArgoListener</listener-class>
+	 </listener>
+
+	
+
+<!-- 
+PARAMETRI NECESSARI NEL CASO SI VOGLIA PASSARE ALLA IMPLEMENTAZIONE MYFACES E COMPRENDERE 
+LE LIBRERIE MYFACES ALL'INTERNO DELLE LIB DEL PROGETTO WEB
+
+		<context-param>
+		      <param-name>org.jboss.jbossfaces.WAR_BUNDLES_JSF_IMPL</param-name>
+		      <param-value>true</param-value>
+		</context-param>   
+		<context-param>
+					<param-name>org.apache.myfaces.annotation.SCAN_PACKAGES</param-name>
+				      <param-value>webred-cs-ui-comp-jsf.jar,webred-ui-comp-jsf.jar</param-value>
+		</context-param>
+ -->
+
+	  <context-param>
+	    <param-name>primefaces.UPLOADER</param-name>
+	    <param-value>commons</param-value>
+	  </context-param>
+	
+ <!-- 
+    <listener>
+        <listener-class>org.apache.myfaces.webapp.StartupServletContextListener</listener-class>
+    </listener>
+ -->
+
+
+ <filter>
+  <filter-name>LoginFilter</filter-name>
+  <filter-class>it.webred.cet.permission.PermissionFilter</filter-class>
+ </filter>
+ <filter>
+  <filter-name>FiltroPwd</filter-name>
+  <filter-class>it.webred.cet.permission.PwdValidationFilter</filter-class>
+ </filter>
+ <filter>
+	<filter-name>PrimeFaces FileUpload Filter</filter-name>
+	<filter-class>org.primefaces.webapp.filter.FileUploadFilter
+	</filter-class>
+	<init-param>
+	<param-name>thresholdSize</param-name>
+	<param-value>10240</param-value> <!-- 10 Mb -->
+	</init-param>
+ </filter>
+ <filter-mapping>
+	<filter-name>PrimeFaces FileUpload Filter</filter-name>
+	<servlet-name>Faces Servlet</servlet-name>
+ </filter-mapping> 
+
+ <filter-mapping>
+  <filter-name>LoginFilter</filter-name>
+  <url-pattern>/jsp/protected/*</url-pattern>
+ </filter-mapping>
+ <filter-mapping>
+  <filter-name>FiltroPwd</filter-name>
+  <url-pattern>/jsp/protected/*</url-pattern>
+ </filter-mapping>
+
+
+ <servlet>
+    <servlet-name>RESTEasy</servlet-name>
+    <servlet-class>org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher</servlet-class>
+         <init-param>
+       <param-name>javax.ws.rs.Application</param-name> 
+       <param-value>it.umbriadigitale.argo.web.rest.services.ArgoRestApplication</param-value>
+    </init-param>
+     <init-param>
+       <param-name>pacagio</param-name> 
+       <param-value>VALORE!</param-value>
+    </init-param>
+</servlet>
+
+
+ <servlet>
+  <servlet-name>Faces Servlet</servlet-name>
+  <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
+ </servlet>
+ <servlet-mapping>
+  <servlet-name>Faces Servlet</servlet-name>
+  <url-pattern>*.faces</url-pattern>
+ </servlet-mapping>
+
+<servlet-mapping>
+    <servlet-name>RESTEasy</servlet-name>
+    <url-pattern>/rest/*</url-pattern>
+</servlet-mapping>
+
+
+  <welcome-file-list>
+    <welcome-file>/jsp/index.jsp</welcome-file>
+  </welcome-file-list>
+
+ <!-- Sample Security Constraint -->
+ <security-constraint>
+  <display-name>ARGO Security</display-name>
+  <web-resource-collection>
+   <web-resource-name>Secure resource</web-resource-name>
+   <url-pattern>/jsp/protected/*</url-pattern>
+  </web-resource-collection>
+  <auth-constraint>
+   <role-name>Argo</role-name>
+  </auth-constraint>
+ </security-constraint>
+ <login-config>
+  <auth-method>FORM</auth-method>
+  <form-login-config>
+   <form-login-page>/jsp/public.faces</form-login-page>
+   <form-error-page>/jsp/public.faces?retry=true</form-error-page>
+  </form-login-config>
+ </login-config>
+ <security-role>
+  <role-name>Argo</role-name>
+ </security-role>
+    
+</web-app>

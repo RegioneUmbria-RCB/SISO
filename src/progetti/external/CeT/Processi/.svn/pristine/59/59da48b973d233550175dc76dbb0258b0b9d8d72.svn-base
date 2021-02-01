@@ -1,0 +1,93 @@
+dir.fileAnagrafica=ONLYONE/ANAGRAFICA/ExpNom
+dir.fileConedil=ONLYONE/CONEDIL/ExpPra
+dir.fileConedi2=ONLYONE/CONEDIL1/ExpPra
+dir.fileConedi3=ONLYONE/CONEDIL2/ExpPra
+dir.fileConedi4=ONLYONE/CONEDIL4/ExpPra
+dir.fileConedi5=ONLYONE/CONEDIL5/ExpPra
+dir.fileConedi9=ONLYONE/CONEDIL9/ExpPra
+dir.fileConedi10=ONLYONE/CONEDIL10/ExpPra
+sql.DELETE_INFORM_IN_OO=DELETE sit_c_concessioni CC where PROVENIENZA \='I' AND EXISTS (SELECT 1 FROM SIT_C_CONCESSIONI C WHERE lpad(C.PROTOCOLLO_NUMERO,20,'0') \= lpad(CC.PROTOCOLLO_NUMERO,20,'0') and c.PROTOCOLLO_DATA \= CC.PROTOCOLLO_DATA AND C.PROVENIENZA \= 'OO')
+sql.UPDATE_IMG_TO_OO=UPDATE SIT_C_CONCESSIONI_IMG IMG SET ID_EXT  \= (SELECT max(cc.id_ext) from sit_c_concessioni CC,  SIT_C_CONCESSIONI C where CC.PROVENIENZA \='OO' AND lpad(C.PROTOCOLLO_NUMERO,20,'0') \= lpad(CC.PROTOCOLLO_NUMERO,20,'0') and c.PROTOCOLLO_DATA \= CC.PROTOCOLLO_DATA AND C.PROVENIENZA \= 'I' AND C.ID_EXT \= IMG.ID_EXT ) where exists ( SELECT 1 from sit_c_concessioni CC,  SIT_C_CONCESSIONI C where CC.PROVENIENZA \='OO' AND lpad(C.PROTOCOLLO_NUMERO,20,'0') \= lpad(CC.PROTOCOLLO_NUMERO,20,'0') and c.PROTOCOLLO_DATA \= CC.PROTOCOLLO_DATA AND C.PROVENIENZA \= 'I' AND C.ID_EXT \= IMG.ID_EXT )
+table1.name=RE_IMPORTCONEDILONLYONE1
+table2.name=RE_IMPORTCONEDILONLYONE2
+table1.idx=CREATE INDEX IDX_RE_IMPORTCONEDILONLYONE1 ON RE_IMPORTCONEDILONLYONE1 (A)
+table2.idx=CREATE INDEX IDX_RE_IMPORTCONEDILONLYONE2 ON RE_IMPORTCONEDILONLYONE2 (A)
+sql.IMPORTCONEDILONLYONE_CONEDIL= SELECT A ,B ,C ,util.fchar_to_date (D, 'DD/MM/YYYY') D ,E ,F ,G ,H ,I ,L ,M ,N ,O ,P ,Q ,R ,S ,T ,U ,V ,Z ,util.fchar_to_date (A1, 'DD/MM/YYYY') A1 ,util.fchar_to_date (B1, 'DD/MM/YYYY') B1 ,C1 ,D1 ,E1 ,util.fchar_to_date (F1, 'DD/MM/YYYY') F1 ,G1 ,util.fchar_to_date (H1, 'DD/MM/YYYY') H1 ,I1 ,PROCESSID, DT_EXP_DATO FROM RE_IMPORTCONEDILONLYONE2 WHERE RE_FLAG_ELABORATO \= '0' ORDER BY DT_EXP_DATO
+sql.IMPORTCONEDILONLYONE_ANAGRAFE=select A ,B ,C ,D ,E ,util.fchar_to_date (F, 'DD/MM/YYYY') F ,G ,H ,I ,L ,M ,N ,O ,P ,Q ,R ,S ,T ,U ,V ,Z ,A1 ,B1 ,C1 ,D1 ,E1 ,F1 ,G1 ,H1 ,I1 ,L1 ,M1 ,N1 ,O1 ,P1 ,Q1 ,R1 ,S1 ,T1 ,U1 ,V1 ,Z1 , PROCESSID, DT_EXP_DATO  from RE_IMPORTCONEDILONLYONE1 WHERE RE_FLAG_ELABORATO \= '0' ORDER BY DT_EXP_DATO
+sql.CREATE_IMPORTCONEDILONLYONE_CONEDIL=create table RE_IMPORTCONEDILONLYONE2 \
+(A VARCHAR2(255),\
+B VARCHAR2(255),\
+C VARCHAR2(255),\
+D VARCHAR2(255),\
+E VARCHAR2(255),\
+F VARCHAR2(4000),\
+G VARCHAR2(255),\
+H varchar2(2000),\
+I VARCHAR2(255),\
+L VARCHAR2(255),\
+M VARCHAR2(255),\
+N VARCHAR2(255),\
+O VARCHAR2(255),\
+P VARCHAR2(255),\
+Q VARCHAR2(2000),\
+R VARCHAR2(2000),\
+S VARCHAR2(2000),\
+T VARCHAR2(2000),\
+U VARCHAR2(2000),\
+V VARCHAR2(2000),\
+Z VARCHAR2(255),\
+A1 VARCHAR2(255),\
+B1 VARCHAR2(255),\
+C1 VARCHAR2(2000),\
+D1 VARCHAR2(2000),\
+E1 VARCHAR2(2000),\
+F1 VARCHAR2(255),\
+G1 VARCHAR2(255),\
+H1 VARCHAR2(255),\
+I1 VARCHAR2(255),\
+PROCESSID VARCHAR2(1000), RE_FLAG_ELABORATO VARCHAR2(1), DT_EXP_DATO DATE)
+sql.CREATE_IMPORTCONEDILONLYONE_ANAGRAFE=create table \
+		RE_IMPORTCONEDILONLYONE1 \
+		(A varchar2(255),  \
+		B varchar2(255), \
+		C varchar2(255), \
+		D varchar2(255), \
+		E varchar2(255), \
+		F varchar2(255), \
+		G varchar2(255), \
+		H varchar2(255), \
+		I varchar2(255), \
+		L varchar2(255), \
+		M varchar2(255), \
+		N varchar2(255), \
+		O varchar2(255), \
+		P varchar2(255), \
+		Q varchar2(255), \
+		R varchar2(255), \
+		S varchar2(255), \
+		T varchar2(255), \
+		U varchar2(255), \
+		V varchar2(255), \
+		Z varchar2(255), \
+		A1 varchar2(255), \
+		B1 varchar2(255), \
+		C1 varchar2(255), \
+		D1 varchar2(255), \
+		E1 varchar2(255), \
+		F1 varchar2(255), \
+		G1 varchar2(2000),\
+		H1 varchar2(255), \
+		I1 varchar2(255), \
+		L1 varchar2(255), \
+		M1 varchar2(255), \
+		N1 varchar2(255), \
+		O1 varchar2(255), \
+		P1 varchar2(255), \
+		Q1 varchar2(255), \
+		R1 varchar2(255), \
+		S1 varchar2(255), \
+		T1 varchar2(255), \
+		U1 varchar2(255), \
+		V1 varchar2(255), \
+		Z1 varchar2(255), \
+		PROCESSID VARCHAR2(1000), RE_FLAG_ELABORATO VARCHAR2(1), DT_EXP_DATO DATE)

@@ -1,0 +1,7 @@
+tableFlusso.name=IS_PAG_FLUSSO
+tableLiquidita.name=IS_PAG_RND_LIQUIDITA_FUT
+tableMovimento.name=IS_PAG_RND_MOVIMENTO
+tableMovimentoInfo.name=IS_PAG_RND_MOVIMENTO_INFO
+tablePratica.name=IS_PAG_RND_PRATICA
+tableSaldo.name=IS_PAG_RND_SALDO
+Caricatore.class.noversion=it.webred.rulengine.brick.loadDwh.load.tassasoggiorno.rnd.v1.ImportTSRnd

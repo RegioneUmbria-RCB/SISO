@@ -1,0 +1,345 @@
+#--------------------------------------------------------------
+# File di configurazione in cui sono indicato i valori dei soli
+# parametri di contesto della catena jelly da passare alla 
+# regola 
+#------------------------------------------------------------
+# Numero di parametri previsti in input
+rengine.jchain.in.nof=39
+#------------------------------------------------------------
+# Le coppie chiavi/valore hanno come key lo stesso nome 
+# indicato nello script jelly xml
+#------------------------------------------------------------
+rengine.jchain.in.1.key=RSITRSCRIPT_Z1
+rengine.jchain.in.1.value=<RsIterator><KEY TABLE\="RE_F24_1_0"><COLUMN NAME\="ID_ORIG"/>\
+<COLUMN NAME\="DT_EXP_DATO"/></KEY><commands><command name\="SIT_F24_Z1">\
+<param id\="field" value\="ID_ORIG"           dest\="ID_ORIG" type\="java.lang.String"/>\
+<param id\="const" value\="33"                dest\="FK_ENTE_SORGENTE" type\="java.lang.Integer"/>\
+<param id\="field" value\="DT_FORNITURA"      dest\="DT_FORNITURA" type\="java.sql.Timestamp"/>\
+<param id\="field" value\="PROG_FORNITURA"    dest\="PROG_FORNITURA" type\="java.lang.String"/>\
+<param id\="const" value\="0"                 dest\="NUM_TRASMISSIONE" type\="java.lang.Integer"/>\
+<param id\="field" value\="COD_VALUTA"        dest\="COD_VALUTA" type\="java.lang.String"/>\
+<param id\="field" value\="COD_ENTE"          dest\="COD_ENTE" type\="java.lang.String"/>\
+<param id\="field" value\="COD_INTERMEDIARIO" dest\="COD_INTERMEDIARIO" type\="java.lang.String"/>\
+<param id\="field" value\="ID_FILE"           dest\="ID_FILE" type\="java.lang.String"/>\
+<param id\="field" value\="NUM_G1"            dest\="NUM_G1" type\="java.math.BigDecimal"/>\
+<param id\="field" value\="NUM_G2"            dest\="NUM_G2" type\="java.math.BigDecimal"/>\
+<param id\="field" value\="NUM_G3"            dest\="NUM_G3" type\="java.math.BigDecimal"/>\
+<param id\="field" value\="NUM_G4"            dest\="NUM_G4" type\="java.math.BigDecimal"/>\
+<param id\="field" value\="NUM_G5"            dest\="NUM_G5" type\="java.math.BigDecimal"/>\
+<param id\="field" value\="NUM_G9"            dest\="NUM_G9" type\="java.math.BigDecimal"/>\
+<param id\="field" value\="NUM_TOT"           dest\="NUM_TOT" type\="java.math.BigDecimal"/>\
+<param id\="field" value\="NUM_TRASMISSIONE"  dest\="NUM_TRASMISSIONE" type\="java.math.BigDecimal"/>\
+<param id\="field" value\="DT_EXP_DATO"       dest\="DT_EXP_DATO" type\="java.sql.Timestamp"/>\
+<param id\="const" value\=""                  dest\="DT_INIZIO_DATO" type\="java.sql.Timestamp"/>\
+<param id\="const" value\=""                  dest\="DT_FINE_DATO" type\="java.sql.Timestamp"/>\
+<param id\="const" value\="0"                 dest\="FLAG_DT_VAL_DATO" type\="java.lang.Integer"/></command></commands></RsIterator>
+rengine.jchain.in.2.key=QUERYSQL_Z1
+rengine.jchain.in.2.value=select to_char(dt_fornitura,'yyyyMMdd')|| '|'|| prog_fornitura id_orig, Z9.* from (SELECT DISTINCT TO_DATE (SUBSTR (riga_modello, 3, 8), 'yyyyMMdd') dt_fornitura,LTRIM(SUBSTR (riga_modello, 11, 2),'0') prog_fornitura,TO_NUMBER (SUBSTR (riga_modello, 39, 2)) num_trasmissione,SUBSTR (riga_modello, 41, 3) cod_valuta,SUBSTR (riga_modello, 44, 4) cod_ente,SUBSTR (riga_modello, 48, 3) cod_intermediario,SUBSTR (riga_modello, 56, 24) id_file,TO_NUMBER (SUBSTR (riga_modello, 80, 7)) num_g1,TO_NUMBER (SUBSTR (riga_modello, 87, 7)) num_g2,TO_NUMBER (SUBSTR (riga_modello, 94, 7)) num_g3,TO_NUMBER (SUBSTR (riga_modello, 101, 7)) num_g4,TO_NUMBER (SUBSTR (riga_modello, 108, 7)) num_g5,TO_NUMBER (SUBSTR (riga_modello, 115, 7)) num_g9,TO_NUMBER (SUBSTR (riga_modello, 122, 7)) num_tot,RE_FLAG_ELABORATO, DT_EXP_DATO FROM RE_F24_1_0 WHERE SUBSTR (riga_modello, 0, 2) \= 'Z1' AND RE_FLAG_ELABORATO \= '0')Z9 ORDER BY DT_EXP_DATO, dt_fornitura, prog_fornitura
+rengine.jchain.in.3.key=RSITRSCRIPT_G1
+rengine.jchain.in.3.value=<RsIterator><KEY TABLE\="RE_F24_1_0"><COLUMN NAME\="ID_ORIG"/>\
+<COLUMN NAME\="DT_EXP_DATO"/></KEY><commands><command name\="SIT_F24_G1">\
+<param id\="const" value\=""           dest\="ID_ORIG" type\="java.lang.String"/>\
+<param id\="field" value\="ID_ORIG_TESTATA"   dest\="ID_ORIG_TESTATA" type\="java.lang.String"/>\
+<param id\="const" value\="33"                dest\="FK_ENTE_SORGENTE" type\="java.lang.Integer"/>\
+<param id\="field" value\="DT_FORNITURA"      dest\="DT_FORNITURA" type\="java.sql.Timestamp"/>\
+<param id\="field" value\="PROG_FORNITURA"    dest\="PROG_FORNITURA" type\="java.lang.String"/>\
+<param id\="field" value\="DT_RIPARTIZIONE"   dest\="DT_RIPARTIZIONE" type\="java.sql.Timestamp"/>\
+<param id\="field" value\="PROG_RIPARTIZIONE" dest\="PROG_RIPARTIZIONE" type\="java.lang.String"/>\
+<param id\="field" value\="DT_BONIFICO"       dest\="DT_BONIFICO" type\="java.sql.Timestamp"/>\
+<param id\="field" value\="PROG_DELEGA"       dest\="PROG_DELEGA" type\="java.lang.String"/>\
+<param id\="field" value\="PROG_RIGA"         dest\="PROG_RIGA" type\="java.lang.String"/>\
+<param id\="field" value\="COD_ENTE_RD"       dest\="COD_ENTE_RD" type\="java.lang.String"/>\
+<param id\="field" value\="TIPO_ENTE_RD"      dest\="TIPO_ENTE_RD" type\="java.lang.String"/>\
+<param id\="field" value\="CAB"               dest\="CAB" type\="java.lang.String"/>\
+<param id\="field" value\="CF"                dest\="CF" type\="java.lang.String"/>\
+<param id\="field" value\="FLAG_ERR_CF"       dest\="FLAG_ERR_CF" type\="java.lang.String"/>\
+<param id\="field" value\="DT_RISCOSSIONE"    dest\="DT_RISCOSSIONE" type\="java.sql.Timestamp"/>\
+<param id\="field" value\="COD_ENTE_COM"      dest\="COD_ENTE_COM" type\="java.lang.String"/>\
+<param id\="field" value\="COD_TRIBUTO"       dest\="COD_TRIBUTO" type\="java.lang.String"/>\
+<param id\="field" value\="FLAG_ERR_CT"       dest\="FLAG_ERR_CT" type\="java.lang.String"/>\
+<param id\="field" value\="RATEAZIONE"        dest\="RATEAZIONE" type\="java.math.BigDecimal"/>\
+<param id\="field" value\="ANNO_RIF"          dest\="ANNO_RIF" type\="java.math.BigDecimal"/>\
+<param id\="field" value\="FLAG_ERR_AR"       dest\="FLAG_ERR_AR" type\="java.lang.String"/>\
+<param id\="field" value\="COD_VALUTA"        dest\="COD_VALUTA" type\="java.lang.String"/>\
+<param id\="field" value\="IMP_DEBITO"        dest\="IMP_DEBITO" type\="java.math.BigDecimal"/>\
+<param id\="field" value\="IMP_CREDITO"       dest\="IMP_CREDITO" type\="java.math.BigDecimal"/>\
+<param id\="field" value\="RAVVEDIMENTO"      dest\="RAVVEDIMENTO" type\="java.lang.String"/>\
+<param id\="field" value\="VAR_IMM_ICI_IMU"   dest\="VAR_IMM_ICI_IMU" type\="java.lang.String"/>\
+<param id\="field" value\="ACCONTO"           dest\="ACCONTO" type\="java.lang.String"/>\
+<param id\="field" value\="SALDO"             dest\="SALDO" type\="java.lang.String"/>\
+<param id\="field" value\="NUM_FABB_ICI_IMU"  dest\="NUM_FABB_ICI_IMU" type\="java.math.BigDecimal"/>\
+<param id\="field" value\="FLAG_ERR_ICI_IMU"  dest\="FLAG_ERR_ICI_IMU" type\="java.lang.String"/>\
+<param id\="field" value\="DETRAZIONE"        dest\="DETRAZIONE" type\="java.math.BigDecimal"/>\
+<param id\="field" value\="DENOMINAZIONE"     dest\="DENOMINAZIONE" type\="java.lang.String"/>\
+<param id\="field" value\="NOME"              dest\="NOME" type\="java.lang.String"/>\
+<param id\="field" value\="SESSO"             dest\="SESSO" type\="java.lang.String"/>\
+<param id\="field" value\="DT_NASCITA"        dest\="DT_NASCITA" type\="java.lang.String"/>\
+<param id\="field" value\="COMUNE_STATO"      dest\="COMUNE_STATO" type\="java.lang.String"/>\
+<param id\="field" value\="PROVINCIA"         dest\="PROVINCIA" type\="java.lang.String"/>\
+<param id\="field" value\="TIPO_IMPOSTA"      dest\="TIPO_IMPOSTA" type\="java.lang.String"/>\
+<param id\="field" value\="CF2"              dest\="CF2" type\="java.lang.String"/>\
+<param id\="field" value\="COD_ID_CF2"       dest\="COD_ID_CF2" type\="java.lang.String"/>\
+<param id\="field" value\="ID_OPERAZIONE"    dest\="ID_OPERAZIONE" type\="java.lang.String"/>\
+<param id\="field" value\="DT_EXP_DATO"       dest\="DT_EXP_DATO" type\="java.sql.Timestamp"/><param id\="const" value\=""                  dest\="DT_INIZIO_DATO" type\="java.sql.Timestamp"/><param id\="const" value\=""                  dest\="DT_FINE_DATO" type\="java.sql.Timestamp"/><param id\="const" value\="0"                 dest\="FLAG_DT_VAL_DATO" type\="java.lang.Integer"/></command></commands></RsIterator>
+rengine.jchain.in.4.key=QUERYSQL_G1
+rengine.jchain.in.4.value= SELECT DISTINCT to_char(dt_fornitura,'yyyyMMdd')|| '|'|| prog_fornitura id_ORIG_testata,to_char(dt_fornitura,'yyyyMMdd')|| '|'|| prog_fornitura|| '|'||to_char(DT_RIPARTIZIONE,'yyyyMMdd')|| '|'|| PROG_RIPARTIZIONE|| '|'||to_char(DT_BONIFICO,'yyyyMMdd')|| '|'|| PROG_DELEGA|| '|'||PROG_RIGA id_orig,G1.* from (select distinct TO_DATE(SUBSTR (riga_modello, 3, 8),'yyyyMMdd') DT_FORNITURA, LTRIM(SUBSTR (riga_modello, 11, 2),'0') PROG_FORNITURA, TO_DATE(SUBSTR (riga_modello, 13, 8),'yyyyMMdd') DT_RIPARTIZIONE,LTRIM(SUBSTR (riga_modello, 21, 2),'0') PROG_RIPARTIZIONE,TO_DATE(SUBSTR (riga_modello, 23, 8),'yyyyMMdd') DT_BONIFICO,LTRIM(SUBSTR (riga_modello, 31, 6),'0') PROG_DELEGA,LTRIM(SUBSTR (riga_modello, 37, 2),'0') PROG_RIGA,SUBSTR(riga_modello, 39, 5) COD_ENTE_RD,SUBSTR(riga_modello, 44, 1) TIPO_ENTE_RD,SUBSTR (riga_modello, 45, 5) CAB,TRIM(SUBSTR (riga_modello, 50, 16)) CF,SUBSTR (riga_modello, 66, 1) FLAG_ERR_CF,TO_DATE(SUBSTR (riga_modello, 67, 8),'yyyyMMdd') DT_RISCOSSIONE,SUBSTR (riga_modello, 75, 4) COD_ENTE_COM,SUBSTR (riga_modello, 79, 4) COD_TRIBUTO,SUBSTR (riga_modello, 83, 1) FLAG_ERR_CT,TO_NUMBER(SUBSTR (riga_modello, 84, 4)) RATEAZIONE,TO_NUMBER(SUBSTR (riga_modello, 88, 4)) ANNO_RIF,SUBSTR (riga_modello, 92, 1) FLAG_ERR_AR,SUBSTR (riga_modello, 93, 3) COD_VALUTA,TO_NUMBER(SUBSTR (riga_modello, 96, 15))IMP_DEBITO,TO_NUMBER(SUBSTR (riga_modello, 111, 15)) IMP_CREDITO,SUBSTR (riga_modello, 126, 1) RAVVEDIMENTO,SUBSTR (riga_modello, 127, 1) VAR_IMM_ICI_IMU,SUBSTR (riga_modello, 128, 1) ACCONTO,SUBSTR (riga_modello, 129, 1) SALDO,TO_NUMBER(SUBSTR (riga_modello, 130, 3)) NUM_FABB_ICI_IMU,SUBSTR (riga_modello, 133, 1) FLAG_ERR_ICI_IMU,TO_NUMBER(SUBSTR (riga_modello, 134, 15)) DETRAZIONE,TRIM(SUBSTR (riga_modello, 149, 55)) DENOMINAZIONE,TRIM(SUBSTR (riga_modello, 204, 20))NOME,TRIM(SUBSTR (riga_modello, 224, 1))SESSO,TRIM(SUBSTR (riga_modello, 225, 8)) DT_NASCITA,TRIM(SUBSTR (riga_modello, 233, 25)) COMUNE_STATO,TRIM(SUBSTR (riga_modello, 258, 2)) PROVINCIA,SUBSTR (riga_modello, 260, 1) TIPO_IMPOSTA,TRIM(SUBSTR (riga_modello, 261, 16)) CF2,TRIM(SUBSTR (riga_modello, 277, 2)) COD_ID_CF2, TRIM(SUBSTR (riga_modello, 279, 18)) ID_OPERAZIONE ,RE_FLAG_ELABORATO, DT_EXP_DATO FROM RE_F24_1_0 WHERE SUBSTR (riga_modello, 0, 2) \= 'G1' AND RE_FLAG_ELABORATO \= '0') G1 ORDER BY DT_EXP_DATO, DT_FORNITURA, PROG_FORNITURA, DT_RIPARTIZIONE,PROG_RIPARTIZIONE, DT_BONIFICO,PROG_DELEGA,PROG_RIGA
+rengine.jchain.in.5.key=RSITRSCRIPT_G2
+rengine.jchain.in.5.value=<RsIterator><KEY TABLE\="RE_F24_1_0"><COLUMN NAME\="ID_ORIG"/>\
+<COLUMN NAME\="DT_EXP_DATO"/></KEY><commands><command name\="SIT_F24_G2">\
+<param id\="const" value\=""           dest\="ID_ORIG" type\="java.lang.String"/>\
+<param id\="field" value\="ID_ORIG_TESTATA"   dest\="ID_ORIG_TESTATA" type\="java.lang.String"/>\
+<param id\="const" value\="33"                dest\="FK_ENTE_SORGENTE" type\="java.lang.Integer"/>\
+<param id\="field" value\="DT_FORNITURA"      dest\="DT_FORNITURA" type\="java.sql.Timestamp"/>\
+<param id\="field" value\="PROG_FORNITURA"    dest\="PROG_FORNITURA" type\="java.lang.String"/>\
+<param id\="field" value\="DT_RIPARTIZIONE"   dest\="DT_RIPARTIZIONE" type\="java.sql.Timestamp"/>\
+<param id\="field" value\="PROG_RIPARTIZIONE" dest\="PROG_RIPARTIZIONE" type\="java.lang.String"/>\
+<param id\="field" value\="DT_BONIFICO"       dest\="DT_BONIFICO" type\="java.sql.Timestamp"/>\
+<param id\="field" value\="COD_ENTE_RIC"       dest\="COD_ENTE_RIC" type\="java.lang.String"/>\
+<param id\="field" value\="COD_VALUTA"        dest\="COD_VALUTA" type\="java.lang.String"/>\
+<param id\="field" value\="IMP_ACCREDITO"        dest\="IMP_ACCREDITO" type\="java.math.BigDecimal"/>\
+<param id\="field" value\="TIPO_IMPOSTA"      dest\="TIPO_IMPOSTA" type\="java.lang.String"/>\
+<param id\="field" value\="DT_EXP_DATO"       dest\="DT_EXP_DATO" type\="java.sql.Timestamp"/>\
+<param id\="const" value\=""                  dest\="DT_INIZIO_DATO" type\="java.sql.Timestamp"/>\
+<param id\="const" value\=""                  dest\="DT_FINE_DATO" type\="java.sql.Timestamp"/>\
+<param id\="const" value\="0"                 dest\="FLAG_DT_VAL_DATO" type\="java.lang.Integer"/></command></commands></RsIterator>
+rengine.jchain.in.6.key=QUERYSQL_G2
+rengine.jchain.in.6.value=SELECT DISTINCT to_char(dt_fornitura,'yyyyMMdd')|| '|'|| prog_fornitura id_orig_testata,to_char(dt_fornitura,'yyyyMMdd')|| '|'|| prog_fornitura|| '|'||to_char(dt_ripartizione,'yyyyMMdd')|| '|'|| prog_ripartizione|| '|'||to_char(DT_BONIFICO,'yyyyMMdd')|| '|'||COD_ENTE_RIC id_orig,G2.* from (select TO_DATE(SUBSTR (riga_modello, 3, 8),'yyyyMMdd') DT_FORNITURA,LTRIM(SUBSTR (riga_modello, 11, 2),'0') PROG_FORNITURA,TO_DATE(SUBSTR (riga_modello, 13, 8),'yyyyMMdd') DT_RIPARTIZIONE,LTRIM(SUBSTR(riga_modello, 21, 2),'0') PROG_RIPARTIZIONE,TO_DATE(SUBSTR (riga_modello, 23, 8),'yyyyMMdd') DT_BONIFICO,SUBSTR (riga_modello, 39, 4) COD_ENTE_RIC,SUBSTR (riga_modello, 43, 3) COD_VALUTA,TO_NUMBER(SUBSTR (riga_modello, 46, 15)) IMP_ACCREDITO,SUBSTR (riga_modello, 61, 1) TIPO_IMPOSTA,RE_FLAG_ELABORATO, DT_EXP_DATO FROM RE_F24_1_0 WHERE     SUBSTR (riga_modello, 0, 2) = 'G2' AND RE_FLAG_ELABORATO = '0') G2 ORDER BY DT_EXP_DATO, DT_FORNITURA, PROG_FORNITURA, DT_RIPARTIZIONE,PROG_RIPARTIZIONE,DT_BONIFICO
+rengine.jchain.in.7.key=RSITRSCRIPT_G3
+rengine.jchain.in.7.value=<RsIterator><KEY TABLE\="RE_F24_1_0"><COLUMN NAME\="ID_ORIG"/>\
+<COLUMN NAME\="DT_EXP_DATO"/></KEY><commands><command name\="SIT_F24_G3">\
+<param id\="const" value\=""                  dest\="ID_ORIG" type\="java.lang.String"/>\
+<param id\="field" value\="ID_ORIG_TESTATA"   dest\="ID_ORIG_TESTATA" type\="java.lang.String"/>\
+<param id\="const" value\="33"                dest\="FK_ENTE_SORGENTE" type\="java.lang.Integer"/>\
+<param id\="field" value\="DT_FORNITURA"      dest\="DT_FORNITURA" type\="java.sql.Timestamp"/>\
+<param id\="field" value\="PROG_FORNITURA"    dest\="PROG_FORNITURA" type\="java.lang.String"/>\
+<param id\="field" value\="DT_RIPARTIZIONE"   dest\="DT_RIPARTIZIONE" type\="java.sql.Timestamp"/>\
+<param id\="field" value\="PROG_RIPARTIZIONE" dest\="PROG_RIPARTIZIONE" type\="java.lang.String"/>\
+<param id\="field" value\="DT_BONIFICO"       dest\="DT_BONIFICO" type\="java.lang.String"/>\
+<param id\="field" value\="COD_ENTE_COM"      dest\="COD_ENTE_COM" type\="java.lang.String"/>\
+<param id\="field" value\="COD_VALUTA"        dest\="COD_VALUTA" type\="java.lang.String"/>\
+<param id\="field" value\="IMP_RECUPERO"      dest\="IMP_RECUPERO" type\="java.math.BigDecimal"/>\
+<param id\="field" value\="ANNO_MESE_RIP_ORIG" dest\="ANNO_MESE_RIP_ORIG" type\="java.lang.String"/>\
+<param id\="field" value\="PROG_RIP_ORIG"      dest\="PROG_RIP_ORIG" type\="java.lang.String"/>\
+<param id\="field" value\="DT_BONIFICO_ORIG"   dest\="DT_BONIFICO_ORIG" type\="java.lang.String"/>\
+<param id\="field" value\="TIPO_IMPOSTA"       dest\="TIPO_IMPOSTA" type\="java.lang.String"/>\
+<param id\="field" value\="TIPO_RECUPERO"      dest\="TIPO_REC" type\="java.lang.String"/>\
+<param id\="field" value\="DESC_TIPO_RECUPERO" dest\="DESC_TIPO_REC" type\="java.lang.String"/>\
+<param id\="field" value\="DT_EXP_DATO"        dest\="DT_EXP_DATO" type\="java.sql.Timestamp"/><param id\="const" value\=""                  dest\="DT_INIZIO_DATO" type\="java.sql.Timestamp"/><param id\="const" value\=""                  dest\="DT_FINE_DATO" type\="java.sql.Timestamp"/><param id\="const" value\="0"                 dest\="FLAG_DT_VAL_DATO" type\="java.lang.Integer"/></command></commands></RsIterator>
+rengine.jchain.in.8.key=QUERYSQL_G3
+rengine.jchain.in.8.value=SELECT DISTINCT to_char(dt_fornitura,'yyyyMMdd')|| '|'|| prog_fornitura id_orig_testata, G3.* from (select distinct TO_DATE(SUBSTR (riga_modello, 3, 8),'yyyyMMdd') DT_FORNITURA,LTRIM(SUBSTR (riga_modello, 11, 2),'0') PROG_FORNITURA,TO_DATE(SUBSTR (riga_modello, 13, 8),'yyyyMMdd') DT_RIPARTIZIONE,LTRIM(SUBSTR (riga_modello, 21, 2),'0') PROG_RIPARTIZIONE,DECODE(SUBSTR (riga_modello, 23, 8),'99999999',NULL,SUBSTR (riga_modello, 23, 8)) DT_BONIFICO,SUBSTR (riga_modello, 39, 4) COD_ENTE_COM,SUBSTR (riga_modello, 43, 3) COD_VALUTA,TO_NUMBER(SUBSTR (riga_modello, 46, 15))IMP_RECUPERO,SUBSTR (riga_modello, 61, 6) ANNO_MESE_RIP_ORIG,LTRIM(SUBSTR (riga_modello, 67, 4),'0') PROG_RIP_ORIG,LTRIM(SUBSTR (riga_modello, 71, 8),'0') DT_BONIFICO_ORIG,SUBSTR (riga_modello, 79, 1) TIPO_IMPOSTA,SUBSTR (riga_modello, 80, 3) TIPO_RECUPERO,SUBSTR (riga_modello, 83, 60) DESC_TIPO_RECUPERO,RE_FLAG_ELABORATO,DT_EXP_DATO FROM RE_F24_1_0 WHERE     SUBSTR (riga_modello, 0, 2) = 'G3' AND RE_FLAG_ELABORATO = '0') G3
+rengine.jchain.in.9.key=RSITRSCRIPT_G4
+rengine.jchain.in.9.value=<RsIterator><KEY TABLE\="RE_F24_1_0"><COLUMN NAME\="ID_ORIG"/>\
+<COLUMN NAME\="DT_EXP_DATO"/></KEY><commands><command name\="SIT_F24_G4">\
+<param id\="const" value\=""                  dest\="ID_ORIG" type\="java.lang.String"/>\
+<param id\="field" value\="ID_ORIG_TESTATA"   dest\="ID_ORIG_TESTATA" type\="java.lang.String"/>\
+<param id\="const" value\="33"                dest\="FK_ENTE_SORGENTE" type\="java.lang.Integer"/>\
+<param id\="field" value\="DT_FORNITURA"      dest\="DT_FORNITURA" type\="java.sql.Timestamp"/>\
+<param id\="field" value\="PROG_FORNITURA"    dest\="PROG_FORNITURA" type\="java.lang.String"/>\
+<param id\="field" value\="DT_RIPARTIZIONE"   dest\="DT_RIPARTIZIONE" type\="java.sql.Timestamp"/>\
+<param id\="field" value\="PROG_RIPARTIZIONE" dest\="PROG_RIPARTIZIONE" type\="java.lang.String"/>\
+<param id\="field" value\="DT_BONIFICO"       dest\="DT_BONIFICO" type\="java.sql.Timestamp"/>\
+<param id\="field" value\="COD_ENTE_COM"      dest\="COD_ENTE_COM" type\="java.lang.String"/>\
+<param id\="field" value\="COD_VALUTA"        dest\="COD_VALUTA" type\="java.lang.String"/>\
+<param id\="field" value\="IMP_ANTICIPO"      dest\="IMP_ANTICIPO" type\="java.math.BigDecimal"/>\
+<param id\="field" value\="TIPO_IMPOSTA"      dest\="TIPO_IMPOSTA" type\="java.lang.String"/>\
+<param id\="field" value\="DT_EXP_DATO"       dest\="DT_EXP_DATO" type\="java.sql.Timestamp"/><param id\="const" value\=""                  dest\="DT_INIZIO_DATO" type\="java.sql.Timestamp"/><param id\="const" value\=""                  dest\="DT_FINE_DATO" type\="java.sql.Timestamp"/><param id\="const" value\="0"                 dest\="FLAG_DT_VAL_DATO" type\="java.lang.Integer"/></command></commands></RsIterator>
+rengine.jchain.in.10.key=QUERYSQL_G4
+rengine.jchain.in.10.value= SELECT DISTINCT to_char(dt_fornitura,'yyyyMMdd')|| '|'|| prog_fornitura id_orig_testata, G4.*  from (select distinct TO_DATE(SUBSTR (riga_modello, 3, 8),'yyyyMMdd') DT_FORNITURA,LTRIM(SUBSTR (riga_modello, 11, 2),'0') PROG_FORNITURA,TO_DATE(SUBSTR (riga_modello, 13, 8),'yyyyMMdd') DT_RIPARTIZIONE,LTRIM(SUBSTR (riga_modello, 21, 2),'0') PROG_RIPARTIZIONE,TO_DATE(SUBSTR (riga_modello, 23, 8),'yyyyMMdd') DT_BONIFICO,SUBSTR (riga_modello, 39, 4) COD_ENTE_COM,SUBSTR (riga_modello, 43, 3) COD_VALUTA,TO_NUMBER(SUBSTR (riga_modello, 46, 15))IMP_ANTICIPO,SUBSTR (riga_modello, 61, 1) TIPO_IMPOSTA,RE_FLAG_ELABORATO, DT_EXP_DATO FROM RE_F24_1_0 WHERE     SUBSTR (riga_modello, 0, 2) \= 'G4'  AND RE_FLAG_ELABORATO \= '0') G4
+rengine.jchain.in.11.key=RSITRSCRIPT_G5
+rengine.jchain.in.11.value=<RsIterator><KEY TABLE\="RE_F24_1_0"><COLUMN NAME\="ID_ORIG"/>\
+<COLUMN NAME\="DT_EXP_DATO"/></KEY><commands><command name\="SIT_F24_G5">\
+<param id\="const" value\=""           dest\="ID_ORIG" type\="java.lang.String"/>\
+<param id\="field" value\="ID_ORIG_TESTATA"   dest\="ID_ORIG_TESTATA" type\="java.lang.String"/>\
+<param id\="const" value\="33"                dest\="FK_ENTE_SORGENTE" type\="java.lang.Integer"/>\
+<param id\="field" value\="DT_FORNITURA"      dest\="DT_FORNITURA" type\="java.sql.Timestamp"/>\
+<param id\="field" value\="PROG_FORNITURA"    dest\="PROG_FORNITURA" type\="java.lang.String"/>\
+<param id\="field" value\="COD_ENTE_COM"       dest\="COD_ENTE_COM" type\="java.lang.String"/>\
+<param id\="field" value\="COD_VALUTA"        dest\="COD_VALUTA" type\="java.lang.String"/>\
+<param id\="field" value\="IMP_ACCREDITO"        dest\="IMP_ACCREDITO" type\="java.math.BigDecimal"/>\
+<param id\="field" value\="CRO" dest\="CRO" type\="java.math.BigDecimal"/>\
+<param id\="field" value\="DT_ACCREDITO"   dest\="DT_ACCREDITO" type\="java.sql.Timestamp"/>\
+<param id\="field" value\="DT_RIPART_ORIG"   dest\="DT_RIPART_ORIG" type\="java.sql.Timestamp"/>\
+<param id\="field" value\="PROG_RIPART_ORIG" dest\="PROG_RIPART_ORIG" type\="java.lang.String"/>\
+<param id\="field" value\="DT_BONIFICO_ORIG"       dest\="DT_BONIFICO_ORIG" type\="java.sql.Timestamp"/>\
+<param id\="field" value\="TIPO_IMPOSTA"      dest\="TIPO_IMPOSTA" type\="java.lang.String"/>\
+<param id\="field" value\="IBAN" dest\="IBAN" type\="java.lang.String"/>\
+<param id\="field" value\="SEZ_CONTO_TU" dest\="SEZ_CONTO_TU" type\="java.lang.String"/>\
+<param id\="field" value\="NUM_CONTO_TU" dest\="NUM_CONTO_TU" type\="java.math.BigDecimal"/>\
+<param id\="field" value\="COD_MOVIMENTO" dest\="COD_MOVIMENTO" type\="java.math.BigDecimal"/>\
+<param id\="field" value\="DT_EXP_DATO"       dest\="DT_EXP_DATO" type\="java.sql.Timestamp"/><param id\="const" value\=""                  dest\="DT_INIZIO_DATO" type\="java.sql.Timestamp"/><param id\="const" value\=""                  dest\="DT_FINE_DATO" type\="java.sql.Timestamp"/><param id\="const" value\="0"                 dest\="FLAG_DT_VAL_DATO" type\="java.lang.Integer"/></command></commands></RsIterator>
+rengine.jchain.in.12.key=QUERYSQL_G5
+rengine.jchain.in.12.value= SELECT DISTINCT to_char(dt_fornitura,'yyyyMMdd')|| '|'|| prog_fornitura ID_ORIG_TESTATA,to_char(dt_fornitura,'yyyyMMdd')|| '|'|| prog_fornitura|| '|'||CRO|| '|'||COD_MOVIMENTO ID_ORIG,G5.* from (select distinct TO_DATE(SUBSTR (riga_modello, 3, 8),'yyyyMMdd') DT_FORNITURA,LTRIM(SUBSTR (riga_modello, 11, 2),'0') PROG_FORNITURA,SUBSTR (riga_modello, 39, 4) COD_ENTE_COM,SUBSTR (riga_modello, 43, 3) COD_VALUTA,TO_NUMBER(SUBSTR (riga_modello, 46, 15))IMP_ACCREDITO,TO_NUMBER(SUBSTR (riga_modello, 61, 11)) CRO,TO_DATE(SUBSTR (riga_modello, 72, 8),'yyyyMMdd') DT_ACCREDITO,TO_DATE(SUBSTR (riga_modello, 80, 8),'yyyyMMdd') DT_RIPART_ORIG,LTRIM(SUBSTR (riga_modello, 88, 2),'0') PROG_RIPART_ORIG,TO_DATE(SUBSTR (riga_modello, 90, 8),'yyyyMMdd') DT_BONIFICO_ORIG,SUBSTR (riga_modello, 98, 1) TIPO_IMPOSTA,TRIM(SUBSTR (riga_modello, 99, 34)) IBAN,TRIM(SUBSTR (riga_modello, 133, 3)) SEZ_CONTO_TU,TO_NUMBER(TRIM(SUBSTR (riga_modello, 136, 6))) NUM_CONTO_TU,TO_NUMBER(TRIM(SUBSTR (riga_modello, 142, 14))) COD_MOVIMENTO,RE_FLAG_ELABORATO,DT_EXP_DATO FROM RE_F24_1_0 WHERE SUBSTR (riga_modello, 0, 2) \= 'G5' AND RE_FLAG_ELABORATO \= '0') G5
+rengine.jchain.in.13.key=RSITRSCRIPT_G9
+rengine.jchain.in.13.value=<RsIterator><KEY TABLE\="RE_F24_1_0"><COLUMN NAME\="ID_ORIG"/>\
+<COLUMN NAME\="DT_EXP_DATO"/></KEY><commands><command name\="SIT_F24_G9">\
+<param id\="const" value\=""           dest\="ID_ORIG" type\="java.lang.String"/>\
+<param id\="field" value\="ID_ORIG_TESTATA"   dest\="ID_ORIG_TESTATA" type\="java.lang.String"/>\
+<param id\="const" value\="33"                dest\="FK_ENTE_SORGENTE" type\="java.lang.Integer"/>\
+<param id\="field" value\="DT_FORNITURA"      dest\="DT_FORNITURA" type\="java.sql.Timestamp"/>\
+<param id\="field" value\="PROG_FORNITURA"    dest\="PROG_FORNITURA" type\="java.lang.String"/>\
+<param id\="field" value\="DT_RIPART_ORIG"   dest\="DT_RIPART_ORIG" type\="java.sql.Timestamp"/>\
+<param id\="field" value\="PROG_RIPART_ORIG" dest\="PROG_RIPART_ORIG" type\="java.lang.String"/>\
+<param id\="field" value\="DT_BONIFICO_ORIG"       dest\="DT_BONIFICO_ORIG" type\="java.sql.Timestamp"/>\
+<param id\="field" value\="COD_ENTE_RD"       dest\="COD_ENTE_RD" type\="java.lang.String"/>\
+<param id\="field" value\="CF"                dest\="CF" type\="java.lang.String"/>\
+<param id\="field" value\="DT_RISCOSSIONE"   dest\="DT_RISCOSSIONE" type\="java.sql.Timestamp"/>\
+<param id\="field" value\="COD_ENTE_COM"     dest\="COD_ENTE_COM" type\="java.lang.String"/>\
+<param id\="field" value\="COD_TRIBUTO"      dest\="COD_TRIBUTO" type\="java.lang.String"/>\
+<param id\="field" value\="ANNO_RIF"         dest\="ANNO_RIF" type\="java.math.BigDecimal"/>\
+<param id\="field" value\="COD_VALUTA"        dest\="COD_VALUTA" type\="java.lang.String"/>\
+<param id\="field" value\="IMP_DEBITO"        dest\="IMP_DEBITO" type\="java.math.BigDecimal"/>\
+<param id\="field" value\="IMP_CREDITO"        dest\="IMP_CREDITO" type\="java.math.BigDecimal"/>\
+<param id\="field" value\="TIPO_OPERAZIONE"      dest\="TIPO_OPERAZIONE" type\="java.lang.String"/>\
+<param id\="field" value\="DT_OPERAZIONE"       dest\="DT_OPERAZIONE" type\="java.sql.Timestamp"/>\
+<param id\="field" value\="TIPO_IMPOSTA"      dest\="TIPO_IMPOSTA" type\="java.lang.String"/>\
+<param id\="field" value\="DT_EXP_DATO"       dest\="DT_EXP_DATO" type\="java.sql.Timestamp"/>\
+<param id\="const" value\=""                  dest\="DT_INIZIO_DATO" type\="java.sql.Timestamp"/><param id\="const" value\=""                  dest\="DT_FINE_DATO" type\="java.sql.Timestamp"/><param id\="const" value\="0"                 dest\="FLAG_DT_VAL_DATO" type\="java.lang.Integer"/></command></commands></RsIterator>
+rengine.jchain.in.14.key=QUERYSQL_G9
+rengine.jchain.in.14.value= SELECT DISTINCT to_char(dt_fornitura,'yyyyMMdd')|| '|'|| prog_fornitura id_orig_testata, null id_orig ,G9.* from (select distinct TO_DATE(SUBSTR(riga_modello, 3, 8),'yyyyMMdd') DT_FORNITURA,LTRIM (SUBSTR(riga_modello, 11, 2),'0') PROG_FORNITURA,TO_DATE(SUBSTR(riga_modello, 39, 8),'yyyyMMdd') DT_RIPART_ORIG,LTRIM (SUBSTR(riga_modello, 47, 2),'0') PROG_RIPART_ORIG,TO_DATE(SUBSTR(riga_modello, 49, 8),'yyyyMMdd') DT_BONIFICO_ORIG,SUBSTR (riga_modello, 57, 5) COD_ENTE_RD,TRIM(SUBSTR(riga_modello, 67, 16)) CF,TO_DATE(SUBSTR (riga_modello, 83, 8),'yyyyMMdd') DT_RISCOSSIONE,SUBSTR(riga_modello, 91, 4) COD_ENTE_COM,SUBSTR(riga_modello, 95, 4) COD_TRIBUTO,TO_NUMBER(SUBSTR(riga_modello, 99, 4)) ANNO_RIF,SUBSTR(riga_modello, 103, 3) COD_VALUTA,TO_NUMBER(SUBSTR(riga_modello, 106, 15))IMP_DEBITO,TO_NUMBER(SUBSTR(riga_modello, 121, 15)) IMP_CREDITO,SUBSTR(riga_modello, 136, 1) TIPO_OPERAZIONE,TO_DATE(SUBSTR (riga_modello, 137, 8),'yyyyMMdd') DT_OPERAZIONE,SUBSTR (riga_modello, 145, 1) TIPO_IMPOSTA,RE_FLAG_ELABORATO,DT_EXP_DATO FROM RE_F24_1_0 WHERE SUBSTR (riga_modello, 0, 2) \= 'G9' AND RE_FLAG_ELABORATO \= '0') G9 ORDER BY DT_EXP_DATO, DT_FORNITURA, PROG_FORNITURA, DT_RIPART_ORIG,PROG_RIPART_ORIG,DT_BONIFICO_ORIG
+rengine.jchain.in.15.key=COMANDOSQL_Z1
+rengine.jchain.in.15.value=UPDATE RE_F24_1_0 SET RE_FLAG_ELABORATO = 1 WHERE RE_FLAG_ELABORATO = 0 and SUBSTR (riga_modello, 0, 2) = 'Z1'
+rengine.jchain.in.16.key=COMANDOSQL_G1
+rengine.jchain.in.16.value=UPDATE RE_F24_1_0 SET RE_FLAG_ELABORATO = 1 WHERE RE_FLAG_ELABORATO = 0 and SUBSTR (riga_modello, 0, 2) = 'G1'
+rengine.jchain.in.17.key=COMANDOSQL_G2
+rengine.jchain.in.17.value=UPDATE RE_F24_1_0 SET RE_FLAG_ELABORATO = 1 WHERE RE_FLAG_ELABORATO = 0 and SUBSTR (riga_modello, 0, 2) = 'G2'
+rengine.jchain.in.18.key=COMANDOSQL_G3
+rengine.jchain.in.18.value=UPDATE RE_F24_1_0 SET RE_FLAG_ELABORATO = 1 WHERE RE_FLAG_ELABORATO = 0 and SUBSTR (riga_modello, 0, 2) = 'G3'
+rengine.jchain.in.19.key=COMANDOSQL_G4
+rengine.jchain.in.19.value=UPDATE RE_F24_1_0 SET RE_FLAG_ELABORATO = 1 WHERE RE_FLAG_ELABORATO = 0 and SUBSTR (riga_modello, 0, 2) = 'G4'
+rengine.jchain.in.20.key=COMANDOSQL_G5
+rengine.jchain.in.20.value=UPDATE RE_F24_1_0 SET RE_FLAG_ELABORATO = 1 WHERE RE_FLAG_ELABORATO = 0 and SUBSTR (riga_modello, 0, 2) = 'G5'
+rengine.jchain.in.21.key=COMANDOSQL_G9
+rengine.jchain.in.21.value=UPDATE RE_F24_1_0 SET RE_FLAG_ELABORATO = 1 WHERE RE_FLAG_ELABORATO = 0 and SUBSTR (riga_modello, 0, 2) = 'G9'
+#-------------------------------------------------------------------------------
+# QUERY AGGIUNTE PER ADDIZIONALE COMUNALE
+#-------------------------------------------------------------------------------
+rengine.jchain.in.22.key=RSITRSCRIPT_C9
+rengine.jchain.in.22.value=<RsIterator><KEY TABLE\="RE_F24_1_0"><COLUMN NAME\="ID_ORIG"/><COLUMN NAME\="DT_EXP_DATO"/></KEY><commands><command name\="SIT_F24_C0"><param id\="field" value\="ID_ORIG"           dest\="ID_ORIG" type\="java.lang.String"/><param id\="const" value\="33"                dest\="FK_ENTE_SORGENTE" type\="java.lang.Integer"/><param id\="field" value\="DT_FORNITURA"      dest\="DT_FORNITURA" type\="java.sql.Timestamp"/><param id\="field" value\="PROG_FORNITURA"    dest\="PROG_FORNITURA" type\="java.lang.String"/><param id\="const" value\="0"                 dest\="NUM_TRASMISSIONE" type\="java.lang.Integer"/><param id\="field" value\="COD_VALUTA"        dest\="COD_VALUTA" type\="java.lang.String"/><param id\="field" value\="COD_ENTE"          dest\="COD_ENTE" type\="java.lang.String"/><param id\="field" value\="COD_INTERMEDIARIO" dest\="COD_INTERMEDIARIO" type\="java.lang.String"/><param id\="field" value\="ID_FILE"           dest\="ID_FILE" type\="java.lang.String"/><param id\="field" value\="NUM_G1"            dest\="NUM_G1" type\="java.math.BigDecimal"/><param id\="field" value\="NUM_G2"            dest\="NUM_G2" type\="java.math.BigDecimal"/><param id\="field" value\="NUM_G3"            dest\="NUM_G3" type\="java.math.BigDecimal"/><param id\="field" value\="NUM_G4"            dest\="NUM_G4" type\="java.math.BigDecimal"/><param id\="field" value\="NUM_G5"            dest\="NUM_G5" type\="java.math.BigDecimal"/><param id\="field" value\="NUM_G9"            dest\="NUM_G9" type\="java.math.BigDecimal"/><param id\="field" value\="NUM_TOT"           dest\="NUM_TOT" type\="java.math.BigDecimal"/><param id\="field" value\="NUM_TRASMISSIONE"  dest\="NUM_TRASMISSIONE" type\="java.math.BigDecimal"/><param id\="field" value\="DT_EXP_DATO"       dest\="DT_EXP_DATO" type\="java.sql.Timestamp"/><param id\="const" value\=""                  dest\="DT_INIZIO_DATO" type\="java.sql.Timestamp"/><param id\="const" value\=""                  dest\="DT_FINE_DATO" type\="java.sql.Timestamp"/><param id\="const" value\="0"                 dest\="FLAG_DT_VAL_DATO" type\="java.lang.Integer"/><param id\="field" value\="ANNO_MESE_RIF"     dest\="ANNO_MESE_RIF" type\="java.lang.String"/><param id\="field" value\="RELEASE"     \t  dest\="RELEASE" type\="java.lang.String"/></command></commands></RsIterator>
+rengine.jchain.in.23.key=QUERYSQL_C9
+rengine.jchain.in.23.value=SELECT anno_mese_rif id_orig, C9.* FROM (SELECT DISTINCT TO_DATE (SUBSTR (riga_modello, 16, 8), 'yyyyMMdd') dt_fornitura, (TO_NUMBER ( SUBSTR ( (SELECT SUBSTR (F24TMP.riga_modello, 56, 24) nome_file FROM RE_F24_1_0 F24TMP WHERE     SUBSTR (F24TMP.riga_modello, 0, 2) \= 'C0' AND F24TMP.RE_FLAG_ELABORATO \= '0' AND SUBSTR (F24TMP.riga_modello, 3, 24) \= SUBSTR (RE_F24_1_0.riga_modello, 3, 24)), INSTR ( (SELECT SUBSTR (F24TMP.riga_modello, 56, 24) nome_file FROM RE_F24_1_0 F24TMP WHERE     SUBSTR (F24TMP.riga_modello, 0, 2) \= 'C0' AND F24TMP.RE_FLAG_ELABORATO \= '0' AND SUBSTR (F24TMP.riga_modello, 3, 24) \= SUBSTR (RE_F24_1_0.riga_modello, 3, 24)), 'P', -1, 1) + 1, 2))) prog_fornitura, (TO_NUMBER ( SUBSTR ( (SELECT SUBSTR (F24TMP.riga_modello, 56, 24) nome_file FROM RE_F24_1_0 F24TMP WHERE     SUBSTR (F24TMP.riga_modello, 0, 2) \= 'C0' AND F24TMP.RE_FLAG_ELABORATO \= '0' AND SUBSTR (F24TMP.riga_modello, 3, 24) \= SUBSTR (RE_F24_1_0.riga_modello, 3, 24)), INSTR ( (SELECT SUBSTR (F24TMP.riga_modello, 56, 24) nome_file FROM RE_F24_1_0 F24TMP WHERE     SUBSTR (F24TMP.riga_modello, 0, 2) \= 'C0' AND F24TMP.RE_FLAG_ELABORATO \= '0' AND SUBSTR (F24TMP.riga_modello, 3, 24) \= SUBSTR (RE_F24_1_0.riga_modello, 3, 24)), 'T', -1, 1) + 1, 2))) num_trasmissione, SUBSTR (riga_modello, 24, 3) cod_valuta, SUBSTR (riga_modello, 9, 4) cod_ente, 0 cod_intermediario, (SELECT SUBSTR (F24TMP.riga_modello, 56, 24) nome_file FROM RE_F24_1_0 F24TMP WHERE     SUBSTR (F24TMP.riga_modello, 0, 2) \= 'C0' AND F24TMP.RE_FLAG_ELABORATO \= '0' AND SUBSTR (F24TMP.riga_modello, 3, 24) \= SUBSTR (RE_F24_1_0.riga_modello, 3, 24)) id_file, TO_NUMBER (SUBSTR (riga_modello, 27, 7)) num_g1, TO_NUMBER (SUBSTR (riga_modello, 34, 7)) num_g2, TO_NUMBER (SUBSTR (riga_modello, 41, 7)) num_g3, TO_NUMBER (SUBSTR (riga_modello, 48, 7)) num_g4, TO_NUMBER (SUBSTR (riga_modello, 55, 7)) num_g5, 0 num_g9, TO_NUMBER (SUBSTR (riga_modello, 62, 7)) num_tot, SUBSTR (riga_modello, 3, 6) ANNO_MESE_RIF, SUBSTR (riga_modello, 13, 3) RELEASE, RE_FLAG_ELABORATO, DT_EXP_DATO FROM RE_F24_1_0 WHERE SUBSTR (riga_modello, 0, 2) \= 'C9' AND RE_FLAG_ELABORATO \= '0') C9 ORDER BY DT_EXP_DATO, dt_fornitura, prog_fornitura
+#-------------------------------------------------------------------------------
+rengine.jchain.in.24.key=RSITRSCRIPT_C1
+rengine.jchain.in.24.value=<RsIterator><KEY TABLE\="RE_F24_1_0"><COLUMN NAME\="ID_ORIG"/><COLUMN NAME\="DT_EXP_DATO"/></KEY><commands><command name\="SIT_F24_C1"><param id\="const" value\="" dest\="ID_ORIG" type\="java.lang.String"/><param id\="field" value\="ID_ORIG_TESTATA"   dest\="ID_ORIG_TESTATA" type\="java.lang.String"/><param id\="const" value\="33"                dest\="FK_ENTE_SORGENTE" type\="java.lang.Integer"/><param id\="field" value\="DT_FORNITURA"      dest\="DT_FORNITURA" type\="java.sql.Timestamp"/><param id\="field" value\="PROG_FORNITURA"    dest\="PROG_FORNITURA" type\="java.lang.String"/><param id\="field" value\="DT_RIPARTIZIONE"   dest\="DT_RIPARTIZIONE" type\="java.sql.Timestamp"/><param id\="field" value\="PROG_RIPARTIZIONE" dest\="PROG_RIPARTIZIONE" type\="java.lang.String"/><param id\="field" value\="DT_BONIFICO"       dest\="DT_BONIFICO" type\="java.sql.Timestamp"/><param id\="field" value\="PROG_DELEGA"       dest\="PROG_DELEGA" type\="java.lang.String"/><param id\="field" value\="PROG_RIGA"         dest\="PROG_RIGA" type\="java.lang.String"/><param id\="field" value\="COD_ENTE_RD"       dest\="COD_ENTE_RD" type\="java.lang.String"/><param id\="field" value\="TIPO_ENTE_RD"      dest\="TIPO_ENTE_RD" type\="java.lang.String"/><param id\="field" value\="CAB"               dest\="CAB" type\="java.lang.String"/><param id\="field" value\="CF"                dest\="CF" type\="java.lang.String"/><param id\="field" value\="FLAG_ERR_CF"       dest\="FLAG_ERR_CF" type\="java.lang.String"/><param id\="field" value\="DT_RISCOSSIONE"    dest\="DT_RISCOSSIONE" type\="java.sql.Timestamp"/><param id\="field" value\="COD_ENTE_COM"      dest\="COD_ENTE_COM" type\="java.lang.String"/><param id\="field" value\="COD_TRIBUTO"       dest\="COD_TRIBUTO" type\="java.lang.String"/><param id\="field" value\="FLAG_ERR_CT"       dest\="FLAG_ERR_CT" type\="java.lang.String"/><param id\="field" value\="RATEAZIONE"        dest\="RATEAZIONE" type\="java.math.BigDecimal"/><param id\="field" value\="ANNO_RIF"          dest\="ANNO_RIF" type\="java.math.BigDecimal"/><param id\="field" value\="FLAG_ERR_AR"       dest\="FLAG_ERR_AR" type\="java.lang.String"/><param id\="field" value\="COD_VALUTA"        dest\="COD_VALUTA" type\="java.lang.String"/><param id\="field" value\="IMP_DEBITO"        dest\="IMP_DEBITO" type\="java.math.BigDecimal"/><param id\="field" value\="IMP_CREDITO"       dest\="IMP_CREDITO" type\="java.math.BigDecimal"/><param id\="field" value\="RAVVEDIMENTO"      dest\="RAVVEDIMENTO" type\="java.lang.String"/><param id\="field" value\="VAR_IMM_ICI_IMU"   dest\="VAR_IMM_ICI_IMU" type\="java.lang.String"/><param id\="field" value\="ACCONTO"           dest\="ACCONTO" type\="java.lang.String"/><param id\="field" value\="SALDO"             dest\="SALDO" type\="java.lang.String"/><param id\="field" value\="NUM_FABB_ICI_IMU"  dest\="NUM_FABB_ICI_IMU" type\="java.math.BigDecimal"/><param id\="field" value\="FLAG_ERR_ICI_IMU"  dest\="FLAG_ERR_ICI_IMU" type\="java.lang.String"/><param id\="field" value\="DETRAZIONE"        dest\="DETRAZIONE" type\="java.math.BigDecimal"/><param id\="field" value\="DENOMINAZIONE"     dest\="DENOMINAZIONE" type\="java.lang.String"/><param id\="field" value\="NOME"              dest\="NOME" type\="java.lang.String"/><param id\="field" value\="SESSO"             dest\="SESSO" type\="java.lang.String"/><param id\="field" value\="DT_NASCITA"        dest\="DT_NASCITA" type\="java.lang.String"/><param id\="field" value\="COMUNE_STATO"      dest\="COMUNE_STATO" type\="java.lang.String"/><param id\="field" value\="PROVINCIA"         dest\="PROVINCIA" type\="java.lang.String"/><param id\="field" value\="TIPO_IMPOSTA"      dest\="TIPO_IMPOSTA" type\="java.lang.String"/><param id\="field" value\="CF2"              dest\="CF2" type\="java.lang.String"/><param id\="field" value\="COD_ID_CF2"       dest\="COD_ID_CF2" type\="java.lang.String"/><param id\="field" value\="ID_OPERAZIONE"    dest\="ID_OPERAZIONE" type\="java.lang.String"/><param id\="field" value\="DT_EXP_DATO"       dest\="DT_EXP_DATO" type\="java.sql.Timestamp"/><param id\="const" value\=""                  dest\="DT_INIZIO_DATO" type\="java.sql.Timestamp"/><param id\="const" value\=""                  dest\="DT_FINE_DATO" type\="java.sql.Timestamp"/><param id\="const" value\="0"                 dest\="FLAG_DT_VAL_DATO" type\="java.lang.Integer"/><param id\="field" value\="ANNO_MESE_RIF"     dest\="ANNO_MESE_RIF" type\="java.lang.String"/></command></commands></RsIterator>
+rengine.jchain.in.25.key=QUERYSQL_C1
+rengine.jchain.in.25.value= SELECT DISTINCT anno_mese_rif id_ORIG_testata, anno_mese_rif || '|' || TO_CHAR (DT_RIPARTIZIONE, 'yyyyMMdd') || '|' || PROG_RIPARTIZIONE || '|' || TO_CHAR (DT_BONIFICO, 'yyyyMMdd') id_orig, C1.* FROM (SELECT DISTINCT ( select TO_DATE (SUBSTR (F24RE.riga_modello, 16, 8), 'yyyyMMdd') from RE_F24_1_0 F24RE where SUBSTR (RE_F24_1_0.riga_modello, 3, 6) \= SUBSTR (F24RE.riga_modello, 3, 6) AND F24RE.RE_FLAG_ELABORATO \= 0 AND SUBSTR (F24RE.riga_modello, 0, 2) \= 'C9' ) DT_FORNITURA, (TO_NUMBER ( SUBSTR ( (SELECT SUBSTR (F24TMP.riga_modello, 56, 24) nome_file FROM RE_F24_1_0 F24TMP WHERE SUBSTR (F24TMP.riga_modello, 0, 2) \= 'C0' AND F24TMP.RE_FLAG_ELABORATO \= '0' AND SUBSTR (F24TMP.riga_modello, 3, 6) \=  SUBSTR (RE_F24_1_0.riga_modello, 3, 6)), INSTR ( (SELECT SUBSTR (F24TMP.riga_modello, 56, 24) nome_file  FROM RE_F24_1_0 F24TMP WHERE SUBSTR (F24TMP.riga_modello, 0, 2) \= 'C0' AND F24TMP.RE_FLAG_ELABORATO \= '0' AND SUBSTR (F24TMP.riga_modello, 3, 6) \= SUBSTR (RE_F24_1_0.riga_modello, 3, 6)), 'P', -1, 1) + 1, 2)) ) PROG_FORNITURA, TO_DATE (SUBSTR (riga_modello, 13, 8), 'yyyyMMdd') DT_RIPARTIZIONE, LTRIM (SUBSTR (riga_modello, 21, 2), '0') PROG_RIPARTIZIONE, TO_DATE (SUBSTR (riga_modello, 23, 8), 'yyyyMMdd') DT_BONIFICO, '' PROG_DELEGA, '' PROG_RIGA, '' COD_ENTE_RD, '' TIPO_ENTE_RD, '' CAB, '' CF, '' FLAG_ERR_CF, null DT_RISCOSSIONE, SUBSTR (riga_modello, 9, 4) COD_ENTE_COM, SUBSTR (riga_modello, 34, 4) COD_TRIBUTO, '' FLAG_ERR_CT, null RATEAZIONE, TO_NUMBER (SUBSTR (riga_modello, 42, 4)) ANNO_RIF, '' FLAG_ERR_AR, SUBSTR (riga_modello, 31, 3) COD_VALUTA, TO_NUMBER (SUBSTR (riga_modello, 46, 15)) IMP_DEBITO, TO_NUMBER (SUBSTR (riga_modello, 61, 15)) IMP_CREDITO, '' RAVVEDIMENTO, '' VAR_IMM_ICI_IMU, '' ACCONTO, '' SALDO, null NUM_FABB_ICI_IMU, '' FLAG_ERR_ICI_IMU, null DETRAZIONE, '' DENOMINAZIONE, '' NOME, '' SESSO, '' DT_NASCITA, '' COMUNE_STATO, '' PROVINCIA, 'AC' TIPO_IMPOSTA, '' CF2, '' COD_ID_CF2, '' ID_OPERAZIONE, SUBSTR (riga_modello, 3, 6) ANNO_MESE_RIF, RE_FLAG_ELABORATO, DT_EXP_DATO FROM RE_F24_1_0 WHERE SUBSTR (riga_modello, 0, 2) \= 'C1' AND RE_FLAG_ELABORATO \= '0') C1 ORDER BY DT_EXP_DATO, DT_FORNITURA, PROG_FORNITURA, DT_RIPARTIZIONE, PROG_RIPARTIZIONE, DT_BONIFICO, PROG_DELEGA, PROG_RIGA
+#-------------------------------------------------------------------------------
+rengine.jchain.in.26.key=RSITRSCRIPT_C2
+rengine.jchain.in.26.value=<RsIterator><KEY TABLE\="RE_F24_1_0"><COLUMN NAME\="ID_ORIG"/>\
+<COLUMN NAME\="DT_EXP_DATO"/></KEY><commands><command name\="SIT_F24_C2"> \
+<param id\="const" value\=""                  dest\="ID_ORIG" type\="java.lang.String"/> \
+<param id\="field" value\="ID_ORIG_TESTATA"   dest\="ID_ORIG_TESTATA" type\="java.lang.String"/> \
+<param id\="const" value\="33"                dest\="FK_ENTE_SORGENTE" type\="java.lang.Integer"/> \
+<param id\="field" value\="DT_FORNITURA"      dest\="DT_FORNITURA" type\="java.sql.Timestamp"/> \
+<param id\="field" value\="PROG_FORNITURA"    dest\="PROG_FORNITURA" type\="java.lang.String"/> \
+<param id\="field" value\="DT_RIPARTIZIONE"   dest\="DT_RIPARTIZIONE" type\="java.sql.Timestamp"/> \
+<param id\="field" value\="PROG_RIPARTIZIONE" dest\="PROG_RIPARTIZIONE" type\="java.lang.String"/> \
+<param id\="field" value\="DT_BONIFICO"       dest\="DT_BONIFICO" type\="java.sql.Timestamp"/> \
+<param id\="field" value\="COD_ENTE_RIC"      dest\="COD_ENTE_RIC" type\="java.lang.String"/> \
+<param id\="field" value\="COD_VALUTA"        dest\="COD_VALUTA" type\="java.lang.String"/> \
+<param id\="field" value\="IMP_ACCREDITO"     dest\="IMP_ACCREDITO" type\="java.math.BigDecimal"/> \
+<param id\="field" value\="TIPO_IMPOSTA"      dest\="TIPO_IMPOSTA" type\="java.lang.String"/> \
+<param id\="field" value\="DT_EXP_DATO"       dest\="DT_EXP_DATO" type\="java.sql.Timestamp"/> \
+<param id\="const" value\=""                  dest\="DT_INIZIO_DATO" type\="java.sql.Timestamp"/> \
+<param id\="const" value\=""                  dest\="DT_FINE_DATO" type\="java.sql.Timestamp"/> \
+<param id\="const" value\="0"                 dest\="FLAG_DT_VAL_DATO" type\="java.lang.Integer"/> \
+<param id\="field" value\="ANNO_MESE_RIF"     dest\="ANNO_MESE_RIF" type\="java.lang.String"/> \
+<param id\="field" value\="CRO"               dest\="CRO" type\="java.lang.String"/> \
+<param id\="field" value\="DT_FINALIZZAZIONE" dest\="DT_FINALIZZAZIONE" type\="java.sql.Timestamp"/> \
+<param id\="field" value\="ESITO_ACCREDITO"   dest\="ESITO_ACCREDITO" type\="java.lang.String"/> \
+<param id\="field" value\="CODICE_MOVIMENTO"  dest\="CODICE_MOVIMENTO" type\="java.lang.String"/></command></commands></RsIterator>
+rengine.jchain.in.27.key=QUERYSQL_C2
+rengine.jchain.in.27.value=SELECT DISTINCT anno_mese_rif id_orig_testata, anno_mese_rif || '|' || TO_CHAR (DT_RIPARTIZIONE, 'yyyyMMdd') || '|' || PROG_RIPARTIZIONE || '|' || TO_CHAR (DT_BONIFICO, 'yyyyMMdd') id_orig, C2.* FROM (SELECT DISTINCT ( select TO_DATE (SUBSTR (F24RE.riga_modello, 16, 8), 'yyyyMMdd') from RE_F24_1_0 F24RE where SUBSTR (RE_F24_1_0.riga_modello, 3, 6) \= SUBSTR (F24RE.riga_modello, 3, 6) AND F24RE.RE_FLAG_ELABORATO \= 0 AND SUBSTR (F24RE.riga_modello, 0, 2) \= 'C9' ) DT_FORNITURA, ( TO_NUMBER ( SUBSTR ( (SELECT SUBSTR (F24TMP.riga_modello, 56, 24) nome_file FROM RE_F24_1_0 F24TMP WHERE SUBSTR (F24TMP.riga_modello, 0, 2) \= 'C0' AND F24TMP.RE_FLAG_ELABORATO \= '0' AND SUBSTR (F24TMP.riga_modello, 3, 6) \=  SUBSTR (RE_F24_1_0.riga_modello, 3, 6)), INSTR ( (SELECT SUBSTR (F24TMP.riga_modello, 56, 24) nome_file  FROM RE_F24_1_0 F24TMP WHERE SUBSTR (F24TMP.riga_modello, 0, 2) \= 'C0' AND F24TMP.RE_FLAG_ELABORATO \= '0' AND SUBSTR (F24TMP.riga_modello, 3, 6) \= SUBSTR (RE_F24_1_0.riga_modello, 3, 6)), 'P', -1, 1) + 1, 2)) ) PROG_FORNITURA, TO_DATE (SUBSTR (riga_modello, 13, 8), 'yyyyMMdd') DT_RIPARTIZIONE, LTRIM (SUBSTR (riga_modello, 21, 2), '0') PROG_RIPARTIZIONE, TO_DATE (SUBSTR (riga_modello, 23, 8), 'yyyyMMdd') DT_BONIFICO, SUBSTR (riga_modello, 9, 4) COD_ENTE_RIC, SUBSTR (riga_modello, 31, 3) COD_VALUTA, TO_NUMBER (SUBSTR (riga_modello, 34, 15)) IMP_ACCREDITO, 'AC' TIPO_IMPOSTA, RE_FLAG_ELABORATO, DT_EXP_DATO, SUBSTR (riga_modello, 3, 6) ANNO_MESE_RIF, SUBSTR (riga_modello, 49, 11) CRO, CASE WHEN SUBSTR (RIGA_MODELLO, 60, 4) = '0000' OR SUBSTR (RIGA_MODELLO, 64, 2) = '00' OR SUBSTR (RIGA_MODELLO, 66, 2) = '00' THEN NULL ELSE TO_DATE (SUBSTR (RIGA_MODELLO, 60, 8), 'yyyyMMdd') END DT_FINALIZZAZIONE, SUBSTR (riga_modello, 68, 1) ESITO_ACCREDITO, SUBSTR (riga_modello, 69, 14) CODICE_MOVIMENTO FROM RE_F24_1_0 WHERE SUBSTR (riga_modello, 0, 2) \= 'C2' AND RE_FLAG_ELABORATO \= '0') C2 ORDER BY DT_EXP_DATO, DT_FORNITURA, PROG_FORNITURA, DT_RIPARTIZIONE, PROG_RIPARTIZIONE, DT_BONIFICO 
+#-------------------------------------------------------------------------------
+rengine.jchain.in.28.key=RSITRSCRIPT_C3
+rengine.jchain.in.28.value=<RsIterator><KEY TABLE\="RE_F24_1_0"><COLUMN NAME\="ID_ORIG"/>\
+<COLUMN NAME\="DT_EXP_DATO"/></KEY><commands><command name\="SIT_F24_C3">\
+<param id\="const" value\=""                  dest\="ID_ORIG" type\="java.lang.String"/>\
+<param id\="field" value\="ID_ORIG_TESTATA"   dest\="ID_ORIG_TESTATA" type\="java.lang.String"/>\
+<param id\="const" value\="33"                dest\="FK_ENTE_SORGENTE" type\="java.lang.Integer"/>\
+<param id\="field" value\="DT_FORNITURA"      dest\="DT_FORNITURA" type\="java.sql.Timestamp"/>\
+<param id\="field" value\="PROG_FORNITURA"    dest\="PROG_FORNITURA" type\="java.lang.String"/>\
+<param id\="field" value\="DT_RIPARTIZIONE"   dest\="DT_RIPARTIZIONE" type\="java.sql.Timestamp"/>\
+<param id\="field" value\="PROG_RIPARTIZIONE" dest\="PROG_RIPARTIZIONE" type\="java.lang.String"/>\
+<param id\="field" value\="DT_BONIFICO"       dest\="DT_BONIFICO" type\="java.sql.Timestamp"/>\
+<param id\="field" value\="COD_ENTE_COM"      dest\="COD_ENTE_COM" type\="java.lang.String"/>\
+<param id\="field" value\="COD_VALUTA"        dest\="COD_VALUTA" type\="java.lang.String"/>\
+<param id\="field" value\="IMP_ANTICIPO"      dest\="IMP_ANTICIPO" type\="java.math.BigDecimal"/>\
+<param id\="field" value\="TIPO_IMPOSTA"      dest\="TIPO_IMPOSTA" type\="java.lang.String"/>\
+<param id\="field" value\="DT_EXP_DATO"       dest\="DT_EXP_DATO" type\="java.sql.Timestamp"/>\
+<param id\="const" value\=""                  dest\="DT_INIZIO_DATO" type\="java.sql.Timestamp"/>\
+<param id\="const" value\=""                  dest\="DT_FINE_DATO" type\="java.sql.Timestamp"/>\
+<param id\="const" value\="0"                 dest\="FLAG_DT_VAL_DATO" type\="java.lang.Integer"/>\
+<param id\="field" value\="ANNO_MESE_RIF"     dest\="ANNO_MESE_RIF" type\="java.lang.String"/></command></commands></RsIterator>
+rengine.jchain.in.29.key=QUERYSQL_C3
+rengine.jchain.in.29.value=SELECT DISTINCT anno_mese_rif id_ORIG_testata, anno_mese_rif || '|' || TO_CHAR (DT_RIPARTIZIONE, 'yyyyMMdd') || '|' || PROG_RIPARTIZIONE || '|' || TO_CHAR (DT_BONIFICO, 'yyyyMMdd') id_orig, C3.* FROM (SELECT DISTINCT (SELECT TO_DATE (SUBSTR (F24RE.riga_modello, 16, 8), 'yyyyMMdd') FROM RE_F24_1_0 F24RE WHERE SUBSTR (RE_F24_1_0.riga_modello, 3, 6) \= SUBSTR (F24RE.riga_modello, 3, 6) AND F24RE.RE_FLAG_ELABORATO \= 0 AND SUBSTR (F24RE.riga_modello, 0, 2) \= 'C9') DT_FORNITURA, (TO_NUMBER ( SUBSTR ( (SELECT SUBSTR (F24TMP.riga_modello, 56, 24) nome_file FROM RE_F24_1_0 F24TMP WHERE SUBSTR (F24TMP.riga_modello, 0, 2) \= 'C0' AND F24TMP.RE_FLAG_ELABORATO \= '0' AND SUBSTR (F24TMP.riga_modello, 3, 6) \= SUBSTR (RE_F24_1_0.riga_modello, 3, 6)), INSTR ( (SELECT SUBSTR (F24TMP.riga_modello, 56, 24) nome_file FROM RE_F24_1_0 F24TMP WHERE SUBSTR (F24TMP.riga_modello, 0, 2) \= 'C0' AND F24TMP.RE_FLAG_ELABORATO \= '0' AND SUBSTR (F24TMP.riga_modello, 3, 6) \= SUBSTR (RE_F24_1_0.riga_modello, 3, 6)), 'P', -1, 1) + 1, 2))) PROG_FORNITURA, TO_DATE (SUBSTR (riga_modello, 13, 8), 'yyyyMMdd') DT_RIPARTIZIONE, LTRIM (SUBSTR (riga_modello, 21, 2), '0') PROG_RIPARTIZIONE, TO_DATE (SUBSTR (riga_modello, 23, 8), 'yyyyMMdd') DT_BONIFICO, SUBSTR (riga_modello, 9, 4) COD_ENTE_COM, SUBSTR (riga_modello, 31, 3) COD_VALUTA, TO_NUMBER (SUBSTR (riga_modello, 34, 15)) IMP_ANTICIPO, 'AC' TIPO_IMPOSTA, SUBSTR (riga_modello, 3, 6) ANNO_MESE_RIF, RE_FLAG_ELABORATO, DT_EXP_DATO FROM RE_F24_1_0 WHERE SUBSTR (riga_modello, 0, 2) \= 'C3' AND RE_FLAG_ELABORATO \= '0') C3 ORDER BY DT_EXP_DATO, DT_FORNITURA, PROG_FORNITURA, DT_RIPARTIZIONE, PROG_RIPARTIZIONE, DT_BONIFICO
+#-------------------------------------------------------------------------------
+rengine.jchain.in.30.key=RSITRSCRIPT_C4
+rengine.jchain.in.30.value=<RsIterator><KEY TABLE\="RE_F24_1_0"><COLUMN NAME\="ID_ORIG"/>\
+<COLUMN NAME\="DT_EXP_DATO"/></KEY><commands><command name\="SIT_F24_C4">\
+<param id\="const" value\=""                  dest\="ID_ORIG" type\="java.lang.String"/>\
+<param id\="field" value\="ID_ORIG_TESTATA"   dest\="ID_ORIG_TESTATA" type\="java.lang.String"/>\
+<param id\="const" value\="33"                dest\="FK_ENTE_SORGENTE" type\="java.lang.Integer"/>\
+<param id\="field" value\="DT_FORNITURA"      dest\="DT_FORNITURA" type\="java.sql.Timestamp"/>\
+<param id\="field" value\="PROG_FORNITURA"    dest\="PROG_FORNITURA" type\="java.lang.String"/>\
+<param id\="field" value\="DT_RIPARTIZIONE"   dest\="DT_RIPARTIZIONE" type\="java.sql.Timestamp"/>\
+<param id\="field" value\="PROG_RIPARTIZIONE" dest\="PROG_RIPARTIZIONE" type\="java.lang.String"/>\
+<param id\="field" value\="DT_BONIFICO"       dest\="DT_BONIFICO" type\="java.lang.String"/>\
+<param id\="field" value\="COD_ENTE_COM"      dest\="COD_ENTE_COM" type\="java.lang.String"/>\
+<param id\="field" value\="COD_VALUTA"        dest\="COD_VALUTA" type\="java.lang.String"/>\
+<param id\="field" value\="IMP_RECUPERO"      dest\="IMP_RECUPERO" type\="java.math.BigDecimal"/>\
+<param id\="field" value\="ANNO_MESE_RIP_ORIG" dest\="ANNO_MESE_RIP_ORIG" type\="java.lang.String"/>\
+<param id\="field" value\="PROG_RIP_ORIG"      dest\="PROG_RIP_ORIG" type\="java.lang.String"/>\
+<param id\="field" value\="DT_BONIFICO_ORIG"   dest\="DT_BONIFICO_ORIG" type\="java.lang.String"/>\
+<param id\="field" value\="TIPO_IMPOSTA"       dest\="TIPO_IMPOSTA" type\="java.lang.String"/>\
+<param id\="field" value\="TIPO_RECUPERO"      dest\="TIPO_REC" type\="java.lang.String"/>\
+<param id\="field" value\="DESC_TIPO_RECUPERO" dest\="DESC_TIPO_REC" type\="java.lang.String"/>\
+<param id\="field" value\="DT_EXP_DATO"        dest\="DT_EXP_DATO" type\="java.sql.Timestamp"/>\
+<param id\="const" value\=""                   dest\="DT_INIZIO_DATO" type\="java.sql.Timestamp"/>\
+<param id\="const" value\=""                  dest\="DT_FINE_DATO" type\="java.sql.Timestamp"/>\
+<param id\="const" value\="0"                 dest\="FLAG_DT_VAL_DATO" type\="java.lang.Integer"/>\
+<param id\="field" value\="ANNO_MESE_RIF"     dest\="ANNO_MESE_RIF" type\="java.lang.String"/>\
+<param id\="field" value\="CAMPO_USO_INTERNO"     dest\="CAMPO_USO_INTERNO" type\="java.lang.String"/></command></commands></RsIterator>
+rengine.jchain.in.31.key=QUERYSQL_C4
+rengine.jchain.in.31.value=SELECT DISTINCT anno_mese_rif id_ORIG_testata, anno_mese_rif || '|' || TO_CHAR (DT_RIPARTIZIONE, 'yyyyMMdd') || '|' || PROG_RIPARTIZIONE id_orig, C4.* FROM (SELECT DISTINCT ( select TO_DATE (SUBSTR (F24RE.riga_modello, 16, 8), 'yyyyMMdd') from RE_F24_1_0 F24RE where SUBSTR (RE_F24_1_0.riga_modello, 3, 6) \= SUBSTR (F24RE.riga_modello, 3, 6) AND F24RE.RE_FLAG_ELABORATO \= 0 AND SUBSTR (F24RE.riga_modello, 0, 2) \= 'C9' ) DT_FORNITURA, ( TO_NUMBER ( SUBSTR ( (SELECT SUBSTR (F24TMP.riga_modello, 56, 24) nome_file FROM RE_F24_1_0 F24TMP WHERE SUBSTR (F24TMP.riga_modello, 0, 2) \= 'C0' AND F24TMP.RE_FLAG_ELABORATO \= '0' AND SUBSTR (F24TMP.riga_modello, 3, 6) \=  SUBSTR (RE_F24_1_0.riga_modello, 3, 6)), INSTR ( (SELECT SUBSTR (F24TMP.riga_modello, 56, 24) nome_file  FROM RE_F24_1_0 F24TMP WHERE SUBSTR (F24TMP.riga_modello, 0, 2) \= 'C0' AND F24TMP.RE_FLAG_ELABORATO \= '0' AND SUBSTR (F24TMP.riga_modello, 3, 6) \= SUBSTR (RE_F24_1_0.riga_modello, 3, 6)), 'P', -1, 1) + 1, 2)) ) PROG_FORNITURA, TO_DATE (SUBSTR (riga_modello, 13, 8), 'yyyyMMdd') DT_RIPARTIZIONE, LTRIM (SUBSTR (riga_modello, 21, 2), '0') PROG_RIPARTIZIONE, NULL DT_BONIFICO, SUBSTR (riga_modello, 9, 4) COD_ENTE_COM, SUBSTR (riga_modello, 31, 3) COD_VALUTA, TO_NUMBER (SUBSTR (riga_modello, 34, 15)) IMP_RECUPERO, SUBSTR (riga_modello, 49, 6) ANNO_MESE_RIP_ORIG, '' PROG_RIP_ORIG, NULL DT_BONIFICO_ORIG, 'AC' TIPO_IMPOSTA, SUBSTR (riga_modello, 55, 3) TIPO_RECUPERO, SUBSTR (riga_modello, 56, 45) DESC_TIPO_RECUPERO, RE_FLAG_ELABORATO, DT_EXP_DATO, SUBSTR (riga_modello, 3, 6) ANNO_MESE_RIF, SUBSTR (riga_modello, 23, 8) CAMPO_USO_INTERNO FROM RE_F24_1_0 WHERE SUBSTR (riga_modello, 0, 2) \= 'C4' AND RE_FLAG_ELABORATO \= '0') C4 ORDER BY DT_EXP_DATO, DT_FORNITURA, PROG_FORNITURA, DT_RIPARTIZIONE, PROG_RIPARTIZIONE, DT_BONIFICO
+#-------------------------------------------------------------------------------
+rengine.jchain.in.32.key=RSITRSCRIPT_C5
+rengine.jchain.in.32.value=<RsIterator><KEY TABLE\="RE_F24_1_0"><COLUMN NAME\="ID_ORIG"/>\
+<COLUMN NAME\="DT_EXP_DATO"/></KEY><commands><command name\="SIT_F24_C5">\
+<param id\="const" value\=""                  dest\="ID_ORIG" type\="java.lang.String"/>\
+<param id\="field" value\="ID_ORIG_TESTATA"   dest\="ID_ORIG_TESTATA" type\="java.lang.String"/>\
+<param id\="const" value\="33"                dest\="FK_ENTE_SORGENTE" type\="java.lang.Integer"/>\
+<param id\="field" value\="ANNO_MESE_RIF"     dest\="ANNO_MESE_RIF" type\="java.lang.String"/>\
+<param id\="field" value\="COD_ENTE"          dest\="COD_ENTE" type\="java.lang.String"/>\
+<param id\="field" value\="DT_PRODUZIONE_MANDATO"   dest\="DT_PRODUZIONE_MANDATO" type\="java.sql.Timestamp"/>\
+<param id\="field" value\="PROG_MANDATO"      dest\="PROG_MANDATO" type\="java.lang.String"/>\
+<param id\="field" value\="DT_RIF"            dest\="DT_RIF" type\="java.sql.Timestamp"/>\
+<param id\="field" value\="PROG_RIF"          dest\="PROG_RIF" type\="java.lang.String"/>\
+<param id\="field" value\="DT_BONIFICO"       dest\="DT_BONIFICO" type\="java.sql.Timestamp"/>\
+<param id\="field" value\="COD_VALUTA"        dest\="COD_VALUTA" type\="java.lang.String"/>\
+<param id\="field" value\="IMP_ACCREDITO"     dest\="IMP_ACCREDITO" type\="java.math.BigDecimal"/>\
+<param id\="field" value\="MOTIVO_MANDATO"    dest\="MOTIVO_MANDATO" type\="java.lang.String"/>\
+<param id\="field" value\="CRO"               dest\="CRO" type\="java.lang.String"/>\
+<param id\="field" value\="DT_FINALIZZAZIONE" dest\="DT_FINALIZZAZIONE" type\="java.sql.Timestamp"/>\
+<param id\="field" value\="ESITO_ACCREDITO"   dest\="ESITO_ACCREDITO" type\="java.lang.String"/>\
+<param id\="field" value\="CODICE_MOVIMENTO"  dest\="CODICE_MOVIMENTO" type\="java.lang.String"/>\
+<param id\="field" value\="TIPO_IMPOSTA"      dest\="TIPO_IMPOSTA" type\="java.lang.String"/>\
+<param id\="field" value\="DT_EXP_DATO"       dest\="DT_EXP_DATO" type\="java.sql.Timestamp"/>\
+<param id\="const" value\=""                  dest\="DT_INIZIO_DATO" type\="java.sql.Timestamp"/>\
+<param id\="const" value\=""                  dest\="DT_FINE_DATO" type\="java.sql.Timestamp"/>\
+<param id\="const" value\="0"                 dest\="FLAG_DT_VAL_DATO" type\="java.lang.Integer"/></command></commands></RsIterator>
+rengine.jchain.in.33.key=QUERYSQL_C5
+rengine.jchain.in.33.value=SELECT DISTINCT anno_mese_rif id_ORIG_testata, anno_mese_rif || '|' || TO_CHAR (DT_PRODUZIONE_MANDATO, 'yyyyMMdd') || '|' || PROG_MANDATO id_orig, C5.* FROM (SELECT DISTINCT SUBSTR (riga_modello, 3, 6) ANNO_MESE_RIF, SUBSTR (riga_modello, 9, 4) COD_ENTE, TO_DATE (SUBSTR (riga_modello, 13, 8), 'yyyyMMdd') DT_PRODUZIONE_MANDATO, LTRIM (SUBSTR (riga_modello, 21, 2), '0') PROG_MANDATO, TO_DATE (SUBSTR (riga_modello, 23, 8), 'yyyyMMdd') DT_RIF, LTRIM (SUBSTR (riga_modello, 31, 2), '0') PROG_RIF, TO_DATE (SUBSTR (riga_modello, 33, 8), 'yyyyMMdd') DT_BONIFICO, SUBSTR (riga_modello, 41, 3) COD_VALUTA, TO_NUMBER (SUBSTR (riga_modello, 44, 15)) IMP_ACCREDITO, SUBSTR (riga_modello, 59, 1) MOTIVO_MANDATO, SUBSTR (riga_modello, 60, 11) CRO, TO_DATE (SUBSTR (riga_modello, 71, 8), 'yyyyMMdd') DT_FINALIZZAZIONE, SUBSTR (riga_modello, 79, 1) ESITO_ACCREDITO, SUBSTR (riga_modello, 80, 14) CODICE_MOVIMENTO, 'AC' TIPO_IMPOSTA, RE_FLAG_ELABORATO, DT_EXP_DATO FROM RE_F24_1_0 WHERE SUBSTR (riga_modello, 0, 2) \= 'C5' AND RE_FLAG_ELABORATO \= '0') C5 ORDER BY DT_EXP_DATO, DT_PRODUZIONE_MANDATO, PROG_MANDATO, DT_RIF, PROG_RIF, DT_BONIFICO    
+#-------------------------------------------------------------------------------
+rengine.jchain.in.34.key=COMANDOSQL_C1
+rengine.jchain.in.34.value=UPDATE RE_F24_1_0 SET RE_FLAG_ELABORATO = 1 WHERE RE_FLAG_ELABORATO = 0 and SUBSTR (riga_modello, 0, 2) = 'C1'
+rengine.jchain.in.35.key=COMANDOSQL_C2
+rengine.jchain.in.35.value=UPDATE RE_F24_1_0 SET RE_FLAG_ELABORATO = 1 WHERE RE_FLAG_ELABORATO = 0 and SUBSTR (riga_modello, 0, 2) = 'C2'
+rengine.jchain.in.36.key=COMANDOSQL_C3
+rengine.jchain.in.36.value=UPDATE RE_F24_1_0 SET RE_FLAG_ELABORATO = 1 WHERE RE_FLAG_ELABORATO = 0 and SUBSTR (riga_modello, 0, 2) = 'C3'
+rengine.jchain.in.37.key=COMANDOSQL_C4
+rengine.jchain.in.37.value=UPDATE RE_F24_1_0 SET RE_FLAG_ELABORATO = 1 WHERE RE_FLAG_ELABORATO = 0 and SUBSTR (riga_modello, 0, 2) = 'C4'
+rengine.jchain.in.38.key=COMANDOSQL_C5
+rengine.jchain.in.38.value=UPDATE RE_F24_1_0 SET RE_FLAG_ELABORATO = 1 WHERE RE_FLAG_ELABORATO = 0 and SUBSTR (riga_modello, 0, 2) = 'C5'
+rengine.jchain.in.39.key=COMANDOSQL_C9
+rengine.jchain.in.39.value=UPDATE RE_F24_1_0 SET RE_FLAG_ELABORATO = 1 WHERE RE_FLAG_ELABORATO = 0 and (SUBSTR (riga_modello, 0, 2) = 'C9' OR SUBSTR (riga_modello, 0, 2) = 'C0' )
+#-------------------------------------------------------------------------------

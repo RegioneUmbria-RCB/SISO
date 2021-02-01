@@ -1,0 +1,202 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich">
+
+<ui:composition template="/jsp/protected/layout/layout.xhtml">
+
+	<ui:define name="content">
+
+		<!-- EVENTI LOG PAGE -->
+		<a4j:include id="eventiLogPage" viewId="#{eMonitorBean.eventiLogPage}" />
+
+		<!-- NEW EVENT PAGE -->
+		<a4j:include id="newEvtPage" viewId="#{eNewBean.newEvtPage}" />
+
+		<rich:separator lineType="solid" />
+
+
+		<rich:panel>
+
+			<h:form id="evForm">
+				<h:panelGrid columns="3">
+
+					<h:graphicImage value="/images/refresh.png" title="Aggiorna"
+						height="16px" style="cursor:pointer; padding-right: 10px;">
+						<a4j:support event="onclick"
+							action="#{eMonitorBean.doCaricaListaEventi}"
+							reRender="listActivityTable">
+						</a4j:support>
+					</h:graphicImage>
+
+					<h:outputLabel value="Ente" />
+					<h:selectOneMenu id="ente" value="#{eMonitorBean.enteSelezionato}">
+						<f:selectItems value="#{eMonitorBean.listaEnti}" />
+						<a4j:support event="onchange"
+							action="#{eMonitorBean.doCaricaListaEventi}"
+							reRender="listActivityTable"></a4j:support>
+					</h:selectOneMenu>
+
+				</h:panelGrid>
+
+				<rich:spacer height="10px" />
+
+				<rich:dataTable width="100%" var="row"
+					value="#{eMonitorBean.listaEventi}" id="listActivityTable"
+					onRowMouseOver="this.style.backgroundColor='#F1F1F1'"
+					onRowMouseOut="this.style.backgroundColor='#{a4jSkin.tableBackgroundColor}'">
+
+					<f:facet name="header">
+
+						<rich:columnGroup>
+							<rich:column
+								colspan="#{eMonitorBean.enteSelezionato != null and eMonitorBean.enteSelezionato != '9999' ? 9 : 8}">
+								<h:outputText value="Elenco eventi programmati" />
+							</rich:column>
+
+							<rich:column breakBefore="true"
+								colspan="#{eMonitorBean.enteSelezionato != null and eMonitorBean.enteSelezionato != '9999' ? 4 : 3}" />
+							<rich:column colspan="4">
+								<h:outputText value="Requisiti evento" />
+							</rich:column>
+							<rich:column></rich:column>
+						</rich:columnGroup>
+					</f:facet>
+
+					<rich:column
+						style="#{row.selected ? 'background-color: #CCFF99;' : ''}"
+						rendered="#{eMonitorBean.enteSelezionato != null and eMonitorBean.enteSelezionato != '9999' ? true : false}">
+						<f:facet name="header">
+							<h:outputText value="" />
+						</f:facet>
+						<h:selectBooleanCheckbox value="#{row.selected}">
+
+							<a4j:support event="onclick" action="#{eMonitorBean.doAbilita}"
+								reRender="listActivityTable">
+								<a4j:actionparam name="onoff" value="#{row.selected}"
+									assignTo="#{eMonitorBean.on}" />
+								<a4j:actionparam name="idevento" value="#{row.id}"
+									assignTo="#{eMonitorBean.id}" />
+								<a4j:actionparam name="standard" value="#{row.standard}"
+									assignTo="#{eMonitorBean.std}" />
+							</a4j:support>
+						</h:selectBooleanCheckbox>
+
+					</rich:column>
+
+
+					<rich:column sortBy="#{row.id}"
+						style="#{row.selected ? 'background-color: #CCFF99;' : ''}">
+						<f:facet name="header">
+							<h:outputText value="Codice Evento" />
+						</f:facet>
+						<h:outputText value="#{row.id}" />
+					</rich:column>
+
+					<rich:column sortBy="#{row.standard}"
+						style="#{row.selected ? 'background-color: #CCFF99;' : ''}">
+						<f:facet name="header">
+							<h:outputText value="Standard" />
+						</f:facet>
+						<h:outputText value="#{row.standard}" />
+					</rich:column>
+
+					<rich:column
+						style="#{row.selected ? 'background-color: #CCFF99;' : ''}">
+						<f:facet name="header">
+							<h:outputText value="Processo da avviare" />
+						</f:facet>
+						<h:outputText value="#{row.nextCommand.descr} [#{row.nextCommand.codCommand}]"
+							rendered="#{row.nextCommand != null}" />
+					</rich:column>
+
+					<rich:column
+						style="#{row.selected ? 'background-color: #CCFF99;' : ''}">
+						<f:facet name="header">
+							<h:outputText value="Tipo operazione" />
+						</f:facet>
+						<h:outputText value="#{row.afterRCommandType.descr}"
+							rendered="#{row.afterRCommandType != null}" />
+					</rich:column>
+
+					<rich:column
+						style="#{row.selected ? 'background-color: #CCFF99;' : ''}">
+						<f:facet name="header">
+							<h:outputText value="Fonte dati" />
+						</f:facet>
+						<h:outputText value="#{row.afterFonteName}"
+							rendered="#{row.afterIdFonte != null}" />
+					</rich:column>
+
+					<rich:column
+						style="#{row.selected ? 'background-color: #CCFF99;' : ''}">
+						<f:facet name="header">
+							<h:outputText value="Processo" />
+						</f:facet>
+						<h:outputText value="#{row.afterRCommand.descr} [#{row.afterRCommand.codCommand}]"
+							rendered="#{row.afterRCommand != null}" />
+					</rich:column>
+
+					<rich:column
+						style="#{row.selected ? 'background-color: #CCFF99;' : ''}">
+						<f:facet name="header">
+							<h:outputText value="Esito processo" />
+						</f:facet>
+						<h:outputText value="#{row.afterRAnagStato.descr}"
+							rendered="#{row.afterRAnagStato != null}" />
+					</rich:column>
+
+					<rich:column>
+						<f:facet name="header">
+							<h:outputText value="" />
+						</f:facet>
+						<center><h:graphicImage value="/images/delete.png"
+							title="Elimina" style="cursor:pointer">
+							<a4j:support event="onclick"
+								action="#{eMonitorBean.doDeleteEvento}" reRender="evForm"
+								onsubmit="if (!confirm('Procedere con l\'eliminazione?')) return false">
+
+								<a4j:actionparam name="idevento" value="#{row.id}"
+									assignTo="#{eMonitorBean.id}" />
+								<a4j:actionparam name="standard" value="#{row.standard}"
+									assignTo="#{eMonitorBean.std}" />
+
+							</a4j:support>
+						</h:graphicImage></center>
+					</rich:column>
+
+					<f:facet name="footer">
+						<h:panelGrid columns="1">
+
+							<a4j:commandLink action="#{eNewBean.doInitNewEvent}"
+								reRender="newEvtPage"
+								oncomplete="Richfaces.showModalPanel('newEvtModalBox'); return false;">
+								<h:outputText value="Nuovo" />
+								<a4j:actionparam name="pagenewevt"
+									value="/jsp/protected/eventi/nuovaAttivita.xhtml"
+									assignTo="#{eNewBean.newEvtPage}" />
+
+							</a4j:commandLink>
+
+						</h:panelGrid>
+
+					</f:facet>
+
+
+				</rich:dataTable>
+
+				<rich:spacer height="20px" />
+
+
+
+
+			</h:form>
+		</rich:panel>
+
+
+	</ui:define>
+</ui:composition>
+</html>

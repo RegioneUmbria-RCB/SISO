@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?><project-modules id="moduleCoreId" project-version="1.5.0">
+    <wb-module deploy-name="SocioSanitario_WEB">
+        <wb-resource deploy-path="/" source-path="/WebContent" tag="defaultRootSource"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/src"/>
+        <dependent-module archiveName="WebredEJBUtility.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/WebredEJBUtility/WebredEJBUtility">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="cetsecutil.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/CT-LIBS/cet-lib/cetsecutil.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="datarouter.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/CT-LIBS/cet-lib/datarouter.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="commons-fileupload-1.3.1.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/CT-LIBS/apache-commons/main/commons-fileupload-1.3.1.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="jackson-core-2.2.3.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/CT-LIBS/json/jackson-core-2.2.3.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="jackson-databind-2.2.3.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/CT-LIBS/json/jackson-databind-2.2.3.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="jackson-annotations-2.2.3.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/CT-LIBS/json/jackson-annotations-2.2.3.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="iText-2.1.7.js2.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/CT-LIBS/jasper/iText-2.1.7.js2.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="commons-beanutils-1.8.2.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/CT-LIBS/jasper/commons-beanutils-1.8.2.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="commons-digester-2.1.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/CT-LIBS/jasper/commons-digester-2.1.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="commons-logging-1.1.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/CT-LIBS/jasper/commons-logging-1.1.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="jasperreports-5.6.0.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/CT-LIBS/jasper/jasperreports-5.6.0.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="xml-apis.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/CT-LIBS/jasper/xml-apis.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="commons-collections-3.2.1.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/CT-LIBS/jasper/commons-collections-3.2.1.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="servlet-api-2.4.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/CT-LIBS/jasper/servlet-api-2.4.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="groovy-all-2.0.1.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/CT-LIBS/jasper/groovy-all-2.0.1.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="webredutils.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/CT-LIBS/cet-lib/webredutils.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="webred-cs-base.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/webred-cs-base/webred-cs-base">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="SocioSanitario_WEB_DTO.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/SocioSanitario_WEB_DTO/SocioSanitario_WEB_DTO">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="geocode-lib.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/geocode-lib/geocode-lib">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="CarSocialeA_DataModel.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/CarSocialeA_DataModel/CarSocialeA_DataModel">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="jasperreports-fonts-5.6.0.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/CT-LIBS/jasper/jasperreports-fonts-5.6.0.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="ud-rest-lib.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/ud-rest-lib/ud-rest-lib">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <property name="java-output-path" value="/SocioSanitario_WEB/build/classes"/>
+        <property name="context-root" value="SocioSanitario_WEB"/>
+    </wb-module>
+</project-modules>

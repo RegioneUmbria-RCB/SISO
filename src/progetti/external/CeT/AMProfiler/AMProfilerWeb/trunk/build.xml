@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE project [<!ENTITY buildfile SYSTEM "file:./build-user.xml">]>
+
+<project basedir="." default="init" name="AMProfiler">
+    &buildfile; 
+
+
+    <target depends="initUser"  name="init">
+    	<property name="AMProfiler.location" value="${basedir}" />
+    	<property name="libdir" value="${AMProfiler.location}/WebContent/WEB-INF/lib" />
+    	<property name="cvs.root" value=":pserver:makerelease:makerelease@172.16.2.188:/cvs_repos" />
+    	<property name="build.compiler" value="modern" />
+    	<property name="comp.debug" value="true" />
+    	<property name="comp.deprecation" value="false" />
+    	<property name="tmp.location" value="${AMProfiler.location}/tmp" />	
+    	<property name="tmp.webxml.location" value="${AMProfiler.location}/tmpWebXml" />	
+    	<tstamp>
+    	      <format property="oggi" pattern="dd/MM/yyyy hh:mm aa"/>
+    	</tstamp>    	
+    	<echo message="PROPERTIES :" />
+    	<echo message="JavaVersion........${java.version}" />
+    	<echo message="javahome...........${java.home}" />
+    	<echo message="user...............${user.name}" />
+    	<echo message="userhome...........${user.home}" />
+    	<echo message="buildcompiler......${build.compiler}" />
+    	<echo message="comp.debug.........${comp.debug}" />
+    	<echo message="comp.deprecation...${comp.deprecation}" />
+    	<echo message="AMProfiler.location.${AMProfiler.location}" />
+    	<echo message="tomcat.location....${tomcat.location}" />
+    	<echo message="tmp.location.......${tmp.location}" />
+    	<echo message="tmp.webxml.location.......${tmp.webxml.location}" />
+        <path id="libs">
+            <!--<pathelement location="build/classes"/>-->
+            <fileset dir="${tomcat.location}/common/lib/">
+                <include name="*.jar"/>
+            </fileset>
+            <fileset dir="${AMProfiler.location}/WebContent/WEB-INF/lib">
+                <include name="*.jar"/>
+            </fileset>
+            <fileset dir="${AMProfiler.location}/lib-utils">
+                <include name="*.jar"/>
+            </fileset>
+        </path>
+    </target>
+    <target name="clean">
+        <delete dir="${tmp.location}"/>
+	    <delete file="${AMProfiler.location}/AMProfiler.war" />
+    </target>
+    <target depends="init,clean, read.env.properties" name="build.war">
+
+    	<antcall target="set.version"/>
+
+    	<mkdir dir="${tmp.location}"/>
+    	<mkdir dir="${tmp.location}/tmpJar"/>
+        <copy todir="${tmp.location}">
+            <fileset dir="${AMProfiler.location}/WebContent">
+            	<exclude name="WEB-INF/web.xml"/>
+                <include name="**/*"/>
+            </fileset>        	
+        </copy>
+    	
+    	<copy file="${AMProfiler.location}/WebContent/WEB-INF/web.xml" todir="${tmp.webxml.location}"/>
+    	
+    	<mkdir dir="${tmp.location}/WEB-INF/classes"/>
+        <copy todir="${tmp.location}/WEB-INF/classes">
+            <fileset dir="${AMProfiler.location}/JavaSource">
+            	<exclude name="CVS/*"/>
+                <include name="**/*.xml"/>
+            	<include name="**/*.properties"/>
+            	<include name="**/*.dtd"/>
+            	<include name="**/*.tld"/>
+            	<include name="**/*.txt"/>
+            </fileset>        	
+        </copy>	
+    	<javac classpathref="libs"  destdir="${tmp.location}/tmpJar" debug="${comp.debug}" deprecation="${comp.deprecation}">
+            <src path="JavaSource"/>
+        </javac>
+
+			<java classname="it.webred.utils.JDomModifyXPath" classpathref="libs" fork="true">
+				<arg value="${tmp.location}/WEB-INF/build.xml" />
+				<arg value="${tmp.location}/WEB-INF/build.xml" />
+				<arg value="ATT"/>
+				<arg value="project/target[@name='axis-deploy']/admin/@port" />
+				<arg value="${webapp.port}" />				
+				<arg value="ATT"/>
+				<arg value="project/target[@name='axis-undeploy']/admin/@port" />
+				<arg value="${webapp.port}" />				
+			</java>
+
+		<java classname="it.webred.utils.JDomModifyXPath" classpathref="libs" fork="true">
+			<arg value="${tmp.webxml.location}/web.xml" />
+			<arg value="${tmp.webxml.location}/web.xml" />
+			<arg value="tag" />
+			<arg value="web-app/display-name" />
+			<arg value="${webapp.name}" />				
+		</java>
+    	
+    	<jar basedir="${tmp.location}/tmpJar" compress="true" includes="*/**" jarfile="${tmp.location}/WEB-INF/lib/AMProfiler.jar" >
+            <manifest>
+                <attribute name="Built-By" value="${user.name}"/>
+                <attribute name="Build-Date" value="${oggi}"/>
+            </manifest>            
+        </jar>
+    	<delete dir="${tmp.location}/tmpJar"/>
+    	<java classname="it.webred.utils.ReboundProperties" classpathref="libs" fork="true">
+    		<arg value="${tmp.location}/WEB-INF/classes/log4j.properties"/>
+    		<arg value="${tmp.location}/WEB-INF/classes/log4j.properties"/>
+        	<arg value="log4j.appender.nelfile.File=${catalina.home}/logs/${webapp.name}Log.txt"/>  
+    		<arg value="log4j.rootLogger=ERROR, nelfile"/>  
+        </java>
+        <war destfile="${AMProfiler.location}/${webapp.name}.war"  webxml="${tmp.webxml.location}\web.xml">
+            <fileset dir="${tmp.location}">
+            </fileset>
+            <manifest>
+                <attribute name="Built-By" value="${user.name}"/>
+            </manifest>     
+        </war>
+    	<delete dir="${tmp.location}"/>
+    	<delete dir="${tmp.webxml.location}"/>
+    	
+    	
+
+    </target>
+
+	
+    <target depends="init" name="take.gestionePermessi.from.cvs">
+    	<mkdir dir="${libdir}/.gestionePermessi"/>
+    	<cvs command="export -d ${libdir}/.gestionePermessi -r HEAD josso/gestionePermessi/releases/last/gestionePermessi.jar" cvsRoot="${cvs.root}" />
+        <delete file="${libdir}/gestionePermessi.jar"/>
+        <copy file="${libdir}/.gestionePermessi/gestionePermessi.jar" todir="${libdir}"/>
+        <delete dir="${libdir}/.gestionePermessi"/>
+    </target>
+	
+    <target depends="init" name="take.webredutils.from.cvs">
+    	<mkdir dir="${libdir}/.webredutils"/>
+    	<cvs command="export -d ${libdir}/.webredutils -r HEAD webredutils/releases/last/webredutils.jar" cvsRoot="${cvs.root}" />
+        <delete file="${libdir}/webredutils.jar"/>
+        <copy file="${libdir}/.webredutils/webredutils.jar" todir="${libdir}"/>
+        <delete dir="${libdir}/.webredutils"/>
+    </target>
+	
+	<!-- Lettura delle informazioni di deploy dal file env.properties oppure dal file properties specifico del cliente -->
+	<target name="set.cliente.default" unless="cliente.settato">
+		<property name="cliente" value="" />
+		<echo message="Non si e' specificato il cliente per il deploy. Si utilizza il file properties di default!!!"/>
+	</target>
+	<target name="check.env.properties" if="cliente.settato">
+		<echo message="Cerco:${basedir}/env${cliente}am.properties"/>
+		<available file="${basedir}/env${cliente}am.properties" property="isFileAvailable" type="file"/>
+	    <fail unless="isFileAvailable" message="Il file env${cliente}am.properties non esiste!!!"/>
+	</target>
+	<target name="check.cliente">
+	    <condition property="cliente.settato">
+	    	<isset property="cliente"/>
+	    </condition>
+	</target>
+	<target name="read.env.properties" depends="check.cliente, set.cliente.default, check.env.properties">    
+	    <echo message="Lettura del file : env${cliente}am.properties"/>
+		<property file="env${cliente}am.properties" prefix="env"/>
+		<property name="webapp.name" value="${env.webapp.name}"/>
+		<property name="webapp.port" value="${env.webapp.port}"/>
+		<echo message="webapp.name=${webapp.name}"/>
+		<echo message="webapp.port=${webapp.port}"/>
+	</target> 	
+	
+	<target name="set.version">
+		<replace 
+		    file="WebContent/jsp/footer.jsp"
+		    propertyFile="JavaSource/version.properties">
+		  <replacefilter 
+		    token="@@version.label@@" 
+		    property="version.label"/>
+		</replace>
+		<echo message="Inserito numero di versione"/>
+	</target>
+	
+</project>

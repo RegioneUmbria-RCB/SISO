@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings
+  xmlns="http://java.sun.com/xml/ns/persistence/orm"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
+  version="2.0">
+	
+	<named-query name="C336Pratica.getListaUserNameIni">
+		<query>
+			<![CDATA[
+				SELECT distinct p.userNameIni 
+					FROM C336Pratica p
+				WHERE p.userNameIni IS NOT NULL
+				]]>
+		</query>
+	</named-query>
+	<named-query name="C336Pratica.getListaUserNameFin">
+		<query>
+			<![CDATA[
+				SELECT distinct p.userNameFin
+					FROM C336Pratica p
+					WHERE p.userNameFin IS NOT NULL
+				]]>
+		</query>
+	</named-query>
+	
+	<named-query name="C336Pratica.getListaAperteOperatore">
+		<query>
+			<![CDATA[
+				SELECT distinct p
+					FROM C336Pratica p, C336GesPratica g
+					WHERE g.id.userName = :operatore 
+					AND p.codStato <> :codStato
+					AND p.id = g.id.idPratica
+					AND g.dtFinGes IS NULL
+				]]>
+		</query>
+	</named-query>
+	
+		<named-query name="C336Pratica.getListaChiuseOperatore">
+		<query>
+			<![CDATA[
+				SELECT distinct p
+					FROM C336Pratica p
+					WHERE p.userNameFin = :operatore 
+					AND   p.codStato = :codStato
+				]]>
+		</query>
+	</named-query>
+	
+	<named-query name="C336Pratica.getPraticaApertaByFP">
+		<query>
+			<![CDATA[
+				SELECT p
+				  FROM C336Pratica p
+				 WHERE p.foglio= :foglio
+				   AND p.particella = :particella
+				   AND p.sub IS NULL 
+				   AND p.dtFin IS NULL
+				]]>
+		</query>
+	</named-query>
+	<named-query name="C336Pratica.getPraticaApertaByFPS">
+		<query>
+			<![CDATA[
+				SELECT p
+				  FROM C336Pratica p
+				 WHERE p.foglio= :foglio
+				   AND p.particella = :particella
+				   AND p.sub = :sub
+				   AND p.dtFin IS NULL
+				]]>
+		</query>
+	</named-query>
+	<named-query name="C336Pratica.getPraticaChiusaByFP">
+		<query>
+			<![CDATA[
+				SELECT p
+				  FROM C336Pratica p
+				 WHERE p.foglio= :foglio
+				   AND p.particella = :particella
+				   AND p.sub IS NULL 
+				   AND p.dtFin IS NOT NULL
+				]]>
+		</query>
+	</named-query>
+	<named-query name="C336Pratica.getPraticaChiusaByFPS">
+		<query>
+			<![CDATA[
+				SELECT p
+				  FROM C336Pratica p
+				 WHERE p.foglio= :foglio
+				   AND p.particella = :particella
+				   AND p.sub = :sub
+				   AND p.dtFin IS NOT NULL
+				]]>
+		</query>
+	</named-query>
+	<named-query name="C336GesPratica.getListaOperatori">
+		<query>
+			<![CDATA[
+				SELECT distinct p.id.userName
+					FROM C336GesPratica p
+			]]>
+		</query>
+	</named-query>
+	<named-query name="C336GesPratica.getGestioneAttualePratica">
+		<query>
+			<![CDATA[
+				SELECT g
+				  FROM C336GesPratica g
+				 WHERE g.id.idPratica= :idPratica
+				   AND g.dtFinGes is null
+				]]>
+		</query>
+	</named-query>
+	<named-query name="C336GesPratica.getStoricoGestionePratica">
+		<query>
+			<![CDATA[
+				SELECT g
+				  FROM C336GesPratica g
+				 WHERE g.id.idPratica= :idPratica
+	   	      ORDER BY  g.dtFinGes DESC
+				]]>
+		</query>
+	</named-query>
+	<named-query name="C336Allegato.getAllegatiPratica">
+		<query>
+			<![CDATA[
+				SELECT a, d.desTipDoc
+				  FROM C336Allegato a, C336DecodTipDoc d
+				 WHERE a.idPratica= :idPratica
+				 AND   a.codTipoDoc=d.codTipDoc
+	   		]]>
+		</query>
+	</named-query>
+	<named-query name="C336SkFabbricato.getSkFabbricato">
+		<query>
+			<![CDATA[
+				SELECT a
+				  FROM C336SkCarGenFabbricato a
+				 WHERE a.idPratica= :idPratica
+	   		]]>
+		</query>
+	</named-query>
+	<named-query name="C336SkUiu.getSkUiu">
+		<query>
+			<![CDATA[
+				SELECT a
+				  FROM C336SkCarGenUiu a
+				 WHERE a.idPratica= :idPratica
+	   		]]>
+		</query>
+	</named-query>
+	<named-query name="C336TabIncrA4A3.getTabIncrA4A3">
+		<query>
+			<![CDATA[
+				SELECT a
+				  FROM C336TabValIncrClsA4A3 a
+				 WHERE a.idPratica= :idPratica
+	   		]]>
+		</query>
+	</named-query>
+	<named-query name="C336TabIncrA5A6.getTabIncrA5A6">
+		<query>
+			<![CDATA[
+				SELECT a
+				  FROM C336TabValIncrClsA5A6 a
+				 WHERE a.idPratica= :idPratica
+	   		]]>
+		</query>
+	</named-query>
+	<named-query name="C336GridAttribA2.getGridAttribA2">
+		<query>
+			<![CDATA[
+				SELECT a
+				  FROM C336GridAttribCatA2 a
+				 WHERE a.idPratica= :idPratica
+	   		]]>
+		</query>
+	</named-query>
+	<named-query name="C336DecodIrreg.getDesIrreg">
+		<query>
+			<![CDATA[
+				SELECT s
+				  FROM C336DecodIrreg s
+				 WHERE s.codIrreg= :codIrreg
+				]]>
+		</query>
+	</named-query>
+	<named-query name="C336DecodIrreg.getListaIrreg">
+		<query>
+			<![CDATA[
+				SELECT s
+				  FROM C336DecodIrreg s
+				  WHERE s.flAttivo=:flAttivo
+				]]>
+		</query>
+	</named-query>
+	<named-query name="C336DecodTipDoc.getDesTipDoc">
+		<query>
+			<![CDATA[
+				SELECT s
+				  FROM C336DecodTipDoc s
+				 WHERE s.codTipDoc= :codTipDoc
+				]]>
+		</query>
+	</named-query>
+	<named-query name="C336DecodTipDoc.getListaTipDoc">
+		<query>
+			<![CDATA[
+				SELECT s
+				  FROM C336DecodTipDoc s
+				]]>
+		</query>
+	</named-query>
+</entity-mappings>

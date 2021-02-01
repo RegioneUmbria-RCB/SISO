@@ -1,0 +1,31 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<relationalModel class="oracle.dbtools.crest.model.design.relational.RelationalDesign" name="CS_SISO_ROMA" id="36B1C6E8-6FD2-1EF6-8F4A-4E5B3D846A78" mainViewID="9C19344B-35D4-B3DE-705E-90F3C805D89E">
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:12 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<shouldBeOpen>true</shouldBeOpen>
+<selectedRDBMSSite>32076570-2523-435C-2E92-BF29817DFF70</selectedRDBMSSite>
+<redirectConnectionStamp class="oracle.dbtools.crest.imports.DBConnectionStamp">
+<connName>CS_SISO_ROMA</connName>
+<connUrl>jdbc:oracle:thin:@HIWEB-SVIL-DB01:1521/DBCAT</connUrl>
+<connUser>CS_DEV2</connUser>
+<connType>1</connType>
+<syncSelected>-1</syncSelected>
+</redirectConnectionStamp>
+<importConnectionStamps>
+<importConnectionStamp class="oracle.dbtools.crest.imports.DBConnectionStamp">
+<connName>CS_SISO_ROMA</connName>
+<connUrl>jdbc:oracle:thin:@ROMA:1521/DBCAT</connUrl>
+<connUser>CS_SISO</connUser>
+<connType>1</connType>
+<syncSelected>1</syncSelected>
+</importConnectionStamp>
+<importConnectionStamp class="oracle.dbtools.crest.imports.DBConnectionStamp">
+<connName>ARGO_ROMA</connName>
+<connUrl>jdbc:oracle:thin:@ROMA:1521/DBCAT</connUrl>
+<connUser>ARGO</connUser>
+<connType>1</connType>
+<syncSelected>1</syncSelected>
+</importConnectionStamp>
+</importConnectionStamps>
+</relationalModel>

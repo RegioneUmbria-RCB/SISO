@@ -1,0 +1,14 @@
+#Connessione
+conn.driver=oracle.jdbc.driver.OracleDriver
+conn.url=jdbc:oracle:thin:@ROMA:1521:DBCAT
+conn.user=DIOGENE_F704_GIT
+conn.pass=DIOGENE_F704_GIT
+connAm.url=jdbc:oracle:thin:@ROMA:1521:DBCAT
+connAm.user=AM_F704_GIT
+connAm.pass=AM_F704_GIT
+connRe.url=jdbc:oracle:thin:@ROMA:1521:DBCAT
+connRe.user=RE_F704_GIT
+connRe.pass=RE_F704_GIT
+#Ente
+belfiore=F704
+

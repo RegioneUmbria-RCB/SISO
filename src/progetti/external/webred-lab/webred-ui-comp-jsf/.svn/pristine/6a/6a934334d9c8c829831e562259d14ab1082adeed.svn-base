@@ -1,0 +1,53 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+     	xmlns:h="http://java.sun.com/jsf/html"
+		xmlns:f="http://java.sun.com/jsf/core"
+		xmlns:ui="http://java.sun.com/jsf/facelets"
+		xmlns:p="http://primefaces.org/ui"
+	  	xmlns:composite="http://java.sun.com/jsf/composite">
+      
+	<h:head>
+		<title>Panel Salva/Esci in Modal Dialog</title>		
+	</h:head>
+	<h:body>
+		<composite:interface componentType="pnlSalvaEsci" >
+			<composite:attribute name="dialogToHide" />
+			<composite:attribute name="pnlToUpdate" />
+			<composite:attribute name="disabled"/>
+			<composite:attribute name="salvaAction" method-signature="void action(java.lang.Object)"/>
+		</composite:interface>
+		<composite:implementation>
+		
+		<table border="0" width="100%">
+				<tr><td><p:spacer height="20"/></td></tr>
+				<tr>
+					<td style="text-align: center;">
+						<p:commandButton id="cmdSalva" value="Salva" disabled="#{cc.attrs.disabled}"
+							actionListener="#{cc.attrs.salvaAction}"  process="@form" 
+							oncomplete="if (args &amp;&amp; !args.validationFailed &amp;&amp; args.saved){ PF('#{cc.attrs.dialogToHide}').hide(); updateLista(); } else {}"/>
+						<p:remoteCommand name="updateLista" process="@this" update="#{cc.attrs.pnlToUpdate}" />  
+						<p:spacer width="15px;" />
+					   <p:commandButton value="Esci" process="@this" onclick="confermaEsci.show()" />
+					</td>
+				</tr>
+		</table>
+		<p:confirmDialog header="Conferma uscita" 
+				widgetVar="confermaEsci" severity="alert"
+				closable="false" appendTo="@(body)"
+				message="I dati non salvati saranno persi: continuare?">
+				<p:panelGrid>
+					<p:row>
+						<p:column style="text-align: center;">
+							<p:commandButton value="SI" onclick="PF('confermaEsci').hide()"
+								oncomplete="PF('#{cc.attrs.dialogToHide}').hide(); "  />
+								
+							<p:commandButton value="NO"
+								onclick="PF('confermaEsci').hide();" type="button" />
+						</p:column>
+					</p:row>
+				</p:panelGrid>
+			</p:confirmDialog>
+		</composite:implementation>
+	</h:body>
+	
+</html>

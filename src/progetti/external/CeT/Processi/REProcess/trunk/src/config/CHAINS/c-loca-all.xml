@@ -1,0 +1,88 @@
+<?xml version="1.0"?>
+<j:jelly trim="false" xmlns:define="jelly:define" xmlns:j="jelly:core"
+	     xmlns:x="jelly:xml" xmlns:re="reTagLib" xmlns:log="jelly:log">
+	
+	<define:taglib uri="reTagLib">
+		<define:jellybean name="bridge" className="it.webred.rulengine.chains.bridge.JellyCommandBridge" />
+	</define:taglib>
+	
+	<!-- 0 -->
+	<re:bridge codiceComando="T-ACCLOCFD" context="${ctx}" connessione="DWH" var="cmd00" />
+	
+	<re:bridge codiceComando="T-ATTLOCFD" context="${ctx}" connessione="DWH" var="cmd01" />
+	
+	<re:bridge codiceComando="T-CONLOCFD" context="${ctx}" connessione="DWH" var="cmd02" />
+
+	<!-- Questa regola elabora i file rimanenti relativi alle locazioni -->	
+	<re:bridge codiceComando="T-LOCFD" context="${ctx}" connessione="DWH" var="cmd03" />
+
+
+
+
+
+	<!-- 1 -->
+	<j:set var='par1' encode='true'>
+		<complexParam>
+			
+			<param type="it.webred.rulengine.type.ComplexParam" name="sql">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[COMANDISQL_1]]</param></complexParam> ]]>
+	   		</param>
+			<param type="it.webred.rulengine.type.ComplexParam" name="tabellexsemaforo">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[TABELLE_SEMAFORO_1]]</param></complexParam> ]]>
+	   		</param>
+	   		
+	   	</complexParam>
+	</j:set>
+	
+	<re:bridge codiceComando="SQL-CARSEM" context="${ctx}" connessione="DWH" var="cmd1" parametro="${par1}" />
+
+
+	<!-- 2 -->
+	<j:set var='par2' encode='true'>
+		<complexParam>
+			
+			<param type="it.webred.rulengine.type.ComplexParam" name="sql">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[COMANDISQL_2]]</param></complexParam> ]]>
+	   		</param>
+			<param type="it.webred.rulengine.type.ComplexParam" name="tabellexsemaforo">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[TABELLE_SEMAFORO_2]]</param></complexParam> ]]>
+	   		</param>
+	   		
+	   	</complexParam>
+	</j:set>
+	
+	<re:bridge codiceComando="SQL-CARSEM" context="${ctx}" connessione="DWH" var="cmd2" parametro="${par2}" />
+	
+	<!-- 3 -->
+	<j:set var='par3' encode='true'>
+		<complexParam>
+			
+			<param type="it.webred.rulengine.type.ComplexParam" name="sql">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[COMANDISQL_3]]</param></complexParam> ]]>
+	   		</param>
+			<param type="it.webred.rulengine.type.ComplexParam" name="tabellexsemaforo">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[TABELLE_SEMAFORO_3]]</param></complexParam> ]]>
+	   		</param>
+	   		
+	   	</complexParam>
+	</j:set>
+	
+	<re:bridge codiceComando="SQL-CARSEM" context="${ctx}" connessione="DWH" var="cmd3" parametro="${par3}" />
+
+	<!-- 4 -->
+	<j:set var='par4' encode='true'>
+		<complexParam>
+			
+			<param type="it.webred.rulengine.type.ComplexParam" name="sql">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[COMANDISQL_4]]</param></complexParam> ]]>
+	   		</param>
+			<param type="it.webred.rulengine.type.ComplexParam" name="tabellexsemaforo">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[TABELLE_SEMAFORO_4]]</param></complexParam> ]]>
+	   		</param>
+	   		
+	   	</complexParam>
+	</j:set>
+	
+	<re:bridge codiceComando="SQL-CARSEM" context="${ctx}" connessione="DWH" var="cmd4" parametro="${par4}" />
+	 
+</j:jelly>

@@ -1,0 +1,579 @@
+<?xml version="1.0"?>
+<j:jelly trim="false" xmlns:define="jelly:define" xmlns:j="jelly:core"
+	     xmlns:x="jelly:xml" xmlns:re="reTagLib" xmlns:log="jelly:log">
+	
+	<define:taglib uri="reTagLib">
+		<define:jellybean name="bridge" className="it.webred.rulengine.chains.bridge.JellyCommandBridge" />
+	</define:taglib>
+	
+	<!-- Caricamento dati da file a RE_F24_1_0  -->
+	<re:bridge codiceComando="TXT-F24T12" context="${ctx}" connessione="DWH" var="cmd0" />
+ 
+ 	<!-- Trasferimento dati Z1 da RE_F24_1_0 a SIT_F24_TESTATA  -->	
+	<j:set var='parZ1' encode='true'>
+		<complexParam>
+		  
+	   		<param type="it.webred.rulengine.type.ComplexParam" name="sql">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[QUERYSQL_Z1]]</param></complexParam> ]]>
+	   		</param>
+	   		
+	   	<!-- 	<param type="it.webred.rulengine.type.ComplexParam" name="parametri_sql">
+				<![CDATA[<complexParam><param type="java.lang.String" name="anno">2012</param></complexParam> ]]>
+	   		</param> -->
+	   	</complexParam>
+	</j:set>
+	<re:bridge codiceComando="SELECTSQL" context="${ctx}" connessione="DWH" var="cmd1_Z" parametro="${parZ1}" />
+	
+	
+	<!-- Scrittura tabella SIT_T_F24_TESTATA -->
+	<j:set var='par2_Z' encode='true'>
+		<complexParam>
+			
+			<!-- senza specificare il tipo per la creazione di un complexParam da oggetto e nn da stringa -->
+			<param type="" name="sqlrs">${cmd1_Z.risultati.RESULTSET}</param>
+			
+			<param type="it.webred.rulengine.type.ComplexParam" name="xml">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[RSITRSCRIPT_Z1]]</param></complexParam> ]]>
+	   		</param>
+			
+	   	</complexParam>
+	</j:set>
+	<re:bridge codiceComando="RSITERATOR" context="${ctx}" connessione="DWH" var="cmd2_Z" parametro="${par2_Z}" />
+	
+	
+	<!-- Update del flag_elaborato nella tabella RE_F24_1_0  -->
+	<j:set var='par3_Z' encode='true'>
+		<complexParam>
+			
+			<param type="it.webred.rulengine.type.ComplexParam" name="xml">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[COMANDOSQL_Z1]]</param></complexParam> ]]>
+	   		</param>
+			
+	   	</complexParam>
+	</j:set>
+	<re:bridge codiceComando="COMANDOSQL" context="${ctx}" connessione="DWH" var="cmd3_Z" parametro="${par3_Z}" />
+	
+	
+	<!-- CARICAMENTI G1 -->
+	
+		<!-- Trasferimento dati G1 da RE_F24_1_0 a SIT_F24_VERSAMENTI  -->	
+	<j:set var='par1_G1' encode='true'>
+		<complexParam>
+		  
+	   		<param type="it.webred.rulengine.type.ComplexParam" name="sql">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[QUERYSQL_G1]]</param></complexParam> ]]>
+	   		</param>
+	   		
+	   		<!-- <param type="it.webred.rulengine.type.ComplexParam" name="parametri_sql">
+				<![CDATA[<complexParam><param type="java.lang.String" name="anno">2012</param></complexParam> ]]>
+	   		</param> -->
+	   	</complexParam>
+	</j:set>
+	<re:bridge codiceComando="SELECTSQL" context="${ctx}" connessione="DWH" var="cmd1_G1" parametro="${par1_G1}" />
+	
+	
+	<!-- Scrittura tabella SIT_F24_VERSAMENTI -->
+	<j:set var='par2_G1' encode='true'>
+		<complexParam>
+			
+			<!-- senza specificare il tipo per la creazione di un complexParam da oggetto e nn da stringa -->
+			<param type="" name="sqlrs">${cmd1_G1.risultati.RESULTSET}</param>
+			
+			<param type="it.webred.rulengine.type.ComplexParam" name="xml">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[RSITRSCRIPT_G1]]</param></complexParam> ]]>
+	   		</param>
+			
+	   	</complexParam>
+	</j:set>
+	<re:bridge codiceComando="RSITERATOR" context="${ctx}" connessione="DWH" var="cmd2_G1" parametro="${par2_G1}" />
+	
+	<!-- Update del flag_elaborato nella tabella RE_F24_1_0  -->
+	<j:set var='par3_G1' encode='true'>
+		<complexParam>
+			
+			<param type="it.webred.rulengine.type.ComplexParam" name="xml">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[COMANDOSQL_G1]]</param></complexParam> ]]>
+	   		</param>
+			
+	   	</complexParam>
+	</j:set>
+	<re:bridge codiceComando="COMANDOSQL" context="${ctx}" connessione="DWH" var="cmd3_G1" parametro="${par3_G1}" />
+	
+	<!-- CARICAMENTI G2 -->
+	
+	<!-- Trasferimento dati G2 da RE_F24_1_0 a SIT_F24_ACCREDITO -->	
+	<j:set var='par1_G2' encode='true'>
+		<complexParam>
+		  
+	   		<param type="it.webred.rulengine.type.ComplexParam" name="sql">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[QUERYSQL_G2]]</param></complexParam> ]]>
+	   		</param>
+	   		
+	   	<!-- 	<param type="it.webred.rulengine.type.ComplexParam" name="parametri_sql">
+				<![CDATA[<complexParam><param type="java.lang.String" name="anno">2012</param></complexParam> ]]>
+	   		</param> -->
+	   	</complexParam>
+	</j:set>
+	<re:bridge codiceComando="SELECTSQL" context="${ctx}" connessione="DWH" var="cmd1_G2" parametro="${par1_G2}" />
+	
+	
+	<!-- Scrittura tabella SIT_F24_ACCREDITO -->
+	<j:set var='par2_G2' encode='true'>
+		<complexParam>
+			
+			<!-- senza specificare il tipo per la creazione di un complexParam da oggetto e nn da stringa -->
+			<param type="" name="sqlrs">${cmd1_G2.risultati.RESULTSET}</param>
+			
+			<param type="it.webred.rulengine.type.ComplexParam" name="xml">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[RSITRSCRIPT_G2]]</param></complexParam> ]]>
+	   		</param>
+			
+	   	</complexParam>
+	</j:set>
+	<re:bridge codiceComando="RSITERATOR" context="${ctx}" connessione="DWH" var="cmd2_G2" parametro="${par2_G2}" />
+	
+	<!-- Update del flag_elaborato nella tabella RE_F24_1_0  -->
+	<j:set var='par3_G2' encode='true'>
+		<complexParam>
+			
+			<param type="it.webred.rulengine.type.ComplexParam" name="xml">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[COMANDOSQL_G2]]</param></complexParam> ]]>
+	   		</param>
+			
+	   	</complexParam>
+	</j:set>
+	<re:bridge codiceComando="COMANDOSQL" context="${ctx}" connessione="DWH" var="cmd3_G2" parametro="${par3_G2}" />
+	
+	<!-- CARICAMENTI G5 -->
+	
+		<!-- Trasferimento dati G5 da RE_F24_1_0 a SIT_F24_ID_ACCREDITO  -->	
+	<j:set var='par1_G5' encode='true'>
+		<complexParam>
+		  
+	   		<param type="it.webred.rulengine.type.ComplexParam" name="sql">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[QUERYSQL_G5]]</param></complexParam> ]]>
+	   		</param>
+	   		
+	   	<!-- 	<param type="it.webred.rulengine.type.ComplexParam" name="parametri_sql">
+				<![CDATA[<complexParam><param type="java.lang.String" name="anno">2012</param></complexParam> ]]>
+	   		</param> -->
+	   	</complexParam>
+	</j:set>
+	<re:bridge codiceComando="SELECTSQL" context="${ctx}" connessione="DWH" var="cmd1_G5" parametro="${par1_G5}" />
+	
+	
+	<!-- Scrittura tabella SIT_T_F24_ID_ACCREDITO -->
+	<j:set var='par2_G5' encode='true'>
+		<complexParam>
+			
+			<!-- senza specificare il tipo per la creazione di un complexParam da oggetto e nn da stringa -->
+			<param type="" name="sqlrs">${cmd1_G5.risultati.RESULTSET}</param>
+			
+			<param type="it.webred.rulengine.type.ComplexParam" name="xml">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[RSITRSCRIPT_G5]]</param></complexParam> ]]>
+	   		</param>
+			
+	   	</complexParam>
+	</j:set>
+	<re:bridge codiceComando="RSITERATOR" context="${ctx}" connessione="DWH" var="cmd2_G5" parametro="${par2_G5}" />
+	
+			
+	<!-- Update del flag_elaborato nella tabella RE_F24_1_0  -->
+	<j:set var='par3_G5' encode='true'>
+		<complexParam>
+			
+			<param type="it.webred.rulengine.type.ComplexParam" name="xml">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[COMANDOSQL_G5]]</param></complexParam> ]]>
+	   		</param>
+			
+	   	</complexParam>
+	</j:set>
+	<re:bridge codiceComando="COMANDOSQL" context="${ctx}" connessione="DWH" var="cmd3_G5" parametro="${par3_G5}" />
+	
+	
+
+   <!-- CARICAMENTI G9 -->
+	
+   <!-- Trasferimento dati G9 da RE_F24_1_0 a SIT_F24_ANNULLAMENTO  -->	
+	<j:set var='par1_G9' encode='true'>
+		<complexParam>
+		  
+	   		<param type="it.webred.rulengine.type.ComplexParam" name="sql">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[QUERYSQL_G9]]</param></complexParam> ]]>
+	   		</param>
+	   		
+	   	<!-- 	<param type="it.webred.rulengine.type.ComplexParam" name="parametri_sql">
+				<![CDATA[<complexParam><param type="java.lang.String" name="anno">2012</param></complexParam> ]]>
+	   		</param> -->
+	   	</complexParam>
+	</j:set>
+	<re:bridge codiceComando="SELECTSQL" context="${ctx}" connessione="DWH" var="cmd1_G9" parametro="${par1_G9}" />
+	
+	
+	<!-- Scrittura tabella SIT_T_F24_ANNULLAMENTO -->
+	<j:set var='par2_G9' encode='true'>
+		<complexParam>
+			
+			<!-- senza specificare il tipo per la creazione di un complexParam da oggetto e nn da stringa -->
+			<param type="" name="sqlrs">${cmd1_G9.risultati.RESULTSET}</param>
+			
+			<param type="it.webred.rulengine.type.ComplexParam" name="xml">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[RSITRSCRIPT_G9]]</param></complexParam> ]]>
+	   		</param>
+			
+	   	</complexParam>
+	</j:set>
+	<re:bridge codiceComando="RSITERATOR" context="${ctx}" connessione="DWH" var="cmd2_G9" parametro="${par2_G9}" />
+	
+	<!-- Update del flag_elaborato nella tabella RE_F24_1_0  -->
+	<j:set var='par3_G9' encode='true'>
+		<complexParam>
+			
+			<param type="it.webred.rulengine.type.ComplexParam" name="xml">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[COMANDOSQL_G9]]</param></complexParam> ]]>
+	   		</param>
+			
+	   	</complexParam>
+	</j:set>
+	<re:bridge codiceComando="COMANDOSQL" context="${ctx}" connessione="DWH" var="cmd3_G9" parametro="${par3_G9}" />
+	
+	  <!-- CARICAMENTI G3 -->
+	
+   <!-- Trasferimento dati G3 da RE_F24_1_0 a SIT_F24_RECUPERO  -->	
+	<j:set var='par1_G3' encode='true'>
+		<complexParam>
+		  
+	   		<param type="it.webred.rulengine.type.ComplexParam" name="sql">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[QUERYSQL_G3]]</param></complexParam> ]]>
+	   		</param>
+	   		
+	   	<!-- 	<param type="it.webred.rulengine.type.ComplexParam" name="parametri_sql">
+				<![CDATA[<complexParam><param type="java.lang.String" name="anno">2012</param></complexParam> ]]>
+	   		</param> -->
+	   	</complexParam>
+	</j:set>
+	<re:bridge codiceComando="SELECTSQL" context="${ctx}" connessione="DWH" var="cmd1_G3" parametro="${par1_G3}" />
+	
+	
+	<!-- Scrittura tabella SIT_T_F24_RECUPERO -->
+	<j:set var='par2_G3' encode='true'>
+		<complexParam>
+			
+			<!-- senza specificare il tipo per la creazione di un complexParam da oggetto e nn da stringa -->
+			<param type="" name="sqlrs">${cmd1_G3.risultati.RESULTSET}</param>
+			
+			<param type="it.webred.rulengine.type.ComplexParam" name="xml">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[RSITRSCRIPT_G3]]</param></complexParam> ]]>
+	   		</param>
+			
+	   	</complexParam>
+	</j:set>
+	<re:bridge codiceComando="RSITERATOR" context="${ctx}" connessione="DWH" var="cmd2_G3" parametro="${par2_G3}" />
+	
+	<!-- Update del flag_elaborato nella tabella RE_F24_1_0  -->
+	<j:set var='par3_G3' encode='true'>
+		<complexParam>
+			
+			<param type="it.webred.rulengine.type.ComplexParam" name="xml">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[COMANDOSQL_G3]]</param></complexParam> ]]>
+	   		</param>
+			
+	   	</complexParam>
+	</j:set>
+	<re:bridge codiceComando="COMANDOSQL" context="${ctx}" connessione="DWH" var="cmd3_G3" parametro="${par3_G3}" />
+	
+	  <!-- CARICAMENTI G4 -->
+	
+   <!-- Trasferimento dati G4 da RE_F24_1_0 a SIT_F24_ANTICIPO  -->	
+	<j:set var='par1_G4' encode='true'>
+		<complexParam>
+		  
+	   		<param type="it.webred.rulengine.type.ComplexParam" name="sql">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[QUERYSQL_G4]]</param></complexParam> ]]>
+	   		</param>
+	   		
+	   	<!-- 	<param type="it.webred.rulengine.type.ComplexParam" name="parametri_sql">
+				<![CDATA[<complexParam><param type="java.lang.String" name="anno">2012</param></complexParam> ]]>
+	   		</param> -->
+	   	</complexParam>
+	</j:set>
+	<re:bridge codiceComando="SELECTSQL" context="${ctx}" connessione="DWH" var="cmd1_G4" parametro="${par1_G4}" />
+	
+	
+	<!-- Scrittura tabella SIT_T_F24_ANTICIPO -->
+	<j:set var='par2_G4' encode='true'>
+		<complexParam>
+			
+			<!-- senza specificare il tipo per la creazione di un complexParam da oggetto e nn da stringa -->
+			<param type="" name="sqlrs">${cmd1_G4.risultati.RESULTSET}</param>
+			
+			<param type="it.webred.rulengine.type.ComplexParam" name="xml">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[RSITRSCRIPT_G4]]</param></complexParam> ]]>
+	   		</param>
+			
+	   	</complexParam>
+	</j:set>
+	<re:bridge codiceComando="RSITERATOR" context="${ctx}" connessione="DWH" var="cmd2_G4" parametro="${par2_G4}" />
+	
+	<!-- Update del flag_elaborato nella tabella RE_F24_1_0  -->
+	<j:set var='par3_G4' encode='true'>
+		<complexParam>
+			
+			<param type="it.webred.rulengine.type.ComplexParam" name="xml">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[COMANDOSQL_G4]]</param></complexParam> ]]>
+	   		</param>
+			
+	   	</complexParam>
+	</j:set>
+	<re:bridge codiceComando="COMANDOSQL" context="${ctx}" connessione="DWH" var="cmd3_G4" parametro="${par3_G4}" />
+	
+	<!-- ADDIZIONALE COMUNALE -->
+
+ 	<!-- Trasferimento dati C0 e C9 da RE_F24_1_0 a SIT_F24_TESTATA  -->	
+	<j:set var='par1_C9' encode='true'>
+		<complexParam>
+		  
+	   		<param type="it.webred.rulengine.type.ComplexParam" name="sql">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[QUERYSQL_C9]]</param></complexParam> ]]>
+	   		</param>
+	   		
+	   	</complexParam>
+	</j:set>
+	<re:bridge codiceComando="SELECTSQL" context="${ctx}" connessione="DWH" var="cmd1_C9" parametro="${par1_C9}" />
+	
+	
+	<!-- Scrittura tabella SIT_T_F24_TESTATA -->
+	<j:set var='par2_C9' encode='true'>
+		<complexParam>
+			
+			<!-- senza specificare il tipo per la creazione di un complexParam da oggetto e nn da stringa -->
+			<param type="" name="sqlrs">${cmd1_C9.risultati.RESULTSET}</param>
+			
+			<param type="it.webred.rulengine.type.ComplexParam" name="xml">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[RSITRSCRIPT_C9]]</param></complexParam> ]]>
+	   		</param>
+			
+	   	</complexParam>
+	</j:set>
+	<re:bridge codiceComando="RSITERATOR" context="${ctx}" connessione="DWH" var="cmd2_C9" parametro="${par2_C9}" />
+	
+		
+ 	<!-- Trasferimento dati C1 da RE_F24_1_0 a SIT_F24_VERSAMENTI  -->	
+	<j:set var='par1_C1' encode='true'>
+		<complexParam>
+		  
+	   		<param type="it.webred.rulengine.type.ComplexParam" name="sql">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[QUERYSQL_C1]]</param></complexParam> ]]>
+	   		</param>
+	   		
+	   	</complexParam>
+	</j:set>
+	<re:bridge codiceComando="SELECTSQL" context="${ctx}" connessione="DWH" var="cmd1_C1" parametro="${par1_C1}" />
+	
+	
+	<!-- Scrittura tabella SIT_T_F24_VERSAMENTI -->
+	<j:set var='par2_C1' encode='true'>
+		<complexParam>
+			
+			<!-- senza specificare il tipo per la creazione di un complexParam da oggetto e nn da stringa -->
+			<param type="" name="sqlrs">${cmd1_C1.risultati.RESULTSET}</param>
+			
+			<param type="it.webred.rulengine.type.ComplexParam" name="xml">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[RSITRSCRIPT_C1]]</param></complexParam> ]]>
+	   		</param>
+			
+	   	</complexParam>
+	</j:set>
+	<re:bridge codiceComando="RSITERATOR" context="${ctx}" connessione="DWH" var="cmd2_C1" parametro="${par2_C1}" />
+
+ 	<!-- Trasferimento dati C2 da RE_F24_1_0 a SIT_F24_ACCREDITO  -->	
+	<j:set var='par1_C2' encode='true'>
+		<complexParam>
+		  
+	   		<param type="it.webred.rulengine.type.ComplexParam" name="sql">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[QUERYSQL_C2]]</param></complexParam> ]]>
+	   		</param>
+	   		
+	   	</complexParam>
+	</j:set>
+	<re:bridge codiceComando="SELECTSQL" context="${ctx}" connessione="DWH" var="cmd1_C2" parametro="${par1_C2}" />
+	
+	
+	<!-- Scrittura tabella SIT_T_F24_ACCREDITO -->
+	<j:set var='par2_C2' encode='true'>
+		<complexParam>
+			
+			<!-- senza specificare il tipo per la creazione di un complexParam da oggetto e nn da stringa -->
+			<param type="" name="sqlrs">${cmd1_C2.risultati.RESULTSET}</param>
+			
+			<param type="it.webred.rulengine.type.ComplexParam" name="xml">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[RSITRSCRIPT_C2]]</param></complexParam> ]]>
+	   		</param>
+			
+	   	</complexParam>
+	</j:set>
+	<re:bridge codiceComando="RSITERATOR" context="${ctx}" connessione="DWH" var="cmd2_C2" parametro="${par2_C2}" />
+
+ 	<!-- Trasferimento dati C3 da RE_F24_1_0 a SIT_F24_RECUPERO  -->	
+	<j:set var='par1_C3' encode='true'>
+		<complexParam>
+		  
+	   		<param type="it.webred.rulengine.type.ComplexParam" name="sql">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[QUERYSQL_C3]]</param></complexParam> ]]>
+	   		</param>
+	   		
+	   	</complexParam>
+	</j:set>
+	<re:bridge codiceComando="SELECTSQL" context="${ctx}" connessione="DWH" var="cmd1_C3" parametro="${par1_C3}" />
+	
+
+	<!-- Scrittura tabella SIT_T_F24_RECUPERO -->
+	<j:set var='par2_C3' encode='true'>
+		<complexParam>
+			
+			<!-- senza specificare il tipo per la creazione di un complexParam da oggetto e nn da stringa -->
+			<param type="" name="sqlrs">${cmd1_C3.risultati.RESULTSET}</param>
+			
+			<param type="it.webred.rulengine.type.ComplexParam" name="xml">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[RSITRSCRIPT_C3]]</param></complexParam> ]]>
+	   		</param>
+			
+	   	</complexParam>
+	</j:set>
+	<re:bridge codiceComando="RSITERATOR" context="${ctx}" connessione="DWH" var="cmd2_C3" parametro="${par2_C3}" />
+
+ 	<!-- Trasferimento dati C4 da RE_F24_1_0 a SIT_F24_ANTICIPO  -->	
+	<j:set var='par1_C4' encode='true'>
+		<complexParam>
+		  
+	   		<param type="it.webred.rulengine.type.ComplexParam" name="sql">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[QUERYSQL_C4]]</param></complexParam> ]]>
+	   		</param>
+	   		
+	   	</complexParam>
+	</j:set>
+	<re:bridge codiceComando="SELECTSQL" context="${ctx}" connessione="DWH" var="cmd1_C4" parametro="${par1_C4}" />
+
+	<!-- Scrittura tabella SIT_T_F24_ANTICIPO -->
+	<j:set var='par2_C4' encode='true'>
+		<complexParam>
+			
+			<!-- senza specificare il tipo per la creazione di un complexParam da oggetto e nn da stringa -->
+			<param type="" name="sqlrs">${cmd1_C4.risultati.RESULTSET}</param>
+			
+			<param type="it.webred.rulengine.type.ComplexParam" name="xml">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[RSITRSCRIPT_C4]]</param></complexParam> ]]>
+	   		</param>
+			
+	   	</complexParam>
+	</j:set>
+	<re:bridge codiceComando="RSITERATOR" context="${ctx}" connessione="DWH" var="cmd2_C4" parametro="${par2_C4}" />
+	
+	<!-- Trasferimento dati C5 da RE_F24_1_0 a SIT_T_F24_ACCREDITO_SUCCESSIVO  -->	
+	<j:set var='par1_C5' encode='true'>
+		<complexParam>
+		  
+	   		<param type="it.webred.rulengine.type.ComplexParam" name="sql">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[QUERYSQL_C5]]</param></complexParam> ]]>
+	   		</param>
+	   		
+	   	</complexParam>
+	</j:set>
+	<re:bridge codiceComando="SELECTSQL" context="${ctx}" connessione="DWH" var="cmd1_C5" parametro="${par1_C5}" />
+	
+	<!-- Scrittura tabella SIT_T_F24_ACCREDITO_SUCCESSIVO -->
+	<j:set var='par2_C5' encode='true'>
+		<complexParam>
+
+			<!-- senza specificare il tipo per la creazione di un complexParam da oggetto e nn da stringa -->
+			<param type="" name="sqlrs">${cmd1_C5.risultati.RESULTSET}</param>
+
+			<param type="it.webred.rulengine.type.ComplexParam" name="xml">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[RSITRSCRIPT_C5]]</param></complexParam> ]]>
+	   		</param>
+
+	   	</complexParam>
+	</j:set>
+	<re:bridge codiceComando="RSITERATOR" context="${ctx}" connessione="DWH" var="cmd2_C5" parametro="${par2_C5}" />
+
+	
+	<!-- Update del C1 flag_elaborato nella tabella RE_F24_1_0  -->
+	<j:set var='par3_C1' encode='true'>
+		<complexParam>
+			
+			<param type="it.webred.rulengine.type.ComplexParam" name="xml">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[COMANDOSQL_C1]]</param></complexParam> ]]>
+	   		</param>
+			
+	   	</complexParam>
+	</j:set>
+	<re:bridge codiceComando="COMANDOSQL" context="${ctx}" connessione="DWH" var="cmd3_C1" parametro="${par3_C1}" />
+	
+	<!-- Update del C2 flag_elaborato nella tabella RE_F24_1_0  -->
+	<j:set var='par3_C2' encode='true'>
+		<complexParam>
+			
+			<param type="it.webred.rulengine.type.ComplexParam" name="xml">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[COMANDOSQL_C2]]</param></complexParam> ]]>
+	   		</param>
+			
+	   	</complexParam>
+	</j:set>
+	<re:bridge codiceComando="COMANDOSQL" context="${ctx}" connessione="DWH" var="cmd3_C2" parametro="${par3_C2}" />
+	
+	<!-- Update del C3 flag_elaborato nella tabella RE_F24_1_0  -->
+	<j:set var='par3_C3' encode='true'>
+		<complexParam>
+			
+			<param type="it.webred.rulengine.type.ComplexParam" name="xml">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[COMANDOSQL_C3]]</param></complexParam> ]]>
+	   		</param>
+			
+	   	</complexParam>
+	</j:set>
+	<re:bridge codiceComando="COMANDOSQL" context="${ctx}" connessione="DWH" var="cmd3_C3" parametro="${par3_C3}" />
+	
+	<!-- Update del C4 flag_elaborato nella tabella RE_F24_1_0  -->
+	<j:set var='par3_C4' encode='true'>
+		<complexParam>
+			
+			<param type="it.webred.rulengine.type.ComplexParam" name="xml">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[COMANDOSQL_C4]]</param></complexParam> ]]>
+	   		</param>
+			
+	   	</complexParam>
+	</j:set>
+	<re:bridge codiceComando="COMANDOSQL" context="${ctx}" connessione="DWH" var="cmd3_C4" parametro="${par3_C4}" />
+	
+	<!-- Update del C5 flag_elaborato nella tabella RE_F24_1_0  -->
+	<j:set var='par3_C5' encode='true'>
+		<complexParam>
+			
+			<param type="it.webred.rulengine.type.ComplexParam" name="xml">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[COMANDOSQL_C5]]</param></complexParam> ]]>
+	   		</param>
+			
+	   	</complexParam>
+	</j:set>
+	<re:bridge codiceComando="COMANDOSQL" context="${ctx}" connessione="DWH" var="cmd3_C5" parametro="${par3_C5}" />
+	
+	<!-- 
+		Update del C9 flag_elaborato nella tabella RE_F24_1_0 
+		L'update di C9 deve essere eseguito dopo tutti gli altri update di C1, C2, 
+		C3, C4, C5 perchè questi hanno accesso ai tipi record C0 e C9 
+		con flag elaborato = 0 
+	-->
+	<j:set var='par3_C9' encode='true'>
+		<complexParam>
+			
+			<param type="it.webred.rulengine.type.ComplexParam" name="xml">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[COMANDOSQL_C9]]</param></complexParam> ]]>
+	   		</param>
+			
+	   	</complexParam>
+	</j:set>
+	<re:bridge codiceComando="COMANDOSQL" context="${ctx}" connessione="DWH" var="cmd3_C9" parametro="${par3_C9}" />
+	
+	
+ 
+</j:jelly>

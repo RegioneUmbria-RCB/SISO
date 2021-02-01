@@ -1,0 +1,6 @@
+tableFlusso.name=IS_PAG_FLUSSO
+tableDisposizione.name=IS_PAG_MAV_DISPOSIZIONE
+tablePagamento.name=IS_PAG_MAV_PAGAMENTO
+tablePromemoria.name=IS_PAG_MAV_PROMEMORIA
+tableSoggetto.name=IS_PAG_MAV_SOGGETTO
+Caricatore.class.noversion=it.webred.rulengine.brick.loadDwh.load.tassasoggiorno.mav.v1.ImportTSMav

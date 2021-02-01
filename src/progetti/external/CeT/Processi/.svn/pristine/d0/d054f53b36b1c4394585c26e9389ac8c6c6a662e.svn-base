@@ -1,0 +1,270 @@
+<?xml version="1.0"?>
+<j:jelly trim="false" xmlns:define="jelly:define" xmlns:j="jelly:core"
+	     xmlns:x="jelly:xml" xmlns:re="reTagLib" xmlns:log="jelly:log">
+	
+	<define:taglib uri="reTagLib">
+		<define:jellybean name="bridge" className="it.webred.rulengine.chains.bridge.JellyCommandBridge" />
+	</define:taglib>
+	
+	<!-- 0 -->
+	<!--  re:bridge codiceComando="AS-PERS" context="${ctx}" connessione="DWH" var="cmd0" / -->
+	
+	<j:set var='par0' encode='true'>
+		<complexParam>
+		  
+	   		<param type="it.webred.rulengine.type.ComplexParam" name="sql">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[QUERYSQL_1]]</param></complexParam> ]]>
+	   		</param>
+	   		
+	   	</complexParam>
+	</j:set>
+	<re:bridge codiceComando="SELECTSQL" context="${ctx}" connessione="DWH" var="cmd0" parametro="${par0}" />
+	
+	<j:set var='par1' encode='true'>
+		<complexParam>
+			
+			<!-- senza specificare il tipo per la creazione di un complexParam da oggetto e nn da stringa -->
+			<param type="" name="sqlrs">${cmd0.risultati.RESULTSET}</param>
+			
+			<param type="it.webred.rulengine.type.ComplexParam" name="xml">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[RSITRSCRIPT_1]]</param></complexParam> ]]>
+	   		</param>
+			
+	   	</complexParam>
+	</j:set>
+	
+	<re:bridge codiceComando="RSITERATOR" context="${ctx}" connessione="DWH" var="cmd1" parametro="${par1}" />
+	
+	<!-- 1 -->
+	<!-- re:bridge codiceComando="AS-DFAMIGL" context="${ctx}" connessione="DWH" var="cmd1" / -->
+	
+	<j:set var='par2' encode='true'>
+		<complexParam>
+		  
+	   		<param type="it.webred.rulengine.type.ComplexParam" name="sql">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[QUERYSQL_2]]</param></complexParam> ]]>
+	   		</param>
+	   		
+	   	</complexParam>
+	</j:set>
+	<re:bridge codiceComando="SELECTSQL" context="${ctx}" connessione="DWH" var="cmd2" parametro="${par2}" />
+	
+	<j:set var='par3' encode='true'>
+		<complexParam>
+			
+			<!-- senza specificare il tipo per la creazione di un complexParam da oggetto e nn da stringa -->
+			<param type="" name="sqlrs">${cmd2.risultati.RESULTSET}</param>
+			
+			<param type="it.webred.rulengine.type.ComplexParam" name="xml">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[RSITRSCRIPT_2]]</param></complexParam> ]]>
+	   		</param>
+			
+	   	</complexParam>
+	</j:set>
+	
+	<re:bridge codiceComando="RSITERATOR" context="${ctx}" connessione="DWH" var="cmd3" parametro="${par3}" />
+	
+	<!-- 2 -->
+	<!-- re:bridge codiceComando="AS-PERSCIV" context="${ctx}" connessione="DWH" var="cmd2" / -->
+		
+	<j:set var='par4' encode='true'>
+		<complexParam>
+		  
+	   		<param type="it.webred.rulengine.type.ComplexParam" name="sql">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[QUERYSQL_3]]</param></complexParam> ]]>
+	   		</param>
+	   		
+	   	</complexParam>
+	</j:set>
+	<re:bridge codiceComando="SELECTSQL" context="${ctx}" connessione="DWH" var="cmd4" parametro="${par4}" />
+	
+	<j:set var='par5' encode='true'>
+		<complexParam>
+			
+			<!-- senza specificare il tipo per la creazione di un complexParam da oggetto e nn da stringa -->
+			<param type="" name="sqlrs">${cmd4.risultati.RESULTSET}</param>
+			
+			<param type="it.webred.rulengine.type.ComplexParam" name="xml">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[RSITRSCRIPT_3]]</param></complexParam> ]]>
+	   		</param>
+			
+	   	</complexParam>
+	</j:set>
+	
+	<re:bridge codiceComando="RSITERATOR" context="${ctx}" connessione="DWH" var="cmd5" parametro="${par5}" />
+	
+	<!-- 3 -->
+	<!-- re:bridge codiceComando="AS-PERSFAM" context="${ctx}" connessione="DWH" var="cmd3" / -->
+	
+	<j:set var='par6' encode='true'>
+		<complexParam>
+		  
+	   		<param type="it.webred.rulengine.type.ComplexParam" name="sql">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[QUERYSQL_4]]</param></complexParam> ]]>
+	   		</param>
+	   		
+	   	</complexParam>
+	</j:set>
+	<re:bridge codiceComando="SELECTSQL" context="${ctx}" connessione="DWH" var="cmd6" parametro="${par6}" />
+	
+	<j:set var='par7' encode='true'>
+		<complexParam>
+			
+			<!-- senza specificare il tipo per la creazione di un complexParam da oggetto e nn da stringa -->
+			<param type="" name="sqlrs">${cmd6.risultati.RESULTSET}</param>
+			
+			<param type="it.webred.rulengine.type.ComplexParam" name="xml">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[RSITRSCRIPT_4]]</param></complexParam> ]]>
+	   		</param>
+			
+	   	</complexParam>
+	</j:set>
+	
+	<re:bridge codiceComando="RSITERATOR" context="${ctx}" connessione="DWH" var="cmd7" parametro="${par7}" />
+	
+	<!-- 4 -->
+	<!-- re:bridge codiceComando="AS-VIE" context="${ctx}" connessione="DWH" var="cmd4" / -->
+	
+	<j:set var='par8' encode='true'>
+		<complexParam>
+		  
+	   		<param type="it.webred.rulengine.type.ComplexParam" name="sql">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[QUERYSQL_5]]</param></complexParam> ]]>
+	   		</param>
+	   		
+	   	</complexParam>
+	</j:set>
+	<re:bridge codiceComando="SELECTSQL" context="${ctx}" connessione="DWH" var="cmd8" parametro="${par8}" />
+	
+	<j:set var='par9' encode='true'>
+		<complexParam>
+			
+			<!-- senza specificare il tipo per la creazione di un complexParam da oggetto e nn da stringa -->
+			<param type="" name="sqlrs">${cmd8.risultati.RESULTSET}</param>
+			
+			<param type="it.webred.rulengine.type.ComplexParam" name="xml">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[RSITRSCRIPT_5]]</param></complexParam> ]]>
+	   		</param>
+			
+	   	</complexParam>
+	</j:set>
+	
+	<re:bridge codiceComando="RSITERATOR" context="${ctx}" connessione="DWH" var="cmd9" parametro="${par9}" />
+	
+	<!-- 5 -->
+	<!-- re:bridge codiceComando="AS-CIVICI" context="${ctx}" connessione="DWH" var="cmd5" / -->
+	
+	<j:set var='par10' encode='true'>
+		<complexParam>
+		  
+	   		<param type="it.webred.rulengine.type.ComplexParam" name="sql">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[QUERYSQL_6]]</param></complexParam> ]]>
+	   		</param>
+	   		
+	   	</complexParam>
+	</j:set>
+	<re:bridge codiceComando="SELECTSQL" context="${ctx}" connessione="DWH" var="cmd10" parametro="${par10}" />
+	
+	<j:set var='par11' encode='true'>
+		<complexParam>
+			
+			<!-- senza specificare il tipo per la creazione di un complexParam da oggetto e nn da stringa -->
+			<param type="" name="sqlrs">${cmd10.risultati.RESULTSET}</param>
+			
+			<param type="it.webred.rulengine.type.ComplexParam" name="xml">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[RSITRSCRIPT_6]]</param></complexParam> ]]>
+	   		</param>
+			
+	   	</complexParam>
+	</j:set>
+	
+	<re:bridge codiceComando="RSITERATOR" context="${ctx}" connessione="DWH" var="cmd11" parametro="${par11}" />
+	
+	<!-- 6 -->
+	<!-- re:bridge codiceComando="AS-COMUNI" context="${ctx}" connessione="DWH" var="cmd6" / -->
+	
+	<j:set var='par12' encode='true'>
+		<complexParam>
+		  
+	   		<param type="it.webred.rulengine.type.ComplexParam" name="sql">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[QUERYSQL_7]]</param></complexParam> ]]>
+	   		</param>
+	   		
+	   	</complexParam>
+	</j:set>
+	<re:bridge codiceComando="SELECTSQL" context="${ctx}" connessione="DWH" var="cmd12" parametro="${par12}" />
+	
+	<j:set var='par13' encode='true'>
+		<complexParam>
+			
+			<!-- senza specificare il tipo per la creazione di un complexParam da oggetto e nn da stringa -->
+			<param type="" name="sqlrs">${cmd12.risultati.RESULTSET}</param>
+			
+			<param type="it.webred.rulengine.type.ComplexParam" name="xml">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[RSITRSCRIPT_7]]</param></complexParam> ]]>
+	   		</param>
+			
+	   	</complexParam>
+	</j:set>
+	
+	<re:bridge codiceComando="RSITERATOR" context="${ctx}" connessione="DWH" var="cmd13" parametro="${par13}" />
+	
+	<!-- 7 -->
+	<!-- re:bridge codiceComando="AS-STATI" context="${ctx}" connessione="DWH" var="cmd7" / -->
+	
+	<j:set var='par14' encode='true'>
+		<complexParam>
+		  
+	   		<param type="it.webred.rulengine.type.ComplexParam" name="sql">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[QUERYSQL_8]]</param></complexParam> ]]>
+	   		</param>
+	   		
+	   	</complexParam>
+	</j:set>
+	<re:bridge codiceComando="SELECTSQL" context="${ctx}" connessione="DWH" var="cmd14" parametro="${par14}" />
+	
+	<j:set var='par15' encode='true'>
+		<complexParam>
+			
+			<!-- senza specificare il tipo per la creazione di un complexParam da oggetto e nn da stringa -->
+			<param type="" name="sqlrs">${cmd14.risultati.RESULTSET}</param>
+			
+			<param type="it.webred.rulengine.type.ComplexParam" name="xml">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[RSITRSCRIPT_8]]</param></complexParam> ]]>
+	   		</param>
+			
+	   	</complexParam>
+	</j:set>
+	
+	<re:bridge codiceComando="RSITERATOR" context="${ctx}" connessione="DWH" var="cmd15" parametro="${par15}" />
+	
+	<!-- 8 -->
+	<!-- re:bridge codiceComando="AS-UNIONI" context="${ctx}" connessione="DWH" var="cmd8" / -->
+	
+	<j:set var='par16' encode='true'>
+		<complexParam>
+		  
+	   		<param type="it.webred.rulengine.type.ComplexParam" name="sql">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[QUERYSQL_9]]</param></complexParam> ]]>
+	   		</param>
+	   		
+	   	</complexParam>
+	</j:set>
+	<re:bridge codiceComando="SELECTSQL" context="${ctx}" connessione="DWH" var="cmd16" parametro="${par16}" />
+	
+	<j:set var='par17' encode='true'>
+		<complexParam>
+			
+			<!-- senza specificare il tipo per la creazione di un complexParam da oggetto e nn da stringa -->
+			<param type="" name="sqlrs">${cmd16.risultati.RESULTSET}</param>
+			
+			<param type="it.webred.rulengine.type.ComplexParam" name="xml">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[RSITRSCRIPT_9]]</param></complexParam> ]]>
+	   		</param>
+			
+	   	</complexParam>
+	</j:set>
+	
+	<re:bridge codiceComando="RSITERATOR" context="${ctx}" connessione="DWH" var="cmd17" parametro="${par17}" />
+
+</j:jelly>

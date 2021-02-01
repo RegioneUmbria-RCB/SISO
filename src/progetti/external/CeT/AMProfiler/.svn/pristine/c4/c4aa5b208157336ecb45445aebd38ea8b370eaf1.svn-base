@@ -1,0 +1,180 @@
+package it.webred.amprofiler.ejb.perm;
+
+
+import it.webred.amprofiler.model.AmGroup;
+import it.webred.amprofiler.model.perm.PermAccesso;
+import it.webred.amprofiler.model.perm.PermEnte;
+import it.webred.amprofiler.model.perm.Permission;
+import it.webred.amprofiler.model.perm.PwdUpdDate;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+
+import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+
+/**
+ * Session Bean implementation class LoginBean
+ */
+@Stateless
+public class LoginBean implements LoginBeanService {
+
+	@PersistenceContext(unitName = "AmProfilerDataModel")
+	protected EntityManager manager;
+
+	public HashMap getPermissions(String username, String ente) {
+		HashMap<String, String> result = new HashMap<String, String>();
+		
+		try {
+			//System.out.println("Get Permission");
+			Query q = manager.createNamedQuery("Login.getPermission");
+			//System.out.println("Query q["+q+"]");
+			q.setParameter("username", username);
+			q.setParameter("ente", ente);
+			
+			List<Permission> tmp = q.getResultList();
+			
+			
+			if (tmp != null) {
+				for (int i=0; i < tmp.size(); i++) {
+					Permission p = tmp.get(i);
+					result.put(p.getPermission(), p.getPermission());
+				}
+			}
+		}
+		catch(Throwable t) {
+			throw new LoginServiceException(t);
+		}
+		
+		return result;
+	}
+	
+	public HashMap getPermissionsByGroup(String gruppo, String ente) {
+		HashMap<String, String> result = new HashMap<String, String>();
+		
+		try {
+			//System.out.println("Get Permission");
+			Query q = manager.createNamedQuery("Login.getPermissionByGroup");
+			//System.out.println("Query q["+q+"]");
+			q.setParameter("gruppo", gruppo);
+			q.setParameter("ente", ente);
+			
+			List<Permission> tmp = q.getResultList();
+			
+			
+			if (tmp != null) {
+				for (int i=0; i < tmp.size(); i++) {
+					Permission p = tmp.get(i);
+					result.put(p.getPermission(), p.getPermission());
+				}
+			}
+		}
+		catch(Throwable t) {
+			throw new LoginServiceException(t);
+		}
+		
+		return result;
+	}
+
+	public PermAccesso getPermissionAccesso(String username, String ente){
+		PermAccesso result = new PermAccesso();
+		
+		try {
+			Query q = manager.createNamedQuery("Login.getPermissionAccessoUtente");
+			q.setParameter("username", username);
+			
+			List<PermAccesso> tmp = q.getResultList();
+			
+			if (tmp != null && tmp.size()>0 && tmp.get(0) != null) {
+				result = tmp.get(0);
+			}else{
+				q = manager.createNamedQuery("Login.getPermissionAccessoGruppo");
+				q.setParameter("username", username);
+				q.setParameter("ente", ente);
+				
+				tmp = q.getResultList();
+				
+				if (tmp != null && tmp.size()>0 && tmp.get(0) != null){ 
+					result = tmp.get(0);
+				}
+			}
+		}
+		catch(Throwable t) {
+			throw new LoginServiceException(t);
+		}
+		
+		return result;
+	}
+	
+	public boolean isPwdValida(String username, int numGiorni)
+	{
+		boolean pwdValida = false;
+
+		try {
+			Query q = manager.createNamedQuery("Login.isPwdValida");
+			q.setParameter("username", username);
+			
+			PwdUpdDate data = (PwdUpdDate) q.getSingleResult();
+					
+				Date dtUpdPwd = new Date(data.getData().getTime());
+				Calendar calUpdPwd = Calendar.getInstance();
+				calUpdPwd.setTime(dtUpdPwd);
+				calUpdPwd.add(Calendar.DAY_OF_YEAR, numGiorni);
+				Calendar calOggi = Calendar.getInstance();
+				calOggi.set(Calendar.HOUR_OF_DAY, 0);
+				calOggi.set(Calendar.MINUTE, 0);
+				calOggi.set(Calendar.SECOND, 0);
+				calOggi.set(Calendar.MILLISECOND, 0);
+				pwdValida = new Boolean(calOggi.getTime().getTime() <= calUpdPwd.getTime().getTime());
+			
+		} catch (Throwable t) {
+			throw new LoginServiceException(t);
+		}
+		
+		return pwdValida;
+
+	}
+	
+	public List getEnte(String username) {
+		List<String> result = new ArrayList<String>();
+		
+		try {
+			Query q = manager.createNamedQuery("Login.getEnte");
+			q.setParameter("username", username);
+			List<PermEnte> tmp = q.getResultList();
+			if (tmp != null) {
+				for (int i=0; i < tmp.size(); i++) {
+					PermEnte ep = tmp.get(i);
+					if(ep != null) {
+						result.add(ep.getEnte());	
+					}
+				}
+			}
+		}
+		catch(Throwable t) {
+			throw new LoginServiceException(t);
+		}
+		
+		return result;
+	}
+	
+	public List<AmGroup> getGruppi(String username, String ente) {
+		
+		try {
+			Query q = manager.createNamedQuery("Login.getGruppi");
+			q.setParameter("username", username);
+			q.setParameter("ente", ente);
+			return q.getResultList();
+		}
+		catch(Throwable t) {
+			throw new LoginServiceException(t);
+		}
+	}
+
+
+}

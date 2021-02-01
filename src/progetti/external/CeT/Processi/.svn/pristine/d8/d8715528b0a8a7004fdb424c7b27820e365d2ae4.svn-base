@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jst.server.core.container/org.jboss.ide.eclipse.as.core.server.runtime.runtimeTarget/JBoss 5.1 Runtime"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/webredutils"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/Indice_Data_Model"/>
+	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
+		<attributes>
+			<attribute name="owner.project.facets" value="jst.java"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/REGeneric/lib/commons-beanutils.jar"/>
+	<classpathentry kind="lib" path="/REGeneric/lib/commons-codec.jar"/>
+	<classpathentry kind="lib" path="/REGeneric/lib/commons-dbutils-1.1.jar"/>
+	<classpathentry kind="lib" path="/REGeneric/lib/jdom-1.0.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/REGeneric"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/REProcess"/>
+	<classpathentry kind="lib" path="/REProcess/lib/simmetrics.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/CT_Config_Data_Model"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

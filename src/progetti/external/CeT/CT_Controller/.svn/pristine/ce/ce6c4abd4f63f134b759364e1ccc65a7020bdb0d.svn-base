@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<application xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:application="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/application_5.xsd" id="Application_ID" version="5">
+  <display-name>Controller</display-name>
+  <module>
+    <web>
+      <web-uri>CT_Controller_Listener.war</web-uri>
+      <context-root>CT_Controller_Listener</context-root>
+    </web>
+  </module>
+  <module>
+    <web>
+      <web-uri>CT_Controller_WEB.war</web-uri>
+      <context-root>Controller</context-root>
+    </web>
+  </module>
+  <module>
+    <ejb>CT_Controller_EJB.jar</ejb>
+  </module>
+  <module>
+    <java>serializer-2.7.1.jar</java>
+  </module>
+  <module>
+    <java>xalan-2.7.1.jar</java>
+  </module>
+</application>

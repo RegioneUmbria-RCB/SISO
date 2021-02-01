@@ -1,0 +1,57 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+     	xmlns:h="http://java.sun.com/jsf/html"
+		xmlns:f="http://java.sun.com/jsf/core"
+		xmlns:ui="http://java.sun.com/jsf/facelets"
+		xmlns:p="http://primefaces.org/ui"
+	  	xmlns:composite="http://java.sun.com/jsf/composite"
+	  	xmlns:webredcs="http://java.sun.com/jsf/composite/webredcs"
+	  	xmlns:webred="http://java.sun.com/jsf/composite/webred">
+
+<p:panelGrid id="erogazioni_picklist_panel" columns="1" style="width:100%"
+				widgetVar="wv_erogazioni_picklist_panel"
+				rendered="#{cc.attrs.iPai.onUpdateErogazioni}">
+				<f:facet name="header">
+					<p:outputLabel value="Associazione di altre erogazioni al PAI" />
+				</f:facet>
+				<f:facet name="footer">
+					<h:panelGroup>
+						<p:commandButton value="conferma"
+							process="erogazioni_picklist_panel" 
+							update="@([id$=paiTabViewContainer])"  
+							action="#{cc.attrs.iPai.setOnUpdateErogazioni(false)}"  />
+						<p:commandButton value="annulla" 
+							process="@this" 
+							update="erogazioni_picklist_panel:@parent"
+							action="#{cc.attrs.iPai.setOnUpdateErogazioni(false)}" />
+					</h:panelGroup>
+				</f:facet>
+				
+				<p:pickList id="erogazioni_picklist" style="width:100%" 
+					value="#{cc.attrs.iPai.picklistErogazioni}" var="v_erogazione"
+					itemLabel="#{v_erogazione.labelConcatAll}"
+					itemValue="#{v_erogazione}" showSourceFilter="true"
+					showTargetFilter="false" filterMatchMode="contains"
+					converterMessage="Errore di conversione"
+					converter="#{cc.attrs.iPai.picklistErogazioniConverter}"
+					showCheckbox="true">
+					<f:facet name="sourceCaption">Disponibili</f:facet>
+					<f:facet name="targetCaption">Collegati al progetto PAI</f:facet>
+					    <p:column headerText="Data ultima erog" style="width:10%">
+							<h:outputText value="#{v_erogazione.master.dataUltimaErogazione}" >
+							    <f:convertDateTime pattern="dd/MM/yyyy"/>
+							</h:outputText>
+						</p:column>
+					    <p:column headerText="Tipo Intervento" style="width:40%">
+							<h:outputText value="#{v_erogazione.master.tipoIntervento.descrizione}" />
+						</p:column>
+						<p:column headerText="Tipo Intervento Custom" style="width:30%">
+							<h:outputText value="#{v_erogazione.master.tipoInterventoCustom}" />
+						</p:column>
+						<p:column headerText="Stato Ultima Erog." style="width:20%">
+							<h:outputText value="#{v_erogazione.master.statoUltimaErogazione}" />
+						</p:column>
+				</p:pickList>
+			</p:panelGrid>
+	  	
+</html>

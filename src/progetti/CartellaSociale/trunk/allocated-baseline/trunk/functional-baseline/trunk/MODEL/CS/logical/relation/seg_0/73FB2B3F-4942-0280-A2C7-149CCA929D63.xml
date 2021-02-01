@@ -1,0 +1,22 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Relation class="oracle.dbtools.crest.model.design.logical.Relation" name="FK_ITER_STEP_CASO" directorySegmentName="seg_0" id="73FB2B3F-4942-0280-A2C7-149CCA929D63">
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:18 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>9F5AB82A-6843-08A1-AAD5-54921DAE1217</importedID>
+<engineerTo>
+<item key="2B43EB65-62DA-EC53-86CF-E94D657D3AAF" value="true"/>
+<item key="36B1C6E8-6FD2-1EF6-8F4A-4E5B3D846A78" value="true"/>
+</engineerTo>
+<sourcePk>5A650E29-D7E4-8C6A-D91C-603040D36CC7</sourcePk>
+<dominantRole>61FF00E8-8CB3-A1B0-A642-ACAA92ABCAAC</dominantRole>
+<identifying>false</identifying>
+<optionalSource>true</optionalSource>
+<optionalTarget>false</optionalTarget>
+<sourceCardinality>1</sourceCardinality>
+<sourceEntity>61FF00E8-8CB3-A1B0-A642-ACAA92ABCAAC</sourceEntity>
+<targetCardinalityString>1</targetCardinalityString>
+<targetEntity>2F52DF94-A2D0-974B-EA07-71C9381B5523</targetEntity>
+<transferable>true</transferable>
+<deleteRule>NO ACTION</deleteRule>
+</Relation>

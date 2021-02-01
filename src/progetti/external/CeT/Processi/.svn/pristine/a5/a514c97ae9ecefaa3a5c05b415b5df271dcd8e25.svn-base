@@ -1,0 +1,15 @@
+#--------------------------------------------------------------
+# File di configurazione in cui sono indicato i valori dei soli
+# parametri di contesto della catena jelly da passare alla 
+# regola 
+#------------------------------------------------------------
+# Numero di parametri previsti in input
+rengine.jchain.in.nof=2
+#------------------------------------------------------------
+# Le coppie chiavi/valore hanno come key lo stesso nome 
+# indicato nello script jelly xml
+#------------------------------------------------------------
+rengine.jchain.in.1.key=QUERYSQL_1
+rengine.jchain.in.1.value=select MATRMATR, TO_CHAR(MATR_PERSNIND1) ID_ORIG_D_PERSONA1, TO_CHAR(matr_persnind2) ID_ORIG_D_PERSONA2, MATRDATA data_unione, lpad(matr_ccomprov,3, '0') || lpad(matr_ccomcodi,3, '0') ID_ORIG_D_COMUNE, lpad(matr_ccomprov,3, '0') ID_ORIG_D_PROVINCIA,ma.CARONTE_DATA_INIZIO_VAL DT_EXP_DATO from ds_d_matrimoni_1_0 ma WHERE CARONTE_FLAG_ELABORATO =0
+rengine.jchain.in.2.key=RSITRSCRIPT_1
+rengine.jchain.in.2.value=<RsIterator> <key table="ds_d_matrimoni_1_0"> <column name="MATRMATR"/> <column name="DT_EXP_DATO"/> </key> <commands> <command name="it.webred.rulengine.brick.loadDwh.base.LoadSitDUnione" livelloAnomalie="1"> <param id="field" value="ID_ORIG_D_PERSONA1" dest="ID_ORIG" type="java.lang.String"/> <param id="const" value="1" dest="FK_ENTE_SORGENTE" type="java.lang.Integer"/> <param id="const" value="" dest="GENER_UNIONE" type="java.lang.String"/> <param id="field" value="DATA_UNIONE" dest="DATA_UNIONE" type="java.sql.Timestamp"/> <param id="field" value="ID_ORIG_D_COMUNE" dest="ID_ORIG_D_COMUNE" type="java.lang.String"/> <param id="field" value="ID_ORIG_D_PROVINCIA" dest="ID_ORIG_D_PROVINCIA" type="java.lang.String"/> <param id="field" value="ID_ORIG_D_PERSONA1" dest="ID_ORIG_D_PERSONA1" type="java.lang.String"/> <param id="field" value="ID_ORIG_D_PERSONA2" dest="ID_ORIG_D_PERSONA2" type="java.lang.String"/> <param id="field" value="DT_EXP_DATO" dest="DT_EXP_DATO" type="java.sql.Timestamp"/> <param id="const" value="" dest="DT_INI_VAL_DATO" type="java.sql.Timestamp"/> <param id="const" value="" dest="DT_FINE_VAL_DATO" type="java.sql.Timestamp"/> <param id="const" value="0" dest="FLAG_DT_VAL_DATO" type="java.lang.Integer"/> </command> <command name="it.webred.rulengine.brick.core.EseguiSql"> <param id="const" dest="SQL" type="java.lang.String"> <![CDATA[ update ds_d_matrimoni_1_0 SET CARONTE_FLAG_ELABORATO = 1 WHERE MATRMATR=? AND CARONTE_DATA_INIZIO_VAL=? ]]> </param> <param id="const" dest="PARAMETRI" type="it.webred.rulengine.type.ComplexParam"> <![CDATA[ <complexParam> <param name="param1"> [[MATRMATR]] </param> <param name="param2"> [[DT_EXP_DATO]] </param> </complexParam> ]]> </param> </command> </commands> </RsIterator>

@@ -1,0 +1,18 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<FKIndexAssociation class="oracle.dbtools.crest.model.design.relational.FKIndexAssociation" directorySegmentName="seg_0" id="E228AE25-6390-45B7-38A9-D38E5747B4EB" containerWithKeyObject="486C6E6A-021E-1BFB-C949-B88FC43D3A85" localFKIndex="575E41B4-44DB-C2B5-E7B6-9EF46B91A0C4" name="CS_CFG_INTESEGSTATO_STATO_FK">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>CS_SISO</sourceObjSchema>
+<sourceObjName>CS_CFG_INTESEGSTATO_STATO_FK</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:19 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>96B6D646-085A-D49C-913B-43749BD8D050</importedID>
+<deleteRule>NO ACTION</deleteRule>
+<referredTableID>62620603-C0E9-E6A0-1CD8-11A17C17131D</referredTableID>
+<keyObject>E8AB170E-B7B0-0A70-75A3-0FD4F1227887</keyObject>
+<referredKeyID>E8AB170E-B7B0-0A70-75A3-0FD4F1227887</referredKeyID>
+<mandatory>true</mandatory>
+<transferable>true</transferable>
+<rely>false</rely>
+<columnDependencyConstraintGenerateInDDL>false</columnDependencyConstraintGenerateInDDL>
+</FKIndexAssociation>

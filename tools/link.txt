@@ -1,0 +1,7 @@
+
+lan
+http://cvs.webred-private.it:3690/svn/webred-lab/tools-IDE
+
+internet
+http://gitweb.pa.umbria.it:8181/svn/webred-lab/tools-IDE
+

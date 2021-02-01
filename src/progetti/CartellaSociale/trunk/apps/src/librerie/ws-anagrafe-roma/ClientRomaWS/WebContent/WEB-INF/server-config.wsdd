@@ -1,0 +1,115 @@
+<ns1:deployment xmlns="http://xml.apache.org/axis/wsdd/" xmlns:java="http://xml.apache.org/axis/wsdd/providers/java" xmlns:ns1="http://xml.apache.org/axis/wsdd/">
+ <ns1:globalConfiguration>
+  <ns1:parameter name="sendMultiRefs" value="true"/>
+  <ns1:parameter name="disablePrettyXML" value="true"/>
+  <ns1:parameter name="adminPassword" value="admin"/>
+  <ns1:parameter name="attachments.Directory" value="C:\progetti\SISO\apache-tomcat-7.0.8\webapps\ClientRomaWS\WEB-INF\attachments"/>
+  <ns1:parameter name="dotNetSoapEncFix" value="true"/>
+  <ns1:parameter name="enableNamespacePrefixOptimization" value="false"/>
+  <ns1:parameter name="sendXMLDeclaration" value="true"/>
+  <ns1:parameter name="sendXsiTypes" value="true"/>
+  <ns1:parameter name="attachments.implementation" value="org.apache.axis.attachments.AttachmentsImpl"/>
+  <ns1:requestFlow>
+   <ns1:handler type="java:org.apache.axis.handlers.JWSHandler">
+    <ns1:parameter name="scope" value="session"/>
+   </ns1:handler>
+   <ns1:handler type="java:org.apache.axis.handlers.JWSHandler">
+    <ns1:parameter name="scope" value="request"/>
+    <ns1:parameter name="extension" value=".jwr"/>
+   </ns1:handler>
+  </ns1:requestFlow>
+ </ns1:globalConfiguration>
+ <ns1:handler name="URLMapper" type="java:org.apache.axis.handlers.http.URLMapper"/>
+ <ns1:handler name="LocalResponder" type="java:org.apache.axis.transport.local.LocalResponder"/>
+ <ns1:handler name="Authenticate" type="java:org.apache.axis.handlers.SimpleAuthenticationHandler"/>
+ <ns1:service name="ClientAnagrafeRoma" provider="java:RPC" style="wrapped" use="literal">
+  <ns3:operation name="ricercaPerCodiceIndividuale" qname="ns1:ricercaPerCodiceIndividuale" returnQName="ns1:ricercaPerCodiceIndividualeReturn" returnType="ns2:RicercaResult" soapAction="" xmlns:ns1="http://test.servizi.comune.roma.it" xmlns:ns2="http://dto.servizi.comune.roma.it" xmlns:ns3="http://xml.apache.org/axis/wsdd/">
+   <ns3:parameter qname="ns1:chiaveCifratura" type="xsd:string" xmlns:xsd="http://www.w3.org/2001/XMLSchema"/>
+   <ns3:parameter qname="ns1:wsURL" type="xsd:string" xmlns:xsd="http://www.w3.org/2001/XMLSchema"/>
+   <ns3:parameter qname="ns1:codiceIndividuale" type="xsd:string" xmlns:xsd="http://www.w3.org/2001/XMLSchema"/>
+  </ns3:operation>
+  <ns1:operation name="eseguiRicercaStatoFamigliaConv" qname="ns3:eseguiRicercaStatoFamigliaConv" returnQName="ns3:eseguiRicercaStatoFamigliaConvReturn" returnType="ns4:RicercaResult" soapAction="" xmlns:ns3="http://test.servizi.comune.roma.it" xmlns:ns4="http://dto.servizi.comune.roma.it">
+   <ns1:parameter qname="ns3:chiaveCifratura" type="xsd:string" xmlns:xsd="http://www.w3.org/2001/XMLSchema"/>
+   <ns1:parameter qname="ns3:wsURL" type="xsd:string" xmlns:xsd="http://www.w3.org/2001/XMLSchema"/>
+   <ns1:parameter qname="ns3:codiceIndividuale" type="xsd:string" xmlns:xsd="http://www.w3.org/2001/XMLSchema"/>
+   <ns1:parameter qname="ns3:codiceFiscale" type="xsd:string" xmlns:xsd="http://www.w3.org/2001/XMLSchema"/>
+  </ns1:operation>
+  <ns1:operation name="verificaDatiAnagrafici" qname="ns5:verificaDatiAnagrafici" returnQName="ns5:verificaDatiAnagraficiReturn" returnType="ns6:RicercaResult" soapAction="" xmlns:ns5="http://test.servizi.comune.roma.it" xmlns:ns6="http://dto.servizi.comune.roma.it">
+   <ns1:parameter qname="ns5:chiaveCifratura" type="xsd:string" xmlns:xsd="http://www.w3.org/2001/XMLSchema"/>
+   <ns1:parameter qname="ns5:URL" type="xsd:string" xmlns:xsd="http://www.w3.org/2001/XMLSchema"/>
+   <ns1:parameter qname="ns5:cognome" type="xsd:string" xmlns:xsd="http://www.w3.org/2001/XMLSchema"/>
+   <ns1:parameter qname="ns5:nome" type="xsd:string" xmlns:xsd="http://www.w3.org/2001/XMLSchema"/>
+   <ns1:parameter qname="ns5:sesso" type="xsd:string" xmlns:xsd="http://www.w3.org/2001/XMLSchema"/>
+   <ns1:parameter qname="ns5:annoNascita" type="xsd:string" xmlns:xsd="http://www.w3.org/2001/XMLSchema"/>
+   <ns1:parameter qname="ns5:meseNascita" type="xsd:string" xmlns:xsd="http://www.w3.org/2001/XMLSchema"/>
+   <ns1:parameter qname="ns5:giornoNascita" type="xsd:string" xmlns:xsd="http://www.w3.org/2001/XMLSchema"/>
+   <ns1:parameter qname="ns5:codiceFiscale" type="xsd:string" xmlns:xsd="http://www.w3.org/2001/XMLSchema"/>
+  </ns1:operation>
+  <ns1:operation name="verificaDatiAnagraficiCompleta" qname="ns7:verificaDatiAnagraficiCompleta" returnQName="ns7:verificaDatiAnagraficiCompletaReturn" returnType="ns8:RicercaResult" soapAction="" xmlns:ns7="http://test.servizi.comune.roma.it" xmlns:ns8="http://dto.servizi.comune.roma.it">
+   <ns1:parameter qname="ns7:chiaveCifratura" type="xsd:string" xmlns:xsd="http://www.w3.org/2001/XMLSchema"/>
+   <ns1:parameter qname="ns7:URL" type="xsd:string" xmlns:xsd="http://www.w3.org/2001/XMLSchema"/>
+   <ns1:parameter qname="ns7:cognome" type="xsd:string" xmlns:xsd="http://www.w3.org/2001/XMLSchema"/>
+   <ns1:parameter qname="ns7:nome" type="xsd:string" xmlns:xsd="http://www.w3.org/2001/XMLSchema"/>
+   <ns1:parameter qname="ns7:sesso" type="xsd:string" xmlns:xsd="http://www.w3.org/2001/XMLSchema"/>
+   <ns1:parameter qname="ns7:annoNascita" type="xsd:string" xmlns:xsd="http://www.w3.org/2001/XMLSchema"/>
+   <ns1:parameter qname="ns7:meseNascita" type="xsd:string" xmlns:xsd="http://www.w3.org/2001/XMLSchema"/>
+   <ns1:parameter qname="ns7:giornoNascita" type="xsd:string" xmlns:xsd="http://www.w3.org/2001/XMLSchema"/>
+   <ns1:parameter qname="ns7:codiceFiscale" type="xsd:string" xmlns:xsd="http://www.w3.org/2001/XMLSchema"/>
+  </ns1:operation>
+  <ns1:operation name="eseguiRicercaAnagraficaEstesa" qname="ns9:eseguiRicercaAnagraficaEstesa" returnQName="ns9:eseguiRicercaAnagraficaEstesaReturn" returnType="ns10:RicercaResult" soapAction="" xmlns:ns10="http://dto.servizi.comune.roma.it" xmlns:ns9="http://test.servizi.comune.roma.it">
+   <ns1:parameter qname="ns9:chiaveCifratura" type="xsd:string" xmlns:xsd="http://www.w3.org/2001/XMLSchema"/>
+   <ns1:parameter qname="ns9:wsURL" type="xsd:string" xmlns:xsd="http://www.w3.org/2001/XMLSchema"/>
+   <ns1:parameter qname="ns9:cognome" type="xsd:string" xmlns:xsd="http://www.w3.org/2001/XMLSchema"/>
+   <ns1:parameter qname="ns9:nome" type="xsd:string" xmlns:xsd="http://www.w3.org/2001/XMLSchema"/>
+   <ns1:parameter qname="ns9:sesso" type="xsd:string" xmlns:xsd="http://www.w3.org/2001/XMLSchema"/>
+   <ns1:parameter qname="ns9:annoIniziale" type="xsd:string" xmlns:xsd="http://www.w3.org/2001/XMLSchema"/>
+   <ns1:parameter qname="ns9:annoFinale" type="xsd:string" xmlns:xsd="http://www.w3.org/2001/XMLSchema"/>
+  </ns1:operation>
+  <ns1:parameter name="allowedMethods" value="verificaDatiAnagrafici ricercaPerCodiceIndividuale verificaDatiAnagraficiCompleta eseguiRicercaAnagraficaEstesa eseguiRicercaStatoFamigliaConv"/>
+  <ns1:parameter name="typeMappingVersion" value="1.2"/>
+  <ns1:parameter name="wsdlPortType" value="ClientAnagrafeRoma"/>
+  <ns1:parameter name="className" value="it.roma.comune.servizi.test.ClientAnagrafeRoma"/>
+  <ns1:parameter name="wsdlServicePort" value="ClientAnagrafeRoma"/>
+  <ns1:parameter name="schemaQualified" value="http://dto.servizi.comune.roma.it,http://test.servizi.comune.roma.it"/>
+  <ns1:parameter name="wsdlTargetNamespace" value="http://test.servizi.comune.roma.it"/>
+  <ns1:parameter name="wsdlServiceElement" value="ClientAnagrafeRomaService"/>
+  <ns1:typeMapping deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle="" qname="ns11:DatiAnagrafeRoma" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" type="java:it.roma.comune.servizi.dto.DatiAnagrafeRoma" xmlns:ns11="http://dto.servizi.comune.roma.it"/>
+  <ns1:typeMapping deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle="" qname="ns12:Persona" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" type="java:it.roma.comune.servizi.dto.Persona" xmlns:ns12="http://dto.servizi.comune.roma.it"/>
+  <ns1:typeMapping deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle="" qname="ns13:DatiIndirizzo" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" type="java:it.roma.comune.servizi.dto.DatiIndirizzo" xmlns:ns13="http://dto.servizi.comune.roma.it"/>
+  <ns1:typeMapping deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle="" qname="ns14:RicercaResult" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" type="java:it.roma.comune.servizi.dto.RicercaResult" xmlns:ns14="http://dto.servizi.comune.roma.it"/>
+  <ns1:typeMapping deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle="" qname="ns15:Componente" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" type="java:it.roma.comune.servizi.dto.Componente" xmlns:ns15="http://dto.servizi.comune.roma.it"/>
+  <ns1:typeMapping deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle="" qname="ns16:Famiglia" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" type="java:it.roma.comune.servizi.dto.Famiglia" xmlns:ns16="http://dto.servizi.comune.roma.it"/>
+  <ns1:typeMapping deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle="" qname="ns17:Genitori" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" type="java:it.roma.comune.servizi.dto.Genitori" xmlns:ns17="http://dto.servizi.comune.roma.it"/>
+  <ns1:typeMapping deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle="" qname="ns18:Nascita" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" type="java:it.roma.comune.servizi.dto.Nascita" xmlns:ns18="http://dto.servizi.comune.roma.it"/>
+  <ns1:typeMapping deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle="" qname="ns19:PersonaCompleta" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" type="java:it.roma.comune.servizi.dto.PersonaCompleta" xmlns:ns19="http://dto.servizi.comune.roma.it"/>
+  <ns1:arrayMapping innerType="ns21:Persona" languageSpecificType="java:it.roma.comune.servizi.dto.Persona[]" qname="ns20:ArrayOf_tns1_Persona" xmlns:ns20="http://test.servizi.comune.roma.it" xmlns:ns21="http://dto.servizi.comune.roma.it"/>
+  <ns1:arrayMapping innerType="ns23:Componente" languageSpecificType="java:it.roma.comune.servizi.dto.Componente[]" qname="ns22:ArrayOf_tns1_Componente" xmlns:ns22="http://test.servizi.comune.roma.it" xmlns:ns23="http://dto.servizi.comune.roma.it"/>
+ </ns1:service>
+ <ns1:service name="AdminService" provider="java:MSG">
+  <ns1:parameter name="allowedMethods" value="AdminService"/>
+  <ns1:parameter name="enableRemoteAdmin" value="false"/>
+  <ns1:parameter name="className" value="org.apache.axis.utils.Admin"/>
+  <ns1:namespace>http://xml.apache.org/axis/wsdd/</ns1:namespace>
+ </ns1:service>
+ <ns1:service name="Version" provider="java:RPC">
+  <ns1:parameter name="allowedMethods" value="getVersion"/>
+  <ns1:parameter name="className" value="org.apache.axis.Version"/>
+ </ns1:service>
+ <ns1:transport name="http">
+  <ns1:requestFlow>
+   <ns1:handler type="URLMapper"/>
+   <ns1:handler type="java:org.apache.axis.handlers.http.HTTPAuthHandler"/>
+  </ns1:requestFlow>
+  <ns1:parameter name="qs:list" value="org.apache.axis.transport.http.QSListHandler"/>
+  <ns1:parameter name="qs:wsdl" value="org.apache.axis.transport.http.QSWSDLHandler"/>
+  <ns1:parameter name="qs.list" value="org.apache.axis.transport.http.QSListHandler"/>
+  <ns1:parameter name="qs.method" value="org.apache.axis.transport.http.QSMethodHandler"/>
+  <ns1:parameter name="qs:method" value="org.apache.axis.transport.http.QSMethodHandler"/>
+  <ns1:parameter name="qs.wsdl" value="org.apache.axis.transport.http.QSWSDLHandler"/>
+ </ns1:transport>
+ <ns1:transport name="local">
+  <ns1:responseFlow>
+   <ns1:handler type="LocalResponder"/>
+  </ns1:responseFlow>
+ </ns1:transport>
+</ns1:deployment>

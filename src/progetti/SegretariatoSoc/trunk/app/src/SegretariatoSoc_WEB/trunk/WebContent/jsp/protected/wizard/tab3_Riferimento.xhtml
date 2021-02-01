@@ -1,0 +1,237 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:webred="http://java.sun.com/jsf/composite/webred" 
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:webredcs="http://java.sun.com/jsf/composite/webredcs">
+	
+<p:panel id="pnlRiferimento">
+<p:tabView id="tabRiferimenti"   orientation="left">
+
+ <p:tab id="tabRiferimento1" title="#{nuovaSchedaWizard.titoloTabRiferimento(1)}" >   
+ <h:panelGrid columns="2" columnClasses="label, value" styleClass="grid">
+	
+			<p:selectBooleanCheckbox value="#{nuovaSchedaWizard.riferimento.comeSegnalante}">
+				<p:ajax update="dati_riferimento" listener="#{nuovaSchedaWizard.riferimentoComeSegnalanteChecked}" />
+			</p:selectBooleanCheckbox>
+			<h:outputText value="Come interlocutore " for="come_segnalante_riferimento" />
+		</h:panelGrid>
+	
+		<h:panelGrid id="dati_riferimento" columns="4" columnClasses="label, value" styleClass="grid">
+			<h:outputText value="Cognome " for="cognome_riferimento" />
+			<p:inputText label="Cognome" id="cognome_riferimento" style="text-transform: uppercase" disabled="#{nuovaSchedaWizard.riferimento.comeSegnalante}"
+				value="#{nuovaSchedaWizard.riferimento.cognome}" />
+	
+			<h:outputText value="Nome " for="nome_riferimento" />
+			<p:inputText label="Nome" id="nome_riferimento" style="text-transform: uppercase" disabled="#{nuovaSchedaWizard.riferimento.comeSegnalante}" value="#{nuovaSchedaWizard.riferimento.nome}" />
+			
+			<h:outputText value="Data di nascita " for="data_nascita_riferimento" />
+			<webred:pnlData id="data_nascita_riferimento" dataValue="#{nuovaSchedaWizard.riferimento.dataNascita}" disabled="#{nuovaSchedaWizard.riferimento.comeSegnalante}"
+								dataPattern="dd/MM/yyyy" dataPatternLabel="gg/mm/aaaa" yearRange="c-100:c+0" />
+						    
+			<h:outputText value="Luogo di nascita " for="citta_nascita_riferimento" />
+			<h:panelGrid colums="1">
+				<webred:pnlComuneNazione comuneNazioneManBean="#{nuovaSchedaWizard.riferimento.comuneNazioneNascitaMan}" disabled="#{nuovaSchedaWizard.riferimento.comeSegnalante}" extraLabelRequired="false" />
+			</h:panelGrid>
+			
+			<h:outputText value="Stato civile " for="stato_civile_riferimento" />
+			<p:selectOneMenu label="Stato civile" id="stato_civile_riferimento" disabled="#{nuovaSchedaWizard.riferimento.comeSegnalante}" 
+								value="#{nuovaSchedaWizard.riferimento.codStatoCivile}" effect="fold" editable="false">
+				<f:selectItem itemLabel="- seleziona -" itemValue="" />
+				<f:selectItems value="#{nuovaSchedaWizard.statiCiviliSelectItem}" />
+			</p:selectOneMenu>
+			
+			<h:outputText value="Sesso " for="sesso_riferimento" />
+			<webred:pnlSesso value="#{nuovaSchedaWizard.riferimento.datiSesso}" disabled="#{nuovaSchedaWizard.riferimento.comeSegnalante}" />
+	
+			<h:outputText value="Telefono " for="telefono_riferimento" />
+			<p:inputText label="Telefono " id="telefono_riferimento" disabled="#{nuovaSchedaWizard.riferimento.comeSegnalante}" value="#{nuovaSchedaWizard.riferimento.telefono}"/>
+			
+			<h:outputText value="Cellulare " for="cel_riferimento" />
+			<p:inputText label="Cellulare" id="cel_riferimento" disabled="#{nuovaSchedaWizard.riferimento.comeSegnalante}" value="#{nuovaSchedaWizard.riferimento.cellulare}"/>
+	
+			<h:outputText value="Email " for="email_riferimento" />
+			<p:inputText label="Email" id="email_riferimento" disabled="#{nuovaSchedaWizard.riferimento.comeSegnalante}" value="#{nuovaSchedaWizard.riferimento.email}" />
+	
+			<h:outputText value="Recapito " for="recapito_riferimento" />
+			<p:inputText label="Recapito" id="recapito_riferimento" disabled="#{nuovaSchedaWizard.riferimento.comeSegnalante}" value="#{nuovaSchedaWizard.riferimento.recapito}" />
+			
+			<h:outputText value="Relazione " for="parentela_riferimento" />
+			<p:selectOneMenu label="Relazione" id="parentela_riferimento" filter="true" filterMatchMode="contains" effect="fold" 
+			                 value="#{nuovaSchedaWizard.riferimento.codRelazione}" panelStyleClass="selectOneMenuGrouped"
+			                 disabled="#{nuovaSchedaWizard.riferimento.comeSegnalante}">
+				<f:selectItem noSelectionOption="true" itemLabel="- seleziona -" />
+				<f:selectItems value="#{nuovaSchedaWizard.relazioni}" />
+				<p:ajax event="change" update="chkAffidatario" listener="#{nuovaSchedaWizard.onChangeTipoRiferimento}"/> 
+			</p:selectOneMenu>
+	        <p:selectBooleanCheckbox id="chkAffidatario" itemLabel="Affidatario"
+					value="#{nuovaSchedaWizard.riferimento.affidatario}">                 
+			</p:selectBooleanCheckbox>
+			<p:spacer width="5px"/>
+			
+			<p:selectBooleanCheckbox label="Eventuali problemi" id="problemi_riferimento" value="#{nuovaSchedaWizard.riferimento.problemi}" itemLabel="Eventuali problemi">
+				<p:ajax update="quali_problemi_riferimento" listener="#{nuovaSchedaWizard.setProblemiRiferimentoChanged}" />
+			</p:selectBooleanCheckbox>
+			
+			<h:outputText value="Specificare quali" for="quali_problemi_riferimento" />
+			<p:inputText label="Specificare quali" id="quali_problemi_riferimento" disabled="#{nuovaSchedaWizard.specificareProblemiDisabled}" value="#{nuovaSchedaWizard.riferimento.qualiProblemi}" />
+	
+		</h:panelGrid>
+		<p:commandButton value="Pulisci campi" icon="ui-icon-refresh" action="#{nuovaSchedaWizard.pulisciRiferimento(1)}" process="@this" update=":#{p:component('pnlRiferimento')}" />
+	</p:tab>
+    <p:tab id="tabRiferimento2" title="#{nuovaSchedaWizard.titoloTabRiferimento(2)}" >   
+<!--  <h:panelGrid columns="2" columnClasses="label, value" styleClass="grid"> -->
+	
+<!-- 			<p:selectBooleanCheckbox value="#{nuovaSchedaWizard.riferimento2.comeSegnalante}"> -->
+<!-- 				<p:ajax update="dati_riferimento2" listener="#{nuovaSchedaWizard.riferimentoComeSegnalanteChecked}" /> -->
+<!-- 			</p:selectBooleanCheckbox> -->
+<!-- 			<h:outputText value="Come interlocutore " for="come_segnalante_riferimento2" /> -->
+<!-- 		</h:panelGrid> -->
+	
+		<h:panelGrid id="dati_riferimento2" columns="4" columnClasses="label, value" styleClass="grid">
+			<h:outputText value="Cognome " for="cognome_riferimento2" />
+			<p:inputText label="Cognome" id="cognome_riferimento2" style="text-transform: uppercase" disabled="#{nuovaSchedaWizard.riferimento2.comeSegnalante}"
+				value="#{nuovaSchedaWizard.riferimento2.cognome}" />
+	
+			<h:outputText value="Nome " for="nome_riferimento2" />
+			<p:inputText label="Nome" id="nome_riferimento2" style="text-transform: uppercase" disabled="#{nuovaSchedaWizard.riferimento2.comeSegnalante}" value="#{nuovaSchedaWizard.riferimento2.nome}" />
+			
+			<h:outputText value="Data di nascita " for="data_nascita_riferimento2" />
+			<webred:pnlData id="data_nascita_riferimento2" dataValue="#{nuovaSchedaWizard.riferimento2.dataNascita}" disabled="#{nuovaSchedaWizard.riferimento2.comeSegnalante}"
+								dataPattern="dd/MM/yyyy" dataPatternLabel="gg/mm/aaaa" yearRange="c-100:c+0" />
+						    
+			<h:outputText value="Luogo di nascita " for="citta_nascita_riferimento2" />
+			<h:panelGrid colums="1">
+				<webred:pnlComuneNazione comuneNazioneManBean="#{nuovaSchedaWizard.riferimento2.comuneNazioneNascitaMan}" disabled="#{nuovaSchedaWizard.riferimento2.comeSegnalante}" extraLabelRequired="false" />
+			</h:panelGrid>
+			
+			<h:outputText value="Stato civile " for="stato_civile_riferimento2" />
+			<p:selectOneMenu label="Stato civile" id="stato_civile_riferimento2" disabled="#{nuovaSchedaWizard.riferimento2.comeSegnalante}" 
+								value="#{nuovaSchedaWizard.riferimento2.codStatoCivile}" effect="fold" editable="false">
+				<f:selectItem itemLabel="- seleziona -" itemValue="" />
+				<f:selectItems value="#{nuovaSchedaWizard.statiCiviliSelectItem}" />
+			</p:selectOneMenu>
+			
+			<h:outputText value="Sesso " for="sesso_riferimento2" />
+			<webred:pnlSesso value="#{nuovaSchedaWizard.riferimento2.datiSesso}" disabled="#{nuovaSchedaWizard.riferimento2.comeSegnalante}" />
+	
+			<h:outputText value="Telefono " for="telefono_riferimento2" />
+			<p:inputText label="Telefono " id="telefono_riferimento2" disabled="#{nuovaSchedaWizard.riferimento2.comeSegnalante}" value="#{nuovaSchedaWizard.riferimento2.telefono}"/>
+			
+			<h:outputText value="Cellulare " for="cel_riferimento2" />
+			<p:inputText label="Cellulare" id="cel_riferimento2" disabled="#{nuovaSchedaWizard.riferimento2.comeSegnalante}" value="#{nuovaSchedaWizard.riferimento2.cellulare}"/>
+	
+			<h:outputText value="Email " for="email_riferimento2" />
+			<p:inputText label="Email" id="email_riferimento2" disabled="#{nuovaSchedaWizard.riferimento2.comeSegnalante}" value="#{nuovaSchedaWizard.riferimento2.email}" />
+	
+			<h:outputText value="Recapito " for="recapito_riferimento2" />
+			<p:inputText label="Recapito" id="recapito_riferimento2" disabled="#{nuovaSchedaWizard.riferimento3.comeSegnalante}" value="#{nuovaSchedaWizard.riferimento.recapito}" />
+			
+			<h:outputText value="Relazione " for="parentela_riferimento2" />
+			<p:selectOneMenu label="Relazione" id="parentela_riferimento2" filter="true" filterMatchMode="contains" effect="fold" 
+			                 value="#{nuovaSchedaWizard.riferimento2.codRelazione}" panelStyleClass="selectOneMenuGrouped"
+			                 disabled="#{nuovaSchedaWizard.riferimento2.comeSegnalante}">
+				<f:selectItem noSelectionOption="true" itemLabel="- seleziona -" />
+				<f:selectItems value="#{nuovaSchedaWizard.relazioni}" />
+				<p:ajax event="change" update="chkAffidatario2" listener="#{nuovaSchedaWizard.onChangeTipoRiferimento}"/> 
+			</p:selectOneMenu>
+	        <p:selectBooleanCheckbox id="chkAffidatario2" itemLabel="Affidatario"
+					value="#{nuovaSchedaWizard.riferimento2.affidatario}">                 
+			</p:selectBooleanCheckbox>
+			<p:spacer width="5px"/>
+			
+			<p:selectBooleanCheckbox label="Eventuali problemi" id="problemi_riferimento2" value="#{nuovaSchedaWizard.riferimento2.problemi}" itemLabel="Eventuali problemi">
+				<p:ajax update="quali_problemi_riferimento2" listener="#{nuovaSchedaWizard.setProblemiRiferimentoChanged}" />
+			</p:selectBooleanCheckbox>
+			
+			<h:outputText value="Specificare quali" for="quali_problemi_riferimento2" />
+			<p:inputText label="Specificare quali" id="quali_problemi_riferimento2" disabled="#{nuovaSchedaWizard.specificareProblemiDisabled}" value="#{nuovaSchedaWizard.riferimento2.qualiProblemi}" />
+	
+		</h:panelGrid>
+		<p:commandButton value="Pulisci campi" icon="ui-icon-refresh"  process="@this" action="#{nuovaSchedaWizard.pulisciRiferimento(2)}" update=":#{p:component('pnlRiferimento')}" />
+	</p:tab>
+	 <p:tab id="tabRiferimento3" title="#{nuovaSchedaWizard.titoloTabRiferimento(3)}" >   
+<!--     <h:panelGrid columns="2" columnClasses="label, value" styleClass="grid"> -->
+	
+<!-- 			<p:selectBooleanCheckbox value="#{nuovaSchedaWizard.riferimento3.comeSegnalante}"> -->
+<!-- 				<p:ajax update="dati_riferimento3" listener="#{nuovaSchedaWizard.riferimentoComeSegnalanteChecked}" /> -->
+<!-- 			</p:selectBooleanCheckbox> -->
+<!-- 			<h:outputText value="Come interlocutore " for="come_segnalante_riferimento3" /> -->
+<!-- 		</h:panelGrid> -->
+	
+		<h:panelGrid id="dati_riferimento3" columns="4" columnClasses="label, value" styleClass="grid">
+			<h:outputText value="Cognome " for="cognome_riferimento3" />
+			<p:inputText label="Cognome" id="cognome_riferimento3" style="text-transform: uppercase" disabled="#{nuovaSchedaWizard.riferimento3.comeSegnalante}"
+				value="#{nuovaSchedaWizard.riferimento3.cognome}" />
+	
+			<h:outputText value="Nome " for="nome_riferimento3" />
+			<p:inputText label="Nome" id="nome_riferimento3" style="text-transform: uppercase" disabled="#{nuovaSchedaWizard.riferimento3.comeSegnalante}" value="#{nuovaSchedaWizard.riferimento3.nome}" />
+			
+			<h:outputText value="Data di nascita " for="data_nascita_riferimento3" />
+			<webred:pnlData id="data_nascita_riferimento3" dataValue="#{nuovaSchedaWizard.riferimento2.dataNascita}" disabled="#{nuovaSchedaWizard.riferimento3.comeSegnalante}"
+								dataPattern="dd/MM/yyyy" dataPatternLabel="gg/mm/aaaa" yearRange="c-100:c+0" />
+						    
+			<h:outputText value="Luogo di nascita " for="citta_nascita_riferimento3" />
+			<h:panelGrid colums="1">
+				<webred:pnlComuneNazione comuneNazioneManBean="#{nuovaSchedaWizard.riferimento3.comuneNazioneNascitaMan}" disabled="#{nuovaSchedaWizard.riferimento3.comeSegnalante}" extraLabelRequired="false" />
+			</h:panelGrid>
+			
+			<h:outputText value="Stato civile " for="stato_civile_riferimento3" />
+			<p:selectOneMenu label="Stato civile" id="stato_civile_riferimento3" disabled="#{nuovaSchedaWizard.riferimento3.comeSegnalante}" 
+								value="#{nuovaSchedaWizard.riferimento3.codStatoCivile}" effect="fold" editable="false">
+				<f:selectItem itemLabel="- seleziona -" itemValue="" />
+				<f:selectItems value="#{nuovaSchedaWizard.statiCiviliSelectItem}" />
+			</p:selectOneMenu>
+			
+			<h:outputText value="Sesso " for="sesso_riferimento3" />
+			<webred:pnlSesso value="#{nuovaSchedaWizard.riferimento3.datiSesso}" disabled="#{nuovaSchedaWizard.riferimento3.comeSegnalante}" />
+	
+			<h:outputText value="Telefono " for="telefono_riferimento3" />
+			<p:inputText label="Telefono " id="telefono_riferimento3" disabled="#{nuovaSchedaWizard.riferimento3.comeSegnalante}" value="#{nuovaSchedaWizard.riferimento3.telefono}"/>
+			
+			<h:outputText value="Cellulare " for="cel_riferimento3" />
+			<p:inputText label="Cellulare" id="cel_riferimento3" disabled="#{nuovaSchedaWizard.riferimento3.comeSegnalante}" value="#{nuovaSchedaWizard.riferimento3.cellulare}"/>
+	
+			<h:outputText value="Email " for="email_riferimento3" />
+			<p:inputText label="Email" id="email_riferimento3" disabled="#{nuovaSchedaWizard.riferimento3.comeSegnalante}" value="#{nuovaSchedaWizard.riferimento3.email}" />
+	
+			<h:outputText value="Recapito " for="recapito_riferimento3" />
+			<p:inputText label="Recapito" id="recapito_riferimento3" disabled="#{nuovaSchedaWizard.riferimento3.comeSegnalante}" value="#{nuovaSchedaWizard.riferimento3.recapito}" />
+			
+			<h:outputText value="Relazione " for="parentela_riferimento3" />
+			<p:selectOneMenu label="Relazione" id="parentela_riferimento3" filter="true" filterMatchMode="contains" effect="fold" 
+			                 value="#{nuovaSchedaWizard.riferimento3.codRelazione}" panelStyleClass="selectOneMenuGrouped"
+			                 disabled="#{nuovaSchedaWizard.riferimento3.comeSegnalante}">
+				<f:selectItem noSelectionOption="true" itemLabel="- seleziona -" />
+				<f:selectItems value="#{nuovaSchedaWizard.relazioni}" />
+				<p:ajax event="change" update="chkAffidatario3" listener="#{nuovaSchedaWizard.onChangeTipoRiferimento}"/> 
+			</p:selectOneMenu>
+	        <p:selectBooleanCheckbox id="chkAffidatario3" itemLabel="Affidatario"
+					value="#{nuovaSchedaWizard.riferimento3.affidatario}">                 
+			</p:selectBooleanCheckbox>
+			<p:spacer width="5px"/>
+			
+			<p:selectBooleanCheckbox label="Eventuali problemi" id="problemi_riferimento3" value="#{nuovaSchedaWizard.riferimento3.problemi}" itemLabel="Eventuali problemi">
+				<p:ajax update="quali_problemi_riferimento3" listener="#{nuovaSchedaWizard.setProblemiRiferimentoChanged}" />
+			</p:selectBooleanCheckbox>
+			
+			<h:outputText value="Specificare quali" for="quali_problemi_riferimento3" />
+			<p:inputText label="Specificare quali" id="quali_problemi_riferimento3" disabled="#{nuovaSchedaWizard.specificareProblemiDisabled}" value="#{nuovaSchedaWizard.riferimento3.qualiProblemi}" />
+	
+		</h:panelGrid>
+		<p:commandButton value="Pulisci campi" icon="ui-icon-refresh" process="@this" action="#{nuovaSchedaWizard.pulisciRiferimento(3)}" update=":#{p:component('pnlRiferimento')}"  />
+	</p:tab>
+	</p:tabView>
+
+	<webred:pnlRequiredSalva
+		salvaAction="#{nuovaSchedaWizard.salvaTabRiferimento()}"
+		renderRecupero="#{nuovaSchedaWizard.abilitaLoadPrecedente}"
+		recuperoLastAction="#{nuovaSchedaWizard.valorizzaRiferimentoDaUltima()}"
+		panelToUpdate="pnlRiferimento"/>
+		
+</p:panel>
+</ui:composition>

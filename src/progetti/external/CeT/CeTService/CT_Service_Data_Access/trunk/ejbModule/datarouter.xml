@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:faces="http://www.springframework.org/schema/faces"
+	xmlns:webflow="http://www.springframework.org/schema/webflow-config"
+	xmlns:jee="http://www.springframework.org/schema/jee" xmlns:security="http://www.springframework.org/schema/security"
+	xsi:schemaLocation="
+        http://www.springframework.org/schema/webflow-config
+        http://www.springframework.org/schema/webflow-config/spring-webflow-config-2.0.xsd
+		http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+		http://www.springframework.org/schema/context 
+		http://www.springframework.org/schema/context/spring-context-2.5.xsd
+		http://www.springframework.org/schema/faces 
+		http://www.springframework.org/schema/faces/spring-faces-2.0.xsd
+		http://www.springframework.org/schema/webflow-config 
+		http://www.springframework.org/schema/webflow-config/spring-webflow-config-2.0.xsd
+		http://www.springframework.org/schema/jee 
+		http://www.springframework.org/schema/jee/spring-jee-2.5.xsd
+		http://www.springframework.org/schema/security 
+		http://www.springframework.org/schema/security/spring-security.xsd">
+
+
+	<bean id="ds_source_0" class="org.springframework.jndi.JndiObjectFactoryBean">
+		<property name="jndiName" value="java:/jdbc/Diogene_DS_0" />
+	</bean>
+	<bean id="ds_source_1" class="org.springframework.jndi.JndiObjectFactoryBean">
+		<property name="jndiName" value="java:/jdbc/Diogene_DS_1" />
+	</bean>
+	<bean id="ds_source_2" class="org.springframework.jndi.JndiObjectFactoryBean">
+		<property name="jndiName" value="java:/jdbc/Diogene_DS_2" />
+	</bean>
+	<bean id="ds_source_3" class="org.springframework.jndi.JndiObjectFactoryBean">
+		<property name="jndiName" value="java:/jdbc/Diogene_DS_3" />
+	</bean>
+	<bean id="ds_source_4" class="org.springframework.jndi.JndiObjectFactoryBean">
+		<property name="jndiName" value="java:/jdbc/Diogene_DS_4" />
+	</bean>
+	<bean id="ds_source_5" class="org.springframework.jndi.JndiObjectFactoryBean">
+		<property name="jndiName" value="java:/jdbc/Diogene_DS_5" />
+	</bean>
+	<bean id="ds_source_6" class="org.springframework.jndi.JndiObjectFactoryBean">
+		<property name="jndiName" value="java:/jdbc/Diogene_DS_6" />
+	</bean>
+	<bean id="ds_source_7" class="org.springframework.jndi.JndiObjectFactoryBean">
+		<property name="jndiName" value="java:/jdbc/Diogene_DS_7" />
+	</bean>
+	<bean id="ds_source_8" class="org.springframework.jndi.JndiObjectFactoryBean">
+		<property name="jndiName" value="java:/jdbc/Diogene_DS_8" />
+	</bean>
+	<bean id="ds_source_9" class="org.springframework.jndi.JndiObjectFactoryBean">
+		<property name="jndiName" value="java:/jdbc/Diogene_DS_9" />
+	</bean>
+	<bean id="ds_source_10" class="org.springframework.jndi.JndiObjectFactoryBean">
+		<property name="jndiName" value="java:/jdbc/Diogene_DS_10" />
+	</bean>
+	<bean id="ds_source_11" class="org.springframework.jndi.JndiObjectFactoryBean">
+		<property name="jndiName" value="java:/jdbc/Diogene_DS_11" />
+	</bean>
+	<bean id="ds_source_12" class="org.springframework.jndi.JndiObjectFactoryBean">
+		<property name="jndiName" value="java:/jdbc/Diogene_DS_12" />
+	</bean>
+	<bean id="ds_source_13" class="org.springframework.jndi.JndiObjectFactoryBean">
+		<property name="jndiName" value="java:/jdbc/Diogene_DS_13" />
+	</bean>
+	<bean id="ds_source_14" class="org.springframework.jndi.JndiObjectFactoryBean">
+		<property name="jndiName" value="java:/jdbc/Diogene_DS_14" />
+	</bean>
+	<bean id="ds_source_15" class="org.springframework.jndi.JndiObjectFactoryBean">
+		<property name="jndiName" value="java:/jdbc/Diogene_DS_15" />
+	</bean>
+	<bean id="ds_source_16" class="org.springframework.jndi.JndiObjectFactoryBean">
+		<property name="jndiName" value="java:/jdbc/Diogene_DS_16" />
+	</bean>
+	<bean id="ds_source_17" class="org.springframework.jndi.JndiObjectFactoryBean">
+		<property name="jndiName" value="java:/jdbc/Diogene_DS_17" />
+	</bean>
+	<bean id="ds_source_18" class="org.springframework.jndi.JndiObjectFactoryBean">
+		<property name="jndiName" value="java:/jdbc/Diogene_DS_18" />
+	</bean>
+	<bean id="ds_source_19" class="org.springframework.jndi.JndiObjectFactoryBean">
+		<property name="jndiName" value="java:/jdbc/Diogene_DS_19" />
+	</bean>
+	<bean id="ds_source_20" class="org.springframework.jndi.JndiObjectFactoryBean">
+		<property name="jndiName" value="java:/jdbc/Diogene_DS_20" />
+	</bean>
+	<bean id="ds_source_21" class="org.springframework.jndi.JndiObjectFactoryBean">
+		<property name="jndiName" value="java:/jdbc/Diogene_DS_21" />
+	</bean>
+	<bean id="ds_source_22" class="org.springframework.jndi.JndiObjectFactoryBean">
+		<property name="jndiName" value="java:/jdbc/Diogene_DS_22" />
+	</bean>
+	<bean id="ds_source_23" class="org.springframework.jndi.JndiObjectFactoryBean">
+		<property name="jndiName" value="java:/jdbc/Diogene_DS_23" />
+	</bean>
+	<bean id="ds_source_24" class="org.springframework.jndi.JndiObjectFactoryBean">
+		<property name="jndiName" value="java:/jdbc/Diogene_DS_24" />
+	</bean>
+	<bean id="ds_source_25" class="org.springframework.jndi.JndiObjectFactoryBean">
+		<property name="jndiName" value="java:/jdbc/Diogene_DS_25" />
+	</bean>
+	<bean id="ds_source_26" class="org.springframework.jndi.JndiObjectFactoryBean">
+		<property name="jndiName" value="java:/jdbc/Diogene_DS_26" />
+	</bean>
+	<bean id="ds_source_27" class="org.springframework.jndi.JndiObjectFactoryBean">
+		<property name="jndiName" value="java:/jdbc/Diogene_DS_27" />
+	</bean>
+	<bean id="ds_source_28" class="org.springframework.jndi.JndiObjectFactoryBean">
+		<property name="jndiName" value="java:/jdbc/Diogene_DS_28" />
+	</bean>
+	<bean id="ds_source_29" class="org.springframework.jndi.JndiObjectFactoryBean">
+		<property name="jndiName" value="java:/jdbc/Diogene_DS_29" />
+	</bean>
+	<bean id="ds_source_30" class="org.springframework.jndi.JndiObjectFactoryBean">
+		<property name="jndiName" value="java:/jdbc/Diogene_DS_30" />
+	</bean>
+	<bean id="ds_source_31" class="org.springframework.jndi.JndiObjectFactoryBean">
+		<property name="jndiName" value="java:/jdbc/Diogene_DS_31" />
+	</bean>
+	<bean id="ds_source_32" class="org.springframework.jndi.JndiObjectFactoryBean">
+		<property name="jndiName" value="java:/jdbc/Diogene_DS_32" />
+	</bean>
+	<bean id="ds_source_33" class="org.springframework.jndi.JndiObjectFactoryBean">
+		<property name="jndiName" value="java:/jdbc/Diogene_DS_33" />
+	</bean>
+	<bean id="ds_source_34" class="org.springframework.jndi.JndiObjectFactoryBean">
+		<property name="jndiName" value="java:/jdbc/Diogene_DS_34" />
+	</bean>
+	<bean id="ds_source_35" class="org.springframework.jndi.JndiObjectFactoryBean">
+		<property name="jndiName" value="java:/jdbc/Diogene_DS_35" />
+	</bean>
+	<bean id="ds_source_36" class="org.springframework.jndi.JndiObjectFactoryBean">
+		<property name="jndiName" value="java:/jdbc/Diogene_DS_36" />
+	</bean>
+	<bean id="ds_source_37" class="org.springframework.jndi.JndiObjectFactoryBean">
+		<property name="jndiName" value="java:/jdbc/Diogene_DS_37" />
+	</bean>
+	<bean id="ds_source_38" class="org.springframework.jndi.JndiObjectFactoryBean">
+		<property name="jndiName" value="java:/jdbc/Diogene_DS_38" />
+	</bean>
+	<bean id="ds_source_39" class="org.springframework.jndi.JndiObjectFactoryBean">
+		<property name="jndiName" value="java:/jdbc/Diogene_DS_39" />
+	</bean>
+	<bean id="ds_source_40" class="org.springframework.jndi.JndiObjectFactoryBean">
+		<property name="jndiName" value="java:/jdbc/Diogene_DS_40" />
+	</bean>
+	<bean id="ds_source_41" class="org.springframework.jndi.JndiObjectFactoryBean">
+		<property name="jndiName" value="java:/jdbc/Diogene_DS_41" />
+	</bean>
+	<bean id="ds_source_42" class="org.springframework.jndi.JndiObjectFactoryBean">
+		<property name="jndiName" value="java:/jdbc/Diogene_DS_42" />
+	</bean>
+	<bean id="ds_source_43" class="org.springframework.jndi.JndiObjectFactoryBean">
+		<property name="jndiName" value="java:/jdbc/Diogene_DS_43" />
+	</bean>
+	<bean id="ds_source_44" class="org.springframework.jndi.JndiObjectFactoryBean">
+		<property name="jndiName" value="java:/jdbc/Diogene_DS_44" />
+	</bean>
+	<bean id="ds_source_45" class="org.springframework.jndi.JndiObjectFactoryBean">
+		<property name="jndiName" value="java:/jdbc/Diogene_DS_45" />
+	</bean>
+	<bean id="ds_source_46" class="org.springframework.jndi.JndiObjectFactoryBean">
+		<property name="jndiName" value="java:/jdbc/Diogene_DS_46" />
+	</bean>
+	<bean id="ds_source_47" class="org.springframework.jndi.JndiObjectFactoryBean">
+		<property name="jndiName" value="java:/jdbc/Diogene_DS_47" />
+	</bean>
+	<bean id="ds_source_48" class="org.springframework.jndi.JndiObjectFactoryBean">
+		<property name="jndiName" value="java:/jdbc/Diogene_DS_48" />
+	</bean>
+	<bean id="ds_source_49" class="org.springframework.jndi.JndiObjectFactoryBean">
+		<property name="jndiName" value="java:/jdbc/Diogene_DS_49" />
+	</bean>
+	<bean id="ds_source_50" class="org.springframework.jndi.JndiObjectFactoryBean">
+		<property name="jndiName" value="java:/jdbc/Diogene_DS_50" />
+	</bean>
+
+
+	<bean id="ctDataSourceRouter" class="it.webred.ct.support.datarouter.DatasourceRouterBean">
+		<property name="targetDataSources">
+			<map key-type="java.lang.String">
+				<entry key="0" value-ref="ds_source_0" />
+				<entry key="1" value-ref="ds_source_1" />
+				<entry key="2" value-ref="ds_source_2" />
+				<entry key="3" value-ref="ds_source_3" />
+				<entry key="4" value-ref="ds_source_4" />
+				<entry key="5" value-ref="ds_source_5" />
+				<entry key="6" value-ref="ds_source_6" />
+				<entry key="7" value-ref="ds_source_7" />
+				<entry key="8" value-ref="ds_source_8" />
+				<entry key="9" value-ref="ds_source_9" />
+				<entry key="10" value-ref="ds_source_10" />
+				<entry key="11" value-ref="ds_source_11" />
+				<entry key="12" value-ref="ds_source_12" />
+				<entry key="13" value-ref="ds_source_13" />
+				<entry key="14" value-ref="ds_source_14" />
+				<entry key="15" value-ref="ds_source_15" />
+				<entry key="16" value-ref="ds_source_16" />
+				<entry key="17" value-ref="ds_source_17" />
+				<entry key="18" value-ref="ds_source_18" />
+				<entry key="19" value-ref="ds_source_19" />
+				<entry key="20" value-ref="ds_source_20" />
+				<entry key="21" value-ref="ds_source_21" />
+				<entry key="22" value-ref="ds_source_22" />
+				<entry key="23" value-ref="ds_source_23" />
+				<entry key="24" value-ref="ds_source_24" />
+				<entry key="25" value-ref="ds_source_25" />
+				<entry key="26" value-ref="ds_source_26" />
+				<entry key="27" value-ref="ds_source_27" />
+				<entry key="28" value-ref="ds_source_28" />
+				<entry key="29" value-ref="ds_source_29" />
+				<entry key="30" value-ref="ds_source_30" />
+				<entry key="31" value-ref="ds_source_31" />
+				<entry key="32" value-ref="ds_source_32" />
+				<entry key="33" value-ref="ds_source_33" />
+				<entry key="34" value-ref="ds_source_34" />
+				<entry key="35" value-ref="ds_source_35" />
+				<entry key="36" value-ref="ds_source_36" />
+				<entry key="37" value-ref="ds_source_37" />
+				<entry key="38" value-ref="ds_source_38" />
+				<entry key="39" value-ref="ds_source_39" />
+				<entry key="40" value-ref="ds_source_40" />
+				<entry key="41" value-ref="ds_source_41" />
+				<entry key="42" value-ref="ds_source_42" />
+				<entry key="43" value-ref="ds_source_43" />
+				<entry key="44" value-ref="ds_source_44" />
+				<entry key="45" value-ref="ds_source_45" />
+				<entry key="46" value-ref="ds_source_46" />
+				<entry key="47" value-ref="ds_source_47" />
+				<entry key="48" value-ref="ds_source_48" />
+				<entry key="49" value-ref="ds_source_49" />
+				<entry key="50" value-ref="ds_source_50" />
+			</map>
+		</property>
+		<property name="defaultTargetDataSource" ref="ds_source_0" />
+	</bean>
+
+	<!-- bean id="entityManagerFactory_SITI"
+		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+		<property name="persistenceXmlLocation" value="META-INF/cet_persistence.xml" />
+		<property name="dataSource" ref="ctDataSourceRouter" />
+		<property name="persistenceUnitName" value="CT_Siti" />
+		<property name="jpaProperties">
+			<props>
+				<prop key="hibernate.dialect">it.webred.ct.data.spatial.OracleSpatialDialect</prop>
+				<prop key="hibernate.show_sql">false</prop>
+			</props>
+		</property>
+		<property name="jpaDialect">
+			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaDialect" />
+		</property>
+	</bean-->
+
+	<bean id="entityManagerFactory_DIOGENE"
+		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+		<property name="persistenceXmlLocation" value="META-INF/cet_persistence.xml" />
+		<property name="dataSource" ref="ctDataSourceRouter" />
+		<property name="persistenceUnitName" value="CT_Diogene" />
+		<property name="jpaProperties">
+			<props>
+				<!-- prop key="hibernate.dialect">org.hibernate.dialect.Oracle9iDialect</prop-->
+				<prop key="hibernate.dialect">it.webred.ct.data.spatial.OracleSpatialDialect</prop>
+				<prop key="hibernate.show_sql">false</prop>
+			</props>
+		</property>
+		<property name="jpaDialect">
+			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaDialect" />
+		</property>
+	</bean>
+</beans>	

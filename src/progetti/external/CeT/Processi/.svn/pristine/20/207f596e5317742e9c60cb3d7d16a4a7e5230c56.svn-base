@@ -1,0 +1,53 @@
+#------------------------------------------------------------
+# File di config della regola
+#------------------------------------------------------------
+rengine.rule.class=it.webred.rulengine.brick.loadDwh.base.LoadDemanioBene
+rengine.rule.cc=DEM_BENE
+rengine.rule.number.params.in=18
+rengine.rule.number.params.out=0
+#--------------------------------------------------------------------------
+# parametri di input: rispecchiano i valori del db sia nel type che nel descr
+#--------------------------------------------------------------------------
+rengine.rule.param.in.1.type=java.math.BigDecimal
+rengine.rule.param.in.2.type=java.lang.String
+rengine.rule.param.in.3.type=java.lang.String
+rengine.rule.param.in.4.type=java.math.BigDecimal
+rengine.rule.param.in.5.type=java.lang.String
+rengine.rule.param.in.6.type=java.lang.String
+rengine.rule.param.in.7.type=java.lang.String
+rengine.rule.param.in.8.type=java.lang.String
+rengine.rule.param.in.9.type=java.lang.String
+rengine.rule.param.in.10.type=java.lang.String
+rengine.rule.param.in.11.type=java.lang.String
+rengine.rule.param.in.12.type=oracle.sql.CLOB
+rengine.rule.param.in.13.type=oracle.sql.CLOB
+rengine.rule.param.in.14.type=java.math.BigDecimal
+rengine.rule.param.in.15.type=java.lang.String
+rengine.rule.param.in.16.type=java.lang.String
+rengine.rule.param.in.17.type=java.lang.Integer
+rengine.rule.param.in.18.type=java.sql.Timestamp
+rengine.rule.param.in.1.descr=PK_ORIG
+rengine.rule.param.in.2.descr=CHIAVE
+rengine.rule.param.in.3.descr=CHIAVE_PADRE
+rengine.rule.param.in.4.descr=CHIAVE1
+rengine.rule.param.in.5.descr=CHIAVE2
+rengine.rule.param.in.6.descr=CHIAVE3
+rengine.rule.param.in.7.descr=CHIAVE4
+rengine.rule.param.in.8.descr=CHIAVE5
+rengine.rule.param.in.9.descr=COD_ECOGRAFICO
+rengine.rule.param.in.10.descr=COD_TIPO_BENE
+rengine.rule.param.in.11.descr=DES_TIPO_BENE
+rengine.rule.param.in.12.descr=DESCRIZIONE
+rengine.rule.param.in.13.descr=NOTE
+rengine.rule.param.in.14.descr=NUM_PARTI
+rengine.rule.param.in.15.descr=PROVENIENZA
+rengine.rule.param.in.16.descr=TIPO
+rengine.rule.param.in.17.descr=FK_ENTE_SORGENTE
+rengine.rule.param.in.18.descr=DT_EXP_DATO
+#------------------------------------------------------------
+# parametri di output
+#------------------------------------------------------------
+#
+#------------------------------------------------------------
+# Definizioni costanti o proprietà aggiuntive della regola
+#------------------------------------------------------------	

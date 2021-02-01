@@ -1,0 +1,147 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+     	xmlns:h="http://java.sun.com/jsf/html"
+		xmlns:f="http://java.sun.com/jsf/core"
+		xmlns:ui="http://java.sun.com/jsf/facelets"
+		xmlns:p="http://primefaces.org/ui"
+	  	xmlns:composite="http://java.sun.com/jsf/composite"
+	  	xmlns:webredcs="http://java.sun.com/jsf/composite/webredcs"
+	  	xmlns:webred="http://java.sun.com/jsf/composite/webred"
+	  	xmlns:c="http://java.sun.com/jsp/jstl/core">
+	  	
+      <p:panel id="pnlObiettivi">	  	
+	   <h:panelGrid columns="4" style="width:100%;">
+				<p:selectBooleanCheckbox itemLabel="Progetto prestazionale senza monitoraggio obiettivi" partialsubmit="true" 
+				value="#{cc.attrs.iPai.selectedPai.monitoraggioObiettivi}">
+			    <p:ajax event="change" process="@this" update="pnlObiettivi" />
+		     </p:selectBooleanCheckbox>
+		</h:panelGrid>	
+     <p:spacer height="15px;" />
+			     <h:panelGrid id="statoPai" style="width:100%;" columnClasses="4"  columns="4" rendered="#{!cc.attrs.iPai.selectedPai.monitoraggioObiettivi}">
+					<h:outputLabel for="motivazioniProgetto"
+						value="Motivazioni del progetto*" />
+					<h:panelGrid >
+						<p:inputTextarea id="motivazioniProgetto" rows="4" cols="50"
+							value="#{cc.attrs.iPai.selectedPai.motivazioniProgetto}"
+							disabled="#{cc.attrs.iPai.closed}" />
+					</h:panelGrid>
+			
+					<p:spacer width="10px"/>
+					<p:spacer width="10px"/>        
+					 
+					<h:outputLabel for="obiettiviBreve" value="Obiettivi di breve termine**" />
+					<p:inputTextarea id="obiettiviBreve" rows="4" cols="50"
+						value="#{cc.attrs.iPai.selectedPai.obiettiviBreve}"
+						disabled="#{cc.attrs.iPai.closed}" />
+			
+					<h:outputLabel for="raggiuntiBreve" value="Raggiunti" />
+					<p:selectOneRadio id="raggiuntiBreve"
+						value="#{cc.attrs.iPai.selectedPai.raggiuntiBreve}"
+						disabled="#{cc.attrs.iPai.closed}">
+					<f:selectItems value="#{cc.attrs.iPai.lstRadioOptions}"/>
+					</p:selectOneRadio>
+				
+					<h:outputLabel for="obiettiviMedio" value="Obiettivi di medio termine**" />
+					<p:inputTextarea id="obiettiviMedio" rows="4" cols="50"
+						value="#{cc.attrs.iPai.selectedPai.obiettiviMedio}"
+						disabled="#{cc.attrs.iPai.closed}" />
+			
+					<h:outputLabel for="raggiuntiMedio" value="Raggiunti" />
+					<p:selectOneRadio id="raggiuntiMedio"
+						value="#{cc.attrs.iPai.selectedPai.raggiuntiMedio}"
+						disabled="#{cc.attrs.iPai.closed}">
+						<f:selectItems value="#{cc.attrs.iPai.lstRadioOptions}"/>
+					</p:selectOneRadio>
+				
+					<h:outputLabel for="obiettiviLungo" value="Obiettivi di lungo termine**" />
+					<p:inputTextarea id="obiettiviLungo" rows="4" cols="50"
+						value="#{cc.attrs.iPai.selectedPai.obiettiviLungo}"
+						disabled="#{cc.attrs.iPai.closed}" />  
+				
+					<h:outputLabel for="raggiuntiLungo" value="Raggiunti" />
+					<p:selectOneRadio id="raggiuntiLungo"
+						value="#{cc.attrs.iPai.selectedPai.raggiuntiLungo}"
+						disabled="#{cc.attrs.iPai.closed}">
+						<f:selectItems value="#{cc.attrs.iPai.lstRadioOptions}"/>
+					</p:selectOneRadio>
+					
+					<h:outputLabel value="Verifica ogni" />
+					<h:panelGrid columns="3">
+						<p:spinner value="#{cc.attrs.iPai.selectedPai.verificaOgni}"
+							min="0" size="5" disabled="#{cc.attrs.iPai.closed or cc.attrs.iPai.onClosing}" />
+						<p:selectOneMenu style="vertical-align: middle;"
+							value="#{cc.attrs.iPai.selectedPai.verificaUnitaMisura}"
+							disabled="#{cc.attrs.iPai.closed or cc.attrs.iPai.onClosing}">
+							<f:selectItem noSelectionOption="true" itemLabel="- seleziona -" />
+				 			<f:selectItems value="#{cc.attrs.iPai.listaPeriodi}" var="item" itemLabel="#{item.descrizione}" itemValue="#{item.codice}" />              
+						</p:selectOneMenu>
+					</h:panelGrid>
+
+				<h:outputLabel for="dataUltimoMonitoraggio" value="Ultimo  monitoraggio effettuato in data" style="display: block; width: 120px;" />
+				<h:outputText id="dataUltimoMonitoraggio" value="#{cc.attrs.iPai.selectedPai.dataMonitoraggio}" >
+					   <f:convertDateTime pattern="dd/MM/yyyy"/>
+				</h:outputText>
+				
+				<p:spacer width="10px"/>
+				<p:spacer width="10px"/>
+				
+				
+				<h:outputLabel for="dataNuovoMonitoraggio" value="Nuovo monitoraggio effettuato in data" style="display: block; width: 120px;"/>
+				<webred:pnlData id="dataNuovoMonitoraggio"
+						dataValue="#{cc.attrs.iPai.dataNuovoMonitoraggio}"
+						dataPattern="dd/MM/yyyy"
+						dataValMes="Data ultimo monitoraggio non valida"
+						dataConMes="Data ultimo monitoraggio non valida"
+						dataPatternLabel="gg/mm/aaaa" yearRange="c-1:c+5"
+						disabled="#{cc.attrs.iPai.closed or cc.attrs.iPai.onClosing}" />
+		</h:panelGrid>
+
+        <p:panelGrid style="width:100%; border: solid red;" rendered="#{cc.attrs.iPai.closed or cc.attrs.iPai.onClosing}">
+			<p:row >
+				<p:column>
+					<h:outputText value="Motivo della chiusura*" />
+				</p:column>
+				<p:column>
+					<h:panelGrid columns="2">
+					<p:selectOneMenu
+						value="#{cc.attrs.iPai.selectedPai.motivoChiusura}"
+						rendered="#{cc.attrs.iPai.closed or cc.attrs.iPai.onClosing}"
+						disabled="#{cc.attrs.iPai.closed}" required="true"
+						requiredMessage="E' necessario indicare il motivo di chiusura">					
+						<f:selectItem itemLabel=" - seleziona -" noSelectionOption="true" />
+  					    <f:selectItems  value="#{cc.attrs.iPai.lstMotivoChiusuraByTipoPai}" var="item" itemLabel="#{item.descrizione}" itemValue="#{item.descrizione}" /> 
+					</p:selectOneMenu>
+					<p:inputTextarea rows="1" style ="witdh:60%"
+						value="#{cc.attrs.iPai.selectedPai.motivoChiusuraSpec}"
+						disabled="#{cc.attrs.iPai.closed}" />
+					</h:panelGrid>
+				</p:column>
+			</p:row>
+			
+			<p:row>
+			    <p:column>
+					<h:outputLabel for="dataChiusura" value="Data Chiusura*" />
+				</p:column>
+			    <p:column>
+					<webred:pnlData id="dataChiusura"
+						dataValue="#{cc.attrs.iPai.selectedPai.csDDiario.dtChiusuraDa}"
+						dataPattern="dd/MM/yyyy" 
+						dataReq="#{cc.attrs.iPai.closed or cc.attrs.iPai.onClosing}"
+						dataReqMes="Data Chiusura è un campo obbligatorio"
+						dataValMes="Data Chiusura non valida"
+						dataConMes="Data chiusura non valida"
+						dataPatternLabel="gg/mm/aaaa" yearRange="c-1:c+5"
+						disabled="#{cc.attrs.iPai.closed}" />
+			    </p:column>
+			</p:row>
+			
+     </p:panelGrid>
+     <p:spacer height="15px;" />
+    <p:panel id="pnlCampiObbligatori" rendered="#{!cc.attrs.iPai.selectedPai.monitoraggioObiettivi or (cc.attrs.iPai.closed or cc.attrs.iPai.onClosing)}">	  	 
+				
+				    <h:outputLabel value="* campi obbligatori" style="font-weight:bold;font-style:italic;font-size:11px;" />
+				    <p:spacer height="10px;" />
+				    <h:outputLabel value="** compilare almeno uno degli obiettivi" style="font-weight:bold;font-style:italic;font-size:11px;" />
+	 </p:panel>			    
+  </p:panel>	  	  	
+</html>

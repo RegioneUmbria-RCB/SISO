@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:webred="http://java.sun.com/jsf/composite/webred"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+<h:form id="formAnagrafica">
+		<p:outputPanel id="pnlGestioneAnagrafica" style="width:100%;" rendered="#{anagraficaController.selectedAnagrafica==null}">
+			<h:panelGrid columns="1" cellpadding="0" cellspacing="0"
+				style="vertical-align: left;">
+				<p:commandButton id="cmdNuovo" value="Nuovo"
+					action="#{anagraficaController.nuova()}"
+					update="formAnagrafica" process="formAnagrafica">
+
+				</p:commandButton>
+				<p:spacer height="2" />
+			</h:panelGrid>
+
+
+			<p:dataTable id="dtAnagrafica" var="rowAnagrafica"
+				rowIndexVar="rowKeyAnag" emptyMessage="Nessun elemento presente"
+				value="#{anagraficaController.anagrafiche}" rows="10"
+				paginator="true"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="5,10,15">
+
+				<f:facet name="header">Anagrafica</f:facet>
+
+				<p:column headerText="Cognome Nome" width="30"
+					filterBy="#{rowAnagrafica.cognomeNome}" filterMatchMode="contains">
+					<h:outputText
+						value="#{rowAnagrafica.cognome} #{rowAnagrafica.nome}">
+					</h:outputText>
+				</p:column>
+
+				<p:column headerText="Data di nascita" width="10"
+					filterBy="#{rowAnagrafica.dataNascita}" filterMatchMode="contains">
+					<h:outputText value="#{rowAnagrafica.dataNascita}">
+						<f:convertDateTime pattern="dd/MM/yyyy" />
+					</h:outputText>
+				</p:column>
+
+				<p:column headerText="Codice Fiscale" width="10"
+					filterBy="#{rowAnagrafica.cf}" filterMatchMode="contains">
+					<h:outputText value="#{rowAnagrafica.cf}" />
+				</p:column>
+
+				<p:column headerText="Referente" width="5"
+					filterBy="#{rowAnagrafica.flgReferente}" filterMatchMode="contains"
+					style="text-align:center">
+					<p:graphicImage id="referente"
+						rendered="#{rowAnagrafica.flgReferente}" value="/images/check.png"
+						style="vertical-align:center;" />
+
+				</p:column>
+				<p:column headerText="Villaggio" width="10"
+					filterBy="#{rowAnagrafica.nomeVillaggio}" filterMatchMode="contains">
+					<h:outputText value="#{rowAnagrafica.struttura.nomeStruttura}" />
+				</p:column>
+				<p:column headerText="Unità abitativa" width="10"
+					filterBy="#{rowAnagrafica.unitaAbitativa}"
+					filterMatchMode="contains">
+					<h:outputText value="#{rowAnagrafica.unitaAbitativa}" />
+					<p:spacer width="5px" />
+					<p:graphicImage id="warnUnitaAbitativa"
+						value="/images/attention.png"
+						rendered="#{anagraficaController.isCongruenteUnitaAbitativa(rowAnagrafica)}"
+						title="L'unità abitativa non corrisponde a quella del referente"
+						style="vertical-align:center;" />
+				</p:column>
+				<p:column headerText="" style="text-align:center;" width="30">
+					<p:commandButton id="cmdModifica" update="@form" title="Modifica" value="Modifica" process="@form">
+						<f:setPropertyActionListener value="#{rowAnagrafica}" target="#{anagraficaController.selectedAnagrafica}" />
+					</p:commandButton>
+					<p:spacer width="5"/>
+					<p:commandButton id="cmdElimina" oncomplete="PF('confermaEliminaAnagrafica').show();" title="Elimina" value="Elimina" process="@this">
+						<f:setPropertyActionListener value="#{rowAnagrafica}" target="#{anagraficaController.selectedAnagrafica}" />
+					</p:commandButton>
+				</p:column>
+
+			</p:dataTable>
+
+		</p:outputPanel>
+
+
+	<!-- Dettaglio Anagrafica -->
+	<p:outputPanel id="panel-dettaglio" rendered="#{anagraficaController.selectedAnagrafica!=null}">
+			<h:panelGrid>
+				<ui:include src="/jsp/protected/dettaglioAnagrafica.xhtml" />
+			</h:panelGrid>
+	</p:outputPanel>
+
+	<p:confirmDialog header="Elimina Anagrafica"
+		widgetVar="confermaEliminaAnagrafica" severity="alert"
+		closable="false" message="Procedere con l'eliminazione?" style="text-align: center;" >
+		<p:panelGrid style="width: 100%;" >
+			<p:row style="text-align: center;">
+				<p:column >
+					<p:commandButton value="SI"
+						onclick="PF('confermaEliminaAnagrafica').hide()"
+						action="#{anagraficaController.eliminaAnagrafica()}"
+						update="@form" />
+					<p:commandButton value="NO"
+						onclick="PF('confermaEliminaAnagrafica').hide();" type="button" />
+				</p:column>
+			</p:row>
+		</p:panelGrid>
+	</p:confirmDialog>
+</h:form>
+
+</html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich">
+
+<rich:modalPanel id="paramsModalBox" minHeight="80" minWidth="900"
+	height="80" width="900">
+
+	<f:facet name="header">
+		<h:outputText value="Funzione #{funz.funzioneCorrente}"></h:outputText>
+	</f:facet>
+
+	<f:facet name="controls">
+		<h:form>
+			<h:panelGroup>
+				<h:graphicImage value="/images/close.png" style="cursor:pointer"
+					id="hidelink">
+					<a4j:support event="onclick" action="#{utBean.resetPage}"
+						reRender="paramsPage"
+						oncomplete="javascript:Richfaces.hideModalPanel('paramsModalBox');" />
+				</h:graphicImage>
+			</h:panelGroup>
+		</h:form>
+	</f:facet>
+
+	<h:form id="paramsForm">
+		
+		<rich:spacer height="10px" />
+		
+		<h:panelGrid columns="4" width="100%" id="pgParam">
+
+			<h:panelGroup >
+				<h:outputLabel value="Ente" />
+				<rich:spacer width="5px"></rich:spacer>
+				<h:selectOneMenu id="txtEnt" value="#{funzBean.enteSelezionato}">
+					<f:selectItems value="#{funzBean.listaEnti}" />
+				</h:selectOneMenu>
+				<rich:spacer height="10px" />
+			</h:panelGroup>
+					
+			<h:panelGroup rendered="#{funzBean.funzioneCorrente eq utBean.f_EMPTY_TABLE}">
+				<h:outputLabel value="Tipo Connessione" />
+				<rich:spacer width="5px"></rich:spacer>
+				<h:selectOneMenu id="connessione"
+					value="#{funzBean.connessioneSelezionata}">
+					<f:selectItems value="#{funzBean.listaTipoConnessioni}" />
+				</h:selectOneMenu>
+				<rich:spacer height="10px" />
+			</h:panelGroup>
+			
+			<h:panelGroup>
+				<h:outputLabel value="Tabella" />
+				<rich:spacer width="5px"></rich:spacer>
+				<h:inputText id="txtTab" value="#{funzBean.tabellaSelezionata}"
+					label="Tabella" />
+					<rich:spacer height="10px" />
+			</h:panelGroup>
+
+			<a4j:commandButton value="Esegui" id="btnEsegui"
+				styleClass="button" action="#{funzBean.doAction}" oncomplete="javascript:Richfaces.hideModalPanel('paramsModalBox');">
+				<a4j:actionparam name="funz"
+					 value="#{funzBean.funzioneCorrente}"
+					 assignTo="#{funzBean.funzioneCorrente}" />
+			</a4j:commandButton>
+		</h:panelGrid>
+	</h:form>
+
+</rich:modalPanel>
+
+</html>

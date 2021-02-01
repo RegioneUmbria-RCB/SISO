@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+
+<jxb:bindings version="1.0" xmlns:jxb="http://java.sun.com/xml/ns/jaxb" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+   <jxb:bindings schemaLocation="../src/main/resources/xsd/PS_PSA_SINA201806.xsd" node="/xs:schema">
+      <jxb:globalBindings />
+      <jxb:schemaBindings>
+         <jxb:package name="com.osmosit.siso.flussoinps.psa_2018">
+         </jxb:package>
+      </jxb:schemaBindings>
+
+      <jxb:bindings node="//xs:complexType[@name='FlussoType']">
+         <jxb:class name="Flusso" />
+      </jxb:bindings>
+
+      <jxb:bindings node="//xs:complexType[@name='BeneficiarioType']">
+         <jxb:class name="Beneficiario" />
+      </jxb:bindings>
+
+      <jxb:bindings node="//xs:complexType[@name='IdentificazioneFlussoType']">
+         <jxb:class name="IdentificazioneFlusso" />
+      </jxb:bindings>
+
+      <jxb:bindings node="//xs:complexType[@name='EnteType']">
+         <jxb:class name="Ente" />
+      </jxb:bindings>
+
+      <jxb:bindings node="//xs:complexType[@name='AnagraficaType']">
+         <jxb:class name="Anagrafica" />
+      </jxb:bindings>
+
+      <jxb:bindings node="//xs:simpleType[@name='GenereType']">
+         <jxb:class name="Genere" />
+      </jxb:bindings>
+
+      <jxb:bindings node="//xs:complexType[@name='IndirizzoType']">
+         <jxb:class name="Indirizzo" />
+      </jxb:bindings>
+
+      <jxb:bindings node="//xs:complexType[@name='PrestazioniSocialiType']">
+         <jxb:class name="PrestazioniSociali" />
+      </jxb:bindings>
+
+      <jxb:bindings node="//xs:simpleType[@name='TipoOperazioneType']">
+         <jxb:typesafeEnumClass name="TipoOperazione" />
+      </jxb:bindings>
+
+      <jxb:bindings node="//xs:complexType[@name='SINAType']">
+         <jxb:class name="SINA" />
+      </jxb:bindings>
+
+
+   </jxb:bindings>
+</jxb:bindings>

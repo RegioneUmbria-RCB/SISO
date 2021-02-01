@@ -1,0 +1,93 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<title>PROGETTO GIT</title>
+
+<link href="../css/newstyle.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+
+<div style="text-align:center" >
+<table width="80%" border="1" align="center" class="griglia" >
+  <tr>
+    <th colspan="2" nowrap="nowrap" class="divTableTitle">ENTE: XXX </th>
+    </tr>
+  <tr >
+    <td width="1%" nowrap="nowrap">Processi di acquisizione<br />
+      e trattamento dati </td>
+    <td align="left" >
+			<div style="width:150px;text-align:center; float:left; margin-left:10px">
+				<div style="width:150px;text-align:center;clear:left; ">
+				<img src="img/caronte.gif" width="150" height="150" />
+				</div>
+				<div style="width:150px;text-align:center;clear:left;">caronte</div>
+			</div>
+			<div style="width:150px;text-align:center; float:left; margin-left:10px">
+				<div style="width:150px;text-align:center;clear:left; ">
+				<img src="img/rulengine.gif" width="150" height="150" />
+				</div>
+				<div style="width:150px;text-align:center;clear:left;">rulengine</div>
+			</div>				
+			<div style="width:150px;text-align:center; float:left; margin-left:10px">
+				<div style="width:150px;text-align:center;clear:left; ">
+				<img src="img/controller.gif" width="150" height="150" />
+				</div>
+				<div style="width:150px;text-align:center;clear:left;">controller</div>
+			</div>
+	 </td>
+  </tr>
+  <tr >
+    <td   width="1%" nowrap="nowrap">Visualizzazione<br />
+      fonti dati </td>
+    <td align="left">
+	
+			<div style="width:150px;text-align:center; float:left; margin-left:10px">
+				<div style="width:150px;text-align:center;clear:left; ">
+				<img src="img/diogene.gif" width="150" height="150" />
+				</div>
+				<div style="width:150px;text-align:center;clear:left;">diogene</div>
+			</div>
+			<div style="width:150px;text-align:center; float:left; margin-left:10px">
+				<div style="width:150px;text-align:center;clear:left; ">
+				<img src="img/diogenedb.gif" width="150" height="150" />
+				</div>
+				<div style="width:150px;text-align:center;clear:left;">diogenedb</div>
+			</div>		
+				
+	</td>
+  </tr>
+  <tr>
+    <td  width="1%" nowrap="nowrap">Applicativi verticali </td>
+    <td align="left">
+	
+			<div style="width:150px;text-align:center; float:left; margin-left:10px">
+				<div style="width:150px;text-align:center;clear:left; ">
+				<img src="img/successioni.gif" width="150" height="150" />
+				</div>
+				<div style="width:150px;text-align:center;clear:left;">successioni</div>
+			</div>
+			<div style="width:150px;text-align:center; float:left; margin-left:10px">
+				<div style="width:150px;text-align:center;clear:left; ">
+				<img src="img/virgilio.gif" width="150" height="150" />
+				</div>
+				<div style="width:150px;text-align:center;clear:left;">virgilio</div>
+			</div>
+			<div style="width:150px;text-align:center; float:left; margin-left:10px">
+				<div style="width:150px;text-align:center;clear:left; ">
+				<img src="img/iseeudap.gif" width="150" height="150" />
+				</div>
+				<div style="width:150px;text-align:center;clear:left;">iseeudap</div>
+			</div>							
+	
+	</td>
+  </tr>
+  <tr>
+    <td  width="1%" nowrap="nowrap">Altro:</td>
+    <td align="left">&nbsp;</td>
+  </tr>
+</table>
+</div>
+</body>
+</html>

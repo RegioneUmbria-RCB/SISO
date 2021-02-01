@@ -1,0 +1,8 @@
+#------------------------------------------------------------------------------------------
+# ATTENZIONE !!
+# La creazione lettura e scrittura di qualsiasi tabella è gestita dentro le classi java
+# relativa al docfa seguendo l'impostazione delle classi originali.
+# Qualunque proprietà da passare all' env docfa va impostata di seguito.
+#------------------------------------------------------------------------------------------
+user.pk.list.query=select a.* from USER_CONS_COLUMNS a, USER_CONSTRAINTS u where a.table_name like '%TAB_LIKE%' and U.TABLE_NAME = A.TABLE_NAME and U.CONSTRAINT_NAME = A.CONSTRAINT_NAME and U.CONSTRAINT_TYPE = 'P'
+#

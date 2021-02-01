@@ -1,0 +1,548 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich">
+
+<ui:composition template="/jsp/protected/layout/layout.xhtml">
+
+	<ui:define name="content">
+
+		<!-- INIZIO UPLOAD MODAL BOX -->
+		<rich:modalPanel id="uplModalBox" minHeight="200" minWidth="400"
+			height="200" width="400">
+			<f:facet name="header">
+				<h:outputText value="Gestione upload"></h:outputText>
+			</f:facet>
+			<f:facet name="controls">
+				<h:form>
+					<h:panelGroup>
+						<h:graphicImage value="/images/close.png" style="cursor:pointer"
+							id="hidelink">
+							<a4j:support event="onclick"
+								oncomplete="javascript:Richfaces.hideModalPanel('uplModalBox');" />
+						</h:graphicImage>
+					</h:panelGroup>
+				</h:form>
+			</f:facet>
+
+			<h:form id="uplForm">
+
+				<rich:fileUpload fileUploadListener="#{uploadBean.listener}"
+					listHeight="75px" listWidth="100%" maxFilesQuantity="1" id="upload"
+					progressLabel="Caricamento in corso..." immediateUpload="false"
+					allowFlash="auto" stopControlLabel="Arresta"
+					stopEntryControlLabel="Arresta" uploadControlLabel="Carica File"
+					addControlLabel="Aggiungi File" cancelEntryControlLabel="Cancella"
+					doneLabel="Caricamento completato"
+					clearAllControlLabel="Cancella Tutto" clearControlLabel="Cancella"
+					transferErrorLabel="Errore nel caricamento del file"
+					sizeErrorLabel="Errore nelle dimensioni del file">
+					<a4j:support event="onuploadcomplete" reRender="pnlBtn" />
+					<a4j:support event="oncancel" reRender="uplForm"
+						action="#{uploadBean.initPanel}" />
+					<a4j:support event="onclear" reRender="uplForm"
+						action="#{uploadBean.initPanel}" />
+				</rich:fileUpload>
+
+				<rich:spacer height="15px" />
+
+				<h:panelGrid id="pnlBtn" columns="1" style="text-align:center;"
+					width="100%">
+
+					<h:panelGroup>
+						<a4j:commandButton value="Conferma" id="btnConfermaUpl"
+							styleClass="button" action="#{uploadBean.doUpload}"
+							rendered="#{uploadBean.visBtnConferma}"
+							oncomplete="Richfaces.hideModalPanel('uplModalBox'); return false;">
+						</a4j:commandButton>
+
+						<rich:spacer width="15px" />
+
+						<a4j:commandButton value="Annulla" id="btnEsciUpl"
+							styleClass="button"
+							onclick="Richfaces.hideModalPanel('uplModalBox'); return false;">
+						</a4j:commandButton>
+					</h:panelGroup>
+
+				</h:panelGrid>
+
+			</h:form>
+
+		</rich:modalPanel>
+		<!-- FINE UPLOAD MODAL BOX -->
+
+		<!-- COMMAND LOG PAGE -->
+		<a4j:include id="commandLogPage"
+			viewId="#{cMonitorBean.commandLogPage}" />
+
+		<rich:separator lineType="solid" />
+
+		<rich:panel>
+			<h:form id="prcForm">
+
+				<h:panelGrid columns="3">
+
+					<h:graphicImage value="/images/refresh.png" title="Aggiorna"
+						height="16px" style="cursor:pointer; padding-right: 10px;">
+						<a4j:support event="onclick"
+							action="#{pMonitorBean.doSearchFontiDatiEnte}"
+							reRender="listMonitorITable, listMonitorETable, cmdForm">
+						</a4j:support>
+					</h:graphicImage>
+
+					<h:outputLabel value="Ente" />
+					<h:selectOneMenu id="ente" value="#{pMonitorBean.enteSelezionato}">
+						<f:selectItems value="#{pMonitorBean.listaEnti}" />
+						<a4j:support event="onchange"
+							action="#{pMonitorBean.doSearchFontiDatiEnte}"
+							reRender="listMonitorITable, listMonitorETable, cmdForm"></a4j:support>
+					</h:selectOneMenu>
+
+				</h:panelGrid>
+
+				<rich:spacer height="10px" />
+
+				<h:panelGrid columns="3" width="100%" cellspacing="0px">
+					<rich:dataTable width="100%" var="row"
+						value="#{pMonitorBean.listaMonitorI}" id="listMonitorITable"
+						onRowMouseOver="this.style.backgroundColor='#F1F1F1'"
+						onRowMouseOut="this.style.backgroundColor='#{a4jSkin.tableBackgroundColor}'">
+						<f:facet name="header">
+							<h:outputText value="Fonti interne" />
+						</f:facet>
+						<rich:column width="18px">
+							<f:facet name="header">
+								<h:outputText value="" />
+							</f:facet>
+							<h:graphicImage value="/images/uploadIcon.gif" width="18px"
+								title="Upload file" style="cursor:pointer">
+								<a4j:support event="onclick"
+									action="#{pMonitorBean.doCaricaDirFiles}" reRender="uplForm"
+									oncomplete="Richfaces.showModalPanel('uplModalBox'); return false;">
+									<a4j:actionparam name="idfonte" value="#{row.fonte.id}"
+										assignTo="#{pMonitorBean.fonteDatiSelezionata}" />
+								</a4j:support>
+							</h:graphicImage>
+						</rich:column>
+						<rich:column>
+							<f:facet name="header">
+								<h:outputText value="Fonte" />
+							</f:facet>
+							<h:outputText value="#{row.fonte.descrizione}" />
+						</rich:column>
+						<rich:column>
+							<f:facet name="header">
+								<h:outputText value="Reperimento" />
+							</f:facet>
+							<center>
+								<a4j:commandButton value="Invio"
+									rendered="#{row.repStatus eq 'F'}" styleClass="greenButton"
+									disabled="#{!row.repProcessable}"
+									action="#{pMonitorBean.submit}" reRender="prcForm, cmdForm">
+									<a4j:actionparam name="fonteId" value="#{row.fonte.id}"
+										assignTo="#{pMonitorBean.fonteDatiSelezionata}" />
+									<a4j:actionparam name="tipoId" value="10"
+										assignTo="#{pMonitorBean.tipologiaSelezionata}" />
+									<a4j:support event="onclick"
+										onsubmit="if (!confirm('Procedere con l\'operazione?')) return false" />
+								</a4j:commandButton>
+								<a4j:commandButton value="Invio"
+									rendered="#{row.repStatus eq 'W'}" styleClass="orangeButton"
+									disabled="#{!row.repProcessable}"
+									action="#{pMonitorBean.submit}" reRender="prcForm, cmdForm">
+									<a4j:actionparam name="fonteId" value="#{row.fonte.id}"
+										assignTo="#{pMonitorBean.fonteDatiSelezionata}" />
+									<a4j:actionparam name="tipoId" value="10"
+										assignTo="#{pMonitorBean.tipologiaSelezionata}" />
+									<a4j:support event="onclick"
+										onsubmit="if (!confirm('Procedere con l\'operazione?')) return false" />
+								</a4j:commandButton>
+								<a4j:commandButton value="Invio"
+									rendered="#{row.repStatus eq 'I'}" styleClass="yellowButton"
+									disabled="#{!row.repProcessable}"
+									action="#{pMonitorBean.submit}" reRender="prcForm, cmdForm">
+									<a4j:actionparam name="fonteId" value="#{row.fonte.id}"
+										assignTo="#{pMonitorBean.fonteDatiSelezionata}" />
+									<a4j:actionparam name="tipoId" value="10"
+										assignTo="#{pMonitorBean.tipologiaSelezionata}" />
+									<a4j:support event="onclick"
+										onsubmit="if (!confirm('Procedere con l\'operazione?')) return false" />
+								</a4j:commandButton>
+								<a4j:commandButton value="Invio"
+									rendered="#{row.repStatus eq 'E'}" styleClass="redButton"
+									disabled="#{!row.repProcessable}"
+									action="#{pMonitorBean.submit}" reRender="prcForm, cmdForm">
+									<a4j:actionparam name="fonteId" value="#{row.fonte.id}"
+										assignTo="#{pMonitorBean.fonteDatiSelezionata}" />
+									<a4j:actionparam name="tipoId" value="10"
+										assignTo="#{pMonitorBean.tipologiaSelezionata}" />
+									<a4j:support event="onclick"
+										onsubmit="if (!confirm('Procedere con l\'operazione?')) return false" />
+								</a4j:commandButton>
+								<br />
+								<rich:spacer height="15px" />
+								<a4j:commandLink action="#{cMonitorBean.doCaricaLog}"
+									reRender="commandLogPage" title="Visualizza Log Reperimento"
+									oncomplete="Richfaces.showModalPanel('commandLogModalBox'); return false;">
+									<h:outputText value="#{row.repDescription}" />
+									<a4j:actionparam name="idcommand" value="#{row.repCommandId}"
+										assignTo="#{cMonitorBean.commandIdSelezionato}" />
+									<a4j:actionparam name="pagecommandlog"
+										value="/jsp/protected/monitor/commandLog.xhtml"
+										assignTo="#{cMonitorBean.commandLogPage}" />
+									<a4j:actionparam name="meseCorr" value="#{cMonitorBean.meseCorr}"
+										assignTo="#{cMonitorBean.meseSelezionato}" />
+									<a4j:actionparam name="annoCorr" value="#{cMonitorBean.annoCorr}"
+										assignTo="#{cMonitorBean.annoSelezionato}" />
+								</a4j:commandLink>
+							</center>
+						</rich:column>
+						<rich:column>
+							<f:facet name="header">
+								<h:outputText value="Acquisizione" />
+							</f:facet>
+							<center>
+								<a4j:commandButton value="Invio"
+									rendered="#{row.acqStatus eq 'F'}"
+									styleClass="greenButton" disabled="#{!row.acqProcessable}"
+									action="#{pMonitorBean.submit}" reRender="prcForm, cmdForm">
+									<a4j:actionparam name="fonteId" value="#{row.fonte.id}"
+										assignTo="#{pMonitorBean.fonteDatiSelezionata}" />
+									<a4j:actionparam name="tipoId" value="20"
+										assignTo="#{pMonitorBean.tipologiaSelezionata}" />
+									<a4j:support event="onclick"
+										onsubmit="if (!confirm('Procedere con l\'operazione?')) return false" />
+								</a4j:commandButton>
+								<a4j:commandButton value="Invio"
+									rendered="#{row.acqStatus eq 'W'}"
+									styleClass="orangeButton" disabled="#{!row.acqProcessable}"
+									action="#{pMonitorBean.submit}" reRender="prcForm, cmdForm">
+									<a4j:actionparam name="fonteId" value="#{row.fonte.id}"
+										assignTo="#{pMonitorBean.fonteDatiSelezionata}" />
+									<a4j:actionparam name="tipoId" value="20"
+										assignTo="#{pMonitorBean.tipologiaSelezionata}" />
+									<a4j:support event="onclick"
+										onsubmit="if (!confirm('Procedere con l\'operazione?')) return false" />
+								</a4j:commandButton>
+								<a4j:commandButton value="Invio"
+									rendered="#{row.acqStatus eq 'I'}" styleClass="yellowButton"
+									disabled="#{!row.acqProcessable}"
+									action="#{pMonitorBean.submit}" reRender="prcForm, cmdForm">
+									<a4j:actionparam name="fonteId" value="#{row.fonte.id}"
+										assignTo="#{pMonitorBean.fonteDatiSelezionata}" />
+									<a4j:actionparam name="tipoId" value="20"
+										assignTo="#{pMonitorBean.tipologiaSelezionata}" />
+									<a4j:support event="onclick"
+										onsubmit="if (!confirm('Procedere con l\'operazione?')) return false" />
+								</a4j:commandButton>
+								<a4j:commandButton value="Invio"
+									rendered="#{row.acqStatus eq 'E'}" styleClass="redButton"
+									disabled="#{!row.acqProcessable}"
+									action="#{pMonitorBean.submit}" reRender="prcForm, cmdForm">
+									<a4j:actionparam name="fonteId" value="#{row.fonte.id}"
+										assignTo="#{pMonitorBean.fonteDatiSelezionata}" />
+									<a4j:actionparam name="tipoId" value="20"
+										assignTo="#{pMonitorBean.tipologiaSelezionata}" />
+									<a4j:support event="onclick"
+										onsubmit="if (!confirm('Procedere con l\'operazione?')) return false" />
+								</a4j:commandButton>
+								<br />
+								<rich:spacer height="15px" />
+								<a4j:commandLink action="#{cMonitorBean.doCaricaLog}"
+									reRender="commandLogPage" title="Visualizza Log Acquisizione"
+									oncomplete="Richfaces.showModalPanel('commandLogModalBox'); return false;">
+									<h:outputText value="#{row.acqDescription}" />
+									<a4j:actionparam name="idcommand" value="#{row.acqCommandId}"
+										assignTo="#{cMonitorBean.commandIdSelezionato}" />
+									<a4j:actionparam name="pagecommandlog"
+										value="/jsp/protected/monitor/commandLog.xhtml"
+										assignTo="#{cMonitorBean.commandLogPage}" />
+									<a4j:actionparam name="meseCorr" value="#{cMonitorBean.meseCorr}"
+										assignTo="#{cMonitorBean.meseSelezionato}" />
+									<a4j:actionparam name="annoCorr" value="#{cMonitorBean.annoCorr}"
+										assignTo="#{cMonitorBean.annoSelezionato}" />
+								</a4j:commandLink>
+							</center>
+						</rich:column>
+						<rich:column>
+							<f:facet name="header">
+								<h:outputText value="Trattamento" />
+							</f:facet>
+							<center>
+								<h:graphicImage rendered="#{!row.trtProcessable}"
+									value="/images/wait.gif" />
+								<br />
+								<rich:spacer height="15px" />
+								<a4j:commandLink action="#{cMonitorBean.doCaricaLog}"
+									reRender="commandLogPage" title="Visualizza Log Trattamento"
+									oncomplete="Richfaces.showModalPanel('commandLogModalBox'); return false;">
+									<h:outputText value="#{row.trtStatus}" />
+									<a4j:actionparam name="idcommand" value="#{row.trtCommandId}"
+										assignTo="#{cMonitorBean.commandIdSelezionato}" />
+									<a4j:actionparam name="pagecommandlog"
+										value="/jsp/protected/monitor/commandLog.xhtml"
+										assignTo="#{cMonitorBean.commandLogPage}" />
+									<a4j:actionparam name="meseCorr" value="#{cMonitorBean.meseCorr}"
+										assignTo="#{cMonitorBean.meseSelezionato}" />
+									<a4j:actionparam name="annoCorr" value="#{cMonitorBean.annoCorr}"
+										assignTo="#{cMonitorBean.annoSelezionato}" />
+								</a4j:commandLink>
+							</center>
+						</rich:column>
+					</rich:dataTable>
+
+					<rich:spacer width="8px" />
+
+					<rich:dataTable width="100%" var="row"
+						value="#{pMonitorBean.listaMonitorE}" id="listMonitorETable"
+						onRowMouseOver="this.style.backgroundColor='#F1F1F1'"
+						onRowMouseOut="this.style.backgroundColor='#{a4jSkin.tableBackgroundColor}'">
+						<f:facet name="header">
+							<h:outputText value="Fonti esterne" />
+						</f:facet>
+						<rich:column width="18px">
+							<f:facet name="header">
+								<h:outputText value="" />
+							</f:facet>
+							<h:graphicImage value="/images/uploadIcon.gif" width="18px"
+								title="Upload file" style="cursor:pointer">
+								<a4j:support event="onclick"
+									action="#{pMonitorBean.doCaricaDirFiles}" reRender="uplForm"
+									oncomplete="Richfaces.showModalPanel('uplModalBox'); return false;">
+									<a4j:actionparam name="idfonte" value="#{row.fonte.id}"
+										assignTo="#{pMonitorBean.fonteDatiSelezionata}" />
+								</a4j:support>
+							</h:graphicImage>
+						</rich:column>
+						<rich:column>
+							<f:facet name="header">
+								<h:outputText value="Fonte" />
+							</f:facet>
+							<h:outputText value="#{row.fonte.descrizione}" />
+						</rich:column>
+						<rich:column>
+							<f:facet name="header">
+								<h:outputText value="Reperimento" />
+							</f:facet>
+							<center>
+								<a4j:commandButton value="Invio"
+									rendered="#{row.repStatus eq 'F'}"
+									styleClass="greenButton" disabled="#{!row.repProcessable}"
+									action="#{pMonitorBean.submit}" reRender="prcForm, cmdForm">
+									<a4j:actionparam name="fonteId" value="#{row.fonte.id}"
+										assignTo="#{pMonitorBean.fonteDatiSelezionata}" />
+									<a4j:actionparam name="tipoId" value="10"
+										assignTo="#{pMonitorBean.tipologiaSelezionata}" />
+									<a4j:support event="onclick"
+										onsubmit="if (!confirm('Procedere con l\'operazione?')) return false" />
+								</a4j:commandButton>
+								<a4j:commandButton value="Invio"
+									rendered="#{row.repStatus eq 'W'}"
+									styleClass="orangeButton" disabled="#{!row.repProcessable}"
+									action="#{pMonitorBean.submit}" reRender="prcForm, cmdForm">
+									<a4j:actionparam name="fonteId" value="#{row.fonte.id}"
+										assignTo="#{pMonitorBean.fonteDatiSelezionata}" />
+									<a4j:actionparam name="tipoId" value="10"
+										assignTo="#{pMonitorBean.tipologiaSelezionata}" />
+									<a4j:support event="onclick"
+										onsubmit="if (!confirm('Procedere con l\'operazione?')) return false" />
+								</a4j:commandButton>
+								<a4j:commandButton value="Invio"
+									rendered="#{row.repStatus eq 'I'}" styleClass="yellowButton"
+									disabled="#{!row.repProcessable}"
+									action="#{pMonitorBean.submit}" reRender="prcForm, cmdForm">
+									<a4j:actionparam name="fonteId" value="#{row.fonte.id}"
+										assignTo="#{pMonitorBean.fonteDatiSelezionata}" />
+									<a4j:actionparam name="tipoId" value="10"
+										assignTo="#{pMonitorBean.tipologiaSelezionata}" />
+									<a4j:support event="onclick"
+										onsubmit="if (!confirm('Procedere con l\'operazione?')) return false" />
+								</a4j:commandButton>
+								<a4j:commandButton value="Invio"
+									rendered="#{row.repStatus eq 'E' }" styleClass="redButton"
+									disabled="#{!row.repProcessable}"
+									action="#{pMonitorBean.submit}" reRender="prcForm, cmdForm">
+									<a4j:actionparam name="fonteId" value="#{row.fonte.id}"
+										assignTo="#{pMonitorBean.fonteDatiSelezionata}" />
+									<a4j:actionparam name="tipoId" value="10"
+										assignTo="#{pMonitorBean.tipologiaSelezionata}" />
+									<a4j:support event="onclick"
+										onsubmit="if (!confirm('Procedere con l\'operazione?')) return false" />
+								</a4j:commandButton>
+								<br />
+								<rich:spacer height="15px" />
+								<a4j:commandLink action="#{cMonitorBean.doCaricaLog}"
+									reRender="commandLogPage" title="Visualizza Log Reperimento"
+									oncomplete="Richfaces.showModalPanel('commandLogModalBox'); return false;">
+									<h:outputText value="#{row.repDescription}" />
+									<a4j:actionparam name="idcommand" value="#{row.repCommandId}"
+										assignTo="#{cMonitorBean.commandIdSelezionato}" />
+									<a4j:actionparam name="pagecommandlog"
+										value="/jsp/protected/monitor/commandLog.xhtml"
+										assignTo="#{cMonitorBean.commandLogPage}" />
+									<a4j:actionparam name="meseCorr" value="#{cMonitorBean.meseCorr}"
+										assignTo="#{cMonitorBean.meseSelezionato}" />
+									<a4j:actionparam name="annoCorr" value="#{cMonitorBean.annoCorr}"
+										assignTo="#{cMonitorBean.annoSelezionato}" />
+								</a4j:commandLink>
+							</center>
+						</rich:column>
+						<rich:column>
+							<f:facet name="header">
+								<h:outputText value="Acquisizione" />
+							</f:facet>
+							<center>
+								<a4j:commandButton value="Invio"
+									rendered="#{row.acqStatus eq 'F'}"
+									styleClass="greenButton" disabled="#{!row.acqProcessable}"
+									action="#{pMonitorBean.submit}" reRender="prcForm, cmdForm">
+									<a4j:actionparam name="fonteId" value="#{row.fonte.id}"
+										assignTo="#{pMonitorBean.fonteDatiSelezionata}" />
+									<a4j:actionparam name="tipoId" value="20"
+										assignTo="#{pMonitorBean.tipologiaSelezionata}" />
+									<a4j:support event="onclick"
+										onsubmit="if (!confirm('Procedere con l\'operazione?')) return false" />
+								</a4j:commandButton>
+								<a4j:commandButton value="Invio"
+									rendered="#{row.acqStatus eq 'W'}"
+									styleClass="orangeButton" disabled="#{!row.acqProcessable}"
+									action="#{pMonitorBean.submit}" reRender="prcForm, cmdForm">
+									<a4j:actionparam name="fonteId" value="#{row.fonte.id}"
+										assignTo="#{pMonitorBean.fonteDatiSelezionata}" />
+									<a4j:actionparam name="tipoId" value="20"
+										assignTo="#{pMonitorBean.tipologiaSelezionata}" />
+									<a4j:support event="onclick"
+										onsubmit="if (!confirm('Procedere con l\'operazione?')) return false" />
+								</a4j:commandButton>
+								<a4j:commandButton value="Invio"
+									rendered="#{row.acqStatus eq 'I'}" styleClass="yellowButton"
+									disabled="#{!row.acqProcessable}"
+									action="#{pMonitorBean.submit}" reRender="prcForm, cmdForm">
+									<a4j:actionparam name="fonteId" value="#{row.fonte.id}"
+										assignTo="#{pMonitorBean.fonteDatiSelezionata}" />
+									<a4j:actionparam name="tipoId" value="20"
+										assignTo="#{pMonitorBean.tipologiaSelezionata}" />
+									<a4j:support event="onclick"
+										onsubmit="if (!confirm('Procedere con l\'operazione?')) return false" />
+								</a4j:commandButton>
+								<a4j:commandButton value="Invio"
+									rendered="#{row.acqStatus eq 'E'}" styleClass="redButton"
+									disabled="#{!row.acqProcessable}"
+									action="#{pMonitorBean.submit}" reRender="prcForm, cmdForm">
+									<a4j:actionparam name="fonteId" value="#{row.fonte.id}"
+										assignTo="#{pMonitorBean.fonteDatiSelezionata}" />
+									<a4j:actionparam name="tipoId" value="20"
+										assignTo="#{pMonitorBean.tipologiaSelezionata}" />
+									<a4j:support event="onclick"
+										onsubmit="if (!confirm('Procedere con l\'operazione?')) return false" />
+								</a4j:commandButton>
+								<br />
+								<rich:spacer height="15px" />
+								<a4j:commandLink action="#{cMonitorBean.doCaricaLog}"
+									reRender="commandLogPage" title="Visualizza Log Acquisizione"
+									oncomplete="Richfaces.showModalPanel('commandLogModalBox'); return false;">
+									<h:outputText value="#{row.acqDescription}" />
+									<a4j:actionparam name="idcommand" value="#{row.acqCommandId}"
+										assignTo="#{cMonitorBean.commandIdSelezionato}" />
+									<a4j:actionparam name="pagecommandlog"
+										value="/jsp/protected/monitor/commandLog.xhtml"
+										assignTo="#{cMonitorBean.commandLogPage}" />
+									<a4j:actionparam name="meseCorr" value="#{cMonitorBean.meseCorr}"
+										assignTo="#{cMonitorBean.meseSelezionato}" />
+									<a4j:actionparam name="annoCorr" value="#{cMonitorBean.annoCorr}"
+										assignTo="#{cMonitorBean.annoSelezionato}" />
+								</a4j:commandLink>
+							</center>
+						</rich:column>
+						<rich:column>
+							<f:facet name="header">
+								<h:outputText value="Trattamento" />
+							</f:facet>
+							<center>
+								<h:graphicImage rendered="#{!row.trtProcessable}"
+									value="/images/wait.gif" />
+								<br />
+								<rich:spacer height="15px" />
+								<a4j:commandLink action="#{cMonitorBean.doCaricaLog}"
+									reRender="commandLogPage" title="Visualizza Log Trattamento"
+									oncomplete="Richfaces.showModalPanel('commandLogModalBox'); return false;">
+									<h:outputText value="#{row.trtStatus}" />
+									<a4j:actionparam name="idcommand" value="#{row.trtCommandId}"
+										assignTo="#{cMonitorBean.commandIdSelezionato}" />
+									<a4j:actionparam name="pagecommandlog"
+										value="/jsp/protected/monitor/commandLog.xhtml"
+										assignTo="#{cMonitorBean.commandLogPage}" />
+									<a4j:actionparam name="meseCorr" value="#{cMonitorBean.meseCorr}"
+										assignTo="#{cMonitorBean.meseSelezionato}" />
+									<a4j:actionparam name="annoCorr" value="#{cMonitorBean.annoCorr}"
+										assignTo="#{cMonitorBean.annoSelezionato}" />
+								</a4j:commandLink>
+							</center>
+						</rich:column>
+					</rich:dataTable>
+				</h:panelGrid>
+			</h:form>
+
+			<rich:spacer height="30px" />
+
+			<h:form id="cmdForm">
+
+				<h:panelGrid columns="2">
+
+					<h:outputLabel value="Fonte dati" />
+					<h:selectOneMenu id="fonte"
+						value="#{cMonitorBean.fonteSelezionata}">
+						<f:selectItem itemLabel="-seleziona-" itemValue="" />
+						<f:selectItems value="#{cMonitorBean.listaFonti}" />
+						<a4j:support event="onchange"
+							action="#{cMonitorBean.doCaricaListaRCommand}" reRender="cmdForm"></a4j:support>
+					</h:selectOneMenu>
+
+				</h:panelGrid>
+
+				<rich:tabPanel switchType="ajax">
+					<rich:tab label="Diagnostica di controllo"
+						action="#{cMonitorBean.doCaricaListaRCommand}"
+						reRender="commandList1">
+						<a4j:actionparam name="idtype" value="31"
+							assignTo="#{cMonitorBean.commandTypeSelezionato}" />
+						<a4j:include id="commandList1"
+							viewId="/jsp/protected/monitor/command.xhtml" />
+					</rich:tab>
+					<rich:tab label="Diagnostica di confronto"
+						action="#{cMonitorBean.doCaricaListaRCommand}"
+						reRender="commandList2">
+						<a4j:actionparam name="idtype" value="32"
+							assignTo="#{cMonitorBean.commandTypeSelezionato}" />
+						<a4j:include id="commandList2"
+							viewId="/jsp/protected/monitor/command.xhtml" />
+					</rich:tab>
+					<rich:tab label="Correlazione"
+						action="#{cMonitorBean.doCaricaListaRCommand}"
+						reRender="commandList3">
+						<a4j:actionparam name="idtype" value="33"
+							assignTo="#{cMonitorBean.commandTypeSelezionato}" />
+						<a4j:include id="commandList3"
+							viewId="/jsp/protected/monitor/command.xhtml" />
+					</rich:tab>
+					<rich:tab label="Elaborazioni"
+						action="#{cMonitorBean.doCaricaListaRCommand}"
+						reRender="commandList4">
+						<a4j:actionparam name="idtype" value="34"
+							assignTo="#{cMonitorBean.commandTypeSelezionato}" />
+						<a4j:include id="commandList4"
+							viewId="/jsp/protected/monitor/command.xhtml" />
+					</rich:tab>
+				</rich:tabPanel>
+
+			</h:form>
+		</rich:panel>
+
+	</ui:define>
+
+</ui:composition>
+
+</html>

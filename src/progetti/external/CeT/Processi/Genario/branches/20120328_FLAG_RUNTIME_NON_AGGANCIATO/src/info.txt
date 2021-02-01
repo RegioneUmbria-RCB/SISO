@@ -1,0 +1,27 @@
+DIPENDENZE GENARIO
+
+
+Java Build Path
+
+- Project:
+	- CT_Config_Data_Model
+	- Indice_Data_Model
+	- REGeneric
+	- REProcess
+	- webredutils
+			
+	
+- Libraries:
+	 commons-beanutils.jar		(REGeneric/lib)
+	 commons-codec.jar			(REGeneric/lib)
+	 commons-dbutils.jar		(REGeneric/lib)
+	 jdom-1.0.jar				(REGeneric/lib)
+	 simmetrics.jar				(REGeneric/lib)
+			 
+	 EAR Libraries
+	 JBoss 5.1 Runtime
+	 JRE System Library
+	
+			 
+
+			

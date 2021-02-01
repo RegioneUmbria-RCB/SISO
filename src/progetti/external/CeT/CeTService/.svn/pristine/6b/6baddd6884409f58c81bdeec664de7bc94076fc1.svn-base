@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings
+  xmlns="http://java.sun.com/xml/ns/persistence/orm"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
+  version="2.0">
+
+	<named-query name="SitTTarBpVers.getVersamentoByNumBollettino">
+		<query>
+			<![CDATA[
+				select d from SitTTarBpVers d
+				where d.numBollettino= :numBollettino
+			 ]]>
+		</query>
+	</named-query>
+
+	<named-query name="SitTIciDmVers.getListaVersamentiByCF">
+		<query>
+			<![CDATA[
+				select d from SitTIciDmVers d
+				where d.cfVersante= :codfisc
+				order by d.prog
+			 ]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SitTIciDmVers.getListaVersamentiByCFAnno">
+		<query>
+			<![CDATA[
+				select d from SitTIciDmVers d
+				where d.cfVersante= :codfisc
+				and d.annoImposta= :anno
+				order by d.prog
+			 ]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SitTIciDmViolazione.getListaViolazioniByCF">
+		<query>
+			<![CDATA[
+				select d from SitTIciDmViolazione d
+				where d.cfVersante= :codfisc
+				order by d.prog
+			 ]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SitTIciDmDecode.getDescrizioneByCodValue">
+		<query>
+			<![CDATA[
+				select d.descrizione from SitTIciDmDecode d
+				where d.id.campo= :nomeCampo and d.id.valore= :valore
+			 ]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SitTIciDmAnag.getListaSoggettoByIdExt">
+		<query>
+			<![CDATA[
+				select d from SitTIciDmAnag d
+				where d.idExt= :idExt 
+			 ]]>
+		</query>
+	</named-query>
+	
+	
+</entity-mappings>

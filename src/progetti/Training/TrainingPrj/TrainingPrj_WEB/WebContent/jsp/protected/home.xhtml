@@ -1,0 +1,55 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:webred="http://java.sun.com/jsf/composite/webred">
+
+<ui:composition template="/jsp/protected/layout/layout.xhtml">
+
+	<ui:define name="content">
+		<h:form id="frmBenvenuto">
+			<p:panel header="Pagina iniziale TrainingPrj" footer="TrainingPrj" toggleable="true">
+				<p:panel>
+					<p:panelGrid>				
+						<f:facet name="header">
+							<p:row>  
+								<p:column colspan="2">  
+			            			<h:outputText value="Benvenuto" /> 
+			        			</p:column>  
+			    			</p:row>
+						</f:facet>				
+		    			<p:row>  
+							<p:column style="width: 30%;">  
+		            			<h:outputText value="Inserire messaggio di saluto" /> 
+		        			</p:column> 
+		        			<p:column style="width: 70%;">  
+		            			<p:inputText style="width: 95%;" value="#{homeBean.messaggio}"/>
+		        			</p:column>  
+		    			</p:row>
+		    			<p:row>  
+							<p:column colspan="2" style="text-align: center;">  
+		            			<p:commandButton value="Invia messaggio" update="lblRisposta" actionListener="#{homeBean.inviaMessaggio}" />
+		        			</p:column>  
+		    			</p:row>
+		    			<p:row>  
+							<p:column>  
+		            			<h:outputText value="TrainingPrj risponde:" />
+		        			</p:column> 
+		        			<p:column>  
+		            			<h:outputText id="lblRisposta" value="#{homeBean.risposta}"/> 
+		        			</p:column>  
+		    			</p:row>	    			
+					</p:panelGrid>
+				</p:panel>
+				<p:spacer height="20px" width="100%"/>
+				<webred:pnlAna iDatiAna="#{manDatiAnaBean}" />
+				<p:spacer height="20px" width="100%"/>
+			</p:panel>			
+		</h:form>
+	</ui:define>
+
+</ui:composition>
+
+</html>

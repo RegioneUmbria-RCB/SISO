@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings
+  xmlns="http://java.sun.com/xml/ns/persistence/orm"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
+  version="2.0">
+  
+	<named-query name="PregeoInfo.getInfoByFP">
+		<query>
+			<![CDATA[
+				SELECT i 
+				FROM PregeoInfo i
+				WHERE LPAD(i.foglio,4,'0') = LPAD(:foglio,4,'0')
+				  AND LPAD(i.particella, 5, '0')  = LPAD(:particella, 5, '0')  
+			]]>
+		</query>
+	</named-query>
+	<named-query name="PregeoInfo.getInfoByFPData">
+		<query>
+			<![CDATA[
+				SELECT i 
+				FROM PregeoInfo i
+				WHERE LPAD(i.foglio,4,'0') = LPAD(:foglio,4,'0')
+				  AND LPAD(i.particella, 5, '0')  = LPAD(:particella, 5, '0')  
+				  AND i.dataPregeo <= :data
+			]]>
+		</query>
+	</named-query>
+	<named-query name="PregeoInfo.getInfoByFsP">
+		<query>
+			<![CDATA[
+				SELECT i 
+				FROM PregeoInfo i
+				WHERE LPAD(substr(i.foglio,0,3),4,'0') = LPAD(:foglio,4,'0')
+				  AND LPAD(i.particella, 5, '0')  = LPAD(:particella, 5, '0')  
+			]]>
+		</query>
+	</named-query>
+	<named-query name="PregeoInfo.getInfoByFsPData">
+		<query>
+			<![CDATA[
+				SELECT i 
+				FROM PregeoInfo i
+				WHERE LPAD(substr(i.foglio,0,3),4,'0') = LPAD(:foglio,4,'0')
+				  AND LPAD(i.particella, 5, '0')  = LPAD(:particella, 5, '0')  
+				  AND i.dataPregeo <= :data
+			]]>
+		</query>
+	</named-query>
+	<named-query name="PregeoInfo.getListaParticellaByNomeFile">
+		<query>
+			<![CDATA[
+				SELECT particella 
+				FROM PregeoInfo i
+				WHERE i.nomeFilePdf = :nomeFile
+			]]>
+		</query>
+	</named-query>
+</entity-mappings>	

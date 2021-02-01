@@ -1,0 +1,56 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+     	xmlns:h="http://java.sun.com/jsf/html"
+		xmlns:f="http://java.sun.com/jsf/core"
+		xmlns:ui="http://java.sun.com/jsf/facelets"
+		xmlns:p="http://primefaces.org/ui"
+	  	xmlns:composite="http://java.sun.com/jsf/composite"
+	  	xmlns:webred="http://java.sun.com/jsf/composite/webred">
+      
+	<h:head>
+		<title>Data validità</title>
+	</h:head>
+	<h:body>
+		<composite:interface componentType="pnlDataValidita">
+			<composite:attribute name="iDatiVal" type="it.webred.cs.jsf.interfaces.IDatiValidita" required="true"/>
+			<composite:attribute name="panelStyleClass" required="false"/>
+			<composite:attribute name="disableModifica" default="false"/>
+		</composite:interface>
+		<composite:implementation>
+			
+			<h:panelGrid columns="1" cellpadding="0" cellspacing="0" styleClass="#{cc.attrs.panelStyleClass}">
+
+			<h:panelGrid columns="9" cellpadding="0" cellspacing="0">
+				<h:outputText value="Data inizio" />
+				<p:spacer width="10" />
+				<p:calendar value="#{cc.attrs.iDatiVal.dataInizio}" pattern="dd/MM/yyyy" converterMessage="Data non valida"
+					disabled="#{cc.attrs.disableModifica}">
+					<p:ajax event="dateSelect" partialSubmit="true" />
+				</p:calendar>
+				<p:spacer width="10" />
+				<h:outputText value="Data fine" rendered="#{cc.attrs.iDatiVal.finito}" />
+				<p:spacer width="10" rendered="#{cc.attrs.iDatiVal.finito}" />
+				<p:calendar value="#{cc.attrs.iDatiVal.dataFine}" pattern="dd/MM/yyyy" disabled="#{cc.attrs.disableModifica}" converterMessage="Data non valida"
+					rendered="#{cc.attrs.iDatiVal.finito}" >
+					<f:attribute name="startDate" value="#{cc.attrs.iDatiVal.dataInizio}" />
+					<f:validator validatorId="dateRangeValidator" />
+				</p:calendar>
+				<p:spacer width="10" />
+				<h:outputText value="(gg/mm/aaaa)" style="font-size: 12px;" />
+				<p:spacer width="20" rendered="#{!cc.attrs.iDatiVal.finito}" />
+				<p:graphicImage id="lblInfoInserimento" rendered="#{rowComp.id!=null}" value="/images/info.png"/>
+           		<p:tooltip for="lblInfoInserimento" rendered="#{rowComp.id!=null}">
+						<h:outputText value="Operatore e data inserimento: " ></h:outputText>
+						<h:outputText value="#{cc.attrs.iDatiVal.usrInserimento} " ></h:outputText>
+						<h:outputText value="#{cc.attrs.iDatiVal.dataInserimento}" >
+								<f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+						</h:outputText>		
+           		</p:tooltip>	
+			</h:panelGrid>
+
+			</h:panelGrid>
+					
+		</composite:implementation>
+	</h:body>
+		
+</html>

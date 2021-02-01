@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:webredcs="http://java.sun.com/jsf/composite/webredcs"
+	xmlns:webred="http://java.sun.com/jsf/composite/webred">
+
+<h:body>
+
+	<composite:interface componentType="pnlGestioneEsportazione">
+		<composite:attribute name="styleClass" />
+		<composite:attribute name="widgetVar" />
+		<composite:attribute name="dettaglio" />
+		<composite:attribute name="gestisciEsportazioneAction" method-signature="void action(java.lang.Object)" />
+		<composite:attribute name="pnlToUpdate"/>
+	</composite:interface>
+
+	<composite:implementation>
+
+
+		<p:dialog widgetVar="#{cc.attrs.widgetVar}" modal="true"
+			message="Correzione parametri non corretti per esportare erogazione"
+			header="Gestione Erogazione" severity="alert" id="confirmDialog"
+			closable="false" resizable="false" position="center"
+			styleClass="dialog">
+			<h:panelGrid columns="2">
+				<h:outputLabel value="Beneficiario:" />
+				<h:outputLabel value="#{fglInterventoBean.soggettoNuovaErogazione.cognome} #{fglInterventoBean.soggettoNuovaErogazione.nome}" style="font-weight:bold;" />
+			</h:panelGrid>
+			<p:tabView id="esportazioneTabView">
+				<p:tab title="Gestione Erogazione">
+					<h:panelGrid columns="3" id="pnlGestEsportazione">
+						<p:outputLabel id="lblPresoInCarico" for="cbxPresoInCarico" value="Durante il servizio il beneficiario è in carico? " style="display:block;width:200px" />
+						<p:selectOneRadio id="cbxPresoInCarico" value="#{cc.attrs.dettaglio.presaInCarico}">
+							<f:selectItems value="#{fglInterventoBean.erogazioneInterventoBean.listaOpzioniPresoInCarico}" />
+						</p:selectOneRadio>
+					</h:panelGrid>
+				</p:tab>
+				<p:tab title="Gestione SINA" rendered="#{fglInterventoBean.visualizzaSinaTab}" titletip="Sistema informativo per la non autosufficienza">
+					<ui:include src="/webredcs/pnlFglIntervento/sina.xhtml" />
+				</p:tab>
+			</p:tabView>
+
+			<webred:pnlSalvaEsci salvaAction="#{cc.attrs.gestisciEsportazioneAction}" 
+								   disabled="#{fglInterventoBean.readOnly and !fglInterventoBean.abilitaSalvataggio}"
+								   dialogToHide="#{cc.attrs.widgetVar}" pnlToUpdate=":#{p:component(cc.attrs.pnlToUpdate)}" />
+					
+		</p:dialog>
+
+
+	</composite:implementation>
+
+</h:body>
+</html>
+
+<!-- 
+ 
+              <webredcs:tooltipInfo title="Se si sceglie 'Non so' verrà rimandata ad una fase successiva la
+                 specifica sulla presa in carico o meno necessaria per l'invio della prestazione
+                 al casellario dell'assistenza" />
+    
+	
+	    -->

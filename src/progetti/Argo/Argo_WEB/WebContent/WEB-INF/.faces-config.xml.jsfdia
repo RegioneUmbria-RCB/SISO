@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PROCESS model-entity="JSFProcess">
+ <PROCESS-ITEM NAME="rules:" SHAPE="32,17,0,0" model-entity="JSFProcessGroup">
+  <PROCESS-ITEM ID="rules::0" NAME="item" model-entity="JSFProcessItem">
+   <PROCESS-ITEM-OUTPUT
+    ID="cs.newPeriod::#jsp#protected#periods#newPeriod.xhtml"
+    NAME="output" PATH="/jsp/protected/periods/newPeriod.xhtml"
+    TARGET="rules:#jsp#protected#periods#newPeriod.xhtml"
+    TITLE="cs.newPeriod" model-entity="JSFProcessItemOutput"/>
+  </PROCESS-ITEM>
+ </PROCESS-ITEM>
+ <PROCESS-ITEM NAME="rules:#jsp#protected#periods#newPeriod.xhtml"
+  PATH="/jsp/protected/periods/newPeriod.xhtml" SHAPE="240,33,0,0" model-entity="JSFProcessGroup"/>
+ <PROCESS-ITEM NAME="rules::1" SHAPE="32,129,0,0" model-entity="JSFProcessGroup">
+  <PROCESS-ITEM ID="rules::1" NAME="item" model-entity="JSFProcessItem">
+   <PROCESS-ITEM-OUTPUT ID="cs.home::#jsp#protected#periods#home.xhtml"
+    NAME="output" PATH="/jsp/protected/periods/home.xhtml"
+    TARGET="rules:#jsp#protected#periods#home.xhtml" TITLE="cs.home" model-entity="JSFProcessItemOutput"/>
+  </PROCESS-ITEM>
+ </PROCESS-ITEM>
+ <PROCESS-ITEM NAME="rules:#jsp#protected#periods#home.xhtml"
+  PATH="/jsp/protected/periods/home.xhtml" SHAPE="240,145,0,0" model-entity="JSFProcessGroup"/>
+</PROCESS>

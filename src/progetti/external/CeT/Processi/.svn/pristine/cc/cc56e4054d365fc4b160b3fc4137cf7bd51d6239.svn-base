@@ -1,0 +1,60 @@
+#--------------------------------------------------------------
+# File di configurazione in cui sono indicato i valori dei soli
+# parametri di contesto della catena jelly da passare alla 
+# regola 
+#------------------------------------------------------------
+# Numero di parametri previsti in input
+rengine.jchain.in.nof=14
+#------------------------------------------------------------
+# Le coppie chiavi/valore hanno come key lo stesso nome 
+# indicato nello script jelly xml
+#------------------------------------------------------------
+rengine.jchain.in.1.key=SQL_DATA_INI_RIF
+rengine.jchain.in.1.value=select max(DATA_INIZIO_VAL)+1 DATA_INI_RIF from SITICIVI
+rengine.jchain.in.2.key=SQL_CREATE_RE_WS_STRADA
+rengine.jchain.in.2.value=CREATE TABLE RE_WS_STRADA(\
+   COD_VIA             NUMBER (9),\
+   TOPONIMO            VARCHAR2 (200 BYTE),\
+   TOPO_VIA            VARCHAR2 (100 BYTE),\
+   TOPO1               VARCHAR2 (100 BYTE),\
+   TOPO2               VARCHAR2 (100 BYTE),\
+   TOPO3               VARCHAR2 (100 BYTE),\
+   TOPO4               VARCHAR2 (100 BYTE),\
+   TOPO5               VARCHAR2 (100 BYTE),\
+   COD_NAZIONALE       VARCHAR2 (4 BYTE),\
+   RE_FLAG_ELABORATO   CHAR (1 BYTE) DEFAULT 0,\
+   PROCESSID           VARCHAR2 (1000 BYTE),\
+   DT_EXP_DATO         DATE DEFAULT SYSDATE \
+)
+rengine.jchain.in.3.key=SQL_CREATE_RE_WS_CIVICO
+rengine.jchain.in.3.value=CREATE TABLE RE_WS_CIVICO(IDC               NUMBER(9), \
+ COORDX            NUMBER, COORDY            NUMBER, CIV_COMPLETO      VARCHAR2(100 Byte), \
+ INDIRIZZO         VARCHAR2(200 Byte), COD_VIA           NUMBER(9), TOPO_VIA          VARCHAR2(100 Byte), \
+ TOPO1             VARCHAR2(100 Byte), TOPO2             VARCHAR2(100 Byte), \
+ TOPO3             VARCHAR2(100 Byte), TOPO4             VARCHAR2(100 Byte), \
+ TOPO5             VARCHAR2(100 Byte), NUMERO            NUMBER(9), LETTERA           VARCHAR2(5 Byte), \
+ BARRA             VARCHAR2(5 Byte), COD_STATO         VARCHAR2(5 Byte), \
+ DESC_STATO        VARCHAR2(100 Byte), COD_NAZIONALE     CHAR(4 Byte),  DATA_APPLICAZIONE DATE, \
+ DATA_SOSPENSIONE  DATE, RESIDENZIALE      CHAR(1 Byte), ZDN               VARCHAR2(5 Byte), CAP               VARCHAR2(6 Byte), UTENTE            VARCHAR2(20 Byte), URL               VARCHAR2(200 Byte), RE_FLAG_ELABORATO CHAR(1 Byte) DEFAULT 0, PROCESSID         VARCHAR2(1000 Byte), DT_EXP_DATO       DATE DEFAULT SYSDATE )
+rengine.jchain.in.4.key=SQL_STRADE_TO_DELETE
+rengine.jchain.in.4.value=select distinct pkid_stra from sitidstr where data_fine_val > sysdate and pkid_stra not in (select distinct cod_via from re_ws_strada WHERE re_flag_elaborato = '0')
+rengine.jchain.in.5.key=SQL_STRADE_TO_UPDATE
+rengine.jchain.in.5.value=select dstr.pkid_stra , 'Aggiornato da: '||dstr.prefisso||' '||dstr.nome as note, TRIM(trailing '|'  from DECODE (UPPER(re.prefisso),UPPER(dstr.prefisso),null,'AGGR_TOPO.PREFISSO'||'|')|| DECODE (UPPER(re.descrizione),UPPER(DSTR.NOME),null,'AGGR_TOPO.NOME'||'|')) FIELDS from (SELECT DISTINCT cod_via pkid_stra,UPPER (topo_via) prefisso,UPPER (TRIM ( topo1 || ' ' || topo2 || ' '|| topo3|| ' '|| topo4 || ' '|| topo5)) descrizione,cod_nazionale,SYSDATE data_inizio_val,TO_DATE ('31/12/9999', 'dd/MM/yyyy') data_fine_val,'WS' utente,'SC' tipo,cod_via numero FROM re_ws_strada  WHERE re_flag_elaborato = '0') re, sitidstr dstr WHERE  re.pkid_stra = dstr.pkid_stra and (UPPER(re.prefisso) <> UPPER(dstr.prefisso) OR UPPER(re.descrizione) <> UPPER(DSTR.NOME))
+rengine.jchain.in.6.key=SQL_INSERT_SIT_CORRELAZIONE_VARIAZIONI
+rengine.jchain.in.6.value=INSERT INTO SIT_CORRELAZIONE_VARIAZIONI(id_dwh,fk_ente_sorgente,prog_es,tipo_dato,tipo_variazione,note, fields) VALUES (?,?,?,?,?,?,?)
+rengine.jchain.in.7.key=SQL_MERGE_AGGR_TOPO
+rengine.jchain.in.7.value=MERGE INTO AGGR_TOPO s USING (SELECT DISTINCT cod_via pkid_stra,UPPER (topo_via) prefisso,UPPER (TRIM ( topo1 || ' ' || topo2 || ' '|| topo3|| ' '|| topo4 || ' '|| topo5)) descrizione,cod_nazionale,SYSDATE data_inizio_val,TO_DATE ('31/12/9999', 'dd/MM/yyyy') data_fine_val,'WS' utente,'SC' tipo,cod_via numero FROM re_ws_strada WHERE re_flag_elaborato\= '0') e ON (s.pkid_topo\= e.pkid_stra) WHEN MATCHED THEN UPDATE SET s.note\= 'Aggiornato da\: '||s.prefisso||' '||s.nome, s.prefisso\= e.prefisso, S.NOME\= e.descrizione,s.data_inizio_val\= e.data_inizio_val,s.data_fine_val\= E.DATA_FINE_VAL,s.UTENTE\= e.utente where UPPER(s.prefisso)<>UPPER(e.prefisso) OR UPPER(s.nome)<>UPPER(e.descrizione) WHEN NOT MATCHED THEN INSERT (aggr_code,pkid_topo,prefisso,nome,cod_nazionale,data_inizio_val,data_fine_val,utente,tipo,numero,note) VALUES (1,e.pkid_stra, e.prefisso,e.descrizione, e.cod_nazionale,e.data_inizio_val,e.data_fine_val,e.utente, e.tipo,e.numero,null)
+rengine.jchain.in.8.key=SQL_MERGE_AGGR_LOCALIZZA
+rengine.jchain.in.8.value=MERGE INTO AGGR_LOCALIZZA s USING (SELECT DISTINCT WSC.IDC pkid_loc, cod_via pkid_topo, WSC.COD_NAZIONALE, CASE WHEN rtrim(trim(numero|| lettera||'/'|| barra),'/')<>civ_completo THEN civ_completo ELSE CASE WHEN TRIM (LEADING 0 FROM WSC.NUMERO) IS NOT NULL AND TRIM (LEADING 0 FROM WSC.LETTERA) IS NULL AND TRIM (LEADING 0 FROM WSC.BARRA) IS NULL THEN TRIM (LEADING 0 FROM WSC.NUMERO) WHEN TRIM (LEADING 0 FROM WSC.NUMERO) IS NOT NULL AND TRIM (LEADING 0 FROM WSC.LETTERA) IS NOT NULL AND TRIM (LEADING 0 FROM WSC.BARRA) IS NULL THEN TRIM (LEADING 0 FROM WSC.NUMERO) || '/' || TRIM (LEADING 0 FROM WSC.LETTERA) WHEN TRIM (LEADING 0 FROM WSC.NUMERO) IS NOT NULL AND TRIM (LEADING 0 FROM WSC.LETTERA) IS NOT NULL AND TRIM (LEADING 0 FROM WSC.BARRA) IS NOT NULL THEN TRIM (LEADING 0 FROM WSC.NUMERO) || '/' || TRIM (LEADING 0 FROM WSC.LETTERA) || '/' || TRIM (LEADING 0 FROM WSC.BARRA) WHEN TRIM (LEADING 0 FROM WSC.NUMERO) IS NOT NULL AND TRIM (LEADING 0 FROM WSC.LETTERA) IS NULL AND TRIM (LEADING 0 FROM WSC.BARRA) IS NOT NULL THEN TRIM (LEADING 0 FROM WSC.NUMERO) || '/' || TRIM (LEADING 0 FROM WSC.BARRA) END END CIV_COMPLETO, NVL(WSC.DATA_APPLICAZIONE, TO_DATE('01/01/0001','dd/MM/yyyy')) data_inizio_val,NVL(WSC.DATA_SOSPENSIONE, TO_DATE('31/12/9999','dd/MM/yyyy')) data_fine_val,'WS' utente, WSC.COORDX, WSC.COORDY FROM re_ws_civico wsc WHERE re_flag_elaborato\= '0' and cod_stato in (2,99)) e ON (s.pkid_loc\= e.pkid_loc) WHEN MATCHED THEN  UPDATE SET s.note\='Aggiornato '||TO_CHAR(SYSDATE,'dd/MM/yyyy'), S.NOME \= e.civ_completo,s.data_inizio_val\= e.data_inizio_val,s.data_fine_val\= E.DATA_FINE_VAL,s.UTENTE \= e.utente, s.shape \= sdo_tools.point(e.coordx,e.coordy,null)  where ( s.nome <> e.civ_completo OR s.data_inizio_val <> e.data_inizio_val OR s.data_fine_val<> e.data_fine_val OR SDO_GEOM.SDO_DISTANCE (s.shape, sdo_tools.point(e.coordx,e.coordy,null) , 0.005) > 0) WHEN NOT MATCHED THEN INSERT (pkid_loc,fkid_type,pkid_topo,cod_nazionale,nome,data_inizio_val,data_fine_val,utente,shape) VALUES (e.pkid_loc,'-1',e.pkid_topo,e.cod_nazionale,e.CIV_COMPLETO,e.data_inizio_val,e.data_fine_val,e.utente, mdsys.sdo_geometry(2001, null, mdsys.SDO_POINT_TYPE (e.coordx, e.coordy, NULL), NULL, NULL)) 
+rengine.jchain.in.9.key=SQL_CIV_TO_UPDATE
+rengine.jchain.in.9.value=select distinct idc, TRIM(trailing '|'  from DECODE (s.nome,e.civ_completo,null,'AGGR_LOCALIZZA.NOME|')|| DECODE (s.data_inizio_val,NVL(e.data_applicazione, TO_DATE('01/01/0001','dd/MM/yyyy')),null,'AGGR_LOCALIZZA.DATA_INIZIO_VAL|')|| DECODE (s.data_fine_val,NVL(e.data_sospensione, TO_DATE('31/12/9999','dd/MM/yyyy')),null,'AGGR_LOCALIZZA.DATA_FINE_VAL|')|| DECODE(SDO_GEOM.SDO_DISTANCE (s.shape, sdo_tools.point(e.coordx,e.coordy,null) , 0.005) , 0, null, 'AGGR_LOCALIZZA.SHAPE|')) fields from re_ws_civico e, aggr_localizza s where idc \= pkid_loc and ( s.nome <> e.civ_completo OR s.data_inizio_val <> NVL(e.data_applicazione, TO_DATE('01/01/0001','dd/MM/yyyy')) OR s.data_fine_val<> NVL(e.data_sospensione, TO_DATE('31/12/9999','dd/MM/yyyy')) or SDO_GEOM.SDO_DISTANCE (s.shape, sdo_tools.point(e.coordx,e.coordy,null) , 0.005) > 0 ) and E.COD_STATO in (2,99) and e.re_flag_elaborato\='0'
+rengine.jchain.in.10.key=SQL_SITIPART_RELATE
+rengine.jchain.in.10.value=SELECT COD_NAZIONALE, FOGLIO, PARTICELLA, SUB FROM SITIPART p WHERE p.DATA_FINE_VAL >= TO_DATE('31/12/9999','dd/MM/yyyy') AND SDO_RELATE(p.SHAPE, ? , ?)='TRUE'
+rengine.jchain.in.11.key=SQL_SITIUIU
+rengine.jchain.in.11.value=SELECT A.PKID_UIU  FROM SITIUIU A WHERE A.COD_NAZIONALE=? AND A.FOGLIO= ? AND A.PARTICELLA= ?  AND A.SUB= ? AND A.DATA_FINE_VAL= TO_DATE('31/12/9999','dd/MM/yyyy')
+rengine.jchain.in.12.key=SQL_INSERT_SITICIVI_UIU
+rengine.jchain.in.12.value=INSERT INTO SITICIVI_UIU (PKID_CIVI, PKID_UIU, DATA_INIZIO_VAL, DATA_FINE_VAL, UTENTE, PRINCIPALE) VALUES(?, ?, SYSDATE, TO_DATE('31/12/9999','dd/MM/yyyy'), 'WS', ? )
+rengine.jchain.in.13.key=SQL_SITICIVI_RELATE
+rengine.jchain.in.13.value=SELECT * FROM SITICIVI WHERE data_fine_val > SYSDATE AND SDO_RELATE(shape, ?, 'QUERYTYPE=WINDOW MASK=ANYINTERACT')='TRUE'
+rengine.jchain.in.14.key=SQL_PRESENZA_SITILOC_UIU_PRINCIPALE
+rengine.jchain.in.14.value=select count(*) from sitiloc_uiu where pkid_uiu= ? and fkid_type = -1 and principale='Y' and data_fine_val >= TO_DATE('31/12/9999','dd/MM/yyyy')

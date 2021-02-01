@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings
+  xmlns="http://java.sun.com/xml/ns/persistence/orm"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
+  version="2.0">
+
+	<!-- Query FabbricatoExRurale -->
+	<named-query name="FabbricatoExRurale.getListaBySezFPS">
+		<query>
+			<![CDATA[
+				SELECT f FROM FabbricatoExRurale f
+				WHERE f.sezione = :sezione
+				AND LPAD(f.foglio,4,'0') = LPAD(:foglio,4,'0')
+				AND LPAD(f.particella,5,'0') = LPAD(:particella,5,'0')
+				AND LPAD(f.sub,4,'0') = LPAD(:subalterno,4,'0')
+			 ]]>
+		</query>
+	</named-query>
+	
+	<named-query name="FabbricatoExRurale.getListaByFPS">
+		<query>
+			<![CDATA[
+				SELECT f FROM FabbricatoExRurale f
+				WHERE (f.sezione IS NULL OR f.sezione = '')
+				AND LPAD(f.foglio,4,'0') = LPAD(:foglio,4,'0')
+				AND LPAD(f.particella,5,'0') = LPAD(:particella,5,'0')
+				AND LPAD(f.sub,4,'0') = LPAD(:subalterno,4,'0')
+			 ]]>
+		</query>
+	</named-query>
+	<named-query name="FabbricatoExRurale.getListaBySezFPSubNull">
+		<query>
+			<![CDATA[
+				SELECT f FROM FabbricatoExRurale f
+				WHERE f.sezione = :sezione
+				AND LPAD(f.foglio,4,'0') = LPAD(:foglio,4,'0')
+				AND LPAD(f.particella,5,'0') = LPAD(:particella,5,'0')
+				AND f.sub IS NULL
+			 ]]>
+		</query>
+	</named-query>
+	
+	<named-query name="FabbricatoExRurale.getListaByFPSubNull">
+		<query>
+			<![CDATA[
+				SELECT f FROM FabbricatoExRurale f
+				WHERE (f.sezione IS NULL OR f.sezione = '')
+				AND LPAD(f.foglio,4,'0') = LPAD(:foglio,4,'0')
+				AND LPAD(f.particella,5,'0') = LPAD(:particella,5,'0')
+				AND f.sub IS NULL
+			 ]]>
+		</query>
+	</named-query>
+	
+		<!-- Query FabbricatoExRurale -->
+	<named-query name="FabbricatoMaiDichiarato.getListaBySezFP">
+		<query>
+			<![CDATA[
+				SELECT f FROM FabbricatoMaiDichiarato f
+				WHERE f.sezione = :sezione
+				AND LPAD(f.foglio,4,'0') = LPAD(:foglio,4,'0')
+				AND LPAD(f.particella,5,'0') = LPAD(:particella,5,'0')
+			 ]]>
+		</query>
+	</named-query>
+	
+	<named-query name="FabbricatoMaiDichiarato.getListaByFP">
+		<query>
+			<![CDATA[
+				SELECT f FROM FabbricatoMaiDichiarato f
+				WHERE (f.sezione IS NULL OR f.sezione = '')
+				AND LPAD(f.foglio,4,'0') = LPAD(:foglio,4,'0')
+				AND LPAD(f.particella,5,'0') = LPAD(:particella,5,'0')
+			 ]]>
+		</query>
+	</named-query>
+	
+
+</entity-mappings>

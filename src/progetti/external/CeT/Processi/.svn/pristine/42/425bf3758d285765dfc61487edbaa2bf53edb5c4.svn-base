@@ -1,0 +1,27 @@
+#UNICO SP
+B.codfisc.start=556
+B.codfisc.end=572
+#UNICO ENC
+D.codfisc.start=556
+D.codfisc.end=572
+#UNICO PF
+A.codfisc.start=106
+A.codfisc.end=122
+
+rigafabb.start=82
+rigafabb.startwith1=RA
+rigafabb.startwith2=RB
+rigafabb.startwith3=FA
+rigafabb.split=RB
+
+col.1=rendita
+col.2=utilizzo
+col.3=giorni
+col.4=possesso
+col.5=canloc
+col.6=casipart
+col.7=cont
+col.8=imponibile
+col.9=aquila
+col.10=comune
+col.11=ici

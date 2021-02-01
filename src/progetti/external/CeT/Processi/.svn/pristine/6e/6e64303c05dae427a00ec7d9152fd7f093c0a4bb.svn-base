@@ -1,0 +1,10 @@
+#------------------------------------------------------------
+# File di config della regola
+#------------------------------------------------------------
+rengine.rule.class=it.webred.rulengine.brick.elab.portaleServiziMonza.Avvocatura
+rengine.rule.cc=PS-AVVOCAT
+rengine.rule.number.params.in=0
+rengine.rule.number.params.out=0
+#------------------------------------------------------------
+# parametri di input
+#------------------------------------------------------------

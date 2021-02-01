@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings
+  xmlns="http://java.sun.com/xml/ns/persistence/orm"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
+  version="2.0">
+
+	<!-- Query SIT_C_CONC_INDIRIZZI -->
+	<named-query name="SitCConcIndirizzi.getListaVieLike">
+		<query>
+			<![CDATA[
+				SELECT DISTINCT TRIM(v.sedime||' '||v.indirizzo)
+				FROM SitCConcIndirizzi v
+				WHERE (v.dtFineVal IS NULL OR v.dtFineVal >= :dtRif )
+				AND TRIM(v.sedime||' '||v.indirizzo) LIKE '%'||:via||'%' 
+				ORDER BY TRIM(v.sedime||' '||v.indirizzo)
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SitCConcIndirizzi.getListaCiviciByVia">
+		<query>
+			<![CDATA[
+				SELECT DISTINCT v.civLiv1 
+				FROM SitCConcIndirizzi v
+				WHERE (v.dtFineVal IS NULL OR v.dtFineVal >= :dtRif )
+				AND TRIM(v.sedime||' '||v.indirizzo) = :via 
+				ORDER BY v.civLiv1
+			]]>
+		</query>
+	</named-query>
+	
+	<!-- Query SIT_C_CONC_PERSONA -->
+	<named-query name="SitCConcPersona.getListaTitoloSoggetto">
+		<query>
+			<![CDATA[
+				SELECT DISTINCT v.titolo 
+				FROM SitCConcPersona v
+				ORDER BY v.titolo
+			]]>
+		</query>
+	</named-query>
+	
+	<!-- Query SIT_C_PERSONA -->
+	<named-query name="SitCConcPersona.getListaSoggettiByCognomeNomeDenom">
+		<query>
+			<![CDATA[
+				SELECT DISTINCT p.cognome, p.nome, p.denominazione
+				FROM SitCPersona p
+				WHERE TRIM(p.cognome||' '||p.nome) LIKE '%'||:denominazione||'%'
+				OR p.denominazione LIKE '%'||:denominazione||'%'
+				ORDER BY p.denominazione, p.cognome, p.nome
+			]]>
+		</query>
+	</named-query>
+	<!-- Query SIT_C_CONCESSIONI -->
+	<named-query name="SitCConcessioni.getListaProtocolloAnno">
+		<query>
+			<![CDATA[
+				SELECT DISTINCT TO_CHAR(c.protocolloData,'yyyy') 
+				FROM SitCConcessioni c
+				WHERE c.protocolloData IS NOT NULL
+				ORDER BY TO_CHAR(c.protocolloData,'yyyy')
+			]]>
+		</query>
+	</named-query>
+	<named-query name="SitCConcessioni.getListaProgressivoAnno">
+		<query>
+			<![CDATA[
+				SELECT DISTINCT c.progressivoAnno 
+				FROM SitCConcessioni c
+				WHERE c.progressivoAnno IS NOT NULL
+				ORDER BY c.progressivoAnno
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SitCConcessioni.getConcessioniByIndirizziFP">
+		<query>
+			<![CDATA[
+				SELECT c FROM SitCConcessioni c, SitCivicoTotale ct
+				WHERE c.id = ct.id.idDwh
+			    AND ct.id.fkEnteSorgente = 3
+			    AND ct.id.progEs = 2
+			    AND ct.fkCivico IN (
+				   SELECT DISTINCT ct.fkCivico
+				   FROM SiticiviUiu cu, Sitiuiu u, SitCivicoTotale ct
+				   WHERE u.id.foglio = :foglio
+				   AND u.id.particella = LPAD (:particella, 5, '0')
+				   AND cu.id.pkidUiu = u.id.pkidUiu
+				   AND cu.id.pkidCivi = ct.id.idDwh
+				   AND ct.id.fkEnteSorgente = 4
+			       AND ct.id.progEs = 2
+				)
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SitCConcIndirizzi.getListaIndirizziByIdExtConc">
+		<query>
+			<![CDATA[
+				select ind from SitCConcIndirizzi ind 
+				where ind.idExtCConcessioni = :idExtConcessione 
+				and ind.dtFineVal is null or ind.dtFineVal >= :dataRif
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SitCConcessioniCatasto.getListaImmobiliByIdExtConc">
+		<query>
+			<![CDATA[
+				select cc from SitCConcessioniCatasto cc 
+				where cc.idExtCConcessioni = :idExtConcessione 
+				and cc.dtFineVal is null or cc.dtFineVal >= :dataRif
+			]]>
+		</query>
+	</named-query>
+	
+	
+	
+	<!-- Join SIT_C_CONCESSIONI_CATASTO/SIT_C_CONCESSIONI_CATASTO -->
+	<named-query name="Join_SitCConcessioni_SitCConcessioniCatasto.getConcessioneByFP">
+		<query>
+			<![CDATA[
+				SELECT distinct c FROM SitCConcessioni c, SitCConcessioniCatasto cc
+				WHERE cc.idExtCConcessioni = c.idExt
+				 AND  LPAD (TRIM (cc.foglio), 4, '0') = LPAD (TRIM (:foglio), 4, '0')
+    			 AND  LPAD (TRIM (cc.particella), 5, '0') =  LPAD (TRIM (:particella), 5, '0')
+    			ORDER BY c.protocolloData DESC, c.dataRilascio DESC 
+			]]>
+		</query>
+	</named-query>
+	<named-query name="Join_SitCConcessioni_SitCConcessioniCatasto.getConcessioneBySezFP">
+		<query>
+			<![CDATA[
+				SELECT distinct c FROM SitCConcessioni c, SitCConcessioniCatasto cc
+				WHERE cc.idExtCConcessioni = c.idExt
+				 AND  LPAD (TRIM (cc.foglio), 4, '0') = LPAD (TRIM (:foglio), 4, '0')
+    			 AND  LPAD (TRIM (cc.particella), 5, '0') =  LPAD (TRIM (:particella), 5, '0')
+    			 AND  cc.sezione=:sezione
+				ORDER BY c.protocolloData DESC,c.dataRilascio DESC 
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="Join_SitCConcessioni_SitCConcessioniCatasto.getConcessioneByFPS">
+		<query>
+			<![CDATA[
+				SELECT distinct c FROM SitCConcessioni c, SitCConcessioniCatasto cc
+				WHERE cc.idExtCConcessioni = c.idExt
+				 AND  LPAD (NVL(TRIM (cc.foglio),'0'), 4, '0') = LPAD (TRIM (:foglio), 4, '0')
+    			 AND  LPAD (NVL(TRIM (cc.particella),'0'), 5, '0') =  LPAD (TRIM (:particella), 5, '0')
+    			 AND  LPAD (NVL(TRIM (cc.subalterno),'0'), 4, '0') =  LPAD (TRIM (:subalterno), 4, '0')
+    			ORDER BY c.protocolloData DESC, c.dataRilascio DESC 
+			]]>
+		</query>
+	</named-query>
+	<named-query name="Join_SitCConcessioni_SitCConcessioniCatasto.getConcessioneBySezFPS">
+		<query>
+			<![CDATA[
+				SELECT distinct c FROM SitCConcessioni c, SitCConcessioniCatasto cc
+				WHERE cc.idExtCConcessioni = c.idExt
+				 AND  LPAD (NVL(TRIM (cc.foglio),'0'), 4, '0') = LPAD (TRIM (:foglio), 4, '0')
+    			 AND  LPAD (NVL(TRIM (cc.particella),'0'), 5, '0') =  LPAD (TRIM (:particella), 5, '0')
+    			 AND  LPAD (NVL(TRIM (cc.subalterno),'0'), 4, '0') =  LPAD (TRIM (:subalterno), 4, '0')
+    			 AND  cc.sezione=:sezione
+				ORDER BY c.protocolloData DESC,c.dataRilascio DESC 
+			]]>
+		</query>
+	</named-query>
+	
+	<!-- Query SIT_C_CONCESSIONI_CATASTO -->
+	<named-query name="SitCConcessioni.getConcessioneById">
+		<query>
+			<![CDATA[
+				SELECT c FROM SitCConcessioni c 
+				WHERE c.id=:id
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SitCConcessioni.getConcessioneByIdExt">
+		<query>
+			<![CDATA[
+				SELECT c FROM SitCConcessioni c 
+				WHERE c.idExt=:idExt
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SitCConcessioniCatasto.getDatiByFP">
+		<query>
+			<![CDATA[
+				SELECT cc FROM SitCConcessioniCatasto cc
+				WHERE LPAD (TRIM (cc.foglio), 4, '0') = LPAD (TRIM (:foglio), 4, '0')
+    			 AND  LPAD (TRIM (cc.particella), 5, '0') =  LPAD (TRIM (:particella), 5, '0')
+			]]>
+		</query>
+	</named-query>
+	<named-query name="SitCConcessioniCatasto.getDatiBySezFP">
+		<query>
+			<![CDATA[
+				SELECT cc FROM SitCConcessioniCatasto cc
+				WHERE LPAD (TRIM (cc.foglio), 4, '0') = LPAD (TRIM (:foglio), 4, '0')
+    			 AND  LPAD (TRIM (cc.particella), 5, '0') =  LPAD (TRIM (:particella), 5, '0')
+    			 AND  cc.sezione=:sezione
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="ConcEdilizieVisure.getVisuraById">
+		<query>
+			<![CDATA[
+				SELECT distinct cc FROM ConcEdilizieVisure cc
+				WHERE cc.id.inxdoc||'|'||cc.id.tipoAtto=:id
+    			order by cc.dataDoc desc
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="ConcEdilizieVisure.getDocVisuraById">
+		<query>
+			<![CDATA[
+				SELECT cc FROM ConcEdilizieVisureDoc cc
+				WHERE cc.id.inxdoc=:inxdoc
+				
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="ConcEdilizieVisure.getVisureTipiAtto">
+		<query>
+			<![CDATA[
+				SELECT distinct cc.id.tipoAtto FROM ConcEdilizieVisure cc
+				ORDER BY cc.id.tipoAtto
+				
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="ConcEdilizieVisure.getDatiByListaId">
+		<query>
+			<![CDATA[
+				SELECT distinct cc FROM ConcEdilizieVisure cc
+				WHERE cc.id.inxdoc||'|'||cc.id.tipoAtto IN (:listaId)
+    			order by cc.dataDoc desc
+			]]>
+		</query>
+	</named-query>
+	
+	</entity-mappings>

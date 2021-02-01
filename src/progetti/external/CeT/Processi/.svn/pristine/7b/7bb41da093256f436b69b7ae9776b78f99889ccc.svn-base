@@ -1,0 +1,4 @@
+tableA.name=RE_ATT_LOCAZIONI_MANUALI_1_0
+file.prefix=ATTLOC.
+#
+Caricatore.class.noversion=it.webred.rulengine.brick.loadDwh.load.locazioni.attloc.v1.ImportLocazioni

@@ -1,0 +1,660 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+     	xmlns:h="http://java.sun.com/jsf/html"
+		xmlns:f="http://java.sun.com/jsf/core"
+		xmlns:ui="http://java.sun.com/jsf/facelets"
+		xmlns:p="http://primefaces.org/ui"
+	  	xmlns:composite="http://java.sun.com/jsf/composite"
+	  	xmlns:webredcs="http://java.sun.com/jsf/composite/webredcs"
+	  	xmlns:webred="http://java.sun.com/jsf/composite/webred"
+	  	xmlns:c="http://java.sun.com/jsp/jstl/core">  	
+	  	
+   <p:outputPanel>
+	  	<p:spacer height="20px" />
+	  	
+	  	<p:confirmDialog widgetVar="confermaStatoAffido" message="Confermi il cambio stato?">
+            <p:commandButton value="Si" process="lista-stati" immediate="true" update="progetto-affido" oncomplete="confermaStatoAffido.hide()"/>
+            <p:commandButton value="No" type="button" onclick="sobs.selectValue(sobs.preShowValue.val());confermaStatoAffido.hide()" />
+        </p:confirmDialog>
+	  	<p:panel header="Progetto Affido" id="progetto-affido">
+	  		<p:panel style="border-color: orange">
+	  	      
+				     <p:panelGrid>
+				        <p:row>
+				            <p:column>
+				                <h:outputLabel for="lista-stati" value="Stato Affido" />
+				            </p:column>
+				            <p:column>
+				                <p:selectOneMenu valueChangeListener="#{cc.attrs.iPai.paiAffidoBean.cambioStato}" onchange="return confermaStatoAffido.show()" 
+				                                   id="lista-stati" widgetVar="sobs" value="#{cc.attrs.iPai.paiAffidoBean.statoAffido}">
+				                    <f:selectItem noSelectionOption="true" itemLabel="- seleziona -" />
+				                    <f:selectItems value="#{cc.attrs.iPai.paiAffidoBean.listaStati}" var="stato" itemDisabled="#{cc.attrs.iPai.paiAffidoBean.isStatoDisabilitato(stato.valore)}"
+				                                   itemLabel="#{stato.descrizione}" itemValue="#{stato.valore}"/>
+				                </p:selectOneMenu>
+				                
+				                <p:spacer width="20px" /> 
+				                
+				                <p:commandButton type="button" icon="ui-icon-arrowthick-2-ne-sw" id="storicoStati" style="top: -7px;" />
+				                
+				                <p:overlayPanel for="storicoStati">
+				                    <p:dataTable var="stato" value="#{cc.attrs.iPai.paiAffidoBean.affido.statiAffido}" >
+				                    
+				                        <p:column headerText="Stato">
+				                            <h:outputText value="#{stato.descrizione}" />
+				                        </p:column>
+				                        <p:column headerText="Data Stato Affido">
+				                            <h:outputText value="#{stato.dataStatoAffido!= null ? stato.dataStatoAffido : ''}" >
+				                                <f:convertDateTime pattern="dd/MM/yyyy" />
+				                            </h:outputText>
+				                        </p:column>		                        			                                           
+				                    </p:dataTable>
+				                </p:overlayPanel>
+				            </p:column>	
+				           
+				            <p:column>
+			                     <h:outputLabel for="adottabile" value="Adottabile" />
+			                </p:column>
+				         	<p:column>
+			                     <p:selectOneMenu id="adottabile" value="#{cc.attrs.iPai.paiAffidoBean.affido.codiceAdottabile}" >
+			                         <f:selectItem noSelectionOption="true" itemLabel="- seleziona -" />
+			                         <f:selectItems  value="#{cc.attrs.iPai.paiAffidoBean.listaAdottabile}" var="item" itemLabel="#{item.descrizione}" itemValue="#{item.codice}" />
+			                     </p:selectOneMenu>
+			                 </p:column>
+				            <p:column>
+				                 <p:selectBooleanCheckbox itemLabel="Affido professionale" value="#{cc.attrs.iPai.paiAffidoBean.affido.affidamentoProfessionale}" />
+				             </p:column>
+				        </p:row>
+				         <p:row rendered="#{cc.attrs.iPai.paiAffidoBean.isStato(50)}">
+				              <p:column>
+				                  <h:outputLabel for="calDataStatoAffido" value="Data Stato Affido* :" />
+				              </p:column>	
+				              <p:column colspan="6">
+                                <p:calendar id="calDataStatoAffido"  placeholder="dd/MM/yyy"  size="10"
+				                            value="#{cc.attrs.iPai.paiAffidoBean.dataStatoAffido}" pattern="dd/MM/yyy" locale="it"
+				                            required="true" requiredMessage="Data Stato Affido è un campo obbligatorio" />
+				              </p:column>
+				           </p:row> 
+				           <p:row>    				             
+				              <p:column>
+				                <h:outputLabel for="carattere-inserimento-residenziale" style="font-style: italic;" value="Carattere inserimento residenziale" />
+				                 <br/>
+				                 <h:outputLabel for="carattere-inserimento-residenziale" style="font-size:0.7em;font-style: italic;" value="valore inviato al SINBA" rendered="false" /> 
+					            </p:column>
+					            <p:column colspan="4">
+				                     <p:selectOneMenu disabled="#{empty cc.attrs.iPai.paiAffidoBean.affido.codiceTipoAffido or cc.attrs.iPai.paiAffidoBean.affido.codiceTipoAffido eq null}"  id="carattere-inserimento-residenziale" value="#{cc.attrs.iPai.paiAffidoBean.affido.codiceInserimentoResidenziale}" >
+				                         <f:selectItem noSelectionOption="true" itemLabel="- non specificato -" />
+				                         <f:selectItems  value="#{cc.attrs.iPai.paiAffidoBean.listaCarattereInserimentoResidenziale}" var="item" itemLabel="#{item.descrizione}" itemValue="#{item.codice}" />
+				                         <p:ajax event="change" immediate="true" partialSubmit="true" global="false" process="@this" update="carattere-inserimento-residenziale"/>
+				                     </p:selectOneMenu>
+					            </p:column>
+					             <p:column>
+					                <h:outputLabel for="tipo-affido" value="Tipologia Affido" rendered="false"/>
+					            </p:column>
+					            <p:column>
+				                     <p:selectOneMenu id="tipo-affido" value="#{cc.attrs.iPai.paiAffidoBean.affido.codiceTipoAffido}" rendered="false">
+				                         <f:selectItem noSelectionOption="true" itemLabel="- seleziona -" />
+				                         <f:selectItems  value="#{cc.attrs.iPai.paiAffidoBean.listaTipoAffido}" var="item" itemLabel="#{item.descrizione}" itemValue="#{item.codice}" />
+				                         <!-- <p:ajax event="change" listener="#{cc.attrs.iPai.paiAffidoBean.onChangeTipoAffido}" immediate="true" partialSubmit="true" global="false" process="@this" update="tipo-accoglienza carattere-inserimento-residenziale"/> -->
+											<p:ajax event="change" process="@this"
+												listener="#{cc.attrs.iPai.paiAffidoBean.onChangeTipoAffido}"
+												partialSubmit="true" global="false"
+												update="tipo-accoglienza carattere-inserimento-residenziale" />
+										</p:selectOneMenu>
+					            </p:column>
+				        	</p:row> 
+				     </p:panelGrid>
+				</p:panel>
+				
+				<p:spacer height="10px" />
+				
+				<p:outputPanel>      
+				    <p:panelGrid style="width:100%;" >
+				        <p:row>
+				            <p:column style="width:250px;">
+				                <h:outputLabel for="natura-accoglienza" value="Tipologia di affidamento familiare*:" />
+				            </p:column>
+				            <p:column >
+				                <p:selectOneMenu id="natura-accoglienza" required="true" requiredMessage="Natura accoglienza non valorizzata"
+				                                 value="#{cc.attrs.iPai.paiAffidoBean.affido.codiceNaturaAccoglienza}" style="width:150px;">
+				                   <f:selectItem noSelectionOption="true" itemLabel="- seleziona -" />
+				                   <f:selectItems value="#{cc.attrs.iPai.paiAffidoBean.listaNaturaAccoglienza}" var="item" itemLabel="#{item.descrizione}" itemValue="#{item.codice}" />
+				                   <p:ajax event="change" immediate="true" partialSubmit="true" global="false" process="@this" update="numero-decreto data-decreto"/>
+				                </p:selectOneMenu>
+				            </p:column>
+				                <p:column style="width:200px;">
+				                <h:outputLabel for="numero-decreto" value="Numero Decreto*" />
+				            </p:column>
+				            <p:column>
+				                <p:inputText disabled="#{ !cc.attrs.iPai.paiAffidoBean.isAffidoGiudiziale()}" id="numero-decreto" 
+				                             placeholder="Numero Decreto" value="#{cc.attrs.iPai.paiAffidoBean.affido.numeroDecreto}"
+				                             required="true" requiredMessage="Numero decreto non valorizzato"/>
+				            </p:column>
+				         
+				            <p:column style="width:200px;">
+				                <h:outputLabel for="data-decreto" value="Data Decreto*" />
+				            </p:column>
+				            <p:column>
+				                <p:calendar id="data-decreto" disabled="#{!cc.attrs.iPai.paiAffidoBean.isAffidoGiudiziale()}" placeholder="Data Decreto" 
+				                            value="#{cc.attrs.iPai.paiAffidoBean.affido.dataDecreto}" pattern="dd/MM/yyy" locale="it"
+				                            required="true" requiredMessage="Data decreto non valorizzata" />
+				            </p:column>
+				         </p:row>
+				          <p:row>
+				            <p:column>
+				                <h:outputLabel for="autorita-provvedimento" value="Autorità Provvedimento" />
+				            </p:column>
+				            <p:column>
+				              <p:selectOneMenu id="autorita-provvedimento"
+				                                 value="#{cc.attrs.iPai.paiAffidoBean.affido.codiceAutoritaProvvedimento}">
+				                   <f:selectItem noSelectionOption="true" itemLabel="- seleziona -" />
+				                   <f:selectItems value="#{cc.attrs.iPai.paiAffidoBean.listaAutoritaProvvedimento}" var="item" itemLabel="#{item.descrizione}" itemValue="#{item.codice}" />
+				                   <p:ajax event="change" immediate="true" partialSubmit="true" global="false" process="@this" update="autorita-provvedimento"/>
+				                </p:selectOneMenu>
+				            </p:column>
+				         </p:row>
+				         <p:row id="row-base">				            
+				             <p:column >
+				                 <h:outputLabel for="forme-affidamento" value="Forme di affidamento" />
+				             </p:column>
+				             <p:column>
+				                 <p:selectOneMenu id="forme-affidamento" value="#{cc.attrs.iPai.paiAffidoBean.affido.codiceFormeAffidamento}" style="width:250px;" panelStyleClass="selectOneMenuGrouped"  >
+				                   <f:selectItem noSelectionOption="true" itemLabel="- seleziona -" />
+				                   <f:selectItems value="#{cc.attrs.iPai.paiAffidoBean.listaFormeAffidamento}"  var="item" itemLabel="#{item.descrizione}" itemValue="#{item.codice}" />
+				             </p:selectOneMenu>
+				             </p:column>
+				              <p:column colspan="2">
+				           
+				                 <p:selectBooleanCheckbox style="vertical-align:middle;" itemLabel="Affidamento a lungo termine o a tempo indeterminato (sine die)" 
+				                                              value="#{cc.attrs.iPai.paiAffidoBean.affido.affidamentoLungoTermine}" />
+				            </p:column>
+				           <p:column>
+				               <h:outputLabel for="collocamento" value="Collocamento #{cc.attrs.iPai.paiAffidoBean.isCollocamentoRequired() ? '*':''}" />
+				             </p:column>
+				           <p:column>
+				                 <p:selectOneMenu id="collocamento" value="#{cc.attrs.iPai.paiAffidoBean.affido.codiceCollocamento}"
+				                                  required="#{cc.attrs.iPai.paiAffidoBean.isCollocamentoRequired()}" requiredMessage="Collocamento non valorizzato">
+				                    <f:selectItem noSelectionOption="true" itemLabel="- seleziona -" />
+				                    <f:selectItems  value="#{cc.attrs.iPai.paiAffidoBean.listaCollocamento}" var="item" itemLabel="#{item.descrizione}" itemValue="#{item.codice}" />
+				                 </p:selectOneMenu>
+				                 <p:tooltip for="collocamento" value="Si intende affido antra-familiare l'affido a parenti entro il IV grado"/>
+				             </p:column>
+				          
+<!-- 				              <p:column rendered ="false"> -->
+<!-- 				                 <h:outputLabel for="tipo-accoglienza" value="Tipo Accoglienza" /> -->
+<!-- 				             </p:column> -->
+<!-- 				             <p:column rendered ="false"> -->
+<!-- 				                 <p:selectOneMenu id="tipo-accoglienza" disabled="#{!cc.attrs.iPai.paiAffidoBean.isAffidoAccoglienza()}" value="#{cc.attrs.iPai.paiAffidoBean.affido.codiceTipoAccoglienza}" -->
+<!-- 				                                    required="#{cc.attrs.iPai.paiAffidoBean.isTipoAccoglienzaRequired()}" requiredMessage="Tipo accoglienza non valorizzata"> -->
+<!-- 				                   <f:selectItem noSelectionOption="true" itemLabel="- seleziona -" /> -->
+<!-- 				                   <f:selectItems value="#{cc.attrs.iPai.paiAffidoBean.listaTipoAccoglienza}" var="item" itemLabel="#{item.descrizione}" itemValue="#{item.codice}" /> -->
+<!-- 				                </p:selectOneMenu> -->
+<!-- 				             </p:column> -->
+				         </p:row>
+				         
+				         <p:row>
+				             <p:column>
+				                 <h:outputLabel for="entita-affido" value="Entità Affido #{cc.attrs.iPai.paiAffidoBean.isEntitaAffidoRequired() ? '*':''}" />
+				             </p:column>
+				             <p:column>
+				                 <p:selectOneMenu id="entita-affido" value="#{cc.attrs.iPai.paiAffidoBean.affido.codiceEntitaAffido}" 
+				                                  required="#{cc.attrs.iPai.paiAffidoBean.isEntitaAffidoRequired()}" requiredMessage="Entità affido non valorizzato">
+				                   <f:selectItem noSelectionOption="true" itemLabel="- seleziona -" />
+				                   <f:selectItems  value="#{cc.attrs.iPai.paiAffidoBean.listaEntitaAffido}" var="item" itemLabel="#{item.descrizione}" itemValue="#{item.codice}" />
+				                   <p:ajax event="change" update="affido-parziale" 
+											        immediate="true" global="false" process="@this" 
+											        partialSubmit="true"/>
+				                </p:selectOneMenu>
+				                <p:tooltip for="entita-affido" value="Si intende residenziale almeno 5 notti a settimana esclusi i periodi di interruzione previsti dal progetto"/>
+				             </p:column>
+				             <p:column>
+				                 <h:outputLabel for="affido-parziale" value="Affido parziale" />
+				             </p:column>
+				             <p:column>
+				                     <p:inputText disabled="#{!cc.attrs.iPai.paiAffidoBean.isAffidoParziale()}" id="affido-parziale" value="#{cc.attrs.iPai.paiAffidoBean.affido.descEntitaAffidoParziale}" />
+				             </p:column>
+				         </p:row>
+			             <p:row rendered="#{cc.attrs.iPai.paiAffidoBean.isStato(40)}">
+			                 <p:column colspan="2">
+			                     <p:selectBooleanCheckbox itemLabel="Presenza reti di famiglie" required="true" 
+			                                              value="#{cc.attrs.iPai.paiAffidoBean.affido.presenzaRetiDiFamiglie}" />
+			                 </p:column>
+			             </p:row>
+				         <p:row rendered="#{cc.attrs.iPai.paiAffidoBean.isStato(50)}">
+				             <p:column>
+				                 <h:outputLabel for="fa-convivenza-orig-aff" value="Convivenza genitori con affidatari*:" />
+				             </p:column>
+				             <p:column>
+				                 <p:selectOneMenu id="fa-convivenza-orig-aff" value="#{cc.attrs.iPai.paiAffidoBean.affido.codiceConvivenzaOrigineAffidataria}" 
+				                                  required="true" requiredMessage="Convivenza non valorizzata">
+				                     <f:selectItem noSelectionOption="true" itemLabel="- seleziona -" />
+				                     <f:selectItems  value="#{cc.attrs.iPai.paiAffidoBean.listaConvivenzaOrigAff}" var="item" itemLabel="#{item.descrizione}" itemValue="#{item.codice}" />
+				                 </p:selectOneMenu>
+				             </p:column>
+				          </p:row>				         
+				        </p:panelGrid>
+				        
+				        <p:spacer height="10px" />
+				        <p:outputPanel rendered="#{cc.attrs.iPai.paiAffidoBean.isStato(50)}">
+				        <h:panelGroup >
+				        <h:panelGrid style="width:100%;" id="pnlRapporti" columns="2">
+				         <p:fieldset legend="Rapporti fra Bambino e Nucleo di Origine" style="border-color: orange">
+				             <h:panelGrid style="width:100%;" id="pnlRapportiBambinoNOrigine" columns="4">
+				                
+				                     <h:outputLabel for="frequenza-contatti" value="Frequenza contatti" />
+				               
+				                     <p:selectOneMenu id="frequenza-contatti" value="#{cc.attrs.iPai.paiAffidoBean.affido.codiceFrequenzaContattiMinore}" >
+				                         <f:selectItem noSelectionOption="true" itemLabel="- seleziona -" />
+				                         <f:selectItems  value="#{cc.attrs.iPai.paiAffidoBean.listaFrequenzaContatti}" var="item" itemLabel="#{item.descrizione}" itemValue="#{item.codice}" />
+				                     </p:selectOneMenu>
+				                
+				                 	<h:outputLabel for="modalitaRapportoOrigAff" value="Modalita Rapporto" />
+				               
+									<p:inputTextarea id="modalitaRapportoNucleoOrigine" rows="4" cols="50"	value="#{cc.attrs.iPai.paiAffidoBean.affido.modalitaRapportoNucleoOrigine}"/>
+								  
+				                </h:panelGrid>  
+				         </p:fieldset>
+				         
+				         <p:fieldset legend="Rapporti fra Nucleo di Origine e Affidatari" style="border-color: orange">
+				          <h:panelGrid style="width:100%;" id="pnlRapportiNOrigineAffidatari" columns="4">
+				          
+				                     <h:outputLabel for="frequenzaContattiAff" value="Frequenza contatti" />
+				              
+				                     <p:selectOneMenu id="frequenzaContattiAff" value="#{cc.attrs.iPai.paiAffidoBean.affido.codiceFrequenzaContattiAff}" >
+				                         <f:selectItem noSelectionOption="true" itemLabel="- seleziona -" />
+				                         <f:selectItems  value="#{cc.attrs.iPai.paiAffidoBean.listaFrequenzaContatti}" var="item" itemLabel="#{item.descrizione}" itemValue="#{item.codice}" />
+				                     </p:selectOneMenu>
+				                 
+				                 	<h:outputLabel for="modalitaRapportoOrigAff" value="Modalita Rapporto" />
+				                  
+									<p:inputTextarea id="modalitaRapportoOrigAff" rows="4" cols="50"	value="#{cc.attrs.iPai.paiAffidoBean.affido.modalitaRapportoOrigAff}"/>
+				               
+				              </h:panelGrid>
+				          </p:fieldset>
+				          
+				          </h:panelGrid>
+				          </h:panelGroup>
+				          
+				          <p:spacer height="10px" />
+						  <p:fieldset legend="Modalità di rapporto con gli ambiti di esperienza del bambini (scuola ed extrascolastici)" style="border-color: orange">
+				          <p:panelGrid style="width:100%;" >
+				             <p:row>
+				                 <p:column>
+				                     <h:outputLabel for="modalitaRappEsperienzaOrig" value="Da parte del nucleo di origine" />
+				                 </p:column>
+				                 <p:column>
+				                    <p:inputTextarea id="modalitaRappEsperienzaOrig" rows="4" cols="50"	value="#{cc.attrs.iPai.paiAffidoBean.affido.modalitaRappEsperienzaOrig}"/>
+				                 </p:column>
+				                  <p:column>
+				                     <h:outputLabel for="modalitaRappEsperienzaFamAff" value="Da parte della famiglia affidataria" />
+				                 </p:column>
+				                 <p:column>
+				                    <p:inputTextarea id="modalitaRappEsperienzaFamAff" rows="4" cols="50"	value="#{cc.attrs.iPai.paiAffidoBean.affido.modalitaRappEsperienzaFamAff}"/>
+				                 </p:column>
+				                 </p:row>    
+				              </p:panelGrid>
+				          </p:fieldset>
+				          <p:spacer height="10px" />
+				         
+				    	  <p:panelGrid style="width:60%;" >
+			          		<p:row>
+			           			 <p:column>
+			                     <h:outputLabel for="noteGestioneSanita" value="Note sulla gestione degli aspetti sanitari del minore" />
+				                 </p:column>
+				                 <p:column>
+				                    <p:inputTextarea id="noteGestioneSanita" rows="4" cols="50"	value="#{cc.attrs.iPai.paiAffidoBean.affido.noteGestioneSanita}"/>
+				                </p:column> 
+			                </p:row> 
+				           </p:panelGrid>
+				     </p:outputPanel>
+				     <h:panelGrid columns="4">
+				      	<h:panelGrid id="presenzaTutore" style="width:100%;"  columns="2" cellspacing="5" >
+							<h:outputText value="Presenza di Tutore" style="font-weight: bold;" />
+						
+							<p:selectOneRadio value="#{cc.attrs.iPai.paiAffidoBean.affido.presenzaTutore}">
+								<f:selectItem itemLabel="Si" itemValue="#{true}"/>
+								<f:selectItem itemLabel="No" itemValue="#{false}"/>
+							    <p:ajax event="change" process="@this" update="@(.updateOnTuteleaCuratelaExist)"/> 
+							</p:selectOneRadio>
+						</h:panelGrid>
+						<h:panelGrid id="presenzaCuratore" style="width:100%;"  columns="2" cellspacing="5" >
+							<h:outputText value="Presenza di Curatore" style="font-weight: bold;" />
+						
+							<p:selectOneRadio value="#{cc.attrs.iPai.paiAffidoBean.affido.presenzaCuratore}">
+								<f:selectItem itemLabel="Si" itemValue="#{true}"/>
+								<f:selectItem itemLabel="No" itemValue="#{false}"/>
+								    <p:ajax event="change" process="@this" update="@(.updateOnTuteleaCuratelaExist)" /> 
+							</p:selectOneRadio>
+						</h:panelGrid>
+					</h:panelGrid>
+				  <p:spacer height="10px" />   
+				      
+                  <p:outputPanel id="pnlTutelaCuratela" styleClass="#{'updateOnTuteleaCuratelaExist'}">
+	   				
+				        <p:fieldset legend="Tutela e Curatela" id="soggetti-affido" style="border-color: orange"  
+				       				rendered="#{cc.attrs.iPai.paiAffidoBean.affido.presenzaCuratore or cc.attrs.iPai.paiAffidoBean.affido.presenzaTutore}">
+				           <p:commandButton type="button" id="aggiungiSoggetto" icon="ui-icon-plus"/>
+				            <p:dataTable emptyMessage="Nessun soggetto trovato" 
+				                      var="sogg" rowIndexVar="rowIndex"
+						              value="#{cc.attrs.iPai.paiAffidoBean.affido.soggettiAffido}" >
+			
+							    <p:column headerText="Cognome">
+								    <h:outputText value="#{sogg.cognome}" />
+							     </p:column>
+							
+							   <p:column headerText="Nome">
+								    <h:outputText value="#{sogg.nome}" />
+							    </p:column>
+							    
+							    <p:column headerText="Ruolo">
+								    <h:outputText value="#{sogg.descrizioneRuolo}" />
+							    </p:column>
+							    <p:column headerText="" style="text-align:center;" width="200">
+									<p:commandButton title="Elimina" process="@this" icon="ui-icon-trash" 
+										 oncomplete="diaEliminaSoggettoAffido.show()">
+										<f:setPropertyActionListener value="#{rowIndex}" target="#{cc.attrs.iPai.paiAffidoBean.idSoggettoSelected}" />
+									</p:commandButton>
+								</p:column>
+							</p:dataTable>
+				
+						    <p:overlayPanel for="aggiungiSoggetto"  showCloseIcon="true" dismissable="false" id="overlay-soggetto" styleClass="#{'updateOnTuteleaCuratelaExist'}">
+						    
+			                    <p:panelGrid style="width:100%;" >
+			                     <p:row>
+			                     <p:column>
+			                         <h:outputLabel for="sogg-cog" value="Cognome" />
+			                     </p:column>
+			                     <p:column>
+			                         <p:inputText id="sogg-cog" value="#{cc.attrs.iPai.paiAffidoBean.cognome}" />
+			                     </p:column>
+			                     <p:column>
+			                          <h:outputLabel for="sogg-nom" value="Nome" />
+			                     </p:column>
+			                     <p:column>
+			                         <p:inputText id="sogg-nom" value="#{cc.attrs.iPai.paiAffidoBean.nome}" />
+			                     </p:column>
+			                     <p:column>
+			                          <h:outputLabel for="sogg-ruolo" value="Ruolo" />
+			                     </p:column>
+			                     <p:column>
+			                         <p:selectOneMenu value="#{cc.attrs.iPai.paiAffidoBean.codiceRuolo}" id="sogg-ruolo" styleClass="#{'updateOnTuteleaCuratelaExist'}" >
+			                              <f:selectItem noSelectionOption="true" itemLabel="- seleziona -" />
+			                              <f:selectItems  value="#{cc.attrs.iPai.paiAffidoBean.listaRuoliSoggetto}" var="item" itemLabel="#{item.descrizione}" itemValue="#{item.codice}" />
+			                         </p:selectOneMenu>
+			                     </p:column>
+			                     </p:row>
+			                    </p:panelGrid>
+			                    <p:commandButton value="Salva" action="#{cc.attrs.iPai.paiAffidoBean.aggiungiSoggetto()}" 
+			                                     process="overlay-soggetto" partialSubmit="true" update="soggetti-affido" />
+				                                     
+				            </p:overlayPanel>
+				        </p:fieldset>
+					</p:outputPanel>
+				</p:outputPanel>
+
+			  	<p:outputPanel>
+				    <p:confirmDialog widgetVar="diaEliminaSoggettoAffido" showEffect="fade" hideEffect="fade"
+					header="Conferma" message="procedere con l'eliminazione?">
+					<h:panelGrid columns="2" style="margin: 0 auto;	text-align: center;">
+		        		<p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check">
+		        			<p:ajax update="soggetti-affido" listener="#{cc.attrs.iPai.paiAffidoBean.eliminaSoggetto()}" oncomplete="diaEliminaSoggettoAffido.hide()"/>
+		        		</p:commandButton>  
+		        		<p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"
+		        		onclick="diaEliminaSoggettoAffido.hide()"/> 
+		        	</h:panelGrid>      
+		    	  </p:confirmDialog>
+	    		</p:outputPanel>
+				
+				<p:spacer height="10px" />
+
+			     <p:fieldset legend="Funzioni e interventi degli attori coinvolti" style="border-color: orange" rendered="#{cc.attrs.iPai.paiAffidoBean.isStato(40)}">
+			             <p:panelGrid style="width:100%;" >
+			                 <p:row>
+			                     <p:column>
+			                         <h:outputLabel for="impegno-fo" value="Famiglia-orig" />
+			                     </p:column>
+			                     <p:column>
+			                         <p:inputTextarea rows="4" cols="50" id="impegno-fo" value="#{cc.attrs.iPai.paiAffidoBean.affido.impegnoFamigliaOrigine}" />
+			                     </p:column>
+			                     <p:column>
+			                          <h:outputLabel for="impegno-fa" value="Famiglia-aff" />
+			                     </p:column>
+			                     <p:column>
+			                         <p:inputTextarea rows="4" cols="50" id="impegno-fa" value="#{cc.attrs.iPai.paiAffidoBean.affido.impegnoFamigliaAffidataria}" />
+			                     </p:column>
+			                 </p:row>
+			                     
+			                 <p:row>
+			                     <p:column>
+			                         <h:outputLabel for="impegno-minore" value="Minore" />
+			                     </p:column>
+			                    <p:column>
+			                         <p:inputTextarea rows="4" cols="50" id="impegno-minore" value="#{cc.attrs.iPai.paiAffidoBean.affido.impegnoMinore}" />
+			                     </p:column>
+			                    <p:column>
+			                        <h:outputLabel for="impegno-sso" value="Servizio sociale" />
+			                    </p:column>
+			                     <p:column>
+			                         <p:inputTextarea rows="4" cols="50" id="impegno-sso" value="#{cc.attrs.iPai.paiAffidoBean.affido.impegnoServizioSociale}" />
+			                     </p:column>
+			                     <p:column>
+			                         <h:outputLabel for="impegno-as" value="Altri soggetti" />
+			                    </p:column>
+			                    <p:column>
+			                        <p:inputTextarea rows="4" cols="50" id="impegno-as" value="#{cc.attrs.iPai.paiAffidoBean.affido.impegnoAltriSoggetti}" />
+			                    </p:column>
+			                 </p:row>
+			             </p:panelGrid>
+			         </p:fieldset>
+				     
+				     <p:spacer height="10px" />
+				     
+				     <p:fieldset legend="Famiglia Origine" style="border-color: orange">
+				     	 <p:dataTable emptyMessage="Nessun soggetto trovato" 
+				                      var="sogg" rowIndexVar="rowIndex" id="table-fam-orig"
+						              value="#{cc.attrs.iPai.paiAffidoBean.famigliaOrig}" >
+			
+							<p:column headerText="Cognome">
+								<h:outputText value="#{sogg.cognome}" />
+							</p:column>
+							
+							<p:column headerText="Nome">
+								<h:outputText value="#{sogg.nome}" />
+							</p:column>
+							
+							<p:column headerText="Cod.fiscale">
+								<h:outputText value="#{sogg.cf}" />
+							</p:column>
+							
+							<p:column headerText="Sesso" width="20" style="text-align:center;">
+								<h:outputText   rendered="#{sogg.sesso ne 'F' and sogg.sesso ne 'M'}" value="#{sogg.sesso}" />
+								<p:graphicImage rendered="#{sogg.sesso eq 'F'}" title="Donna" value="#{resource['webredcs/img/female.png']}" height="20"/>
+				            	<p:graphicImage rendered="#{sogg.sesso eq 'M'}" title="Uomo"  value="#{resource['webredcs/img/male.png']}" height="20"/>
+							</p:column>
+							
+							<p:column headerText="Relazione">
+								<h:outputText value="#{sogg.parentela}" />
+							</p:column>
+					    </p:dataTable>
+				     
+				         <p:panelGrid style="width:100%;" >
+				             <p:row>
+				                 <p:column>
+				                     <p:selectBooleanCheckbox itemLabel="Allontanamento" value="#{cc.attrs.iPai.paiAffidoBean.affido.famigliaOrigine.minoreAllontanato}"/>
+				                 </p:column>
+				                 <p:column>
+				                     <p:selectBooleanCheckbox itemLabel="Genitori sconosciuti" value="#{cc.attrs.iPai.paiAffidoBean.affido.famigliaOrigine.genitoriSconosciuti}"/>
+				                 </p:column>
+				                 <p:column>
+	                                 <p:selectBooleanCheckbox itemLabel="Fuori Regione" value="#{cc.attrs.iPai.paiAffidoBean.affido.famigliaOrigine.fuoriRegione}"/>
+	                             </p:column>
+				             </p:row>
+				             <p:row rendered="#{cc.attrs.iPai.paiAffidoBean.isStato(50)}">
+				             	    <p:column>
+					                     <h:outputLabel for="fa-interventi-origine" value="Interventi*" />
+					                 </p:column>
+					                 <p:column>
+					                     <p:selectOneMenu id="fa-interventi-origine" value="#{cc.attrs.iPai.paiAffidoBean.affido.famigliaOrigine.codiceIntervento}" 
+					                                      required="true" requiredMessage="Interventi famiglie origine non valorizzati">
+					                         <f:selectItem noSelectionOption="true" itemLabel="- seleziona -" />
+					                         <f:selectItems  value="#{cc.attrs.iPai.paiAffidoBean.listaOrigineInterventi}" var="item" itemLabel="#{item.descrizione}" itemValue="#{item.codice}" />
+					                     </p:selectOneMenu>
+					                 </p:column>
+				             </p:row>
+				         </p:panelGrid>
+				         <p:panel id="pnlSpese">
+				          <p:panelGrid style="width:100%;" >
+				             <p:row>
+				                 <p:column>
+				                     <p:selectBooleanCheckbox  itemLabel="Contributo alle spese da parte della famiglia di origine" 
+				                     						   value="#{cc.attrs.iPai.paiAffidoBean.affido.famigliaOrigine.contributoAlleSpese}">
+				                    	<p:ajax event="change" process="@this" update="pnlSpese" /> 
+				                     </p:selectBooleanCheckbox>
+				                     
+				                 </p:column>
+				                 <p:column>
+				                 <h:outputLabel for="noteContributoSpese" value="Note sul contributo *"   rendered="#{cc.attrs.iPai.paiAffidoBean.affido.famigliaOrigine.contributoAlleSpese}" />
+				                   </p:column>
+				                 <p:column>
+				                 	<p:inputTextarea id="noteContributoSpese" rows="4" cols="50"
+						               value="#{cc.attrs.iPai.paiAffidoBean.affido.famigliaOrigine.noteContributoAlleSpese}"
+						                rendered="#{cc.attrs.iPai.paiAffidoBean.affido.famigliaOrigine.contributoAlleSpese}"
+						                required="#{cc.attrs.iPai.paiAffidoBean.affido.famigliaOrigine.contributoAlleSpese}"
+						                requiredMessage="Inserire le note al contributo Spese" />	
+				                 </p:column>
+				              </p:row>
+				            </p:panelGrid>
+				            </p:panel>
+				     </p:fieldset>
+				     
+				     <p:spacer height="10px" />
+				     
+				     <p:fieldset legend="Famiglia Affidataria" style="border-color: orange">
+				         
+				         <p:outputPanel rendered="#{cc.attrs.iPai.paiAffidoBean.mostraFamigliaAffBase()}">
+				             <p:panelGrid style="width:100%;" columns="7">
+				              
+			              		 <h:outputLabel value="PADRE" style="font-weight:bold; " />
+			              		 
+			                     <h:outputLabel for="fa-padre-base-cf" value="Cod.fiscale" />
+			                     <p:inputText id="fa-padre-base-cf" value="#{cc.attrs.iPai.paiAffidoBean.affido.famigliaAffidataria.padre.cf}" />
+			                 
+			                     <h:outputLabel for="fa-padre-base-cognome" value="Cognome" />
+			                     <p:inputText id="fa-padre-base-cognome" value="#{cc.attrs.iPai.paiAffidoBean.affido.famigliaAffidataria.padre.cognome}" />
+			                  
+			                     <h:outputLabel for="fa-padre-base-nome" value="Nome" />
+			                     <p:inputText id="fa-padre-base-nome" value="#{cc.attrs.iPai.paiAffidoBean.affido.famigliaAffidataria.padre.nome}" />
+			                 
+			                	 <h:outputLabel value="MADRE" style="font-weight:bold;" />
+			                	 
+			                     <h:outputLabel for="fa-madre-base-cf" value="Cod.fiscale" />
+			                     <p:inputText id="fa-madre-base-cf" value="#{cc.attrs.iPai.paiAffidoBean.affido.famigliaAffidataria.madre.cf}" />
+			                 
+			                     <h:outputLabel for="fa-madre-base-cognome" value="Cognome" />
+			                     <p:inputText id="fa-madre-base-cognome" value="#{cc.attrs.iPai.paiAffidoBean.affido.famigliaAffidataria.madre.cognome}" />
+			                 
+			                     <h:outputLabel for="fa-madre-base-nome" value="Nome" />
+				                 <p:inputText id="fa-madre-base-nome" value="#{cc.attrs.iPai.paiAffidoBean.affido.famigliaAffidataria.madre.nome}" />
+				                
+				       		  </p:panelGrid>
+				         </p:outputPanel>
+				         
+				         <p:outputPanel rendered="#{!cc.attrs.iPai.paiAffidoBean.mostraFamigliaAffBase()}">
+<!-- 				                 <p:selectBooleanCheckbox itemLabel="RICARICA I GENITORI"  -->
+<!-- 				                               value="#{cc.attrs.iPai.paiAffidoBean.ricaricaFamAff}"/> -->
+				         
+					         <p:dataTable emptyMessage="Nessun soggetto trovato" id="table-fam-aff"
+					                      var="sogg" rowIndexVar="rowIndex" 
+							              value="#{cc.attrs.iPai.paiAffidoBean.famigliaAff}" >
+				
+									<p:column headerText="Cognome">
+										<h:outputText value="#{sogg.cognome}" />
+									</p:column>
+									
+									<p:column headerText="Nome">
+										<h:outputText value="#{sogg.nome}" />
+									</p:column>
+									
+									<p:column headerText="Cod.fiscale">
+										<h:outputText value="#{sogg.cf}" />
+									</p:column>
+									
+									<p:column headerText="Sesso" width="20" style="text-align:center;">
+										<h:outputText   rendered="#{sogg.sesso ne 'F' and sogg.sesso ne 'M'}" value="#{sogg.sesso}" />
+										<p:graphicImage rendered="#{sogg.sesso eq 'F'}" title="Donna" value="/images/female.png" height="20"/>
+						            	<p:graphicImage rendered="#{sogg.sesso eq 'M'}" title="Uomo" value="/images/male.png" height="20"/>
+									</p:column>
+									
+									<p:column headerText="Relazione">
+										<h:outputText value="#{sogg.parentela}" />
+									</p:column>
+							</p:dataTable>
+						</p:outputPanel>
+					
+				         <p:panelGrid style="width:100%;" >
+					         <p:row>
+					             <p:column>
+				                     <h:outputLabel for="fa-skills" value="Caratteristiche:" />
+				                 </p:column>
+				                 <p:column>
+				                     <p:inputTextarea rows="4" cols="30" id="fa-skills" autoResize="true"
+				                                      value="#{cc.attrs.iPai.paiAffidoBean.affido.famigliaAffidataria.caratteristiche}" />
+				                 </p:column>
+				                 <p:column rendered="#{cc.attrs.iPai.paiAffidoBean.isStato(30)}">
+				                     <h:outputLabel for="fa-motivazioni" value="Motivazioni della scelta:" />
+				                 </p:column>
+				                 <p:column rendered="#{cc.attrs.iPai.paiAffidoBean.isStato(30)}">
+				                     <p:inputTextarea rows="4" cols="30" id="fa-motivazioni" autoResize="true"
+				                                      value="#{cc.attrs.iPai.paiAffidoBean.affido.famigliaAffidataria.motivazioni}" />
+				                 </p:column>
+				             </p:row>
+				             <p:row rendered="#{cc.attrs.iPai.paiAffidoBean.isStato(30)}">
+				                 <p:column>
+				                     <h:outputLabel for="fa-banca-famiglie" value="Inserita in banca dati famiglie*:" />
+				                 </p:column>
+				                 <p:column>
+				                     <p:selectOneMenu id="fa-banca-famiglie" value="#{cc.attrs.iPai.paiAffidoBean.affido.famigliaAffidataria.codiceBancaDatiFamiglie}" 
+				                                      required="true" requiredMessage="Banca dati famiglie non valorizzato">
+				                         <f:selectItem noSelectionOption="true" itemLabel="- seleziona -" />
+				                         <f:selectItems  value="#{cc.attrs.iPai.paiAffidoBean.listaBancaFamiglie}" var="item" itemLabel="#{item.descrizione}" itemValue="#{item.codice}" />
+				                     </p:selectOneMenu>
+				                 </p:column>
+				             
+				                 <p:column>
+				                     <h:outputLabel for="fa-idoneita" value="Idoneità*:" />
+				                 </p:column>
+				                 <p:column>
+				                     <p:selectOneMenu required="true" id="fa-idoneita" requiredMessage="Idoneità non valorizzata"
+				                                      value="#{cc.attrs.iPai.paiAffidoBean.affido.famigliaAffidataria.codiceIdoneita}" >
+				                         <f:selectItem noSelectionOption="true" itemLabel="- seleziona -" />
+				                         <f:selectItems  value="#{cc.attrs.iPai.paiAffidoBean.listaIdoneita}" var="item" itemLabel="#{item.descrizione}" itemValue="#{item.codice}" />
+				                     </p:selectOneMenu>
+				                 </p:column>
+				             </p:row>
+				             <p:row rendered="#{cc.attrs.iPai.paiAffidoBean.isStato(40)}">
+				                 <p:column>
+				                     <h:outputLabel for="fa-affidatari" value="Affidatari*:" />
+				                 </p:column>
+				                 <p:column>
+				                     <p:selectOneMenu id="fa-affidatari" value="#{cc.attrs.iPai.paiAffidoBean.affido.famigliaAffidataria.codiceTipoFamiglia}" 
+				                                      required="true" requiredMessage="Affidatari non valorizzati">
+				                         <f:selectItem noSelectionOption="true" itemLabel="- seleziona -" />
+				                         <f:selectItems  value="#{cc.attrs.iPai.paiAffidoBean.listaAffidatari}" var="item" itemLabel="#{item.descrizione}" itemValue="#{item.codice}" />
+				                     </p:selectOneMenu>
+				                 </p:column>
+				              </p:row>
+			                 <p:row rendered="#{cc.attrs.iPai.paiAffidoBean.isStato(50)}">
+			                     <p:column>
+			                         <p:selectBooleanCheckbox itemLabel="F.A. conosciuta dal minore" 
+			                                                  value="#{cc.attrs.iPai.paiAffidoBean.affido.famigliaAffidataria.conosciutaDalMinore}"/>
+			                     </p:column>
+			                     <p:column>
+			                         <p:selectBooleanCheckbox itemLabel="Fuori Regione" 
+			                                                  value="#{cc.attrs.iPai.paiAffidoBean.affido.famigliaAffidataria.fuoriRegione}"/>
+			                     </p:column>
+			                 </p:row>
+				         </p:panelGrid>
+				     </p:fieldset>
+				 </p:panel>
+	  	
+	</p:outputPanel>
+</html>

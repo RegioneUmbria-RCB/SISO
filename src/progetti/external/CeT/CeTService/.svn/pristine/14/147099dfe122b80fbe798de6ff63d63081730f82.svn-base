@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings
+  xmlns="http://java.sun.com/xml/ns/persistence/orm"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
+  version="2.0">
+
+	<!-- Join MuiFabbricatiIdentifica / MuiNotaTras nota / MuiFabbricatiInfo -->
+	<named-query name="Join_FabbrIden_Nota_FabbrInfo.getNotaByFPS">
+		<query>
+			<![CDATA[
+				SELECT nota 
+				FROM MuiFabbricatiIdentifica fabbr, MuiNotaTras nota , MuiFabbricatiInfo fabInfo
+				WHERE nota.iid =  fabbr.iidNota
+				  AND nota.iidFornitura = fabbr.iidFornitura
+				  AND fabbr.iidFornitura= fabinfo.iidFornitura 
+				  AND fabbr.iidNota = fabinfo.iidNota 
+				  AND fabbr.idImmobile = fabinfo.idImmobile 
+				  AND LPAD(fabbr.foglio, 4, '0') = LPAD(:foglio, 4, '0')  
+				  AND LPAD(fabbr.numero, 5, '0')  = LPAD(:particella, 5, '0')  
+				  AND LPAD(fabbr.subalterno, 4, '0')  = LPAD(:sub, 4, '0')  
+				  ORDER BY nota.annoNotaDate DESC 
+			]]>
+		</query>
+	</named-query>
+	<named-query name="Join_FabbrIden_Nota_FabbrInfo.getNotaByFPSubNonVal">
+		<query>
+			<![CDATA[
+				SELECT nota 
+				FROM MuiFabbricatiIdentifica fabbr, MuiNotaTras nota , MuiFabbricatiInfo fabInfo
+				WHERE nota.iid =  fabbr.iidNota
+				  AND nota.iidFornitura = fabbr.iidFornitura
+				  AND fabbr.iidFornitura= fabinfo.iidFornitura 
+				  AND fabbr.iidNota = fabinfo.iidNota 
+				  AND fabbr.idImmobile = fabinfo.idImmobile 
+				  AND LPAD(fabbr.foglio, 4, '0') = LPAD(:foglio, 4, '0')  
+				  AND LPAD(fabbr.numero, 5, '0')  = LPAD(:particella, 5, '0')  
+				  AND fabbr.subalterno IS NULL  
+				  ORDER BY nota.annoNotaDate DESC 
+			]]>
+		</query>
+	</named-query>
+	<named-query name="Join_FabbrIden_Nota_FabbrInfo.getNotaBySezFPS">
+		<query>
+			<![CDATA[
+				SELECT nota 
+				FROM MuiFabbricatiIdentifica fabbr, MuiNotaTras nota , MuiFabbricatiInfo fabInfo
+				WHERE nota.iid =  fabbr.iidNota
+				  AND nota.iidFornitura = fabbr.iidFornitura
+				  AND fabbr.iidFornitura= fabinfo.iidFornitura 
+				  AND fabbr.iidNota = fabinfo.iidNota 
+				  AND fabbr.idImmobile = fabinfo.idImmobile 
+				  AND LPAD(fabbr.foglio, 4, '0') = LPAD(:foglio, 4, '0')  
+				  AND LPAD(fabbr.numero, 5, '0')  = LPAD(:particella, 5, '0')  
+				  AND LPAD(fabbr.subalterno, 4, '0')  = LPAD(:sub, 4, '0')  
+				  AND fabbr.sezioneUrbana=:sezione 
+				  ORDER BY nota.annoNotaDate DESC 
+			]]>
+		</query>
+	</named-query>
+	<named-query name="Join_FabbrIden_Nota_FabbrInfo.getNotaBySezFPSubNonVal">
+		<query>
+			<![CDATA[
+				SELECT nota 
+				FROM MuiFabbricatiIdentifica fabbr, MuiNotaTras nota , MuiFabbricatiInfo fabInfo
+				WHERE nota.iid =  fabbr.iidNota
+				  AND nota.iidFornitura = fabbr.iidFornitura
+				  AND fabbr.iidFornitura= fabinfo.iidFornitura 
+				  AND fabbr.iidNota = fabinfo.iidNota 
+				  AND fabbr.idImmobile = fabinfo.idImmobile 
+				  AND LPAD(fabbr.foglio, 4, '0') = LPAD(:foglio, 4, '0')  
+				  AND LPAD(fabbr.numero, 5, '0')  = LPAD(:particella, 5, '0')  
+				  AND fabbr.subalterno IS NULL  
+				  AND fabbr.sezioneUrbana=:sezione 
+				  ORDER BY nota.annoNotaDate DESC 
+			]]>
+		</query>
+	</named-query>
+	<!-- Join  MuiNotaTras nota / MuiTerreniInfo -->
+	<named-query name="Join_Nota_FabbrInfo.getNotaTerrenoByFP">
+		<query>
+			<![CDATA[
+				SELECT nota
+				  FROM MuiTerreniInfo terr,MuiNotaTras nota 
+				 WHERE terr.iidFornitura = nota.iidFornitura
+				   AND nota.iid = terr.iidNota 
+				   AND LPAD(terr.foglio, 4,'0') = LPAD(:foglio,4,'0')
+				   AND LPAD(terr.numero, 5,'0') = LPAD(:particella,5,'0')
+				   ORDER BY nota.annoNotaDate DESC 
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="Join_Nota_FabbrInfo.getNotaTerrenoBySezFP">
+		<query>
+			<![CDATA[
+				SELECT nota
+				  FROM MuiTerreniInfo terr,MuiNotaTras nota 
+				 WHERE terr.iidFornitura = nota.iidFornitura
+				   AND nota.iid = terr.iidNota 
+				   AND LPAD(terr.foglio, 4,'0') = LPAD(:foglio,4,'0')
+				   AND LPAD(terr.numero, 5,'0') = LPAD(:particella,5,'0')
+				   AND terr.sezioneCensuaruia=:sezione
+				   ORDER BY nota.annoNotaDate DESC 
+			]]>
+		</query>
+	</named-query>
+	<named-query name="Join_FabbrIden_Nota_FabbrInfo.getNotaByFP">
+		<query>
+			<![CDATA[
+				SELECT distinct nota 
+				FROM MuiFabbricatiIdentifica fabbr, MuiNotaTras nota , MuiFabbricatiInfo fabInfo
+				WHERE nota.iid =  fabbr.iidNota
+				  AND nota.iidFornitura = fabbr.iidFornitura
+				  AND fabbr.iidFornitura= fabinfo.iidFornitura 
+				  AND fabbr.iidNota = fabinfo.iidNota 
+				  AND fabbr.idImmobile = fabinfo.idImmobile 
+				  AND LPAD(fabbr.foglio, 4, '0') = LPAD(:foglio, 4, '0')  
+				  AND LPAD(fabbr.numero, 5, '0')  = LPAD(:particella, 5, '0')  
+				  ORDER BY nota.annoNotaDate DESC 
+			]]>
+		</query>
+	</named-query>
+	<named-query name="Join_FabbrIden_Nota_FabbrInfo.getNotaBySezFP">
+		<query>
+			<![CDATA[
+				SELECT distinct nota 
+				FROM MuiFabbricatiIdentifica fabbr, MuiNotaTras nota , MuiFabbricatiInfo fabInfo
+				WHERE nota.iid =  fabbr.iidNota
+				  AND nota.iidFornitura = fabbr.iidFornitura
+				  AND fabbr.iidFornitura= fabinfo.iidFornitura 
+				  AND fabbr.iidNota = fabinfo.iidNota 
+				  AND fabbr.idImmobile = fabinfo.idImmobile 
+				  AND LPAD(fabbr.foglio, 4, '0') = LPAD(:foglio, 4, '0')  
+				  AND LPAD(fabbr.numero, 5, '0')  = LPAD(:particella, 5, '0')   
+				  AND fabbr.sezioneUrbana=:sezione 
+				  ORDER BY nota.annoNotaDate DESC 
+			]]>
+		</query>
+	</named-query>
+	<named-query name="FabbrIden.getListaUIByNotaFabbr">
+		<query>
+			<![CDATA[
+				SELECT distinct fabbr
+				FROM MuiFabbricatiIdentifica fabbr
+				WHERE fabbr.iidFornitura= :iidFornitura 
+				  AND fabbr.iidNota = :iidNota
+				  AND LPAD(fabbr.foglio, 4, '0') = LPAD(:foglio, 4, '0')  
+				  AND LPAD(fabbr.numero, 5, '0')  = LPAD(:particella, 5, '0')   
+				  AND (fabbr.sezioneUrbana=:sezione or fabbr.sezioneUrbana is null) 
+				  
+			]]>
+		</query>
+	</named-query>
+	</entity-mappings>

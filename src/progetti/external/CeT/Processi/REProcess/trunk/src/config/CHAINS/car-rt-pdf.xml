@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<j:jelly trim="false" xmlns:define="jelly:define" xmlns:j="jelly:core"
+	     xmlns:x="jelly:xml" xmlns:re="reTagLib" xmlns:log="jelly:log">
+	
+	<define:taglib uri="reTagLib">
+		<define:jellybean name="bridge" className="it.webred.rulengine.chains.bridge.JellyCommandBridge" />
+	</define:taglib>
+	
+	<j:set var='par1' encode='true'>
+		<complexParam>
+			<param type="it.webred.rulengine.type.ComplexParam" name="sql1">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[SQL_CREATE_SIT_RUOLO_TAR_PDF]]</param></complexParam> ]]>
+	   		</param>
+	   	</complexParam>
+	</j:set>
+
+	<re:bridge codiceComando="C-RT-PDF" context="${ctx}" connessione="DWH" var="cmd1" parametro="${par1}"/>
+	
+
+</j:jelly>

@@ -1,0 +1,8 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<OSDM_Design class="oracle.dbtools.crest.model.design.Design" name="ModelloSISO" id="769DAC70-E256-58EC-85DE-13DCAABF250F" version="3.5">
+<createdBy>marcoultra</createdBy>
+<createdTime>2016-07-18 12:17:25 UTC</createdTime>
+<ownerDesignName>ModelloSISO</ownerDesignName>
+<capitalNames>false</capitalNames>
+<designId>769DAC70-E256-58EC-85DE-13DCAABF250F</designId>
+</OSDM_Design>

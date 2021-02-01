@@ -1,0 +1,12 @@
+
+<deployment name="AMProfiler" xmlns="http://xml.apache.org/axis/wsdd/" 
+    xmlns:java="http://xml.apache.org/axis/wsdd/providers/java">
+
+  
+  
+  <service name="Services" provider="java:RPC">
+    <parameter name="className" value="it.webred.AMProfiler.services.Services"/>
+    <parameter name="allowedMethods" value="getListaUrl"/>
+  </service>
+
+</deployment>

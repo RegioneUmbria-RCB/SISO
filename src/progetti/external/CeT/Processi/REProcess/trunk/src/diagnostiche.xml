@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<diagnostiche>
+
+<!--
+Attributi obbligatori
+	id 							= corrisponde alla chiave della tabella DIA_CATALOGO
+	tableDettaglio 				= nome della tabella dove sono memorizzati i risultati delle diagnostiche sia standard che no 
+	tableClass 					= nome classe che mappa la tabella di dettaglio
+Attributi non obbligatori
+	seqForDettaglio 			= nome sequence obbligatoria solo nel caso di diagnostiche standard
+	standard					= se non presente di default S (Si) N (No)
+	fieldTableDettaglioForFK 	= nome del campo FK nella tabella di dettaglio che memorizza la chiave della testata.
+								  Valorizzare solamente nel caso di diagnostiche non standard e che gestiscono la storicizzazione
+								  delle esecuzioni.
+	tipoGest					= Va specificato per tutte quelle D. che non prevedono solo una pagina di visualizzazione risultati standatd.
+								  Attualmente i valori previsti sono 1-Default, 2-Navigation Case, 3-Other context, 4-Other web site 
+	tipoGestValue				= valore riferito al tipoGest.Null se tipoGest è uguale ad 1
+ -->
+
+	<diagnostica id="1" tableDettaglio="DIA_DETTAGLIO_D_CTR_DEM" tableClass="it.webred.ct.diagnostics.service.data.model.DiaDettaglioDCtrDem" seqForDettaglio="SEQ_DIA_DETTAGLIO_D_CTR_DEM"> </diagnostica>
+	<diagnostica id="2" tableDettaglio="DIA_DETTAGLIO_D_CTR_DEM" tableClass="it.webred.ct.diagnostics.service.data.model.DiaDettaglioDCtrDem" seqForDettaglio="SEQ_DIA_DETTAGLIO_D_CTR_DEM"> </diagnostica>
+	<diagnostica id="3" tableDettaglio="DIA_DETTAGLIO_D_CTR_DEM" tableClass="it.webred.ct.diagnostics.service.data.model.DiaDettaglioDCtrDem" seqForDettaglio="SEQ_DIA_DETTAGLIO_D_CTR_DEM"> </diagnostica>
+	<diagnostica id="4" tableDettaglio="DIA_DETTAGLIO_D_CTR_DEM" tableClass="it.webred.ct.diagnostics.service.data.model.DiaDettaglioDCtrDem" seqForDettaglio="SEQ_DIA_DETTAGLIO_D_CTR_DEM"> </diagnostica>
+	<diagnostica id="5" tableDettaglio="DIA_DETTAGLIO_D_CTR_DEM" tableClass="it.webred.ct.diagnostics.service.data.model.DiaDettaglioDCtrDem" seqForDettaglio="SEQ_DIA_DETTAGLIO_D_CTR_DEM"> </diagnostica>
+	<diagnostica id="6" tableDettaglio="DIA_DETTAGLIO_D_CTR_DEM" tableClass="it.webred.ct.diagnostics.service.data.model.DiaDettaglioDCtrDem" seqForDettaglio="SEQ_DIA_DETTAGLIO_D_CTR_DEM"> </diagnostica>
+	<diagnostica id="7" tableDettaglio="DIA_DETTAGLIO_D_CTR_DEM" tableClass="it.webred.ct.diagnostics.service.data.model.DiaDettaglioDCtrDem" seqForDettaglio="SEQ_DIA_DETTAGLIO_D_CTR_DEM"> </diagnostica>
+	<diagnostica id="8" tableDettaglio="DIA_DETTAGLIO_D_CTR_DEM" tableClass="it.webred.ct.diagnostics.service.data.model.DiaDettaglioDCtrDem" seqForDettaglio="SEQ_DIA_DETTAGLIO_D_CTR_DEM"> </diagnostica>
+	<diagnostica id="9" tableDettaglio="DIA_DETTAGLIO_D_CTR_DEM" tableClass="it.webred.ct.diagnostics.service.data.model.DiaDettaglioDCtrDem" seqForDettaglio="SEQ_DIA_DETTAGLIO_D_CTR_DEM"> </diagnostica>
+	<diagnostica id="10" tableDettaglio="DIA_DETTAGLIO_D_CTR_DEM" tableClass="it.webred.ct.diagnostics.service.data.model.DiaDettaglioDCtrDem" seqForDettaglio="SEQ_DIA_DETTAGLIO_D_CTR_DEM"> </diagnostica>
+	<diagnostica id="11" tableDettaglio="DIA_DETTAGLIO_D_CTR_DEM" tableClass="it.webred.ct.diagnostics.service.data.model.DiaDettaglioDCtrDem" seqForDettaglio="SEQ_DIA_DETTAGLIO_D_CTR_DEM"> </diagnostica>
+	<diagnostica id="12" tableDettaglio="DIA_DETTAGLIO_D_CTR_DEM" tableClass="it.webred.ct.diagnostics.service.data.model.DiaDettaglioDCtrDem" seqForDettaglio="SEQ_DIA_DETTAGLIO_D_CTR_DEM"> </diagnostica>
+	<diagnostica id="13" tableDettaglio="DIA_DETTAGLIO_D_CTR_DEM" tableClass="it.webred.ct.diagnostics.service.data.model.DiaDettaglioDCtrDem" seqForDettaglio="SEQ_DIA_DETTAGLIO_D_CTR_DEM"> </diagnostica>
+	<diagnostica id="14" tableDettaglio="DIA_DETTAGLIO_D_CTR_DEM" tableClass="it.webred.ct.diagnostics.service.data.model.DiaDettaglioDCtrDem" seqForDettaglio="SEQ_DIA_DETTAGLIO_D_CTR_DEM"> </diagnostica>
+	<diagnostica id="15" tableDettaglio="DIA_DETTAGLIO_D_CTR_DEM" tableClass="it.webred.ct.diagnostics.service.data.model.DiaDettaglioDCtrDem" seqForDettaglio="SEQ_DIA_DETTAGLIO_D_CTR_DEM"> </diagnostica>
+	<diagnostica id="16" tableDettaglio="DIA_DETTAGLIO_D_CTR_DEM01" tableClass="it.webred.ct.diagnostics.service.data.model.DiaDettaglioDCtrDem01" seqForDettaglio="SEQ_DIA_DETTAGLIO_D_CTR_DEM"> </diagnostica>
+	<diagnostica id="17" tableDettaglio="DIA_DETTAGLIO_D_CTR_DEM" tableClass="it.webred.ct.diagnostics.service.data.model.DiaDettaglioDCtrDem" seqForDettaglio="SEQ_DIA_DETTAGLIO_D_CTR_DEM"> </diagnostica>
+	<diagnostica id="18" tableDettaglio="DIA_DETTAGLIO_D_CTR_DEM02" tableClass="it.webred.ct.diagnostics.service.data.model.DiaDettaglioDCtrDem02" seqForDettaglio="SEQ_DIA_DETTAGLIO_D_CTR_DEM"> </diagnostica>
+	<diagnostica id="19" tableDettaglio="DIA_DETTAGLIO_D_CTR_DEM03" tableClass="it.webred.ct.diagnostics.service.data.model.DiaDettaglioDCtrDem03" seqForDettaglio="SEQ_DIA_DETTAGLIO_D_CTR_DEM"> </diagnostica>
+	<diagnostica id="20" tableDettaglio="DIA_DETTAGLIO_D_CTR_DEM03" tableClass="it.webred.ct.diagnostics.service.data.model.DiaDettaglioDCtrDem03" seqForDettaglio="SEQ_DIA_DETTAGLIO_D_CTR_DEM"> </diagnostica>
+	<diagnostica id="21" tableDettaglio="DIA_DETTAGLIO_D_CTR_DEM02" tableClass="it.webred.ct.diagnostics.service.data.model.DiaDettaglioDCtrDem02" seqForDettaglio="SEQ_DIA_DETTAGLIO_D_CTR_DEM"> </diagnostica>
+	<diagnostica id="22" tableDettaglio="DIA_DETTAGLIO_D_CTR_DEM03" tableClass="it.webred.ct.diagnostics.service.data.model.DiaDettaglioDCtrDem03" seqForDettaglio="SEQ_DIA_DETTAGLIO_D_CTR_DEM"> </diagnostica>	
+	<diagnostica id="23" tableDettaglio="DIA_DETTAGLIO_D_CTR_DEM03" tableClass="it.webred.ct.diagnostics.service.data.model.DiaDettaglioDCtrDem03" seqForDettaglio="SEQ_DIA_DETTAGLIO_D_CTR_DEM"> </diagnostica>	
+	<!--  diagnostica id="24" tableDettaglio="DIA_DETTAGLIO_D_CTR_DEM04" tableClass="it.webred.ct.diagnostics.service.data.model.DiaDettaglioDCtrDem04" seqForDettaglio="SEQ_DIA_DETTAGLIO_D_CTR_DEM"> </diagnostica-->
+	
+	<!-- 
+		Ricordarsi di aggiornare lo script di upgrade per dioegne su svn al 
+		momento della creazione della tabella 
+	-->
+	<diagnostica id="101" tableDettaglio="DIA_DETTAGLIO_D_CTR_TRI01" tableClass="it.webred.ct.diagnostics.service.data.model.DiaDettaglioDCtrTri01" seqForDettaglio="SEQ_DIA_DETTAGLIO_D_CTR_TRI"> </diagnostica>
+	<diagnostica id="102" tableDettaglio="DIA_DETTAGLIO_D_CTR_TRI01" tableClass="it.webred.ct.diagnostics.service.data.model.DiaDettaglioDCtrTri01" seqForDettaglio="SEQ_DIA_DETTAGLIO_D_CTR_TRI"> </diagnostica>
+	<diagnostica id="103" tableDettaglio="DIA_DETTAGLIO_D_CTR_TRI01" tableClass="it.webred.ct.diagnostics.service.data.model.DiaDettaglioDCtrTri01" seqForDettaglio="SEQ_DIA_DETTAGLIO_D_CTR_TRI"> </diagnostica>
+	<diagnostica id="104" tableDettaglio="DIA_DETTAGLIO_D_CTR_TRI02" tableClass="it.webred.ct.diagnostics.service.data.model.DiaDettaglioDCtrTri02" seqForDettaglio="SEQ_DIA_DETTAGLIO_D_CTR_TRI"> </diagnostica>
+	<diagnostica id="105" tableDettaglio="DIA_DETTAGLIO_D_CTR_TRI03" tableClass="it.webred.ct.diagnostics.service.data.model.DiaDettaglioDCtrTri03" seqForDettaglio="SEQ_DIA_DETTAGLIO_D_CTR_TRI"> </diagnostica>
+	<diagnostica id="106" tableDettaglio="DIA_DETTAGLIO_D_CTR_TRI04" tableClass="it.webred.ct.diagnostics.service.data.model.DiaDettaglioDCtrTri04" seqForDettaglio="SEQ_DIA_DETTAGLIO_D_CTR_TRI"> </diagnostica>
+	<diagnostica id="107" tableDettaglio="DIA_DETTAGLIO_D_CTR_TRI05" tableClass="it.webred.ct.diagnostics.service.data.model.DiaDettaglioDCtrTri05" seqForDettaglio="SEQ_DIA_DETTAGLIO_D_CTR_TRI"> </diagnostica>
+	<diagnostica id="108" tableDettaglio="DIA_DETTAGLIO_D_CTR_TRI05" tableClass="it.webred.ct.diagnostics.service.data.model.DiaDettaglioDCtrTri05" seqForDettaglio="SEQ_DIA_DETTAGLIO_D_CTR_TRI"> </diagnostica>
+	<diagnostica id="109" tableDettaglio="DIA_DETTAGLIO_D_CTR_TRI05" tableClass="it.webred.ct.diagnostics.service.data.model.DiaDettaglioDCtrTri05" seqForDettaglio="SEQ_DIA_DETTAGLIO_D_CTR_TRI"> </diagnostica>
+	<diagnostica id="110" tableDettaglio="DIA_DETTAGLIO_D_CTR_TRI05" tableClass="it.webred.ct.diagnostics.service.data.model.DiaDettaglioDCtrTri05" seqForDettaglio="SEQ_DIA_DETTAGLIO_D_CTR_TRI"> </diagnostica>
+	<diagnostica id="111" tableDettaglio="DIA_DETTAGLIO_D_CTR_TRI05" tableClass="it.webred.ct.diagnostics.service.data.model.DiaDettaglioDCtrTri05" seqForDettaglio="SEQ_DIA_DETTAGLIO_D_CTR_TRI"> </diagnostica>
+	<diagnostica id="112" tableDettaglio="DIA_DETTAGLIO_D_CTR_TRI05" tableClass="it.webred.ct.diagnostics.service.data.model.DiaDettaglioDCtrTri05" seqForDettaglio="SEQ_DIA_DETTAGLIO_D_CTR_TRI"> </diagnostica>
+	<diagnostica id="113" tableDettaglio="DIA_DETTAGLIO_D_CTR_TRI06" tableClass="it.webred.ct.diagnostics.service.data.model.DiaDettaglioDCtrTri06" seqForDettaglio="SEQ_DIA_DETTAGLIO_D_CTR_TRI"> </diagnostica>
+	<diagnostica id="114" tableDettaglio="DIA_DETTAGLIO_D_CTR_TRI07" tableClass="it.webred.ct.diagnostics.service.data.model.DiaDettaglioDCtrTri07" seqForDettaglio="SEQ_DIA_DETTAGLIO_D_CTR_TRI"> </diagnostica>
+	<diagnostica id="115" tableDettaglio="DIA_DETTAGLIO_D_CTR_TRI07" tableClass="it.webred.ct.diagnostics.service.data.model.DiaDettaglioDCtrTri07" seqForDettaglio="SEQ_DIA_DETTAGLIO_D_CTR_TRI"> </diagnostica>
+	<diagnostica id="116" tableDettaglio="DIA_DETTAGLIO_D_CTR_TRI08" tableClass="it.webred.ct.diagnostics.service.data.model.DiaDettaglioDCtrTri08" seqForDettaglio="SEQ_DIA_DETTAGLIO_D_CTR_TRI"> </diagnostica>
+	<diagnostica id="117" tableDettaglio="DIA_DETTAGLIO_D_CTR_TRI08" tableClass="it.webred.ct.diagnostics.service.data.model.DiaDettaglioDCtrTri08" seqForDettaglio="SEQ_DIA_DETTAGLIO_D_CTR_TRI"> </diagnostica>
+	<diagnostica id="118" tableDettaglio="DIA_DETTAGLIO_D_CTR_TRI08" tableClass="it.webred.ct.diagnostics.service.data.model.DiaDettaglioDCtrTri08" seqForDettaglio="SEQ_DIA_DETTAGLIO_D_CTR_TRI"> </diagnostica>
+	
+	<diagnostica id="201" tableDettaglio="DIA_DETTAGLIO_D_CTR_CAT01" tableClass="it.webred.ct.diagnostics.service.data.model.DiaDettaglioDCtrCat01" seqForDettaglio="SEQ_DIA_DETTAGLIO_D_CTR_CAT"> </diagnostica>
+	<diagnostica id="202" tableDettaglio="DIA_DETTAGLIO_D_CTR_CAT01" tableClass="it.webred.ct.diagnostics.service.data.model.DiaDettaglioDCtrCat01" seqForDettaglio="SEQ_DIA_DETTAGLIO_D_CTR_CAT"> </diagnostica>
+	<diagnostica id="203" tableDettaglio="DIA_DETTAGLIO_D_CTR_CAT01" tableClass="it.webred.ct.diagnostics.service.data.model.DiaDettaglioDCtrCat01" seqForDettaglio="SEQ_DIA_DETTAGLIO_D_CTR_CAT"> </diagnostica>
+	
+	<diagnostica id="301" tableDettaglio="DIA_DETTAGLIO_D_CTR_ICI01" tableClass="it.webred.ct.diagnostics.service.data.model.DiaDettaglioDCtrIci01" seqForDettaglio="SEQ_DIA_DETTAGLIO_D_CTR_ICI"> </diagnostica>
+	<diagnostica id="302" tableDettaglio="DIA_DETTAGLIO_D_CTR_ICI02" tableClass="it.webred.ct.diagnostics.service.data.model.DiaDettaglioDCtrIci02" seqForDettaglio="SEQ_DIA_DETTAGLIO_D_CTR_ICI"> </diagnostica>
+	<diagnostica id="303" tableDettaglio="DIA_DETTAGLIO_D_CTR_ICI03" tableClass="it.webred.ct.diagnostics.service.data.model.DiaDettaglioDCtrIci03" seqForDettaglio="SEQ_DIA_DETTAGLIO_D_CTR_ICI"> </diagnostica>
+	<diagnostica id="304" tableDettaglio="" tableClass="" seqForDettaglio="SEQ_DIA_DETTAGLIO_D_CTR_ICI"> </diagnostica>
+	
+	<diagnostica id="401" tableDettaglio="" tableClass="" seqForDettaglio="SEQ_DIA_DETTAGLIO_D_CFR_TAR"> </diagnostica>
+	<diagnostica id="402" tableDettaglio="" tableClass="" seqForDettaglio="SEQ_DIA_DETTAGLIO_D_CFR_TAR"> </diagnostica>
+	<diagnostica id="403" tableDettaglio="" tableClass="" seqForDettaglio="SEQ_DIA_DETTAGLIO_D_CFR_TAR"> </diagnostica>
+	<diagnostica id="404" tableDettaglio="" tableClass="" seqForDettaglio="SEQ_DIA_DETTAGLIO_D_CTR_DEM"> </diagnostica>
+	<diagnostica id="405" tableDettaglio="" tableClass="" seqForDettaglio="SEQ_DIA_DETTAGLIO_D_CFR_TAR"> </diagnostica>
+	
+	<diagnostica id="501" tableDettaglio="" tableClass="" seqForDettaglio="SEQ_DIA_DETTAGLIO_D_CTR_CAT"> </diagnostica>
+	<diagnostica id="502" tableDettaglio="" tableClass="" seqForDettaglio="SEQ_DIA_DETTAGLIO_L_LIS_CAT"> </diagnostica>
+		
+	<diagnostica id="701" tableDettaglio="DIA_DETTAGLIO_D_CFR_TOP01" tableClass="it.webred.ct.diagnostics.service.data.model.DiaDettaglioDCfrTop01" seqForDettaglio="SEQ_DIA_DETTAGLIO_D_CFR_TOP01"> </diagnostica>
+	
+	<diagnostica id="702" tableDettaglio="DIA_DETTAGLIO_D_CFR_CAT01" tableClass="it.webred.ct.diagnostics.service.data.model.DiaDettaglioDCfrCat01" seqForDettaglio="SEQ_DIA_DETTAGLIO_D_CFR_CAT01"> </diagnostica>
+	<diagnostica id="703" tableDettaglio="DIA_DETTAGLIO_D_CFR_CAT02" tableClass="it.webred.ct.diagnostics.service.data.model.DiaDettaglioDCfrCat02" seqForDettaglio="SEQ_DIA_DETTAGLIO_D_CFR_CAT01"> </diagnostica>
+	<diagnostica id="704" tableDettaglio="DIA_DETTAGLIO_D_CTR_CAT02" tableClass="it.webred.ct.diagnostics.service.data.model.DiaDettaglioDCtrCat02" seqForDettaglio="SEQ_DIA_DETTAGLIO_D_CTR_CAT" fieldTableDettaglioForFK="FK_DIA_TESTATA"  standard="N" tipoGest="1"  > </diagnostica>
+	<diagnostica id="705" tableDettaglio="DIA_DETTAGLIO_D_CTR_CAT03" tableClass="it.webred.ct.diagnostics.service.data.model.DiaDettaglioDCtrCat03" seqForDettaglio="SEQ_DIA_DETTAGLIO_D_CTR_CAT" fieldTableDettaglioForFK="FK_DIA_TESTATA"  standard="N" tipoGest="1"  > </diagnostica>
+	
+	<diagnostica id="1101" tableDettaglio="DIA_DETTAGLIO_D_CTR_TR201" tableClass="it.webred.ct.diagnostics.service.data.model.DiaDettaglioDCtrTr201" seqForDettaglio="SEQ_DIA_DETTAGLIO_D_CTR_TRI2"> </diagnostica>
+	<diagnostica id="1102" tableDettaglio="DIA_DETTAGLIO_D_CTR_TR201" tableClass="it.webred.ct.diagnostics.service.data.model.DiaDettaglioDCtrTr201" seqForDettaglio="SEQ_DIA_DETTAGLIO_D_CTR_TRI2"> </diagnostica>
+	<diagnostica id="1103" tableDettaglio="DIA_DETTAGLIO_D_CTR_TR201" tableClass="it.webred.ct.diagnostics.service.data.model.DiaDettaglioDCtrTr201" seqForDettaglio="SEQ_DIA_DETTAGLIO_D_CTR_TRI2"> </diagnostica>
+	<diagnostica id="1104" tableDettaglio="DIA_DETTAGLIO_D_CTR_TR202" tableClass="it.webred.ct.diagnostics.service.data.model.DiaDettaglioDCtrTr202" seqForDettaglio="SEQ_DIA_DETTAGLIO_D_CTR_TRI2"> </diagnostica>
+	<diagnostica id="1105" tableDettaglio="" tableClass="" seqForDettaglio="SEQ_DIA_DETTAGLIO_D_CTR_TRI2"> </diagnostica>
+	<diagnostica id="1106" tableDettaglio="" tableClass="" seqForDettaglio="SEQ_DIA_DETTAGLIO_D_CTR_TRI2"> </diagnostica>
+	<diagnostica id="1107" tableDettaglio="DIA_DETTAGLIO_D_CTR_TR203" tableClass="it.webred.ct.diagnostics.service.data.model.DiaDettaglioDCtrTr203" seqForDettaglio="SEQ_DIA_DETTAGLIO_D_CTR_TRI2"> </diagnostica>
+	<diagnostica id="1108" tableDettaglio="DIA_DETTAGLIO_D_CTR_TR203" tableClass="it.webred.ct.diagnostics.service.data.model.DiaDettaglioDCtrTr203" seqForDettaglio="SEQ_DIA_DETTAGLIO_D_CTR_TRI2"> </diagnostica>
+	<diagnostica id="1109" tableDettaglio="DIA_DETTAGLIO_D_CTR_TR203" tableClass="it.webred.ct.diagnostics.service.data.model.DiaDettaglioDCtrTr203" seqForDettaglio="SEQ_DIA_DETTAGLIO_D_CTR_TRI2"> </diagnostica>
+	<diagnostica id="1110" tableDettaglio="DIA_DETTAGLIO_D_CTR_TR203" tableClass="it.webred.ct.diagnostics.service.data.model.DiaDettaglioDCtrTr203" seqForDettaglio="SEQ_DIA_DETTAGLIO_D_CTR_TRI2"> </diagnostica>
+	<diagnostica id="1111" tableDettaglio="DIA_DETTAGLIO_D_CTR_TR203" tableClass="it.webred.ct.diagnostics.service.data.model.DiaDettaglioDCtrTr203" seqForDettaglio="SEQ_DIA_DETTAGLIO_D_CTR_TRI2"> </diagnostica>
+	<diagnostica id="1112" tableDettaglio="DIA_DETTAGLIO_D_CTR_TR203" tableClass="it.webred.ct.diagnostics.service.data.model.DiaDettaglioDCtrTr203" seqForDettaglio="SEQ_DIA_DETTAGLIO_D_CTR_TRI2"> </diagnostica>
+	<diagnostica id="1113" tableDettaglio="DIA_DETTAGLIO_D_CTR_TR204" tableClass="it.webred.ct.diagnostics.service.data.model.DiaDettaglioDCtrTr204" seqForDettaglio="SEQ_DIA_DETTAGLIO_D_CTR_TRI2"> </diagnostica>
+	<diagnostica id="1114" tableDettaglio="DIA_DETTAGLIO_D_CTR_TR205" tableClass="it.webred.ct.diagnostics.service.data.model.DiaDettaglioDCtrTr205" seqForDettaglio="SEQ_DIA_DETTAGLIO_D_CTR_TRI2"> </diagnostica>
+	<diagnostica id="1115" tableDettaglio="DIA_DETTAGLIO_D_CTR_TR205" tableClass="it.webred.ct.diagnostics.service.data.model.DiaDettaglioDCtrTr205" seqForDettaglio="SEQ_DIA_DETTAGLIO_D_CTR_TRI2"> </diagnostica>
+	<diagnostica id="1116" tableDettaglio="DIA_DETTAGLIO_D_CTR_TR206" tableClass="it.webred.ct.diagnostics.service.data.model.DiaDettaglioDCtrTr206" seqForDettaglio="SEQ_DIA_DETTAGLIO_D_CTR_TRI2"> </diagnostica>
+	<diagnostica id="1117" tableDettaglio="DIA_DETTAGLIO_D_CTR_TR206" tableClass="it.webred.ct.diagnostics.service.data.model.DiaDettaglioDCtrTr206" seqForDettaglio="SEQ_DIA_DETTAGLIO_D_CTR_TRI2"> </diagnostica>
+	<diagnostica id="1118" tableDettaglio="" tableClass="" seqForDettaglio="SEQ_DIA_DETTAGLIO_D_CTR_TRI2"> </diagnostica>
+	
+	<diagnostica id="1301" tableDettaglio="DIA_DETTAGLIO_D_CFR_ICI201" tableClass="it.webred.ct.diagnostics.service.data.model.DiaDettaglioDCfrIci201" seqForDettaglio="SEQ_DIA_DETTAGLIO_D_CFR_ICI2"> </diagnostica>
+	<diagnostica id="1302" tableDettaglio="DIA_DETTAGLIO_D_CFR_ICI202" tableClass="it.webred.ct.diagnostics.service.data.model.DiaDettaglioDCfrIci202" seqForDettaglio="SEQ_DIA_DETTAGLIO_D_CFR_ICI2"> </diagnostica>
+	<diagnostica id="1303" tableDettaglio="DIA_DETTAGLIO_D_CFR_ICI203" tableClass="it.webred.ct.diagnostics.service.data.model.DiaDettaglioDCfrIci203" seqForDettaglio="SEQ_DIA_DETTAGLIO_D_CFR_ICI2"> </diagnostica>
+	<diagnostica id="1304" tableDettaglio="DIA_DETTAGLIO_D_CFR_ICI204" tableClass="it.webred.ct.diagnostics.service.data.model.DiaDettaglioDCfrIci204" seqForDettaglio="SEQ_DIA_DETTAGLIO_D_CFR_ICI2"> </diagnostica>
+	
+	<diagnostica id="1401" tableDettaglio="DIA_DETTAGLIO_D_CFR_TAR01" tableClass="it.webred.ct.diagnostics.service.data.model.DiaDettaglioDCfrTar01" seqForDettaglio="SEQ_DIA_DETTAGLIO_D_CFR_TAR2"> </diagnostica>
+	<diagnostica id="1402" tableDettaglio="DIA_DETTAGLIO_D_CFR_TAR02" tableClass="it.webred.ct.diagnostics.service.data.model.DiaDettaglioDCfrTar02" seqForDettaglio="SEQ_DIA_DETTAGLIO_D_CFR_TAR2"> </diagnostica>
+	<diagnostica id="1403" tableDettaglio="DIA_DETTAGLIO_D_CFR_TAR03" tableClass="it.webred.ct.diagnostics.service.data.model.DiaDettaglioDCfrTar03" seqForDettaglio="SEQ_DIA_DETTAGLIO_D_CFR_TAR2"> </diagnostica>
+	<diagnostica id="1404" tableDettaglio="DIA_DETTAGLIO_D_CFR_TAR02" tableClass="it.webred.ct.diagnostics.service.data.model.DiaDettaglioDCfrTar02" seqForDettaglio="SEQ_DIA_DETTAGLIO_D_CFR_TAR2"> </diagnostica>
+	<diagnostica id="1405" tableDettaglio="DIA_DETTAGLIO_D_CFR_TAR03" tableClass="it.webred.ct.diagnostics.service.data.model.DiaDettaglioDCfrTar03" seqForDettaglio="SEQ_DIA_DETTAGLIO_D_CFR_TAR2"> </diagnostica>
+	
+	<diagnostica id="1406" tableDettaglio="DIA_DETTAGLIO_D_NONSTD_TEST" tableClass="it.webred.ct.diagnostics.service.data.model.DiaDettaglioDNonStdTest" seqForDettaglio="SEQ_DIA_DETTAGLIO_D_TEST" fieldTableDettaglioForFK=""  standard="N" tipoGest="1"  > </diagnostica>
+	<diagnostica id="1407" tableDettaglio="DOCFA_REPORT_NORES" fieldTableDettaglioForFK="" tableClass="it.webred.ct.diagnostics.service.data.model.DocfaReportNoRes" standard="N" tipoGest="2" tipoGestValue="diagnostica.docfaNoRes"  > </diagnostica>
+	<diagnostica id="1408" tableDettaglio="DOCFA_REPORT" fieldTableDettaglioForFK="" tableClass="it.webred.ct.diagnostics.service.data.model.DocfaReport" standard="N" tipoGest="2" tipoGestValue="diagnostica.docfaRes"  > </diagnostica>
+	
+	<diagnostica id="1409" tableDettaglio="DIA_DETTAGLIO_D_CFR_ECOG1_V1" tableClass="it.webred.ct.diagnostics.service.data.model.DiaDettaglioDCfrEcog1V1" seqForDettaglio="SEQ_DIA_DETTAGLIO_D_CFR_ECOG1"> </diagnostica>
+	<diagnostica id="1410" tableDettaglio="DIA_DETTAGLIO_D_CFR_ECOG1_V2" tableClass="it.webred.ct.diagnostics.service.data.model.DiaDettaglioDCfrEcog1V2" seqForDettaglio="SEQ_DIA_DETTAGLIO_D_CFR_ECOG1"> </diagnostica>
+	<diagnostica id="1411" tableDettaglio="DIA_DETTAGLIO_D_CFR_ECOG1_C1" tableClass="it.webred.ct.diagnostics.service.data.model.DiaDettaglioDCfrEcog1C1" seqForDettaglio="SEQ_DIA_DETTAGLIO_D_CFR_ECOG1"> </diagnostica>
+	<diagnostica id="1412" tableDettaglio="DIA_DETTAGLIO_D_CFR_ECOG1_C2" tableClass="it.webred.ct.diagnostics.service.data.model.DiaDettaglioDCfrEcog1C2" seqForDettaglio="SEQ_DIA_DETTAGLIO_D_CFR_ECOG1"> </diagnostica>
+	<diagnostica id="1413" tableDettaglio="DIA_DETTAGLIO_D_CFR_ECOG2"    tableClass="it.webred.ct.diagnostics.service.data.model.DiaDettaglioDCfrEcog2"   seqForDettaglio="SEQ_DIA_DETTAGLIO_D_CFR_ECOG2"> </diagnostica>
+	<diagnostica id="1414" tableDettaglio="DIA_DETTAGLIO_D_STC_REPRED"   tableClass="it.webred.ct.diagnostics.service.data.model.DiaDettaglioDStcRepred"   seqForDettaglio="SEQ_DIA_DETTAGLIO_D_STC_REPRED"> </diagnostica>
+	<diagnostica id="1415" tableDettaglio="DIA_DETTAGLIO_D_CFR_CTAR"     tableClass="it.webred.ct.diagnostics.service.data.model.DiaDettaglioDCfrCatTarsu" seqForDettaglio="SEQ_DIA_DETTAGLIO_D_CFR_CTAR"> </diagnostica>
+	<diagnostica id="1416" tableDettaglio="DIA_DETTAGLIO_D_CFR_EDIC"     tableClass="it.webred.ct.diagnostics.service.data.model.DiaDettaglioDCfrEdiC"      seqForDettaglio="SEQ_DIA_DETTAGLIO_D_CFR_EDIC"> </diagnostica>
+	<diagnostica id="1417" tableDettaglio="DIA_DETTAGLIO_D_CFR_TARC"     tableClass="it.webred.ct.diagnostics.service.data.model.DiaDettaglioDCfrTarC"      seqForDettaglio="SEQ_DIA_DETTAGLIO_D_CFR_TARC"> </diagnostica>
+	<diagnostica id="1418" tableDettaglio="DIA_ACCESSI_ISOLE_ECOLOGICHE" fieldTableDettaglioForFK="FK_DIA_TESTATA" tableClass="it.webred.ct.diagnostics.service.data.model.DiaAccessiIsoleEcologiche" standard="N" tipoGest="1"> </diagnostica>
+	
+</diagnostiche>

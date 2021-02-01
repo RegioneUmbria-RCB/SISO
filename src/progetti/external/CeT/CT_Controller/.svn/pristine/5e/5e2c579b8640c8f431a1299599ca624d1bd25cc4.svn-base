@@ -1,0 +1,137 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich">
+
+<a4j:region renderRegionOnly="true">
+	<!-- INIZIO LOG MODAL BOX -->
+	<rich:modalPanel id="schedulerLogModalBox" minHeight="780" minWidth="900"
+		height="780" width="900">
+		<f:facet name="header">
+			<h:outputText value="Visualizzazione Log"></h:outputText>
+		</f:facet>
+		<f:facet name="controls">
+			<h:form>
+				<h:panelGroup>
+					<h:graphicImage value="/images/close.png" style="cursor:pointer"
+						id="hidelink">
+						<a4j:support event="onclick"
+							oncomplete="javascript:Richfaces.hideModalPanel('schedulerLogModalBox');"
+							action="#{sMonitorBean.resetPage}" reRender="schedulerLogPage" />
+					</h:graphicImage>
+				</h:panelGroup>
+			</h:form>
+		</f:facet>
+
+		<h:form id="schedulerLogForm">
+
+			<rich:extendedDataTable width="100%" height="700px" var="row"
+				value="#{sMonitorBean.listaLog}" id="listLogTable"
+				enableContextMenu="false"
+				onRowMouseOver="this.style.backgroundColor='#F1F1F1'"
+				onRowMouseOut="this.style.backgroundColor='#{a4jSkin.tableBackgroundColor}'">
+
+				<rich:column sortable="false" width="100%">
+					<f:facet name="header">
+						<h:outputText value="Dati del processo"></h:outputText>
+					</f:facet>
+
+					<div style="float: left;"><h:panelGrid columns="4">
+						<h:graphicImage width="20px"
+							rendered="#{row.RAnagStato.tipo eq 'F'}"
+							value="/images/greencircle.png" style="padding-right: 5px;"
+							title="#{row.RAnagStato.descr}" />
+						<h:graphicImage width="20px"
+							rendered="#{row.RAnagStato.tipo eq 'I'}"
+							value="/images/yellowcircle.png" style="padding-right: 5px;"
+							title="#{row.RAnagStato.descr}" />
+						<h:graphicImage width="20px"
+							rendered="#{row.RAnagStato.tipo eq 'E'}"
+							value="/images/redcircle.png" style="padding-right: 5px;"
+							title="#{row.RAnagStato.descr}" />
+						<rich:spacer width="25px" rendered="#{row.RAnagStato == null}"/>
+						<h:outputText value="Id:" style="font-weight: bold;" />
+						<h:outputText value="#{row.commandLaunch.processid}"
+							style="padding-right: 20px;" />
+					</h:panelGrid></div>
+					<div style="float: right;"><h:panelGrid columns="5">
+						<h:outputText value="Data inizio:" style="font-weight: bold;" />
+						<h:outputText value="#{row.commandLaunch.dateStart}"
+							style="padding-right: 20px;">
+							<f:convertDateTime pattern="dd/MM/yyyy HH:mm" timeZone="CET" />
+						</h:outputText>
+						<h:outputText value="Data fine:" style="font-weight: bold;" />
+						<h:outputText value="#{row.commandLaunch.dateEnd}">
+							<f:convertDateTime pattern="dd/MM/yyyy HH:mm" timeZone="CET" />
+						</h:outputText>
+						<h:graphicImage rendered="#{row.processing}"
+							value="/images/wait.gif" title="In esecuzione" />
+					</h:panelGrid></div>
+
+					<br />
+					<br />
+
+					<rich:togglePanel switchType="client" stateOrder="closed,log">
+
+						<f:facet name="closed">
+							<rich:toggleControl>
+								<h:outputText value="Apri" />
+							</rich:toggleControl>
+						</f:facet>
+
+						<f:facet name="log">
+
+							<h:panelGrid columns="2">
+								<rich:toggleControl value="Chiudi" switchToState="closed" />
+
+								<rich:dataTable width="100%" var="log" value="#{row.commandAck}"
+									onRowMouseOver="this.style.backgroundColor='#F1F1F1'"
+									onRowMouseOut="this.style.backgroundColor='#{a4jSkin.tableBackgroundColor}'">
+
+									<rich:column>
+										<f:facet name="header">
+											<h:outputText value="Data" />
+										</f:facet>
+										<h:outputText value="#{log.logDate}">
+											<f:convertDateTime pattern="dd/MM/yyyy HH:mm" timeZone="CET" />
+										</h:outputText>
+									</rich:column>
+									<rich:column>
+										<f:facet name="header">
+											<h:outputText value="Messaggio" />
+										</f:facet>
+										<h:outputText value="#{log.message}" />
+									</rich:column>
+
+								</rich:dataTable>
+							</h:panelGrid>
+
+						</f:facet>
+					</rich:togglePanel>
+
+				</rich:column>
+
+			</rich:extendedDataTable>
+
+			<rich:spacer height="15px" />
+			<h:panelGrid columns="1" style="text-align:center;" width="100%">
+
+				<h:panelGroup>
+					<a4j:commandButton value="Chiudi" id="btnEsci" styleClass="button"
+						action="#{sMonitorBean.resetPage}" reRender="schedulerLogPage"
+						onclick="Richfaces.hideModalPanel('schedulerLogModalBox'); return false;">
+					</a4j:commandButton>
+				</h:panelGroup>
+
+			</h:panelGrid>
+
+		</h:form>
+
+	</rich:modalPanel>
+	<!-- FINE LOG MODAL BOX -->
+</a4j:region>
+
+</html>

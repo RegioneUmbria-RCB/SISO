@@ -1,0 +1,18 @@
+#------------------------------------------------------------
+# File di config della regola
+#------------------------------------------------------------
+rengine.rule.class=it.webred.rulengine.brick.loadDwh.load.ImportDemogVieRule
+rengine.rule.cc=TXT-DVIEFD
+rengine.rule.number.params.in=0
+rengine.rule.number.params.out=0
+#--------------------------------------------------------------------------
+# parametri di input: rispecchiano i valori del db sia nel type che nel descr
+#--------------------------------------------------------------------------
+#
+#------------------------------------------------------------
+# parametri di output
+#------------------------------------------------------------
+#
+#------------------------------------------------------------
+# Definizioni costanti o proprietà aggiuntive della regola
+#------------------------------------------------------------	

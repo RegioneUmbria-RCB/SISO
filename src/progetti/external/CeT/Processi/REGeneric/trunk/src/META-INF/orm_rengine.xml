@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings
+  xmlns="http://java.sun.com/xml/ns/persistence/orm"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
+  version="2.0">
+
+	<!-- Query RRule -->
+	<named-query name="RRule.getListaRRule">
+		<query>
+			<![CDATA[
+				SELECT rr FROM RRule rr
+				WHERE rr.dateEnd is not null
+			]]>
+		</query>
+	</named-query>
+	<named-query name="RRule.getRCommandListaRRule">
+		<query>
+			<![CDATA[
+				SELECT rr FROM RRule rr
+				WHERE rr.RCommand.id = :commandId
+				AND rr.dateEnd is null
+			]]>
+		</query>
+	</named-query>
+	
+	<!-- Query RConnection -->
+	<named-query name="RConnection.getListaRConnection">
+		<query>
+			<![CDATA[
+				SELECT rc FROM RConnection rc
+				ORDER BY rc.id ASC
+			]]>
+		</query>
+	</named-query>
+
+	<!-- Query RCommand -->
+	<named-query name="RCommand.getListaRCommand">
+		<query>
+			<![CDATA[
+				SELECT rc FROM RCommand rc
+				ORDER BY rc.codCommand ASC
+			]]>
+		</query>
+	</named-query>
+	<named-query name="RCommand.getRCommand">
+		<query>
+			<![CDATA[
+				SELECT rc 
+				FROM RCommand rc, RRule rr
+				WHERE rc.id = :commandId
+				AND rr.RCommand.id = rc.id
+				AND rr.dateEnd is null
+			]]>
+		</query>
+	</named-query>
+	<named-query name="RCommand.getRCommandByCommandId">
+		<query>
+			<![CDATA[SELECT rc FROM RCommand rc WHERE rc.id = :commandId]]>
+		</query>
+	</named-query>
+	<named-query name="RCommand.getRCommandByCodCommand">
+		<query>
+			<![CDATA[
+				SELECT rc 
+				FROM RCommand rc, RRule rr
+				WHERE rc.codCommand = :codCommand
+				AND rr.RCommand.id = rc.id
+				AND rr.dateEnd is null
+			]]>
+		</query>
+	</named-query>
+	<named-query name="RCommand.getRCommandByRRuleClassname">
+		<query>
+			<![CDATA[
+				SELECT rc 
+				FROM RCommand rc, RRule rr
+				WHERE rr.RCommand.id = rc.id
+				AND rr.className = :classname
+				AND rr.dateEnd is null
+			]]>
+		</query>
+	</named-query>
+	<named-query name="RCommand.getRCommand2">
+		<query>
+			<![CDATA[
+				SELECT rc 
+				FROM RCommand rc, RChain rch
+				WHERE rc.id = :commandId
+				AND rch.RCommandByFkCommand.id = rc.id
+				AND rch.dateEnd is null
+			]]>
+		</query>
+	</named-query>
+	<named-query name="RCommand.getRCommandByCodCommand2">
+		<query>
+			<![CDATA[
+				SELECT rc 
+				FROM RCommand rc, RChain rch
+				WHERE rc.codCommand = :codCommand
+				AND rch.RCommandByFkCommand.id = rc.id
+				AND rch.dateEnd is null
+			]]>
+		</query>
+	</named-query>
+	
+	
+	<!-- Query RCommandLaunch -->
+	<named-query name="RCommandLaunch.getRCommandLaunchByProcessID">
+		<query>
+			<![CDATA[
+				SELECT rcl FROM RCommandLaunch rcl
+				WHERE rcl.processid = :processid
+			]]>
+		</query>
+	</named-query>
+	
+	<!-- Query RAbNormal -->
+	<named-query name="RAbNormal.getCountByFilteredProcess">
+		<query>
+			<![CDATA[
+				SELECT count(rab.id) 
+				FROM RCommandLaunch rcl, RCommandAck rak, RAbNormal rab
+				WHERE rcl.id = rak.RCommandLaunch.id
+				AND rak.id = rab.RCommandAck.id
+				AND rcl.processid = :processid
+			]]>
+		</query>
+	</named-query>
+	
+	<!-- Query RCommandAck -->
+	<named-query name="RCommandAck.getCountByFilteredProcess">
+		<query>
+			<![CDATA[
+				SELECT count(rak.id) 
+				FROM RCommandLaunch rcl, RCommandAck rak
+				WHERE rcl.id = rak.RCommandLaunch.id
+				AND rcl.processid = :processid
+			]]>
+		</query>
+	</named-query>
+	<named-query name="RCommandAck.getCountRjcAckByFilteredProcess">
+		<query>
+			<![CDATA[
+				SELECT count(rak.id) 
+				FROM RCommandLaunch rcl, RCommandAck rak
+				WHERE rcl.id = rak.RCommandLaunch.id
+				AND rak.ackName = 'RejectAck'
+				AND rcl.processid = :processid
+			]]>
+		</query>
+	</named-query>
+	
+	
+	<!-- Query RChain -->
+	<named-query name="RChain.getRChain">
+		<query>
+			<![CDATA[
+				SELECT rch
+				FROM RChain rch
+				WHERE rch.id = :chainId
+				AND rch.dateEnd is null
+			]]>
+		</query>
+	</named-query>
+	<named-query name="RChain.getCommandRChains">
+		<query>
+			<![CDATA[
+				SELECT rch
+				FROM RChain rch, RCommand rc
+				WHERE rch.RCommandByFkCommand.id = rc.id
+				AND rc.id = :commandId
+			]]>
+		</query>
+	</named-query>
+
+</entity-mappings>

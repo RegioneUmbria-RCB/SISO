@@ -1,0 +1,81 @@
+  <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/03/addressing" xmlns:wsse="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd">
+    <soap:Header>
+      <wsa:Action>http://servizi.comune.roma.it/verificheanagrafiche/VerificaAnagraficaResponse</wsa:Action>
+      <wsa:MessageID>uuid:59c8b4b5-a64f-4838-97e0-eab9f824fc39</wsa:MessageID>
+      <wsa:RelatesTo>uuid:54ff863f-8437-4ff0-a11f-7173a670afa8</wsa:RelatesTo>
+      <wsa:To>http://schemas.xmlsoap.org/ws/2004/03/addressing/role/anonymous</wsa:To>
+      <wsse:Security>
+        <wsu:Timestamp wsu:Id="Timestamp-d214882d-9a42-4a0b-882a-310a33880b95">
+          <wsu:Created>2017-05-09T10:25:50Z</wsu:Created>
+          <wsu:Expires>2017-05-09T10:30:50Z</wsu:Expires>
+        </wsu:Timestamp>
+      </wsse:Security>
+    </soap:Header>
+    <soap:Body>
+      <VerificaAnagraficaResponse xmlns="http://servizi.comune.roma.it/verificheanagrafiche">
+        <VerificaAnagraficaResult>
+        
+<VerificaAnagrafica attributo="NETVA2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="">
+<Elenco>
+	<PersonaElenco>
+		<CodiceIndividuale>25049497</CodiceIndividuale>
+		<Nome>MARIO</Nome>
+		<Cognome>Rossi</Cognome>
+		<DatadiNascita>
+			<Giorno>07</Giorno>
+			<Mese>08</Mese>
+			<Anno>1960</Anno>
+		</DatadiNascita>
+		<Sesso>M</Sesso>
+		<FlagVivoResidente>1</FlagVivoResidente>
+		<CodiceFiscale>RSSMRA60B10C543X</CodiceFiscale>
+		<Descrizione>MARIO&#xA0;Rossi&#xA0;07/08/1960&#xA0;Deceduto</Descrizione>
+	</PersonaElenco>
+	<PersonaElenco>
+		<CodiceIndividuale>27560082</CodiceIndividuale>
+		<Nome>MARIO</Nome>
+		<Cognome>Rossi</Cognome>
+		<DatadiNascita>
+			<Giorno>12</Giorno>
+			<Mese>01</Mese>
+			<Anno>1960</Anno>
+		</DatadiNascita>
+		<Sesso>M</Sesso>
+		<FlagVivoResidente>6</FlagVivoResidente>
+		<CodiceFiscale>RSSMRA60A12G704I</CodiceFiscale>
+		<Descrizione>MARIO&#xA0;Rossi&#xA0;12/01/1960&#xA0;Aire</Descrizione>
+	</PersonaElenco>
+	<PersonaElenco>
+		<CodiceIndividuale>27584004</CodiceIndividuale>
+		<Nome>MARIO</Nome>
+		<Cognome>Rossi</Cognome>
+		<DatadiNascita>
+			<Giorno>07</Giorno>
+			<Mese>08</Mese>
+			<Anno>1960</Anno>
+		</DatadiNascita>
+		<Sesso>M</Sesso>
+		<FlagVivoResidente>3</FlagVivoResidente>
+		<Descrizione>MARIO&#xA0;Rossi&#xA0;07/08/1960&#xA0;Emigrato</Descrizione>
+	</PersonaElenco>
+	<PersonaElenco>
+	<CodiceIndividuale>27587098</CodiceIndividuale>
+	<Nome>MARIO</Nome>
+	<Cognome>Rossi</Cognome>
+	<DatadiNascita>
+		<Giorno>16</Giorno>
+		<Mese>09</Mese>
+		<Anno>1960</Anno>
+	</DatadiNascita>
+	<Sesso>M</Sesso>
+	<Indirizzo>VIA PRINCIPE AMEDEO N.128</Indirizzo>
+	<FlagVivoResidente>0</FlagVivoResidente>
+	<CodiceFiscale>RSSMRA60P16H501I</CodiceFiscale>
+	<Descrizione>MARIO&#xA0;Rossi&#xA0;16/09/1960&#xA0;Via Principe Amedeo N.128</Descrizione>
+	</PersonaElenco>
+</Elenco>
+</VerificaAnagrafica>
+</VerificaAnagraficaResult>
+      </VerificaAnagraficaResponse>
+    </soap:Body>
+  </soap:Envelope>

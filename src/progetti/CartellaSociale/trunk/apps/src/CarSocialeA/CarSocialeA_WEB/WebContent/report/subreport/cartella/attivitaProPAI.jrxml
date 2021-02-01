@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="5" bottomMargin="5" whenResourceMissingType="Empty" uuid="03109260-e34d-4ca3-b686-899bd9f4b710">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<field name="dtAttivita" class="java.lang.String"/>
+	<field name="numOperatori" class="java.lang.String"/>
+	<field name="dtProssimaAttDal" class="java.lang.String"/>
+	<field name="eseguitaRichiestaIndagine" class="java.lang.String"/>
+	<field name="oreImpiegateTot" class="java.lang.String"/>
+	<field name="dtProssimaAttAl" class="java.lang.String"/>
+	<field name="SUBREPORT_DIR" class="java.lang.String"/>
+	<field name="analisiPro" class="java.lang.String"/>
+	<field name="tipoAttivita_1" class="java.lang.Object"/>
+	<field name="tipoAttivita_2" class="java.lang.Object"/>
+	<field name="tipoAttivita_3" class="java.lang.Object"/>
+	<field name="macroattivita" class="java.lang.String"/>
+	<field name="microattivita" class="java.lang.String"/>
+	<background>
+		<band/>
+	</background>
+	<title>
+		<band height="58">
+			<staticText>
+				<reportElement positionType="Float" mode="Opaque" x="0" y="0" width="553" height="24" backcolor="#CCCCCC" uuid="ffbd68c7-d806-4fc5-8df7-debec6deefeb"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Attività Professionali collegate]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="52" y="24" width="106" height="34" uuid="b95de214-202c-4330-b4cc-6a8e15fb17ad"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true" isItalic="false"/>
+				</textElement>
+				<text><![CDATA[Macro-attività]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="0" y="24" width="51" height="34" uuid="e6ccff95-47fc-4c34-9bc3-43a03ab05c1e"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true" isItalic="false"/>
+				</textElement>
+				<text><![CDATA[Data]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="264" y="24" width="95" height="34" uuid="52a7a240-6d31-4baa-b25a-cf9be83bbdca"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true" isItalic="false"/>
+				</textElement>
+				<text><![CDATA[Ore impiegate]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="158" y="24" width="106" height="34" uuid="7524f2c5-68e8-42a2-ac91-e6bc6bdeb683"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true" isItalic="false"/>
+				</textElement>
+				<text><![CDATA[Micro-attività]]></text>
+			</staticText>
+		</band>
+	</title>
+	<detail>
+		<band height="21" splitType="Immediate">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="0" y="0" width="52" height="20" uuid="69c5cd03-d84d-4efa-b41c-a0cd2cd024cc"/>
+				<textElement textAlignment="Center">
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{dtAttivita}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="52" y="0" width="106" height="20" uuid="3a18b453-1b56-4701-bd75-2cd50f213ced"/>
+				<textElement textAlignment="Center">
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{macroattivita}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="264" y="0" width="96" height="20" uuid="b19eeb94-fc9b-4e33-9fc5-12fa6308d617"/>
+				<textElement textAlignment="Center">
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{oreImpiegateTot}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="158" y="0" width="106" height="20" uuid="e76dfd46-60bc-4e3e-afd8-9ead52edd199"/>
+				<textElement textAlignment="Center">
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{macroattivita}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

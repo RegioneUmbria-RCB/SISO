@@ -1,0 +1,4 @@
+table1_0.name=RE_RTT_CANC_BOLLETTE_1_0
+table1_0.create_table=CREATE TABLE RE_RTT_CANC_BOLLETTE_1_0(ID_SERVIZIO        VARCHAR2(8 BYTE),COD_BOLLETTA       VARCHAR2(80 BYTE),PROCESSID          VARCHAR2(50 BYTE),RE_FLAG_ELABORATO  VARCHAR2(1 BYTE),DT_EXP_DATO        DATE)
+table1_0.idx=CREATE INDEX idx_re_rtt_canc_bollette_1_0 ON RE_RTT_CANC_BOLLETTE_1_0 (ID_SERVIZIO, COD_BOLLETTA)
+Caricatore.class.noversion=it.webred.rulengine.brick.loadDwh.load.rette.cancellazioni.v1.ImportBolletteCanc

@@ -1,0 +1,145 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Table class="oracle.dbtools.crest.model.design.relational.Table" directorySegmentName="seg_0" id="97C2F4D5-A292-0D94-07A9-311653D9CF5F" schemaObject="31789C62-6489-FE63-4664-3CFB4035AC87" name="CS_CFG_INT_ESEG_ATT_UM">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>CS_SISO</sourceObjSchema>
+<sourceObjName>CS_CFG_INT_ESEG_ATT_UM</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:18 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>0C77D8AD-DB9C-64F2-256D-5B6C699123DB</importedID>
+<existDependencyGenerateInDDl>true</existDependencyGenerateInDDl>
+<parsed>true</parsed>
+<columns itemClass="oracle.dbtools.crest.model.design.relational.Column">
+<Column name="ID" id="047CBB00-B399-DC1F-E1EB-B84780A3B223">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>CS_CFG_INT_ESEG_ATT_UM</sourceObjSchema>
+<sourceObjName>ID</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:18 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>64B1E0A4-D7A1-3D6D-44C0-604D1D5F014F</importedID>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<dataTypePrecision>10</dataTypePrecision>
+<ownDataTypeParameters>,10,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="CFG_INT_ESEG_ID" id="EBF298B9-6445-61EA-FA23-083F931AAB13">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>CS_CFG_INT_ESEG_ATT_UM</sourceObjSchema>
+<sourceObjName>CFG_INT_ESEG_ID</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:18 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>CC2D4DBA-98AD-443A-7830-AAB18523B5CF</importedID>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<dataTypePrecision>10</dataTypePrecision>
+<ownDataTypeParameters>,10,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+<associations>
+<colAssociation fkAssociation="77535928-8E1D-D3DE-EC8D-6E4D08DA8D8F" referredColumn="B4F6BBB4-A114-1074-F299-530BAB8F5202"/>
+</associations>
+</Column>
+<Column name="ATTR_UM_ID" id="FE643008-3B01-0B3D-561F-BD98FF04A41A">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>CS_CFG_INT_ESEG_ATT_UM</sourceObjSchema>
+<sourceObjName>ATTR_UM_ID</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:18 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>C10AF8EB-78B9-93E5-846D-F6138184438B</importedID>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<dataTypePrecision>10</dataTypePrecision>
+<ownDataTypeParameters>,10,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+<associations>
+<colAssociation fkAssociation="F5BF9932-71BC-AEE7-ACCB-B364C1FD7581" referredColumn="50AF6B8A-0351-E6F9-4BA8-7E7F24BA8366"/>
+</associations>
+</Column>
+<Column name="CALC_TOTALE" id="58B7C59A-F445-A366-037F-8DDFE9C21876">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>CS_CFG_INT_ESEG_ATT_UM</sourceObjSchema>
+<sourceObjName>CALC_TOTALE</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2016-01-21 16:42:56 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>7CC7B4DD-F83A-0BDF-C7EC-EDE5BBF5D94C</importedID>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT025</logicalDatatype>
+<dataTypeSize>1 BYTE</dataTypeSize>
+<defaultValue>1</defaultValue>
+<ownDataTypeParameters>1 BYTE,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+</columns>
+<indexes itemClass="oracle.dbtools.crest.model.design.relational.Index">
+<ind_PK_UK id="03E44A9C-1D55-1629-9E96-D19D8611AA2A" name="CS_CFG_INT_ESEG_ATT_UM_PK">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>CS_SISO</sourceObjSchema>
+<sourceObjName>CS_CFG_INT_ESEG_ATT_UM_PK</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:18 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>75A2BDC5-4BDF-C334-16F9-AD96ACF01C07</importedID>
+<pk>true</pk>
+<indexState>Primary Constraint</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="047CBB00-B399-DC1F-E1EB-B84780A3B223"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="5765CA30-04FE-DE3C-68FB-EF9F3E79A585" schemaObject="31789C62-6489-FE63-4664-3CFB4035AC87" name="CS_CFG_INT_ESEG_ATT_UM_PK">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>CS_SISO</sourceObjSchema>
+<sourceObjName>CS_CFG_INT_ESEG_ATT_UM_PK</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:18 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>67DF9A5F-874D-702C-0147-2CD4B51686CF</importedID>
+<indexState>Unique Plain Index</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="047CBB00-B399-DC1F-E1EB-B84780A3B223"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="8D440443-E205-08C9-032F-17C37588D27A" schemaObject="31789C62-6489-FE63-4664-3CFB4035AC87" name="IDX_CS_CFG_INT_ESEG_ID_ATT_UM">
+<sourceConnName>CS_SISO_ROMA</sourceConnName>
+<sourceObjSchema>CS_SISO</sourceObjSchema>
+<sourceObjName>IDX_CS_CFG_INT_ESEG_ID_ATT_UM</sourceObjName>
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-08-31 12:44:19 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>3753A53E-EAE4-04A9-6F45-5B375A0E2877</importedID>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="EBF298B9-6445-61EA-FA23-083F931AAB13"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="139D0EEF-577F-F329-5120-29FAFAC74FC0" name="CS_CFGINT_ESEGATT_ATTRUM_FK">
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:19 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<indexState>Foreign Key</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="FE643008-3B01-0B3D-561F-BD98FF04A41A"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="3919FC97-ACEF-0AE8-AC8B-6411704855B7" name="CS_CFGINT_ESEGATT_INT_ESEG_FK">
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:57:19 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<indexState>Foreign Key</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="EBF298B9-6445-61EA-FA23-083F931AAB13"/>
+</indexColumnUsage>
+</ind_PK_UK>
+</indexes>
+</Table>

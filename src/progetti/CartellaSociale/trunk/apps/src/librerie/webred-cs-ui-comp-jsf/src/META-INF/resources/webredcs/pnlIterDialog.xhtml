@@ -1,0 +1,288 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+     	xmlns:h="http://java.sun.com/jsf/html"
+		xmlns:f="http://java.sun.com/jsf/core"
+		xmlns:ui="http://java.sun.com/jsf/facelets"
+	  	xmlns:composite="http://java.sun.com/jsf/composite"
+	  	xmlns:webredcs="http://java.sun.com/jsf/composite/webredcs"
+		xmlns:p="http://primefaces.org/ui"
+		xmlns:c="http://java.sun.com/jsp/jstl/core">
+      
+	<h:head>
+		<title>Gestione Caso</title>
+	</h:head>
+	
+	<h:body>
+		<composite:interface componentType="pnlIterDialog">
+		    <composite:attribute name="idModalIterDialog"  type="java.lang.String" required="true" default="mdlIterDialog" />
+ 			<composite:attribute name="iIterDialog" type="it.webred.cs.jsf.interfaces.IIterDialog" />
+ 			<composite:attribute name="iPCarico" type="it.webred.cs.jsf.interfaces.IPresaInCarico" />
+			<composite:attribute name="widgetVar"  type="java.lang.String" required="true" />
+			<composite:attribute name="closeDialogActionListener" type="javax.faces.event.ActionListener" required="true" />
+			<composite:attribute name="readOnly"  default="false"/>
+			<composite:attribute name="presaInCarico"  default="false"/>
+			<composite:attribute name="updateOnClose"/>
+		</composite:interface>
+		
+		<composite:implementation>
+	
+			<p:dialog id="#{cc.attrs.idModalIterDialog}" header="Gestione degli stati del caso (#{cc.attrs.iIterDialog.caso.idCaso})" widgetVar="#{cc.attrs.widgetVar}" modal="true" styleClass="dialog" resizable="false" visible="#{cc.attrs.iIterDialog.visibile}" closable="false">
+			<p:outputPanel id="pnlModalIterDialog">
+				<!-- Wait for callback -->
+				<fieldset class="fieldsetStep">
+					<legend>
+						<h:outputLabel value="Dati del caso" />
+					</legend>
+					<table width="100%">
+						<tbody>
+							<tr>
+								<td align="right" colspan="4">
+<!-- 									<p:commandButton value="Chiudi" rendered="#{cc.getValueExpression('closeDialogActionListener') != null}"  -->
+<!-- 													 update=":#{p:component(cc.attrs.updateOnClose)}, @form" process="@this"> -->
+<!-- 										<f:actionListener binding="#{cc.attrs.closeDialogActionListener}"/> -->
+<!-- 										<f:actionListener binding="#{cc.attrs.iIterDialog.closeDialog}"/> -->
+<!-- 									</p:commandButton> -->
+
+								
+									   <c:choose>
+										   <c:when test="#{cc.attrs.iPCarico == null}">
+										   <p:commandButton value="Chiudi"
+									           actionListener="#{cc.attrs.iIterDialog.chiudiDialog}" update=":#{p:component(cc.attrs.updateOnClose)}, @form" process="@this"/>
+									   </c:when>
+										   <c:otherwise>
+										      <p:commandButton value="Chiudi"
+									           actionListener="#{cc.attrs.iPCarico.inizializeAndRefresh}" update=":#{p:component(cc.attrs.updateOnClose)}, @form" process="@this"/>
+										   </c:otherwise>
+										</c:choose>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<h:outputLabel id="idCasoLabel" styleClass="label" value="ID" for="idCasoValue" />
+								</td>
+								<td>
+									<h:outputText id="idCasoValue" value="#{cc.attrs.iIterDialog.caso.idCaso}" />
+								</td>
+								<td>
+									<h:outputLabel id="nomeCasoLabel" styleClass="label" value="Nome" for="nomeCasoValue" />
+								</td>
+								<td>
+									<h:outputText id="nomeCasoValue" value="#{cc.attrs.iIterDialog.caso.nomeCaso}" />
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<h:outputLabel id="dataInserimentoLabel" styleClass="label"  
+										rendered="#{cc.attrs.iIterDialog.caso.dataInserimentoRendered}"
+										value="Creato il" for="dataInserimentoValue" />
+								</td>
+								<td>
+									<h:outputText id="dataInserimentoValue"
+										rendered="#{cc.attrs.iIterDialog.caso.dataInserimentoRendered}"
+										value="  #{cc.attrs.iIterDialog.caso.dataInserimento}" />
+								</td>
+								<td>
+									<h:outputLabel id="utenteInserimentoLabel" styleClass="label" 
+										rendered="#{cc.attrs.iIterDialog.caso.utenteInserimentoRendered}"
+										value="da" for="utenteInserimentoValue" />
+								</td>
+								<td>
+									<h:outputText id="utenteInserimentoValue"
+										rendered="#{cc.attrs.iIterDialog.caso.utenteInserimentoRendered}"
+										value="  #{cc.attrs.iIterDialog.caso.utenteInserimento}" />
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<h:outputLabel id="dataModificaLabel" styleClass="label"
+										rendered="#{cc.attrs.iIterDialog.caso.dataModificaRendered}"
+										value="Modificato il" for="dataModificaValue" />
+								</td>
+								<td>
+									<h:outputText id="dataModificaValue"
+										rendered="#{cc.attrs.iIterDialog.caso.dataModificaRendered}"
+										value="  #{cc.attrs.iIterDialog.caso.dataModifica}" />
+								</td>
+								<td>
+									<h:outputLabel id="utenteModificaLabel" styleClass="label"
+										rendered="#{cc.attrs.iIterDialog.caso.utenteModificaRendered}"
+										value="da" for="utenteModificaValue" />
+								</td>
+								<td>
+									<h:outputText id="utenteModificaValue" 
+										rendered="#{cc.attrs.iIterDialog.caso.utenteModificaRendered}"
+										value="  #{cc.attrs.iIterDialog.caso.utenteModifica}" />
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<h:outputLabel id="responsabileLabel" styleClass="label"
+										rendered="#{cc.attrs.iIterDialog.caso.responsabileRendered}"
+										value="Responsabile " for="responsabileValue" />
+								</td>
+								<td>
+									<h:outputText id="responsabileValue" 
+										rendered="#{cc.attrs.iIterDialog.caso.responsabileRendered}"
+										value="  #{cc.attrs.iIterDialog.caso.responsabile}" />
+								</td>
+							</tr>
+							</tbody>
+					</table>
+				</fieldset>
+				
+				<p:tabView activeIndex="0" id="tab" styleClass="itertDialogTab">
+					<p:tab id="idTabCronologia" title="Cronologia" >
+						<ui:repeat var="iterStep" value="#{cc.attrs.iIterDialog.history.iterInfoStatoMans}" varStatus="status">
+							<webredcs:pnlIterInfoStato id="pnlIterInfoStato#{status.index}" iIterInfoStato="#{iterStep}" showOpenDialogButton="false" showOpenDialogResponsabile="false"/> 
+						</ui:repeat>
+					</p:tab>
+					<p:tab id="idTabCambioStato" title="Cambio Stato">
+						<p:panel id="idTabCambioStatoBody" styleClass="pnlIterDialog">
+							<p:panelGrid columns="2">
+								<p:outputLabel for="nomeStatoLastStep" value="Lo stato attuale del caso è  "/>
+								<p:outputLabel id="nomeStatoLastStep" value="#{cc.attrs.iIterDialog.cambioStato.nomeStatoLastStep}" style="font-weight:bold;"/>
+							</p:panelGrid>
+							
+							<f:facet name="footer">
+								
+								
+									<ui:repeat var="itTrans" value="#{cc.attrs.iIterDialog.cambioStato.statoSuccessivoAziones}">
+											<p:commandButton value="#{itTrans.nome}" disabled="#{cc.attrs.readOnly}"
+											                 actionListener="#{cc.attrs.iIterDialog.inizializzaNuovoStato(itTrans.idStatoA)}" 
+											                 update=":#{p:component(cc.attrs.idModalIterDialog)}" />
+									</ui:repeat>
+								
+								<p:spacer height="20px"/>
+										
+								<p:outputPanel id="idNotaLabelPanel" rendered="#{cc.attrs.iIterDialog.cambioStato.mostraDatiObbligatori}">
+									<h:panelGrid columns="4">
+										
+										<p:outputLabel for="dataCambio" value="Data del cambio stato" styleClass="label" />
+								
+										<p:calendar id="dataCambio" value="#{cc.attrs.iIterDialog.cambioStato.dataInserimento}" placeholder="dd/MM/yyyy"  size="15">
+											<p:ajax event="dateSelect" pattern="dd/MM/yyyy" showOn="button" listener="#{cc.attrs.iIterDialog.cambioStato.onDataCambioStatoSelect}" update="dataCambio"/>
+										</p:calendar>
+									
+										<h:outputLabel  id="idNotaLabel" for="idNotaValue" styleClass="label" value="Nota" />
+										<p:inputTextarea  id="idNotaValue" value="#{cc.attrs.iIterDialog.cambioStato.nota}" cols="80" />
+									
+									</h:panelGrid>
+								
+								</p:outputPanel>
+								
+								<p:panel id="idStatoDati" rendered="#{cc.attrs.iIterDialog.cambioStato.datiRendered}" header="#{cc.attrs.iIterDialog.cambioStato.statoDatiLabel}">
+									<p:panelGrid styleClass="footerPanel" rendered="#{cc.attrs.iIterDialog.cambioStato.operatorePanelRendered}">
+									 	<p:row> 
+									 		<p:column rendered="#{cc.attrs.iIterDialog.cambioStato.enteRendered}">
+												<h:outputLabel id="enteLabel" styleClass="label" value="Ente" for="idEnte" />
+								            </p:column> 
+								            <p:column rendered="#{cc.attrs.iIterDialog.cambioStato.enteRendered}">
+								            	<p:selectOneMenu id="idEnte" value="#{cc.attrs.iIterDialog.cambioStato.enteSelezionato}" 
+								            					 filter="true" filterMatchMode="contains">  
+									                <f:selectItem noSelectionOption="true" itemLabel="- seleziona -"/>
+									                <f:selectItems value="#{cc.attrs.iIterDialog.cambioStato.entes}" />  
+									                <p:ajax update="idSettore" listener="#{cc.attrs.iIterDialog.cambioStato.handleEnteChange}" />  
+									            </p:selectOneMenu> 
+								            </p:column>
+								            
+								            <p:column rendered="#{cc.attrs.iIterDialog.cambioStato.settoreRendered}">
+												<h:outputLabel id="settoreLabel" styleClass="label" value="Settore" for="idSettore" />
+								            </p:column>  
+								            <p:column rendered="#{cc.attrs.iIterDialog.cambioStato.settoreRendered}">
+								            	<p:selectOneMenu id="idSettore" value="#{cc.attrs.iIterDialog.cambioStato.settoreSelezionato}" 
+								            					 filter="true" filterMatchMode="contains">  
+									                <f:selectItem noSelectionOption="true" itemLabel="- seleziona -"/>
+									                <f:selectItems value="#{cc.attrs.iIterDialog.cambioStato.settores}" /> 
+									                <p:ajax update="idOperatore" listener="#{cc.attrs.iIterDialog.cambioStato.handleSettoreChange}" /> 
+									            </p:selectOneMenu>
+								            </p:column>  
+								            
+								            <p:column rendered="#{cc.attrs.iIterDialog.cambioStato.operatoreRendered}">
+												<h:outputLabel id="operatoreLabel" styleClass="label" value="Operatore" for="idOperatore" />
+								            </p:column>  
+								            <p:column rendered="#{cc.attrs.iIterDialog.cambioStato.operatoreRendered}">
+							            		<p:selectOneMenu id="idOperatore" value="#{cc.attrs.iIterDialog.cambioStato.operatoreSelezionato}"
+							            						 filter="true" filterMatchMode="contains">  
+									            	<f:selectItem noSelectionOption="true" itemLabel="- seleziona -"/>
+									                <f:selectItems value="#{cc.attrs.iIterDialog.cambioStato.operatores}" />  
+								            	</p:selectOneMenu>
+								            </p:column>  
+								        </p:row>
+									</p:panelGrid>
+								</p:panel>
+									
+								<ui:fragment rendered="#{cc.attrs.iIterDialog.cambioStato.datiExtRendered}" >
+									<fieldset class="fieldsetStep">
+										<legend>
+											<h:outputLabel value="#{cc.attrs.iIterDialog.cambioStato.datiExtLabel}" />
+										</legend>
+			
+									<p:dataTable styleClass="iterAttrTableStyleClass"  rendered="#{cc.attrs.iIterDialog.cambioStato.datiExtRendered}" 
+											     tableStyleClass="noStyleTable" rowStyleClass="noStyleTable" var="attr"  
+											     value="#{cc.attrs.iIterDialog.cambioStato.iterStatoAttrs}" rowIndexVar="rowIndex">
+										<p:column>
+											<h:outputLabel value="#{attr.label} #{attr.required ? '*' : '' }" styleClass="label" />
+										</p:column>
+				
+										<p:column>
+											<p:spinner value="#{attr.valore}" rendered="#{attr.integer}" />
+				
+											<p:inputText value="#{attr.valore}" rendered="#{attr.string}" />
+				
+											<p:selectBooleanCheckbox value="#{attr.valore}" rendered="#{attr.bool}" />
+				
+											<p:calendar value="#{attr.valore}" pattern="dd/MM/yyyy" rendered="#{attr.date}" />
+				
+											<p:selectOneMenu value="#{attr.valore}" rendered="#{attr.list}">
+												<f:selectItem noSelectionOption="true" itemLabel="- seleziona -"/>
+												<f:selectItems value="#{attr.listaCombo}" />
+											</p:selectOneMenu>
+				
+											<p:tooltip for="@(.iterAttrTableStyleClass tr[role=row][data-ri=#{rowIndex}])"  
+												showEffect="fade" hideEffect="fade" atPosition="top center" myPosition="bottom center" showDelay="500" >
+												<h:outputLabel value="#{attr.tooltip}" escape="false"/>
+											</p:tooltip>
+										</p:column>
+									</p:dataTable>
+									</fieldset>
+								</ui:fragment>
+								
+								<ui:fragment rendered="#{cc.attrs.iIterDialog.cambioStato.mostraDatiObbligatori}" >
+									<table width="100%">
+										<tbody>
+											<tr>
+												<td align="center">
+													<p:commandButton value="Salva" disabled="#{cc.attrs.readOnly}"                   
+																	 actionListener="#{cc.attrs.iIterDialog.saveDialogWithAttributes}" 
+													                 oncomplete="if (args &amp;&amp; !args.validationFailed &amp;&amp; args.saved){ updateSalvaIterDialog();} else {}" /> 
+													<p:remoteCommand name="updateSalvaIterDialog" 
+																	 update=":#{p:component('pnlModalIterDialog')}, :#{p:component('pnlNotifiche')}" />  
+												</td> 
+												<td align="center">
+													<p:commandButton value="Salva e chiudi" disabled="#{cc.attrs.readOnly}"  rendered="#{cc.attrs.iPCarico != null}" 
+													                actionListener="#{cc.attrs.iPCarico.saveDialogAndClose}" 
+													                update=":#{p:component(cc.attrs.updateOnClose)}, @form, :#{p:component('pnlNotifiche')}" >
+<!-- 														<f:actionListener binding="#{cc.attrs.closeDialogActionListener}"/> -->
+<!-- 														<f:actionListener binding="#{cc.attrs.iIterDialog.closeDialog}"/> -->
+													</p:commandButton>
+													<p:commandButton value="Salva e chiudi" disabled="#{cc.attrs.readOnly}"  rendered="#{cc.attrs.iPCarico == null}" 
+													                actionListener="#{cc.attrs.iIterDialog.saveDialogWithAttributes}" 
+													                update=":#{p:component(cc.attrs.updateOnClose)}, @form, :#{p:component('pnlNotifiche')}" >
+<!-- 														<f:actionListener binding="#{cc.attrs.closeDialogActionListener}"/> -->
+<!-- 														<f:actionListener binding="#{cc.attrs.iIterDialog.closeDialog}"/> -->
+													</p:commandButton>
+												</td>
+											</tr>
+										</tbody>
+									</table>
+								</ui:fragment>
+							</f:facet>
+						</p:panel>
+					</p:tab>
+				</p:tabView>
+				</p:outputPanel>
+			</p:dialog>
+			<p:growl id="messages" showDetail="true" />
+		</composite:implementation>
+	</h:body>
+</html>

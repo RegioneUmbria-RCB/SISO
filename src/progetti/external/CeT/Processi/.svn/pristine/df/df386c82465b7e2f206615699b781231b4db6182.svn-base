@@ -1,0 +1,10 @@
+tableRiga.name=RED_AN_RIGA
+tableAttivita.name=RED_AN_ATTIVITA
+tableAnagrafici.name=RED_AN_DATI_ANAGRAFICI
+tableDescrizione.name=RED_AN_DESCRIZIONE
+tableDomicilio.name=RED_AN_DOMICILIO_FISCALE
+tableRedditi.name=RED_AN_REDDITI_DICHIARATI
+tableTrascodifica.name=RED_AN_TRASCODIFICA
+tableRB.name=RED_AN_FABBRICATI
+tableRA.name=RED_AN_TERRENI
+Caricatore.class.noversion=it.webred.rulengine.brick.loadDwh.load.redditi.analitici.v1.ImportRedditiAn

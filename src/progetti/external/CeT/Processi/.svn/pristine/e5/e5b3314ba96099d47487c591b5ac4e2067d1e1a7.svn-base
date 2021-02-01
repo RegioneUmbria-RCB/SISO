@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<j:jelly trim="false" xmlns:define="jelly:define" xmlns:j="jelly:core"
+	     xmlns:x="jelly:xml" xmlns:re="reTagLib" xmlns:log="jelly:log">
+	
+	<define:taglib uri="reTagLib">
+		<define:jellybean name="bridge" className="it.webred.rulengine.chains.bridge.JellyCommandBridge" />
+	</define:taglib>
+	
+
+	<!-- 1 -->
+	<j:set var='par1' encode='true'>
+		<complexParam>
+			
+			<param type="it.webred.rulengine.type.ComplexParam" name="xml">
+				<![CDATA[<complexParam><param type="java.lang.String" name="cpx">[[COMANDOSQL_1]]</param></complexParam> ]]>
+	   		</param>
+			
+	   	</complexParam>
+	</j:set>
+	
+	<re:bridge codiceComando="COMANDOSQL" context="${ctx}" connessione="DWH" var="cmd1" parametro="${par1}" />
+
+
+	
+	 
+</j:jelly>

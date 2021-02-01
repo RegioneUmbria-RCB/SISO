@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?><!-- Use this file to deploy some handlers/chains and services      --><!-- Two ways to do this:                                           --><!--   java org.apache.axis.client.AdminClient deploy.wsdd          --><!--      after the axis server is running                          --><!-- or                                                             --><!--   java org.apache.axis.utils.Admin client|server deploy.wsdd   --><!--      from the same directory that the Axis engine runs         --><deployment xmlns="http://xml.apache.org/axis/wsdd/" xmlns:java="http://xml.apache.org/axis/wsdd/providers/java">
+
+  <!-- Services from ClientAnagrafeRomaService WSDL service -->
+
+  <service name="ClientAnagrafeRoma" provider="java:RPC" style="wrapped" use="literal">
+      <parameter name="wsdlTargetNamespace" value="http://test.servizi.comune.roma.it"/>
+      <parameter name="wsdlServiceElement" value="ClientAnagrafeRomaService"/>
+      <parameter name="schemaQualified" value="http://dto.servizi.comune.roma.it,http://test.servizi.comune.roma.it"/>
+      <parameter name="wsdlServicePort" value="ClientAnagrafeRoma"/>
+      <parameter name="className" value="it.roma.comune.servizi.test.ClientAnagrafeRoma"/>
+      <parameter name="wsdlPortType" value="ClientAnagrafeRoma"/>
+      <parameter name="typeMappingVersion" value="1.2"/>
+      <operation xmlns:operNS="http://test.servizi.comune.roma.it" xmlns:retNS="http://test.servizi.comune.roma.it" xmlns:rtns="http://dto.servizi.comune.roma.it" name="ricercaPerCodiceIndividuale" qname="operNS:ricercaPerCodiceIndividuale" returnQName="retNS:ricercaPerCodiceIndividualeReturn" returnType="rtns:RicercaResult" soapAction="">
+        <parameter xmlns:pns="http://test.servizi.comune.roma.it" xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="pns:chiaveCifratura" type="tns:string"/>
+        <parameter xmlns:pns="http://test.servizi.comune.roma.it" xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="pns:wsURL" type="tns:string"/>
+        <parameter xmlns:pns="http://test.servizi.comune.roma.it" xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="pns:codiceIndividuale" type="tns:string"/>
+      </operation>
+      <operation xmlns:operNS="http://test.servizi.comune.roma.it" xmlns:retNS="http://test.servizi.comune.roma.it" xmlns:rtns="http://dto.servizi.comune.roma.it" name="eseguiRicercaStatoFamigliaConv" qname="operNS:eseguiRicercaStatoFamigliaConv" returnQName="retNS:eseguiRicercaStatoFamigliaConvReturn" returnType="rtns:RicercaResult" soapAction="">
+        <parameter xmlns:pns="http://test.servizi.comune.roma.it" xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="pns:chiaveCifratura" type="tns:string"/>
+        <parameter xmlns:pns="http://test.servizi.comune.roma.it" xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="pns:wsURL" type="tns:string"/>
+        <parameter xmlns:pns="http://test.servizi.comune.roma.it" xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="pns:codiceIndividuale" type="tns:string"/>
+        <parameter xmlns:pns="http://test.servizi.comune.roma.it" xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="pns:codiceFiscale" type="tns:string"/>
+      </operation>
+      <operation xmlns:operNS="http://test.servizi.comune.roma.it" xmlns:retNS="http://test.servizi.comune.roma.it" xmlns:rtns="http://dto.servizi.comune.roma.it" name="verificaDatiAnagrafici" qname="operNS:verificaDatiAnagrafici" returnQName="retNS:verificaDatiAnagraficiReturn" returnType="rtns:RicercaResult" soapAction="">
+        <parameter xmlns:pns="http://test.servizi.comune.roma.it" xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="pns:chiaveCifratura" type="tns:string"/>
+        <parameter xmlns:pns="http://test.servizi.comune.roma.it" xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="pns:URL" type="tns:string"/>
+        <parameter xmlns:pns="http://test.servizi.comune.roma.it" xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="pns:cognome" type="tns:string"/>
+        <parameter xmlns:pns="http://test.servizi.comune.roma.it" xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="pns:nome" type="tns:string"/>
+        <parameter xmlns:pns="http://test.servizi.comune.roma.it" xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="pns:sesso" type="tns:string"/>
+        <parameter xmlns:pns="http://test.servizi.comune.roma.it" xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="pns:annoNascita" type="tns:string"/>
+        <parameter xmlns:pns="http://test.servizi.comune.roma.it" xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="pns:meseNascita" type="tns:string"/>
+        <parameter xmlns:pns="http://test.servizi.comune.roma.it" xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="pns:giornoNascita" type="tns:string"/>
+        <parameter xmlns:pns="http://test.servizi.comune.roma.it" xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="pns:codiceFiscale" type="tns:string"/>
+      </operation>
+      <operation xmlns:operNS="http://test.servizi.comune.roma.it" xmlns:retNS="http://test.servizi.comune.roma.it" xmlns:rtns="http://dto.servizi.comune.roma.it" name="verificaDatiAnagraficiCompleta" qname="operNS:verificaDatiAnagraficiCompleta" returnQName="retNS:verificaDatiAnagraficiCompletaReturn" returnType="rtns:RicercaResult" soapAction="">
+        <parameter xmlns:pns="http://test.servizi.comune.roma.it" xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="pns:chiaveCifratura" type="tns:string"/>
+        <parameter xmlns:pns="http://test.servizi.comune.roma.it" xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="pns:URL" type="tns:string"/>
+        <parameter xmlns:pns="http://test.servizi.comune.roma.it" xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="pns:cognome" type="tns:string"/>
+        <parameter xmlns:pns="http://test.servizi.comune.roma.it" xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="pns:nome" type="tns:string"/>
+        <parameter xmlns:pns="http://test.servizi.comune.roma.it" xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="pns:sesso" type="tns:string"/>
+        <parameter xmlns:pns="http://test.servizi.comune.roma.it" xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="pns:annoNascita" type="tns:string"/>
+        <parameter xmlns:pns="http://test.servizi.comune.roma.it" xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="pns:meseNascita" type="tns:string"/>
+        <parameter xmlns:pns="http://test.servizi.comune.roma.it" xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="pns:giornoNascita" type="tns:string"/>
+        <parameter xmlns:pns="http://test.servizi.comune.roma.it" xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="pns:codiceFiscale" type="tns:string"/>
+      </operation>
+      <operation xmlns:operNS="http://test.servizi.comune.roma.it" xmlns:retNS="http://test.servizi.comune.roma.it" xmlns:rtns="http://dto.servizi.comune.roma.it" name="eseguiRicercaAnagraficaEstesa" qname="operNS:eseguiRicercaAnagraficaEstesa" returnQName="retNS:eseguiRicercaAnagraficaEstesaReturn" returnType="rtns:RicercaResult" soapAction="">
+        <parameter xmlns:pns="http://test.servizi.comune.roma.it" xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="pns:chiaveCifratura" type="tns:string"/>
+        <parameter xmlns:pns="http://test.servizi.comune.roma.it" xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="pns:wsURL" type="tns:string"/>
+        <parameter xmlns:pns="http://test.servizi.comune.roma.it" xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="pns:cognome" type="tns:string"/>
+        <parameter xmlns:pns="http://test.servizi.comune.roma.it" xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="pns:nome" type="tns:string"/>
+        <parameter xmlns:pns="http://test.servizi.comune.roma.it" xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="pns:sesso" type="tns:string"/>
+        <parameter xmlns:pns="http://test.servizi.comune.roma.it" xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="pns:annoIniziale" type="tns:string"/>
+        <parameter xmlns:pns="http://test.servizi.comune.roma.it" xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="pns:annoFinale" type="tns:string"/>
+      </operation>
+      <parameter name="allowedMethods" value="verificaDatiAnagrafici ricercaPerCodiceIndividuale verificaDatiAnagraficiCompleta eseguiRicercaAnagraficaEstesa eseguiRicercaStatoFamigliaConv"/>
+
+      <typeMapping xmlns:ns="http://dto.servizi.comune.roma.it" qname="ns:DatiAnagrafeRoma" type="java:it.roma.comune.servizi.dto.DatiAnagrafeRoma" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle=""/>
+      <typeMapping xmlns:ns="http://dto.servizi.comune.roma.it" qname="ns:Persona" type="java:it.roma.comune.servizi.dto.Persona" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle=""/>
+      <typeMapping xmlns:ns="http://dto.servizi.comune.roma.it" qname="ns:DatiIndirizzo" type="java:it.roma.comune.servizi.dto.DatiIndirizzo" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle=""/>
+      <typeMapping xmlns:ns="http://dto.servizi.comune.roma.it" qname="ns:RicercaResult" type="java:it.roma.comune.servizi.dto.RicercaResult" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle=""/>
+      <typeMapping xmlns:ns="http://dto.servizi.comune.roma.it" qname="ns:Componente" type="java:it.roma.comune.servizi.dto.Componente" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle=""/>
+      <arrayMapping xmlns:ns="http://test.servizi.comune.roma.it" xmlns:cmp-ns="http://dto.servizi.comune.roma.it" qname="ns:ArrayOf_tns1_Persona" type="java:it.roma.comune.servizi.dto.Persona[]" innerType="cmp-ns:Persona" encodingStyle=""/>
+      <typeMapping xmlns:ns="http://dto.servizi.comune.roma.it" qname="ns:Famiglia" type="java:it.roma.comune.servizi.dto.Famiglia" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle=""/>
+      <arrayMapping xmlns:ns="http://test.servizi.comune.roma.it" xmlns:cmp-ns="http://dto.servizi.comune.roma.it" qname="ns:ArrayOf_tns1_Componente" type="java:it.roma.comune.servizi.dto.Componente[]" innerType="cmp-ns:Componente" encodingStyle=""/>
+      <typeMapping xmlns:ns="http://dto.servizi.comune.roma.it" qname="ns:Genitori" type="java:it.roma.comune.servizi.dto.Genitori" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle=""/>
+      <typeMapping xmlns:ns="http://dto.servizi.comune.roma.it" qname="ns:Nascita" type="java:it.roma.comune.servizi.dto.Nascita" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle=""/>
+      <typeMapping xmlns:ns="http://dto.servizi.comune.roma.it" qname="ns:PersonaCompleta" type="java:it.roma.comune.servizi.dto.PersonaCompleta" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle=""/>
+  </service>
+</deployment>

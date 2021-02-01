@@ -1,0 +1,7 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<SchemaObject class="oracle.dbtools.crest.model.design.relational.SchemaObject" name="GALILEO_UMBRIA" directorySegmentName="seg_0" id="B1581F26-2A56-2190-06E4-BABE86DDE8BD">
+<createdBy>marcoultra</createdBy>
+<createdTime>2015-06-03 13:53:58 UTC</createdTime>
+<ownerDesignName>CS</ownerDesignName>
+<importedID>D00C55C8-2512-D9C9-9D88-D2CEDEEAAC30</importedID>
+</SchemaObject>

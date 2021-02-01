@@ -1,0 +1,57 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich">
+
+	
+	<ui:composition template="/jsp/protected/layout/layoutnomenu.xhtml">
+	<ui:define name="content">
+
+		<!-- DIAG LOG PAGE -->
+		<a4j:include id="diagLogPage" viewId="#{dMonitorBean.diagLogPage}" />
+
+		<rich:separator lineType="solid" />
+				
+		<rich:panel>
+			<h:form id="evForm">
+			
+				<h:panelGrid columns="2">
+				
+					<h:outputText value="Ente chiamante: " />
+					<h:outputText value="#{dMonitorBean.belfiore}" />
+					
+					<h:outputText value="Codice comando:" />
+					<h:outputText value="#{dMonitorBean.codiceComando}" />
+					
+					<h:outputText value="Tipologia esecuzione: " />
+					<h:outputText value="#{dMonitorBean.diagType}" />
+					
+				</h:panelGrid>
+				
+				<rich:spacer height="10px" />				
+				<rich:separator lineType="solid" />
+				
+				<h:panelGrid columns="3">
+					<h:outputLabel value="Esegui diagnostica (Gruppo)" />
+					<a4j:commandButton styleClass="button" value="Esegui" id="btnEsegui" action="#{dMonitorBean.doExecuteGroup}">
+						<a4j:actionparam name="codente"	value="#{dMonitorBean.belfiore}" 
+									 assignTo="#{dMonitorBean.belfiore}"/>
+									 
+						<a4j:actionparam name="codcmd" value="#{dMonitorBean.codiceComando}" 
+									 assignTo="#{dMonitorBean.codiceComando}"/>
+						<a4j:support event="onclick"
+								oncomplete="return openControllerWindow();"/>
+					</a4j:commandButton>
+					
+					<a4j:commandButton styleClass="button" value="Indietro" action="#{dMonitorBean.doReturn}">
+					</a4j:commandButton>
+				</h:panelGrid>
+			</h:form>
+			
+		</rich:panel>
+	</ui:define>
+	</ui:composition>
+</html>

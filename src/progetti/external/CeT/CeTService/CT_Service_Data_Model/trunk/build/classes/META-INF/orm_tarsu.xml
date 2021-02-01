@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings
+  xmlns="http://java.sun.com/xml/ns/persistence/orm"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
+  version="2.0">
+
+	<!-- Query SitTTarOggetto -->
+	
+	<named-query name="SitTTarOggetto.getListaTarsuUiu">
+		<query>
+			<![CDATA[
+				SELECT o, v.prefisso || ' ' || v.descrizione
+			    FROM SitTTarOggetto o,
+			         SitTTarVia v
+			    WHERE o.idExtVia = v.idExt
+			    AND o.foglio = :foglio
+			    AND o.numero = :numero
+			    AND LPAD (NVL (o.sub, '0'), 4, '0') = :sub
+			    ORDER BY o.datIni DESC
+			 ]]>
+		</query>
+	</named-query>
+	
+	
+	<named-query name="SitTTarOggetto.getListaProvenienza">
+		<query>
+			<![CDATA[
+				select distinct o.provenienza
+				from SitTTarOggetto o
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SitTTarOggetto.getListaOggettiTARSUBYFPS">
+		<query>
+			<![CDATA[
+				select o 
+				from SitTTarOggetto o
+				where o.foglio = ltrim(:foglio, '0') 
+				AND o.numero = ltrim(:particella, '0') 
+				AND o.sub = ltrim(:unimm, '0')
+				order by datFin desc
+			]]>
+		</query>
+	</named-query>
+
+	<named-query name="SitTTarOggetto.getOggettiBYSFPS">
+		<query>
+			<![CDATA[
+				select o 
+				from SitTTarOggetto o
+				where (o.sez is null or o.sez=:sez)
+				and o.foglio = :foglio 
+				and o.numero = :particella 
+				and o.sub = :unimm
+				order by datFin desc
+				
+			]]>
+		</query>
+	</named-query>
+	<named-query name="SitTTarOggetto.getOggettiBYProvenienzaFPS">
+		<query>
+			<![CDATA[
+				select o 
+				from SitTTarOggetto o
+				where LPAD(o.foglio, 4,'0') =  LPAD(:foglio, 4,'0')
+				and   LPAD(o.numero,5,'0') = LPAD(:particella,5,'0')
+				and   LPAD(o.sub,4,'0') = LPAD(:unimm,4,'0')
+				and   o.provenienza = :provenienza
+				order by datFin desc
+				
+			]]>
+		</query>
+	</named-query>
+	<named-query name="SitTTarOggetto.getOggettiBYProvenienzaSezFPS">
+		<query>
+			<![CDATA[
+				select o 
+				from SitTTarOggetto o
+				where o.sez=:sez
+				and  LPAD(o.foglio, 4,'0') =  LPAD(:foglio, 4,'0')
+				and  LPAD(o.numero,5,'0') = LPAD(:particella,5,'0')
+				and  LPAD(o.sub,4,'0') = LPAD(:unimm,4,'0')
+				and   o.provenienza = :provenienza
+				order by datFin desc
+				
+			]]>
+		</query>
+	</named-query>
+	<named-query name="SitTTarOggetto.getOggettiBYProvenFabbricato">
+		<query>
+			<![CDATA[
+				select o 
+				from SitTTarOggetto o
+				where LPAD(o.foglio, 4,'0') =  LPAD(:foglio, 4,'0')
+				and   LPAD(o.numero,5,'0') = LPAD(:particella,5,'0')
+				and   o.provenienza = :provenienza
+				order by sub, datFin desc
+				
+			]]>
+		</query>
+	</named-query>
+	<named-query name="SitTTarOggetto.getOggettiBYProvenSezFabbricato">
+		<query>
+			<![CDATA[
+				select o 
+				from SitTTarOggetto o
+				where o.sez=:sez
+				and  LPAD(o.foglio, 4,'0') =  LPAD(:foglio, 4,'0')
+				and  LPAD(o.numero,5,'0') = LPAD(:particella,5,'0')
+				and   o.provenienza = :provenienza
+				order by sub, datFin desc
+				
+			]]>
+		</query>
+	</named-query>
+	<named-query name="SitTTarOggetto.getOggettiByIdSogg" >
+		<query>
+			<![CDATA[
+				SELECT o, v.tipoSoggetto  
+				FROM 
+					SitTTarOggetto o, 
+					 VTTarSoggAll v 
+				WHERE  o.idExt=v.id.idExtOggRsu
+				AND    v.id.id=:idSogg
+				ORDER BY o.sez, o.foglio, o.numero, o.sub
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="SitTTarOggetto.getOggettoByIdExt" >
+		<query>
+			<![CDATA[
+				SELECT o  
+				FROM SitTTarOggetto o
+				WHERE  o.idExt= :idExt
+			]]>
+		</query>
+	</named-query>
+	
+	
+	
+	<!--<named-native-query name="SitTTarOggetto.getDettaglioOggettoTARSU"
+		result-class="it.webred.ct.data.model.tarsu.SitTTarOggetto">
+		<query>
+			<![CDATA[
+				select SIT_T_TAR_OGGETTO.ID, SIT_T_TAR_OGGETTO.ID_EXT,
+				NVL(SIT_T_TAR_OGGETTO.FOGLIO,'-') AS FOGLIO,
+				NVL(SIT_T_TAR_OGGETTO.NUMERO,'-') AS NUMERO, 
+				NVL(SIT_T_TAR_OGGETTO.SUB,'-') AS SUB,
+				NVL(SIT_T_TAR_OGGETTO.DES_CLS_RSU,'-') AS DES_CLS_RSU, 
+				SIT_T_TAR_OGGETTO.SUP_TOT AS SUP_TOT, 
+				SIT_T_TAR_OGGETTO.DAT_INI,  AS DAT_INI,
+				SIT_T_TAR_OGGETTO.DAT_FIN,  AS DAT_FIN,
+				NVL(SIT_T_TAR_OGGETTO.DES_TIP_OGG,'-') AS DES_TIP_OGG, 
+				NVL(SIT_T_TAR_VIA.DESCRIZIONE,SIT_T_TAR_OGGETTO.DES_IND) AS DES_IND, 
+				NVL(SIT_T_TAR_OGGETTO.NUM_CIV,'-') AS NUM_CIV, 
+				NVL(SIT_T_TAR_OGGETTO.SCALA,'-') AS SCALA, 
+				NVL(SIT_T_TAR_OGGETTO.PIANO,'-') AS PIANO, 
+				NVL(SIT_T_TAR_OGGETTO.INTERNO,'-') AS INTERNO 
+				from SIT_T_TAR_OGGETTO, SIT_T_TAR_VIA 
+				where SIT_T_TAR_OGGETTO.ID = ? 
+				and SIT_T_TAR_OGGETTO.ID_EXT_VIA = SIT_T_TAR_VIA.ID_EXT(+)
+			]]>
+		</query>
+	</named-native-query>
+
+	--><!-- Query SitTTarSogg -->
+	
+	<named-query name="SitTTarSogg.getSoggettoByCF">
+		<query>
+			<![CDATA[
+				SELECT DISTINCT s.idOrigSoggU, s.codFisc, s.cogDenom, s.nome
+				FROM SitTTarSogg s
+				WHERE s.tipSogg = 'F'
+				AND s.codFisc = :codfisc
+				ORDER BY s.cogDenom, s.nome
+			]]>
+		</query>
+	</named-query>
+
+	<named-query name="SitTTarSogg.getSoggettoByPIVA">
+		<query>
+			<![CDATA[
+				SELECT DISTINCT s.idOrigSoggU, s.partIva, s.cogDenom
+				FROM SitTTarSogg s
+				WHERE s.tipSogg = 'G'
+				AND s.codFisc = :codpiva
+				ORDER BY s.cogDenom
+			]]>
+		</query>
+	</named-query>
+
+	<named-query name="SitTTarSogg.getListaSoggettiByCognome">
+		<query>
+			<![CDATA[
+				SELECT DISTINCT s.idOrigSoggU, s.codFisc, s.cogDenom, s.nome
+				FROM SitTTarSogg s
+				WHERE s.tipSogg = 'F'
+				AND s.cogDenom LIKE :cognome
+				ORDER BY s.cogDenom, s.nome
+			]]>
+		</query>
+	</named-query>
+
+	<named-query name="SitTTarSogg.getListaSoggettiByDenominazione">
+		<query>
+			<![CDATA[
+				SELECT DISTINCT s.idOrigSoggU, s.partIva, s.cogDenom
+				FROM SitTTarSogg s
+				WHERE s.tipSogg = 'G'
+				AND s.cogDenom LIKE :denominazione
+				ORDER BY s.cogDenom
+			]]>
+		</query>
+	</named-query>
+
+	<named-query name="SitTTarSogg.getListaContribuentiBy_IdExtOggRsu">
+		<query>
+			<![CDATA[
+				SELECT sogg 
+				FROM SitTTarSogg sogg, SitTTarContrib contrib 
+				WHERE contrib.idExtOggRsu = :idExtOggRsu 
+				AND sogg.idExt = contrib.idExtSogg 
+			]]>
+		</query>
+	</named-query>
+
+	<named-query name="SitTTarSogg.getListaDichiarantiBy_IdExtOggRsu">
+		<query>
+			<![CDATA[
+				SELECT sogg 
+				FROM SitTTarSogg sogg, SitTTarDich dichiarante 
+				WHERE dichiarante.idExtOggRsu = :idExtOggRsu 
+				AND sogg.idExt = dichiarante.idExtSogg 
+			]]>
+		</query>
+	</named-query>
+	<named-query name="SitTTarSogg.getSoggettoById">
+		<query>
+			<![CDATA[
+				select s 
+				from SitTTarSogg s
+				where s.id = :id
+			]]>
+		</query>
+	</named-query>
+	<!--  VTTarSoggAll (Al momento non utilizzata
+	<named-query name="VTTarSoggAll.getSoggettiByOggetto">
+		<query>
+			<![CDATA[
+				select v
+				from VTTarSoggAll v
+				where v.id.idExtOggRsu = :idExtOggRsu
+			]]>
+		</query>
+	</named-query>
+	-->
+	<!-- Query SitTTarVia -->
+	<named-query name="SitTTarVia.getViaByIdExt">
+		<query>
+			<![CDATA[
+				SELECT v 
+				FROM SitTTarVia v
+				where v.idExt = :idExt
+			]]>
+		</query>
+	</named-query>
+	
+	<named-native-query name="SitTTarSogg.getUlterioriSoggettiBy_IdExtOggRsu" result-set-mapping="ulterioriSoggettiMapping">
+		<query>
+			<![CDATA[
+				SELECT s.* , o.tit_sogg titolo 
+				FROM 
+					sit_t_tar_sogg s, 
+					sit_t_tar_ult_sogg u, 
+					sit_t_tar_ogg_ultsogg o
+				WHERE u.id_ext_ogg_rsu = :idExtOggRsu 
+				AND o.id_ext_tar_ult_sogg = u.id_ext 
+				AND s.id_ext = u.id_ext_sogg 
+				ORDER BY titolo
+			]]>
+		</query>
+	</named-native-query>
+	
+	<sql-result-set-mapping name="ulterioriSoggettiMapping">
+		<entity-result entity-class="it.webred.ct.data.model.tarsu.SitTTarSogg"/>
+		<column-result name="titolo"/>
+	</sql-result-set-mapping>
+
+
+
+</entity-mappings>

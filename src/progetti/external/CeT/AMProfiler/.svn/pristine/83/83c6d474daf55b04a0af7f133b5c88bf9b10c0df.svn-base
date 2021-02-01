@@ -1,0 +1,26 @@
+body {
+	font-size: 14px;
+	margin-left: 2.5%;
+	padding:0;
+	width: 95%;
+}
+
+.messageLabel {
+	font-family: Arial, Verdana, sans-serif;
+	font-size: 14px;
+	font-weight: bold;
+}
+
+tbody>tr>td {
+	vertical-align: top;
+}
+
+.imagebacked {
+	padding-left: 26px; /* image-width */
+	background-repeat: no-repeat;
+}
+
+.scroll {
+	overflow:auto;
+	max-height: 500px;
+}

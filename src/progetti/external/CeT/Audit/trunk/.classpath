@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="lib" path="/CT-LIBS/apache-log4j/log4j-1.2.17.jar"/>
+	<classpathentry kind="lib" path="/CT-LIBS/JBOSS711/modules/javax/interceptor/api/jboss-interceptors-api_1.1_spec-1.0.0.Final.jar"/>
+	<classpathentry kind="lib" path="/CT-LIBS/apache-commons/main/commons-dbutils-1.1.jar"/>
+	<classpathentry kind="lib" path="/CT-LIBS/aopalliance/1.0/aopalliance.jar"/>
+	<classpathentry kind="lib" path="/CT-LIBS/aop/AspectJ/1.6.12/aspectj-1.6.12.jar"/>
+	<classpathentry kind="lib" path="/CT-LIBS/aop/AspectJ/1.6.12/lib-extracted/aspectjrt.jar"/>
+	<classpathentry kind="lib" path="/CT-LIBS/aop/AspectJ/1.6.12/lib-extracted/aspectjtools.jar"/>
+	<classpathentry kind="lib" path="/CT-LIBS/aop/AspectJ/1.6.12/lib-extracted/aspectjweaver.jar"/>
+	<classpathentry kind="lib" path="/CT-LIBS/aop/AspectJ/1.6.12/lib-extracted/org.aspectj.matcher.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/DataRouter"/>
+	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jre6">
+		<attributes>
+			<attribute name="owner.project.facets" value="java"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/CT-LIBS/JBOSS711/modules/javax/ejb/jboss-ejb-api_3.1_spec-1.0.1.Final.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

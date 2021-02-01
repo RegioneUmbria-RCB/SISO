@@ -1,0 +1,117 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+	<title>Argo</title>
+	<link rel="stylesheet" type="text/css" href="${facesContext.externalContext.requestContextPath}/css/style.css" />
+	
+	<script type="text/javascript" src="${facesContext.externalContext.requestContextPath}/js/it.js" />
+</h:head>
+
+<h:body>
+<div class="block">
+		<!-- Header -->
+		<h:panelGroup id="header" >
+				<div  class="column">
+				     <p:graphicImage id="imgLogoComune" value="#{userBean.logoComune}"   rendered="#{userBean.esisteLogoComune()}" height="100" cache="false" />
+				     <h:graphicImage id="imgLogo" styleClass="logo" value="/images/logo.png" />
+				</div>
+				<div  class="column">
+				     <p:graphicImage id="imgLogoHeader1" value="#{userBean.logoHeader1}" rendered="#{userBean.esisteLogoHeader1()}" height="100" cache="false" />
+				     <p:spacer width="20px"/> 
+				     <p:graphicImage id="imgLogoHeader2" value="#{userBean.logoHeader2}" rendered="#{userBean.esisteLogoHeader2()}" height="100" cache="false" />
+				</div>
+				<div class="last" >
+					<!-- Login -->
+					<ui:fragment rendered="#{!loginBean.logged}" >
+						<form id="frmLogin" action='j_security_check' method='post'>
+							<h:panelGrid columnClasses="rightAlign" columns="1" width="100%" >
+								<h:panelGroup>
+									<h:outputLabel value="Nome utente" />
+									<p:spacer id="id1" width="5"/>
+									<p:inputText value="" id="j_username"/>
+								    
+								    <p:spacer id="id2" width="7"/>
+									
+									<h:outputLabel value="Password" />
+									<p:spacer id="id3"  width="5"/>
+									<p:inputText value="" id="j_password" type="password"/>			
+								
+									<p:spacer id="id4" width="10"/>
+									<p:commandButton id="loginBtn" value="Login" onclick="document.forms['frmLogin'].submit();"/>
+								</h:panelGroup>
+							</h:panelGrid>
+						</form>
+					</ui:fragment>
+					<!-- End Login -->
+					<h:form id="frmUser">
+						
+						<h:panelGrid columns="1" width="100%" columnClasses="rightAlign loggedTable" >
+							<p:outputPanel id="menuGenerale" >
+							<h:panelGrid columns="15" rendered="#{loginBean.logged}" >
+							
+								<!-- Start Logged -->
+								<h:panelGrid columns="1">
+								<h:outputLabel value="Benvenuto"/>
+								<h:outputLabel value="#{userBean.denominazione}" styleClass="bold"/>
+								</h:panelGrid>
+								
+								<p:spacer id="id5"  width="5"/>
+									
+								<p:commandLink id="logout" title="Logout"
+									global="false" action="#{loginBean.doLogout}" >
+									<p:graphicImage id="imgLogout" value="/images/logout.png" styleClass="logout" />
+								</p:commandLink>
+								
+							 	<p:spacer id="id6"  width="5"/>
+																		
+	
+						    	
+								<!-- End Logged -->
+						    	
+							</h:panelGrid>
+							</p:outputPanel>
+							
+						</h:panelGrid>
+					</h:form>
+				</div>
+			
+		</h:panelGroup>
+		<!-- Fine Header -->
+		<div  class="column span-20">
+	    <p:spacer height="15px"/>
+		<h:form id="frmMsg">
+			<p:growl id="growl" showDetail="true" autoUpdate="true" life="8000" escape="false"/>
+		</h:form>
+
+		<!-- Content -->
+		<h:panelGroup layout="block" id="content">
+			<ui:insert name="content"/>
+		</h:panelGroup>
+
+		<p:spacer height="15px"/>
+		
+		</div>
+		</div>
+		<!-- loading -->
+		<p:ajaxStatus onstart="PF('statusDialog').show();" onsuccess="PF('statusDialog').hide();" />  
+		<p:dialog modal="true" widgetVar="statusDialog" header="Operazione in corso..." 
+		        draggable="false" closable="false" resizable="false" >
+		    <p:graphicImage value="/images/ajaxloadingbar.gif" />  
+		</p:dialog>
+		<!-- Fine Loading --> 
+		
+
+
+		<!-- Footer -->
+		<ui:include id="footer" src="/jsp/protected/layout/footer.xhtml"/>
+
+</h:body>
+
+</html>

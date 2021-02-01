@@ -1,0 +1,590 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:webredcs="http://java.sun.com/jsf/composite/webredcs"
+	xmlns:webred="http://java.sun.com/jsf/composite/webred">
+
+
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+	<title>CarSocialeA</title>
+	<link rel="stylesheet" type="text/css" href="${facesContext.externalContext.requestContextPath}/css/style.css" />
+
+	<script type="text/javascript" src="${facesContext.externalContext.requestContextPath}/js/it.js" />
+	<script type="text/javascript" src="${facesContext.externalContext.requestContextPath}/js/utils.js" />
+	<script type="text/javascript" src="${facesContext.externalContext.requestContextPath}/js/monitorDownload.js" />
+	<!-- residuo-evoluzione-pai  -->
+</h:head>
+
+<h:body>
+	<div class="block">
+		<!-- Header -->
+		<h:panelGroup id="header">
+			<div class="column">
+				<p:graphicImage id="imgLogoComune" value="#{userBean.logoComune}"
+					rendered="#{userBean.esisteLogoComune()}" height="100"
+					cache="false" />
+				<h:graphicImage id="imgLogo" styleClass="logo"
+					value="/images/logo.png" />
+			</div>
+			<div class="column">
+				<p:graphicImage id="imgLogoHeader1" value="#{userBean.logoHeader1}"
+					rendered="#{userBean.esisteLogoHeader1()}" height="100"
+					cache="false" />
+				<p:spacer width="20px" />
+				<p:graphicImage id="imgLogoHeader2" value="#{userBean.logoHeader2}"
+					rendered="#{userBean.esisteLogoHeader2()}" height="100"
+					cache="false" />
+			</div>
+			<div class="last">
+				<!-- Login -->
+				<ui:fragment rendered="#{!loginBean.logged}">
+					<form id="frmLogin" action='j_security_check' method='post'>
+						<h:panelGrid columnClasses="rightAlign" columns="1" width="100%">
+							<h:panelGroup>
+								<h:outputLabel value="Nome utente" />
+								<p:spacer id="id1" width="5" />
+								<p:inputText value="" id="j_username" />
+
+								<p:spacer id="id2" width="7" />
+
+								<h:outputLabel value="Password" />
+								<p:spacer id="id3" width="5" />
+								<p:inputText value="" id="j_password" type="password" />
+
+								<p:spacer id="id4" width="10" />
+								<p:commandButton id="loginBtn" value="Login"
+									onclick="document.forms['frmLogin'].submit();" />
+							</h:panelGroup>
+						</h:panelGrid>
+					</form>
+					<webredcs:pnlNews iNews="#{newsMan}" renderGoogleDoc="false"/>
+				</ui:fragment>
+				<!-- End Login -->
+				<h:form id="frmUser">
+
+					<h:panelGrid columns="1" width="100%"
+						columnClasses="rightAlign loggedTable">
+						<p:outputPanel id="menuGenerale">
+							<h:panelGrid columns="15" rendered="#{loginBean.logged}">
+
+								<!-- Start Logged -->
+								<h:panelGrid columns="1">
+									<h:outputLabel value="Benvenuto" />
+									<h:outputLabel value="#{userBean.denominazione}"
+										styleClass="bold" />
+								</h:panelGrid>
+
+								<p:spacer id="id5" width="5" />
+
+								<p:commandLink id="logout" title="Logout" global="false"
+									action="#{loginBean.doLogout}"
+									disabled="#{schedaBean.disableHead}">
+									<p:graphicImage id="imgLogout" value="/images/logout.png"
+										styleClass="logout" />
+								</p:commandLink>
+
+								<p:spacer id="id6" width="5" />
+
+								<p:outputPanel id="pnlNotifiche" deferred="true">
+									<webredcs:pnlNotifica iNotifica="#{notificaMan}" 
+														  disabled="#{schedaBean.disableHead}" id="pnlNotifica" />
+								</p:outputPanel>
+
+								<p:spacer id="id7" width="5" />
+
+								<p:outputPanel id="pnlLink" deferred="true">
+									<p:commandButton id="goSegrSoc"
+										title="Vai a #{navigationBean.labelSegrSociale}" ajax="false"
+										icon="ui-icon-extlink"
+										value="#{navigationBean.labelSegrSociale}"
+										action="#{navigationBean.goSegrSociale}"
+										style="text-decoration: none;"
+										disabled="#{schedaBean.disableHead or !navigationBean.permessoUdcEnte}">
+									</p:commandButton>
+								</p:outputPanel>
+								<p:spacer id="id8" width="5" />
+
+								<p:outputPanel deferred="true">
+									<p:commandLink id="setting" title="Pannello di Configurazione"
+										update="@this" global="false"
+										disabled="#{schedaBean.disableHead}">
+										<p:graphicImage id="imgSetting" value="/images/setting.png"
+											styleClass="setting" />
+									</p:commandLink>
+
+									<p:overlayPanel id="panelConfigurazione" for="setting"
+										showEffect="blind" hideEffect="blind" style="width:140px;">
+										<h:panelGrid columns="1" style="text-align:left;">
+											<p:commandLink id="configurazione"
+												action="#{navigationBean.goConfigurazione}"
+												disabled="#{schedaBean.disableHead or !navigationBean.autorizzatoConfigurazione}">
+												<h:outputText value="Configurazione" />
+											</p:commandLink>
+										</h:panelGrid>
+									</p:overlayPanel>
+								</p:outputPanel>
+								<!-- End Logged -->
+
+							</h:panelGrid>
+						</p:outputPanel>
+
+						<p:outputPanel id="outPid1">
+							<h:panelGrid>
+								<p:menubar id="idMenubar1" rendered="#{loginBean.logged}"
+									style="min-width:500px;">
+									<f:facet name="options">
+
+										<h:panelGrid columns="14" cellpadding="0" cellspacing="0"
+											style="margin-left:20px"
+											columnClasses="leftAlign, leftAlign, leftAlign, leftAlign, leftAlign, leftAlign, leftAlign, leftAlign, leftAlign">
+
+											<h:outputLabel value="Org.:"
+												rendered="#{not empty userBean.listaOrganizzazioni}"
+												title="Organizzazione" />
+											<p:spacer id="spacer99" width="10" />
+											<p:selectOneMenu id="selectidOganizzazioni"
+												value="#{userBean.idOrganizzazione}"
+												filterMatchMode="contains" filter="true"
+												rendered="#{not empty userBean.listaOrganizzazioni}"
+												disabled="#{schedaBean.disableHead}">
+												<f:selectItems value="#{userBean.listaOrganizzazioni}" />
+												<p:ajax event="change" process="@this"
+													listener="#{userBean.handleChangeOrganizzazione}"
+													update=":#{p:component('pnlLink')}  :#{p:component('pnlNotifiche')}" />
+											</p:selectOneMenu>
+
+											<p:spacer id="spacer98" width="10" />
+
+											<h:outputLabel value="Settore:"
+												rendered="#{not empty userBean.listaSettori}" />
+											<p:spacer id="spacer100" width="10" />
+											<p:selectOneMenu id="selectidSettori"
+												value="#{userBean.idSettore}"
+												rendered="#{not empty userBean.listaSettori}"
+												disabled="#{schedaBean.disableHead}">
+												<f:selectItems value="#{userBean.listaSettori}" />
+												<p:ajax event="change" process="@this"
+													listener="#{userBean.handleChangeSettore}"
+													update=":#{p:component('pnlNotifiche')}" />
+											</p:selectOneMenu>
+
+											<p:spacer width="10" />
+
+											<p:commandLink id="btnInfoSettore"
+												title="Informazioni Settore"
+												disabled="#{schedaBean.disableHead}">
+												<p:graphicImage id="imgInfo" value="/images/info_small.png"
+													styleClass="infoSmall" />
+											</p:commandLink>
+
+											<p:overlayPanel id="idOverlay78" for="btnInfoSettore"
+												showEffect="blind" hideEffect="blind" my="left bottom"
+												at="left top" style="width:420px; z-index:999999!important;" >
+
+												<p:tree value="#{userBean.listaInfoSettore}" var="node"
+													style="width:100%; text-align:left;">
+													<p:treeNode>
+														<h:outputText value="#{node}" />
+													</p:treeNode>
+												</p:tree>
+
+											</p:overlayPanel>
+											<p:spacer id="id987" width="10" />
+										</h:panelGrid>
+									</f:facet>
+								</p:menubar>
+							</h:panelGrid>
+						</p:outputPanel>
+						<p:outputPanel>
+							<p:menubar id="idMenubar2" rendered="#{loginBean.logged}"
+								style="min-width:500px;">
+								<p:menuitem icon="home_icon" action="#{navigationBean.goHome}"
+									title="Homepage" disabled="#{schedaBean.disableHead}">
+									<p:resetInput target="@all" />
+								</p:menuitem>
+								<p:menuitem value="Gestione Configurazioni" icon="ui-icon-gear"
+									action="#{navigationBean.goConfigurazione}"
+									rendered="#{navigationBean.configurazioneVisible}"
+									disabled="#{schedaBean.disableHead}">
+									<p:resetInput target="@all" />
+								</p:menuitem>
+
+								<p:menuitem value="Schede #{navigationBean.labelSegrSociale}"
+									icon="ui-icon-folder-collapsed"
+									action="#{navigationBean.goSchedeSegretariato}"
+									rendered="#{navigationBean.schedeSegretariatoVisible}"
+									disabled="#{schedaBean.disableHead}">
+									<p:resetInput target="@all" />
+								</p:menuitem>
+
+								<p:menuitem value="Lista casi" icon="ui-icon-clipboard"
+									action="#{navigationBean.goListaCasi(false)}"
+									rendered="#{navigationBean.listaCasiVisible}"
+									disabled="#{schedaBean.disableHead}">
+									<p:resetInput target="@all" />
+								</p:menuitem>
+								  
+								<p:menuitem value="Lista casi assegnati" icon="ui-icon-clipboard"
+									action="#{navigationBean.goListaCasiAssegnati(false)}"
+									rendered="#{navigationBean.listaCasiAssegnatiVisible}"
+									disabled="#{schedaBean.disableHead}">
+									<p:resetInput target="@all" />
+								</p:menuitem>
+								<p:menuitem value="Interscambio" icon="ui-icon-clipboard"
+									action="#{navigationBean.goInterscambioCartellaSociale()}"
+									rendered="#{navigationBean.interscambioVisible}"
+									disabled="#{schedaBean.disableHead}">
+									<p:resetInput target="@all" />
+								</p:menuitem>
+
+								<p:menuitem value="Doc. individuali" icon="ui-icon-document"
+									rendered="#{navigationBean.docIndividualiVisible}"
+									disabled="#{schedaBean.disableHead}" />
+
+								<p:submenu
+									label="#{soggetto != null? 'Caso:' : 'Nuovo caso'} #{soggetto != null? soggetto.csAAnagrafica.cognome : ''} #{soggetto != null? soggetto.csAAnagrafica.nome : ''}"
+									rendered="#{navigationBean.casoVisible}">
+									<p:menuitem value="Cartella" icon="ui-icon-pencil"
+										action="#{schedaBean.carica(soggetto)}"
+										disabled="#{schedaBean.disableHead}"
+										rendered="#{navigationBean.visibilePerCasoAssegnato}"/>
+									<p:menuitem value="Fascicolo" icon="ui-icon-folder-open"
+										action="#{fascicoloBean.carica(soggetto)}"
+										rendered="#{fascicoloBean.renderVisualizzaFascicolo}"
+										disabled="#{schedaBean.disableHead}" />
+									<p:menuitem value="Dati caso" icon="ui-icon-document"
+										action="#{datiCasoBean.loadDatiCaso}" update=":frmDatiCaso"
+										oncomplete="wdgDatiCasoModal.show()"
+										disabled="#{schedaBean.disableHead}" />
+									<p:menuitem value="Inform. Governative" icon="ui-icon-suitcase"
+										title="Informazioni integrative sul soggetto, provenienti dagli archivi comunali e catastali"
+										action="#{soggettoGitBean.loadDatiSoggettoGit}"
+										update=":frmDatiSoggettoGit"
+										oncomplete="if (args &amp;&amp; args.canOpen) wdgDatiSoggettoGitModal.show();"
+										disabled="#{schedaBean.disableHead}" />
+									<p:menuitem value="Stampa cartella" icon="ui-icon-print"
+										action="#{reportBean.initializeStampaCartella(soggetto)}"
+										disabled="#{schedaBean.disableHead}"
+										rendered="#{navigationBean.visibilePerCasoAssegnato}" 
+										actionListener="#{navigationBean.goMenuLayout}" />
+								</p:submenu>
+
+								<f:facet name="options">
+									<p:outputPanel rendered="#{navigationBean.casoVisible}" >
+									<h:panelGrid columns="5" >
+										    <p:outputPanel id="pnlPrivacyHeader" styleClass="#{'updateOnPrivacyChange'}" >
+										    	<webred:iconaConsensoPrivacy labelPrivacy="#{schedaBean.consensoPrivacyMan.privacy}" 
+										    							     utenteAnonimo="#{schedaBean.consensoPrivacyMan.utenteAnonimo}"/>
+										    </p:outputPanel>
+											<webredcs:pnlDatiEsterniSoggetto />
+										<webredcs:pnlServiziSanitari
+											iServiziSanitari="#{serviziSanitariBean}"
+											codiceFiscale="#{soggetto.csAAnagrafica.cf}" />
+											
+										<p:outputPanel rendered="#{navigationBean.interscambioCartellaSociale}" deferred="true">
+										<p:outputPanel style="margin-right:5px; display:inline-block;">
+											<p:commandLink id="infoExport" title="Caso Esportato"
+											rendered="#{schedaBean.renderedCasoEsportatoInterscambio}"
+											action="#{navigationBean.goListaEventiFiltrataPerCF(schedaBean.getSession().getAttribute('soggetto').getCsAAnagrafica().getCf(), 'EXPORT')}">
+												<p:graphicImage id="imgExp" value="/images/export.png"
+													styleClass="infoSmall" />
+											</p:commandLink>
+	
+											<p:commandLink id="infoImport" title="Caso Importato"
+											rendered="#{schedaBean.renderedCasoImportatoInterscambio}"
+											action="#{navigationBean.goListaEventiFiltrataPerCF(schedaBean.getSession().getAttribute('soggetto').getCsAAnagrafica().getCf(), 'IMPORT')}">
+												<p:graphicImage id="imgImp" value="/images/import.png"
+													styleClass="infoSmall" />
+											</p:commandLink>
+										</p:outputPanel>
+										   <webredcs:pnlDialogEvento
+										    enableButton="true"
+											btnStartExp="#{schedaBean.dialogEsportaCartella(schedaBean.getSession().getAttribute('soggetto').getCsACaso())}"
+											btnConfExp="#{schedaBean.esportaCartella}"
+											iDialogEvento="#{schedaBean.modalBean}"/>
+										</p:outputPanel>
+										</h:panelGrid>
+									</p:outputPanel>
+								</f:facet>
+
+							</p:menubar>
+						</p:outputPanel>
+					</h:panelGrid>
+				</h:form>
+			</div>
+
+		</h:panelGroup>
+		<!-- Fine Header -->
+		<div class="column span-20">
+			<p:spacer height="15px" />
+			<h:form id="frmMsg">
+				<p:growl id="growl" showDetail="true" autoUpdate="true" sticky="true" escape="false" redisplay="true"  />
+			</h:form>
+
+			<!-- Content -->
+			<h:panelGroup layout="block" id="content">
+				<ui:insert name="content" />
+			</h:panelGroup>
+
+			<p:spacer height="15px" />
+
+		</div>
+	</div>
+			<!-- loading -->
+			<p:ajaxStatus onstart="PF('statusDialog').show();" onsuccess="PF('statusDialog').hide();" />
+			<p:dialog modal="true" widgetVar="statusDialog"
+				header="Operazione in corso..." draggable="false" closable="false"
+				resizable="false">
+				<p:graphicImage value="/images/ajaxloadingbar.gif" />
+			</p:dialog>
+			<!-- Fine Loading -->
+		
+			<p:dialog widgetVar="wdgDatiSoggettoGitModal" modal="true"
+				closable="true" header="Informazioni Governative" width="900"
+				height="650">
+		
+				<h:form id="frmDatiSoggettoGit">
+					<webredcs:pnlSoggettoGit iSoggettoGit="#{soggettoGitBean}"
+						id="pnlSoggettoGit" />
+		
+					<table border="0" width="100%">
+						<tr>
+							<td style="text-align: center;"><p:commandButton
+									value="Chiudi" id="datiSoggGitButton"
+									onclick="wdgDatiSoggettoGitModal.hide();">
+								</p:commandButton></td>
+						</tr>
+					</table>
+				</h:form>
+			</p:dialog>
+		
+			<p:dialog id="#{reportBean.modalId}" widgetVar="#{reportBean.modalWidgetVar}" resizable="true" maximizable="true" draggable="false"
+				 modal="true" closable="true" header="Creazione stampa per #{reportBean.denominazione}" style="width:50% !important; height:40% !important;">
+				<h:form id="frmOpzioniStampa">
+					<p:wizard backLabel="indietro" nextLabel="avanti" widgetVar="wiz" flowListener="#{reportBean.flowStampa}" >
+						<p:tab id="step1" title="Cosa Stampare">
+							<p:panel >
+									<p:selectManyCheckbox value="#{reportBean.lstSubreportObbl}"
+										layout="grid" columns="1" disabled="true">
+										<f:selectItems value="#{reportBean.lstSubreportObbl}" />
+									</p:selectManyCheckbox>
+						
+									<p:selectManyCheckbox value="#{reportBean.selectedSubreport}"
+										layout="grid" columns="1">
+										<f:selectItems value="#{reportBean.lstSubreport}" />
+									</p:selectManyCheckbox>
+						
+									<p:spacer height="20" />
+						
+									<p:selectManyCheckbox value="#{reportBean.selectedReportOpz}"
+										layout="grid" columns="1">
+										<f:selectItems value="#{reportBean.lstReportOpz}" />
+									</p:selectManyCheckbox>
+		
+					<!--<p:spacer height="20" />
+		
+					 <table border="0" style="margin: auto; width: 100px;">
+						<tr>
+							<td style="border: 0; padding: 0;"><h:commandButton
+									id="creaStampaBtn" value="Crea" action="#{reportBean.controllaStampa}"
+									styleClass="ui-button ui-widget ui-state-default ui-corner-all"
+									style="padding: .3em 1em; display: block; line-height: 1.4;"
+									onclick="#{reportBean.modalWidgetVar}.hide();" /></td>
+							<td style="border: 0; padding: 0;"><p:commandButton
+									id="ChiudiBtn" value="Chiudi"
+									onclick="#{reportBean.modalWidgetVar}.hide();" /></td>
+						</tr>
+					</table> -->
+						</p:panel>
+					</p:tab>
+					<p:tab id="step2" title="Opzioni" >
+						<p:panel header="Scelta Attivita" toggleable="true" rendered="#{reportBean.vediAttivita}" >
+						 <p:outputLabel value="Attività non presenti" rendered="#{empty reportBean.listaRelDTO}"/>
+						 <p:dataTable var="rowRel" rowIndexVar="rowKeyRel" rowKey="#{rowRel}"
+								emptyMessage="Nessun elemento presente"  selection="#{reportBean.listaRelSel}"
+								value="#{reportBean.listaRelDTO}" rendered="#{!empty reportBean.listaRelDTO}"
+								rows="10" paginator="true">
+				
+								<f:facet name="header">
+									<p:outputLabel value="Lista Attività Professionali" />
+								</f:facet>
+								<p:column selectionMode="multiple" >
+								
+								</p:column>
+								<p:column headerText="Data" width="60">
+									<h:outputText
+										value="#{rowRel.relazione.csDDiario.dtAmministrativa}">
+										<f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+									</h:outputText>
+								</p:column>
+								<p:column headerText="Macro tipo attività">
+									<h:outputText value="#{rowRel.relazione.macroAttivita.descrizione}" />
+								</p:column>
+								<p:column headerText="Micro tipo attività">
+									<h:outputText value="#{rowRel.relazione.microAttivita.descrizione}" />
+								</p:column>
+								<p:column headerText="Analisi problematiche"
+									style="text-align:center;">
+									<p:selectBooleanCheckbox value="#{rowRel.relazione.flagRilevazioneProblematiche}" disabled="true" />
+								</p:column>
+								<p:column headerText="Interventi proposti" >
+				 					 <p:dataList var="intervento" value="#{rowRel.relazione.csCTipoInterventos.toArray()}" rendered="#{not empty rowRel.relazione.csCTipoInterventos}" 
+				 					 			style="border:none !important; padding:0px;"> 
+										<h:outputLabel value="#{intervento.descrizione}"  style="font-size: 0.7rem;" />
+									</p:dataList>
+								</p:column>
+								 <p:column headerText="Con Chi">
+								  <ui:repeat var="CC" value="#{rowRel.relazione.lstConChi}" >
+								  		 <h:outputText value="#{CC.descrizione}" />
+				  			  			 <h:outputText rendered="#{(CC.id eq 9999)}" value=": #{rowRel.relazione.conChiAltro}" /><br/>
+				  			  		</ui:repeat>
+								</p:column> 
+								<p:column headerText="Riunione Con">
+									<h:outputText value="#{rowRel.relazione.riunioneCon.nome}" />
+								</p:column>
+								<p:column headerText="Num. operatori" style="text-align:center" >
+									<h:outputText value="#{rowRel.relazione.numOperatori}" />
+								</p:column>
+								<p:column headerText="Ore impiegate" style="text-align:center" >
+									<h:outputText value="#{rowRel.relazione.oreImpiegate}">
+										<f:convertDateTime type="time" pattern="HH:mm" locale="it_IT" />
+									</h:outputText>
+								</p:column>
+							</p:dataTable>   
+							
+				 		</p:panel>
+				 		<p:spacer height="20" />
+				 		<p:panel header="Scelta PAI" toggleable="true"  rendered="#{reportBean.vediPAI}" >
+				 		    <p:outputLabel value="PAI non presenti" rendered="#{empty reportBean.listaPAI}"/>
+				 			<p:dataTable widgetVar="dataTableWidgetVar" id="dataTablePaiStampa"
+										 var="rowPai" rowIndexVar="rowKeyPai" value="#{reportBean.listaPAI}"
+										 selection="#{reportBean.listaPAISel}" rowKey="#{rowPai}"
+										 paginator="true" paginatorPosition="bottom" rows="10"
+										 rendered="#{!empty reportBean.listaPAI}"
+										 emptyMessage="Nessun progetto corrisponde ai criteri di ricerca">
+					
+								<f:facet name="header">
+									<p:outputLabel value="Elenco progetti" />
+								</f:facet>
+								<p:column selectionMode="multiple" />
+								
+								<p:column headerText="ID" 
+									style="text-align:left;width:70px;">
+									<h:outputText value="#{rowPai.diarioId}" />
+								</p:column>
+					
+								<p:column headerText="Tipo progetto" >
+									<h:outputText value="#{rowPai.csTbTipoPai.descrizione}" />
+								</p:column>
+					
+								<p:column headerText="Data Attivazione" style="text-align:center;width:70px;">
+									<h:outputText value="#{rowPai.csDDiario.dtAttivazioneDa}">
+										<f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+									</h:outputText>
+								</p:column>
+								
+								<p:column headerText="Data Chiusura"
+									style="text-align:center;width:70px;">
+									<h:outputText value="#{rowPai.csDDiario.dtChiusuraDa}">
+										<f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+									</h:outputText>
+								</p:column>
+								
+								<!-- SISO-520 -->
+								<p:column headerText="Data Chiusura prevista"
+									style="text-align:center;width:70px;">
+									<h:outputText value="#{rowPai.dataChiusuraPrevista}">
+										<f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+									</h:outputText>
+								</p:column>
+					
+								  <p:column headerText="Da chiudere" 
+									style="text-align:center;">
+									<h:outputText value="#{rowPai.shouldBeClosed ? 'sì' : 'no'}" />
+								</p:column>
+					
+								<p:column headerText="Da controllare" 
+									style="text-align:center;">
+									<h:outputText value="#{rowPai.shouldBeChecked ? 'sì' : 'no'}" />
+								</p:column>
+					
+								<p:column headerText="Obiettivi" 
+									style="width:250px; overflow:scroll;">
+									<p:scrollPanel style="width:250px">
+									<ui:repeat var="ob" value="#{rowPai.txtObiettivi}">
+										<h:outputText value=" • #{ob}" /><br/>
+									</ui:repeat>
+									</p:scrollPanel>
+								</p:column>
+		
+							</p:dataTable>
+				 		</p:panel>
+				 		<p:spacer height="20" />
+				 		<p:panel style="text-align:-webkit-center" >
+				 			<p:commandButton value="Stampa" ajax="false" 
+				 			 onclick="#{reportBean.modalWidgetVar}.hide();"  action="#{reportBean.controllaStampa}" process="step1 step2" style="float:center;"  />
+				 		</p:panel>
+				  </p:tab>
+				</p:wizard>
+				</h:form>
+			</p:dialog>
+		
+			<p:dialog widgetVar="wdgDatiCasoModal" modal="true" closable="true"
+				header="Dati Caso">
+		
+				<h:form id="frmDatiCaso">
+		
+					<h:panelGrid columns="2" cellspacing="10">
+						<h:outputLabel value="Stato corrente" styleClass="bold" />
+						<h:outputLabel
+							value="#{datiCasoBean.itStep.csItStep.csCfgItStato.nome}" />
+		
+						<h:outputLabel value="Data cambio stato" styleClass="bold" />
+						<h:outputLabel value="#{datiCasoBean.itStep.dataAmministrativa}">
+							<f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+						</h:outputLabel>
+					</h:panelGrid>
+		
+					<h:panelGrid columns="2" cellspacing="10">
+						<h:outputLabel value="Categoria sociale" styleClass="bold" />
+						<h:outputLabel value="#{datiCasoBean.catSociale}" />
+					</h:panelGrid>
+		
+					<table border="0" width="100%">
+						<tr>
+							<td><p:spacer height="20" /></td>
+						</tr>
+						<tr>
+							<td style="text-align: center;"><p:commandButton
+									id="chiudiBtn" value="Chiudi" onclick="wdgDatiCasoModal.hide();">
+								</p:commandButton></td>
+						</tr>
+					</table>
+				</h:form>
+			</p:dialog>
+
+     		<p:dialog id="idWvDlgStampaPor"	widgetVar="wVdlgStampaPor"									 
+				 	showEffect="fade"  hideEffect="explode" header="Inserire il Soggetto Attuatore" >
+				<h:form id="frmDatiPor">
+               		<h:panelGrid styleClass="noBorder" columns="2" >
+              			<h:outputText value="Sogg. Attuatore"  />
+              			<p:inputText id="soggAttut"  value="#{fglInterventoBean.soggettoAttuatore}"  />
+               		 	<p:commandButton value="Conferma" ajax="false"  onclick="PF('wVdlgStampaPor').hide();" 
+					  		process="@form"  action="#{fglInterventoBean.chiamaStampa}"/>  
+				    	<p:commandButton value="Annulla" type="button" onclick="PF('wVdlgStampaPor').hide();" />
+               			
+               		</h:panelGrid>
+               	</h:form>
+				
+			</p:dialog>
+
+	<!-- Footer -->
+	<ui:include id="footer" src="/jsp/protected/layout/footer.xhtml" />
+
+</h:body>
+
+</html>

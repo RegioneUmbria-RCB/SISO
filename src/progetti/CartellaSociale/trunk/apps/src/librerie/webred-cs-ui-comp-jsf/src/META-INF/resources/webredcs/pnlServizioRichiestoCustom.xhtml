@@ -1,0 +1,169 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:fn="http://java.sun.com/jsp/jstl/functions" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui"
+  xmlns:composite="http://java.sun.com/jsf/composite" xmlns:c="http://java.sun.com/jstl/core">
+
+<h:head>
+  <title></title>
+</h:head>
+<h:body>
+
+	<composite:interface componentType="pnlServizioRichiestoCustom">
+		<composite:attribute name="iServizioRichiestoCustom" 	type="it.webred.cs.json.serviziorichiestocustom.IServizioRichiestoCustom" 			required="true" />
+		<composite:attribute name="servizio"					type="managedbean.cartella_sociale.servizirichiesticustom.ServizioRichiestoCustom"	required="true" />
+		<composite:attribute name="serviziBean"					type="it.webred.ss.web.bean.wizard.ServiziRichiestiInterventiCustomBean"			required="false" />
+		<composite:attribute name="soloLettura" default="false"/>	
+	</composite:interface>
+	<composite:implementation
+		xmlns:webred="http://java.sun.com/jsf/composite/webred"
+		xmlns:webredcs="http://java.sun.com/jsf/composite/webredcs">
+
+			<style type="text/css">
+				.eliminaImg {
+    				background-image: url("#{resource['webredcs/img/bin.png']}") !important;
+    				width: 25px;
+    				height: 25px;
+    				margin-left: -12px!important;
+    				margin-top: -12px!important;
+				} 
+				.eliminaImgButton{
+					width: 40px; height: 40px;
+				}
+			</style>
+
+		<p:outputPanel id="panel_serviziocustom" rendered="#{cc.attrs.iServizioRichiestoCustom.versionLowerCase eq '1'}">
+		
+			<h:panelGrid columns="2" width="100%" >
+				<h:panelGroup>
+					<p:outputLabel value="Data richiesta / servizio " for="dataRichiesta"/>
+					<webred:pnlData id="dataRichiesta" maxDate="#{cc.attrs.iServizioRichiestoCustom.currentDate}"
+									dataValue="#{cc.attrs.iServizioRichiestoCustom.jsonCurrent.dataRichiesta}" 
+						            dataPattern="dd/MM/yyyy"  dataPatternLabel="gg/mm/aaaa" dataReq="true" 
+						            disabled="#{cc.attrs.soloLettura}"/>
+						            
+					<webredcs:tooltipInfo  title="Data richiesta / servizio"  
+						stringDescr="Data di sottoscrizione della richiesta da parte del cittadino ovvero di erogazione del servizio professionale da parte dell’operatore sociale"/>				            
+					
+					<p:selectBooleanCheckbox id="erogabileInAccoglienza" style="padding-left:10px"
+						itemLabel="Erogabile in accoglienza?" 
+						disabled="#{cc.attrs.soloLettura || cc.attrs.iServizioRichiestoCustom.jsonCurrent.consuntivoList.size()>0}"
+						value="#{cc.attrs.iServizioRichiestoCustom.jsonCurrent.erogabileInAccoglienza}"/> 
+					
+					<p:commandButton value="Aggiungi documento"
+						action="#{cc.attrs.serviziBean.setServizio(servizio)}"
+						oncomplete="testDialog.show()" 
+						rendered="#{!cc.attrs.soloLettura}"
+						style="margin-left:80px;"/> 
+				</h:panelGroup>
+				
+				<p:dataTable var="documento" value="#{cc.attrs.iServizioRichiestoCustom.listaDocumentiDaSalvare}" emptyMessage="Nessun documento presente">
+					<p:column headerText="Nome documento">
+						<h:outputText value="#{documento.nome}" />
+					</p:column>
+					<p:column>
+						<p:commandButton title="Elimina" icon="ui-icon-trash"
+							action="#{cc.attrs.iServizioRichiestoCustom.eliminaDocumento(documento)}"
+							update="@form" 
+							rendered="#{!cc.attrs.soloLettura}" 	/>
+	
+					    <p:commandButton id="downloadButton" value="Download" ajax="false" icon="ui-icon-arrowthickstop-1-s" >
+					        <p:fileDownload value="#{documento.streamedContent}" />
+					    </p:commandButton>					     
+					</p:column>	
+				</p:dataTable>
+			
+			</h:panelGrid>
+			
+			<p:spacer height="10px" />
+   			<p:multiSelectListbox value="#{cc.attrs.iServizioRichiestoCustom.jsonCurrent.selezionePDS}" 
+   								 showHeaders="true" header="Macro Intervento"
+   								 effect="slide" disabled="#{cc.attrs.soloLettura}" rendered="#{not empty cc.attrs.iServizioRichiestoCustom.listaPDS}">
+       			<f:selectItems value="#{cc.attrs.iServizioRichiestoCustom.listaPDS}" style="font-size: 12px;"/>
+  			</p:multiSelectListbox>	
+			
+			<p:outputPanel rendered="#{cc.attrs.iServizioRichiestoCustom.renderResidenzaFuoriAmbito}">
+	            <p:fieldset legend="Motivo presenza da fuori ambito">
+					
+					<p:outputLabel value="La residenza dell'utente non appartiene all'ambito dello sportello corrente. Indicare i motivi per cui si è presentato a questo sportello. "/>
+					
+					<p:spacer width="20px"/>
+					<h:panelGrid columns="10">
+					<p:selectManyCheckbox label="Selezionare nuovi interventi" id="nuovi_interventi_richiesti"  disabled="#{cc.attrs.soloLettura}"
+										  value="#{cc.attrs.iServizioRichiestoCustom.jsonCurrent.nuoviInterventiSelezionati}" layout="grid" columns="5">
+						<f:selectItems value="#{cc.attrs.iServizioRichiestoCustom.nuoviInterventi}" />
+					</p:selectManyCheckbox>
+					
+					<p:spacer width="20px"/>
+					<h:outputText value="Altro " for="altri_interventi_richiesti" disabled="#{cc.attrs.soloLettura}"/>
+					<p:inputText label="Altro servizio (specificare)" id="altri_interventi_richiesti" disabled="#{cc.attrs.soloLettura}" value="#{cc.attrs.iServizioRichiestoCustom.jsonCurrent.altro}" />
+					</h:panelGrid>
+				</p:fieldset>
+			 </p:outputPanel>
+			<h:panelGrid columns="1">
+				<p:outputLabel value="Note"/>
+				<p:inputTextarea value="#{cc.attrs.iServizioRichiestoCustom.jsonCurrent.note}" cols="200" disabled="#{cc.attrs.soloLettura}"/>
+			</h:panelGrid>
+			
+			<p:spacer height="10px" />
+			
+			<p:fieldset legend="Consuntivazione interventi" toggleable="true">
+				<p:commandButton title="Aggiungi un nuovo consuntivo di erogazione intervento" icon="ui-icon-plusthick"
+						value="Nuova"
+						update="panel_serviziocustom" disabled="#{cc.attrs.soloLettura}"
+						action="#{cc.attrs.iServizioRichiestoCustom.addConsuntivoItem()}"/>
+							
+				<p:dataTable id="item_datatable" var="item" emptyMessage="Nessun consuntivo presente"
+						    value="#{cc.attrs.iServizioRichiestoCustom.jsonCurrent.consuntivoList}" >
+					<p:column>
+						<p:commandButton title="Rimuovi il consuntivo di erogazione intervento" icon="ui-icon-trash"
+							immediate="true"
+							update="@namingcontainer:@parent:panel_serviziocustom" disabled="#{cc.attrs.soloLettura}"
+							action="#{cc.attrs.iServizioRichiestoCustom.removeConsuntivoItem(item)}"/>
+					</p:column>
+				 	<p:column headerText="Data">
+				 		<webred:pnlData dataValue="#{item.date}" 
+							            dataPattern="dd/MM/yyyy"  dataPatternLabel="gg/mm/aaaa" dataReq="true" 
+							            disabled="#{cc.attrs.soloLettura}"/>					            			 		
+			 		</p:column>
+				 	<p:column headerText="Descrizione">
+				 		<p:inputText value="#{item.description}" disabled="#{cc.attrs.soloLettura}" style="width:100%" />
+			 		</p:column>
+				 	<p:column headerText="Num. operatori">
+				 		<p:inputText value="#{item.numOperators}" type="number" disabled="#{cc.attrs.soloLettura}"/>
+				 	</p:column>
+				 	<p:column headerText="Ore totali impiegate">
+				 		<p:inputText value="#{item.numHours}" type="number" disabled="#{cc.attrs.soloLettura}"/>
+			 		</p:column>
+				 	<p:column headerText="Tipo attività">	
+						<!-- select items
+							1-Accettazione richiesta, 2-Lavorazione, 3-Verifica iter, 
+							4-Servizio concluso, 5-Avvio iter esterno a sportello, 
+							6-Verifica iter esterno a sportello, 7-Servizio erogato esternamente a sportello
+						-->
+				 		<p:selectOneMenu value="#{item.tipoAttivita}" disabled="#{cc.attrs.soloLettura}" >
+				 			<f:selectItem itemLabel="- seleziona -" noSelectionOption="true" />
+				 			<f:selectItem itemLabel="0-Richiesta Informazioni" itemValue="0" itemDisabled="#{cc.attrs.iServizioRichiestoCustom.jsonCurrent.erogabileInAccoglienza}" />
+				 			<f:selectItem itemLabel="1-Compilazione e/o Accettazione richiesta" itemValue="1" />
+				 			<f:selectItem itemLabel="2-Gestione e Lavorazione richiesta" itemValue="2"/>
+				 			<f:selectItem itemLabel="3-Verifica iter" itemValue="3" itemDisabled="#{!cc.attrs.iServizioRichiestoCustom.jsonCurrent.erogabileInAccoglienza}" />
+				 			<f:selectItem itemLabel="4-Servizio concluso" itemValue="4" itemDisabled="#{!cc.attrs.iServizioRichiestoCustom.jsonCurrent.erogabileInAccoglienza}" />
+				 			<f:selectItem itemLabel="5-Avvio iter esterno a sportello" itemValue="5" itemDisabled="#{cc.attrs.iServizioRichiestoCustom.jsonCurrent.erogabileInAccoglienza}" />
+				 			<f:selectItem itemLabel="6-Verifica iter esterno a sportello" itemValue="6" itemDisabled="#{cc.attrs.iServizioRichiestoCustom.jsonCurrent.erogabileInAccoglienza}" />
+				 			<f:selectItem itemLabel="7-Servizio erogato esternamente a sportello" itemValue="7" itemDisabled="#{cc.attrs.iServizioRichiestoCustom.jsonCurrent.erogabileInAccoglienza}" />
+				 		</p:selectOneMenu>
+				 		
+				 	</p:column>
+				 	
+				</p:dataTable>
+			
+			</p:fieldset> 		
+				
+		
+		</p:outputPanel>
+		
+	</composite:implementation>
+
+
+</h:body>
+
+</html>

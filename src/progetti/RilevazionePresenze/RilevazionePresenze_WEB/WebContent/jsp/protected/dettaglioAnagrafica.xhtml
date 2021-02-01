@@ -1,0 +1,471 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite">
+
+<p:outputPanel id="pnlDettaglioAnagrafica">
+	<p:accordionPanel style="min-width: 1000px" autowidth="false" id="pnlAccord">
+		<p:tab title="Dati Anagrafici e Insediamento">
+			<h:panelGrid columns="8" columnClasses="label, value"
+				id="pnlDateInsediamento" style=" width:100%;">
+				<p:fieldset id="DateInsediamento" legend="Permanenza"
+					style="display: inline-block; vertical-align: top; width:95%;">
+					<h:outputLabel id="lblDataInsediamento" value="Data Ingresso *" />
+					<p:spacer width="5px" />
+					<p:calendar id="dataInsediamento"
+						value="#{anagraficaController.selectedAnagrafica.dataInsediamento}"
+						pattern="dd/MM/yyyy" placeholder="dd/MM/yyyy" size="15"
+						validatorMessage="La data inserita non è valida" navigator="true"
+						yearRange="c-100:c+10"
+						valueChangeListener="#{anagraficaController.onDataInsediamentoChange}">					
+					</p:calendar>
+					<p:spacer width="10px" />
+					<h:outputLabel id="lblDataUScita" value="Data Uscita " />
+					<p:spacer width="5px" />
+					<p:calendar id="dataUscita"
+						value="#{anagraficaController.selectedAnagrafica.dataUscita}"
+						pattern="dd/MM/yyyy" placeholder="dd/MM/yyyy" size="15"
+						validatorMessage="La data inserita non è valida" navigator="true"
+						yearRange="c-100:c+10"
+						valueChangeListener="#{anagraficaController.onDataUscitaChange}">
+					</p:calendar>
+					<p:spacer width="10px" />
+					<h:outputText value="Motivazione uscita " for="motivazione"/>
+					<p:selectOneMenu label="Motivazione uscita" id="motivazione"
+						value="#{anagraficaController.selectedAnagrafica.idMotivazione}"
+						style="vertical-align:middle" effect="fold" editable="false" filter="true">
+						<f:selectItem itemLabel="- seleziona -" noSelectionOption="true" />
+						<f:selectItems value="#{anagraficaController.listaMotivazioni.values()}"
+							var="item" itemLabel="#{item.descrizione}" itemValue="#{item.id}" />
+					</p:selectOneMenu>
+				</p:fieldset>
+			</h:panelGrid>
+			<h:panelGrid columns="8" columnClasses="label, value"
+				id="pnlAnagEsterno" style=" width:45%;">
+				<p:fieldset id="datiAnag" legend="Dati Anagrafici"
+					style="display: inline-block; vertical-align: top; width:100%;">
+					<h:panelGrid columns="4" columnClasses="label, value"
+						id="strutturaPanel">
+						<p:outputLabel for="txtCognome" value="Cognome*" />
+						<p:inputText id="txtCognome"
+							value="#{anagraficaController.selectedAnagrafica.cognome}" 
+							valueChangeListener="#{anagraficaController.onCognomeChange}"/>
+						<p:outputLabel for="txtNome" value="Nome * " />
+						<p:inputText id="txtNome"
+							value="#{anagraficaController.selectedAnagrafica.nome}" />
+						<h:outputLabel id="lblGenere" value="Genere *" />
+						<p:selectOneMenu id="slcGenere"
+							value="#{anagraficaController.selectedAnagrafica.genere}"
+							style="width:125px;vertical-align:middle" valueChangeListener="#{anagraficaController.onGenereChange}">
+							<f:selectItem itemLabel="Maschio" itemValue="M" />
+							<f:selectItem itemLabel="Femmina" itemValue="F" />						
+						</p:selectOneMenu>
+						<p:outputLabel for="txtCf" value="Codice Fiscale " />
+						<p:inputText id="txtCf"
+							value="#{anagraficaController.selectedAnagrafica.cf}"
+							maxlength="16"
+							valueChangeListener="#{anagraficaController.onCfChange}" />
+						<h:outputLabel id="lblDataNascita" value="Data di Nascita *" />
+						<p:calendar id="dataNascita"
+							value="#{anagraficaController.selectedAnagrafica.dataNascita}"
+							pattern="dd/MM/yyyy" placeholder="dd/MM/yyyy" size="15"
+							validatorMessage="La data inserita non è valida" navigator="true"
+							yearRange="c-100:c+10"
+							valueChangeListener="#{anagraficaController.onDataNascitaChange}" >
+						</p:calendar>
+						<h:outputText value="Cittadinanza " for="cittadinanza" />
+						<p:selectOneMenu label="Cittadinanza" id="cittadinanza"
+							style="vertical-align:middle"
+							value="#{anagraficaController.selectedAnagrafica.cittadinanza}"
+							effect="fold" editable="false" filter="true">
+							<f:selectItem itemLabel="- seleziona -" itemValue="" />
+							<f:selectItems value="#{anagraficaController.cittadinanze}" 
+							valueChangeListener="#{anagraficaController.onCittadinanzaChange}" ></f:selectItems>
+						</p:selectOneMenu>
+
+						<h:outputText id="txtComuneNascita" value="Comune" />
+						<p:autoComplete id="txtAutocompleteComuneNascita" maxResults="25"
+							value="#{anagraficaController.selectedAnagraficaComuneNascita}"							
+							completeMethod="#{anagraficaController.completaLuogo}"
+							var="comuneNascitaVar" itemValue="#{comuneNascitaVar}"
+							converter ="amTabComuniConverter"
+							itemLabel="#{comuneNascitaVar.denominazione}"
+							style="vertical-align:middle">
+							<p:ajax event="itemSelect"
+								listener="#{anagraficaController.onComuneNascitaSelect}"
+								update="txtprovNascitaCod" />
+						</p:autoComplete>
+
+						<h:outputText id="lblCodProvNascita" value="Prov" />
+						<p:inputText id="txtprovNascitaCod" disable="true"
+							value="#{anagraficaController.selectedAnagrafica.provNascitaCod}"
+							style="width:50px" />
+						<h:outputText id="txtNazioneNascita" value="Nazione" />
+						<p:autoComplete id="txtAutocompleteNazione" maxResults="25"
+							value="#{anagraficaController.selectedAnagraficaStatoNascita}"
+							completeMethod="#{anagraficaController.completaLstNazioni}"
+							var="nazioneVar" itemLabel="#{nazioneVar.nazione}"
+							itemValue="#{nazioneVar}"
+							converter="amTabNazioniConverter"
+							style="vertical-align:middle" >
+							<p:ajax event="itemSelect"
+								listener="#{anagraficaController.onStatoNascitaSelect}"
+								update="txtprovNascitaCod" />
+						</p:autoComplete>						
+					</h:panelGrid>
+				</p:fieldset>
+
+				<p:fieldset id="Res" legend="Residenza"
+					style="display: inline-block; vertical-align: top; width:70%; height:270px;">
+					<h:panelGrid columns="2" columnClasses="label, value" id="pnlRes">
+						<h:outputText id="lblIndirizzoResidenza" value="Indirizzo" />
+						<p:inputText id="txtIndirizzoResidenza"
+						value="#{anagraficaController.selectedAnagrafica.indirizzoResidenza}"  						
+						valueChangeListener="#{anagraficaController.onIndirizzoResChange}">
+						</p:inputText>
+
+						<h:outputText id="txtComuneResidenza" value="Comune" />
+						<p:autoComplete id="txtAutocompleteComuneResidenza"
+							maxResults="25"
+							value="#{anagraficaController.selectedAnagraficaComuneResidenza}"
+							converter="amTabComuniConverter"
+							completeMethod="#{anagraficaController.completaLuogo}"
+							var="comuneRes" itemLabel="#{comuneRes.denominazione}"
+							itemValue="#{comuneRes}"
+							style="vertical-align:middle" >
+							<p:ajax event="itemSelect"
+								listener="#{anagraficaController.onComuneResidenzaSelect}"
+								update="txtprovResidenzaCod slcMunicipioResidenza"  />
+						</p:autoComplete>
+						<h:outputText id="lblCodProvResidenza" value="Prov" />
+						<p:inputText id="txtprovResidenzaCod"
+							value="#{anagraficaController.selectedAnagrafica.provResidenzaCod}"
+							style="width:50px" />
+						<h:outputText id="lblMunicipio" value="Municipio" />
+						<p:selectOneMenu id="slcMunicipioResidenza"
+							label="Municipio Residenza" style="vertical-align:middle"
+							value="#{anagraficaController.selectedAnagrafica.idMunicipioRes}"
+							effect="fold" editable="false" filter="true"
+							valueChangeListener="#{anagraficaController.onMunicipioResChange}"
+							disabled="#{!anagraficaController.abilitaMunicipioRes}">
+							<f:selectItem itemLabel="- seleziona -" itemValue="" />
+							<f:selectItems value="#{anagraficaController.lstMunicipi}" />
+						</p:selectOneMenu>
+
+					</h:panelGrid>
+				</p:fieldset>
+				<p:fieldset id="Dom" legend="Domicilio"
+					style="display: inline-block; vertical-align: top; width:70%; height:270px;">
+					<h:panelGrid columns="2" columnClasses="label, value" id="pnlDom">
+						<h:outputText id="lblIndirizzoDomicilio" value="Indirizzo" />
+						<p:inputText id="txtIndirizzoDomicilio"
+						value="#{anagraficaController.selectedAnagrafica.indirizzoDomicilio}"  
+						
+						valueChangeListener="#{anagraficaController.onIndirizzoDomChange}"></p:inputText>
+						<h:outputText id="txtComuneDomicilio" value="Comune" />
+						<p:autoComplete id="txtAutocompleteComuneDomicilio" maxResults="25"
+							value="#{anagraficaController.selectedAnagraficaComuneDomicilio}"
+							converter="amTabComuniConverter"
+							completeMethod="#{anagraficaController.completaLuogo}"
+							var="comuneDom" itemLabel="#{comuneDom.denominazione}"
+							itemValue="#{comuneDom}"
+							style="vertical-align:middle">
+							<p:ajax event="itemSelect"
+								listener="#{anagraficaController.onComuneDomicilioSelect}"
+								update="txtprovDomicilioCod  slcMunicipioDomicilio" />
+						</p:autoComplete>
+						<h:outputText id="lblCodProvDomicilio" value="Prov" />
+						<p:inputText id="txtprovDomicilioCod"
+							value="#{anagraficaController.selectedAnagrafica.provDomicilioCod}"
+							style="width:50px" />
+						<h:outputText id="lblMunicipioDom" value="Municipio" />
+						<p:selectOneMenu id="slcMunicipioDomicilio"
+							label="Municipio Domicilio" style="vertical-align:middle"
+							value="#{anagraficaController.selectedAnagrafica.idMunicipioDom}"
+							effect="fold" editable="false" filter="true"
+							valueChangeListener="#{anagraficaController.onMunicipioDomChange}"
+							disabled="#{!anagraficaController.abilitaMunicipioDom}">
+							<f:selectItem itemLabel="- seleziona -" itemValue="" />
+							<f:selectItems value="#{anagraficaController.lstMunicipi}" />
+						</p:selectOneMenu>
+					</h:panelGrid>
+				</p:fieldset>
+			</h:panelGrid>
+		</p:tab>
+		<p:tab title="Nucleo Familiare">
+			<h:panelGrid columns="8" columnClasses="label, value"
+				style=" width:100%;">
+				<p:fieldset legend="Nucleo Familiare"
+					style="display: inline-block; vertical-align: top; width:100%;">
+					<h:panelGrid columns="8" columnClasses="label, value"
+						id="pnlNucleoFamiliare" style="width:100%;">
+						<h:outputText value="E' referente di un nucleo familiare?  "
+							for="referente" />
+						<p:spacer width="5px" />
+						<p:selectOneRadio id="referente"
+							value="#{anagraficaController.selectedAnagrafica.flgReferente}"
+							unselectable="true">
+							<f:selectItem itemLabel="Sì" itemValue="#{true}" />
+							<f:selectItem itemLabel="No" itemValue="#{false}" />
+							<p:ajax event="change" update="pnlGradoParentela" process="@this" />
+						</p:selectOneRadio>
+					</h:panelGrid>
+					<h:panelGrid columns="8" columnClasses="label, value"
+						id="pnlGradoParentela">
+
+						<h:outputText value="Seleziona referente del nucleo familiare*"
+							for="dropListaReferenti"
+							rendered="#{!anagraficaController.selectedAnagrafica.flgReferente}" />
+						<p:spacer width="5px" />
+						<p:selectOneMenu label="Seleziona referente del nucleo familiare*"
+							id="dropListaReferenti"
+							value="#{anagraficaController.selectedAnagrafica.idReferente}"
+							rendered="#{!anagraficaController.selectedAnagrafica.flgReferente}"
+							style="vertical-align:middle" effect="fold" editable="false"
+							filter="true"
+							valueChangeListener="#{anagraficaController.onReferenteChange}">
+							<f:selectItem itemLabel="- seleziona -" itemValue="" />
+							<f:selectItems value="#{anagraficaController.referenti.values()}"
+								var="itmRef" itemLabel="#{itmRef.cognome} #{itmRef.nome}"
+								itemValue="#{itmRef.id}"  />
+						</p:selectOneMenu>
+						<p:spacer width="10px" />
+						<h:outputText value="Relazione di parentela*"
+							for="dropRelazioneParentela"
+							rendered="#{!anagraficaController.selectedAnagrafica.flgReferente}" />
+						<p:spacer width="5px" />
+						<p:selectOneMenu label="Relazione di parentela con il referente*"
+							id="dropRelazioneParentela"
+							value="#{anagraficaController.selectedAnagrafica.idParentela}"
+							rendered="#{!anagraficaController.selectedAnagrafica.flgReferente}"
+							style="vertical-align:middle" effect="fold" editable="false"
+							filter="true"
+							valueChangeListener="#{anagraficaController.onGradoParentelaChange}">
+							<f:selectItem itemLabel="- seleziona -" itemValue="" />
+							<f:selectItems value="#{anagraficaController.lstParentela}" />
+						</p:selectOneMenu>
+
+
+
+					</h:panelGrid>
+				</p:fieldset>
+
+			</h:panelGrid>
+		</p:tab>
+		<p:tab title="Villaggio - Area">
+			<h:panelGrid columns="8" columnClasses="label, value" id="pnlVill"
+				style=" width:100%;">
+				<p:fieldset legend="Villaggio"
+					style="display: inline-block; vertical-align: top; width:100%;">
+					<h:panelGrid columns="8" columnClasses="label, value"
+						id="pnlVillgaggio">
+						<h:outputText value="Villaggio attrezzato/tollerato*"
+							for="villaggio" />
+						<p:selectOneMenu label="Villaggio attrezzato/tollerato*"
+							id="villaggio"
+							value="#{anagraficaController.selectedAnagrafica.struttura.id}"
+							style="vertical-align:middle" effect="fold" editable="false"
+							filter="true">
+							<f:selectItem itemLabel="- seleziona -" itemValue="" />
+							<f:selectItems value="#{anagraficaController.strutture.values()}"
+								var="itm" itemLabel="#{itm.nomeStruttura}" itemValue="#{itm.id}" />
+							<p:ajax event="change" partialSubmit="true"
+								listener="#{anagraficaController.onChangeCmbxVillaggio}"
+								update=" @(.updateOnVillaggioChange)" process="@this" />
+						</p:selectOneMenu>
+						<h:outputText value="Area" for="area" />
+						<p:selectOneMenu label="Area" id="area"
+							value="#{anagraficaController.selectedAnagrafica.idAreaStruttura}"
+							style="vertical-align:middle" effect="fold" editable="false"
+							filter="true" styleClass="#{'updateOnVillaggioChange'}">
+							<f:selectItem itemLabel="- seleziona -" itemValue="" />
+							<f:selectItems value="#{anagraficaController.aree.values()}"
+								var="itmA" itemLabel="#{itmA.descrizione}"
+								itemValue="#{itmA.id}" />
+						</p:selectOneMenu>
+						<h:outputText value="Numero Unità Abitativa*" for="unitaAbitativa" />
+						<p:inputText id="unitaAbitativa"
+							value="#{anagraficaController.selectedAnagrafica.unitaAbitativa}"
+							valueChangeListener="#{anagraficaController.onUnitaAbitativaChange}">
+						</p:inputText>	
+						<p:graphicImage id="infoUnitaAbitativa" value="/images/info_small.png" title="Inserire unità abitativa senza spazi. separare più unità abitative con la virgola (,) " style="vertical-align:center;"/>
+					</h:panelGrid>
+				</p:fieldset>
+
+			</h:panelGrid>
+		</p:tab>
+		<p:tab title="Formazione-Lavoro">
+			<h:panelGrid columns="8" columnClasses="label, value"
+				id="pnlCondLavorativa" style=" width:100%;">
+				<p:fieldset legend="Formazione-Lavoro"
+					style="display: inline-block; vertical-align: top; width:100%;">
+					<h:panelGrid columns="8" columnClasses="label, value"
+						id="pnlFormazioneLavoro">
+						<h:outputText value="Titolo di studio " />
+						<p:selectOneMenu
+							value="#{anagraficaController.selectedAnagrafica.idTitoloStudio}"
+							style="width:300px"
+							valueChangeListener="#{anagraficaController.onTitoloStudioChange}">
+							<f:selectItems value="#{anagraficaController.lstTitoliStudio}" />
+						</p:selectOneMenu>
+						<h:outputText id="txtNazioneTitStudio" value="Conseguito in" />
+						<p:autoComplete id="txtAutocompleteNazioneTitStudio"
+							maxResults="10"
+							value="#{anagraficaController.selectedAnagraficaStatoTitoloConseguito}"
+							completeMethod="#{anagraficaController.completaLstNazioni}"
+							var="nazioneTitVar" itemLabel="#{nazioneTitVar.nazione}"
+							itemValue="#{nazioneTitVar}"
+							converter="amTabNazioniConverter"
+							style="vertical-align:middle">
+							<p:ajax event="itemSelect"
+								listener="#{anagraficaController.onStatoTitoloStudioChange}"
+								update="txtprovDomicilioCod  slcMunicipioDomicilio" />
+							</p:autoComplete>							
+					</h:panelGrid>
+
+					<h:panelGrid columns="8">
+						<h:outputText value="Condizione Lavorativa "
+							style="display: block; width: 100px;" />
+						<p:selectOneMenu label="Condizione Lavorativa" id="condLav"
+							value="#{anagraficaController.selectedAnagrafica.idCondizioneLavorativa}"
+							effect="fold" editable="false" style="width:300px"
+							valueChangeListener="#{anagraficaController.onCondizioneLavorativaChange}">
+							<f:selectItems value="#{anagraficaController.lstConLavorativa}"
+								var="cl" itemLabel="#{cl.descrizione}" itemValue="#{cl}" />
+						</p:selectOneMenu>
+
+						<h:outputText
+							value="Ordine di scuola a cui è iscritto alla data di insediamento " />
+						<p:selectOneMenu
+							value="#{anagraficaController.selectedAnagrafica.idOrdineScuola}"
+							style="width:300px"
+							valueChangeListener="#{anagraficaController.onOrdineScuolaChange}">
+							<f:selectItem itemLabel="- seleziona -" itemValue="" />
+							<f:selectItems value="#{anagraficaController.listaTipiScuola}" />
+						</p:selectOneMenu>
+					</h:panelGrid>
+
+				</p:fieldset>
+			</h:panelGrid>
+		</p:tab>
+		<p:tab title="Vulnerabilità">
+			<h:panelGrid columns="8" columnClasses="label, value" style=" width:95%;">
+				<p:fieldset legend="Vulnerabilità"
+					style="display: inline-block; vertical-align: top; width:100%;">
+					<h:panelGrid columns="4" columnClasses="label, value" id="pnlVulnerabilita">
+						<h:outputText value="Eventuali Vulnerabilità associate all'utente" for="vulnerabilita" />
+						<p:selectOneMenu
+							label="Eventuali Vulnerabilità associate all'utente"
+							id="vulnerabilita"
+							value="#{anagraficaController.selectedAnagrafica.idVulnerabilita}"
+							style="vertical-align:middle" effect="fold" editable="false"
+							filter="true"
+							valueChangeListener="#{anagraficaController.onGruppoVulnerabileChange}">
+							<f:selectItem itemLabel="- seleziona -" itemValue="" />
+							<f:selectItems value="#{anagraficaController.listaGruppoVulnerabile}" />
+						</p:selectOneMenu>
+					</h:panelGrid>
+				</p:fieldset>
+			</h:panelGrid>
+			<p:spacer height="20" width="100%" />
+		</p:tab>
+		<p:tab title="Documento">
+			<h:panelGrid columns="8" columnClasses="label, value" style=" width:100%;">
+				<p:fieldset legend="Documento"
+					style="display: inline-block; vertical-align: top; width:100%;">
+					<p:spacer height="2" />
+					<h:panelGrid columns="7" columnClasses="label, value" id="pnlDocumento1">
+						<h:outputText value="Tipo Documento" />
+						<p:selectOneMenu label="Tipo Documento" id="slcTipoDocumento"
+							style="vertical-align:middle" effect="fold" editable="false"
+							filter="true"
+							value="#{anagraficaController.documentoController.nuovoDocumentoIdTipologiaDocumento}">
+							<f:selectItem itemLabel="- seleziona -" itemValue="" />
+							<f:selectItems value="#{anagraficaController.lstTipoDocumento}" />
+						</p:selectOneMenu>
+						<h:outputText value="Numero Documento" />
+						<p:inputText id="txtNumeroDocumento" value="#{anagraficaController.documentoController.nuovoDocumentoNumeroDocumento}"/>						
+						<h:outputText value="Data Scadenza" />
+						<p:calendar id="dataScadenza"
+						    value="#{anagraficaController.documentoController.nuovoDocumentoDataScadenza}"							
+							pattern="dd/MM/yyyy" placeholder="dd/MM/yyyy" size="15"
+							validatorMessage="La data inserita non è valida" navigator="true"
+							yearRange="c-100:c+10">
+						</p:calendar>
+
+						<p:commandButton id="btnAggiungiDocumento"
+							value="Aggiungi"
+							actionListener="#{anagraficaController.documentoController.aggiungiDocumento()}" process="pnlDocumento1" update="dtDocumenti frmMessages" />
+					</h:panelGrid>
+					<p:dataTable id="dtDocumenti" var="rowDocumento"
+						rowIndexVar="rowKeyDoc" emptyMessage="Nessun elemento presente"
+						value="#{anagraficaController.documentoController.elencoDocumenti}">
+						<f:facet name="header">Documenti</f:facet>
+						<p:column headerText="Tipo Documento" width="50">
+							<h:outputText
+								value="#{anagraficaController.readTipoDocumento(rowDocumento.idTipologiaDocumento)}">
+							</h:outputText>
+						</p:column>
+						<p:column headerText="Numero documento" width="50">
+							<h:outputText value="#{rowDocumento.numeroDocumento}">
+							</h:outputText>
+						</p:column>
+						<p:column headerText="Data Scadenza" width="10">
+							<h:outputText value="#{rowDocumento.dataScadenza}">
+								<f:convertDateTime pattern="dd/MM/yyyy" />
+							</h:outputText>
+						</p:column>
+						<p:column headerText="" width="50">
+							<p:commandButton id="cmdButtonDocumento" process="@this"
+								value="Elimina" update="dtDocumenti"
+								action="#{anagraficaController.documentoController.eliminaDocumento()}"
+								style="width:90%">
+								<f:setPropertyActionListener value="#{rowDocumento}"
+									target="#{anagraficaController.documentoController.selectedDocumento}" />
+							</p:commandButton>
+						</p:column>
+
+					</p:dataTable>
+				</p:fieldset>
+			</h:panelGrid>
+		</p:tab>
+	</p:accordionPanel>
+	<table border="0" width='100%'>
+		<tr>
+			<td><p:spacer height="20" /></td>
+		</tr>
+		<tr>
+			<td style="text-align: center;">
+			<p:commandButton id="cmdSalva" value="Salva" actionListener="#{anagraficaController.salva()}" update="@form frmMessages"/> 
+	        
+				<p:spacer width="15px;" /> <p:spacer width="15px;" /> 
+				<p:commandButton
+					value="Esci" onclick="PF('confermaEsciAnagrafica').show()" /></td>
+		</tr>
+	</table>
+	<p:confirmDialog header="Conferma uscita"
+		widgetVar="confermaEsciAnagrafica" severity="alert" closable="false"
+		message="I dati non salvati saranno persi: continuare?">
+		<p:panelGrid style="width: 100%;">
+			<p:row>
+				<p:column style="text-align:center;">
+					<p:commandButton value="SI"
+						onclick="PF('confermaEsciAnagrafica').hide()"
+						action="#{anagraficaController.chiudiDettaglioEtornaAgriglia()}" process="@this"
+						update="@form" />
+
+					<p:commandButton value="NO"
+						onclick="PF('confermaEsciAnagrafica').hide();" type="button" />
+				</p:column>
+			</p:row>
+		</p:panelGrid>
+	</p:confirmDialog>
+
+</p:outputPanel>
+
+</html>

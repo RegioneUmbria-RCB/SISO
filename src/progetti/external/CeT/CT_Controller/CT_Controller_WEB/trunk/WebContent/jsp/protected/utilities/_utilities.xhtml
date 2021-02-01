@@ -1,0 +1,188 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich">
+
+<ui:composition template="/jsp/protected/layout/layout.xhtml">
+
+	<ui:define name="content">
+
+		<!-- LOG PAGE -->
+		<a4j:include id="utilitiesLogPage" viewId="#{utBean.utilitiesLogPage}" />
+
+		<rich:separator lineType="solid" />
+		<rich:panel>
+			<h:form>
+				<rich:panelBar width="100%" id="pb"
+					selectedPanel="#{utBean.selectedPanelBar}">
+					<a4j:support event="onitemchange" action="#{utBean.panelBarChanged}" />
+					<rich:panelBarItem id="pbCalcHash" label="Ricalcola Hash">
+						<a4j:support event="onenter" reRender="pgRicHashParam">
+							<a4j:actionparam name="idfunct" value="#{utBean.f_RIC_HASH}"
+								assignTo="#{utBean.funzioneCorrente}" />
+						</a4j:support>
+						<rich:spacer height="10px" />
+						
+					
+						<h:panelGrid columns="7" width="70%" id="pgRicHashParam">
+				
+								<h:panelGroup>
+									<h:outputLabel value="Ente" />
+									<rich:spacer width="5px"></rich:spacer>
+									<h:selectOneMenu id="txtEnte_1"
+										value="#{utBean.enteSelezionato}">
+										<f:selectItems value="#{utBean.listaEnti}" />
+									</h:selectOneMenu>
+								</h:panelGroup>
+
+								<h:panelGroup rendered="false">
+									<h:outputLabel value="Tipo Connessione" />
+									<rich:spacer width="5px"></rich:spacer>
+									<h:selectOneMenu id="connessione_1"
+										value="#{utBean.connessioneSelezionata}">
+										<f:selectItems value="#{utBean.listaTipoConnessioni}" />
+									</h:selectOneMenu>
+								</h:panelGroup>
+								
+								<h:panelGroup>
+									<h:outputLabel value="Tabella" />
+									<rich:spacer width="5px"></rich:spacer>
+									<h:inputText id="txtTab_1" value="#{utBean.tabellaSelezionata}"
+										label="Tabella" />
+								</h:panelGroup>
+								
+								<h:panelGroup>
+
+									<a4j:commandButton value="Calcola" id="btnCalcola" styleClass="button" action="#{utBean.doRicalcolaHash}">
+										<a4j:support event="oncomplete" reRender="semaforo"/>
+									</a4j:commandButton>
+
+									<rich:spacer width="15px" />
+
+								</h:panelGroup>
+
+							<h:graphicImage rendered="true" value="/images/refresh.png"
+								title="Aggiorna" height="16px"
+								style="cursor:pointer; padding-right: 10px;">
+								<a4j:support event="onclick"
+									action="#{utBean.doCaricaLastStatoFunzione}"
+									reRender="semaforo">
+								</a4j:support>
+							</h:graphicImage>
+
+							<h:panelGroup id="semaforo" rendered="true">
+								<h:graphicImage width="20px"
+									rendered="#{utBean.statoFunzioneCorrente eq '124'}"
+									value="/images/greencircle.png" style="padding-right: 5px;"
+									title="Elaborazione conclusa correttamente" />
+								<h:graphicImage width="20px"
+									rendered="#{utBean.statoFunzioneCorrente eq '126'}"
+									value="/images/yellowcircle.png" style="padding-right: 5px;"
+									title="In esecuzione" />
+								<h:graphicImage width="20px"
+									rendered="#{utBean.statoFunzioneCorrente eq '125'}"
+									value="/images/redcircle.png" style="padding-right: 5px;"
+									title="Elaborazione conclusa con errori" />
+							</h:panelGroup>
+
+							<a4j:commandLink action="#{utBean.doCaricaLog}"
+								reRender="utilitiesLogPage" title="Visualizza Log"
+								oncomplete="Richfaces.showModalPanel('utilitiesLogModalBox'); return false;">
+								<h:outputText value="Visualizza Log" />
+								<a4j:actionparam name="pageutlog"
+									value="/jsp/protected/utilities/utilitiesLog.xhtml"
+									assignTo="#{utBean.utilitiesLogPage}" />
+							</a4j:commandLink>
+
+						</h:panelGrid>
+						
+					</rich:panelBarItem>
+
+					<rich:panelBarItem id="pbSvuotaTabella" label="Svuota Tabella">
+						<a4j:support event="onenter" reRender="pgEmptyTbl">
+							<a4j:actionparam name="idfunct" value="#{utBean.f_EMPTY_TABLE}"
+								assignTo="#{utBean.funzioneCorrente}" />
+						</a4j:support>
+						<rich:spacer height="10px" />
+						
+						<h:panelGrid columns="7" width="70%" id="pgEmptyTbl">
+
+								<h:panelGroup>
+									<h:outputLabel value="Ente" />
+									<rich:spacer width="5px"></rich:spacer>
+									<h:selectOneMenu id="txtEnte_2"
+										value="#{utBean.enteSelezionato}">
+										<f:selectItems value="#{utBean.listaEnti}" />
+									</h:selectOneMenu>
+								</h:panelGroup>
+
+								<h:panelGroup>
+									<h:outputLabel value="Tipo Connessione" />
+									<rich:spacer width="5px"></rich:spacer>
+									<h:selectOneMenu id="connessione_2" label="Connessione"
+										value="#{utBean.connessioneSelezionata}">
+										<f:selectItems value="#{utBean.listaTipoConnessioni}" />
+									</h:selectOneMenu>
+								</h:panelGroup>
+								<h:panelGroup>
+									<h:outputLabel value="Tabella" />
+									<rich:spacer width="5px"></rich:spacer>
+									<h:inputText id="txtTab_2" value="#{utBean.tabellaSelezionata}"
+										label="Tabella" />
+								</h:panelGroup>
+								<h:panelGroup>
+
+									<a4j:commandButton value="Elabora" id="btnEmptyTbl"
+										reRender="pgEmptyTbl" styleClass="button"
+										action="#{utBean.doSvuotaTabella}">
+									</a4j:commandButton>
+
+									<rich:spacer width="15px" />
+
+								</h:panelGroup>
+
+							<h:graphicImage rendered="true" value="/images/refresh.png"
+								title="Aggiorna" height="16px"
+								style="cursor:pointer; padding-right: 10px;">
+								<a4j:support event="onclick"
+									action="#{utBean.doCaricaLastStatoFunzione}"
+									reRender="pgEmptyTbl">
+								</a4j:support>
+							</h:graphicImage>
+
+							<h:panelGroup id="semaforo_2" rendered="true">
+								<h:graphicImage width="20px"
+									rendered="#{utBean.statoFunzioneCorrente eq '124'}"
+									value="/images/greencircle.png" style="padding-right: 5px;"
+									title="Elaborazione conclusa correttamente" />
+								<h:graphicImage width="20px"
+									rendered="#{utBean.statoFunzioneCorrente eq '126'}"
+									value="/images/yellowcircle.png" style="padding-right: 5px;"
+									title="In esecuzione" />
+								<h:graphicImage width="20px"
+									rendered="#{utBean.statoFunzioneCorrente eq '125'}"
+									value="/images/redcircle.png" style="padding-right: 5px;"
+									title="Elaborazione conclusa con errori" />
+							</h:panelGroup>
+
+							<a4j:commandLink action="#{utBean.doCaricaLog}"
+								reRender="utilitiesLogPage" title="Visualizza Log"
+								oncomplete="Richfaces.showModalPanel('utilitiesLogModalBox'); return false;">
+								<h:outputText value="Visualizza Log" />
+								<a4j:actionparam name="pageutlog"
+									value="/jsp/protected/utilities/utilitiesLog.xhtml"
+									assignTo="#{utBean.utilitiesLogPage}" />
+							</a4j:commandLink>
+							
+						</h:panelGrid>
+					</rich:panelBarItem>
+				</rich:panelBar>
+				
+			</h:form>
+		</rich:panel>
+	</ui:define>
+</ui:composition>
+</html>

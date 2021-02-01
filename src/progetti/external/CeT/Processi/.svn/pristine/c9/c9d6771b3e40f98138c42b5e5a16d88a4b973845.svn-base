@@ -1,0 +1,32 @@
+#------------------------------------------------------------
+# File di config della regola
+#------------------------------------------------------------
+rengine.rule.class=it.webred.rulengine.diagnostics.avviso.DiaAvvisoRule
+rengine.rule.cc=RDIAAVVISO
+rengine.rule.number.params.in=2
+rengine.rule.number.params.out=0
+#--------------------------------------------------------------------------
+# parametri di input: rispecchiano i valori del db sia nel type che nel descr
+#--------------------------------------------------------------------------
+rengine.rule.param.in.1.type=java.lang.String
+rengine.rule.param.in.2.type=java.lang.String
+rengine.rule.param.in.1.descr=OGGETTO
+rengine.rule.param.in.2.descr=BODY
+-------------------------
+# parametri di output
+#------------------------------------------------------------
+#rengine.rule.param.out.1.type=java.lang.String
+#rengine.rule.param.out.2.type=java.lang.String
+#rengine.rule.param.out.3.type=java.lang.String
+#rengine.rule.param.out.4.type=java.lang.String
+#rengine.rule.param.out.5.type=java.lang.String
+#rengine.rule.param.out.6.type=java.lang.String
+#rengine.rule.param.out.1.descr=SERVER
+#rengine.rule.param.out.2.descr=PORT
+#rengine.rule.param.out.3.descr=MITTENTE
+#rengine.rule.param.out.4.descr=DESTINATARIO
+#rengine.rule.param.out.5.descr=SOGGETTO
+#rengine.rule.param.out.6.descr=MESSAGGIO
+#------------------------------------------------------------
+# Definizioni costanti o proprietà aggiuntive della regola
+#------------------------------------------------------------	
