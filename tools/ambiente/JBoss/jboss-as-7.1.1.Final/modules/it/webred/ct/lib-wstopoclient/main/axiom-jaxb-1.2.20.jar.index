@@ -1,0 +1,15 @@
+
+META-INF/maven
+org/apache/axiom
+org/apache/axiom/om/util
+org
+META-INF
+org/apache/axiom/util/jaxb
+org/apache
+META-INF/maven/org.apache.ws.commons.axiom
+org/apache/axiom/om/util/jaxb
+org/apache/axiom/util
+org/apache/axiom/om/ds
+META-INF/maven/org.apache.ws.commons.axiom/axiom-jaxb
+org/apache/axiom/om
+org/apache/axiom/om/ds/jaxb

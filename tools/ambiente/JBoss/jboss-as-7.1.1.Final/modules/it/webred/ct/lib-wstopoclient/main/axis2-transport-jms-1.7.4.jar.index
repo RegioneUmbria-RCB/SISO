@@ -1,0 +1,12 @@
+org/apache/axis2/transport/jms
+
+org/apache/axis2/transport/jms/ctype
+META-INF/maven/org.apache.axis2
+org/apache/axis2
+org/apache/axis2/transport/jms/iowrappers
+org/apache
+org/apache/axis2/transport
+META-INF/maven
+META-INF/maven/org.apache.axis2/axis2-transport-jms
+org
+META-INF

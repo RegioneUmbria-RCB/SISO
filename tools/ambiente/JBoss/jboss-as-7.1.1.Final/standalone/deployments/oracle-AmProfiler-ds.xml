@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- ===================================================================== -->
+<!--                                                                       -->
+<!--  JBoss Server Configuration                                           -->
+<!--                                                                       -->
+<!-- ===================================================================== -->
+
+<!-- See http://www.jboss.org/community/wiki/Multiple1PC for information about local-tx-datasource -->
+<!-- $Id: oracle-ds.xml 88948 2009-05-15 14:09:08Z jesper.pedersen $ -->
+<!-- ==================================================================== -->
+<!--  Datasource config for Oracle originally from Steven Coy             -->
+<!-- ==================================================================== -->
+
+
+<datasources xmlns="http://www.jboss.org/ironjacamar/schema">
+
+
+<datasource jndi-name="java:/AMProfiler" pool-name="amDS">
+      <connection-url>jdbc:oracle:thin:@172.16.2.61:1521:DBCAT</connection-url>
+      <driver>oracle</driver>
+	   <security>
+			<user-name>AM_F704_GIT</user-name>
+			<password>AM_F704_GIT</password>
+	   </security>
+</datasource>
+
+<!--	
+	<xa-datasource jndi-name="java:/AMProfiler" pool-name="amDS">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@172.16.2.61:1521:DBCAT</xa-datasource-property>
+	   <security>
+			<user-name>AM_F704_GIT</user-name>
+			<password>AM_F704_GIT</password>
+	   </security>
+    </xa-datasource>
+-->
+	
+</datasources>

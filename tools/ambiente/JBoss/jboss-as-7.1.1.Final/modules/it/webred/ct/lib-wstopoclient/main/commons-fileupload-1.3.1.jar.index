@@ -1,0 +1,14 @@
+
+META-INF/maven/commons-fileupload
+org/apache/commons
+org/apache/commons/fileupload/disk
+META-INF/maven
+org
+org/apache/commons/fileupload/servlet
+META-INF
+org/apache/commons/fileupload/util
+org/apache
+org/apache/commons/fileupload/portlet
+org/apache/commons/fileupload/util/mime
+org/apache/commons/fileupload
+META-INF/maven/commons-fileupload/commons-fileupload
