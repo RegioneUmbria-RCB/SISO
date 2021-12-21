@@ -117,7 +117,7 @@ public class AccessTableSchedaSegrSessionBean extends CarSocialeBaseSessionBean 
 	}
 	
 	@Override
-	public Integer getSchedeSegrCount(SchedaSegrDTO dto) {
+	public Integer getSchedeSegrCount(SchedaSegrDTO dto) throws Throwable {
 		return schedaSegrDao.getSchedeSegrCount(dto.isOnlyNew(), dto);
 	}
 	

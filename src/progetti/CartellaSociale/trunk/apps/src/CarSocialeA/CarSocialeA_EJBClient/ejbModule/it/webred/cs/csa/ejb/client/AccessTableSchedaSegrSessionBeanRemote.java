@@ -33,7 +33,7 @@ public interface AccessTableSchedaSegrSessionBeanRemote {
 
 	public List<DatiSchedaAccessoDTO> getSchedeSegr(SchedaSegrDTO dto) throws Throwable;
 	
-	public Integer getSchedeSegrCount(SchedaSegrDTO dto);
+	public Integer getSchedeSegrCount(SchedaSegrDTO dto) throws Throwable;
 
 	public void updateSchedaSegr(BaseDTO dto);
 	

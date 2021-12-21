@@ -137,14 +137,18 @@ public class SchedaSegrDAO extends CarSocialeBaseDAO implements Serializable {
 		return lst;
 	}
 	
-	public Integer getSchedeSegrCount(boolean onlyNew,SchedaSegrDTO criteria) {
-		
+	public Integer getSchedeSegrCount(boolean onlyNew,SchedaSegrDTO criteria) throws Throwable{
 		criteria.setOnlyNew(onlyNew);
-		
+		try{
 		String query = getQuery(true, criteria);
+		logger.debug("getSchedeSegrCount SQL["+query+"]");
 		Query q = em.createNativeQuery(query);
 		BigDecimal o = (BigDecimal) q.getSingleResult();
 		return new Integer(o.intValue());
+		}catch(Throwable e){
+			logger.error(e.getMessage(), e);
+			throw e;
+		}
 	}
 	
 	private String getQuery(boolean count, SchedaSegrDTO criteria) {
