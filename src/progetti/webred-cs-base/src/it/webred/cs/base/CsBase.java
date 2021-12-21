@@ -1,6 +1,7 @@
 package it.webred.cs.base;
 
 import it.webred.cs.data.DataModelCostanti;
+import it.webred.cs.data.DataModelCostanti.AmParameterKey;
 import it.webred.ct.config.model.AmKeyValueExt;
 import it.webred.ct.config.parameters.ParameterService;
 import it.webred.ct.config.parameters.dto.ParameterSearchCriteria;
@@ -24,6 +25,7 @@ import org.jboss.logging.Logger;
 public class CsBase {
 	
 	public static final SimpleDateFormat ddMMyyyy = new SimpleDateFormat("dd/MM/yyyy");
+	public static final SimpleDateFormat yyyyMMdd = new SimpleDateFormat("yyyy-MM-dd");
 	protected static Logger logger = Logger.getLogger("carsociale.log");
 	protected static ParameterService paramService = (ParameterService) getEjb("CT_Service", "CT_Config_Manager", "ParameterBaseService");
 	
@@ -35,6 +37,30 @@ public class CsBase {
 			url=null;
 		}
 		return url;
+	}
+	
+	public class CredenzialiIseeWS{
+		private String username;
+		private String ufficio;
+		private String ente;
+		public String getUsername() {
+			return username;
+		}
+		public void setUsername(String username) {
+			this.username = username;
+		}
+		public String getUfficio() {
+			return ufficio;
+		}
+		public void setUfficio(String ufficio) {
+			this.ufficio = ufficio;
+		}
+		public String getEnte() {
+			return ente;
+		}
+		public void setEnte(String ente) {
+			this.ente = ente;
+		}
 	}
 	
 	public class CredenzialiWS {
@@ -82,11 +108,30 @@ public class CsBase {
 		return null;
 	}
 
+	protected CredenzialiIseeWS getCredenzialiIseeWS() {
+		
+		String username = this.getGlobalParameter(AmParameterKey.WS_ISEE_USERNAME);
+		String ufficio = this.getGlobalParameter(AmParameterKey.WS_ISEE_UFFICIO);
+		String ente = this.getGlobalParameter(AmParameterKey.WS_ISEE_ENTE);
+		
+		CredenzialiIseeWS ars  = null;
+		if(!StringUtils.isBlank(username) && !StringUtils.isBlank(ufficio) && !StringUtils.isBlank(ente)){
+			ars = new CredenzialiIseeWS();
+			ars.setUsername(username);
+			ars.setUfficio(ufficio);
+			ars.setEnte(ente);
+		}else{
+			logger.warn("Credenziali WS ISEE non definite");
+		}
+		
+	
+		return ars;
+	}
+
 	
 	
 	protected String getGlobalParameter(String paramName) {
-		ParameterService paramService = (ParameterService) getEjb("CT_Service","CT_Config_Manager" , "ParameterBaseService");
-	    ParameterSearchCriteria criteria = new ParameterSearchCriteria();
+		ParameterSearchCriteria criteria = new ParameterSearchCriteria();
 		criteria.setKey(paramName);
 		criteria.setComune(null);
 		criteria.setSection(null);
@@ -111,9 +156,18 @@ public class CsBase {
 	}
 	
 
+	public boolean isRicercaIseeAbilitata(){
+		return "1".equalsIgnoreCase(this.getGlobalParameter(DataModelCostanti.AmParameterKey.WS_ISEE_ABILITA));
+	}
+	
 	public boolean isAnagrafeSanitariaUmbriaAbilitata(){
 		List<String> s = getTipoRicercaAbilitata();
 		return s.contains(DataModelCostanti.TipoRicercaSoggetto.ANAG_SANITARIA_UMBRIA);
+	}
+	
+	public boolean isAnagrafeComunaleInternaAbilitata(){
+		List<String> s = getTipoRicercaAbilitata();
+		return s.contains(DataModelCostanti.TipoRicercaSoggetto.DEFAULT);
 	}
 	
 	protected List<String> getTipoRicercaAbilitata(){
@@ -135,13 +189,23 @@ public class CsBase {
 		
 	}
 	
+	public URL getISEEDichiarazioneEndpointURL() {
+		String urlString = this.getISEEURL();
+		return urlString!=null ? stringToUrl(urlString) : null;
+	}
+	
 	public URL getAnagrafeWSDLLocationURL() {
 		String urlString = getAnagrafeWSDLLocation();
 		return urlString!=null ? stringToUrl(urlString) : null;
 	}
 	
+	public String getISEEURL(){
+		return getGlobalParameter(DataModelCostanti.AmParameterKey.WS_ISEE_URL);
+	}
+	
 	public String getAnagrafeWSDLLocation(){
 		return getGlobalParameter(DataModelCostanti.AmParameterKey.WS_RICERCA_URL);
+		//return getGlobalParameter(DataModelCostanti.AmParameterKey.KEY_URL_SSOCIALI);
 	}
 
 	public CredenzialiWS getCredenzialiWS() {
