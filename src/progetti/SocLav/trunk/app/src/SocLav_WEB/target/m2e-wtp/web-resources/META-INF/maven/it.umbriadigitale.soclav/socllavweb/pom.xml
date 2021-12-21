@@ -12,7 +12,7 @@
 		<maven.compiler.target>9</maven.compiler.target>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<springframework.version>4.3.5.RELEASE</springframework.version>
-		<springsecurity.version>4.2.1.RELEASE</springsecurity.version>
+		<springsecurity.version>5.2.10.RELEASE</springsecurity.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<adminfaces.version>1.1.0</adminfaces.version>
 		<jersey2.version>2.19</jersey2.version>
