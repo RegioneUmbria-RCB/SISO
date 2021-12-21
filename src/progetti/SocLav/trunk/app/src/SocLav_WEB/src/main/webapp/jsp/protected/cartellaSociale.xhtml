@@ -1,0 +1,48 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:webred="http://java.sun.com/jsf/composite/webred"
+	xmlns:webredcs="http://java.sun.com/jsf/composite/webredcs">
+
+
+	<p:dataTable id="tblCasi" value="#{carSocialeManBean.lstCartelleSociali}" var="cs" 
+				 rendered="#{not empty carSocialeManBean.lstCartelleSociali and carSocialeManBean.render}" 
+				 emptyMessage="Non ci sono cartelle sociale per il soggetto nel comune di residenza">
+		<f:facet name="header">Cartella Sociale</f:facet>
+		<p:column headerText="Cognome e nome">
+			<p:outputLabel value="#{cs.cognome} #{cs.nome}"/>
+		</p:column>
+		<p:column headerText="Cod.fiscale" style="text-align:center;">
+			<p:outputLabel value="#{cs.cf}"/>
+		</p:column>
+		<p:column headerText="Data nascita" style="text-align:center;">
+			<p:outputLabel value="#{cs.dataNascita}">
+				<f:convertDateTime pattern="dd/MM/yyyy"/>
+			</p:outputLabel>
+		</p:column>
+		<p:column headerText="Zona soc." style="text-align:center;">
+			<p:outputLabel value="#{cs.zonaSociale}"/>
+		</p:column>
+		<p:column headerText="Organizzazione">
+			<p:outputLabel value="#{cs.organizzazione}"/>
+		</p:column>
+		<p:column headerText="Settore">
+			<p:outputLabel value="#{cs.settore}"/>
+		</p:column>
+		<p:column headerText="Cat.sociale">
+			<p:outputLabel value="#{cs.categoriaSoc}"/>
+		</p:column>
+		<p:column headerText="Stato iter">
+			<p:outputLabel value="#{cs.statoIter}"/>
+		</p:column>
+		<p:column headerText="Data" style="text-align:center;">
+			<p:outputLabel value="#{cs.dataIter}">
+				<f:convertDateTime pattern="dd/MM/yyyy"/>
+			</p:outputLabel>
+		</p:column>
+	</p:dataTable>
+
+</html>

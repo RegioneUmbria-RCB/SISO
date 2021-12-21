@@ -13,6 +13,8 @@
 		<class>it.webred.cs.data.model.view.VSsSchedeUdcDiff</class>
 		<class>it.webred.cs.data.model.view.CsAmAnagraficaOperatore</class>
 		<class>it.webred.cs.data.model.view.CsRdcAnagraficaGepi</class>
+		<class>it.webred.cs.data.model.view.CsVistaPai</class>
+		<class>it.webred.cs.data.model.view.CsVistaFse</class>
 		
 		<class>it.webred.cs.data.model.CsAAnagrafica</class>
 		<class>it.webred.cs.data.model.CsAAnagraficaLog</class>
@@ -27,7 +29,6 @@
 		<class>it.webred.cs.data.model.CsACasoOpeTipoOpe2</class>
 		<class>it.webred.cs.data.model.CsAComponente</class>
 		<class>it.webred.cs.data.model.CsAComponenteGit</class>
-		<class>it.webred.cs.data.model.CsAContributi</class>
 		<class>it.webred.cs.data.model.CsADatiSociali</class>
 		<class>it.webred.cs.data.model.CsADatiInvalidita</class>
 		<class>it.webred.cs.data.model.CsADisabilita</class>
@@ -38,11 +39,9 @@
 		<class>it.webred.cs.data.model.persist.CsAlert</class>
 		<class>it.webred.cs.data.model.CsAlertBASIC</class>
 		<class>it.webred.cs.data.model.CsAlertConfig</class>
-		<class>it.webred.cs.data.model.CsAServizi</class>
 		<class>it.webred.cs.data.model.CsASoggettoLAZY</class>
 		<class>it.webred.cs.data.model.CsASoggettoCategoriaSoc</class>
 		<class>it.webred.cs.data.model.CsASoggettoCategoriaSocPK</class>
-		<class>it.webred.cs.data.model.CsASoggettoCategoriaSocLAZY</class>
 		<class>it.webred.cs.data.model.CsASoggettoMedico</class>
 		<class>it.webred.cs.data.model.CsASoggettoMedicoPK</class>
 		<class>it.webred.cs.data.model.CsASoggettoStatoCivile</class>
@@ -51,7 +50,6 @@
 		<class>it.webred.cs.data.model.CsASoggettoStatusPK</class>
 		<class>it.webred.cs.data.model.CsATribunale</class>
 		<class>it.webred.cs.data.model.CsCCategoriaSociale</class>
-		<class>it.webred.cs.data.model.CsCCategoriaSocialeBASIC</class>
 		<class>it.webred.cs.data.model.CsCComunita</class>
 		<class>it.webred.cs.data.model.CsDClob</class>
 		<class>it.webred.cs.data.model.CsCDiarioConchi</class>
@@ -89,13 +87,14 @@
 		<class>it.webred.cs.data.model.CsCfgIntEsegStato</class>
 		<class>it.webred.cs.data.model.CsCfgIntEsegStatoInt</class>
 		<class>it.webred.cs.data.model.CsCfgIntEsegAttUm</class>
+		<class>it.webred.cs.data.model.CsCfgBelfiore</class>
 
 		<class>it.webred.cs.data.model.CsCfgParametri</class>
 		<class>it.webred.cs.data.model.CsCfgParametriPK</class>
 		<class>it.webred.cs.data.model.CsCMedico</class>
 		<class>it.webred.cs.data.model.CsVMedico</class>
 		<class>it.webred.cs.data.model.CsCTipoIntervento</class>
-		<class>it.webred.cs.data.model.CsCInterventoPrForm</class>
+		<class>it.webred.cs.data.model.CsCfgIntPrForm</class>
 		<class>it.webred.cs.data.model.CsCTipoColloquio</class>
 		<class>it.webred.cs.data.model.CsFlgIntervento</class>
 		<class>it.webred.cs.data.model.CsIAdmAdh</class>
@@ -119,8 +118,6 @@
 		<class>it.webred.cs.data.model.CsISemiResiMin</class>
 		<class>it.webred.cs.data.model.CsICentrod</class>
 		<class>it.webred.cs.data.model.CsIBuonoSoc</class>
-		<class>it.webred.cs.data.model.CsItAggiornamento</class>
-		<class>it.webred.cs.data.model.CsItComunicazione</class>
 		<class>it.webred.cs.data.model.CsItStep</class>
 		<class>it.webred.cs.data.model.CsItStepLAZY</class>
 		<class>it.webred.cs.data.model.CsItStepAttrValue</class>
@@ -137,6 +134,8 @@
 		<class>it.webred.cs.data.model.CsOOperatoreSettoreBASIC</class>
 		<class>it.webred.cs.data.model.CsOOpsettoreAlertConfig</class>
 		<class>it.webred.cs.data.model.CsOOpsettoreAlertConfigPK</class>
+		<class>it.webred.cs.data.model.CsOOpsettoreAuthDownload</class>
+		<class>it.webred.cs.data.model.CsOOpsettoreAuthDownloadPK</class>
 		<class>it.webred.cs.data.model.CsOOperatoreTipoOperatore</class>
 		<class>it.webred.cs.data.model.CsOOperatoreTipoOperatoreBASIC</class>
 		<class>it.webred.cs.data.model.CsOOrganizzazione</class>
@@ -167,6 +166,7 @@
 		<class>it.webred.cs.data.model.CsTbDisabGravita</class>
 		<class>it.webred.cs.data.model.CsTbDisabTipologia</class>
 		<class>it.webred.cs.data.model.CsTbDisponibilita</class>
+		<class>it.webred.cs.data.model.CsTbDurataRicLavoro</class>
 		<class>it.webred.cs.data.model.CsTbEsenzioneRiduzione</class>
 		<class>it.webred.cs.data.model.CsTbGVulnerabile</class>
 		<class>it.webred.cs.data.model.CsTbIcd10</class>
@@ -188,6 +188,9 @@
 		<class>it.webred.cs.data.model.CsTbAssenzaPermesso</class> <!-- SISO-792 -->
 		<class>it.webred.cs.data.model.CsTbResponsabilita</class>
 		<class>it.webred.cs.data.model.CsTbScuola</class>
+		<class>it.webred.cs.data.model.CsTbScuolaAnno</class>
+		<class>it.webred.cs.data.model.CsTbScuolaAnnoPK</class>
+		<class>it.webred.cs.data.model.CsTbAnnoScolastico</class>
 		<class>it.webred.cs.data.model.CsTbServComunita</class>
 		<class>it.webred.cs.data.model.CsTbServLuogoStr</class>
 		<class>it.webred.cs.data.model.CsTbServResRetta</class>
@@ -226,6 +229,7 @@
 		<class>it.webred.cs.data.model.CsTbMicroIntervento</class>
 		<class>it.webred.cs.data.model.CsTbTribStruttura</class>
 		<class>it.webred.cs.data.model.CsTbTipoIsee</class>
+		<class>it.webred.cs.data.model.CsTbSsProvenienza</class>
 		
 		<class>it.webred.cs.data.model.CsTbSettoreImpiego</class>
 		<class>it.webred.cs.data.model.CsDColloquio</class>
@@ -243,11 +247,12 @@
 		<class>it.webred.cs.data.model.CsDPai</class>
 		<class>it.webred.cs.data.model.CsOZonaSoc</class>
 		<!-- Vista SSchedaSegr Filtro -->
-		<class>it.webred.cs.data.model.CsVistaCasiSS</class>
+		<class>it.webred.cs.data.model.CsSchedeAltraProvenienza</class> <!-- SISO-938 -->
 		<!-- tree Tipi Servizi -->
 		<class>it.webred.cs.data.model.VGerrarchiaServizi</class>
 		<class>it.webred.cs.data.model.CsCTipoInterventoCustom</class>
-		
+		<!-- SISO-1280 -->
+	 	<class>it.webred.cs.data.model.CsPaiMastSogg</class>
 		<class>it.webred.cs.data.model.CsIQuota</class>
 		<class>it.webred.cs.data.model.CsIRigaQuota</class>
 		<class>it.webred.cs.data.model.CsIValQuota</class>
@@ -263,8 +268,6 @@
 	 	<class>it.webred.cs.data.model.ArFfProgetto</class>				<!-- SISO-522 --> 
 	 	<class>it.webred.cs.data.model.ArFfProgettoAttivita</class>				<!-- SISO-790 --> 
 	 	<class>it.webred.cs.data.model.VErogExportHelp</class>				<!-- SISO-538 --> 
-	 	<class>it.webred.cs.data.model.ArFfProgettoOrg</class>					<!-- SISO-575 --> 
-	 	<class>it.webred.cs.data.model.ArOOrganizzazione</class>				<!-- SISO-575 -->
 	 	
 	 	<class>it.webred.cs.data.model.CsCfTemp</class>	
 	 	<class>it.webred.cs.data.model.CsMobileStaging</class>
@@ -280,7 +283,21 @@
 	 	<class>it.webred.cs.data.model.affido.CsPaiAffidoSoggetto</class>
 	 	<class>it.webred.cs.data.model.affido.CsTbPaiAffido</class>
 	 	<class>it.webred.cs.data.model.affido.CsTbPaiAffidoChiave</class>
-	 	
+	 	<!-- Minori-Inserimento in struttura -->
+	 	<class>it.webred.cs.data.model.pti.CsPaiPTI</class>
+	 	<class>it.webred.cs.data.model.pti.CsPaiPTIFase</class>
+	 	<class>it.webred.cs.data.model.pti.RichiestaDisponibilitaPaiPti</class>
+	 	<class>it.webred.cs.data.model.pti.InserimentoMinoreDaStruttura</class>
+	 	<class>it.webred.cs.data.model.pti.CsTbPaiPTIFase</class>
+	 	<class>it.webred.cs.data.model.TipoStruttura</class>
+	 	<class>it.webred.cs.data.model.pti.CsPaiPtiDocumento</class>
+	 	<class>it.webred.cs.data.model.CsRelSettoreStruttura</class>
+	 	<class>it.webred.cs.data.model.pti.InserimentoConsuntivazione</class>
+	 	<class>it.webred.cs.data.model.pti.CsPaiPTIRevisioni</class>
+	 	<class>it.webred.cs.data.model.pti.ArCsPaiInfoSintetiche</class>
+	 	<class>it.webred.cs.data.model.CsTbTipoMinore</class>
+	 	<class>it.webred.cs.data.model.ArRpTipologiaServizio</class>
+	 		
 	 	<!-- SISO-817 -->
 	 	<class>it.webred.cs.data.model.CsIInterventoPrFseSiru</class>
 
@@ -318,10 +335,28 @@
     	<!--  SISO-1278 -->
     	<class>it.webred.cs.data.model.CsAInvCiv</class>
     	
+    	<!--  SISO-1275 -->
+    	<class>it.webred.cs.data.model.CsPaiFaseChiusura</class>
+    	<class>it.webred.cs.data.model.CsPaiFaseChiusuraPK</class>
+    	<!--  SISO-1257 -->
+    	<class>it.webred.cs.data.model.sal.CsPaiSAL</class>
+    	<class>it.webred.cs.data.model.sal.CsPaiSALFase</class>
+    	<class>it.webred.cs.data.model.sal.CsTbPaiSal</class>
+    	<class>it.webred.cs.data.model.sal.CsTbPaiSalPK</class>
+    	<class>it.webred.cs.data.model.sal.CsPaiSalStorico</class>
+    	<class>it.webred.cs.data.model.CsDRelSal</class>
+
+        <!-- SISO-1305 -->
+    	<class>it.webred.cs.data.model.CsTbTipoExtraFse</class>
+    	<class>it.webred.cs.data.model.CsExtraFseMast</class> 
+		<class>it.webred.cs.data.model.CsExtraFseDatiLavoro</class>
+		<class>it.webred.cs.data.model.CsExtraFseSiru</class>
+    	
+    	<shared-cache-mode>ENABLE_SELECTIVE</shared-cache-mode>
 		<properties>
 			<!-- property name="hibernate.dialect" value="org.hibernate.dialect.Oracle9iDialect" / -->
 			<property name="hibernate.dialect" value="it.webred.ct.data.spatial.OracleSpatialDialect" />
-			<!-- <property name="hibernate.hbm2ddl.auto" value="update"/> -->
+			<!--<property name="hibernate.hbm2ddl.auto" value="update"/>-->
 			<property name="javax.persistence.validation.mode" value="NONE" />
 			<property name="hibernate.show_sql" value="false" />   <!-- RIMETTERE A TRUE PER VISUALIZZARE IL LOG -->
 			<property name="hibernate.format_sql" value="false" /> <!-- RIMETTERE A TRUE PER VISUALIZZARE IL LOG -->
@@ -329,10 +364,11 @@
    			<property name="hibernate.cache.use_second_level_cache" value="true"/>
    			<property name="hibernate.cache.region.factory_class" value="org.jboss.as.jpa.hibernate4.infinispan.InfinispanRegionFactory"/>   -->           
 			<property name="hibernate.transaction.jta.platform" value="org.hibernate.service.jta.platform.internal.JBossAppServerJtaPlatform" />
-			
+			<property name="hibernate.cache.use_second_level_cache" value="true"/>
+ 			<property name="hibernate.cache.use_minimal_puts" value="true"/>
 			
 			<!-- logga statistiche di esecuzione query a livello DEBUG su category org.hibernate.stat -->
-			<property name="hibernate.generate_statistics" value="true" />
+			<property name="hibernate.generate_statistics" value="false" />
 			
 		</properties>
 	</persistence-unit>

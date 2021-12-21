@@ -70,9 +70,6 @@ public class VErogExportHelp implements Serializable {
 	@Column(name="FLAG_CARATTERE_PRESTAZIONE")
 	private String flagCaratterePrestazione;
 
-	@Column(name="FLAG_COMPART_CALC")
-	private BigDecimal flagCompartCalc;
-
 	@Column(name="FLAG_EROGAZIONE_CHIUSA")
 	private String flagErogazioneChiusa;
 
@@ -259,14 +256,6 @@ public class VErogExportHelp implements Serializable {
 
 	public void setFlagCaratterePrestazione(String flagCaratterePrestazione) {
 		this.flagCaratterePrestazione = flagCaratterePrestazione;
-	}
-
-	public BigDecimal getFlagCompartCalc() {
-		return this.flagCompartCalc;
-	}
-
-	public void setFlagCompartCalc(BigDecimal flagCompartCalc) {
-		this.flagCompartCalc = flagCompartCalc;
 	}
 
 	public String getFlagErogazioneChiusa() {

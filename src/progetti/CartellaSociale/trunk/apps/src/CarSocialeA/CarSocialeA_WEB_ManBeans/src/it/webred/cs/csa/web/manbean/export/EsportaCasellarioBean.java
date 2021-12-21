@@ -11,11 +11,15 @@ import it.webred.cs.csa.ejb.dto.ErogazioniSearchCriteria;
 import it.webred.cs.csa.ejb.dto.EsportazioneDTO;
 import it.webred.cs.csa.ejb.dto.EsportazioneDTOView;
 import it.webred.cs.csa.ejb.dto.EsportazioneTestataDTO;
+import it.webred.cs.csa.ejb.dto.KeyValueDTO;
 import it.webred.cs.csa.ejb.dto.erogazioni.SoggettoErogazioneBean;
 import it.webred.cs.csa.web.manbean.fascicolo.FglInterventoBean;
 import it.webred.cs.data.DataModelCostanti;
 import it.webred.cs.data.DataModelCostanti.CSIPs;
 import it.webred.cs.data.DataModelCostanti.CSIPs.FLAG_IN_CARICO;
+import it.webred.cs.data.DataModelCostanti.EsportazioneSIUSS;
+import it.webred.cs.data.DataModelCostanti.EsportazioneSIUSS.FREQUENZA;
+import it.webred.cs.data.DataModelCostanti.EsportazioneSIUSS.STATO;
 import it.webred.cs.data.DataModelCostanti.ListaBeneficiari;
 import it.webred.cs.data.model.CsASoggettoLAZY;
 import it.webred.cs.data.model.CsCCategoriaSociale;
@@ -42,7 +46,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.math.BigDecimal;
-import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.Format;
@@ -71,8 +74,6 @@ import org.jboss.logging.Logger;
 import org.primefaces.context.RequestContext;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
-
-import com.osmosit.siso.flussoinps.logic.Cost;
 
 @ManagedBean
 @ViewScoped
@@ -158,6 +159,8 @@ public class EsportaCasellarioBean extends CsUiCompBaseBean {
 	private List<SelectItem> listaCategorieSociali; // SISO-738
 	private List<SelectItem> listaTipoIntervento; 		// SISO-1159
 	private List<SelectItem> listaTipoInterventoCustom; // SISO-1159
+	private List<SelectItem> listaStatoEsportazione;
+	private List<SelectItem> listaFrequenza;
 
 	private EsportazioneDTOView erogDaRevocare = null; // SISO-780
 
@@ -196,9 +199,18 @@ public class EsportaCasellarioBean extends CsUiCompBaseBean {
 		showPnlEsporta = false;
 		showPnlVisualizza = false;
 		opSettore = getCurrentOpSettore();
-		statoEsportazione = "a"; // SISO-738
+		statoEsportazione = DataModelCostanti.EsportazioneSIUSS.STATO.TUTTO.getCodice(); // SISO-738
 		caricaCategorieSociali(); // SISO-738
 		caricaTipiIntervento();
+		
+		listaStatoEsportazione = new ArrayList<SelectItem>();
+			for(STATO s : EsportazioneSIUSS.STATO.values())
+				listaStatoEsportazione.add(new SelectItem(s.getCodice(),s.getDescrizione()));
+		
+		listaFrequenza = new ArrayList<SelectItem>();
+		for(FREQUENZA s : EsportazioneSIUSS.FREQUENZA.values())
+			listaFrequenza.add(new SelectItem(s.getCodice(),s.getDescrizione()));
+			
 		dettaglioDaGestire = new EsportazioneDTOView();
 		dettaglioDaGestire.setPresaInCarico(new BigDecimal(CSIPs.FLAG_IN_CARICO.NON_SO.getCodice()));
 		// setTempPresaInCarico(new BigDecimal(2));
@@ -220,15 +232,17 @@ public class EsportaCasellarioBean extends CsUiCompBaseBean {
 	private void caricaTipiIntervento() {
 		listaTipoIntervento = new ArrayList<SelectItem>();
 		listaTipoInterventoCustom = new ArrayList<SelectItem>();
-		CeTBaseObject b = new CeTBaseObject();
+		BaseDTO b = new BaseDTO();
 		fillEnte(b);
-		 List<CsCTipoIntervento> allInterventi = interventoService.findTipiInterventoAbilitati(b);
-		 for (CsCTipoIntervento tipoInt : allInterventi) {
-			if("STANDARD".equalsIgnoreCase(tipoInt.getTipo())) 
-				listaTipoIntervento.add(new SelectItem(tipoInt.getId(), tipoInt.getDescrizione()));
-			else
-				listaTipoInterventoCustom.add(new SelectItem(tipoInt.getId(), tipoInt.getDescrizione()));
-		}
+		b.setObj("STANDARD");
+		List<KeyValueDTO> standard = interventoService.findTipiInterventoAbilitati(b);
+		for (KeyValueDTO tipoInt : standard)
+			listaTipoIntervento.add(new SelectItem(tipoInt.getCodice(), tipoInt.getDescrizione()));
+		
+		b.setObj("CUSTOM");
+		List<KeyValueDTO> custom = interventoService.findTipiInterventoAbilitati(b);
+		for (KeyValueDTO tipoInt : custom)
+			listaTipoInterventoCustom.add(new SelectItem(tipoInt.getCodice(), tipoInt.getDescrizione()));
 	}
 
 	public void onDownloadRefresh() {
@@ -328,30 +342,35 @@ public class EsportaCasellarioBean extends CsUiCompBaseBean {
 
 			if (
 			// FILTRO CF
-			   !StringUtils.isEmpty(cf) && !el.getSoggettoCodiceFiscale().toLowerCase().contains(cf)
+			   (!StringUtils.isBlank(cf) && !el.getSoggettoCodiceFiscale().toLowerCase().contains(cf))
 			// FILTRO COGNOME
-			|| !StringUtils.isEmpty(cognome) && !el.getSoggettoCognome().toLowerCase().contains(cognome)
+			|| (!StringUtils.isBlank(cognome) && !el.getSoggettoCognome().toLowerCase().contains(cognome))
 			// FILTRO NOME
-			|| !StringUtils.isEmpty(nome) && !el.getSoggettoNome().toLowerCase().contains(nome)
+			|| (!StringUtils.isBlank(nome) && !el.getSoggettoNome().toLowerCase().contains(nome))
 			// FILTRO DENOMINAZIONE PRESTAZIONE
-			|| !StringUtils.isEmpty(prestazione) && (StringUtils.isEmpty(el.getDenominazionePrestazione()) || !el.getDenominazionePrestazione().toLowerCase().contains(prestazione))
+			|| (!StringUtils.isBlank(prestazione) && (StringUtils.isBlank(el.getDenominazionePrestazione()) || !el.getDenominazionePrestazione().toLowerCase().contains(prestazione.trim().toLowerCase())))
 			// FILTRO AREA TARGET
-			|| !StringUtils.isEmpty(areaTarget) && !el.getCategoriaSocialeDescrizione().toLowerCase().contains(areaTarget)
+			|| (!StringUtils.isBlank(areaTarget) && !el.getCategoriaSocialeDescrizione().toLowerCase().contains(areaTarget))
 			// FILTRO NUMERO PROTOCOLLO
-			|| !StringUtils.isEmpty(numeroProtocollo) && (StringUtils.isEmpty(el.getPrestazioneProtocolloEnte()) || !el.getPrestazioneProtocolloEnte().toLowerCase().equals(numeroProtocollo))
-			|| this.tipoIntervento>0 	   && (el.getTipoInterventoId()==null 	  || !el.getTipoInterventoId().equals(this.tipoIntervento))
-			|| this.tipoInterventoCustom>0 && (el.getTipoInterventoCustom()==null || !el.getTipoInterventoCustom().getId().equals(this.tipoInterventoCustom))
+			|| (!StringUtils.isBlank(numeroProtocollo) && (StringUtils.isBlank(el.getPrestazioneProtocolloEnte()) || !el.getPrestazioneProtocolloEnte().toLowerCase().equals(numeroProtocollo)))
+			|| (this.tipoIntervento>0 	   && (el.getTipoInterventoId()==null 	  || !el.getTipoInterventoId().equals(this.tipoIntervento)))
+			|| (this.tipoInterventoCustom>0 && (el.getTipoInterventoCustom()==null || !el.getTipoInterventoCustom().getId().equals(this.tipoInterventoCustom)))
+			//FILTRO FREQUENZA
+			|| (!StringUtils.isBlank(filtroFrequenza) && !filtroFrequenza.equals(el.getFrequenza()))
+			// SISO-809 RIMUOVO LE EROGAZIONI DI GRUPPO
+			|| ListaBeneficiari.GRUPPO.equals(el.getTipoBeneficiario())
 			) {
 				// rimuovo il nodo dalla lista se non rispetta i filtri
 				it.remove();
 			} else {
 				// rimuovo i dettagli se il filtro è selezionato
-				if (!statoEsportazione.equals("a")) {
+				if (!statoEsportazione.equals(DataModelCostanti.EsportazioneSIUSS.STATO.TUTTO.getCodice())) {
 
 					Iterator<EsportazioneDTOView> itd = el.getDettagli().iterator();
 					while (itd.hasNext()) {
 						EsportazioneDTOView eld = itd.next();
-						if (statoEsportazione.equals("e") && !eld.isEsportata() || statoEsportazione.equals("ne") && eld.isEsportata()) {
+						if (statoEsportazione.equals(EsportazioneSIUSS.STATO.ESPORTATE.getCodice()) && !eld.isEsportata() 
+						 || statoEsportazione.equals(EsportazioneSIUSS.STATO.DA_ESPORTARE.getCodice()) && eld.isEsportata()) {
 							itd.remove();
 						}
 					}
@@ -360,15 +379,6 @@ public class EsportaCasellarioBean extends CsUiCompBaseBean {
 					if (el.getDettagli().isEmpty()) {
 						it.remove();
 					}
-				}
-				
-				if (filtroFrequenza != null && !filtroFrequenza.isEmpty()) {
-					if (!el.getFrequenza().equals(filtroFrequenza))
-						it.remove();
-				}
-				// SISO-809
-				if (el.getTipoBeneficiario().equals(ListaBeneficiari.GRUPPO)) {
-					it.remove();
 				}
 			}
 		}
@@ -439,15 +449,7 @@ public class EsportaCasellarioBean extends CsUiCompBaseBean {
 
 		erogDaEsportareList =
 				EsportaCasellarioUtils.filtraVErogExport(erogDaEsportareVisualizzazioneList, listaVErogExportHelp, psExportService);
-			/*//SISO-784 collegamento SINA -- spostato a valle
-			List<Long> idsMast = EsportaCasellarioUtils.extractMastIds(erogDaEsportareList);
-			if(idsMast.size() > 0){
-					dto.setObj(idsMast);
-					List<CsDSina> listaSina = sinaService.getSinaByMastIds(dto);
-					EsportaCasellarioUtils.caricaSinaCollegati(erogDaEsportareList, listaSina);
-			}
-			//numErogDaEsportare = calcolaNumErogDaEsportare(erogDaEsportareVisualizzazioneList);
-	*/
+		
 		List<EsportazioneDTOView> listaErogazioniMasterChiusuraInPeriodo =  psExportService.findErogazioniMasterChiusuraInPeriodo(bDto);
 
 		avvisoErogazioniNonEsportate =  EsportaCasellarioUtils.avvisoErogazioniNonEsportate(listaErogazioniMasterChiusuraInPeriodo,erogDaEsportareVisualizzazioneList);
@@ -570,10 +572,10 @@ public class EsportaCasellarioBean extends CsUiCompBaseBean {
 	}
 	
 	private List<BigDecimal> getIds(List<EsportazioneDTOView> listaEsportazioneDTOview) {
+		List<Long> listaIds = EsportaCasellarioUtils.extractMastIds(listaEsportazioneDTOview);
 		Set<BigDecimal> ids = new HashSet<BigDecimal>();
-		for (EsportazioneDTOView e : listaEsportazioneDTOview)
-			ids.add(new BigDecimal(e.getInterventoEsegMastId()));
-
+		for (Long id : listaIds)
+			ids.add(new BigDecimal(id));
 		return new ArrayList<BigDecimal>(ids);
 	}
 
@@ -589,7 +591,7 @@ public class EsportaCasellarioBean extends CsUiCompBaseBean {
 		prestazione = null;
 		areaTarget = null;
 		numeroProtocollo = null;
-		statoEsportazione = "a";
+		statoEsportazione = DataModelCostanti.EsportazioneSIUSS.STATO.TUTTO.getCodice();
 		numErogDaEsportare = 0;
 
 		return showPnlEsporta;
@@ -649,126 +651,51 @@ public class EsportaCasellarioBean extends CsUiCompBaseBean {
 		return saved;
 	}
 
-	private HashMap<Object, Object> insertDatiBeneficiario(EsportazioneDTO erogDaEsportare) {
-		HashMap<Object, Object> mappaDatiSogg = new HashMap<Object, Object>();
-		if (erogDaEsportare.getSoggettoCodiceFiscale() != null)
-			mappaDatiSogg.put(Cost.BENEFICIARIO_CF,erogDaEsportare.getSoggettoCodiceFiscale());
-		if (erogDaEsportare.getBenefRegione() != null)
-			mappaDatiSogg.put(Cost.RESIDENZA_REGIONE,erogDaEsportare.getBenefRegione());
-		if (erogDaEsportare.getBenefComune() != null)
-			mappaDatiSogg.put(Cost.RESIDENZA_COMUNE,erogDaEsportare.getBenefComune());
-		if (erogDaEsportare.getBenefNazione() != null)
-			mappaDatiSogg.put(Cost.RESIDENZA_NAZIONE,erogDaEsportare.getBenefNazione());
-		if (erogDaEsportare.getSoggettoNome() != null)
-			mappaDatiSogg.put(Cost.ANAGRAFICA_NOME,erogDaEsportare.getSoggettoNome());
-		if (erogDaEsportare.getSoggettoCognome() != null)
-			mappaDatiSogg.put(Cost.ANAGRAFICA_COGNOME,erogDaEsportare.getSoggettoCognome());
-		if (erogDaEsportare.getBenefAnnoNascita() != null)
-			mappaDatiSogg.put(Cost.ANAGRAFICA_ANNONASCITA,Integer.toString(erogDaEsportare.getBenefAnnoNascita()));
-		if (erogDaEsportare.getBenefLuogoNascita() != null)
-			mappaDatiSogg.put(Cost.ANAGRAFICA_LUOGONASCITA,erogDaEsportare.getBenefLuogoNascita());
-		if (erogDaEsportare.getBenefSesso() != null)
-			mappaDatiSogg.put(Cost.ANAGRAFICA_SESSO,Integer.toString(erogDaEsportare.getBenefSesso()));
-		if (erogDaEsportare.getBenefCittadinanza() != null)
-			mappaDatiSogg.put(Cost.ANAGRAFICA_CITTAD_ISO,Integer.toString(erogDaEsportare.getBenefCittadinanza()));
-//		if(erogDaEsportare.getBenefSecCittadinanza()!=null)
-//		mappaDatiSogg.put(Cost.ANAGRAFICA_SEC_CITTAD_ISO, Integer.toString(erogDaEsportare.getBenefSecCittadinanza()));		
-		//SISO-962
-		if (erogDaEsportare.getBenefSecCittadinanza()  != null)
-			mappaDatiSogg.put(Cost.ANAGRAFICA_SEC_CITTAD_ISO, erogDaEsportare.getBenefSecCittadinanza());
-		//SISO-962 Fine
-		return mappaDatiSogg;
-	}
-
-	private HashMap<Object, Object> insertDatiPrestazione(EsportazioneDTO erogDaEsportare) {
-		HashMap<Object, Object> mappaDatiPrest = new HashMap<Object, Object>();
-		DateFormat datef = new SimpleDateFormat("dd/MM/yyyy");
-
-		/* prestazione periodica */
-		//TODO: mappaDatiPrest.put(Cost.PRESTAZIONE_DATA_INIZIO, xmlDateInizio);
-		// mappaDatiPrest.put(Cost.PRESTAZIONE_DATA_FINE, erogDaEsportare.getPrestDataFine());
-		// mappaDatiPrest.put(Cost.PRESTAZIONE_PERIOD_EROG, erogDaEsportare.getPrestPeriodoErogaz());
-		// mappaDatiPrest.put(Cost.PRESTAZIONE_IMPORTO_MENS, erogDaEsportare.getPrestImportoMens());				
-		
-		/* prestazione occasionale */
-
-		if (erogDaEsportare.getNumProtDSU() != null)
-			mappaDatiPrest.put(Cost.PRESTAZIONE_NUMPROT_DSU, erogDaEsportare.getNumProtDSU());
-		if (erogDaEsportare.getAnnoProtDSU() != null)
-			mappaDatiPrest.put(Cost.PRESTAZIONE_ANNO_PROT, Integer.toString(erogDaEsportare.getAnnoProtDSU()));
-		if (erogDaEsportare.getDataDSU() != null) {
-			mappaDatiPrest.put(Cost.PRESTAZIONE_DATA_DSU, datef.format(erogDaEsportare.getDataDSU()));
-		}
-		if (erogDaEsportare.getCodPrestazione() != null)
-			mappaDatiPrest.put(Cost.PRESTAZIONE_CODICE, erogDaEsportare.getCodPrestazione());
-		if (erogDaEsportare.getDenomPrestazione() != null)
-			mappaDatiPrest.put(Cost.PRESTAZIONE_DENOMINAZIONE, erogDaEsportare.getDenomPrestazione());
-
-		if (erogDaEsportare.getDataEsecuzione() != null) {
-			mappaDatiPrest.put(Cost.PRESTAZIONE_DATA_EROG, datef.format(erogDaEsportare.getDataEsecuzione()));
-		}
-		if (erogDaEsportare.getSpesa() != null)
-			mappaDatiPrest.put(Cost.PRESTAZIONE_IMPORTO, df.format(erogDaEsportare.getSpesa()));
-
-		/* dati comuni */
-		if (erogDaEsportare.getCarattere() != null)
-			mappaDatiPrest.put(Cost.PRESTAZIONE_CARATTERE, erogDaEsportare.getCarattere());
-		if (erogDaEsportare.getPercGestitaEnte() != null)
-			mappaDatiPrest.put(Cost.PRESTAZIONE_QUOTA_ENTE, df.format(erogDaEsportare.getPercGestitaEnte()));
-		if (erogDaEsportare.getCompartUtenti() != null)
-			mappaDatiPrest.put(Cost.PRESTAZIONE_QUOTA_UTENTE, df.format(erogDaEsportare.getCompartUtenti()));
-		if (erogDaEsportare.getCompartSsn() != null)
-			mappaDatiPrest.put(Cost.PRESTAZIONE_QUOTA_SSN, df.format(erogDaEsportare.getCompartSsn()));
-
-//		if(erogDaEsportare.getSogliaISEE()!=null)
-//		mappaDatiPrest.put(Cost.PRESTAZIONE_SOGLIA_ISEE, decf.format(erogDaEsportare.getSogliaISEE()));	
-	
-		return mappaDatiPrest;
-	}
-
 	public StreamedContent getFile2015() {
+		InputStream stream = null;
+		StreamedContent file = null;
 		try {
 			CsIPsExportMast exportMast = onBtnEsportaCasellarioClick(SchemaVersion.PSA_2015);
-			InputStream stream = new FileInputStream(tempFile);
-			StreamedContent file = new DefaultStreamedContent(stream, "text/xml", exportMast.getIdentificazioneFlusso() + ".xml");
-			return file;
+			stream = new FileInputStream(tempFile);
+			file = new DefaultStreamedContent(stream, "text/xml", exportMast.getIdentificazioneFlusso() + ".xml");
 		} catch (FileNotFoundException e) {
 			addError("Esportazione fallita", "errore nel recupero del file xml");
 			logger.error("Esportazione fallita",e);
-			return null;
 		} catch (Exception e) {
 			addError("Esportazione fallita", "la procedura di esportazione ha segnalato un errore");
 			logger.error("Esportazione fallita",e);
-			return null;
 		}
+		return file;
 	}
 
 	public StreamedContent getFile() {
+		InputStream stream = null;
+		StreamedContent file = null;
 		try {
 			// SISO-780
+			logger.debug("Avvio esportazione file SIUSS");
 			gestionePeriodiche();
 
 			CsIPsExportMast exportMast = onBtnEsportaCasellarioClick(SchemaVersion.PSA_2018_PS_SINA);
-			InputStream stream = new FileInputStream(tempFile);
-			StreamedContent file = new DefaultStreamedContent(stream, "text/xml", exportMast.getIdentificazioneFlusso() + ".xml");
+			stream = new FileInputStream(tempFile);
+			file = new DefaultStreamedContent(stream, "text/xml", exportMast.getIdentificazioneFlusso() + ".xml");
 			
 			 //Refresh caricamento dati
 			onDownloadRefresh();
-			return file;
 		} catch (FileNotFoundException e) {
 			addError("Esportazione fallita", "errore nel recupero del file xml");
 			logger.error("Esportazione fallita", e);
-			return null;
 		} catch (Exception e) {
 			addError("Esportazione fallita", "la procedura di esportazione ha segnalato un errore: "+e.getMessage());
 			logger.error("Esportazione fallita",e);
-			return null;
 		}
+		return file;
 	}
 
 	public CsIPsExportMast onBtnEsportaCasellarioClick(SchemaVersion schemaVersion) throws Exception {
 		CsIPsExportMast exportMasterEntity = null; // fallback value
-
+		
+		logger.debug("*** onBtnEsportaCasellarioClick erogDaEsportareList["+erogDaEsportareList.size()+"] esportazioneValida["+getEsportazioneValida()+"]");
 		if (erogDaEsportareList.size() > 0 && getEsportazioneValida()) {
 
 			/*
@@ -788,7 +715,7 @@ public class EsportaCasellarioBean extends CsUiCompBaseBean {
 					    throw new Exception("controllare campo preso in carico nell'esportazione: "+es.getInterventoEsegMastId().toString());
 					}
 
-				}
+			}
 
 			tempFile = File.createTempFile("EsportaCasellarioBean", "");
 
@@ -855,9 +782,9 @@ public class EsportaCasellarioBean extends CsUiCompBaseBean {
 //
 //			EsportaCasellarioUtils.impostaIdentificazioneFlusso(tempFile.getAbsolutePath(), idFlusso);
 //			// FINE SISO-586
-		}
-		else {
-			logger.debug("onBtnEsportaCasellarioClick: niente da esportare");
+		}else {
+			logger.debug("*** onBtnEsportaCasellarioClick: niente da esportare");
+			throw new Exception("nessuna erogazione da esportare");
 		}
 
 		return exportMasterEntity;
@@ -971,7 +898,8 @@ public class EsportaCasellarioBean extends CsUiCompBaseBean {
 	public void gestionePeriodiche() {
 
 		boolean gestitePeridiche = false;
-
+		logger.debug("Avvio gestione erogazioni periodiche");
+		
 		for (EsportazioneTestataDTO etdto : erogTestataVisualizzazioneList) {
 			/*SISO-943 SOSTITUITO CON CS_I_PS.CARATTERE PER GESTIRE ANCHE LE IRREGOLARI COME PERIODICHE*/
 			// if (etdto.getFrequenza().equalsIgnoreCase(etdto.FREQUENZA_REGOLARE)) { SISO-943 SOSTITUITO CON CS_I_PS.CARATTERE PER GESTIRE ANCHE LE IRREGOLARI COME PERIODICHE
@@ -993,6 +921,7 @@ public class EsportaCasellarioBean extends CsUiCompBaseBean {
 					dto.setObj(etdto.getInterventoEsegMastId());
 					
 					//vengono revocate TUTTE le eorgazioni associate alla MAST anche quelle fuori dal range di date selezionato
+					logger.debug("Gestione periodiche: revoco erogazioni associate alla MAST["+etdto.getInterventoEsegMastId()+"]");
 					psExportService.updateCsIPsExportRevocaEsportazioneByInterventoEsegMastId(dto);
 				}
 			}
@@ -1000,6 +929,7 @@ public class EsportaCasellarioBean extends CsUiCompBaseBean {
 		
 		//se sono state gestite almeno una periodica, ricarico le liste per l'esportazione
 		if(gestitePeridiche){
+			logger.debug("Sono state gestite erogazioni periodiche: ricarico le liste per l'esportazione");
 			onBtnVerificaCasellarioClick();
 		}
 	}
@@ -1233,18 +1163,19 @@ public class EsportaCasellarioBean extends CsUiCompBaseBean {
 //	}
 
 	public boolean isBtnEsportaDisabled(){
-		return numErogDaEsportare == 0;
+		return DataModelCostanti.EsportazioneSIUSS.STATO.ESPORTATE.getCodice().equals(this.statoEsportazione) || 
+			   numErogDaEsportare == 0;
 	}
 
 	private int calcolaNumErogDaEsportare( List<EsportazioneDTOView> erogDaEsportareVisualizzazioneList) {
 		int numErogDaEsportare = 0;
 		for (EsportazioneDTOView esportazioneDTOView : erogDaEsportareVisualizzazioneList) {
-			if (esportazioneDTOView.isDaInviare()) {
-				numErogDaEsportare++;
-			}else{
-				logger.debug("calcolaNumErogDaEsportare NON INVIARE "+esportazioneDTOView.getSoggettoCodiceFiscale());
+				if (esportazioneDTOView.isDaInviare()) {
+					numErogDaEsportare++;
+				}else{
+					logger.debug("calcolaNumErogDaEsportare NON INVIARE "+esportazioneDTOView.getSoggettoCodiceFiscale());
+				}
 			}
-		}
 		return numErogDaEsportare;
 	}
 
@@ -1296,7 +1227,7 @@ public class EsportaCasellarioBean extends CsUiCompBaseBean {
 	}
 
 	public void setPrestazione(String prestazione) {
-		this.prestazione = prestazione.trim().toLowerCase();
+		this.prestazione = prestazione;
 	}
 
 	public String getAreaTarget() {
@@ -1312,7 +1243,7 @@ public class EsportaCasellarioBean extends CsUiCompBaseBean {
 	}
 
 	public void setStatoEsportazione(String statoEsportazione) {
-		this.statoEsportazione = statoEsportazione.trim().toLowerCase();
+		this.statoEsportazione = statoEsportazione;
 	}
 
 	public String getNumeroProtocollo() {
@@ -1403,65 +1334,21 @@ public class EsportaCasellarioBean extends CsUiCompBaseBean {
 			List<SelectItem> listaTipoInterventoCustom) {
 		this.listaTipoInterventoCustom = listaTipoInterventoCustom;
 	}
-	
-	
-	
-//	private void salvaDatiExportTest(String enteErogatore, String denominazEnte, String indirizzoEnte, String cfOperatore) throws CarSocialeServiceException { 
-//
-////		EntityManager em=null;
-////		
-////		EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("test");
-////		
-////		em = entityManagerFactory.createEntityManager();
-////	
-////		em.getTransaction().begin();
-//		 
-//		CsIPsExportMast csIPsExportMast = new CsIPsExportMast();
-// 
-//		Date actualDate = new Date();
-//
-//		csIPsExportMast.setEnteErogatore("enteErogatore");
-//		csIPsExportMast.setDenominazEnte("denominazEnte");
-//		csIPsExportMast.setIndirizzoEnte("indirizzoEnte");
-//		csIPsExportMast.setCfOperatore("nexus1");
-//		csIPsExportMast.setFlusso("PSA");
-//		csIPsExportMast.setDataInvio(null);
-//		
-//		BaseDTO progressivoCsIPsExportMastPSA = new BaseDTO();  
-//		CsUiCompBaseBean.fillEnte(progressivoCsIPsExportMastPSA);
-//		progressivoCsIPsExportMastPSA.setObj(csIPsExportMast.getEnteErogatore()); 
-//		csIPsExportMast.setNumProgressivo(psExportService.getProgressivoCsIPsExportMastPSA(progressivoCsIPsExportMastPSA));   
-//		csIPsExportMast.setDtIns(actualDate);
-//		csIPsExportMast.setDtMod(actualDate);
-//		
-//		BaseDTO dto = new BaseDTO(); 
-//		CsUiCompBaseBean.fillEnte(dto);
-//		dto.setObj(csIPsExportMast);
-//		csIPsExportMast = psExportService.saveCsIPsExportMast(dto);
-//		
-//		Set<CsIPsExport> csIPsExportList = new HashSet<CsIPsExport>();
-//		csIPsExportMast.setCsIPsExportList(csIPsExportList);
-//		
-////		for (EsportazioneDTO esportazioneDTO : erogDaEsportareList) {
-//			CsIPsExport psExport = new CsIPsExport();
-// 
-//			psExport.setCsIIntervento(null); 
-//			psExport.setCsIInterventoEseg(null); 
-//			CsIInterventoEsegMast csIInterventoEsegMast = new CsIInterventoEsegMast();
-//			csIInterventoEsegMast.setId(361870);  
-//			psExport.setCsIInterventoEsegMast(csIInterventoEsegMast); 
-//			psExport.setCsIPsExportMast(csIPsExportMast); ;
-//			psExport.setDtIns(actualDate); ;
-//			psExport.setDtMod(actualDate); ; 
-//			
-//			csIPsExportList.add(psExport);
-////		}  
-// 
-//			dto.setObj(csIPsExportMast);	
-//			psExportService.saveCsIPsExportMast(dto);
-//	
-//	}
-	
-	//FINE MOD-RL
 
+	public List<SelectItem> getListaStatoEsportazione() {
+		return listaStatoEsportazione;
+	}
+
+	public void setListaStatoEsportazione(List<SelectItem> listaStatoEsportazione) {
+		this.listaStatoEsportazione = listaStatoEsportazione;
+	}
+
+	public List<SelectItem> getListaFrequenza() {
+		return listaFrequenza;
+	}
+
+	public void setListaFrequenza(List<SelectItem> listaFrequenza) {
+		this.listaFrequenza = listaFrequenza;
+	}
+	
 }

@@ -64,12 +64,12 @@
 			     <!-- Dettaglio dati Intervento (In lettura) abilitato se non è un nuovo intervento -->
 			    <ui:include src="/webredcs/pnlFglIntervento/frgDettInterventoLettura.xhtml"/> 
 			  
-				<p:panel header="Dati Foglio Amministrativo " toggleable="true" toggleSpeed="500" widgetVar="FApanel" >
+		<p:panel id="pnlFoglioAmministrativo" header="Dati Foglio Amministrativo " styleClass="#{'updateFlagRespintoChange updateFlagAttivazioneChange'}"
+				toggleable="true" toggleSpeed="500" widgetVar="FApanel">
 				
-			<h:panelGrid id="pnlFoglioAmministrativo" columns="6" width="100%" styleClass="#{cc.attrs.styleClass} updateFlagAttivazioneChange">
-				<p:selectBooleanCheckbox id="ckx_respinto" value="#{fglInterventoBean.datiFglIntBean.flagRespinto}" itemLabel="Respinto" >
-					<p:ajax update="growl ckx_respinto pnlLblDettaglioOperazione pnlDettaglioOperazione txtMotivoRespinto cbxTipoFoglio dtFoglioAl dtFoglioDal @parent:@parent:pnlSpeseTestata @parent:@parent:pnlTestata @parent:@parent:pnlDettaglio" 
-	           			  listener="#{fglInterventoBean.onCheckRespinto}" event="change" disabled="#{fglInterventoBean.readOnly}"/>
+			<h:panelGrid id="pnlGridFoglioAmministrativo" columns="6" width="100%" styleClass="#{cc.attrs.styleClass}">
+				<p:selectBooleanCheckbox id="ckx_respinto" value="#{fglInterventoBean.datiFglIntBean.flagRespinto}" itemLabel="Respinto" disabled="#{fglInterventoBean.readOnly}">
+					<p:ajax event="change" listener="#{fglInterventoBean.onCheckRespinto}" partialSubmit="true" process="@this" update="@(.updateFlagRespintoChange)"  />
 	           	</p:selectBooleanCheckbox>	           			 
 	           	<h:outputLabel value="" />
 	           	<h:outputLabel for="txtMotivoRespinto" value="Motivazione" />
@@ -85,7 +85,8 @@
 	     			dataPatternLabel="gg/mm/aaaa" maxDate="#{commonSessionMan.currentDate}" yearRange="c-10:c+0" disabled="#{fglInterventoBean.readOnly}"/>    				  	 
 		 	 	
 		 		<h:outputText value="Relazione" /> 
-	     			<p:selectOneMenu  id="somRelazioni" value="#{fglInterventoBean.datiFglIntBean.idRelazione}" disabled="#{fglInterventoBean.readOnly}"  >
+	     		<p:selectOneMenu  id="somRelazioni" value="#{fglInterventoBean.datiFglIntBean.idRelazione}" disabled="#{fglInterventoBean.readOnly}"  >
+	     				<f:selectItem noSelectionOption="true" itemLabel="- seleziona -"/>
 	     				<f:selectItems value="#{fglInterventoBean.lstRelazioni}" var="tipo" itemLabel="#{tipo.descrizione}" itemValue="#{tipo}"/>
 	     		</p:selectOneMenu>				 				 
 				 <p:spacer width="24" />
@@ -93,7 +94,8 @@
 				 
 			 	<h:outputText value="Tipo Foglio *" />
 	            <h:panelGroup>
-	               <p:tooltip for="cbxTipoFoglio" rendered="#{fglInterventoBean.anyErogazioniBetweenDataInizioDataFine}" value="#{fglInterventoBean.tipoErogazioneDisableTooltip}" />
+	               <p:tooltip for="cbxTipoFoglio" rendered="#{fglInterventoBean.anyErogazioniBetweenDataInizioDataFine}" 
+	               			  value="#{fglInterventoBean.tipoErogazioneDisableTooltip}" />
 	               <!-- fix SISO-624 aggiunta condizione su attributo disabled -->
 	               <p:selectOneMenu id="cbxTipoFoglio" value="#{fglInterventoBean.datiFglIntBean.flagAttivazione}" required="true"
 	                  requiredMessage="'Tipo Foglio' è un campo obbligatorio"                  
@@ -105,47 +107,40 @@
 	            </h:panelGroup> 
 	
 	            <h:outputText value=" Dal *" />
-	       		<h:panelGroup id="pnlDataFglDa" styleClass="#{'updateFlagAttivazioneChange'}">
+	       		<h:panelGroup id="pnlDataFglDa">
 		       		<p:tooltip for="dtFoglioDal" rendered="#{fglInterventoBean.anyErogazioniBetweenDataInizioDataFine}" 
 		       				   value="#{fglInterventoBean.tipoErogazioneDisableTooltip}" /> 
-		       		<webred:pnlData dataReq="true" dataReqMes="Inserire data di inizio validita' per il foglio amministrativo"
-		      			dataValue="#{fglInterventoBean.datiFglIntBean.dtTipoAttDa}" dataPattern="dd/MM/yyyy" id="dtFoglioDal" 
+		       		<webred:pnlData id="dtFoglioDal"  dataReq="true" dataReqMes="Inserire data di inizio validita' per il foglio amministrativo"
+		      			dataValue="#{fglInterventoBean.datiFglIntBean.dtTipoAttDa}" dataPattern="dd/MM/yyyy" 
 		      			dataValMes="Data Inizio Tipo Attivazione non valida" dataConMes="Data Inizio Tipo Attivazione non valida"
 		      			dataPatternLabel="gg/mm/aaaa"  yearRange="c-10:c+10" 
 		      			disabled="#{fglInterventoBean.disableIntervalloDateFgl}"/> 
 		      	</h:panelGroup> 
 	      			
 	      		<h:outputText value=" Al *" />
-	      		<h:panelGroup id="pnlDataFglA" styleClass="#{'updateFlagAttivazioneChange'}">
+	      		<h:panelGroup id="pnlDataFglA">
 		      		<p:tooltip for="dtFoglioAl" rendered="#{fglInterventoBean.anyErogazioniBetweenDataInizioDataFine}" 
 		      				   value="#{fglInterventoBean.tipoErogazioneDisableTooltip}" /> 
-		      		<webred:pnlData dataReq="true" dataReqMes="Inserire data di fine validita' per il foglio amministrativo" 
-		      			dataValue="#{fglInterventoBean.datiFglIntBean.dtTipoAttA}" dataPattern="dd/MM/yyyy" id="dtFoglioAl" 
+		      		<webred:pnlData id="dtFoglioAl" dataReq="true" dataReqMes="Inserire data di fine validita' per il foglio amministrativo" 
+		      			dataValue="#{fglInterventoBean.datiFglIntBean.dtTipoAttA}" dataPattern="dd/MM/yyyy" 
 		      			disabled="#{fglInterventoBean.disableIntervalloDateFgl or fglInterventoBean.datiFglIntBean.chiusura}"
 		      			dataValMes="Data Fine Tipo Attivazione non valida" dataConMes="Data Fine Tipo Attivazione non valida"
 		      			dataPatternLabel="gg/mm/aaaa"  yearRange="c-10:c+10" />
 	      		</h:panelGroup>
 		
-	          	<h:panelGroup id="pnlLblDettaglioOperazione" styleClass="#{'updateFlagAttivazioneChange'}">
-	           				<h:outputLabel for="somTipoAttivazione" value="Tipo Attivazione" rendered="#{fglInterventoBean.datiFglIntBean.flagAttivazione eq 'A'}" 
-	           				disabled="#{fglInterventoBean.readOnly}"/> 
-		           			<h:outputLabel for="somDesSospensione" value="Tipo Sospensione" rendered="#{fglInterventoBean.datiFglIntBean.flagAttivazione eq 'S'}" 
-		           			disabled="#{fglInterventoBean.readOnly}"/> 
-		           			<h:outputLabel for="somMotivoChiusura" value="Motivo Chiusura" rendered="#{fglInterventoBean.datiFglIntBean.flagAttivazione eq 'C'}" 
-		           			disabled="#{fglInterventoBean.readOnly}"/> 
-	           	</h:panelGroup>	           			
-          		<h:panelGroup id="pnlDettaglioOperazione" styleClass="#{'updateFlagAttivazioneChange'}">
-           		    <p:selectOneMenu id="somTipoAttivazione" value="#{fglInterventoBean.datiFglIntBean.tipoAttivazione}" rendered="#{fglInterventoBean.datiFglIntBean.flagAttivazione eq 'A'}" 
+	          	<h:outputLabel id="lblDettaglioOperazione" value="#{fglInterventoBean.datiFglIntBean.labelDettaglioOperazione}"/>           			
+          		<h:panelGroup id="pnlDettaglioOperazione">
+           		    <p:selectOneMenu id="somTipoAttivazione" value="#{fglInterventoBean.datiFglIntBean.tipoAttivazione}" rendered="#{fglInterventoBean.datiFglIntBean.attivazione}" 
            		    disabled="#{fglInterventoBean.readOnly or fglInterventoBean.datiFglIntBean.flagRespinto}">
            				<f:selectItems value="#{fglInterventoBean.lstTipoAttivazione}" var="tipo" itemLabel="#{tipo.descrizione}" itemValue="#{tipo}"/>
            			</p:selectOneMenu>
            			
-          			<p:selectOneMenu id="somDesSospensione" value="#{fglInterventoBean.datiFglIntBean.descrSospensione}" rendered="#{fglInterventoBean.datiFglIntBean.flagAttivazione eq 'S'}" 
+          			<p:selectOneMenu id="somDesSospensione" value="#{fglInterventoBean.datiFglIntBean.descrSospensione}" rendered="#{fglInterventoBean.datiFglIntBean.sospensione}" 
           			disabled="#{fglInterventoBean.readOnly or fglInterventoBean.datiFglIntBean.flagRespinto}">
            				<f:selectItems value="#{fglInterventoBean.lstTipoSospensione}" var="tipo" itemLabel="#{tipo.descrizione}" itemValue="#{tipo}"/> 
            			</p:selectOneMenu>	
           						          				
-          			<p:selectOneMenu id="somMotivoChiusura" value="#{fglInterventoBean.datiFglIntBean.motivoChiusura}" rendered="#{fglInterventoBean.datiFglIntBean.flagAttivazione eq 'C'}"   
+          			<p:selectOneMenu id="somMotivoChiusura" value="#{fglInterventoBean.datiFglIntBean.motivoChiusura}" rendered="#{fglInterventoBean.datiFglIntBean.chiusura}"   
           			disabled="#{fglInterventoBean.readOnly or fglInterventoBean.datiFglIntBean.flagRespinto}">
            				<f:selectItems value="#{fglInterventoBean.lstMotiviChiusura}" var="tipo" itemLabel="#{tipo.descrizione}" itemValue="#{tipo}"/> 
            			</p:selectOneMenu>
@@ -219,8 +214,8 @@
 	               		 </f:facet>
 	               		<div style="text-align: -webkit-center">
 	               		 <p:commandButton value="Conferma" 
-						oncomplete="if (args &amp;&amp; !args.validationFailed &amp;&amp; args.saved){ PF('#{cc.attrs.widgetVar}').hide(); updateListaInterventi(); PF('#{cc.attrs.widgetVar}ConfermaFrmErogazioneFSE').hide();} else {}" 
-						  process="@this" 
+						    oncomplete="if (args &amp;&amp; !args.validationFailed &amp;&amp; args.saved){ PF('#{cc.attrs.widgetVar}').hide(); updateListaInterventi(); PF('#{cc.attrs.widgetVar}ConfermaFrmErogazioneFSE').hide();} else {}" 
+						    process="@this" 
 							action="#{fglInterventoBean.salvaFSE}" />
 					    <p:commandButton value="Annulla" type="button" onclick="PF('#{cc.attrs.widgetVar}ConfermaFrmErogazioneFSE').hide();" />
 	               		</div>

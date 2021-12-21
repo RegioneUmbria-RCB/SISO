@@ -11,9 +11,20 @@ public class BaseDTO extends CeTBaseObject  {
 	private Object obj3;
 	private Object obj4;
 	private Object obj5;
+	private Object obj6;
 	
 	private Boolean nascondiInfoPerSettore;
 	private Long settoreId;
+
+	
+	
+	public Object getObj6() {
+		return obj6;
+	}
+
+	public void setObj6(Object obj6) {
+		this.obj6 = obj6;
+	}
 
 	public Object getObj() {
 		return obj;

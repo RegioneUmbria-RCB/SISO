@@ -4,15 +4,6 @@ import java.io.Serializable;
 
 import javax.persistence.*;
 
-import java.math.BigDecimal;
-import java.util.List;
-import java.util.Set;
-
-
-/**
- * The persistent class for the CS_O_SETTORE database table.
- * 
- */
 @Entity
 @Table(name="CS_O_SETTORE")
 public class CsOSettoreBASIC implements Serializable {

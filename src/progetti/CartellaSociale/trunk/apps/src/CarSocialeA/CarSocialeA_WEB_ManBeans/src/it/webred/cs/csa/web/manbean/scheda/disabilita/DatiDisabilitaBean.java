@@ -1,12 +1,12 @@
 package it.webred.cs.csa.web.manbean.scheda.disabilita;
 
 import it.webred.cs.csa.ejb.dto.BaseDTO;
+
 import it.webred.cs.csa.web.manbean.scheda.SchedaValiditaBaseBean;
 import it.webred.cs.data.DataModelCostanti;
 import it.webred.cs.data.model.CsADisabilita;
 import it.webred.cs.data.model.CsASoggettoLAZY;
-import it.webred.cs.data.model.CsTbDisabEnte;
-import it.webred.cs.data.model.CsTbDisabGravita;
+import it.webred.cs.csa.ejb.dto.KeyValueDTO;
 import it.webred.cs.data.model.CsTbDisabTipologia;
 import it.webred.cs.jsf.bean.ValiditaCompBaseBean;
 import it.webred.cs.jsf.interfaces.IDatiValiditaList;
@@ -196,39 +196,29 @@ public class DatiDisabilitaBean extends SchedaValiditaBaseBean implements IDatiV
 		lstTipologia = new ArrayList<SelectItem>();
 		CeTBaseObject bo = new CeTBaseObject();
 		fillEnte(bo);
-		List<CsTbDisabTipologia> lst = confService.getDisabTipologia(bo);
-		lstCsTbDisabTipologia = lst;
-		if (lst != null) {
-			for (CsTbDisabTipologia obj : lst) {
+		lstCsTbDisabTipologia = confService.getDisabTipologia(bo);
+		if (lstCsTbDisabTipologia != null) {
+			for (CsTbDisabTipologia obj : lstCsTbDisabTipologia) {
 				lstTipologia.add(new SelectItem(obj.getId(), obj.getDescrizione()));
 			}
 		}		
 	}
 
 	private void loadLstEnte() {
-		lstEnte = new ArrayList<SelectItem>();
-		lstEnte.add(new SelectItem(null, "- seleziona -"));
 		CeTBaseObject bo = new CeTBaseObject();
 		fillEnte(bo);
-		List<CsTbDisabEnte> lst = confService.getDisabEnte(bo);
-		if (lst != null) {
-			for (CsTbDisabEnte obj : lst) {
-				lstEnte.add(new SelectItem(obj.getId(), obj.getDescrizione()));
-			}
-		}		
+		List<KeyValueDTO> lst = confService.getDisabEnte(bo);
+		lstEnte = this.convertiLista(lst);
+		lstEnte.add(0, new SelectItem(null, "- seleziona -"));
+
 	}
 
 	private void loadLstGravita() {
-		lstGravita = new ArrayList<SelectItem>();
-		lstGravita.add(new SelectItem(null, "- seleziona -"));
 		CeTBaseObject bo = new CeTBaseObject();
 		fillEnte(bo);
-		List<CsTbDisabGravita> lst = confService.getDisabGravita(bo);
-		if (lst != null) {
-			for (CsTbDisabGravita obj : lst) {
-				lstGravita.add(new SelectItem(obj.getId(), obj.getDescrizione()));
-			}
-		}		
+		List<KeyValueDTO> lst = confService.getDisabGravita(bo);
+		lstGravita = this.convertiLista(lst);
+		lstGravita.add(0, new SelectItem(null, "- seleziona -"));	
 	}
 	
 }

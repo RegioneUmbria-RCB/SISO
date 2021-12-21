@@ -6,12 +6,12 @@
     <dependencies> 
       <module name="deployment.CT_Service_Client.ear" export="true"/>
       <module name="deployment.AmProfiler.ear" export="true"/>
+      <module name="deployment.Argo.ear" export="true"/>
       <module name="deployment.SegretariatoSoc.ear" export="true"/>
       <module name="deployment.SegretariatoSoc.ear.SegretariatoSoc_EJB.jar"/>
       <module name="deployment.AnagrafeRomaBridgeClient.war" export="true"/>
       <module name="com.oracle.ojdbc" slot="main"/>
       <module name="com.oracle.spatial" slot="main"/>
-
     </dependencies> 
   </deployment> 
 </jboss-deployment-structure>

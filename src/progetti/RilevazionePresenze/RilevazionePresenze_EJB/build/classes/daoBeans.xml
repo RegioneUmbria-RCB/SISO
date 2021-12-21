@@ -25,6 +25,6 @@
 	   		
 	   <!-- Qui vanno aggiunti i DAO  -->
 	   	<context:annotation-config />
-	   	<context:component-scan base-package="eu.smartpeg.rilevazionepresenze.ejb.dao" />
+	   	<context:component-scan base-package="eu.smartpeg.rilevazionepresenze.ejb.dao, eu.smartpeg.rilevazionepresenze.pai.ejb.dao" />
 	   	<!-- context:load-time-weaver/-->
 	</beans>

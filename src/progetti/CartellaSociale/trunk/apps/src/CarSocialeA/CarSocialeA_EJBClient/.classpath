@@ -11,9 +11,10 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/CT_Config_Data_Model"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/CarSocialeA_DataModel"/>
 	<classpathentry exported="true" kind="lib" path="/CT-LIBS/cet-lib/datarouter.jar"/>
-	<classpathentry kind="src" path="/CT_Service_Data_Model"/>
 	<classpathentry exported="true" kind="lib" path="/CT-LIBS/json/jackson-annotations-2.2.3.jar"/>
 	<classpathentry kind="lib" path="/CT-LIBS/JBOSS711/client/jboss-jsf-api_2.1_spec-2.0.1.Final.jar"/>
 	<classpathentry kind="src" path="/AnagrafeRegionaleClient_DTO"/>
+	<classpathentry kind="lib" path="/CT-LIBS/json/jackson-databind-2.2.3.jar"/>
+	<classpathentry kind="lib" path="/CT-LIBS/json/jackson-core-2.2.3.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

@@ -29,11 +29,6 @@ public class CsOOperatoreTipoOperatore implements Serializable {
 	@Column(name="DATA_INIZIO_APP")
 	private Date dataInizioApp;
 
-/*	//bi-directional many-to-one association to CsACasoOpeTipoOpe
-	@OneToMany(mappedBy="csOOperatoreTipoOperatore")
-	private List<CsACasoOpeTipoOpe> csACasoOpeTipoOpes;
-*/
-
 	//bi-directional many-to-one association to CsOOperatore
 	@ManyToOne
 	@JoinColumn(name="OPERATORE_SETTORE_ID")
@@ -70,29 +65,6 @@ public class CsOOperatoreTipoOperatore implements Serializable {
 	public void setDataInizioApp(Date dataInizioApp) {
 		this.dataInizioApp = dataInizioApp;
 	}
-
-/*	public List<CsACasoOpeTipoOpe> getCsACasoOpeTipoOpes() {
-		return this.csACasoOpeTipoOpes;
-	}
-
-	public void setCsACasoOpeTipoOpes(List<CsACasoOpeTipoOpe> csACasoOpeTipoOpes) {
-		this.csACasoOpeTipoOpes = csACasoOpeTipoOpes;
-	}
-
-	public CsACasoOpeTipoOpe addCsACasoOpeTipoOpe(CsACasoOpeTipoOpe csACasoOpeTipoOpe) {
-		getCsACasoOpeTipoOpes().add(csACasoOpeTipoOpe);
-		csACasoOpeTipoOpe.setCsOOperatoreTipoOperatore(this);
-
-		return csACasoOpeTipoOpe;
-	}
-
-	public CsACasoOpeTipoOpe removeCsACasoOpeTipoOpe(CsACasoOpeTipoOpe csACasoOpeTipoOpe) {
-		getCsACasoOpeTipoOpes().remove(csACasoOpeTipoOpe);
-		csACasoOpeTipoOpe.setCsOOperatoreTipoOperatore(null);
-
-		return csACasoOpeTipoOpe;
-	}
-*/
 
 	public CsOOperatoreSettore getCsOOperatoreSettore() {
 		return csOOperatoreSettore;

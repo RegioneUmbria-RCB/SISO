@@ -1,5 +1,7 @@
 package it.webred.cs.csa.web.manbean.fascicolo.interventi;
 
+import it.umbriadigitale.argo.ejb.client.cs.bean.ArConfigurazioneService;
+import it.umbriadigitale.argo.ejb.client.cs.dto.configurazione.ArAttivitaDTO;
 import it.webred.cs.csa.ejb.client.AccessTableComuniSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.AccessTableIndirizzoSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.AccessTableInterventoSessionBeanRemote;
@@ -7,9 +9,12 @@ import it.webred.cs.csa.ejb.client.AccessTableOperatoreSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.AccessTableSchedaSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.domini.AccessTableDominiSiruSessionBeanRemote;
 import it.webred.cs.csa.ejb.dto.BaseDTO;
-import it.webred.cs.csa.ejb.dto.SiruDominioDTO;
-import it.webred.cs.csa.ejb.dto.SiruResultDTO;
+import it.webred.cs.csa.ejb.dto.KeyValueDTO;
 import it.webred.cs.csa.ejb.dto.erogazioni.SoggettoErogazioneBean;
+import it.webred.cs.csa.ejb.dto.siru.ConfigurazioneFseDTO;
+import it.webred.cs.csa.ejb.dto.siru.SiruDominioDTO;
+import it.webred.cs.csa.ejb.dto.siru.SiruResultDTO;
+import it.webred.cs.csa.ejb.dto.siru.StampaFseDTO;
 import it.webred.cs.csa.ejb.enumeratori.SiruEnum;
 import it.webred.cs.csa.web.manbean.fascicolo.FglInterventoBean;
 import it.webred.cs.data.DataModelCostanti;
@@ -23,7 +28,6 @@ import it.webred.cs.data.model.CsAIndirizzo;
 import it.webred.cs.data.model.CsASoggettoLAZY;
 import it.webred.cs.data.model.CsCTipoIntervento;
 import it.webred.cs.data.model.CsCTipoInterventoCustom;
-import it.webred.cs.data.model.CsIInterventoEsegMast;
 import it.webred.cs.data.model.CsIInterventoEsegMastSogg;
 import it.webred.cs.data.model.CsIInterventoPr;
 import it.webred.cs.data.model.CsIInterventoPrFse;
@@ -31,6 +35,7 @@ import it.webred.cs.data.model.CsOOrganizzazione;
 import it.webred.cs.data.model.CsOSettore;
 import it.webred.cs.data.model.CsOZonaSoc;
 import it.webred.cs.data.model.CsTbCondLavoro;
+import it.webred.cs.data.model.CsTbDurataRicLavoro;
 import it.webred.cs.data.model.CsTbFormaGiuridica;
 import it.webred.cs.data.model.CsTbGVulnerabile;
 import it.webred.cs.data.model.CsTbIngMercato;
@@ -52,11 +57,12 @@ import it.webred.jsf.bean.ComuneBean;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.TreeMap;
+import java.util.regex.Matcher;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
@@ -65,6 +71,7 @@ import javax.faces.model.SelectItemGroup;
 import javax.naming.NamingException;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.validator.EmailValidator;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -94,13 +101,11 @@ public class DatiProgettoBean extends CsUiCompBaseBean implements Serializable {
 	protected CsCTipoIntervento tipoIntervento;
 	protected CsCTipoInterventoCustom tipoIntCustom;
 	
-	private List<ArFfProgetto> listaProgetti= new ArrayList<ArFfProgetto>();  //SISO-522
+	private List<SelectItem> listaProgetti;  //SISO-522
 	private CsIInterventoPr csIInterventoPr;
 	private String codiceForm;
 	
-	private List<ArFfProgettoAttivita> listaSottocorsi= new ArrayList<ArFfProgettoAttivita>();//SISO-790
-	private List<ArFfProgettoAttivita> copiaListaSottocorsi=new ArrayList<ArFfProgettoAttivita>(); 
-	private Long idProgettoSelezionato;
+	private List<SelectItem> listaSottocorsi=new ArrayList<SelectItem>(); 
 	
 	
 	//SISO-790
@@ -113,7 +118,7 @@ public class DatiProgettoBean extends CsUiCompBaseBean implements Serializable {
 	private boolean stampaPor = false;
 	private final String NON_RILEVATO="Non rilevato";
 	
-	private ComuneGenericMan comuneMan;
+	private ComuneGenericMan comuneMan; //Sede Aziendale
 	
 	//SISO-972
 	private int numFSE = 0;	
@@ -127,6 +132,7 @@ public class DatiProgettoBean extends CsUiCompBaseBean implements Serializable {
 	private List<SelectItem> lstSettoreImpiego;
 	private List<CsTbIngMercato> lstIngMercatoTooltip;
 
+	private List<SelectItem> lstDurataRicLavoro;
 	private List<SelectItem> lstGruppoVulnerabile;
 	private List<SelectItem> lstFormeGiuridiche;
 	
@@ -146,8 +152,8 @@ public class DatiProgettoBean extends CsUiCompBaseBean implements Serializable {
 	private String arFfProgettoAltro;
 	//FINE SISO-1131
 	private final DatiProgettoBeanTooltipText tooltipText = new DatiProgettoBeanTooltipText();
-	 
-
+	private ConfigurazioneFseDTO mappaCampiFse;
+	
 	public int getNumFSE() {
 		return numFSE;
 	}
@@ -161,13 +167,8 @@ public class DatiProgettoBean extends CsUiCompBaseBean implements Serializable {
 		return comuneNazioneNascitaBean;
 	}
 
-	public void setComuneNazioneNascitaBean(
-			ComuneNazioneNascitaMan comuneNazioneNascitaBean) {
+	public void setComuneNazioneNascitaBean(ComuneNazioneNascitaMan comuneNazioneNascitaBean) {
 		this.comuneNazioneNascitaBean = comuneNazioneNascitaBean;
-	}
-
-	public Long getIdProgettoSelezionato() {//SERVE PER IL CONTROLLO DELLA SELEZIONE IN FglInterventoBEan alla Stampa del POR
-		return idProgettoSelezionato;
 	}
 	
     //SISO-1131
@@ -191,15 +192,10 @@ public class DatiProgettoBean extends CsUiCompBaseBean implements Serializable {
 		
 		if(lstTitoliStudio == null){
 			lstTitoliStudio = new ArrayList<SelectItem>();
-			lstTitoliStudio.add(new SelectItem(null, "- seleziona -"));
 			CeTBaseObject bo = new CeTBaseObject();
 			fillEnte(bo);
-			List<CsTbTitoloStudio> lst = confService.getTitoliStudio(bo);
-			if (lst != null) {
-				for (CsTbTitoloStudio obj : lst) {
-					lstTitoliStudio.add(new SelectItem(obj.getId(), obj.getDescrizione()));
-				}
-			}		
+			List<KeyValueDTO> lst = confService.getTitoliStudio(bo);
+			lstTitoliStudio = convertiLista(lst);
 		}
 		
 		return lstTitoliStudio;
@@ -212,38 +208,29 @@ public class DatiProgettoBean extends CsUiCompBaseBean implements Serializable {
 	}
 
 	//inizio SISO-790
-		public List<ArFfProgettoAttivita> getListaSottocorsi() {
+		public List<SelectItem> getListaSottocorsi() {
 			return listaSottocorsi;
 		}
 
-		public void setListaSottocorsi(List<ArFfProgettoAttivita> listaSottocorsi) {
+		public void setListaSottocorsi(List<SelectItem> listaSottocorsi) {
 			this.listaSottocorsi = listaSottocorsi;
-		}
-
-		public List<ArFfProgettoAttivita> getCopiaListaSottocorsi() {
-			return copiaListaSottocorsi;
-		}
-
-		public void setCopiaListaSottocorsi(
-				List<ArFfProgettoAttivita> copiaListaSottocorsi) {
-			this.copiaListaSottocorsi = copiaListaSottocorsi;
 		}
 
 		//fine SISO-790
 
 	//SISO-972 datiProgettoBean.loadDatiProgetto(progetto,tabProgettoSolaLettura,this.idTipoIntevento, this.idTipoIntrCustom, catSocialeID);
 		
-	public void loadDatiProgetto(CsIInterventoPr progetto, boolean solalettura, Long tipoIntId, Long tipoInCustomId, Long catSocialeID, SoggettoErogazioneBean soggettoErogazione) {
+	public void loadDatiProgetto(CsIInterventoPr progetto, boolean solalettura, Long tipoIntId, Long tipoInCustomId, Long catSocialeID, SoggettoErogazioneBean soggettoErogazione, String valSoggettoAttuatore) {
 			
-			 this.loadDatiProgetto(progetto, solalettura, tipoIntId, tipoInCustomId, catSocialeID );
+			 this.loadDatiProgetto(progetto, solalettura, tipoIntId, tipoInCustomId, catSocialeID, valSoggettoAttuatore );
 			 //this.loadDatiResidenza(soggettoErogazione);
-			 this.loadDatiSociali(soggettoErogazione);
+			 if(soggettoErogazione!=null) 
+				 this.loadDatiSociali(soggettoErogazione.getCodiceFiscale());
 			 this.onChangeAttivita(soggettoErogazione);
 	}	
 	//SISO-972 fine
-	
-	
-	public void loadDatiProgetto(CsIInterventoPr progetto, boolean solalettura, Long tipoIntId, Long tipoInCustomId, Long catSocialeID) {
+
+	public void loadDatiProgetto(CsIInterventoPr progetto, boolean solalettura, Long tipoIntId, Long tipoInCustomId, Long catSocialeID, String valSoggettoAttuatore) {
 		
 		if(progetto!=null){
 			this.csIInterventoPr = progetto;
@@ -271,23 +258,29 @@ public class DatiProgettoBean extends CsUiCompBaseBean implements Serializable {
 		
 		loadListaOrigineFinanziamenti();
 		
-		if(this.csIInterventoPr.getCsTbIngMercato()!=null && DataModelCostanti.TipiIngMercato.OCCUPATO.equalsIgnoreCase(this.csIInterventoPr.getCsTbIngMercato().getId())){
+		if(this.isOccupato() && this.mappaCampiFse!=null && this.mappaCampiFse.getAzComune().isAbilitato()){
 			this.comuneMan = new ComuneGenericMan("Sede aziendale");
 			if(this.csIInterventoPr.getCsIInterventoPrFse()!=null)
 				this.comuneMan.setComune(this.getComune(this.csIInterventoPr.getCsIInterventoPrFse().getAzComuneCod()));
 		}
+		
 		stampaPor = false;
 		
-		this.codiceForm = null;
+		//this.codiceForm = null;
 		
 		//SISO_1131
 		
 		this.setSelectedProgettoAltro(this.csIInterventoPr.getCsTbProgettoAltro()!=null? this.csIInterventoPr.getCsTbProgettoAltro(): new CsTbProgettoAltro());
 		
-		
-		
 		if(this.csIInterventoPr.getCsIInterventoPrFse()!=null){
 			this.codiceForm = "FSE";
+			
+			boolean regMarche = this.isModuloPorMarche();
+			if(regMarche && this.mappaCampiFse.getSoggettoAttuatore().isAbilitato() && !StringUtils.isBlank(valSoggettoAttuatore) && 
+			   StringUtils.isBlank(csIInterventoPr.getCsIInterventoPrFse().getSoggettoAttuatore())){
+				csIInterventoPr.getCsIInterventoPrFse().setSoggettoAttuatore(valSoggettoAttuatore);
+				this.addWarning("", "Il campo soggetto attuatore è stato prevalorizzato dal sistema, salvare il dato");
+			}
 
 			String jsonDomicilio = this.getCsIInterventoPr().getCsIInterventoPrFse().getComuneDomicilio();
 			String jsonNascita = this.getCsIInterventoPr().getCsIInterventoPrFse().getComuneNascita();
@@ -301,7 +294,6 @@ public class DatiProgettoBean extends CsUiCompBaseBean implements Serializable {
 			comuneNazioneNascitaBean = new ComuneNazioneNascitaMan();
 			//SISO - 945 fine
 			try {
-				//residenzaComuneMan.setComune(mapper.readValue(jsonResidenza, ComuneBean.class));
 				domicilioComuneMan.setComune(mapper.readValue(jsonDomicilio, ComuneBean.class));
 				//SISO - 945
 				if(jsonNascita != null){
@@ -309,23 +301,13 @@ public class DatiProgettoBean extends CsUiCompBaseBean implements Serializable {
 					comuneNazioneNascitaBean.getComuneNascitaMan().setComune(nComune);
 				}
 				//SISO - 945 fine
- 
-				if(this.getCsIInterventoPr().getCsIInterventoPrFse().getStatoNascitaCod() != null &&
-						this.getCsIInterventoPr().getCsIInterventoPrFse().getStatoNascitaDes() != null){
-					AmTabNazioni amTabNazioni = CsUiCompBaseBean.getNazioneByIstat(this.getCsIInterventoPr().getCsIInterventoPrFse().getStatoNascitaCod(),
-									this.getCsIInterventoPr().getCsIInterventoPrFse().getStatoNascitaDes());
-					
- 
+				String statoCod = this.getCsIInterventoPr().getCsIInterventoPrFse().getStatoNascitaCod();
+				String statoDes = this.getCsIInterventoPr().getCsIInterventoPrFse().getStatoNascitaDes();
+				if(statoCod != null && statoDes != null){
+					AmTabNazioni amTabNazioni = CsUiCompBaseBean.getNazioneByIstat(statoCod, statoDes);
 					this.comuneNazioneNascitaBean.setNazioneValue();
 					this.comuneNazioneNascitaBean.getNazioneMan().setNazione(amTabNazioni);
 				}
-			/*	if(this.csIInterventoPr.getCsIInterventoPrFse().getCsTbGrVulnerabile() != null){
-					this.comunicaVulnerabilita = "SI"; 
-				}else if (this.csIInterventoPr.getCsIInterventoPrFse().getCsTbGrVulnerabile() == null && this.csIInterventoPr.getCsIInterventoPrFse().getComunicaVul() != null){
-					this.comunicaVulnerabilita = this.getCsIInterventoPr().getCsIInterventoPrFse().getComunicaVul();
-				}else{
-					this.comunicaVulnerabilita="";
-				}*/
 				 
 				//SISO - 945 fine
 			} catch (JsonParseException e) {
@@ -341,19 +323,19 @@ public class DatiProgettoBean extends CsUiCompBaseBean implements Serializable {
 		}
 	}
 	
-	public void loadDatiSociali(SoggettoErogazioneBean soggettoErogazione){
+	public void loadDatiSociali(String cf){
 		datiSociali = null;
 		if(isAccessoEsternoDatiCartella()){
-			if (soggettoErogazione!=null && !StringUtils.isBlank(soggettoErogazione.getCodiceFiscale())) {
+			if (!StringUtils.isBlank(cf)) {
 				BaseDTO dto = new BaseDTO();
 				fillEnte(dto);
-				dto.setObj(soggettoErogazione.getCodiceFiscale());
+				dto.setObj(cf);
 				datiSociali = schedaService.findDatiSocialiAttiviBySoggettoCf(dto);
 			}else
 				this.addWarning("Recupero dati sociali", "Non è stato possibile precaricare i dati esistenti in cartella sociale: codice fiscale non valorizzato");	
 		}
 	}
-	
+		
 	public void valorizzaLavoroDatiSociali(){
 		lavoroFromDatiSociali = false;
 		studioFromDatiSociali = false;
@@ -432,7 +414,7 @@ public class DatiProgettoBean extends CsUiCompBaseBean implements Serializable {
 				if (lst != null && !lst.isEmpty()) {
 					
 					CsTbIngMercato ingMercato = lst.get(0).getCsTbIngMercato();
-					if(ingMercato.getDescrizione()!=null && !ingMercato.getDescrizione().isEmpty())
+					if(!StringUtils.isBlank(ingMercato.getDescrizione()))
 						lstIngMercatoTooltip.add(ingMercato);
 					lstIngMercato.add(new SelectItem(ingMercato.getId(), ingMercato.getDescrizione()));
 					
@@ -442,7 +424,8 @@ public class DatiProgettoBean extends CsUiCompBaseBean implements Serializable {
 					for (CsTbCondLavoro obj : lst) {
 						SelectItem si = new SelectItem(obj.getId(), obj.getDescrizione());
 						boolean valorePresetted = getCondLavoroId()!=null && obj.getId()==getCondLavoroId();
-						if("0".equals(obj.getAbilitato()) && !valorePresetted)
+						boolean abilitato = obj.getAbilitato()!=null ? obj.getAbilitato().booleanValue() : Boolean.FALSE;
+						if(!abilitato && !valorePresetted)
 							si.setDisabled(true);
 						if(labelGroup==null || labelGroup.trim().isEmpty())
 							lstConLavorativa.add(si);
@@ -594,11 +577,11 @@ public class DatiProgettoBean extends CsUiCompBaseBean implements Serializable {
 		this.lstConLavorativa = lstConLavorativa;
 	}
 	//inizio SISO-522 
-	public List<ArFfProgetto> getListaProgetti() {
+	public List<SelectItem> getListaProgetti() {
 		return listaProgetti;
 	}
 
-	public void setListaProgetti(List<ArFfProgetto> listaProgetti) {
+	public void setListaProgetti(List<SelectItem> listaProgetti) {
 		this.listaProgetti = listaProgetti;
 	}
 
@@ -649,8 +632,9 @@ public class DatiProgettoBean extends CsUiCompBaseBean implements Serializable {
 	
 	public boolean isAbilitaMenuProgettiAltro() {
 //		return abilitaMenuProgettiAltro
-		if (csIInterventoPr!=null && csIInterventoPr.getFfProgettoDescrizione() != null){
-			this.abilitaMenuProgettiAltro = (!csIInterventoPr.getFfProgettoDescrizione().isEmpty() && csIInterventoPr.getFfProgettoDescrizione().equalsIgnoreCase("ALTRO"));
+		if (csIInterventoPr!=null && csIInterventoPr.getProgetto()!=null){
+			String progDescrizione = csIInterventoPr.getProgetto().getDescrizione();
+			this.abilitaMenuProgettiAltro = (!StringUtils.isBlank(progDescrizione) &&  progDescrizione.equalsIgnoreCase("ALTRO"));
 		}
 		else{
 			this.abilitaMenuProgettiAltro = false;
@@ -681,44 +665,38 @@ public class DatiProgettoBean extends CsUiCompBaseBean implements Serializable {
 			fillEnte(bdto);		
 			listaOrigineFin= interventoService.findAllOrigineFinanziamenti(bdto); 
 
-			listaProgetti = new ArrayList<ArFfProgetto>();
+			listaProgetti = new ArrayList<SelectItem>();
 			CsOSettore titolare = this.csIInterventoPr.getSettoreTitolare();
 			if (titolare!=null) {  
-				//bdto.setObj(getSelSettoreTitolareId);
-				//CsOSettore csOSettore =  confService.getSettoreById(bdto); 	// (CsOOperatoreSettore) getSession().getAttribute("operatoresettore");  
-				
 				bdto.setObj(titolare.getCsOOrganizzazione().getCodRouting());
-				listaProgetti = interventoService.findProgettiByBelfioreOrganizzazione(bdto);
-				
-				//inizio SISO-790
-				listaSottocorsi= interventoService.findSottocorsi(bdto);
-				
-				LoadListaSottocorsi(listaProgetti, copiaListaSottocorsi);
+				List<ArFfProgetto> lstArPr = confService.findProgettiByBelfioreOrganizzazione(bdto);
+				for(ArFfProgetto arp : lstArPr){
+					SelectItem si = new SelectItem(arp.getId(), arp.getDescrizione()+"["+arp.getCodiceMemo()+"]");
+					listaProgetti.add(si);
+				}
+				//inizio SISO-790				
+				loadListaSottocorsi();
 				//fine SISO-790
 			}
 			
 		}
 	
 	//inizio SISO-790
-		public void LoadListaSottocorsi(List<ArFfProgetto> lstProgetti, List<ArFfProgettoAttivita> lstSottocorsi ){
-			lstSottocorsi.clear();
-			lstSottocorsi.addAll(listaSottocorsi);
-			if (lstProgetti != null) {
-				for (ArFfProgetto prog : lstProgetti) {
-						if(prog.getDescrizione().equals(this.csIInterventoPr.getFfProgettoDescrizione())){
-							idProgettoSelezionato=prog.getId();
-						}
-					}
-				}
-				
-				for(Iterator<ArFfProgettoAttivita> iter = lstSottocorsi.listIterator(); iter.hasNext();){
-					ArFfProgettoAttivita sottocorso =iter.next();
-					if(!(sottocorso.getProgettoId().equals(idProgettoSelezionato))){
-							iter.remove();
-						}
-					}
-				
+	public void loadListaSottocorsi(){
+		listaSottocorsi.clear();
+		ArFfProgetto progetto = this.csIInterventoPr.getProgetto();
+		Long idProgettoSel =  progetto!=null ? progetto.getId() : null;
+		String progettoDesc = progetto!=null ? progetto.getDescrizione() : null;
+		loadCodiceForm(progettoDesc);
+		loadMappaCampiFse(idProgettoSel);
+		ArConfigurazioneService arConfService = (ArConfigurazioneService) getArgoEjb( "ArConfigurazioneServiceBean");
+		List<ArAttivitaDTO> lst = arConfService.getListaAttivita(idProgettoSel);
+		for(ArAttivitaDTO k : lst){
+			SelectItem si = new SelectItem(k.getId(), k.getDescrizione());
+			si.setDisabled(!k.getAbilitato());
+			listaSottocorsi.add(si);
 		}
+	}
 		//fine SISO - 790	
 	   	
 	public List<VLineaFin> getListaOrigineFin() {
@@ -736,17 +714,10 @@ public class DatiProgettoBean extends CsUiCompBaseBean implements Serializable {
 			i++;
 		}
 		if (lineaSelected!=null && lineaSelected.getProgettoId()!=null) {
-			int j=0;
-			boolean trovato = false;
-			while (j<this.listaProgetti.size() && !trovato){
-				ArFfProgetto progetto = this.listaProgetti.get(j);
-				logger.debug("onChangeOrigineFinanziamento: progetto"+ progetto.getId() + "  " + lineaSelected.getProgettoId());
-				if (progetto.getId() == lineaSelected.getProgettoId().longValue()) {
-					this.csIInterventoPr.setFfProgettoDescrizione(progetto.getDescrizione());
-					this.onChangeProgetto(soggettoErogazione);
-					trovato = true;
-				}
-				j++;
+			ArFfProgetto progFin = getProgetto(lineaSelected.getProgettoId().longValue());
+			if(progFin!=null){
+				this.csIInterventoPr.setProgetto(progFin);
+				this.onChangeProgetto(soggettoErogazione);
 			}
 		}
 	}
@@ -967,59 +938,65 @@ public class DatiProgettoBean extends CsUiCompBaseBean implements Serializable {
 	}
 	
 	public void onChangeProgetto(SoggettoErogazioneBean soggettoErogazione){
-		BaseDTO dto = new BaseDTO();
-		fillEnte(dto);
+		loadListaSottocorsi();
 		
-		codiceForm = null;
-		String progetto = this.getCsIInterventoPr().getFfProgettoDescrizione();
-		if(!StringUtils.isEmpty(progetto)){
-			
-			dto.setObj(progetto);
-			dto.setObj2(this.idTipoIntervento);
-			dto.setObj3(this.idTipoIntrCustom);
-			dto.setObj4(this.idCatSociale);
-			codiceForm = confService.findCodFormProgetto(dto);
-			
-			if (!progetto.equalsIgnoreCase("ALTRO")){
-				this.setSelectedProgettoAltro(new CsTbProgettoAltro());
-				this.csIInterventoPr.setCsTbProgettoAltro(new CsTbProgettoAltro());
-			}
+		ArFfProgetto progetto = this.getCsIInterventoPr().getProgetto();
+		if(progetto!=null && !"ALTRO".equalsIgnoreCase(progetto.getDescrizione())){
+			this.setSelectedProgettoAltro(new CsTbProgettoAltro());
+			this.csIInterventoPr.setCsTbProgettoAltro(new CsTbProgettoAltro());
 		}
 		
-		if(datiSociali==null) loadDatiSociali(soggettoErogazione);
+		if(datiSociali==null && soggettoErogazione!=null) loadDatiSociali(soggettoErogazione.getCodiceFiscale());
 	
 		if(this.isRenderFSE()){
 			
-			//SISO-972
-			/**
-			 * Recuperare eventuali FSE precedenti per il soggetto
-			 * */
-		 
-			//interventoService.getListaInterventiByCaso(BaseDTO dto)
-			//FINE SISO-972
-			//residenzaComuneMan = new ComuneResidenzaMan();
 			domicilioComuneMan = new ComuneResidenzaMan();
 			if(this.csIInterventoPr.getCsIInterventoPrFse()==null) 
 				this.csIInterventoPr.setCsIInterventoPrFse(new CsIInterventoPrFse());
 				
 			//SISO-846
-			if(this.csIInterventoPr.getCsIInterventoPrFse().getFlagResDom()==null)
-				this.csIInterventoPr.getCsIInterventoPrFse().setFlagResDom(ProgettoErogazioni.FLAG_RES_DOM.RESIDENZA.getCodice());
-			
+			if(this.mappaCampiFse!=null && this.mappaCampiFse.getPagResDom().isAbilitato()){
+				if(this.csIInterventoPr.getCsIInterventoPrFse().getFlagResDom()==null)
+					this.csIInterventoPr.getCsIInterventoPrFse().setFlagResDom(ProgettoErogazioni.FLAG_RES_DOM.RESIDENZA.getCodice());
+			}else
+				this.csIInterventoPr.getCsIInterventoPrFse().setFlagResDom(null);
+
 			aggiornaDatiDaCartella(); //Sovrascrive i valori solo se sono a NULL
 			
-		}		
-		else{
+		}else{
 			this.csIInterventoPr.setCsIInterventoPrFse(null);
 			//residenzaComuneMan = null;
 			domicilioComuneMan = null;
 		}
 		onChangeAttivita(soggettoErogazione);
-		//inizio SISO-790
-		LoadListaSottocorsi(listaProgetti, copiaListaSottocorsi);
-	    //fine SISO-790
 	}
 	
+	private void loadCodiceForm(String progetto){
+		codiceForm = null;
+		if(!StringUtils.isEmpty(progetto)){
+			BaseDTO dto = new BaseDTO();
+			fillEnte(dto);
+			dto.setObj(progetto);
+			dto.setObj2(this.idTipoIntervento);
+			dto.setObj3(this.idTipoIntrCustom);
+			dto.setObj4(this.idCatSociale);
+			codiceForm = confService.findCodFormProgetto(dto);
+		}
+	}
+	
+	private void loadMappaCampiFse(Long idProgetto){
+		mappaCampiFse = null;
+		if(this.isRenderFSE() && idProgetto!=null && idProgetto>0){
+			CsOSettore titolare = this.csIInterventoPr.getSettoreTitolare();
+			if (titolare!=null) {  
+				BaseDTO bdto = new BaseDTO();
+				fillEnte(bdto);
+				bdto.setObj(idProgetto);
+				//bdto.setObj2(titolare.getCsOOrganizzazione().getCodRouting());
+				mappaCampiFse = confService.loadCampiFse(bdto);
+			}
+		}
+	}
 	
 	//SISO-972
 	
@@ -1035,13 +1012,15 @@ public class DatiProgettoBean extends CsUiCompBaseBean implements Serializable {
 			try {
 				boolean allineamentoEseg = false;
 				
-			   String codiceFiscale = soggettoErogazione.getCodiceFiscale();
-				if (!StringUtils.isBlank(codiceFiscale) && !StringUtils.isBlank(this.csIInterventoPr.getnSottocorsoAttivita())) {
-				
+				String codiceFiscale = soggettoErogazione.getCodiceFiscale();
+			   	ArFfProgettoAttivita attivita = this.csIInterventoPr.getProgettoAttivita();
+				ArFfProgetto progetto = this.csIInterventoPr.getProgetto();
+				if (!StringUtils.isBlank(codiceFiscale) && attivita!=null) {
+					
 					fillEnte(dto);
 					dto.setObj(codiceFiscale);
-					dto.setObj2(this.csIInterventoPr.getnSottocorsoAttivita());
-					dto.setObj3(this.csIInterventoPr.getFfProgettoDescrizione());
+					dto.setObj2(attivita!=null ? attivita.getId() : null);
+					dto.setObj3(progetto!=null ? progetto.getId() : null);
 						//String cf, String attivita, String progetto
 					List<CsIInterventoEsegMastSogg> lsti = interventoService.getBeneficiariErogazione(dto);
 					
@@ -1079,8 +1058,6 @@ public class DatiProgettoBean extends CsUiCompBaseBean implements Serializable {
 								ObjectMapper mapper = new ObjectMapper();
 								domicilioComuneMan = new ComuneResidenzaMan();
 								domicilioComuneMan.setComune(mapper.readValue(prEsistente.getCsIInterventoPrFse().getComuneDomicilio(), ComuneBean.class));
-							 
-								
 							}
 							if(prEsistente.getCsIInterventoPrFse().getComuneNascita()  != null){
 								this.csIInterventoPr.getCsIInterventoPrFse().setComuneNascita(prEsistente.getCsIInterventoPrFse().getComuneNascita());
@@ -1119,7 +1096,7 @@ public class DatiProgettoBean extends CsUiCompBaseBean implements Serializable {
 							this.csIInterventoPr.getCsIInterventoPrFse().setIban(prEsistente.getCsIInterventoPrFse().getIban());
 							this.csIInterventoPr.getCsIInterventoPrFse().setLavoroDescOrario(prEsistente.getCsIInterventoPrFse().getLavoroDescOrario());
 							this.csIInterventoPr.getCsIInterventoPrFse().setLavoroDescTipo(prEsistente.getCsIInterventoPrFse().getLavoroDescTipo() );
-							this.csIInterventoPr.getCsIInterventoPrFse().setLavoroDurataRicerca(prEsistente.getCsIInterventoPrFse().getLavoroDurataRicerca());
+							this.csIInterventoPr.getCsIInterventoPrFse().setDurataRicLavoroId(prEsistente.getCsIInterventoPrFse().getDurataRicLavoroId());
 							this.csIInterventoPr.getCsIInterventoPrFse().setTelefono(prEsistente.getCsIInterventoPrFse().getTelefono() );
 							this.csIInterventoPr.getCsIInterventoPrFse().setTitoloStudioAnno(prEsistente.getCsIInterventoPrFse().getTitoloStudioAnno());
 							this.csIInterventoPr.getCsIInterventoPrFse().setViaDomicilio(prEsistente.getCsIInterventoPrFse().getViaDomicilio() );
@@ -1152,7 +1129,7 @@ public class DatiProgettoBean extends CsUiCompBaseBean implements Serializable {
 	 				this.comuneNazioneNascitaBean = new ComuneNazioneNascitaMan();
 	 			}
 	 			
-		 		if(!StringUtils.isEmpty(this.csIInterventoPr.getnSottocorsoAttivita()))
+		 		if(this.csIInterventoPr.getProgettoAttivita()!=null)
 		 			 renderAttivita = true;
 		 		else
 		 			 renderAttivita = false;	
@@ -1165,7 +1142,11 @@ public class DatiProgettoBean extends CsUiCompBaseBean implements Serializable {
 			
 	 	}
 	 	if(renderAttivita && this.isModuloPorMarche()){
+			if(this.mappaCampiFse.getSoggettoAttuatore().isAbilitato() && StringUtils.isBlank(csIInterventoPr.getCsIInterventoPrFse().getSoggettoAttuatore())){
+				csIInterventoPr.getCsIInterventoPrFse().setSoggettoAttuatore(getZonaSociale());
+			}
 	 		this.stampaPor = true;
+	 		
 	 	}
 	}
 
@@ -1179,20 +1160,24 @@ public class DatiProgettoBean extends CsUiCompBaseBean implements Serializable {
 		this.codiceForm = codiceForm;
 	}
 	
+	public List<SelectItem> getLstDurataRicLavoro() {
+		if (lstDurataRicLavoro == null) {
+			lstDurataRicLavoro = new ArrayList<SelectItem>();
+			CeTBaseObject cet = new CeTBaseObject();
+			fillEnte(cet);
+			List<KeyValueDTO> lst = confService.getDurataRicLavoro(cet);;
+			this.lstDurataRicLavoro = convertiLista(lst);
+		}
+		return lstDurataRicLavoro;
+	}
+	
 	public List<SelectItem> getLstGruppoVulnerabile() {
 		if(lstGruppoVulnerabile == null){
 			lstGruppoVulnerabile = new ArrayList<SelectItem>();
-			lstGruppoVulnerabile.add(new SelectItem(null, "- seleziona -"));
 			CeTBaseObject bo = new CeTBaseObject();
 			fillEnte(bo);
-			List<CsTbGVulnerabile> lst = confService.getGruppiVulnerab(bo);
-			if (lst != null) {
-				for (CsTbGVulnerabile p : lst) {
-					SelectItem fa = new SelectItem(p.getId(), p.getDescrizione());
-					fa.setDisabled(!"1".equals(p.getAbilitato()));
-					lstGruppoVulnerabile.add(fa);
-				}
-			}		
+			List<KeyValueDTO> lst = confService.getGruppiVulnerabili(bo);
+			lstGruppoVulnerabile = convertiLista(lst);
 		}
 		return lstGruppoVulnerabile;
 	}
@@ -1216,7 +1201,7 @@ public class DatiProgettoBean extends CsUiCompBaseBean implements Serializable {
 	}
 	
 	public boolean isRenderFSE(){
-		return "FSE".equalsIgnoreCase(this.codiceForm);
+		return DataModelCostanti.TipoProgetto.FSE.equalsIgnoreCase(this.codiceForm);
 	}
 	//SISO-972
 	public boolean isRenderFSEAttivita(){
@@ -1237,7 +1222,7 @@ public class DatiProgettoBean extends CsUiCompBaseBean implements Serializable {
 			}
 			//SISO-FIX
 			if(!this.isRicercaPrimaOccupazione() && !this.isDisoccupato())
-				this.csIInterventoPr.getCsIInterventoPrFse().setLavoroDurataRicerca(null);
+				this.csIInterventoPr.getCsIInterventoPrFse().setDurataRicLavoroId(null);
 
 			if(!this.isInattivo())
 				this.csIInterventoPr.getCsIInterventoPrFse().setFlagAltroCorso(null);
@@ -1282,13 +1267,13 @@ public class DatiProgettoBean extends CsUiCompBaseBean implements Serializable {
 			this.comuneMan = new ComuneGenericMan("Sede aziendale");
 		}
 	}
-	public boolean isDurataRicercaLavoro(){
+/*	public boolean isDurataRicercaLavoro(){
 	 if(isRicercaPrimaOccupazione())
 		 return true;
 	 if(isDisoccupato())
 		 return true;
 	 return false;
-	}
+	}*/
 	
 	public boolean isPensionato(){
 		boolean val = this.csIInterventoPr.getCsTbCondLavoro()!=null &&
@@ -1297,7 +1282,7 @@ public class DatiProgettoBean extends CsUiCompBaseBean implements Serializable {
 	}
 	
 	public boolean isOccupato(){
-		boolean val = this.csIInterventoPr.getCsTbIngMercato()!=null && !this.isModuloPorMarche() &&
+		boolean val = this.csIInterventoPr.getCsTbIngMercato()!=null && //!this.isModuloPorMarche() &&
 				DataModelCostanti.TipiIngMercato.OCCUPATO.equalsIgnoreCase(this.csIInterventoPr.getCsTbIngMercato().getId());
 		return val;
 	}
@@ -1382,7 +1367,7 @@ public class DatiProgettoBean extends CsUiCompBaseBean implements Serializable {
 			this.csIInterventoPr.setCsTbTitoloStudio(null);
 		/*END*/
 		
-		if(this.csIInterventoPr.getFfProgettoDescrizione()==null || this.csIInterventoPr.getFfProgettoDescrizione().isEmpty()){
+		if(this.csIInterventoPr.getProgetto()==null || csIInterventoPr.getProgetto().getId()==null || csIInterventoPr.getProgetto().getId()==0){
 			addErrorCampiObbligatori("Progetti", "Progetto");
 			res = false;
 		}
@@ -1412,13 +1397,16 @@ public class DatiProgettoBean extends CsUiCompBaseBean implements Serializable {
 			popolaLuogoDiNascitaFse();
 			
 			//Validazione campi
-			if(csIInterventoPr.getnSottocorsoAttivita().isEmpty() ) {
+			if(csIInterventoPr.getProgettoAttivita()==null) {
 				addErrorCampiObbligatori("Progetti", "n°sottocorso/attività");
 				res = false;
 			}
 			//SISO-846
 			
 			if(this.isRenderFSEAttivita()){
+				
+				res = res && this.validaCampiObbligatoriFse();
+				
 				ObjectMapper mapper = new ObjectMapper();
 				ComuneBean comuneDomicilio = this.domicilioComuneMan.getComune();
 				//this.csIInterventoPr.getCsIInterventoPrFse().setComuneResidenza(mapper.writeValueAsString(rc));
@@ -1428,28 +1416,7 @@ public class DatiProgettoBean extends CsUiCompBaseBean implements Serializable {
 					logger.error(e);
 				}
 					
-				if(this.getCsIInterventoPr().getCsIInterventoPrFse().getComunicaVul() == null){
-					addError("Progetti","Selezionare se l'utente comunica o meno la condizione di vulnerabilità");
-					res = false;
-				}else if(this.getCsIInterventoPr().getCsIInterventoPrFse().getComunicaVul() && 
-						(this.getCsIInterventoPr().getCsIInterventoPrFse().getCsTbGrVulnerabile() == null ||
-						 this.getCsIInterventoPr().getCsIInterventoPrFse().getCsTbGrVulnerabile().getId() == null)){
-					addError("Progetti","indicare la condizione di vulnerabilità");
-					res = false;
-				}else if(!this.getCsIInterventoPr().getCsIInterventoPrFse().getComunicaVul() && 
-						 this.getCsIInterventoPr().getCsIInterventoPrFse().getCsTbGrVulnerabile() != null &&
-						 this.getCsIInterventoPr().getCsIInterventoPrFse().getCsTbGrVulnerabile().getId()!=null){
-					addError("Progetti","Valori incompatibili: se l'utente non intende comunicare la condizione di vulnerabilità, non deve essere espresso alcun valore.");
-					res = false;
-				}
 			
-				if(this.isOccupato()){
-					ComuneBean azComune = comuneMan.getComune();
-					this.csIInterventoPr.getCsIInterventoPrFse().setAzComuneCod(azComune!=null ? azComune.getCodIstatComune() : null);
-					this.csIInterventoPr.getCsIInterventoPrFse().setAzComuneDes(azComune!=null ? azComune.getDenominazione(): null);
-					this.csIInterventoPr.getCsIInterventoPrFse().setAzProv(azComune!=null ? azComune.getSiglaProv(): null);
-				}
-				
 				//SISO-962 Inizio
 				if( csIInterventoPr.getCsIInterventoPrFse() != null)
 				{
@@ -1468,39 +1435,42 @@ public class DatiProgettoBean extends CsUiCompBaseBean implements Serializable {
 				}
 				
 				//VALIDAZIONE SIRU
-				BaseDTO dto = new BaseDTO();
-				fillEnte(dto);
-				dto.setObj(csIInterventoPr);
-				dto.setObj2(soggettoErogazione);
-				SiruResultDTO validazione =interventoService.validaSiru(dto);
-				
-				if(validazione!= null && !validazione.getErrori().isEmpty()){
-					addWarning("Validazione campi Progetto", validazione.getErrori());
-					res = false;
-				}else
-					csIInterventoPr.setCsIInterventoPrFseSiru(validazione.getSiru());
+				if(res){
+					BaseDTO dto = new BaseDTO();
+					fillEnte(dto);
+					dto.setObj(csIInterventoPr);
+					dto.setObj2(soggettoErogazione);
+					dto.setObj3(this.mappaCampiFse);
+					SiruResultDTO validazione =interventoService.validaSiru(dto);
+					
+					if(validazione!= null && !validazione.getErrori().isEmpty()){
+						addWarning("Validazione campi Progetto", validazione.getErrori());
+						res = false;
+					}else
+						csIInterventoPr.setCsIInterventoPrFseSiru(validazione.getSiruInterventi());
+				}
 				
 				//SISO-996
 				if(isControlloResDomPOR()){
 					/*Verifico che la regione del settore titolare sia diversa da quella di residenza o domicilio*/
-					boolean stessaRegione = true;
+					boolean stessaRegione = false;
 					
 					String belfiore = getSettoreTitolare().getCsOOrganizzazione().getCodCatastale();
 					AmTabComuni comuneTitolare = luoghiService.getComuneItaByBelfiore(belfiore);
 					String regioneTitolare = comuneTitolare!=null ? comuneTitolare.getCodIstatRegione() : null;
-					if(StringUtils.isEmpty(regioneTitolare)){
+					if(StringUtils.isBlank(regioneTitolare)){
 						/*Potrebbe essere un'organizzazione con cod.fiscale (es.comunità montana)
 						 * recupero la zona sociale corrente
 						 * */
 						AccessTableOperatoreSessionBeanRemote opService =
 						(AccessTableOperatoreSessionBeanRemote)getEjb("CarSocialeA", "CarSocialeA_EJB", "AccessTableOperatoreSessionBean");
-						CsOZonaSoc zona = opService.findZonaSocAbilitata(dto);
-						if(zona!=null && StringUtils.isEmpty(zona.getCodIstatRegione()))
+						CeTBaseObject cet = new CeTBaseObject();
+						fillEnte(cet);
+						CsOZonaSoc zona = opService.findZonaSocAbilitata(cet);
+						if(zona!=null && !StringUtils.isBlank(zona.getCodIstatRegione()))
 							regioneTitolare = zona.getCodIstatRegione();
 						else
-							addMessage(FacesMessage.SEVERITY_ERROR,"Errore di configurazione: cod.istat regione non impostato per la zona sociale corrente. Contattare l'assistenza.");
-						
-				
+							addError("Progetti","Errore di configurazione: cod.istat regione non impostato per la zona sociale corrente. Contattare l'assistenza.");
 					}
 					
 					AmTabComuni comuneDom = null;
@@ -1515,16 +1485,17 @@ public class DatiProgettoBean extends CsUiCompBaseBean implements Serializable {
 						}
 					}
 				
-					if(comuneResidenza != null){
+					if(comuneResidenza != null && !StringUtils.isBlank(regioneTitolare)){
 						 comuneRes = luoghiService.getComuneItaByIstat(comuneResidenza.getCodIstatComune());
 						 stessaRegione = regioneTitolare.equals(comuneRes.getCodIstatRegione());
 					}	
-					if(comuneDomicilio!=null && comuneDomicilio.getCodIstatComune()!=null && !stessaRegione){
+					if(comuneDomicilio!=null && !StringUtils.isBlank(regioneTitolare) && 
+					   comuneDomicilio.getCodIstatComune()!=null && !stessaRegione){
 						 comuneDom = luoghiService.getComuneItaByIstat(comuneDomicilio.getCodIstatComune());
 						 stessaRegione = regioneTitolare.equals(comuneDom.getCodIstatRegione());
 					}	
 					if(!stessaRegione){
-						addMessage(FacesMessage.SEVERITY_ERROR,"Per progetti finanziati su fondi POR, la regione di residenza o domicilio del beneficiario deve essere uguale alla regione del Comune Titolare");
+						addError("Progetti","Per progetti finanziati su fondi POR, la regione di residenza o domicilio del beneficiario deve essere uguale alla regione del Comune Titolare");
 						res = false;
 					}
 					
@@ -1535,22 +1506,188 @@ public class DatiProgettoBean extends CsUiCompBaseBean implements Serializable {
 		if (abilitaMenuProgettiAltro) {
 			if (this.selectedProgettoAltro != null ) {
 				if (this.selectedProgettoAltro.getDescrizione().isEmpty()){
-					addError("Progetti",
-							"Attenzione: è obbligatorio specificare il progetto Altro");
+					addError("Progetti", "Attenzione: è obbligatorio specificare il progetto Altro");
 			    	res = false;
 				}
 			
 			} else {
-				addError("Progetti",
-						"Attenzione: è obbligatorio specificare il progetto Altro");
+				addError("Progetti", "Attenzione: è obbligatorio specificare il progetto Altro");
 				res = false;
 			}
 		}
-		//
 		
-		/* --===-- */
 		return res;
 		
+	}
+		
+	private boolean validaCampiObbligatoriFse(){
+		boolean ret = true;
+		
+		String telefono = this.csIInterventoPr.getCsIInterventoPrFse().getTelefono();
+		String cellulare = this.csIInterventoPr.getCsIInterventoPrFse().getCellulare(); 
+		String email = this.getCsIInterventoPr().getCsIInterventoPrFse().getEmail();
+		
+		if(this.isModuloPorMarche()){
+			if(StringUtils.isBlank(telefono) && StringUtils.isBlank(cellulare) && StringUtils.isBlank(email)){
+				addError("Progetti", "Informazioni insufficienti: inserire almeno un recapito tra: telefono fisso, cellulare, email");
+				ret = false;
+			}else{
+				Matcher mTel = DataModelCostanti.patternNumTelFisso.matcher(telefono);
+				 if(!StringUtils.isBlank(telefono) && !mTel.matches()){
+					 addError("Progetti","Formato non corretto per il campo numero di telefono: " + telefono);
+					 ret = false;
+				 }
+				 
+				 Matcher mCel = DataModelCostanti.patternNumTelMobile.matcher(cellulare);
+				 if(!StringUtils.isBlank(cellulare) && !mCel.matches()){
+					 addError("Progetti","Formato non corretto per il campo numero di cellulare: "+cellulare);
+					 ret = false;
+				 }
+				 
+				 if(email!=null){
+					EmailValidator validator = EmailValidator.getInstance();
+					boolean valido = validator.isValid(email);
+					if(!valido){
+						addError("Progetti","Formato non corretto per il campo e-mail: "+email);
+						ret=false;
+					}
+				}
+			}
+		}
+		
+		if(this.csIInterventoPr.getCsTbIngMercato()==null ) {
+			addError("Progetti","Attenzione: Per i progetti di tipo FSE il campo 'Condizione nel mercato del lavoro in ingresso' è obbligatorio");
+			ret = false;
+		}else if(StringUtils.isBlank(this.csIInterventoPr.getCsTbIngMercato().getDescrizione())){
+			addError("Progetti","Attenzione: Il campo 'Condizione nel mercato del lavoro in ingresso' non ha un valore valido per progetti di tipo FSE");
+			ret = false;
+		}
+		
+		if(this.isModuloPorMarche()){
+		  if(csIInterventoPr.getCsTbTitoloStudio() == null || csIInterventoPr.getCsTbTitoloStudio().getId() == 0){
+			  addError("Progetti","Attenzione: Per i progetti di tipo FSE il campo 'Titolo di studio' è obbligatorio");
+				ret = false;
+			}else if(csIInterventoPr.getCsTbTitoloStudio()!=null && "Non rilevato".equalsIgnoreCase(csIInterventoPr.getCsTbTitoloStudio().getDescrizione())){
+				addError("Progetti","Attenzione: Valore 'Non rilevato' non ammesso per 'Titolo di Studio' per i progetti di tipo FSE");
+				ret = false;
+			}
+		}
+		
+		if(this.isOccupato()) {
+			
+			if(this.mappaCampiFse.getAzComune().isAbilitato()){
+				ComuneBean azComune = comuneMan.getComune();
+				this.csIInterventoPr.getCsIInterventoPrFse().setAzComuneCod(azComune!=null ? azComune.getCodIstatComune() : null);
+				this.csIInterventoPr.getCsIInterventoPrFse().setAzComuneDes(azComune!=null ? azComune.getDenominazione(): null);
+				this.csIInterventoPr.getCsIInterventoPrFse().setAzProv(azComune!=null ? azComune.getSiglaProv(): null);
+			}
+			
+			
+			if(mappaCampiFse.getLavoroTipo().isValida() && StringUtils.isBlank(csIInterventoPr.getCsIInterventoPrFse().getLavoroDescTipo())) {
+				addErrorCampiObbligatori("Progetti", mappaCampiFse.getLavoroTipo().getLabel());
+				ret = false;
+			}
+			if(mappaCampiFse.getLavoroOrario().isValida() && StringUtils.isBlank(csIInterventoPr.getCsIInterventoPrFse().getLavoroDescTipo())) {
+				addErrorCampiObbligatori("Progetti", mappaCampiFse.getLavoroOrario().getLabel());
+				ret = false;
+			}
+			if(mappaCampiFse.getAzRagioneSociale().isValida() && StringUtils.isBlank(csIInterventoPr.getCsIInterventoPrFse().getAzRagioneSociale())) {
+				addErrorCampiObbligatori("Progetti", mappaCampiFse.getAzRagioneSociale().getLabel());
+				ret = false;
+			}
+			if((mappaCampiFse.getAzPi().isValida() && StringUtils.isBlank(csIInterventoPr.getCsIInterventoPrFse().getAzPIVA())) && 
+			   (mappaCampiFse.getAzCf().isValida() && StringUtils.isBlank(csIInterventoPr.getCsIInterventoPrFse().getAzCF()))) {
+				String error = mappaCampiFse.getAzPi().getLabel()+" o "+mappaCampiFse.getAzCf().getLabel();
+				addErrorCampiObbligatori("Progetti", error);
+				ret = false;
+			}
+	
+			if(mappaCampiFse.getAzVia().isValida() && StringUtils.isBlank(csIInterventoPr.getCsIInterventoPrFse().getAzVia())) {
+				addErrorCampiObbligatori("Progetti", mappaCampiFse.getAzVia().getLabel());
+				ret = false;
+			} 
+
+			if(mappaCampiFse.getAzComune().isValida() && StringUtils.isBlank(csIInterventoPr.getCsIInterventoPrFse().getAzComuneDes())) {
+				addErrorCampiObbligatori("Progetti", mappaCampiFse.getAzComune().getLabel());
+				ret = false;
+			} 
+
+			if(mappaCampiFse.getAzCodAteco().isValida() && StringUtils.isBlank(csIInterventoPr.getCsIInterventoPrFse().getAzCodAteco())) {
+				addErrorCampiObbligatori("Progetti", mappaCampiFse.getAzCodAteco().getLabel());
+				ret = false;
+			} 
+
+			if(mappaCampiFse.getAzFormaGiuridica().isValida() && csIInterventoPr.getCsIInterventoPrFse().getAzFormaGiuridica()==null) {
+				addErrorCampiObbligatori("Progetti", mappaCampiFse.getAzFormaGiuridica().getLabel());
+				ret = false;
+			} 
+
+			if(mappaCampiFse.getAzDimensione().isValida() && StringUtils.isBlank(csIInterventoPr.getCsIInterventoPrFse().getAzDescDimensioni())) {
+				addErrorCampiObbligatori("Progetti", mappaCampiFse.getAzDimensione().getLabel());
+				ret = false;
+			} 
+		} else if(this.isDisoccupato()) {
+			if(mappaCampiFse.getDurataRicercaLavoro().isValida() && StringUtils.isBlank(csIInterventoPr.getCsIInterventoPrFse().getDurataRicLavoroId())) {
+				addErrorCampiObbligatori("Progetti", mappaCampiFse.getDurataRicercaLavoro().getLabel());
+				ret = false;
+			} 
+			
+		} else if(this.isInattivo()) {
+			
+		} else if(this.isRicercaPrimaOccupazione()) {
+			if(mappaCampiFse.getDurataRicercaLavoro().isValida() && StringUtils.isBlank(csIInterventoPr.getCsIInterventoPrFse().getDurataRicLavoroId())) {
+				addErrorCampiObbligatori("Progetti", mappaCampiFse.getDurataRicercaLavoro().getLabel());
+				ret = false;
+			} 
+		}
+		
+		BigDecimal annoTitolo = csIInterventoPr.getCsIInterventoPrFse().getTitoloStudioAnno();
+		if(mappaCampiFse.getAnnoTitoloStudio().isValida() && (annoTitolo == null || annoTitolo.longValue()<1800)){
+			addErrorCampiObbligatori("Progetti", mappaCampiFse.getAnnoTitoloStudio().getLabel());
+			ret = false;
+		}
+		
+		if(mappaCampiFse.getPagIban().isValida() && StringUtils.isBlank(csIInterventoPr.getCsIInterventoPrFse().getIban())){
+			addErrorCampiObbligatori("Progetti", mappaCampiFse.getPagIban().getLabel());
+			ret = false;
+		}
+		
+		if(mappaCampiFse.getPagResDom().isValida() && csIInterventoPr.getCsIInterventoPrFse().getFlagResDom()==null){
+			addErrorCampiObbligatori("Progetti", mappaCampiFse.getPagResDom().getLabel());
+			ret = false;
+		}
+		
+		if(mappaCampiFse.getInattivoAltroCorso().isValida() && this.csIInterventoPr.getCsIInterventoPrFse().getFlagAltroCorso()==null){
+			addErrorCampiObbligatori("Progetti", mappaCampiFse.getInattivoAltroCorso().getLabel());
+			ret = false;
+		}
+		
+		if(this.getCsIInterventoPr().getCsIInterventoPrFse().getComunicaVul() == null){
+			addError("Progetti","Selezionare se l'utente comunica o meno la condizione di vulnerabilità");
+			ret = false;
+		}else if(this.getCsIInterventoPr().getCsIInterventoPrFse().getComunicaVul() && 
+				(this.getCsIInterventoPr().getCsIInterventoPrFse().getCsTbGrVulnerabile() == null ||
+				 this.getCsIInterventoPr().getCsIInterventoPrFse().getCsTbGrVulnerabile().getId() == null)){
+			addError("Progetti","indicare la condizione di vulnerabilità");
+			ret = false;
+		}else if(!this.getCsIInterventoPr().getCsIInterventoPrFse().getComunicaVul() && 
+				 this.getCsIInterventoPr().getCsIInterventoPrFse().getCsTbGrVulnerabile() != null &&
+				 this.getCsIInterventoPr().getCsIInterventoPrFse().getCsTbGrVulnerabile().getId()!=null){
+			addError("Progetti","Valori incompatibili: se l'utente non intende comunicare la condizione di vulnerabilità, non deve essere espresso alcun valore.");
+			ret = false;
+		}
+		
+		if(mappaCampiFse.getDataSottoscrizione().isValida() && this.getCsIInterventoPr().getCsIInterventoPrFse().getDtSottoscrizione() == null){
+			addErrorCampiObbligatori("Progetti",mappaCampiFse.getDataSottoscrizione().getLabel());
+			ret = false;
+		}
+		
+		if(mappaCampiFse.getSoggettoAttuatore().isValida() && StringUtils.isBlank(csIInterventoPr.getCsIInterventoPrFse().getSoggettoAttuatore())) {
+			addErrorCampiObbligatori("Progetti", mappaCampiFse.getSoggettoAttuatore().getLabel());
+			ret = false;
+		}
+	
+		return ret;
 	}
 	
 	public void setIdSettoreGestoreComeIdSettoreTitolare() {
@@ -1578,7 +1715,7 @@ public class DatiProgettoBean extends CsUiCompBaseBean implements Serializable {
 			
 			if (lsAteco != null) {
 				for (SiruDominioDTO obj : lsAteco) {
-					lstAteco.add(new SelectItem(obj.getCodice(), obj.getCodice()+ " "+obj.getDescrizione()));
+					lstAteco.add(new SelectItem(obj.getCodiceSiru(), obj.getCodiceSiru()+ " "+obj.getDescrizione()));
 				}
 			}		
 		}
@@ -1719,9 +1856,9 @@ public class DatiProgettoBean extends CsUiCompBaseBean implements Serializable {
 	}
 	
 	
-	public void onChangeBeneficiarioRiferimento(SoggettoErogazioneBean soggettoErogazione,ComuneNazioneNascitaMan comuneNazioneNascitaMan) {
+	public void onChangeBeneficiarioRiferimento(String cf ,ComuneNazioneNascitaMan comuneNazioneNascitaMan) {
 		this.comuneNazioneNascitaBean=comuneNazioneNascitaMan;
-		loadDatiSociali(soggettoErogazione);
+		loadDatiSociali(cf);
 		
 		//Resetto i dati provenienti dalla cartella poichè è cambiato il soggetto di riferimento per il quale erano stati configurati
 		if(datiSociali!=null){
@@ -1739,7 +1876,7 @@ public class DatiProgettoBean extends CsUiCompBaseBean implements Serializable {
 		}
 		
 	}
-	
+
 	public Boolean getServizioGestibileComeAmbito() {
 		boolean servizioGestibileComeAmbito = false;
 		CsOSettore settoreTitolare = getSettoreTitolare();
@@ -1757,5 +1894,127 @@ public class DatiProgettoBean extends CsUiCompBaseBean implements Serializable {
 	public boolean getServizioGestitoComeAmbito() {
 		return this.csIInterventoPr.getServizioAmbito();
 	}
+	
+	public boolean isRenderSezAzienda(){
+		boolean render = false;
+		if(this.isOccupato() && this.mappaCampiFse!=null)
+			render = this.mappaCampiFse.isRenderSezAzienda();
+		return render;
+	}
+	
+	public boolean isRenderSezLavoro(){
+		boolean render = false;
+		if(this.isOccupato() && this.mappaCampiFse!=null)
+			render = this.mappaCampiFse.isRenderSezLavoro();
+		return render;
+	}
 
+	public boolean isRenderAltroCorso(){
+		boolean render = false;
+		if(this.isInattivo() && this.mappaCampiFse!=null)
+			render = this.mappaCampiFse.getInattivoAltroCorso().isAbilitato();	
+		return render;
+	}
+	
+	public boolean isRenderDurataRicLavoro(){
+		boolean render = false;
+		if(this.mappaCampiFse!=null && (this.isDisoccupato() || this.isRicercaPrimaOccupazione()))
+			render = this.mappaCampiFse.getDurataRicercaLavoro().isAbilitato();
+		return render;
+	}
+	
+	public ConfigurazioneFseDTO getMappaCampiFse() {
+		return mappaCampiFse;
+	}
+
+	public void valorizzaStampaFse(StampaFseDTO stampaFseDTO) {
+		stampaFseDTO.setTelefono(this.getCsIInterventoPr().getCsIInterventoPrFse().getTelefono());
+		stampaFseDTO.setCellulare(this.getCsIInterventoPr().getCsIInterventoPrFse().getCellulare());
+		stampaFseDTO.setEmail(this.getCsIInterventoPr().getCsIInterventoPrFse().getEmail());
+		stampaFseDTO.setLuogoNascita(this.getComuneNazioneNascitaBean().getDescrizioneLuogoDiNascita());
+		
+		if(this.getDomicilioComuneMan().getComune() != null){
+			stampaFseDTO.setDomicilioCap(this.getDomicilioComuneMan().getComune().getCap());
+			stampaFseDTO.setDomicilioSiglaProv(this.getDomicilioComuneMan().getComune().getSiglaProv());
+			stampaFseDTO.setDomicilioComune(this.getDomicilioComuneMan().getComune().getDenominazione());
+		}
+		stampaFseDTO.setViaDomicilio(this.getCsIInterventoPr().getCsIInterventoPrFse().getViaDomicilio());
+	
+		//Dati Dichiarati
+		stampaFseDTO.setComunicaVul(this.getCsIInterventoPr().getCsIInterventoPrFse().getComunicaVul());
+		
+		CsTbGVulnerabile gVulnerabile = this.getCsIInterventoPr().getCsIInterventoPrFse().getCsTbGrVulnerabile();
+		if(gVulnerabile!=null){
+			stampaFseDTO.setIdVulnerabile(gVulnerabile.getId());
+			stampaFseDTO.setDescrizioneVulnerabile(gVulnerabile.getTooltip());
+		}
+		
+		stampaFseDTO.setDurataRicercaLavoro(this.isRenderDurataRicLavoro());
+		String idDurataRicLavoro = this.getCsIInterventoPr().getCsIInterventoPrFse().getDurataRicLavoroId();
+		CsTbDurataRicLavoro ricLavoro = null;
+		if(!StringUtils.isBlank(idDurataRicLavoro)){
+			BaseDTO dto = new BaseDTO();
+			fillEnte(dto);
+			dto.setObj(new Long(idDurataRicLavoro));
+			ricLavoro = confService.findDurataRicLavoroById(dto);
+		}
+		stampaFseDTO.setLavoroDurataRicerca(ricLavoro!=null ? ricLavoro.getTooltip() : "");
+		
+		CsTbIngMercato ingMercato = this.getCsIInterventoPr().getCsTbIngMercato();
+		stampaFseDTO.setCondLavoro(ingMercato!=null ? ingMercato.getTooltip() : null);
+		
+		CsTbTitoloStudio tbTit = this.getCsIInterventoPr().getCsTbTitoloStudio();
+		String codIstat = tbTit!=null && !StringUtils.isBlank(tbTit.getCodIstat()) ? tbTit.getCodIstat() : "";
+		String tooltip = tbTit!=null && !StringUtils.isBlank(tbTit.getTooltip()) ? tbTit.getTooltip() : "";
+		String titolo = tbTit!=null ? (codIstat+" "+tbTit.getDescrizione()+" "+tooltip).trim() : null;
+		stampaFseDTO.setTitoloStudio(titolo);
+		
+		Date dtsottoscrizione = this.getCsIInterventoPr().getCsIInterventoPrFse().getDtSottoscrizione();
+		if(dtsottoscrizione!=null)
+			stampaFseDTO.setDtSottoscrizione(ddMMyyyy.format(dtsottoscrizione));
+		stampaFseDTO.setSoggettoAttuatore(this.getCsIInterventoPr().getCsIInterventoPrFse().getSoggettoAttuatore());
+		
+		//Dati progetto
+		String progDesc = this.csIInterventoPr.getProgetto().getDescrizione();
+		stampaFseDTO.setFfProgettoDescrizione(progDesc.replaceFirst(DataModelCostanti.patternFSE, ""));
+		stampaFseDTO.setCodProgetto(this.getCsIInterventoPr().getProgetto().getCodiceMemo());
+		stampaFseDTO.setCodAttivita(this.getCsIInterventoPr().getProgettoAttivita().getCodice());
+		
+	}
+
+	public Long getIdProgettoSel() {
+		return this.csIInterventoPr.getProgetto()!=null ? this.csIInterventoPr.getProgetto().getId() : null;
+	}
+
+	public void setIdProgettoSel(Long idProgettoSel) {
+		ArFfProgetto p = this.getProgetto(idProgettoSel);
+		this.csIInterventoPr.setProgetto(p);
+	}
+
+	public Long getIdProgettoAttivitaSel() {
+		return this.csIInterventoPr.getProgettoAttivita()!=null ? this.csIInterventoPr.getProgettoAttivita().getId() : null;
+	}
+
+	public void setIdProgettoAttivitaSel(Long idProgettoAttivitaSel) {
+		ArFfProgettoAttivita p = null;
+		if(idProgettoAttivitaSel!=null && idProgettoAttivitaSel>0){
+			BaseDTO dto = new BaseDTO();
+			fillEnte(dto);
+			dto.setObj(idProgettoAttivitaSel);
+			p  = confService.getProgettoAttivitaById(dto);
+		}
+		this.csIInterventoPr.setProgettoAttivita(p);
+	}
+	
+	private ArFfProgetto getProgetto(Long id){
+		ArFfProgetto p = null;
+		if(id!=null && id>0){
+			BaseDTO dto = new BaseDTO();
+			fillEnte(dto);
+			dto.setObj(id);
+			p  = confService.getProgettiById(dto);
+		}
+		return p;
+	}
+	
 }

@@ -24,18 +24,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import it.webred.cs.csa.ejb.CarSocialeBaseDAO;
 import it.webred.cs.csa.ejb.client.CarSocialeServiceException;
 import it.webred.cs.csa.ejb.dto.CsRelRelazioneProblDTO;
-import it.webred.cs.csa.ejb.dto.CsRelRelazioneProblDTO;
 import it.webred.cs.csa.ejb.dto.DiarioAnagraficaDTO;
 import it.webred.cs.csa.ejb.dto.KeyValueDTO;
 import it.webred.cs.csa.ejb.dto.TriageItemDTO;
+import it.webred.cs.csa.ejb.dto.cartella.RisorsaCalcDTO;
+import it.webred.cs.csa.ejb.dto.siru.CampoFseDTO;
 import it.webred.cs.data.model.ArBiInviante;
+import it.webred.cs.data.model.ArFfProgetto;
+import it.webred.cs.data.model.ArFfProgettoAttivita;
 import it.webred.cs.data.model.ArTbPrestazioniInps;
-import it.webred.cs.data.model.CsAAnagrafica;
 import it.webred.cs.data.model.CsACaso;
 import it.webred.cs.data.model.CsCCategoriaSociale;
 import it.webred.cs.data.model.CsCDiarioConchi;
 import it.webred.cs.data.model.CsCDiarioDove;
-import it.webred.cs.data.model.CsCInterventoPrForm;
 import it.webred.cs.data.model.CsCTipoColloquio;
 import it.webred.cs.data.model.CsCfgIntEsegStato;
 import it.webred.cs.data.model.CsCfgParametri;
@@ -43,20 +44,22 @@ import it.webred.cs.data.model.CsDRelazione;
 import it.webred.cs.data.model.CsOOrganizzazione;
 import it.webred.cs.data.model.CsOSettore;
 import it.webred.cs.data.model.CsOSettoreBASIC;
+import it.webred.cs.data.model.CsPaiFaseChiusura;
+import it.webred.cs.data.model.CsPaiFaseChiusuraPK;
 import it.webred.cs.data.model.CsRelRelazioneProbl;
-import it.webred.cs.data.model.CsRelSettoreCatsoc;
-import it.webred.cs.data.model.CsRelSottocartDocProt;
+import it.webred.cs.data.model.CsRelSettoreStruttura;
 import it.webred.cs.data.model.CsTbAbitGestProprietario;
 import it.webred.cs.data.model.CsTbAbitTitoloGodimento;
+import it.webred.cs.data.model.CsTbAnnoScolastico;
 import it.webred.cs.data.model.CsTbAssenzaPermesso;
 import it.webred.cs.data.model.CsTbBuono;
 import it.webred.cs.data.model.CsTbCittadinanzaAcq;
 import it.webred.cs.data.model.CsTbCondLavoro;
 import it.webred.cs.data.model.CsTbContatto;
-import it.webred.cs.data.model.CsTbDisabEnte;
 import it.webred.cs.data.model.CsTbDisabGravita;
 import it.webred.cs.data.model.CsTbDisabTipologia;
 import it.webred.cs.data.model.CsTbDisponibilita;
+import it.webred.cs.data.model.CsTbDurataRicLavoro;
 import it.webred.cs.data.model.CsTbEsenzioneRiduzione;
 import it.webred.cs.data.model.CsTbFormaGiuridica;
 import it.webred.cs.data.model.CsTbGVulnerabile;
@@ -84,7 +87,7 @@ import it.webred.cs.data.model.CsTbProfessione;
 import it.webred.cs.data.model.CsTbProgettoAltro;
 import it.webred.cs.data.model.CsTbResponsabilita;
 import it.webred.cs.data.model.CsTbSchedaMultidim;
-import it.webred.cs.data.model.CsTbScuola;
+import it.webred.cs.data.model.CsTbScuolaAnno;
 import it.webred.cs.data.model.CsTbSecondoLivello;
 import it.webred.cs.data.model.CsTbServComunita;
 import it.webred.cs.data.model.CsTbServLuogoStr;
@@ -94,30 +97,31 @@ import it.webred.cs.data.model.CsTbSettoreImpiego;
 import it.webred.cs.data.model.CsTbSinaDomanda;
 import it.webred.cs.data.model.CsTbSinaRisposta;
 import it.webred.cs.data.model.CsTbSottocartellaDoc;
+import it.webred.cs.data.model.CsTbSsProvenienza;
 import it.webred.cs.data.model.CsTbStatoCivile;
 import it.webred.cs.data.model.CsTbStatus;
-import it.webred.cs.data.model.CsTbStesuraRelazioniPer;
 import it.webred.cs.data.model.CsTbTipoAbitazione;
 import it.webred.cs.data.model.CsTbTipoAlert;
 import it.webred.cs.data.model.CsTbTipoCirc4;
 import it.webred.cs.data.model.CsTbTipoComunita;
-import it.webred.cs.data.model.CsTbTipoContratto;
 import it.webred.cs.data.model.CsTbTipoContributo;
 import it.webred.cs.data.model.CsTbTipoDiario;
 import it.webred.cs.data.model.CsTbTipoIndirizzo;
 import it.webred.cs.data.model.CsTbTipoIsee;
+import it.webred.cs.data.model.CsTbTipoMinore;
 import it.webred.cs.data.model.CsTbTipoOperatore;
 import it.webred.cs.data.model.CsTbTipoPai;
 import it.webred.cs.data.model.CsTbTipoProgetto;
 import it.webred.cs.data.model.CsTbTipoRapportoCon;
 import it.webred.cs.data.model.CsTbTipoRetta;
 import it.webred.cs.data.model.CsTbTipoRientriFami;
-import it.webred.cs.data.model.CsTbTipoScuola;
 import it.webred.cs.data.model.CsTbTipologiaFamiliare;
 import it.webred.cs.data.model.CsTbTitoloStudio;
 import it.webred.cs.data.model.CsTbTribStruttura;
 import it.webred.cs.data.model.CsTbTutela;
 import it.webred.cs.data.model.CsTbUnitaMisura;
+import it.webred.cs.data.model.TipoStruttura;
+import it.webred.cs.data.model.VStrutturaArea;
 
 @Named
 public class ConfigurazioneDAO extends CarSocialeBaseDAO implements Serializable {
@@ -130,10 +134,8 @@ public class ConfigurazioneDAO extends CarSocialeBaseDAO implements Serializable
 	private DocumentoDAO documentoDao;
 	@Autowired
 	private CasoDAO casoDAO;
-	
 	@Autowired
 	private SchedaDAO schedaDao;
-	
 
 	@SuppressWarnings("unchecked")
 	public List<CsTbStatoCivile> getStatoCivile() {
@@ -221,21 +223,18 @@ public class ConfigurazioneDAO extends CarSocialeBaseDAO implements Serializable
 		return null;
 	}
 	//SISO-1190
-	public List<CsTbTitoloStudio> getTitoloStudioAbilitato() {
-
+	public List<CsTbTitoloStudio> getTitoliStudio(boolean abilitatoOnly) {
+		List<CsTbTitoloStudio> lista = new ArrayList<CsTbTitoloStudio>();
 		try {
-
-			Query q = em.createNamedQuery("CsTbTitoloStudio.findAllAbilit");
-			List<CsTbTitoloStudio> lista = q.getResultList();
-			
-				return lista;
-
+			String nomeQuery = abilitatoOnly ? "CsTbTitoloStudio.findAllAbil" : "CsTbTitoloStudio.findAll";
+			Query q = em.createNamedQuery(nomeQuery);
+			lista = q.getResultList();
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 		}
-		return null;
+		return lista;
 	}
-	
+
 	public CsTbStatoCivile getStatoCivileByCodice(String obj) {
 		if(obj!=null)
 			return em.find(CsTbStatoCivile.class, obj);
@@ -380,53 +379,11 @@ public class ConfigurazioneDAO extends CarSocialeBaseDAO implements Serializable
 		return null;
 	}
 
-	@SuppressWarnings("unchecked")
-	public List<CsTbProblematica> getProblematiche() {
-
-		try {
-
-			Query q = em.createNamedQuery("CsTbProblematica.findAllAbil");
-			return q.getResultList();
-
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-		}
-		return null;
-	}
-
 	public CsTbProblematica getProblematicaById(Long id) {
 
 		CsTbProblematica cs = em.find(CsTbProblematica.class, id);
 		return cs;
 
-	}
-
-	@SuppressWarnings("unchecked")
-	public List<CsTbStesuraRelazioniPer> getStesuraRelazioniPer() {
-
-		try {
-
-			Query q = em.createNamedQuery("CsTbStesuraRelazioniPer.findAllAbil");
-			return q.getResultList();
-
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-		}
-		return null;
-	}
-
-	@SuppressWarnings("unchecked")
-	public List<CsTbTitoloStudio> getTitoliStudio() {
-
-		try {
-
-			Query q = em.createNamedQuery("CsTbTitoloStudio.findAllAbil");
-			return q.getResultList();
-
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-		}
-		return null;
 	}
 
 	public CsTbTitoloStudio getTitoloStudioById(Long id) {
@@ -456,20 +413,6 @@ public class ConfigurazioneDAO extends CarSocialeBaseDAO implements Serializable
 		try {
 
 			Query q = em.createNamedQuery("CsTbCondLavoro.findAll");
-			return q.getResultList();
-
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-		}
-		return null;
-	}
-
-	@SuppressWarnings("unchecked")
-	public List<CsTbTipoContratto> getTipoContratto() {
-
-		try {
-
-			Query q = em.createNamedQuery("CsTbTipoContratto.findAllAbil");
 			return q.getResultList();
 
 		} catch (Exception e) {
@@ -735,6 +678,20 @@ public class ConfigurazioneDAO extends CarSocialeBaseDAO implements Serializable
 		}
 		return null;
 	}
+	
+	@SuppressWarnings("unchecked")
+	public List<CsTbDurataRicLavoro> getDurataRicLavoro() {
+
+		try {
+
+			Query q = em.createNamedQuery("CsTbDurataRicLavoro.findAll");
+			return q.getResultList();
+
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		}
+		return null;
+	}
 
 	public CsTbDisponibilita getDisponibilitaById(Long id) {
 
@@ -789,20 +746,6 @@ public class ConfigurazioneDAO extends CarSocialeBaseDAO implements Serializable
 		return null;
 	}
 
-	@SuppressWarnings("unchecked")
-	public List<CsTbMacroSegnal> getMacroSegnalazioni() {
-
-		try {
-
-			Query q = em.createNamedQuery("CsTbMacroSegnal.findAllAbil");
-			return q.getResultList();
-
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-		}
-		return null;
-	}
-
 	public CsTbMacroSegnal getMacroSegnalazioneById(Long id) {
 
 		CsTbMacroSegnal cs = em.find(CsTbMacroSegnal.class, id);
@@ -831,53 +774,11 @@ public class ConfigurazioneDAO extends CarSocialeBaseDAO implements Serializable
 
 	}
 
-	@SuppressWarnings("unchecked")
-	public List<CsTbMotivoSegnal> getMotivoSegnalazioni() {
-
-		try {
-
-			Query q = em.createNamedQuery("CsTbMotivoSegnal.findAllAbil");
-			return q.getResultList();
-
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-		}
-		return null;
-	}
-
 	public CsTbMotivoSegnal getMotivoSegnalazioneById(Long id) {
 
 		CsTbMotivoSegnal cs = em.find(CsTbMotivoSegnal.class, id);
 		return cs;
 
-	}
-
-	@SuppressWarnings("unchecked")
-	public List<CsTbDisabEnte> getDisabEnte() {
-
-		try {
-
-			Query q = em.createNamedQuery("CsTbDisabEnte.findAllAbil");
-			return q.getResultList();
-
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-		}
-		return null;
-	}
-
-	@SuppressWarnings("unchecked")
-	public List<CsTbDisabGravita> getDisabGravita() {
-
-		try {
-
-			Query q = em.createNamedQuery("CsTbDisabGravita.findAllAbil");
-			return q.getResultList();
-
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-		}
-		return null;
 	}
 
 	public CsTbDisabGravita getDisabGravitaById(Long id) {
@@ -1189,20 +1090,6 @@ public class ConfigurazioneDAO extends CarSocialeBaseDAO implements Serializable
 		return null;
 	}
 
-	@SuppressWarnings("unchecked")
-	public List<CsTbScuola> getScuole() {
-
-		try {
-
-			Query q = em.createNamedQuery("CsTbScuola.findAllAbil");
-			return q.getResultList();
-
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-		}
-		return null;
-	}
-
 	public List<String> getComuniScuole() {
 
 		try {
@@ -1215,9 +1102,20 @@ public class ConfigurazioneDAO extends CarSocialeBaseDAO implements Serializable
 		}
 		return null;
 	}
+	
+	public List<CsTbAnnoScolastico> getAnniScolastici() {
+		try {
+			Query q = em.createNamedQuery("CsTbAnnoScolastico.findAll");
+			return q.getResultList();
+
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		}
+		return null;
+	}
 
 	@SuppressWarnings("unchecked")
-	public List<CsTbScuola> getScuoleByComuneTipo(String comune, Long tipoId) {
+	public List<CsTbScuolaAnno> getScuoleByComuneTipo(String comune, Long tipoId) {
 
 		try {
 
@@ -1232,27 +1130,13 @@ public class ConfigurazioneDAO extends CarSocialeBaseDAO implements Serializable
 		return null;
 	}
 
-	public List<CsTbScuola> getScuoleByComuneAnnoTipo(String anno, Long tipoId, String belfiore) {
+	public List<CsTbScuolaAnno> getScuoleByComuneAnnoTipo(String comune, Long tipoId, Long anno) {
 		try {
 
 			Query q = em.createNamedQuery("CsTbScuola.findByComuneAnnoTipo");
 			q.setParameter("anno", anno);
 			q.setParameter("idTipo", tipoId);
-			q.setParameter("comune", belfiore);
-			return q.getResultList();
-
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-		}
-		return null;
-	}
-
-	@SuppressWarnings("unchecked")
-	public List<CsTbTipoScuola> getTipoScuole() {
-
-		try {
-
-			Query q = em.createNamedQuery("CsTbTipoScuola.findAllAbil");
+			q.setParameter("comune", comune);
 			return q.getResultList();
 
 		} catch (Exception e) {
@@ -1365,6 +1249,32 @@ public class ConfigurazioneDAO extends CarSocialeBaseDAO implements Serializable
 		try {
 
 			Query q = em.createNamedQuery("CsOSettore.findAll");
+			return q.getResultList();
+
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		}
+		return null;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<CsOSettore> getSettoreRiunione() {
+		try {
+
+			Query q = em.createNamedQuery("CsOSettore.findPerRiunione");
+			return q.getResultList();
+
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		}
+		return null;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<CsOSettore> getSettoriDatiSociali() {
+		try {
+
+			Query q = em.createNamedQuery("CsOSettore.findSettoriInvianteInviatoInCarico");
 			return q.getResultList();
 
 		} catch (Exception e) {
@@ -1572,13 +1482,13 @@ public class ConfigurazioneDAO extends CarSocialeBaseDAO implements Serializable
 	}
 
 	public String findCodFormProgetto(String progetto, Long tipoIntervento, Long tipoInterventoCustom, Long idCatSoc) {
-		Query q = em.createNamedQuery("CsCInterventoPrForm.find");
+		Query q = em.createNamedQuery("CsCfgIntPrForm.find");
 		q.setParameter("progetto", progetto);
 		q.setParameter("tipoInterventoId", tipoIntervento);
 		q.setParameter("tipoInterventoCustomId", tipoInterventoCustom);
 		q.setParameter("catSocialeId", idCatSoc);
-		List<CsCInterventoPrForm> lst = q.getResultList();
-		if(!lst.isEmpty()) return ((CsCInterventoPrForm)lst.get(0)).getRifFormInterventoPrDett();
+		List<String> lst = q.getResultList();
+		if(!lst.isEmpty()) return ((String)lst.get(0));
 		return null;
 	}
 
@@ -1716,34 +1626,42 @@ public class ConfigurazioneDAO extends CarSocialeBaseDAO implements Serializable
 		return null;
 	}
 	//SISO-1172
-		@SuppressWarnings("unchecked")
-		public List<CsTbMotivoChiusuraPai> getMotiviChiusuraPai(Long idTipoPai) {
-			List<CsTbMotivoChiusuraPai> listaMotiviChiusura = null;
-			if(idTipoPai != null){
-				try{
-					Query q = em.createNamedQuery("CsTbMotivoChiusuraPai.findAll");
-					List<CsTbMotivoChiusuraPai> lista = q.getResultList();
-					if(lista != null)
-						listaMotiviChiusura = new ArrayList<CsTbMotivoChiusuraPai>();
-					
-					for(CsTbMotivoChiusuraPai o: lista){
-						String[] value_split = o.getTipi_pai().split("|");
-						if (Arrays.asList(value_split).contains(idTipoPai.toString()) ) {
-							CsTbMotivoChiusuraPai dto = new CsTbMotivoChiusuraPai();
-							dto.setId((Long) o.getId());
-							dto.setDescrizione((String) o.getDescrizione());
-							listaMotiviChiusura.add(dto);
+			@SuppressWarnings("unchecked")
+			public List<CsTbMotivoChiusuraPai> getMotiviChiusuraPai(Long idTipoPai) {
+				List<CsTbMotivoChiusuraPai> listaMotiviChiusura = null;
+				if(idTipoPai != null){
+					try{
+						Query q = em.createNamedQuery("CsTbMotivoChiusuraPai.findAll");
+						List<CsTbMotivoChiusuraPai> lista = q.getResultList();
+						if(lista != null)
+							listaMotiviChiusura = new ArrayList<CsTbMotivoChiusuraPai>();
+						
+						for(CsTbMotivoChiusuraPai o: lista){
+							String[] value_split = o.getTipi_pai().split(";");
+							if (Arrays.asList(value_split).contains(idTipoPai.toString()) ) {
+								CsTbMotivoChiusuraPai dto = new CsTbMotivoChiusuraPai();
+								dto.setId((Long) o.getId());
+								dto.setDescrizione((String) o.getDescrizione());
+								listaMotiviChiusura.add(dto);
+							}
 						}
-					}
-					
-			    }catch(Throwable e){
-				logger.error(e.getMessage(), e);
+						
+				    }catch(Throwable e){
+					logger.error(e.getMessage(), e);
+				}
+				
+				}
+				return listaMotiviChiusura;
 			}
-			
-			}
-			return listaMotiviChiusura;
+		//SISO-1172 FINE
+		
+		
+		public CsTbMotivoChiusuraPai getMotivoChiusuraPaiById(Long id) 
+		{
+			CsTbMotivoChiusuraPai cs = em.find(CsTbMotivoChiusuraPai.class, id);
+			return cs;
 		}
-	//SISO-1172 FINE
+		
 		
 	//TODO TASK SISO 1044
 	@SuppressWarnings("unchecked")
@@ -1752,31 +1670,24 @@ public class ConfigurazioneDAO extends CarSocialeBaseDAO implements Serializable
 		try {
 			HashMap<Long, DiarioAnagraficaDTO> idAna2diarioAna;
 			idAna2diarioAna = new HashMap<Long, DiarioAnagraficaDTO>();
-			List<CsAAnagrafica> anagrafiche;
-			anagrafiche = new ArrayList<CsAAnagrafica>();
-
-			
+		
 			CsACaso casoTrovato=casoDAO.findCasoById(casoId);
-			
+			String cfSoggetto = casoTrovato.getCsASoggetto().getCsAAnagrafica().getCf();
+			List<RisorsaCalcDTO> anagrafiche = schedaDao.findComponentiGiaFamigliariBySoggettoCf(cfSoggetto, null, null);
 						
-			
-			
-			anagrafiche= schedaDao.findComponentiGiaFamigliariBySoggettoCf(casoTrovato.getCsASoggetto().getCsAAnagrafica().getCf(),null);
-						
-			
-			for (CsAAnagrafica fam : anagrafiche) {
+			for (RisorsaCalcDTO fam : anagrafiche) {
 				
 				//solo i familiari con CF valorizzato
-				if(fam.getCf() == null || fam.getCf().trim().isEmpty()){
+				if(StringUtils.isBlank(fam.getCf())){
 					continue;
 				}
 							
 				DiarioAnagraficaDTO da = new DiarioAnagraficaDTO();
-				da.setAnagraficaId(fam.getId());
+				da.setAnagraficaId(fam.getAnagraficaId());
 				da.setCf(fam.getCf());
 				da.setCognome(fam.getCognome());
 				da.setNome(fam.getNome());
-				idAna2diarioAna.put(fam.getId(), da);
+				idAna2diarioAna.put(fam.getAnagraficaId(), da);
 			}
 					
 			ArrayList<DiarioAnagraficaDTO> lstr = new ArrayList<DiarioAnagraficaDTO>(idAna2diarioAna.values());
@@ -2347,6 +2258,20 @@ public class ConfigurazioneDAO extends CarSocialeBaseDAO implements Serializable
 	}
 	
 	@SuppressWarnings("unchecked")
+	public List<VStrutturaArea>  findAllStruttura( ) {
+		List<VStrutturaArea>listaStrutture = new ArrayList<VStrutturaArea>();
+			try{
+				Query q = em.createNamedQuery("VStrutturaArea.findAll"); 
+				listaStrutture = q.getResultList();
+				
+				return listaStrutture;
+			}catch(Throwable e){
+				logger.error(e.getMessage(), e);
+			}
+		return null;
+	}
+	
+	@SuppressWarnings("unchecked")
 	public List<KeyValueDTO>  findArea(Long idStruttura) {
 		ArrayList<KeyValueDTO>listaArea = new ArrayList<KeyValueDTO>();
 		 listaArea = new ArrayList<KeyValueDTO>();
@@ -2384,10 +2309,10 @@ public class ConfigurazioneDAO extends CarSocialeBaseDAO implements Serializable
 	
 	//recupero codiceDocumentoGed
 	@SuppressWarnings("unchecked")
-	public String findCodiceDocumentoGed(Long sottocartellaDocId, String codRoutingOrgId) {
+	public String findCodiceDocumentoGed(String codRoutingOrgId) {
 		try {
 			Query q = em.createNamedQuery("CsRelSottocartDocProt.findCodiceDocumentoGed");
-			q.setParameter("sottocartellaDocId", sottocartellaDocId);
+//			q.setParameter("sottocartellaDocId", sottocartellaDocId);
 			q.setParameter("codRoutingOrgId", codRoutingOrgId);
 			
 			if(q.getResultList() != null)
@@ -2415,9 +2340,9 @@ public class ConfigurazioneDAO extends CarSocialeBaseDAO implements Serializable
 
 			Query q = em.createNamedQuery("CsTbProgettoAltro.findProgettoAltroByDescrizione");
 			q.setParameter("descrizione", descrizione);
-			Object o = q.getSingleResult();
-			if (o != null){
-				return (CsTbProgettoAltro)o;
+			List<Object> o = q.getResultList();
+			if (o != null && o.size()>0){
+				return (CsTbProgettoAltro)o.get(0);
 			}
 		} catch (NoResultException e) {
 			logger.debug("CsTbProgettoAltro con descrizione ["+descrizione+"] non trovato");
@@ -2431,8 +2356,10 @@ public class ConfigurazioneDAO extends CarSocialeBaseDAO implements Serializable
 	@SuppressWarnings("unchecked")
 	public List<CsTbUnitaMisura> getUnitaMisuraByIdInterventi(String query) {
 		try{
+			logger.debug("getUnitaMisuraByIdInterventi SQL["+query+"]");
 			Query q = em.createQuery(query);
 			List<CsTbUnitaMisura> retList = q.getResultList();
+			logger.debug("getUnitaMisuraByIdInterventi result["+retList.size()+"]");
 			return retList;
 		}catch(Exception e){
 			logger.error(e.getMessage(),e);
@@ -2466,5 +2393,270 @@ public class ConfigurazioneDAO extends CarSocialeBaseDAO implements Serializable
 			logger.error(e.getMessage(), e);
 		}
 		return null;
+	}
+	
+	public List<CsTbSsProvenienza> getSsProvenienza() {
+		try {
+
+			Query q = em.createNamedQuery("CsTbSsProvenienza.findAll");
+			return q.getResultList();
+
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		}
+		return null;
+	}
+	
+	//SISO-1275
+	public CsPaiFaseChiusura getPaiFaseChiusuraById(CsPaiFaseChiusuraPK pk) {
+		CsPaiFaseChiusura cs = em.find(CsPaiFaseChiusura.class, pk);
+		return cs;
+	}
+
+	public CsTbTipoOperatore getTipoOperatore(Long id) {
+		return em.find(CsTbTipoOperatore.class, id);
+	}
+	
+	public List<KeyValueDTO> getTbItems(String tabella){
+		List<KeyValueDTO> lstKv = new ArrayList<KeyValueDTO>();
+		String sql = "SELECT DISTINCT t.ID, t.DESCRIZIONE, t.ABILITATO "
+				   + "FROM "+tabella+" t "
+				   + "ORDER BY t.descrizione ";
+		Query q = em.createNativeQuery(sql);
+		List<Object[]> lst = (List<Object[]>)q.getResultList();
+		if (lst != null) {
+			for (Object[] obj : lst) {
+				KeyValueDTO kv = new KeyValueDTO(obj[0], (String)obj[1]);
+				boolean abilitato = obj[2]!=null && obj[2].toString().equals("1") ? Boolean.TRUE : Boolean.FALSE;
+				kv.setAbilitato(abilitato);
+				lstKv.add(kv);
+			}
+		}		
+    	return lstKv;
+	}
+	
+   public Boolean getPaiFaseChiusuraByTipoPaiId(Long idTipoPai) {
+		
+		try {
+
+			Query q = em.createNamedQuery("CsPaiFaseChiusura.findPaiFaseChiusuraByTipoPaiId");
+			q.setParameter("idTipoPai", idTipoPai);
+			List<Long> lstIs = q.getResultList();
+			return lstIs.size()>0;
+
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		}
+		return null;
+	}
+   
+	public ArFfProgetto getProgettoById(Long id) {
+			ArFfProgetto prog = em.find(ArFfProgetto.class, id);
+			return prog;
+		}
+	
+	public ArFfProgettoAttivita getProgettoAttivitaById(Long id) {
+			ArFfProgettoAttivita prog = em.find(ArFfProgettoAttivita.class, id);
+			return prog;
+		}
+	
+/*	public List<ArFfProgettoAttivita> getSottocorsi(){			
+		Query q = em.createNamedQuery("ArFfProgettoAttivita.findByAbilitato"); 
+		return (List<ArFfProgettoAttivita>) q.getResultList();  
+	}*/
+	
+	public List<ArFfProgetto> findProgettiByBelfioreOrganizzazione(String belfiore, String tipoProgetto){			
+		List<ArFfProgetto> lst = new ArrayList<ArFfProgetto>();
+		String sql = "select distinct p.* from ar_ff_progetto p "+
+				"left join ar_ff_progetto_org po on (p.id = po.progetto_id) "+
+				"left join ar_o_organizzazione o on (po.organizzazione_id = o.id) "+
+				"left join cs_cfg_int_pr_form frm on (FRM.FF_PROGETTO_DESCRIZIONE = p.descrizione) "+
+				"where po.abilitato = 1 and o.belfiore = :belfiore ";
+		if(!StringUtils.isBlank(tipoProgetto))
+			sql+= "and frm.abilitato = 1 and frm.RIF_FORM_INTERVENTO_PR_DETT = :tipoProgetto ";
+		sql+= "order by descrizione";
+		
+		try{		
+			Query q = em.createNativeQuery(sql, ArFfProgetto.class);
+			if(!StringUtils.isBlank(tipoProgetto))
+				q.setParameter("tipoProgetto", tipoProgetto);
+			q.setParameter( "belfiore", belfiore );
+			lst = (List<ArFfProgetto>) q.getResultList();  
+		}catch(Exception e){
+			logger.error(e.getMessage(), e);
+		}
+		return lst;
+	}
+	
+	public HashMap<String, CampoFseDTO> loadCampiFseByIdProgetto(Long progettoId) {
+		HashMap<String, CampoFseDTO> mappa = new HashMap<String, CampoFseDTO>();
+		try{
+			String sql = "select campo as codice, s.label, nvl(c.obbligatorio, s.obbligatorio) obbligatorio, nvl(c.abilitato, s.abilitato) abilitato "
+					+ "from AR_FF_FSE_CAMPI_STANDARD s "
+					+ "left join (select * from AR_FF_FSE_CAMPI_PROGETTO where progetto_id = :progettoId) c on s.campo = c.campo_id";
+			logger.debug("loadCampiFseByIdProgetto idProgetto["+progettoId+"] SQL["+sql+"]");
+			Query q = em.createNativeQuery(sql);
+			q.setParameter("progettoId", progettoId);
+			List<Object[]> lst = q.getResultList();
+			for(Object[] o : lst){
+				CampoFseDTO c = new CampoFseDTO();
+				c.setLabel((String)o[1]);
+				c.setObbligatorio(o[2]!=null ? BigDecimal.ONE.equals((BigDecimal)o[2]):false);
+				c.setAbilitato(o[3]!=null ? BigDecimal.ONE.equals((BigDecimal)o[3]) :false);
+				mappa.put((String)o[0], c);
+			}
+		}catch(Exception e){
+			logger.error(e.getMessage(), e);
+		}
+		return mappa;
+	}
+	
+	public List<TipoStruttura> getLstTipoStrutturaByTipoFunzione(Long idTipoFunzione) {
+		List<TipoStruttura> listaTipoStruttura = null;
+
+		if (idTipoFunzione != null) {
+			try {
+				TypedQuery<TipoStruttura> q = em.createNamedQuery("TipoStruttura.findAll", TipoStruttura.class);
+				List<TipoStruttura> lista = q.getResultList();
+				if (lista != null) {
+					listaTipoStruttura = new ArrayList<TipoStruttura>();
+					for (TipoStruttura tipoStrutt : lista) {
+						String[] value_split = tipoStrutt.getTipoFunzione().split("|");
+						if (Arrays.asList(value_split).contains(idTipoFunzione.toString())) {
+							TipoStruttura dto = new TipoStruttura();
+							dto.setId((Long) tipoStrutt.getId());
+							dto.setDescrizione((String) tipoStrutt.getDescrizione());
+							listaTipoStruttura.add(dto);
+						}
+					}
+
+				}
+			} catch (Exception e) {
+				logger.error("Errore getTipoStruttura " + e.getMessage(), e);
+			}
+			
+		}
+		return listaTipoStruttura;
+
+	}
+	
+	@SuppressWarnings("unchecked")
+	public CsRelSettoreStruttura findSettoreByIdStruttura(Long idStruttura) {
+		try {
+				Query q = em.createNamedQuery("CsRelSettoreStruttura.findSettoreByIdStruttura");
+				q.setParameter("idStruttura", idStruttura);
+				return (CsRelSettoreStruttura) q.getSingleResult();
+		} 
+		catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		}
+		return null;
+	}
+	
+	public List<CsTbTipoMinore> getListaTipoMinore(){
+		try {
+		Query q = em.createNamedQuery("CsTbTipoMinore.findAll");
+		return q.getResultList();
+		    } 
+		catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		}
+		return null;
+	}
+	
+	public CsTbTipoMinore getTipoMinoreById(Long id) {
+		return em.find(CsTbTipoMinore.class, id);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public CsOSettore findSettoreByRelStruttura(Long idStruttura) {
+		try {	
+			Query q = em.createNamedQuery("CsRelSettoreStruttura.findSettoreByStruttura");
+			q.setParameter("idStruttura", idStruttura);
+			return (CsOSettore) q.getSingleResult();
+		} 
+		catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		}
+		return null;
+	}
+
+	public boolean verificaUsoArProgettoAttivita(Long idOrg, Long idProgetto, Long idAttivita) {
+		boolean exists = false;
+		String sql = 
+		"select distinct * from ( "+
+		"select aro.id organizzazione_id, pr.progetto_id, pr.progetto_attivita_id "+ 
+		"from cs_i_intervento_pr pr, cs_o_settore s, cs_o_organizzazione o, ar_o_organizzazione aro "+
+		"where PR.SETTORE_TITOLARE_ID = s.id and s.organizzazione_id = o.id and o.cod_routing = aro.belfiore "+
+		"union all "+
+		"select aro.id organizzazione_id, pr.progetto_id, pr.progetto_attivita_id  "+
+		"from CS_EXTRA_FSE_DATI_LAVORO pr, CS_EXTRA_FSE_MAST m, SS_SCHEDA s, SS_SCHEDA_ACCESSO sa, cs_o_organizzazione o, ar_o_organizzazione aro "+
+		"where PR.EXTRA_FSE_MAST_ID = m.id and M.TIPO_EXTRA_FSE_ID = 2 and s.id = M.SCHEDA_ID and sa.id = s.accesso and SA.REL_UPO_ORGANIZZAZIONE_ID=o.id and o.cod_routing = aro.belfiore "+
+		"union all "+
+		"select aro.id organizzazione_id, pr.progetto_id, pr.progetto_attivita_id "+
+		"from CS_EXTRA_FSE_DATI_LAVORO pr, CS_EXTRA_FSE_MAST m, CS_IT_STEP it, cs_o_settore s, cs_o_organizzazione o, ar_o_organizzazione aro "+
+		"where PR.EXTRA_FSE_MAST_ID = m.id and M.TIPO_EXTRA_FSE_ID = 1  and IT.SETTORE_ID=s.id and s.organizzazione_id = o.id and o.cod_routing = aro.belfiore "+
+		"AND (IT.ID IS NULL OR IT.ID = (SELECT MAX (it2.id) FROM CS_IT_STEP it2 WHERE IT2.CASO_ID = M.CASO_ID)) "+
+		") where 1=1 ";
+		
+		logger.debug("verificaUsoArProgettoAttivita organizzazioneId["+idOrg+"] progettoId["+idProgetto+"] attivitaId["+idAttivita+"]");
+		if(idOrg!=null && idOrg>0)
+			sql+= " and organizzazione_Id = :organizzazioneId";
+		if(idProgetto!=null)
+			sql+= " and progetto_Id = :progettoId ";
+		if(idAttivita!=null)
+			sql+= " and progetto_attivita_id = :attivitaId ";
+		
+		Query q = em.createNativeQuery(sql);
+		
+		if(idOrg!=null && idOrg>0)
+			q.setParameter("organizzazioneId", idOrg);
+		if(idProgetto!=null)
+			q.setParameter("progettoId", idProgetto);
+		if(idAttivita!=null)
+			q.setParameter("attivitaId", idAttivita);
+		
+		List<Object[]> lst = q.getResultList();
+		exists = !lst.isEmpty();
+		logger.debug("verificaUsoArProgettoAttivita organizzazioneId["+idOrg+"] progettoId["+idProgetto+"] attivitaId["+idAttivita+"] RES["+exists+"]");
+		
+		return exists;
+	}
+
+	public CsTbTipoPai findIdProgettoPaiByDesc(String descrizione) {
+		try {	
+			Query q = em.createNamedQuery("CsTbTipoPai.findByDesc");
+			q.setParameter("descrizione", descrizione);
+			return (CsTbTipoPai) q.getSingleResult();
+		} 
+		catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		}
+		return null;
+	}
+
+	public CsTbTipoPai findCsTbTipoPaiById(Long id) {
+		return em.find(CsTbTipoPai.class, id);
+	}
+
+	public List<Long> findTipoDocAuthDownload(long id) {
+		List<Long> authDownload = new ArrayList<Long>();
+		try {	
+			Query q = em.createNamedQuery("CsOOpSettoreAuthDownload.findByOpSettore");
+			q.setParameter("opSettoreId", id);
+			authDownload = (List<Long>) q.getResultList();
+		} 
+		catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		}
+		return authDownload;
+	}
+
+	public CsTbTipoIndirizzo findCsTbTipoIndirizzoById(Long id) {
+		return em.find(CsTbTipoIndirizzo.class, id);
+	}
+
+	public CsTbDurataRicLavoro findDurataRicLavoroById(Long id) {
+		return em.find(CsTbDurataRicLavoro.class, id);
 	}
 }

@@ -100,7 +100,7 @@
    <url-pattern>/jsp/protected/*</url-pattern>
   </web-resource-collection>
   <auth-constraint>
-   <role-name>CarSociale</role-name>
+   <role-name>SegretariatoSoc</role-name>
   </auth-constraint>
  </security-constraint>
  <login-config>
@@ -111,6 +111,6 @@
   </form-login-config>
  </login-config>
  <security-role>
-  <role-name>CarSociale</role-name>
+  <role-name>SegretariatoSoc</role-name>
  </security-role>
 </web-app>

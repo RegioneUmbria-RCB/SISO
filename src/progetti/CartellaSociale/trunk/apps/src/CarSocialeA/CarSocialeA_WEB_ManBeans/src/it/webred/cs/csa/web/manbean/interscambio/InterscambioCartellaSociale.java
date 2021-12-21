@@ -13,7 +13,6 @@ import it.webred.cs.csa.ejb.dto.EventoDTO;
 import it.webred.cs.csa.ejb.dto.OperatoreDTO;
 import it.webred.cs.data.DataModelCostanti;
 import it.webred.cs.data.model.CsACaso;
-import it.webred.cs.data.model.CsACasoOpeTipoOpe;
 import it.webred.cs.data.model.CsOOperatoreSettore;
 import it.webred.utilities.DateTimeUtils;
 
@@ -30,14 +29,9 @@ public class InterscambioCartellaSociale extends BaseInterscambioCartellaSociale
 		BaseDTO dto = new BaseDTO();
 		fillEnte(dto);
 		dto.setObj(caso.getId()); 
-		CsACasoOpeTipoOpe csaCasoOpeTipoOpe =  casoService.findCasoOpeResponsabile(dto);
 		
-		//Cerco l'operatore responsabile del caso
-		CsOOperatoreSettore responsabile = csaCasoOpeTipoOpe.getCsOOperatoreTipoOperatore().getCsOOperatoreSettore();
-		//In sua assenza assegno il creatore del caso come destinatario
-		if (responsabile == null){
-			responsabile = casoService.findCreatoreCaso(dto);
-		}
+		//Cerco l'operatore responsabile (o creatore) del caso
+		CsOOperatoreSettore responsabile = casoService.findDestinatarioAlertCaso(dto);
 		adto.setOpSettoreTo(responsabile);
 
 		//TIPO NOTIFICA

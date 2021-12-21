@@ -9,6 +9,15 @@
 		<class>eu.smartpeg.rilevazionepresenze.data.model.DocumentiAnag</class>
 		<class>eu.smartpeg.rilevazionepresenze.data.model.TipoDocumento</class>
 		<class>eu.smartpeg.rilevazionepresenze.data.model.Motivazione</class>
+		<class>eu.smartpeg.rilevazionepresenze.data.model.TipoStruttura</class>
+		<class>eu.smartpeg.rilevazionepresenze.data.model.pai.RichiestaDisponibilitaPaiPti</class>
+		<class>eu.smartpeg.rilevazionepresenze.data.model.pai.ArCsPaiPTI</class>
+		<class>eu.smartpeg.rilevazionepresenze.data.model.pai.ArCsPaiPtiDocumento</class>
+		<class>eu.smartpeg.rilevazionepresenze.data.model.pai.ArCsPaiInfoSintetiche</class>
+		<class>eu.smartpeg.rilevazionepresenze.data.model.pai.ArCsPaiPtiConsunti</class>
+		<class>eu.smartpeg.rilevazionepresenze.data.model.TipologiaServizio</class>
+		
+		
 		<properties>
 			<property name="hibernate.dialect" value="it.webred.ct.data.spatial.OracleSpatialDialect" />			
 			<property name="javax.persistence.validation.mode" value="NONE" />

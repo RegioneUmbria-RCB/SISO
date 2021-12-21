@@ -34,7 +34,7 @@
 		<div class="last">
 			<!-- Login -->
 		<ui:fragment rendered="#{!userBean.logged}">
-				<h:form id="frmLogin" action='j_security_check' method='post'>
+				<form id="frmLogin" action='j_security_check' method='post'>
 					<h:panelGrid columnClasses="rightAlign" columns="1" width="100%">
 						<h:panelGroup>
 							<p:spacer width="5px" />
@@ -50,7 +50,7 @@
 						</h:panelGroup>
 						<p:commandButton value="Login" onclick="document.forms['frmLogin'].submit();" />
 					</h:panelGrid>
-				</h:form>
+				</form>
 	  </ui:fragment>
       <ui:fragment >
 		    <h:form id="frmUser" rendered="#{userBean.logged}">
@@ -101,5 +101,10 @@
     	
  
 </h:body>
+
+<p:dialog id="loadingModal" widgetVar="loadingModal" modal="true" draggable="false" closable="false" resizable="false" showHeader="false">
+	<p:graphicImage value="/images/ajaxloadingbar.gif"></p:graphicImage>
+</p:dialog>
+<p:ajaxStatus onstart="PF('loadingModal').show();" onsuccess="PF('loadingModal').hide();" />
 
 </html>

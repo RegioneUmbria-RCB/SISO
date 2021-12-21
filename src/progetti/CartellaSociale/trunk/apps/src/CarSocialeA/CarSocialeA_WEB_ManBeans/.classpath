@@ -33,5 +33,6 @@
 	<classpathentry kind="src" path="/Argo_EJBClient"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/InterscambioCartellaSociale"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/AnagrafeRomaBridgeClient"/>
+	<classpathentry kind="src" path="/Argo_DataModel"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -73,7 +73,18 @@ public class CsIInterventoEsegMastSogg implements Serializable {
 	 
 	 @Column(name="DATI_VALIDI")
 	 private Boolean datiValidi;
+	
+	@MapsId("masterId")
+    @ManyToOne (optional=false, fetch = FetchType.LAZY)
+    @JoinColumn(name="INT_ESEG_MAST_ID", referencedColumnName="id")
+	private CsIInterventoEsegMast master;
+	
+
+	@Column(name="FLAG_NAZ_RES_NON_DEFINITA")
+	private Boolean nazioneResidenzaNonDefinita;
 		
+
+	 
 	 public String getNazioneResidenza() {
 		return nazioneResidenza;
 	}
@@ -105,16 +116,6 @@ public class CsIInterventoEsegMastSogg implements Serializable {
 	public void setSecondaCittadinanza(String secondaCittadinanza) {
 		this.secondaCittadinanza = secondaCittadinanza;
 	}
-
-	@MapsId("masterId")
-    @ManyToOne (optional=false, fetch = FetchType.LAZY)
-    @JoinColumn(name="INT_ESEG_MAST_ID", referencedColumnName="id")
-	private CsIInterventoEsegMast master;
-	
-
-	@Column(name="FLAG_NAZ_RES_NON_DEFINITA")
-	private Boolean nazioneResidenzaNonDefinita;
-	
 	
 	public CsIInterventoEsegMastSogg() {
 		id = new CsIInterventoEsegMastSoggPK();

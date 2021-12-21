@@ -5,6 +5,7 @@ package it.webred.cs.jsf.manbean;
 import it.webred.cs.csa.ejb.client.AccessTableConfigurazioneSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.AccessTableInterventoSessionBeanRemote;
 import it.webred.cs.csa.ejb.dto.BaseDTO;
+import it.webred.cs.csa.ejb.dto.KeyValueDTO;
 import it.webred.cs.csa.ejb.dto.PaiDTO;
 import it.webred.cs.data.DataModelCostanti;
 import it.webred.cs.data.DataModelCostanti.Pai.PERIODO_TEMPORALE;
@@ -55,12 +56,8 @@ public class SchedaPaiMan extends CsUiCompBaseBean implements ISchedaPAI {
 			lstTipoPai = new ArrayList<SelectItem>();
 			CeTBaseObject bo = new CeTBaseObject();
 			fillEnte(bo);
-			List<CsTbTipoPai> lst = confService.getTipoPai(bo);
-			if (lst != null) {
-				for (CsTbTipoPai obj : lst) {
-					lstTipoPai.add(new SelectItem(obj.getId(), obj.getDescrizione()));
-				}
-			}
+			List<KeyValueDTO> lst = confService.getTipoPai(bo);
+			lstTipoPai = this.convertiLista(lst);
 		}
 
 		return lstTipoPai;

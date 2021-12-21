@@ -2,12 +2,10 @@ package it.webred.cs.json.familiariConviventi.ver1;
 
 import it.webred.cs.csa.ejb.client.AccessTableConfigurazioneSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.CarSocialeServiceException;
-import it.webred.cs.csa.ejb.dto.BaseDTO;
 import it.webred.cs.data.model.CsDValutazione;
 import it.webred.cs.data.model.CsTbGVulnerabile;
 import it.webred.cs.data.model.CsTbTipologiaFamiliare;
 import it.webred.cs.json.ISchedaValutazione;
-import it.webred.cs.json.dto.JsonBaseBean;
 import it.webred.cs.json.familiariConviventi.DatiSocialiFamiliariConviventiPdfDTO;
 import it.webred.cs.json.familiariConviventi.FamiliariManBaseBean;
 import it.webred.ct.support.datarouter.CeTBaseObject;
@@ -26,7 +24,6 @@ public class FamConviventiManBean extends FamiliariManBaseBean{
 	private AccessTableConfigurazioneSessionBeanRemote confService = (AccessTableConfigurazioneSessionBeanRemote) getEjb("CarSocialeA", "CarSocialeA_EJB", "AccessTableConfigurazioneSessionBean");
 	
 	private List<CsTbTipologiaFamiliare> lstCsTbTipologiaFam;
-	private List<SelectItem> lstGruppiVulnerabili;
 	private List<SelectItem> lstTipologiaFam;
 	private FamConviventiController controller;
 
@@ -210,26 +207,6 @@ public class FamConviventiManBean extends FamiliariManBaseBean{
 			this.loadTipologieNucleo();
 		return lstCsTbTipologiaFam;
 	}
-	
-	@Override
-	public List<SelectItem> getListaGruppoVulnerabile() {
-		if(lstGruppiVulnerabili == null){
-			lstGruppiVulnerabili = new ArrayList<SelectItem>();
-			lstGruppiVulnerabili.add(new SelectItem(null, "- seleziona -"));
-			CeTBaseObject bo = new CeTBaseObject();
-			fillEnte(bo);
-			List<CsTbGVulnerabile> lst = confService.getGruppiVulnerab(bo);
-			if (lst != null) {
-				for (CsTbGVulnerabile p : lst) {
-					SelectItem fa = new SelectItem(p.getId(), p.getDescrizione());
-					fa.setDisabled(!"1".equals(p.getAbilitato()));
-					lstGruppiVulnerabili.add(fa);
-				}
-			}		
-		}
-		return lstGruppiVulnerabili;
-	}
-	
 
 	@Override
 	public void changeTipoNucleo() {

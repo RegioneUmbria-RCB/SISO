@@ -3,34 +3,39 @@ package it.webred.cs.csa.ejb.dto;
 public class SchedaSegrDTO extends PaginationDTO {
 	private static final long serialVersionUID = 1L;
 	
-	private Long id;
-	private String flgStato;
+	private Long id; //Identificativo della scheda UDC (Campo SCHEDA_ID in CS_SS_SCHEDA_SEGR)
+	private String provenienza;
+	
+	private boolean nuovoInserimento;
+	private boolean tipoSchedaPropostaPic;
 	private Long idCatSociale;
 	private Long idSettore;
 	private Long idAnagrafica;
 	private String cf;
+	private boolean searchBySoggetto = false;
 	
+	private Long enteSchedaAccessoId;
+	private String enteDestinatario; //Codice Belfiore dell'ente destinatario della scheda CS_SS_SCHEDA_SEGR
+	
+	// variabili usate dai filtri della View
 	private boolean onlyNew;
 	
 	private String dataAccesso;
 	private String operatore;
 	private String ufficio;
-	private String soggSegnalante;
+	private String soggettoSegnalato;
 	private String tipoIntervento;
 	private String categoriaSociale;
-
+	private String[] lstProvenienza;	// SISO-938
 	
-	public Long getId() {
-		return id;
+	private boolean loadListaUDCFascicolo = false;
+	
+
+	public boolean isNuovoInserimento() {
+		return nuovoInserimento;
 	}
-	public void setId(Long id) {
-		this.id = id;
-	}
-	public String getFlgStato() {
-		return flgStato;
-	}
-	public void setFlgStato(String flgStato) {
-		this.flgStato = flgStato;
+	public void setNuovoInserimento(boolean nuovoInserimento) {
+		this.nuovoInserimento = nuovoInserimento;
 	}
 	public boolean isOnlyNew() {
 		return onlyNew;
@@ -68,13 +73,12 @@ public class SchedaSegrDTO extends PaginationDTO {
 	public void setUfficio(String ufficio) {
 		this.ufficio = ufficio;
 	}
-	public String getSoggSegnalante() {
-		return soggSegnalante;
+	public String getSoggettoSegnalato() {
+		return soggettoSegnalato;
 	}
-	public void setSoggSegnalante(String soggSegnalante) {
-		this.soggSegnalante = soggSegnalante;
+	public void setSoggettoSegnalato(String soggettoSegnalato) {
+		this.soggettoSegnalato = soggettoSegnalato;
 	}
-	
 	public String getCf() {
 		return cf;
 	}
@@ -98,6 +102,54 @@ public class SchedaSegrDTO extends PaginationDTO {
 	}
 	public void setCategoriaSociale(String categoriaSociale) {
 		this.categoriaSociale = categoriaSociale;
+	}
+	public String getProvenienza() {
+		return provenienza;
+	}
+	public void setProvenienza(String provenienza) {
+		this.provenienza = provenienza;
+	}
+	public Long getId() {
+		return id;
+	}
+	public void setId(Long id) {
+		this.id = id;
+	}
+	public String[] getLstProvenienza() {
+		return lstProvenienza;
+	}
+	public void setLstProvenienza(String[] lstProvenienza) {
+		this.lstProvenienza = lstProvenienza;
+	}
+	public boolean isSearchBySoggetto() {
+		return searchBySoggetto;
+	}
+	public void setSearchBySoggetto(boolean searchBySoggetto) {
+		this.searchBySoggetto = searchBySoggetto;
+	}
+	public boolean isLoadListaUDCFascicolo() {
+		return loadListaUDCFascicolo;
+	}
+	public void setLoadListaUDCFascicolo(boolean loadListaUDCFascicolo) {
+		this.loadListaUDCFascicolo = loadListaUDCFascicolo;
+	}
+	public String getEnteDestinatario() {
+		return enteDestinatario;
+	}
+	public void setEnteDestinatario(String enteDestinatario) {
+		this.enteDestinatario = enteDestinatario;
+	}
+	public boolean isTipoSchedaPropostaPic() {
+		return tipoSchedaPropostaPic;
+	}
+	public void setTipoSchedaPropostaPic(boolean tipoSchedaPropostaPic) {
+		this.tipoSchedaPropostaPic = tipoSchedaPropostaPic;
+	}
+	public Long getEnteSchedaAccessoId() {
+		return enteSchedaAccessoId;
+	}
+	public void setEnteSchedaAccessoId(Long enteSchedaAccessoId) {
+		this.enteSchedaAccessoId = enteSchedaAccessoId;
 	}
 	
 }

@@ -64,10 +64,10 @@ public class CsOOperatoreSettore implements Serializable {
 	
 	private Boolean firma;
 	
-	@OneToMany(mappedBy="csOOperatoreSettore", fetch=FetchType.EAGER)
+	@OneToMany(mappedBy="csOOperatoreSettore", fetch=FetchType.LAZY)
 	private Set<CsOOperatoreTipoOperatore> tipoOperatore;
 	
-	@OneToMany(mappedBy="opSettore", fetch=FetchType.EAGER)
+	@OneToMany(mappedBy="opSettore" , fetch=FetchType.LAZY)
 	private Set<CsOOpsettoreAlertConfig> alertConfig;
 
 	public CsOOperatoreSettore() {

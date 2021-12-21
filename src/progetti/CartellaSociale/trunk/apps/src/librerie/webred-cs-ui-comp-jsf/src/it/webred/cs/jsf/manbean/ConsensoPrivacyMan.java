@@ -12,8 +12,6 @@ import org.primefaces.context.RequestContext;
 
 import it.webred.cs.jsf.interfaces.IConsensoPrivacy;
 import it.webred.cs.jsf.manbean.superc.CsUiCompBaseBean;
-import it.webred.ss.data.model.privacy.CsSsPrivacyPK;
-import it.webred.ss.data.model.privacy.SsSchedaPrivacy;
 import it.webred.ss.ejb.client.SsSchedaSessionBeanRemote;
 import it.webred.ss.ejb.dto.DatiPrivacyDTO;
 
@@ -39,7 +37,8 @@ public class ConsensoPrivacyMan extends CsUiCompBaseBean implements IConsensoPri
 	
 	private SsSchedaSessionBeanRemote ssSchedaSegrService = 
 			(SsSchedaSessionBeanRemote) getEjb("SegretariatoSoc", "SegretariatoSoc_EJB", "SsSchedaSessionBean");
-	
+
+	public ConsensoPrivacyMan(){}
 	
 	public ConsensoPrivacyMan(String cf, Long organizzazioneId, Boolean anonimo, Boolean rdc) {
 		privacy = null;

@@ -95,10 +95,10 @@
 		<p:spacer height="20"/>
 		<h:panelGrid columns="2">
 			<h:outputText value="Cognome *" />
-			<p:inputText style="width: 95%; text-transform: capitalize;" value="#{cc.attrs.iDatiAna.datiAnaBean.cognome}" maxlength="100"
+			<p:inputText style="width: 95%;" value="#{cc.attrs.iDatiAna.datiAnaBean.cognome}" maxlength="100"
 				disabled="#{cc.attrs.iDatiAna.soggettoId != null}" />
 			<h:outputText value="Nome *" />
-			<p:inputText style="width: 95%; text-transform: capitalize;" value="#{cc.attrs.iDatiAna.datiAnaBean.nome}" maxlength="100"
+			<p:inputText style="width: 95%;" value="#{cc.attrs.iDatiAna.datiAnaBean.nome}" maxlength="100"
 				disabled="#{cc.attrs.iDatiAna.soggettoId != null}" />
 
 			<h:outputText value="Data di nascita *" />
@@ -160,12 +160,12 @@
 				<f:selectItems value="#{cc.attrs.iDatiAna.lstCittadinanze}" />
 			</p:selectOneMenu>
 
-
 			<h:outputText value="Residenza *" />
 			<webred:pnlResidenza id="residenza" residenzaManBean="#{cc.attrs.iDatiAna.residenzaCsaMan}" labelStyle="display:block;width: 162px;"
 				panelStyleClass="#{cc.attrs.panelStyleClass}" codiceFiscale="#{cc.attrs.iDatiAna.datiAnaBean.codiceFiscale}"
-				disableModifica="#{cc.attrs.disableModifica}" attivaSalvataggio="#{!cc.attrs.iDatiAna.disabilitaForm}"/>
-
+				disableModifica="#{cc.attrs.disableModifica or cc.attrs.iDatiAna.disabilitaForm}" 
+				attivaSalvataggio="#{!cc.attrs.iDatiAna.disabilitaForm}"/>
+			
 			<h:outputText value="Stato civile" />
 			<webredcs:pnlDataValiditaGestione var="SC" textDialogHeader="Gestione Stato Civile" iDatiValGestione="#{cc.attrs.iDatiAna.statoCivileGestBean}"
 				disableModifica="#{cc.attrs.disableModifica or cc.attrs.iDatiAna.disabilitaForm}"/>

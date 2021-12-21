@@ -23,9 +23,11 @@ public interface IListaCasi {
 	public void clearFilters();
 
 	public boolean isRenderTipoOperatore();
+	public boolean isRenderStatoOperatore();
 	
 	public List<SelectItem> getListaOperatori();
 	public List<SelectItem> getListaStati(); 
 	public List<SelectItem> getListaTitStudio();
 	public List<SelectItem> getListaCondLavoro();
+
 }

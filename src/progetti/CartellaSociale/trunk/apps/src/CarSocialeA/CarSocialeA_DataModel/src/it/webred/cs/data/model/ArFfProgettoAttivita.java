@@ -4,9 +4,6 @@ import java.io.Serializable;
 
 import javax.persistence.*;
 
-import java.util.Date;
-import java.util.List;
-
 /**
  * The persistent class for the AR_FF_PROGETTO_ATTIVITA database table.
 
@@ -15,16 +12,14 @@ import java.util.List;
 
 @Entity
 @Table(name="AR_FF_PROGETTO_ATTIVITA")
-@NamedQuery(name="ArFfProgettoAttivita.findAll", query="SELECT a FROM ArFfProgettoAttivita a")
 public class ArFfProgettoAttivita implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
 	@Id
 	private long id;
 	
-	@Column(name="PROGETTO_ID", insertable=false, updatable=false )
+	@Column(name="PROGETTO_ID")
 	private Long progettoId;
-	
 	
 	@Column(name="CODICE")
 	private String codice;
@@ -38,13 +33,12 @@ public class ArFfProgettoAttivita implements Serializable{
 	@Column(name="ABILITATO")
 	private Boolean abilitato;
 	
-	
-	//bi-directional many-to-one association to ArFfProgetto
+/*	//bi-directional many-to-one association to ArFfProgetto
 	@ManyToOne
 	@JoinColumn(name="PROGETTO_ID")
 	private ArFfProgetto progetto;
 
-
+*/
 	
 	public ArFfProgettoAttivita() {
 	}
@@ -109,7 +103,7 @@ public class ArFfProgettoAttivita implements Serializable{
 	}
 
 
-	public ArFfProgetto getProgetto() {
+/*	public ArFfProgetto getProgetto() {
 		return progetto;
 	}
 
@@ -117,12 +111,11 @@ public class ArFfProgettoAttivita implements Serializable{
 	public void setProgetto(ArFfProgetto progetto) {
 		this.progetto = progetto;
 	}
-
+*/
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
-	}	
-	
-	
+	}
+
 
 }

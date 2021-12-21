@@ -1,7 +1,34 @@
 package it.webred.ss.web.bean.lista.soggetti;
 
+import it.webred.cs.csa.ejb.client.AccessTableInterventoSessionBeanRemote;
+import it.webred.cs.csa.ejb.client.AccessTableSoggettoSessionBeanRemote;
+import it.webred.cs.csa.ejb.dto.BaseDTO;
+import it.webred.cs.csa.ejb.dto.KeyValueDTO;
+import it.webred.cs.data.DataModelCostanti;
+import it.webred.cs.data.model.CsOOrganizzazione;
+import it.webred.cs.data.model.CsOSettore;
+import it.webred.cs.jsf.bean.UserSearchExtInput;
+import it.webred.cs.jsf.manbean.ConsensoPrivacyMan;
+import it.webred.cs.jsf.manbean.superc.CsUiCompBaseBean;
+import it.webred.cs.jsf.manbean.superc.CsUiCompBaseBean.CredenzialiWS;
+import it.webred.ct.config.model.AmTabComuni;
+import it.webred.ct.data.access.basic.anagrafe.dto.IndirizzoAnagDTO;
+import it.webred.ejb.utility.ClientUtility;
+import it.webred.siso.ws.ricerca.dto.FamiliareDettaglio;
+import it.webred.siso.ws.ricerca.dto.PersonaDettaglio;
+import it.webred.siso.ws.ricerca.dto.RicercaAnagraficaParams;
+import it.webred.siso.ws.ricerca.dto.RicercaAnagraficaResult;
+import it.webred.ss.data.model.SsAnagrafica;
+import it.webred.ss.data.model.SsOOrganizzazione;
+import it.webred.ss.data.model.SsSchedaSegnalato;
+import it.webred.ss.ejb.client.SsSchedaSessionBeanRemote;
+import it.webred.ss.ejb.dto.SintesiSchedeUfficioDTO;
+import it.webred.ss.ejb.dto.SsSearchCriteria;
+import it.webred.ss.web.bean.SegretariatoSocBaseBean;
+import it.webred.ss.web.bean.util.PuntoContatto;
+import it.webred.ss.web.bean.util.Soggetto;
+
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
@@ -18,47 +45,13 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.naming.NamingException;
-import javax.servlet.ServletContext;
 
 import org.apache.commons.lang3.StringUtils;
 import org.primefaces.context.RequestContext;
-import org.primefaces.model.DefaultStreamedContent;
-import org.primefaces.model.StreamedContent;
 
+import eu.smartpeg.rievazionepresenze.dto.AnagraficaDTO;
 import eu.smartpeg.rilevazionepresenze.AnagraficaSessionBeanRemote;
 import eu.smartpeg.rilevazionepresenze.data.dto.RpSearchCriteria;
-import eu.smartpeg.rilevazionepresenze.data.model.Anagrafica;
-
-import it.webred.cs.csa.ejb.client.AccessTableInterventoSessionBeanRemote;
-import it.webred.cs.csa.ejb.client.AccessTableSoggettoSessionBeanRemote;
-import it.webred.cs.csa.ejb.dto.BaseDTO;
-import it.webred.cs.data.DataModelCostanti;
-import it.webred.cs.data.model.CsOOrganizzazione;
-import it.webred.cs.data.model.CsOSettore;
-import it.webred.cs.jsf.bean.UserSearchExtInput;
-import it.webred.cs.jsf.manbean.ConsensoPrivacyMan;
-import it.webred.cs.jsf.manbean.superc.CsUiCompBaseBean;
-import it.webred.cs.jsf.manbean.superc.CsUiCompBaseBean.CredenzialiWS;
-import it.webred.ct.data.access.basic.anagrafe.AnagrafeService;
-import it.webred.ct.data.access.basic.anagrafe.dto.IndirizzoAnagDTO;
-import it.webred.ct.data.access.basic.anagrafe.dto.RicercaSoggettoAnagrafeDTO;
-import it.webred.ct.data.access.basic.anagrafe.dto.SoggettoAnagrafeDTO;
-import it.webred.ct.data.access.basic.common.dto.KeyValueDTO;
-import it.webred.ct.data.model.anagrafe.SitDPersona;
-import it.webred.ejb.utility.ClientUtility;
-import it.webred.siso.ws.ricerca.dto.FamiliareDettaglio;
-import it.webred.siso.ws.ricerca.dto.PersonaDettaglio;
-import it.webred.siso.ws.ricerca.dto.RicercaAnagraficaParams;
-import it.webred.siso.ws.ricerca.dto.RicercaAnagraficaResult;
-import it.webred.ss.data.model.SsAnagrafica;
-import it.webred.ss.data.model.SsOOrganizzazione;
-import it.webred.ss.data.model.SsSchedaSegnalato;
-import it.webred.ss.ejb.client.SsSchedaSessionBeanRemote;
-import it.webred.ss.ejb.dto.SintesiSchedeUfficioDTO;
-import it.webred.ss.ejb.dto.SsSearchCriteria;
-import it.webred.ss.web.bean.SegretariatoSocBaseBean;
-import it.webred.ss.web.bean.util.PuntoContatto;
-import it.webred.ss.web.bean.util.Soggetto;
 
 @ManagedBean
 @ViewScoped
@@ -82,9 +75,6 @@ public class SearchBean extends SegretariatoSocBaseBean{
       
     private static final String SCHEDE_URL = "schede.faces";
 	private static final String NUOVA_SCHEDA_URL = "editScheda.faces";
-	private static final String REPORT_PATH = "/reports/modulo_scheda.pdf";
-	private static final String PRIVACY_PATH = "/reports/modulo_privacy.pdf";
-  	
 	
 	@EJB(lookup = "java:global/RilevazionePresenze/RilevazionePresenze_EJB/AnagraficaSessionBean!eu.smartpeg.rilevazionepresenze.AnagraficaSessionBeanRemote") 
 	private AnagraficaSessionBeanRemote rilevazionePresenzeService;
@@ -210,21 +200,12 @@ public class SearchBean extends SegretariatoSocBaseBean{
 			soggetti = new ArrayList<Soggetto>();
 			
 			if(this.isAnagrafeComunaleInternaAbilitata() && !params.isRicercaAlias()){
-			    AnagrafeService anagrafeService = (AnagrafeService) getEjb ("CT_Service", "CT_Service_Data_Access", "AnagrafeServiceBean");
-				RicercaSoggettoAnagrafeDTO rsDto = new RicercaSoggettoAnagrafeDTO();
-				fillEnte(rsDto);
-				rsDto.setCognome(params.getCognome());
-				rsDto.setNome(params.getNome());
-				rsDto.setCodFis(params.getCodiceFiscale());
-				rsDto.setSesso(params.getDatiSesso().getSesso());
-				rsDto.setAnnoNascitaDa(params.getAnnoNascitaDa());
-				rsDto.setAnnoNascitaA(params.getAnnoNascitaA());
-				rsDto.setDtRif(new Date());
-				
-				List<SitDPersona> list = anagrafeService.searchSISOAnagrafiche(rsDto);
-				if(list != null)	
-					for(SitDPersona sog: list)
-						addSoggettoAnagComLista(sog,results);
+				List<Soggetto> lstAnag = ricercaInAnagrafeEsterna(DataModelCostanti.TipoRicercaSoggetto.DEFAULT);
+				for(Soggetto s : lstAnag){
+					String key = s.getSoggettoKey();
+					if(!results.containsKey(key))
+						results.put(key, s);
+				}
 			}
 			
 			if(this.isAnagrafeSigessAbilitata()&& !params.isRicercaAlias()){
@@ -289,6 +270,8 @@ public class SearchBean extends SegretariatoSocBaseBean{
 					valorizzaPresenzaInCS(s);
 					valorizzaPresenzaInRP(s);
 					s.setBeneficiarioRdC(verificaPresenzaRdC(s.getCf()));	
+					//SISO-1531
+					s.setPresenzaDatiEsterni(verificaPresenzaDatiEsterni(s.getCf()));
 					s.setEv(isInEnteEsterno(s.getCf()));
 					soggetti.add(s);
 					if(!s.getSsComplete().isEmpty() || !s.getSsIncomplete().isEmpty()) //Serve a recuperare la lista di schede aperte
@@ -325,9 +308,9 @@ public class SearchBean extends SegretariatoSocBaseBean{
 				rab.setAnnoNascitaA(params.getAnnoNascitaA());
 				
 				RicercaAnagraficaResult result = CsUiCompBaseBean.ricercaPerDatiAnagrafici(rab);
-				
-				if(StringUtils.isBlank(result.getMessaggio()) && result.getElencoAssisiti()!=null)
-					listAnagReg.addAll(result.getElencoAssisiti());
+				List<PersonaDettaglio> elenco = result.getElencoAssistiti();
+				if(StringUtils.isBlank(result.getMessaggio()) && elenco!=null)
+					listAnagReg.addAll(elenco);
 				
 				if(!StringUtils.isBlank(result.getMessaggio()))
 					logger.error(result.getMessaggio(), result.getEccezione());
@@ -352,6 +335,7 @@ public class SearchBean extends SegretariatoSocBaseBean{
 						}
 						sogg.setIndirizzo(ind);
 					}
+					verificaPrivacy(sogg);
 					
 					listAutocomplete.add(sogg);
 				}
@@ -362,34 +346,6 @@ public class SearchBean extends SegretariatoSocBaseBean{
 		}
 		return listAutocomplete;
 	} 
-	
-
-	
-	private void addSoggettoAnagComLista(SitDPersona s, TreeMap<String,Soggetto> results){
-		
-		boolean emigrato = s.getDataEmi()!=null && (s.getDataImm()==null || s.getDataImm().before(s.getDataEmi()));
-		if(!emigrato){
-			Soggetto val = new Soggetto(null, s.getId(), null, s.getCognome(), s.getNome(), s.getCodfisc(), s.getDataNascita(), s.getDataMor(), s.getSesso());
-		    String key =val.getSoggettoKey();
-			if(results.containsKey(key))
-				val = results.get(key);
-			
-			val.setIdExt(s.getIdExt());
-			if(s.getDataMor()==null){
-				IndirizzoAnagDTO i = getResidenzaFromAnagrafe(s.getCodfisc());
-				if(i!=null){
-					Date oggi = new Date();
-					if(oggi.after(i.getDataInizioApp()))
-						val.setIndirizzo(i);
-				}
-			}
-			
-			verificaPrivacy(val);
-			
-			results.put(key, val);
-		}
-
-	}
 
 	private void addSoggettoUdCLista(SsAnagrafica s, TreeMap<String,Soggetto> results){
 		Soggetto val = new Soggetto(null, null, s.getId(), s.getCognome(), s.getNome(), s.getCf(), s.getData_nascita(), null, s.getSesso());
@@ -466,26 +422,27 @@ public class SearchBean extends SegretariatoSocBaseBean{
 		try {
 
 
-    		List<Anagrafica> lstAnagraficaRP = rilevazionePresenzeService.searchAnagraficaRPBySoggetto(dto);
+    		List<AnagraficaDTO> lstAnagraficaRP = rilevazionePresenzeService.searchAnagraficaRPBySoggetto(dto);
     		
     		if  (lstAnagraficaRP != null && lstAnagraficaRP.size()>0)
     		{
-    			for (Anagrafica anagRp :  lstAnagraficaRP) {
-                  Soggetto sogg = new Soggetto(DataModelCostanti.TipoRicercaSoggetto.ANAG_RILEVAZIONE_PRESENZE, String.valueOf(anagRp.getId()), null, anagRp.getCognome(), anagRp.getNome(), anagRp.getCf(), anagRp.getDataNascita(), null, anagRp.getGenere());
+    			for (AnagraficaDTO anagRp :  lstAnagraficaRP) {
+                  Soggetto sogg = new Soggetto(DataModelCostanti.TipoRicercaSoggetto.ANAG_RILEVAZIONE_PRESENZE, String.valueOf(anagRp.getId()), null, anagRp.getCognome(), anagRp.getNome(), anagRp.getCf(), anagRp.getDataNascita(), null, anagRp.getSesso());
 					
 					if(anagRp.getIndirizzoResidenza()!=null){
 						IndirizzoAnagDTO ind = new IndirizzoAnagDTO();
 						ind.setIndirizzo(anagRp.getIndirizzoResidenza());
 						
-						if(anagRp.getComuneResidenzaCod()!=null){
-							ind.setComCod(anagRp.getComuneResidenzaCod());
-							ind.setComDes(anagRp.getComuneResidenzaDes());
-							ind.setProv(anagRp.getProvResidenzaCod());
+						AmTabComuni comuneRes = anagRp.getComuneResidenza();
+						if(comuneRes!=null){
+							ind.setComCod(comuneRes.getCodIstatComune());
+							ind.setComDes(comuneRes.getDenominazione());
+							ind.setProv(comuneRes.getSiglaProv());
 						}
 						
 						sogg.setIndirizzo(ind);
 					}
-					
+					verificaPrivacy(sogg);
 					listAutocomplete.add(sogg);
     			}
     		}
@@ -741,63 +698,6 @@ public class SearchBean extends SegretariatoSocBaseBean{
 		return false;
 	}
 	
-	private List<SitDPersona> readSoggettiFromAnagrafeByName(String cognome, String nome){
-		RicercaSoggettoAnagrafeDTO rsDto = new RicercaSoggettoAnagrafeDTO();
-		fillUserData(rsDto);
-		rsDto.setDenom((cognome + " " + nome).trim());
-    		
-    	try {
-    		AnagrafeService anagrafeService = (AnagrafeService) ClientUtility.getEjbInterface(
-    				"CT_Service", "CT_Service_Data_Access", "AnagrafeServiceBean");
-
-    		return anagrafeService.getListaPersoneByDenominazione(rsDto);
-    		
-    	} catch(NamingException e) {
-    		logger.error(e.getMessage(), e);
-    		addError("caricamento.soggetto.error");
-		}
-    	return null;
-	}
-	
-	private List<SitDPersona> readSoggettiFromAnagrafeByCf(String cf){
-		RicercaSoggettoAnagrafeDTO dto = new RicercaSoggettoAnagrafeDTO();
-    	fillUserData(dto);
-    	dto.setCodFis(cf);
-    	dto.setDtRif(new Date());
-    	
-    	try {
-    		AnagrafeService anagrafeService = (AnagrafeService) ClientUtility.getEjbInterface(
-    				"CT_Service", "CT_Service_Data_Access", "AnagrafeServiceBean");
-    		return anagrafeService.getListaPersoneByCF(dto);
-    		
-    	} catch(NamingException e) {
-    		logger.error(e.getMessage(), e);
-    		addError("caricamento.soggetto.error");
-		}
-    	return null;
-	}
-	
-	private List<SoggettoAnagrafeDTO> searchSoggettiFromAnagrafe(String cognome, String nome, String cf, String sesso, Date dtNas, String alias){
-		RicercaSoggettoAnagrafeDTO dto = new RicercaSoggettoAnagrafeDTO();
-    	fillUserData(dto);
-    	dto.setCodFis(cf);
-    	dto.setCognome(cognome);
-    	dto.setNome(nome);
-    	dto.setSesso(sesso);
-    	dto.setDtNas(dtNas);
-    	
-    	try {
-    		AnagrafeService anagrafeService = (AnagrafeService) ClientUtility.getEjbInterface(
-    				"CT_Service", "CT_Service_Data_Access", "AnagrafeServiceBean");
-    		return anagrafeService.searchSoggetto(dto);
-    		
-    	} catch(NamingException e) {
-    		logger.error(e.getMessage(), e);
-    		addError("caricamento.soggetto.error");
-		}
-    	return null;
-	}
-	
 	public void onViewSchedeClick(){
 		
     	if(selectedSoggetto == null){
@@ -851,9 +751,10 @@ public class SearchBean extends SegretariatoSocBaseBean{
     		if(selectedSoggetto.getCf()==null) addWarning("seleziona.soggetto.noCF");
     		
     		String url = addParameter(NUOVA_SCHEDA_URL, CF_KEY, selectedSoggetto.getCf()+"");
-    		
-    		if(selectedSoggetto.isAnagSanitariaUmbria() || selectedSoggetto.isAnagSigess() || selectedSoggetto.isAnagSanitariaMarche() || selectedSoggetto.isAnagRilevazionePresenze()){
-    			String identificativo = selectedSoggetto.getId();
+    		if(selectedSoggetto.isAnagEsistenteUDC())
+    			url = addParameter(NUOVA_SCHEDA_URL, SOGGETTO_KEY, selectedSoggetto.getIdSsAnag()+"");
+    		else //if(selectedSoggetto.isAnagSanitariaUmbria() || selectedSoggetto.isAnagSigess() || selectedSoggetto.isAnagSanitariaMarche() || selectedSoggetto.isAnagRilevazionePresenze())
+    		{	String identificativo = selectedSoggetto.getId();
     			if(StringUtils.isBlank(identificativo)){
     				String message = "Il soggetto selezionato "
     						+ "["+selectedSoggetto.getCognome()+" "+selectedSoggetto.getNome()+" c.f.:"+selectedSoggetto.getCf()+"] "
@@ -866,11 +767,8 @@ public class SearchBean extends SegretariatoSocBaseBean{
     			}else
     				url = addParameter(NUOVA_SCHEDA_URL, ANAG_WS_KEY, identificativo +"");
     				
-    			url = addParameter(url, ANAG_WS_TIPO, selectedSoggetto.getTipoRicercaSoggetto()+"");
-    			
-    		}else if(selectedSoggetto.isAnagEsistenteUDC())
-    			url = addParameter(NUOVA_SCHEDA_URL, SOGGETTO_KEY, selectedSoggetto.getIdSsAnag()+"");
-    		
+    			url = addParameter(url, ANAG_WS_TIPO, selectedSoggetto.getTipoRicercaSoggetto()+"");	
+    		}
     		//Matteo Leandri 30/06/2016
     		//recupero il parametro currentLocation. La pagina sulla quale viene fatto il redirect lo utilizza per creare il nome del pulsante "indietro"
     		String clParam = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("currentLocation");

@@ -17,8 +17,6 @@ import javax.naming.NamingException;
 public abstract class  NazioneMan extends BasicManBean implements INazione  {
 
 	public AmTabNazioni nazione;
-	protected static String currNazioneDenominazione = "ITALIA";
-
 	
 	public List<AmTabNazioni> getLstNazioni(String query) {
 		List<AmTabNazioni> lstNazioni = new ArrayList<AmTabNazioni>();		
@@ -34,7 +32,7 @@ public abstract class  NazioneMan extends BasicManBean implements INazione  {
 		return lstNazioni;
 	}
 	
-	public static AmTabNazioni getCurrNazione() {
+/*	public static AmTabNazioni getCurrNazione() {
 		AmTabNazioni currNazione = null;		
 		try {
 			AccessTableNazioniSessionBeanRemote bean = (AccessTableNazioniSessionBeanRemote) ClientUtility.getEjbInterface("CarSocialeA", "CarSocialeA_EJB", "AccessTableNazioniSessionBean");
@@ -44,7 +42,7 @@ public abstract class  NazioneMan extends BasicManBean implements INazione  {
 		}
 		return currNazione;
 	}
-
+*/
 	public void handleChangeNazione(javax.faces.event.AjaxBehaviorEvent event){  
 		try {
 			String a = ((it.webred.ct.config.model.AmTabNazioni)((javax.faces.component.UIInput)event.getComponent()).getValue()).getNazione();
@@ -69,10 +67,5 @@ public abstract class  NazioneMan extends BasicManBean implements INazione  {
 		return new NazioneConverter();
 	}
 
-
-
-	
-	
-	
 }
 

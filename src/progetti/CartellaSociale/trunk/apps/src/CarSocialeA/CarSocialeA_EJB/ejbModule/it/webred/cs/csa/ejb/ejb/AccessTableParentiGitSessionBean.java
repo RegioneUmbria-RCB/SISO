@@ -27,6 +27,8 @@ import java.util.List;
 
 import javax.ejb.Stateless;
 
+import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -144,8 +146,8 @@ public class AccessTableParentiGitSessionBean extends CarSocialeBaseSessionBean 
 	@AuditConsentiAccessoAnonimo
     @AuditSaltaValidazioneSessionID
 	public void elaboraVariazioniFamigliaGruppoGit(BaseDTO dto) {
-		CsAFamigliaGruppoGit famiglia = (CsAFamigliaGruppoGit)dto.getObj();
-		List<FamiliareDettaglio> lista = (List<FamiliareDettaglio>)dto.getObj2();
+		CsAFamigliaGruppoGit famiglia = (CsAFamigliaGruppoGit)dto.getObj(); 		//famiglia corrente
+		List<FamiliareDettaglio> lista = (List<FamiliareDettaglio>)dto.getObj2();   //famiglia aggiornata
 		String cfIntestatario = famiglia.getCsASoggetto().getCsAAnagrafica().getCf();
 		HashMap<String, CsAComponenteGit> mappaNew = new HashMap<String, CsAComponenteGit>();
 		for(FamiliareDettaglio f : lista){
@@ -154,7 +156,9 @@ public class AccessTableParentiGitSessionBean extends CarSocialeBaseSessionBean 
 				continue;
 			
 			CsAComponenteGit c = this.initFamiliare(f, famiglia, dto.getUserId());
-			mappaNew.put(f.getCodfisc().toUpperCase(), c);
+			String hashFam = DigestUtils.md5Hex(c.getCognome()+c.getNome()+c.getComuneNascitaCod()+c.getStatoNascitaCod()+c.getDataNascita());
+			String key = !StringUtils.isBlank(f.getCodfisc()) ? f.getCodfisc().toUpperCase() : hashFam;
+			mappaNew.put(key, c);
 		}
 			
 		boolean segnalazioneFamiglia = false;
@@ -162,7 +166,10 @@ public class AccessTableParentiGitSessionBean extends CarSocialeBaseSessionBean 
 		List<CsAComponenteGit> componentiOld = famiglia.getCsAComponenteGits();
 		List<BigDecimal> toRemove = new ArrayList<BigDecimal>();
 		for(CsAComponenteGit o : componentiOld){
-			String key = o.getCf().toUpperCase();
+			
+			String hashFam = DigestUtils.md5Hex(o.getCognome()+o.getNome()+o.getComuneNascitaCod()+o.getStatoNascitaCod()+o.getDataNascita());
+			String key = !StringUtils.isBlank(o.getCf()) ? o.getCf().toUpperCase() : hashFam;
+			
 			CsAComponenteGit f = mappaNew.get(key);
 			boolean segnalazione = false;
 			

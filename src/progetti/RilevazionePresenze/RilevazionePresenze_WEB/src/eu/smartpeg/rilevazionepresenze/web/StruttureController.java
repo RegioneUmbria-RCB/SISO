@@ -19,6 +19,8 @@ import javax.faces.model.SelectItem;
 import eu.smartpeg.rilevazionepresenze.StruttureSessionBeanRemote;
 import eu.smartpeg.rilevazionepresenze.data.model.Area;
 import eu.smartpeg.rilevazionepresenze.data.model.Struttura;
+import eu.smartpeg.rilevazionepresenze.data.model.TipoStruttura;
+import eu.smartpeg.rilevazionepresenze.datautil.DataModelCostanti;
 import eu.smartpeg.rilevazionepresenze.datautil.DataModelCostanti.Villaggi.TIPO_VILLAGGIO;
 
 
@@ -38,6 +40,8 @@ public class StruttureController extends RilevazionePresenzeBaseController imple
     private String modalHeader;
     private String areaSelected;
     private Map<String,Area> aree;
+    private String tipoFunzione; 
+    private TipoStruttura tipoStrutturaDefault;
     
 	@EJB private StruttureSessionBeanRemote struttureEjb;
 	
@@ -45,13 +49,17 @@ public class StruttureController extends RilevazionePresenzeBaseController imple
 	public StruttureController() {
 		this.strutture = new ArrayList<>();
 		this.aree = new HashMap<>();
+		setTipoFunzione(HomeController.getGlobalParameter(DataModelCostanti.AmParameterKey.TIPO_FUNZIONE_STRUTTURA));
+		
 	}
 	
 	@PostConstruct
 	public void init() {
 		this.selectedStruttura = null;
 		this.selectedArea = null;
-		readStrutture();
+//		readStrutture();
+		//Modifica dopo inserimento Modulo Minori in Struttura
+		readStruttureByTipoFunzione(Long.valueOf(this.getTipoFunzione()));
 		readAree();
 	}
 
@@ -68,6 +76,15 @@ public class StruttureController extends RilevazionePresenzeBaseController imple
 		return null;
 	}
 	
+	public String readStruttureByTipoFunzione(Long idTipoFunzione) {		
+		setStrutture(struttureEjb.findStruttureByTipoFunzione(idTipoFunzione));	
+		return null;
+	}
+	
+	public String readStruttureByTipo() {		
+		setStrutture(struttureEjb.findAll());	
+		return null;
+	}
 	
 
 	public String getSelectedAreaId() {
@@ -81,6 +98,7 @@ public class StruttureController extends RilevazionePresenzeBaseController imple
 	public void setSelectedStruttura(Struttura selectedStruttura) {
 		setModalHeader("Modifica Villaggio");		
 		this.selectedStruttura = selectedStruttura;
+		this.selectedStruttura.setTipoStruttura(this.getTipoStrutturaDefault());   //setTipo(this.getIdTipoStruttura());
 		readAree();
     }
 
@@ -271,6 +289,22 @@ public class StruttureController extends RilevazionePresenzeBaseController imple
 	public void addMessage(FacesMessage.Severity tipoMessaggio, String summary, String messaggio) {
 		FacesMessage message = new FacesMessage(tipoMessaggio, summary, messaggio);
 		FacesContext.getCurrentInstance().addMessage(null, message);
+	}
+
+	public String getTipoFunzione() {
+		return tipoFunzione;
+	}
+
+	public void setTipoFunzione(String tipoFunzione) {
+		this.tipoFunzione = tipoFunzione;
+	}
+
+	public TipoStruttura getTipoStrutturaDefault() {
+		return struttureEjb.findTipoStruttura(Long.valueOf(this.getTipoFunzione()));
+	}
+
+	public void setTipoStrutturaDefault(TipoStruttura tipoStrutturaDefault) {
+		this.tipoStrutturaDefault = tipoStrutturaDefault;
 	}
 }
 

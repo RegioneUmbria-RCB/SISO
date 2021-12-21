@@ -33,18 +33,18 @@
 				<p:fieldset id="datiAnag" legend="Dati Anagrafici" style="display: inline-block; vertical-align: top; width:70%;">					
 				  	<h:panelGrid columns="4" columnClasses="label, value" width="100%">			
 						<h:outputText value="Cognome *" for="cognome_segnalato" />
-						<p:inputText disabled="#{nuovaSchedaWizard.segnalato.anagrafica.disableAnagrafica and nuovaSchedaWizard.segnalato.anagrafica.cognome!=null}" label="Cognome" id="cognome_segnalato" style="text-transform: uppercase"
+						<p:inputText disabled="#{nuovaSchedaWizard.segnalato.anagrafica.disableAnagrafica and nuovaSchedaWizard.segnalato.anagrafica.cognome!=null}" label="Cognome" id="cognome_segnalato"
 							value="#{nuovaSchedaWizard.segnalato.anagrafica.cognome}" 
 							readonly="#{nuovaSchedaWizard.privacyAnonimo}"/>
 	
 						<h:outputText value="Nome *" for="nome_segnalato" />
-						<p:inputText disabled="#{nuovaSchedaWizard.segnalato.anagrafica.disableAnagrafica and nuovaSchedaWizard.segnalato.anagrafica.nome!=null}" label="Nome" id="nome_segnalato" style="text-transform: uppercase"
+						<p:inputText disabled="#{nuovaSchedaWizard.segnalato.anagrafica.disableAnagrafica and nuovaSchedaWizard.segnalato.anagrafica.nome!=null}" label="Nome" id="nome_segnalato" 
 							value="#{nuovaSchedaWizard.segnalato.anagrafica.nome}" 
 							readonly="#{nuovaSchedaWizard.privacyAnonimo}"/>
 						
 						 <h:outputText value="Alias *" for="alias_segnalato" rendered="#{nuovaSchedaWizard.privacyAnonimo or tempCodFiscManager.isTemporaneo(nuovaSchedaWizard.segnalato.anagrafica.codiceFiscale)}" />	
 	                	<h:panelGrid colums="3" rendered="#{nuovaSchedaWizard.privacyAnonimo or tempCodFiscManager.isTemporaneo(nuovaSchedaWizard.segnalato.anagrafica.codiceFiscale)}">		   
-						<p:inputText disabled="#{nuovaSchedaWizard.segnalato.anagrafica.disableAnagrafica and nuovaSchedaWizard.segnalato.anagrafica.alias!=null}" label="Alias" id="alias_segnalato" style="text-transform: uppercase"
+						<p:inputText disabled="#{nuovaSchedaWizard.segnalato.anagrafica.disableAnagrafica and nuovaSchedaWizard.segnalato.anagrafica.alias!=null}" label="Alias" id="alias_segnalato"
 							value="#{nuovaSchedaWizard.segnalato.anagrafica.alias}"	/>
 						</h:panelGrid>
 						<p:spacer width="2px;" rendered="#{nuovaSchedaWizard.privacyAnonimo or tempCodFiscManager.isTemporaneo(nuovaSchedaWizard.segnalato.anagrafica.codiceFiscale)}"/>
@@ -70,7 +70,7 @@
 						<h:outputText value="Codice fiscale *" for="codice_fiscale_segnalato" />
 						<h:panelGroup rendered="#{!nuovaSchedaWizard.privacyAnonimo}">
 							<p:inputText disabled="#{nuovaSchedaWizard.segnalato.anagrafica.disableAnagrafica and nuovaSchedaWizard.segnalato.anagrafica.codiceFiscale!=null}" 
-							    label="Codice fiscale" id="codice_fiscale_segnalato" maxlength="16" style="text-transform: uppercase" 
+							    label="Codice fiscale" id="codice_fiscale_segnalato" maxlength="16" 
 								value="#{nuovaSchedaWizard.segnalato.anagrafica.codiceFiscale}" validatorMessage="Codice fiscale non valido"  >
 								<p:ajax event="change" listener="#{nuovaSchedaWizard.onChangeCodiceFiscale}" update="pnlSegnalato" process="datiAnag" />
 								<f:validator validatorId="codFiscValidator"/>	    	
@@ -102,7 +102,7 @@
 	<!-- CF per ANONIMO  --> 
 		   				<h:panelGroup rendered="#{nuovaSchedaWizard.privacyAnonimo}">
 		   					<p:inputText readonly="true"
-							    label="Codice fiscale" id="codice_fiscale_segnalato_anonimo" maxlength="16" style="text-transform: uppercase" 
+							    label="Codice fiscale" id="codice_fiscale_segnalato_anonimo" maxlength="16"
 								value="#{nuovaSchedaWizard.segnalato.anagrafica.codiceFiscale}" >							
 							</p:inputText>
 		   				</h:panelGroup>
@@ -149,7 +149,7 @@
 					<h:panelGrid columns="2" >
 						<h:outputText value="Medico medicina generale " for="medico_segnalato" 
 						              title="Inserire Cognome e Nome" style="display: block; width: 150px;"/>
-						<p:autoComplete label="Medico medicina generale" id="medico_segnalato" value="#{nuovaSchedaWizard.segnalato.medico}" title="Inserire Cognome e Nome" minQueryLength="3" style="text-transform: uppercase"
+						<p:autoComplete label="Medico medicina generale" id="medico_segnalato" value="#{nuovaSchedaWizard.segnalato.medico}" title="Inserire Cognome e Nome" minQueryLength="3"
 							completeMethod="#{nuovaSchedaWizard.completeMedico}" />
 	                          
 						<h:outputLabel value=" N.Tessera sanitaria " for="tessera_sanitaria_segnalato" />
@@ -199,7 +199,7 @@
        				<h:panelGrid id="residenzaIndirizzo" columns="3" columnClasses="label, value" styleClass="grid">		
 							
 					<h:outputText value="Indirizzo " for="via_residenza" />
-					<p:inputText style="text-transform: uppercase" label="Via residenza" id="via_residenza" maxlength="100" size="25" 
+					<p:inputText  label="Via residenza" id="via_residenza" maxlength="100" size="25" 
 				             value="#{nuovaSchedaWizard.segnalato.residenza.via}" /> <!--  disabled="#{nuovaSchedaWizard.segnalato.senzaFissaDimora}" -->
 					
 					<webred:pnlComuneNazione id="comune_residenza" comuneNazioneManBean="#{nuovaSchedaWizard.segnalato.residenza.comuneNazioneMan}" 
@@ -229,7 +229,7 @@
 						              rendered="#{!nuovaSchedaWizard.segnalato.domicilioAsResidenza}">
 									
 							<h:outputText value="Indirizzo " for="via_domicilio" />
-							<p:inputText style="text-transform: uppercase" label="Via domicilio" disabled="#{nuovaSchedaWizard.segnalato.domicilioAsResidenza}"
+							<p:inputText  label="Via domicilio" disabled="#{nuovaSchedaWizard.segnalato.domicilioAsResidenza}"
 							             id="via_domicilio" maxlength="100" size="25" value="#{nuovaSchedaWizard.segnalato.domicilio.via}" />
 							 <webred:pnlComuneNazione comuneNazioneManBean="#{nuovaSchedaWizard.segnalato.domicilio.comuneNazioneMan}" 
 							                         extraLabelRequired="false" disabled="#{nuovaSchedaWizard.segnalato.domicilioAsResidenza}" />
@@ -268,6 +268,7 @@
 			 <p:fieldset legend="Formazione - Lavoro" style="display: inline-block; vertical-align: top;">
 				<webredcs:pnlFormazioneLavoro iFormazioneLavoro="#{nuovaSchedaWizard.segnalato.formLavoroMan}" numColonne="2" 
 				                              onChangeCondLavoro="#{nuovaSchedaWizard.onChangeCondLavoro()}"
+				                              condLavoroChangeUpdate="@(.panelpor)"
 				                              onChangeTitoloStudio="#{nuovaSchedaWizard.onChangeTitoloStudio()}"/>
 			</p:fieldset>
 		
@@ -316,7 +317,9 @@
 						</p:dataTable>
 					</p:dialog>
 				
-					<webredcs:pnlFamConviventi iFamConviventi="#{nuovaSchedaWizard.famConviventiMan}" numColonne="2" />
+					<webredcs:pnlFamConviventi iFamConviventi="#{nuovaSchedaWizard.famConviventiMan}" numColonne="2" 
+											   onChangeGrVulnerabile="#{nuovaSchedaWizard.onChangeGruppoVulnerabile()}" 
+											   grVulChangeUpdate="@(.grpVulner)" />
 				</p:outputPanel>
 				
 			</p:fieldset>

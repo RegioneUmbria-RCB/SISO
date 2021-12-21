@@ -92,8 +92,8 @@ public class ServiziRichiestiInterventiCustomBean extends SegretariatoSocBaseBea
 		List<CsDValutazione> res = this.getSchedeJsonInterventiCustom(scheda);
 		
 		for(CsDValutazione val : res){
-		
-			if(TipoDiario.ABITAZIONE_ID==val.getCsDDiario().getCsTbTipoDiario().getId()){
+			
+			if(TipoDiario.INTERMEDIAZIONE_AB_ID==val.getCsDDiario().getCsTbTipoDiario().getId()){
 				IIntermediazioneAb intermediazioneAbMan = (IIntermediazioneAb)IntermediazioneManBaseBean.initByModel(val);
 				if (intermediazioneAbMan!=null) {
 					serviziRichiestiInterventiCustomSalvati.add(intermediazioneAbMan);
@@ -173,7 +173,7 @@ public class ServiziRichiestiInterventiCustomBean extends SegretariatoSocBaseBea
 							List<CsDValutazione> res = this.getSchedeJsonInterventiCustom(ssScheda); //Lista ordinata per data amministrativa decrescente
 							for(CsDValutazione val : res){
 							
-								if(TipoDiario.ABITAZIONE_ID==val.getCsDDiario().getCsTbTipoDiario().getId().intValue()){
+								if(TipoDiario.INTERMEDIAZIONE_AB_ID==val.getCsDDiario().getCsTbTipoDiario().getId().intValue()){
 									IIntermediazioneAb intermediazioneAbMan = (IIntermediazioneAb)IntermediazioneManBaseBean.initByModel(val);
 									if (intermediazioneAbMan!=null)
 										listaServizioRichiestoCustomAltreSchede.add(intermediazioneAbMan);
@@ -729,7 +729,7 @@ public class ServiziRichiestiInterventiCustomBean extends SegretariatoSocBaseBea
 						if ( (TipiInterventoCustom.UDC_INVIO_A_ORGANIZZAZIONE_ESTERNA==selectedTipoInterventoCustomId && serviziRichiestiInterventiCustomDaSalvareContainsTipoInterventoCustomId(TipiInterventoCustom.UDC_INVIO_ALTRO_UFFICIO))
 								 || (TipiInterventoCustom.UDC_INVIO_ALTRO_UFFICIO==selectedTipoInterventoCustomId && serviziRichiestiInterventiCustomDaSalvareContainsTipoInterventoCustomId(TipiInterventoCustom.UDC_INVIO_A_ORGANIZZAZIONE_ESTERNA)) ) 
 						{
-							this.addWarningMessage("Attenzione", "Il servizio richiesto prevede l'invio della scheda ma esiste già un altra richiesta di invio presente");
+							this.addWarningMessage("Attenzione", "Il servizio richiesto prevede l'invio della scheda ma esiste già una richiesta di invio");
 						}
 						else if (schedaInviata)
 						{

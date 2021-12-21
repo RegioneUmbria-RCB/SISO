@@ -1,10 +1,13 @@
 package it.webred.cs.data.model;
 
 import java.io.Serializable;
+
 import javax.persistence.*;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 
 /**
@@ -13,7 +16,6 @@ import java.util.List;
  */
 @Entity
 @Table(name="CS_A_FAMIGLIA_GRUPPO")
-@NamedQuery(name="CsAFamigliaGruppo.findAll", query="SELECT c FROM CsAFamigliaGruppo c")
 public class CsAFamigliaGruppo implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -71,8 +73,9 @@ public class CsAFamigliaGruppo implements Serializable {
 	private Integer infoSconosciute;   
 	
 	//bi-directional many-to-one association to CsAComponente
-	@OneToMany(mappedBy="csAFamigliaGruppo", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-	private List<CsAComponente> csAComponentes;
+	@OrderBy("id")
+	@OneToMany(mappedBy="csAFamigliaGruppo", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	private Set<CsAComponente> csAComponentes;
 
 	//bi-directional many-to-one association to CsASoggetto
 	@ManyToOne
@@ -80,6 +83,7 @@ public class CsAFamigliaGruppo implements Serializable {
 	private CsASoggettoLAZY csASoggetto;
 
 	public CsAFamigliaGruppo() {
+		csAComponentes = new HashSet<CsAComponente>();
 	}
 
 	public Long getId() {
@@ -178,11 +182,11 @@ public class CsAFamigliaGruppo implements Serializable {
 		this.usrMod = usrMod;
 	}
 
-	public List<CsAComponente> getCsAComponentes() {
-		return this.csAComponentes;
+	public Set<CsAComponente> getCsAComponentes() {
+		return csAComponentes;
 	}
 
-	public void setCsAComponentes(List<CsAComponente> csAComponentes) {
+	public void setCsAComponentes(Set<CsAComponente> csAComponentes) {
 		this.csAComponentes = csAComponentes;
 	}
 

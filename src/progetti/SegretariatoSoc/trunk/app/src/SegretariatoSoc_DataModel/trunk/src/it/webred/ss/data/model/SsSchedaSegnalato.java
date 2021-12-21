@@ -1,7 +1,6 @@
 package it.webred.ss.data.model;
 
 import it.webred.ss.data.model.tb.CsTbCondLavoro;
-import it.webred.ss.data.model.tb.CsTbIngMercato;
 import it.webred.ss.data.model.tb.CsTbProfessione;
 import it.webred.ss.data.model.tb.CsTbSettoreImpiego;
 import it.webred.ss.data.model.tb.CsTbTitoloStudio;

@@ -33,11 +33,19 @@ public class DatiUserSearchBean {
 		this.soggetto = soggetto;
 	}
 
+	public boolean isAnagrafeSanitariaUmbria(){
+		return id.startsWith(DataModelCostanti.TipoRicercaSoggetto.ANAG_SANITARIA_UMBRIA);
+	}
+	
 	public boolean isAnagrafeSanitaria() {
 		return id.startsWith(DataModelCostanti.TipoRicercaSoggetto.ANAG_SANITARIA_PREFIX);
 	}
 	
 	public boolean isAnagrafeSigess() {
 		return id.startsWith(DataModelCostanti.TipoRicercaSoggetto.SIGESS);
+	}
+	
+	public boolean isAnagrafeInterna(){
+		return id.startsWith(DataModelCostanti.TipoRicercaSoggetto.DEFAULT);
 	}
 }

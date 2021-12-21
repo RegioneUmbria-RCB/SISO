@@ -12,7 +12,6 @@ import java.util.List;
  */
 @Entity
 @Table(name="CS_A_FAMIGLIA_GRUPPO_GIT")
-@NamedQuery(name="CsAFamigliaGruppoGit.findAll", query="SELECT c FROM CsAFamigliaGruppoGit c")
 public class CsAFamigliaGruppoGit implements Serializable {
 	private static final long serialVersionUID = 1L;
 

@@ -1,6 +1,7 @@
 package it.webred.cs.data.model;
 
 import java.io.Serializable;
+import java.util.List;
 
 import javax.persistence.*;
 
@@ -31,6 +32,9 @@ public class CsTbMacroAttivita implements Serializable {
 	
 	@Column(name="FLAG_RIUNIONE_CON")
 	private Boolean flagRiunioneCon;
+	
+	@OneToMany(mappedBy="macroAttivita", fetch=FetchType.LAZY)
+	private List<CsTbMicroAttivita> lstMicroAttivita;
 	
 	public CsTbMacroAttivita() {
 	}
@@ -95,6 +99,14 @@ public class CsTbMacroAttivita implements Serializable {
 		this.flagConChi = flagConChi;
 	}
 	
+	public List<CsTbMicroAttivita> getLstMicroAttivita() {
+		return lstMicroAttivita;
+	}
+
+	public void setLstMicroAttivita(List<CsTbMicroAttivita> lstMicroAttivita) {
+		this.lstMicroAttivita = lstMicroAttivita;
+	}
+
 	@Override
 	public boolean equals(Object other) {	
 	    if (other == null) return false;

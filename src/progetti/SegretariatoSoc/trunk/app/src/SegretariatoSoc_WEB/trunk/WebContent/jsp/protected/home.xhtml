@@ -193,7 +193,7 @@
 				           <p:tooltip for="lblSsComplete" styleClass="tooltip" rendered="#{soggetto.ssComplete.size()>0}">
 				                  <h:outputLabel value="n° Schede Complete" styleClass="h4"/><br/><br/>
 			           			  <ui:repeat value="#{soggetto.ssComplete}" var="ss" style="font-size:0.6em;" >
-			           			    <h:outputText value=" #{ss.key}: #{ss.value}"/><br/>
+			           			    <h:outputText value=" #{ss.codice}: #{ss.descrizione}"/><br/>
 			          			  </ui:repeat>
 			           		</p:tooltip>
 			           		<p:spacer width="10px" rendered="#{not empty soggetto.ssIncomplete and not empty soggetto.ssComplete}"/>
@@ -201,7 +201,7 @@
 				           <p:tooltip for="lblSsIncomplete" styleClass="tooltip" rendered="#{soggetto.ssIncomplete.size()>0}">
 			           			  <h:outputLabel value="n° Schede Incomplete" styleClass="h4"/><br/><br/>
 			           			  <ui:repeat value="#{soggetto.ssIncomplete}" var="ss" style="font-size:0.6em;" >
-			           			   <h:outputText value=" #{ss.key}: #{ss.value}"/><br/>
+			           			   <h:outputText value=" #{ss.codice}: #{ss.descrizione}"/><br/>
 			          			  </ui:repeat>
 			           		</p:tooltip>
 		           		</h:panelGroup> 
@@ -214,11 +214,13 @@
 			        		  rendered="#{ufficiTableBean.preselectedPContatto.ufficio.visColInterventi}" 
 			        		  style="text-align:center;vertical-align:middle;width:5%">  
 			            <p:graphicImage rendered="#{soggetto.intErogati}" value="/images/check.png"/>
-			            <p:graphicImage rendered="#{!soggetto.intErogati}" value="/images/close.png"/>
+			            <p:graphicImage rendered="#{!soggetto.intErogati and !soggetto.presenzaDatiEsterni}" value="/images/close.png"/>
 			            <p:graphicImage id="lblRdC" rendered="#{soggetto.beneficiarioRdC}"  
 	        				    	   title="Beneficiario di Reddito di Cittadinanz (Patto per il Sociale)"
 	        				    	   value="#{resource['webredcs/img/rdc.png']}" width="20px"/>
-										
+						 <p:graphicImage id="lblDatiEsterni" rendered="#{soggetto.presenzaDatiEsterni}"  
+	        				    	   title="Il soggetto ha beneficiato di prestazioni sociali"
+	        				    	   value="#{resource['webredcs/img/earth256.png']}" width="20px"/>				
 			        </p:column>
 			        
 			        <p:column headerText="Enti di volontariato" style="text-align:center;vertical-align:middle;width:5%">  
@@ -295,7 +297,7 @@
 				           <p:tooltip for="lblSsNComplete" styleClass="tooltip" rendered="#{soggettoNucleo.ssComplete.size()>0}">
 			           			  <h:outputLabel value="n° Schede Complete" styleClass="h4"/><br/><br/>
 			           			  <ui:repeat value="#{soggettoNucleo.ssComplete}" var="ss" style="font-size:0.6em;">
-			           			  	<h:outputText value=" #{ss.key}: #{ss.value}"/><br/>
+			           			  	<h:outputText value=" #{ss.codice}: #{ss.descrizione}"/><br/>
 			          			  </ui:repeat>
 			           		</p:tooltip>
 			           		<p:spacer width="10px" rendered="#{not empty soggettoNucleo.ssIncomplete and not empty soggettoNucleo.ssComplete}"/>
@@ -304,7 +306,7 @@
 			           			  
 			           			  <h:outputLabel value="n° Schede Incomplete" styleClass="h4"/><br/><br/>
 			           			  <ui:repeat value="#{soggettoNucleo.ssIncomplete}" var="ss" style="font-size:0.6em;">
-			           			  	<h:outputText value=" #{ss.key}: #{ss.value}"/><br/>
+			           			  	<h:outputText value=" #{ss.codice}: #{ss.descrizione}"/><br/>
 			          			  </ui:repeat>
 			           		</p:tooltip>
 		 

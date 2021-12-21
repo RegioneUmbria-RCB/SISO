@@ -11,6 +11,7 @@ import it.webred.cs.data.model.CsCfgIntEsegStato;
 import it.webred.cs.data.model.CsIIntervento;
 import it.webred.cs.data.model.CsIInterventoEseg;
 import it.webred.cs.data.model.CsIInterventoEsegMast;
+import it.webred.cs.data.model.CsIQuota;
 import it.webred.cs.data.model.CsOSettore;
 import it.webred.cs.jsf.bean.erogazioneIntervento.ErogazioneInterventoUtils.SumDTO;
 import it.webred.cs.jsf.manbean.superc.CsUiCompBaseBean;
@@ -166,8 +167,7 @@ public class InterventoErogazHistoryBean extends CsUiCompBaseBean implements Ser
 		
 		if(this.csIInterventoId != null && this.idErogazioneMaster==null){
 			bDto.setObj(csIInterventoId);
-			CsIInterventoEsegMast master = this.interventoService.getCsIInterventoEsegMastByByInterventoId(bDto);
-			idErogazioneMaster = master!=null ? master.getId() : null;
+			idErogazioneMaster = this.interventoService.getCsIInterventoEsegMastIdByInterventoId(bDto);
 		}
 		
 		if(this.idErogazioneMaster!=null){
@@ -176,12 +176,15 @@ public class InterventoErogazHistoryBean extends CsUiCompBaseBean implements Ser
 			listaInterEseg = this.interventoService.getInterventoEsegByMasterId(bDto);
 		}else{return;}
 				
-		bDto.setObj(this.csCTipoInterventoCustom!=null ?  csCTipoInterventoCustom.getId() : (this.getCsCTipoIntervento()!=null ? this.getCsCTipoIntervento().getId() : null));
+		Long currTipoIntervento = this.csCTipoInterventoCustom!=null ?  csCTipoInterventoCustom.getId() : (this.getCsCTipoIntervento()!=null ? this.getCsCTipoIntervento().getId() : null);
+		bDto.setObj(currTipoIntervento);
 		HashMap<Long, ErogStatoCfgDTO>  mappa = interventoService.findConfigIntEsegByTipoIntervento(bDto);
 		
 		this.rows = new LinkedList<InterventoErogazHistoryRowBean>();
 		for (CsIInterventoEseg csIInterventoEseg : listaInterEseg) {
-			InterventoErogazHistoryRowBean curHistoryRow = new InterventoErogazHistoryRowBean(header, csIInterventoEseg, mappa,csIInterventoEseg.getCsIInterventoEsegMast().getCsIQuota().getCsTbUnitaMisura().getValore());
+			CsIQuota quota = csIInterventoEseg.getCsIInterventoEsegMast().getCsIQuota();
+			String um = quota!=null ? quota.getCsTbUnitaMisura().getValore() : null;
+			InterventoErogazHistoryRowBean curHistoryRow = new InterventoErogazHistoryRowBean(header, csIInterventoEseg, mappa, um);
 			this.rows.add(curHistoryRow);
 		}
 
@@ -289,4 +292,14 @@ public class InterventoErogazHistoryBean extends CsUiCompBaseBean implements Ser
 			return currRows;
 			
 		}
+	
+	public List<Long> getListaIdInterventiAttivi(){
+		List<Long> lst = new ArrayList<Long>();
+		for(InterventoErogazHistoryRowBean row : this.rows){
+			if(row.getIntEseg()!=null && row.getIntEseg().getId()!=null)
+				lst.add(row.getIntEseg().getId());
+		}
+		return lst;
+	}
 }
+

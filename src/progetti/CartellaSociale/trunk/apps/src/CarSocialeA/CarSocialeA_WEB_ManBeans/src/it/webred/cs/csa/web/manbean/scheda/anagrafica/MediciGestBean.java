@@ -2,6 +2,7 @@ package it.webred.cs.csa.web.manbean.scheda.anagrafica;
 
 import it.webred.cs.csa.ejb.client.AccessTableMediciSessionBeanRemote;
 import it.webred.cs.csa.ejb.dto.BaseDTO;
+import it.webred.cs.csa.ejb.dto.KeyValueDTO;
 import it.webred.cs.data.model.CsCMedico;
 import it.webred.cs.jsf.bean.ValiditaCompBaseBean;
 import it.webred.cs.jsf.interfaces.IDatiValiditaGestione;
@@ -25,34 +26,20 @@ public class MediciGestBean extends DatiValGestioneMan implements IDatiValiditaG
 
 	@Override
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public List<KeyValuePairBean> getLstItems() {
-		
-		lstItems = new ArrayList<KeyValuePairBean>();
+	protected List<KeyValueDTO> loadListItems() {
 		try {
 			AccessTableMediciSessionBeanRemote bean = (AccessTableMediciSessionBeanRemote) ClientUtility.getEjbInterface("CarSocialeA", "CarSocialeA_EJB", "AccessTableMediciSessionBean");
 			CeTBaseObject bo = new CeTBaseObject();
 			fillEnte(bo);
-			List<CsCMedico> beanLstMedici = bean.getMedici(bo);
-			if (beanLstMedici != null) {
-				for (CsCMedico medico : beanLstMedici) {
-					String denominazione = (medico.getCognome() == null ? "" : medico.getCognome()).trim();
-					String nome = (medico.getNome() == null ? "" : medico.getNome()).trim();
-					if (!nome.equals("")) {
-						if (!denominazione.equals("")) {
-							denominazione += " ";
-						}
-						denominazione += nome;
-					}					
-					lstItems.add(new KeyValuePairBean(medico.getId(), denominazione));
-				}
-			}
+			return bean.getMedici(bo);
+
 		} catch (NamingException e) {
 			addErrorFromProperties("caricamento.error");
 			logger.error(e.getMessage(),e);
+			return null;
 		}
-		
-		return lstItems;
 	}
+
 
 	@Override
 	public List<KeyValuePairBean> getDettaglioSelezione(Long id) {

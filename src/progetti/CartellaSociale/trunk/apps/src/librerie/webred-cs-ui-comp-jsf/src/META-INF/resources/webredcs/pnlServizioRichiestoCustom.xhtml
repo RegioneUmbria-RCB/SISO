@@ -75,8 +75,10 @@
 			</h:panelGrid>
 			
 			<p:spacer height="10px" />
+			<p:outputLabel value="Macro/micro intervento *"/>
    			<p:multiSelectListbox value="#{cc.attrs.iServizioRichiestoCustom.jsonCurrent.selezionePDS}" 
-   								 showHeaders="true" header="Macro Intervento"
+   								 showHeaders="true" header="Macro Intervento" 
+   								 required="true" requiredMessage="Il campo macro/micro intervento è obbligatorio"
    								 effect="slide" disabled="#{cc.attrs.soloLettura}" rendered="#{not empty cc.attrs.iServizioRichiestoCustom.listaPDS}">
        			<f:selectItems value="#{cc.attrs.iServizioRichiestoCustom.listaPDS}" style="font-size: 12px;"/>
   			</p:multiSelectListbox>	

@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite">
+
+<h:form id="formInsMinori">
+	<p:outputPanel id="pnlRichiesteDisponibilita" style="width:100%; ">
+		<p:panel id="panelInsMinori">
+			<h:panelGrid columns="1" cellpadding="0" cellspacing="0"
+				style="vertical-align: left;">
+				<h3>Inserimento Minore</h3>
+			</h:panelGrid>
+
+			<p:dataTable id="dtInsMinoriId" var="rowInsMinori"
+				emptyMessage="Nessun elemento presente"
+				value="#{inserimentoMinoriController.minori}" rows="5"
+				paginator="true"
+				paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="5,10,15" rowKey="#{rowInsMinori.id}"
+				scrollable="false" rowExpandMode="single" sortMode="single"
+				sortBy="#{rowInsMinori.id}" sortOrder="descending">
+
+				<f:facet name="header">
+					<p:outputPanel>
+						<p:commandButton value="Inserisci Minore"
+							oncomplete="PF('insMinoreDialog').show();"
+							action="#{inserimentoMinoriController.resetMinore()}"
+							update="@this tabMinori:formInsMinori:insMinoreDialogId"
+							immediate="true">
+						</p:commandButton>
+					</p:outputPanel>
+				</f:facet>
+
+				<p:column headerText="Nome" width="30">
+					<h:outputText value="#{rowInsMinori.nome}">
+					</h:outputText>
+				</p:column>
+				<p:column headerText="Cognome" width="30">
+					<h:outputText value="#{rowInsMinori.cognome}">
+					</h:outputText>
+				</p:column>
+				<p:column headerText="CF" width="30">
+					<h:outputText value="#{rowInsMinori.cf}">
+					</h:outputText>
+				</p:column>
+				<p:column headerText="Data inizio permanenza" width="30">
+					<h:outputText value="#{rowInsMinori.dataInizioPermamenza}">
+						<f:convertDateTime pattern="dd/MM/yyyy" />
+					</h:outputText>
+				</p:column>
+				<p:column headerText="Data fine permanenza" width="30">
+					<h:outputText value="#{rowInsMinori.dataFinePermanenza}">
+						<f:convertDateTime pattern="dd/MM/yyyy" />
+					</h:outputText>
+				</p:column>
+				<p:column headerText="Info" width="30">
+					<p:commandButton value="Info"
+						oncomplete="PF('insMinoreDialog').show();">
+						<p:ajax event="click" update="tabMinori:formInsMinori:insMinoreDialogId"
+							listener="#{inserimentoMinoriController.setNuovoInserimento(rowInsMinori)}" />
+					</p:commandButton>
+				</p:column>
+
+			</p:dataTable>
+
+			<p:dialog id="insMinoreDialogId" modal="true" style="max-height:100%;overflow-y:auto;"
+				widgetVar="insMinoreDialog" header="Inserisci Minore">
+
+				<p:panel id="pnlForm" style="max-width:700px;">
+					<p:outputPanel styleClass="ui-g">
+						<p:messages showDetail="true" autoUpdate="true" closable="true" escape="false"></p:messages>
+						<p:outputPanel styleClass="ui-lg-4 ui-md-6 ui-g-12">
+							<h:outputText value="Nome" />
+							<p:outputPanel />
+							<p:inputText styleClass="p-d-block" id="nome" disabled="#{inserimentoMinoriController.nuovoInserimento.id != null}"
+								value="#{inserimentoMinoriController.nuovoInserimento.nome}" required="true" requiredMessage="Il nome è obbligatorio"/>
+								
+						</p:outputPanel>
+						<p:outputPanel styleClass="ui-lg-4 ui-md-6 ui-g-12">
+							<h:outputText value="Cognome" />
+							<p:outputPanel />
+							<p:inputText id="cognome" required="true" requiredMessage="Il cognome è obbligatorio" styleClass="p-d-block" disabled="#{inserimentoMinoriController.nuovoInserimento.id != null}"
+								value="#{inserimentoMinoriController.nuovoInserimento.cognome}" />
+								
+						</p:outputPanel>
+						<p:outputPanel styleClass="ui-lg-4 ui-md-6 ui-g-12">
+							<h:outputText value="Codice Fiscale" />
+							<p:outputPanel />
+							<p:inputText id="cf" required="true" requiredMessage="Il codice fiscale è obbligatorio" styleClass="p-d-block" disabled="#{inserimentoMinoriController.nuovoInserimento.id != null}"
+								value="#{inserimentoMinoriController.nuovoInserimento.cf}" />
+								
+						</p:outputPanel>
+						<p:outputPanel styleClass="ui-lg-4 ui-md-6 ui-g-12">
+							<h:outputText value="Anno di nascita" />
+							<p:outputPanel />
+							<p:spinner disabled="#{inserimentoMinoriController.nuovoInserimento.id != null}"
+								value="#{inserimentoMinoriController.nuovoInserimento.annoNascita}" size="4"
+								maxlength="4" min="1900" required="true" />
+
+						</p:outputPanel>
+						<p:outputPanel styleClass="ui-lg-4 ui-md-6 ui-g-12">
+							<h:outputText value="Sesso" />
+							<p:outputPanel />
+							<p:selectOneMenu disabled="#{inserimentoMinoriController.nuovoInserimento.id != null}"
+								value="#{inserimentoMinoriController.nuovoInserimento.sesso}">
+								<f:selectItem itemLabel="M" itemValue="M" itemDisabled="false" />
+								<f:selectItem itemValue="F" itemLabel="F" />
+							</p:selectOneMenu>
+						</p:outputPanel>
+						<p:outputPanel styleClass="ui-lg-4 ui-md-6 ui-g-12">
+							<h:outputText value="Cittadinanaza" />
+							<p:outputPanel />
+							<p:selectOneMenu label="Cittadinanza" id="cittadinanza"
+							 disabled="#{inserimentoMinoriController.nuovoInserimento.id != null}"
+							style="vertical-align:middle"
+							value="#{inserimentoMinoriController.nuovoInserimento.cittadinanza}"
+							effect="fold" editable="false" filter="true">
+							<f:selectItem itemLabel="- seleziona -" itemValue="" />
+							<f:selectItems value="#{inserimentoMinoriController.cittadinanze}" 
+							valueChangeListener="#{inserimentoMinoriController.onCittadinanzaChange}" ></f:selectItems>
+						</p:selectOneMenu>
+						</p:outputPanel>
+					</p:outputPanel>
+					<p:outputPanel styleClass="ui-g">
+						<p:outputPanel id="residenza" styleClass="ui-g-12">
+						<p:outputPanel styleClass="ui-lg-4 ui-md-6 ui-g-12">
+							<h:outputText id="txtComuneResidenza" value="Comune di Residenza" />
+							<p:autoComplete id="txtAutocompleteComuneResidenza"
+							  disabled="#{inserimentoMinoriController.nuovoInserimento.id != null}"
+								maxResults="25"
+								value="#{inserimentoMinoriController.selectedMinoreComuneResidenza}"
+								converter="amTabComuniConverter"
+								completeMethod="#{inserimentoMinoriController.completaLuogo}"
+								var="comuneRes" itemLabel="#{comuneRes.denominazione}"
+								itemValue="#{comuneRes}"
+								style="vertical-align:middle" >
+								<p:ajax event="itemSelect" 
+									listener="#{inserimentoMinoriController.onComuneResidenzaSelect}"  process="@parent"  update="txtAutocompleteNazione"/>
+								
+							</p:autoComplete>
+						</p:outputPanel>
+							<p:outputPanel styleClass="ui-lg-4 ui-md-6 ui-g-12">
+								<h:outputText value="Nazione di residenza" />
+								<p:outputPanel />
+								<p:autoComplete id="txtAutocompleteNazione" maxResults="25"
+								 disabled="#{inserimentoMinoriController.nuovoInserimento.id != null}"
+									value="#{inserimentoMinoriController.selectedMinoreStatoResidenza}"
+									completeMethod="#{inserimentoMinoriController.completaLstNazioni}"
+									var="nazioneVar" itemLabel="#{nazioneVar.nazione}"
+									itemValue="#{nazioneVar}"
+									converter="amTabNazioniConverter"
+									style="vertical-align:middle" >
+									<p:ajax event="itemSelect"
+										listener="#{inserimentoMinoriController.onStatoResidenzaSelect}"  process="@parent"  update="txtAutocompleteComuneResidenza" />
+										
+								</p:autoComplete>			
+							</p:outputPanel>
+
+						</p:outputPanel>
+						<p:outputPanel id="indResidenza"
+							styleClass="ui-lg-4 ui-md-6 ui-g-12">
+							<p:outputPanel>
+								<h:outputText value="Indirizzo di residenza" />
+								<p:outputPanel />
+								<p:inputText styleClass="p-d-block" disabled="#{inserimentoMinoriController.nuovoInserimento.id != null}"
+									value="#{inserimentoMinoriController.nuovoInserimento.viaResidenza}" />
+							</p:outputPanel>
+						</p:outputPanel>
+					</p:outputPanel>
+
+					<p:outputPanel styleClass="ui-g">
+						<p:outputPanel styleClass="ui-lg-4 ui-md-6 ui-g-12">
+							<h:outputText value="Data inizio permanenza" />
+							<p:outputPanel />
+							<p:calendar placeholder="Data" styleClass="disabledClass" disabled="#{inserimentoMinoriController.nuovoInserimento.id != null}"
+								pattern="dd/MM/yyyy" locale="it" required="true" requiredMessage="Data inizio Permanenza obbligatoria"
+								value="#{inserimentoMinoriController.nuovoInserimento.dataInizioPermamenza}" />
+						</p:outputPanel>
+						<p:outputPanel styleClass="ui-lg-4 ui-md-6 ui-g-12">
+							<h:outputText value="Data fine permanenza" />
+							<p:outputPanel /> 
+							<p:calendar placeholder="Data" styleClass="disabledClass" disabled="#{inserimentoMinoriController.nuovoInserimento.id != null}"
+								pattern="dd/MM/yyyy" locale="it" required="true" requiredMessage="Data fine Permanenza obbligatoria"
+								value="#{inserimentoMinoriController.nuovoInserimento.dataFinePermanenza}" />
+						</p:outputPanel>
+					</p:outputPanel>
+					<p:outputPanel styleClass="ui-g">
+						<p:outputPanel styleClass="ui-g-12">
+							<h:outputText value="Carica il PAI" />
+							<p:outputPanel />
+							<p:fileUpload uploadLabel="Carica File" label="Sfoglia File" rendered="#{inserimentoMinoriController.nuovoInserimento.stato==null or inserimentoMinoriController.nuovoInserimento.stato=='INS' or inserimentoMinoriController.nuovoInserimento.stato=='PRESA_IN_CARICO_NO_DOC'}"
+								invalidSizeMessage="File troppo grande" id="uploadPAI"
+								update="@(.allegatoTable)" mode="advanced"
+								fileUploadListener="#{inserimentoMinoriController.handleUploadPai}"
+								multiple="false" />
+							<p:dataGrid var="allegato"
+								value="#{inserimentoMinoriController.nuovoInserimento.documentoPai}"
+								styleClass="allegatoTable" columns="1" layout="grid"
+								emptyMessage="Nessun allegato presente">
+
+								<p:panelGrid columns="2" style="width:100%"
+									columnClasses="ui-grid-col-9,ui-grid-col-3"
+									styleClass="ui-panelgrid-blank noborder">
+									<h:outputText
+										value="#{inserimentoMinoriController.nuovoInserimento.nomeDocPai}" />
+									<p:commandButton immediate="true"
+										actionListener="#{inserimentoMinoriController.preparePaiFile()}"
+										value="Download" ajax="false">
+										<p:fileDownload value="#{inserimentoMinoriController.paiFile}" />
+									</p:commandButton>
+								</p:panelGrid>
+							</p:dataGrid>
+
+						</p:outputPanel>
+
+
+						<p:outputPanel styleClass="ui-g-12">
+							<h:outputText value="Carica il PTI equivalente" />
+							<p:outputPanel />
+							<p:fileUpload uploadLabel="Carica File" label="Sfoglia File" rendered="#{inserimentoMinoriController.nuovoInserimento.stato==null or inserimentoMinoriController.nuovoInserimento.stato=='INS' or inserimentoMinoriController.nuovoInserimento.stato=='PRESA_IN_CARICO_NO_DOC'}"
+								invalidSizeMessage="File troppo grande" id="uploadPTI"
+								update="@(.allegatoTable)" mode="advanced"
+								fileUploadListener="#{inserimentoMinoriController.handleUploadPTIEqui}"
+								multiple="false" />
+							<p:dataGrid var="allegato"
+								value="#{inserimentoMinoriController.nuovoInserimento.documentoPtiEqui}"
+								styleClass="allegatoTable" columns="1" layout="grid"
+								emptyMessage="Nessun allegato presente">
+
+								<p:panelGrid columns="2" style="width:100%"
+									columnClasses="ui-grid-col-9,ui-grid-col-3"
+									styleClass="ui-panelgrid-blank noborder">
+									<h:outputText
+										value="#{inserimentoMinoriController.nuovoInserimento.nomeDocPtiEqui}" />
+									<p:commandButton immediate="true"
+										actionListener="#{inserimentoMinoriController.preparePTIEQUIFile()}"
+										value="Download" ajax="false">
+										<p:fileDownload
+											value="#{inserimentoMinoriController.ptiEquiFile}" />
+									</p:commandButton>
+								</p:panelGrid>
+							</p:dataGrid>
+
+						</p:outputPanel>
+					</p:outputPanel>
+				</p:panel>
+
+
+				<p:outputPanel>
+					<p:commandButton value="Salva" rendered="#{inserimentoMinoriController.nuovoInserimento.id == null}"
+						action="#{inserimentoMinoriController.salvaNuovoInserimento()}"
+						process="@form"
+						update="dtInsMinoriId pnlForm"></p:commandButton>
+				
+				<p:commandButton value="Salva" rendered="#{inserimentoMinoriController.nuovoInserimento.id != null}"
+						action="#{inserimentoMinoriController.salva()}"
+						process="@form"
+						update="dtInsMinoriId pnlForm"></p:commandButton>
+				</p:outputPanel>
+
+			</p:dialog>
+			
+
+
+		</p:panel>
+	</p:outputPanel>
+</h:form>
+</html>

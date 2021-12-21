@@ -6,15 +6,11 @@ import java.math.BigDecimal;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "V_GERARCHIA_SERVIZI")
-@NamedQuery(name = "VGerrarchiaServizi.findAll", query = "SELECT s FROM VGerrarchiaServizi s")
 public class VGerrarchiaServizi implements Serializable {
 	/**
 	 * 
@@ -54,9 +50,9 @@ public class VGerrarchiaServizi implements Serializable {
 	@Column(name = "AREAT_ID")
 	private BigDecimal areaTid; 
 	
-	@OneToOne
+/*	@OneToOne 
 	@JoinColumn(name="T_CLASSE_ID", updatable=false, insertable=false)
-	private ArTClasse ArTClasse;
+	private ArTClasse ArTClasse;*/
 	
 
 	public BigDecimal getId() {
@@ -146,11 +142,11 @@ public class VGerrarchiaServizi implements Serializable {
 		this.areaTid = areaTid;
 	}
 
-	public ArTClasse getArTClasse() {
+	/*public ArTClasse getArTClasse() {
 		return ArTClasse;
 	}
 
 	public void setArTClasse(ArTClasse arTClasse) {
 		ArTClasse = arTClasse;
-	}
+	}*/
 }

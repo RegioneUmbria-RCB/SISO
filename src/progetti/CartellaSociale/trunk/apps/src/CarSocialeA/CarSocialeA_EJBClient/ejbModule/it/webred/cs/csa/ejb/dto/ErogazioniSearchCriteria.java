@@ -1,6 +1,7 @@
 package it.webred.cs.csa.ejb.dto;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 
@@ -23,7 +24,7 @@ public class ErogazioniSearchCriteria extends PaginationDTO{
 	private Long[] lstTipoIntervento;
 	private Long[] lstTipoInterventoCustom;
 	private String[] lstTipoInterventoInps; //SISO-1162
-	private String dataErogazione;
+	private Date dataErogazione;
 	private String statoErogazione;
 	
 	//frida aggiunti
@@ -68,12 +69,12 @@ public class ErogazioniSearchCriteria extends PaginationDTO{
 	}
 	public String getCodiceFiscale() {
 		return codiceFiscale;
-	}
-	public String getDataErogazione() {
+	}	
+	public Date getDataErogazione() {
 		return dataErogazione;
 	}
-	public String getStatoErogazione() {
-		return statoErogazione;
+	public void setDataErogazione(Date dataErogazione) {
+		this.dataErogazione = dataErogazione;
 	}
 	public void setPermessoAutorizzativo(boolean permessoAutorizzativo) {
 		this.permessoAutorizzativo = permessoAutorizzativo;
@@ -93,13 +94,12 @@ public class ErogazioniSearchCriteria extends PaginationDTO{
 	public void setCodiceFiscale(String codiceFiscale) {
 		this.codiceFiscale = codiceFiscale;
 	}
-	public void setDataErogazione(String dataErogazione) {
-		this.dataErogazione = dataErogazione;
-	}
 	public void setStatoErogazione(String statoErogazione) {
 		this.statoErogazione = statoErogazione;
 	}
-	
+	public String getStatoErogazione() {
+		return statoErogazione;
+	}
 	public boolean isSearchErogatiNoIntervento() {
 		return searchErogatiNoIntervento;
 	}

@@ -27,7 +27,6 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name="CS_CFG_IT_STATO")
-@NamedQuery(name="CsCfgItStato.findAll", query="SELECT c FROM CsCfgItStato c")
 public class CsCfgItStato implements Serializable {
 	private static final long serialVersionUID = 1L;
 

@@ -1,36 +1,13 @@
 package it.webred.cs.csa.web.manbean.report;
 
-import java.io.File;
-import java.io.InputStream;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.SessionScoped;
-import javax.faces.context.FacesContext;
-import javax.servlet.ServletContext;
-
-import org.apache.commons.lang3.ArrayUtils;
-import org.primefaces.context.RequestContext;
-import org.primefaces.event.FlowEvent;
-import org.primefaces.model.DefaultStreamedContent;
-import org.primefaces.model.StreamedContent;
-
 import it.webred.cs.csa.ejb.dto.BaseDTO;
 import it.webred.cs.csa.ejb.dto.RelazioneDTO;
-import it.webred.cs.csa.ejb.dto.erogazioni.SoggettoErogazioneBean;
+import it.webred.cs.csa.ejb.dto.siru.StampaFseDTO;
 import it.webred.cs.csa.utils.JasperUtils;
 import it.webred.cs.csa.utils.bean.report.dto.BasePdfDTO;
 import it.webred.cs.csa.utils.bean.report.dto.ReportPdfDTO;
 import it.webred.cs.csa.utils.bean.report.dto.TriagePdfDTO;
 import it.webred.cs.csa.web.manbean.fascicolo.FascicoloBean;
-import it.webred.cs.csa.web.manbean.fascicolo.interventi.DatiProgettoBean;
 import it.webred.cs.csa.web.manbean.fascicolo.relazioni.TriageBean;
 import it.webred.cs.csa.web.manbean.report.dto.cartella.DiarioPdfDTO;
 import it.webred.cs.csa.web.manbean.report.dto.fascicolo.ModelloPorPdfDTO;
@@ -55,12 +32,35 @@ import it.webred.cs.json.isee.IIseeJson;
 import it.webred.cs.json.valMultidimensionale.IValMultidimensionale;
 import it.webred.cs.json.valSinba.IValSinba;
 import it.webred.ss.ejb.dto.report.DatiPrivacyPdfDTO;
+
+import java.io.File;
+import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
+import javax.faces.bean.SessionScoped;
+import javax.faces.context.FacesContext;
+import javax.servlet.ServletContext;
+
 import net.sf.jasperreports.engine.JREmptyDataSource;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+
+import org.apache.commons.lang3.ArrayUtils;
+import org.primefaces.context.RequestContext;
+import org.primefaces.event.FlowEvent;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
 
 @ManagedBean
 @SessionScoped
@@ -118,6 +118,14 @@ public class ReportBean extends ReportBaseBean {
 	private List<CsDPai> listaPAISel = new ArrayList<CsDPai>();
 	private boolean vediAttivita = false, vediPAI = false;
 	private JasperPrint jasperprint;
+	
+	public void initializeStampaCartella(Long anagraficaId){
+		BaseDTO dto = new BaseDTO();
+		fillEnte(dto);
+		dto.setObj(anagraficaId);
+		CsASoggettoLAZY s = soggettoService.getSoggettoById(dto);
+		initializeStampaCartella(s);
+	}
 	
 	public void initializeStampaCartella(CsASoggettoLAZY cssoggetto) {
 
@@ -698,7 +706,7 @@ public class ReportBean extends ReportBaseBean {
 		}
 	}
 	
-	public void esportaModelloPor(SoggettoErogazioneBean beneficRif ,DatiProgettoBean datiprogetto,String soggettoAttuat){
+	public void esportaModelloPor(StampaFseDTO datiprogetto){
 		try{
 		String reportPath =	getSession().getServletContext().getRealPath("/report");
 		String logo =	getSession().getServletContext().getRealPath("/images");
@@ -706,7 +714,7 @@ public class ReportBean extends ReportBaseBean {
 		ReportCartellaFiller filler = new ReportCartellaFiller();
 	    boolean marche = super.isModuloPorMarche();
 		
-		ModelloPorPdfDTO pdf = filler.fillModello(beneficRif,datiprogetto,soggettoAttuat,marche);
+		ModelloPorPdfDTO pdf = filler.fillModelloPOR(datiprogetto,marche);
 		pdf.setImagePath(logo+"/"); //+"logo_FSE_2014_2020_completo.jpg"); nome immagine presente nel modulo
 		JasperUtils jUtils = new JasperUtils();
 		HashMap<String, Object> map = new HashMap<String, Object>();
@@ -717,8 +725,6 @@ public class ReportBean extends ReportBaseBean {
 			addErrorFromProperties("report.error");
 			logger.error(e.getMessage(),e);
 		}		
-	
-		
 	}
 	
 	public StreamedContent getStampaPrivacy(DatiPrivacyPdfDTO dati, String lblSegnalante, String lblUtente, String lblRiferimento){
@@ -808,17 +814,18 @@ public class ReportBean extends ReportBaseBean {
 		 		//addError("pdf.error");
 		 		logger.error(e);
 			}
+		 	InputStream stream = null;
 			try{
 				String  tempPath =getSession().getServletContext().getRealPath("/report/temp.pdf");
 				JasperExportManager.exportReportToPdfFile(jasperprint, tempPath);
 			
-				InputStream stream = ((ServletContext)FacesContext.getCurrentInstance().getExternalContext().getContext()).getResourceAsStream(PDF_PATH);
+				stream = ((ServletContext)FacesContext.getCurrentInstance().getExternalContext().getContext()).getResourceAsStream(PDF_PATH);
 				String titolo = dati!=null ? dati.getCf() : "VUOTO";
 				filePrivacy = new DefaultStreamedContent(stream, "application/pdf", titolo+"_privacy.pdf");
 				
 		 	} catch (JRException e) {
 		 			logger.error(e);
-		 		}
+		 	}
 		
 		 return filePrivacy;
 	 }

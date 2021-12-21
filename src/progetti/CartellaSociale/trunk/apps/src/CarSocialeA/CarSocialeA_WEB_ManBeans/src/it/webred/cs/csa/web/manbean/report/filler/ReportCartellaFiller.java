@@ -1,39 +1,22 @@
 package it.webred.cs.csa.web.manbean.report.filler;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
-
-import javax.faces.model.SelectItem;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import it.webred.amprofiler.model.AmAnagrafica;
-import it.webred.cs.csa.ejb.client.AccessTableCasoSessionBeanRemote;
-import it.webred.cs.csa.ejb.client.AccessTableConfigurazioneSessionBeanRemote;
-import it.webred.cs.csa.ejb.client.AccessTableDiarioSessionBeanRemote;
-import it.webred.cs.csa.ejb.client.AccessTableSoggettoSessionBeanRemote;
 import it.webred.cs.csa.ejb.dto.BaseDTO;
 import it.webred.cs.csa.ejb.dto.ErogazioniSearchCriteria;
 import it.webred.cs.csa.ejb.dto.PaiDTOExt;
+import it.webred.cs.csa.ejb.dto.PresaInCaricoDTO;
 import it.webred.cs.csa.ejb.dto.RelazioneDTO;
 import it.webred.cs.csa.ejb.dto.TriageItemDTO;
 import it.webred.cs.csa.ejb.dto.erogazioni.ErogazioneMasterDTO;
-import it.webred.cs.csa.ejb.dto.erogazioni.SoggettoErogazioneBean;
 import it.webred.cs.csa.ejb.dto.pai.affido.CsPaiAffidoDTO;
 import it.webred.cs.csa.ejb.dto.pai.affido.CsPaiAffidoDominioDTO;
 import it.webred.cs.csa.ejb.dto.pai.affido.CsPaiAffidoSoggFamigliaDTO;
 import it.webred.cs.csa.ejb.dto.pai.affido.CsPaiAffidoSoggettoDTO;
 import it.webred.cs.csa.ejb.dto.pai.affido.PaiAffidoStatoEnum;
+import it.webred.cs.csa.ejb.dto.siru.StampaFseDTO;
 import it.webred.cs.csa.utils.bean.report.dto.StoricoPdfDTO;
 import it.webred.cs.csa.utils.bean.report.dto.TriagePdfDTO;
 import it.webred.cs.csa.web.manbean.fascicolo.FascicoloBean;
 import it.webred.cs.csa.web.manbean.fascicolo.erogazioniInterventi.ErogInterventoRowBean;
-import it.webred.cs.csa.web.manbean.fascicolo.interventi.DatiProgettoBean;
 import it.webred.cs.csa.web.manbean.fascicolo.pai.PaiAffidoBean;
 import it.webred.cs.csa.web.manbean.fascicolo.relazioni.RelazioniBean;
 import it.webred.cs.csa.web.manbean.fascicolo.relazioni.TriageBean;
@@ -67,8 +50,9 @@ import it.webred.cs.csa.web.manbean.scheda.operatori.OperatoriComp;
 import it.webred.cs.csa.web.manbean.scheda.parenti.ParentiComp;
 import it.webred.cs.csa.web.manbean.scheda.sociali.DatiSocialiComp;
 import it.webred.cs.csa.web.manbean.scheda.tribunale.DatiTribunaleComp;
-import it.webred.cs.data.model.ArFfProgetto;
-import it.webred.cs.data.model.CsACasoOpeTipoOpe;
+import it.webred.cs.data.DataModelCostanti;
+import it.webred.cs.data.DataModelCostanti.GrVulnerabile;
+import it.webred.cs.data.DataModelCostanti.Pai;
 import it.webred.cs.data.model.CsAComponente;
 import it.webred.cs.data.model.CsASoggettoCategoriaSoc;
 import it.webred.cs.data.model.CsASoggettoLAZY;
@@ -76,15 +60,15 @@ import it.webred.cs.data.model.CsCDiarioConchi;
 import it.webred.cs.data.model.CsDColloquio;
 import it.webred.cs.data.model.CsDIsee;
 import it.webred.cs.data.model.CsDPai;
-import it.webred.cs.data.model.CsOOperatore;
 import it.webred.cs.data.model.CsOOperatoreSettore;
+import it.webred.cs.data.model.CsOSettore;
 import it.webred.cs.data.model.CsRelRelazioneProbl;
 import it.webred.cs.data.model.CsRelRelazioneTipoint;
 import it.webred.cs.data.model.CsTbDisabTipologia;
+import it.webred.cs.data.model.CsTbGVulnerabile;
 import it.webred.cs.jsf.bean.ValiditaCompBaseBean;
 import it.webred.cs.jsf.bean.colloquio.ColloquioRowBean;
 import it.webred.cs.jsf.bean.colloquio.DatiColloquioBean;
-import it.webred.cs.jsf.manbean.ComuneResidenzaMan;
 import it.webred.cs.jsf.manbean.superc.CsUiCompBaseBean;
 import it.webred.cs.json.abitazione.ver1.AbitazioneBean;
 import it.webred.cs.json.abitazione.ver1.AbitazioneManBean;
@@ -95,17 +79,24 @@ import it.webred.ct.config.model.AmTabNazioni;
 import it.webred.dto.utility.KeyValuePairBean;
 import it.webred.jsf.bean.ComuneBean;
 import it.webred.jsf.bean.SessoBean;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
+
+import javax.faces.model.SelectItem;
+
+import org.apache.commons.lang3.StringUtils;
+
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 
 public class ReportCartellaFiller extends CsUiCompBaseBean {
-	private AccessTableCasoSessionBeanRemote casoService = (AccessTableCasoSessionBeanRemote) getEjb("CarSocialeA",
-			"CarSocialeA_EJB", "AccessTableCasoSessionBean");
-	private AccessTableSoggettoSessionBeanRemote soggettoService = (AccessTableSoggettoSessionBeanRemote) getEjb(
-			"CarSocialeA", "CarSocialeA_EJB", "AccessTableSoggettoSessionBean");
-	private AccessTableConfigurazioneSessionBeanRemote confService = (AccessTableConfigurazioneSessionBeanRemote) getEjb(
-			"CarSocialeA", "CarSocialeA_EJB", "AccessTableConfigurazioneSessionBean");
+	
 	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-	private AccessTableDiarioSessionBeanRemote diario = (AccessTableDiarioSessionBeanRemote) getCarSocialeEjb("AccessTableDiarioSessionBean");
 
 	private CsASoggettoLAZY soggetto;
 	private SchedaBean schedaBean;
@@ -150,12 +141,6 @@ public class ReportCartellaFiller extends CsUiCompBaseBean {
 
 		if (anaBean.getResidenzaCsaMan().getIndirizzoResidenzaAttivo() != null) {
 			String res = anaBean.getResidenzaCsaMan().getIndirizzoResidenzaAttivo().getCsAAnaIndirizzo().getLabelIndirizzoCompleto();
-			/*res += ", " + anaBean.getResidenzaCsaMan().getCivicoFromNumeroAltro(
-					anaBean.getResidenzaCsaMan().getIndirizzoResidenzaAttivo().getCsAAnaIndirizzo().getCivicoNumero(),
-					anaBean.getResidenzaCsaMan().getIndirizzoResidenzaAttivo().getCsAAnaIndirizzo().getCivicoAltro());
-			res += " - " + anaBean.getResidenzaCsaMan().getIndirizzoResidenzaAttivo().getCsAAnaIndirizzo().getComDes();
-			res += " (" + anaBean.getResidenzaCsaMan().getIndirizzoResidenzaAttivo().getCsAAnaIndirizzo().getStatoDes()
-					+ ")";*/
 			ana.setResidenza(res);
 		}
 		if (!anaBean.getStatoCivileGestBean().getLstComponentsActive().isEmpty())
@@ -199,20 +184,13 @@ public class ReportCartellaFiller extends CsUiCompBaseBean {
 				catSociali += ", " + soggCatSoc.getCsCCategoriaSociale().getTooltip();
 			}
 			ana.setCatSociale(catSociali.substring(2));
-
-			// responsabile
+			
+			//Presa In Carico
 			dto.setObj(soggetto.getCsACaso().getId());
-			CsACasoOpeTipoOpe casoOpTipoOp = casoService.findCasoOpeResponsabile(dto);
-			if (casoOpTipoOp != null) {
-				CsOOperatore op = casoOpTipoOp.getCsOOperatoreTipoOperatore().getCsOOperatoreSettore().getCsOOperatore();
-				ana.setAssSociale(this.getDenominazioneOperatore(op));
-
-				Date dataPIC;
-				if (casoOpTipoOp.getDtMod() != null)
-					dataPIC = casoOpTipoOp.getDtMod();
-				else
-					dataPIC = casoOpTipoOp.getDtIns();
-				ana.setDataPIC(fillData(dataPIC));
+			PresaInCaricoDTO pic = iterService.getLastPICByCaso(dto);
+			if(pic!=null){
+				ana.setAssSociale(pic.getResponsabile().getDenominazione());
+				ana.setDataPIC(fillData(pic.getDataAmministrativa()));
 			}
 
 		} catch (Exception e) {
@@ -626,8 +604,7 @@ public class ReportCartellaFiller extends CsUiCompBaseBean {
 		DiarioPdfDTO op = new DiarioPdfDTO();
 		Date dataColloquio = colloquio.getCsDDiario().getDtAmministrativa();
 		op.setDataColloquio(fillData(dataColloquio));
-		AmAnagrafica am = CsUiCompBaseBean.getAnagraficaByUsername(colloquio.getCsDDiario().getUserIns());
-		op.setOperatore(am != null ? am.getCognome() + " " + am.getNome() : colloquio.getCsDDiario().getUserIns());
+		op.setOperatore(CsUiCompBaseBean.getCognomeNomeUtente(colloquio.getCsDDiario().getUserIns()));
 		if (colloquio.getCsCDiarioDove() != null) {
 			op.setDove(colloquio.getCsCDiarioDove().getDescrizione());
 		}
@@ -759,7 +736,7 @@ public class ReportCartellaFiller extends CsUiCompBaseBean {
 		BaseDTO dtoi = new BaseDTO();
 		fillEnte(dtoi);
 		dtoi.setObj(soggetto.getCsACaso().getId());
-		List<CsDIsee> lstdiario = diario.findIseeByCaso(dtoi);
+		List<CsDIsee> lstdiario = diarioService.findIseeByCaso(dtoi);
 		Collections.sort(lstdiario,new Comparator<CsDIsee>() {
 
 			@Override
@@ -876,8 +853,20 @@ public class ReportCartellaFiller extends CsUiCompBaseBean {
 				descrizione = descrizione.concat(temp);
 			}
 			
-			if(rel.getRelazione().getRiunioneCon() != null)
-				descrizione = rel.getRelazione().getMacroAttivita().getDescrizione()+"  Con:" + rel.getRelazione().getRiunioneCon().getNome() +" "+(rel.getRelazione().getRiunioneCon().getNome2() !=null ? rel.getRelazione().getRiunioneCon().getNome2() : "");	
+			///SISO-1481
+//			if(rel.getRelazione().getRiunioneCon() != null)
+//				descrizione = rel.getRelazione().getMacroAttivita().getDescrizione()+"  Con:" + rel.getRelazione().getRiunioneCon().getNome() +" "+(rel.getRelazione().getRiunioneCon().getNome2() !=null ? rel.getRelazione().getRiunioneCon().getNome2() : "");	
+			
+			if(!rel.getRelazione().getLstRiunioneConChi().isEmpty()) {
+				descrizione = rel.getRelazione().getMacroAttivita().getDescrizione() +"  Con:  " ;
+			
+                String temp = "";
+				
+				for (CsOSettore riunioneCon : rel.getRelazione().getLstRiunioneConChi()){ 
+						temp = temp.isEmpty() ? riunioneCon.getCsOOrganizzazione().getNome() + " - " + riunioneCon.getNome() : temp.concat(", " + riunioneCon.getCsOOrganizzazione().getNome() + " - " + riunioneCon.getNome());
+				}
+				descrizione = descrizione.concat(temp);
+			}
 			
 			if(rel.getRelazione().getConChiAltro() != null)
 				descrizione.concat(" ").concat(rel.getRelazione().getConChiAltro());
@@ -1008,6 +997,19 @@ public class ReportCartellaFiller extends CsUiCompBaseBean {
 		
 	}
 	
+	private String getObiettiviRaggiunti(Integer raggiunto){
+		String desc="";
+		if(raggiunto!=null){
+			if(raggiunto.equals(Pai.RAGGIUNTI_NO))
+				desc = "non raggiunti";
+			else if(raggiunto.equals(Pai.RAGGIUNTI_PARZIALMENTE))
+				desc = "raggiunti parzialmente";
+			else if(raggiunto.equals(Pai.RAGGIUNTI_SI))
+				desc = "raggiunti";
+		}
+		return desc;
+	}
+	
 	public List<PAIPdfDTO> fillPAI(List<CsDPai> listaPAISel,List<RelazioneDTO> listaRelDTO,String subPath){
 		 List<PAIPdfDTO> ListaPdfDto = new ArrayList<PAIPdfDTO>();
 		 PaiAffidoBean paiAffidoBean = new PaiAffidoBean();
@@ -1019,32 +1021,15 @@ public class ReportCartellaFiller extends CsUiCompBaseBean {
 					/*Scrittura campi in comune a tutti i tipi di PAI*/
 					 PAIPdfDTO pdfPai = new PAIPdfDTO();
 					 pdfPai.setDtAttivazione(fillData(pai.getCsDDiario().getDtAttivazioneDa()));
-					 //pdfPai.setProgetto(pai.get);
+					 
 					 pdfPai.setDtChiusuraPrevista(fillData(pai.getDataChiusuraPrevista()));
 					 pdfPai.setObiettiviBreveTer(pai.getObiettiviBreve() != null && !pai.getObiettiviBreve().isEmpty() ? pai.getObiettiviBreve() : "");
 					 pdfPai.setObiettiviMedioTer(pai.getObiettiviMedio()!= null && !pai.getObiettiviMedio().isEmpty() ? pai.getObiettiviMedio() : "");
 					 pdfPai.setObiettiviLungoTer(pai.getObiettiviLungo() != null && !pai.getObiettiviLungo().isEmpty() ? pai.getObiettiviLungo() : "");
 					 
-					 if(pai.getRaggiuntiBreve() != null && pai.getRaggiuntiBreve().equals(2)){
-						 pdfPai.setRaggiuntiBreve("raggiunti parzialmente");
-					 }
-					 else if(pai.getRaggiuntiBreve() !=null){
-					 	pdfPai.setRaggiuntiBreve(pai.getRaggiuntiBreve().equals(1) ? "non raggiunti" : "raggiunti");
-					 }
-					 
-					 if(pai.getRaggiuntiMedio() != null && pai.getRaggiuntiMedio().equals(2)){
-						 pdfPai.setRaggiuntiMedio("raggiunti parzialmente");
-					 }
-					 else if(pai.getRaggiuntiMedio() != null){
-					 	pdfPai.setRaggiuntiMedio(pai.getRaggiuntiMedio().equals(1) ? "non raggiunti" : "raggiunti");
-					 }
-					 
-					 if(pai.getRaggiuntiLungo() != null && pai.getRaggiuntiLungo().equals(2)){
-						 pdfPai.setRaggiuntiLungo("raggiunti parzialmente");
-					 }
-					 else if(pai.getRaggiuntiLungo() != null){
-					 	pdfPai.setRaggiuntiLungo(pai.getRaggiuntiLungo().equals(1) ? "non raggiunti" : "raggiunti");
-					 }
+					 pdfPai.setRaggiuntiBreve(this.getObiettiviRaggiunti(pai.getRaggiuntiBreve()));
+					 pdfPai.setRaggiuntiMedio(this.getObiettiviRaggiunti(pai.getRaggiuntiMedio()));
+					 pdfPai.setRaggiuntiLungo(this.getObiettiviRaggiunti(pai.getRaggiuntiLungo()));
 					
 					 pdfPai.setVerificaOgni(pai.getVerificaOgni().toString() + " "+ pai.getVerificaUnitaMisura());
 					 pdfPai.setDtUltimoMonitor(fillData(pai.getDataMonitoraggio()));
@@ -1130,7 +1115,7 @@ public class ReportCartellaFiller extends CsUiCompBaseBean {
 		bDto.setDiarioPaiId(paiId);
 		List<ErogazioneMasterDTO> lst = interventoService.searchListaErogInterventi(bDto);
 		for(ErogazioneMasterDTO dae : lst){
-			ErogInterventoRowBean row = new ErogInterventoRowBean(dae);
+			ErogInterventoRowBean row = new ErogInterventoRowBean(dae, false);
 			erogPai.add(row);
 		}
 		return erogPai;
@@ -1314,121 +1299,64 @@ public class ReportCartellaFiller extends CsUiCompBaseBean {
 		return affidoPdf;
 	}
 	
-	public ModelloPorPdfDTO fillModello(SoggettoErogazioneBean beneficRif, DatiProgettoBean datiProgetto, String soggettoAttuat, boolean marche){
+	public ModelloPorPdfDTO fillModelloPOR(StampaFseDTO datiProgetto, boolean marche){
 		ModelloPorPdfDTO pdf = new ModelloPorPdfDTO();
-		ObjectMapper mapper = new ObjectMapper();
 		try{
 			//Dati beneficiario
-			pdf.setCognome(beneficRif.getCognome());
-			pdf.setNome(beneficRif.getNome());
-			pdf.setCodFiscale(beneficRif.getCodiceFiscale());
-			pdf.setCittadinanza(beneficRif.getCittadinanza());
-			/**
-			 * Prendendo i dati dal codice fiscale va considerato se prevedere i casi di omocodia!!?
-			 * */
-			if(beneficRif.getCodiceFiscale().length() <= 16 ){//se > 16 è temporaneo e lo ignoro
-					String beneficGiornoNascita = beneficRif.getCodiceFiscale().substring(9, 11);
-					String letteraMeseNascita = beneficRif.getCodiceFiscale().substring(8,9).toUpperCase();
-					String meseNascita= "";
-					String beneficAnnoNascita = beneficRif.getAnnoNascita().toString(); 
-					int benefSessoGiorno = Integer.parseInt(beneficGiornoNascita);
-					
-					pdf.setSesso(benefSessoGiorno > 31 ? "F" : "M");
-					
-					if(letteraMeseNascita.equals("A")){
-				           meseNascita="01";
-				    }else if(letteraMeseNascita.equals("B")){
-				           meseNascita="02";
-				    }else if(letteraMeseNascita.equals("C")){
-				           meseNascita="03";
-				    }else if(letteraMeseNascita.equals("D")){
-				           meseNascita="04";
-				    }else if(letteraMeseNascita.equals("E")){
-				           meseNascita="05";
-				    }else if(letteraMeseNascita.equals("H")){
-				           meseNascita="06";
-				    }else if(letteraMeseNascita.equals("L")){
-				           meseNascita="07";
-				    }else if(letteraMeseNascita.equals("M")){
-				           meseNascita="08";
-				    }else if(letteraMeseNascita.equals("P")){
-				           meseNascita="09";
-				    }else if(letteraMeseNascita.equals("R")){
-				           meseNascita="10";
-				    }else if(letteraMeseNascita.equals("S")){
-				           meseNascita="11";
-				    }else if(letteraMeseNascita.equals("T")){
-				           meseNascita="12";
-				    }
-					
-					benefSessoGiorno = benefSessoGiorno > 31 ? benefSessoGiorno - 40 : benefSessoGiorno ;
-					pdf.setDataNascita(String.valueOf(benefSessoGiorno).concat("/").concat(meseNascita).concat("/").concat(beneficAnnoNascita));
-					
-			}
-			pdf.setTelefono(datiProgetto.getCsIInterventoPr().getCsIInterventoPrFse().getTelefono() != null ? datiProgetto.getCsIInterventoPr().getCsIInterventoPrFse().getTelefono() : "");
-			pdf.setCellulare(datiProgetto.getCsIInterventoPr().getCsIInterventoPrFse().getCellulare() != null ? datiProgetto.getCsIInterventoPr().getCsIInterventoPrFse().getCellulare() : "");
-			pdf.setEmail(datiProgetto.getCsIInterventoPr().getCsIInterventoPrFse().getEmail() != null ? datiProgetto.getCsIInterventoPr().getCsIInterventoPrFse().getEmail() : "");
+			pdf.setCognome(datiProgetto.getCognome());
+			pdf.setNome(datiProgetto.getNome());
+			pdf.setCodFiscale(datiProgetto.getCodiceFiscale());
+			pdf.setCittadinanza(datiProgetto.getCittadinanza());
+			pdf.setDataNascita(datiProgetto.getDataNascita());
+			pdf.setSesso(datiProgetto.getSesso());
+
+			pdf.setTelefono(datiProgetto.getTelefono() != null ? datiProgetto.getTelefono() : "");
+			pdf.setCellulare(datiProgetto.getCellulare() != null ? datiProgetto.getCellulare() : "");
+			pdf.setEmail(datiProgetto.getEmail() != null ? datiProgetto.getEmail() : "");
+			pdf.setLuogoNascita(datiProgetto.getLuogoNascita());
 			
-			if(datiProgetto.getComuneNazioneNascitaBean().getComuneNascitaMan().getComune() != null){
-				ComuneBean infoComune = datiProgetto.getComuneNazioneNascitaBean().getComuneNascitaMan().getComune();
-				pdf.setLuogoNascita(infoComune.getDenominazione().concat(", ").concat(infoComune.getSiglaProv()));
-			}else if(datiProgetto.getComuneNazioneNascitaBean().getNazioneNascitaMan().getNazione()!= null){
-				datiProgetto.getComuneNazioneNascitaBean().getNazioneNascitaMan().getNazione();
-				pdf.setLuogoNascita(datiProgetto.getComuneNazioneNascitaBean().getNazioneNascitaMan().getNazione().getNazione());
-			}
-			
-			ComuneResidenzaMan residenzaComuneMan = new ComuneResidenzaMan();
-			if(!beneficRif.getJsonComuneResidenza().isEmpty()){
-				residenzaComuneMan.setComune(mapper.readValue(beneficRif.getJsonComuneResidenza(), ComuneBean.class));
-				pdf.setResid_cap(residenzaComuneMan.getComune().getCap() != null ? residenzaComuneMan.getComune().getCap() : "" );
-				pdf.setResid_sigla_prov(residenzaComuneMan.getComune().getSiglaProv() != null ? residenzaComuneMan.getComune().getSiglaProv() : "" );
-				pdf.setResidenza(residenzaComuneMan.getComune().getDenominazione() != null ? residenzaComuneMan.getComune().getDenominazione() : "");
-			}
-			pdf.setResid_via(beneficRif.getViaResidenza());
-			
+			pdf.setResid_cap(datiProgetto.getCapResidenza());
+			pdf.setResid_sigla_prov(datiProgetto.getSiglaProvResidenza());
+			pdf.setResidenza(datiProgetto.getComuneResidenza());
+			pdf.setResid_via(datiProgetto.getViaResidenza());
 	
-			if(datiProgetto.getDomicilioComuneMan().getComune() != null){
-				pdf.setDom_cap(datiProgetto.getDomicilioComuneMan().getComune().getCap() != null ? datiProgetto.getDomicilioComuneMan().getComune().getCap() : "");
-				pdf.setDom_sigla_prov(datiProgetto.getDomicilioComuneMan().getComune().getSiglaProv() != null ? datiProgetto.getDomicilioComuneMan().getComune().getSiglaProv() : "");
-				pdf.setDomicilio(datiProgetto.getDomicilioComuneMan().getComune().getDenominazione() != null ? datiProgetto.getDomicilioComuneMan().getComune().getDenominazione() : "" );
-			}
-			pdf.setDom_via(datiProgetto.getCsIInterventoPr().getCsIInterventoPrFse().getViaDomicilio()!= null ? datiProgetto.getCsIInterventoPr().getCsIInterventoPrFse().getViaDomicilio(): "");
+			pdf.setDom_cap(datiProgetto.getDomicilioCap());
+			pdf.setDom_sigla_prov(datiProgetto.getDomicilioSiglaProv());
+			pdf.setDomicilio(datiProgetto.getDomicilioComune());
+			pdf.setDom_via(datiProgetto.getViaDomicilio());
 		
 			//Dati Dichiarati
 			String vulnerabilita = "-";
-			if(datiProgetto.getCsIInterventoPr().getCsIInterventoPrFse().getComunicaVul()){
+			if(datiProgetto.getComunicaVul()){
 				if(marche){
-				String scelto = datiProgetto.getCsIInterventoPr().getCsIInterventoPrFse().getCsTbGrVulnerabile() != null ? datiProgetto.getCsIInterventoPr().getCsIInterventoPrFse().getCsTbGrVulnerabile().getId() : "";
-					
-					if(!scelto.isEmpty() && (scelto.equals("01")|| scelto.equals("02")||scelto.equals("03")||scelto.equals("04")||scelto.equals("14")||scelto.equals("17")||scelto.equals("18")||scelto.equals("19")||scelto.equals("20"))){
-						vulnerabilita = "Altro tipo di vulnerabilità";
-					}else if(!scelto.isEmpty() && (scelto.equals("15")|| scelto.equals("16"))){
-						vulnerabilita = "Vittima di violenza, di tratta e grave sfruttamento";
-					}else{
-						vulnerabilita = datiProgetto.getCsIInterventoPr().getCsIInterventoPrFse().getCsTbGrVulnerabile() != null ? datiProgetto.getCsIInterventoPr().getCsIInterventoPrFse().getCsTbGrVulnerabile().getDescrizione()  : null;
+					String scelto = datiProgetto.getIdVulnerabile();
+					BaseDTO dto = new BaseDTO();
+					fillEnte(dto);
+					CsTbGVulnerabile gr = null;
+					if(!StringUtils.isBlank(scelto) && Arrays.asList(GrVulnerabile.stampaAltro).contains(scelto)){
+						dto.setObj(GrVulnerabile.ALTRO); //13 Altro tipo di vulnerabilità
+						gr = confService.getGrVulnerabileById(dto);
+					}else if(!StringUtils.isBlank(scelto) && Arrays.asList(GrVulnerabile.stampaVittimaViolenza).contains(scelto)){
+						dto.setObj(GrVulnerabile.VITTIMA_VIOLENZA); //11 Vittima di violenza, di tratta e grave sfruttamento
+						gr = confService.getGrVulnerabileById(dto);
 					}
-			
-				}else{
-				vulnerabilita = datiProgetto.getCsIInterventoPr().getCsIInterventoPrFse().getCsTbGrVulnerabile() != null ? datiProgetto.getCsIInterventoPr().getCsIInterventoPrFse().getCsTbGrVulnerabile().getDescrizione()  : null;
-				}
+					vulnerabilita = gr!=null ? gr.getTooltip() : datiProgetto.getDescrizioneVulnerabile();
+				}else
+					vulnerabilita = datiProgetto.getDescrizioneVulnerabile();
 			}else{
 				vulnerabilita =  "L'utente non intende fornire informazioni sulla condizione di vulnerabilità";
 			}
 			pdf.setCond_vulnerabilita(vulnerabilita);
-			pdf.setDurata_ric_lavoro(datiProgetto.getCsIInterventoPr().getCsIInterventoPrFse().getLavoroDurataRicerca() != null ? datiProgetto.getCsIInterventoPr().getCsIInterventoPrFse().getLavoroDurataRicerca() : null);
-			pdf.setCondizione_lavoro(datiProgetto.getCsIInterventoPr().getCsTbCondLavoro().getDescrizione() != null ? datiProgetto.getCsIInterventoPr().getCsTbCondLavoro().getDescrizione() : "");
-			pdf.setTitolo_studio(datiProgetto.getCsIInterventoPr().getCsTbTitoloStudio().getDescrizione() != null ? datiProgetto.getCsIInterventoPr().getCsTbTitoloStudio().getDescrizione() : "");
+			pdf.setDurata_ric_lavoro(datiProgetto.getLavoroDurataRicerca());
+			pdf.setCondizione_lavoro(datiProgetto.getCondLavoro());
+			pdf.setTitolo_studio(datiProgetto.getTitoloStudio());
 			
 			//Dati progetto
-			pdf.setNome_prog(datiProgetto.getCsIInterventoPr().getFfProgettoDescrizione());
-			pdf.setAttuatore_prog(soggettoAttuat);
+			pdf.setNome_prog(datiProgetto.getFfProgettoDescrizione());
+			pdf.setAttuatore_prog(datiProgetto.getSoggettoAttuatore());
 			
-			String codProgetto = null;
-			String attivita = datiProgetto.getCsIInterventoPr().getnSottocorsoAttivita() != null ? datiProgetto.getCsIInterventoPr().getnSottocorsoAttivita() : "";
-			for(ArFfProgetto prog : datiProgetto.getListaProgetti()){
-				if(datiProgetto.getCsIInterventoPr().getFfProgettoDescrizione().equals(prog.getDescrizione()))
-					codProgetto = prog.getCodiceMemo();
-			}
+			String codProgetto = datiProgetto.getCodProgetto();
+			String attivita = datiProgetto.getCodAttivita();
 			
 			if(marche)
 				pdf.setCod_prog(attivita);
@@ -1436,9 +1364,11 @@ public class ReportCartellaFiller extends CsUiCompBaseBean {
 				pdf.setCod_prog(codProgetto);
 				pdf.setAttivita(attivita);
 			}
+			
+			pdf.setDataSottoscrizione(datiProgetto.getDtSottoscrizione());
 		
 		} catch (Exception e) {
-			logger.error(e);
+			logger.error(e.getLocalizedMessage(), e);
 		}
 		return pdf;
 	}

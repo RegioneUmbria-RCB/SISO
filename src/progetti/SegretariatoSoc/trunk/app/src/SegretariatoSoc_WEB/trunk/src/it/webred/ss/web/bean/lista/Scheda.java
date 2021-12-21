@@ -30,6 +30,8 @@ public class Scheda extends SegretariatoSocBaseBean {
 	private Date dataRicezione;
 	private String nomeZonaInviante;
 	private String statoCS;
+	private String enteSegnalazionePIC;
+	
 	private String origZonaSociale;
 	private String cf;
 	private String descOrganizzazione;
@@ -71,6 +73,7 @@ public class Scheda extends SegretariatoSocBaseBean {
 		this.cf = dto.getCfUtente();
 		this.descOrganizzazione = dto.getDescOrganizzazione();
 		this.alias = dto.getAlias();
+		this.enteSegnalazionePIC = dto.getEnteSegnalazionePIC();
 		
 		if(dto.getDataPrivacy()!=null) {
 			String sdata = new SimpleDateFormat("dd/MM/yyyy").format(dto.getDataPrivacy());
@@ -289,7 +292,15 @@ public class Scheda extends SegretariatoSocBaseBean {
 	public void setAlias(String alias) {
 		this.alias = alias;
 	}
-    
+
+	public String getEnteSegnalazionePIC() {
+		return enteSegnalazionePIC;
+	}
+
+	public void setEnteSegnalazionePIC(String enteSegnalazionePIC) {
+		this.enteSegnalazionePIC = enteSegnalazionePIC;
+	}
+
 	public boolean isAnonimo() {
 		boolean val = this.getDenominazione().contains(Anagrafica.SEGNALATO_CF_ANONIMO) 
 				   || this.getCf().contains(Anagrafica.SEGNALATO_CF_ANONIMO);

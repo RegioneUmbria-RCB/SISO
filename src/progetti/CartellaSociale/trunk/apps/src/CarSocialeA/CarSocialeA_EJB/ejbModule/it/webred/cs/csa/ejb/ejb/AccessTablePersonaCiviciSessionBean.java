@@ -78,7 +78,6 @@ public class AccessTablePersonaCiviciSessionBean extends CarSocialeBaseSessionBe
 		if(obj!=null){
 	    	indirizzoRes = new CsAIndirizzo();
 			CsAAnaIndirizzo indirizzoAna = new CsAAnaIndirizzo();
-			int idx = -1;
 			indirizzoAna.setCodiceVia(obj.getCodiceVia());
 			indirizzoAna.setIndirizzo(obj.getIndirizzo());
 			indirizzoAna.setCivicoNumero(obj.getCivicoNumero());

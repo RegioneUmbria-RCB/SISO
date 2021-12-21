@@ -122,10 +122,11 @@ public class TimerTaskGiornaliero extends TimerTask {
 	    String jksPath = ArgoBaseBean.getParametroGlobale(this.KEY_JKS_PATH);
 	    
 	    if(!StringUtils.isBlank(jksPath) && !StringUtils.isBlank(jksPwd) ){
-		    try {
+	    	 FileInputStream in = null;
+	    	try {
 		      KeyStore truststore = KeyStore.getInstance("JKS");
 	
-		      FileInputStream in = new FileInputStream(jksPath);
+		      in = new FileInputStream(jksPath);
 		      truststore.load(in,jksPwd.toCharArray());
 		      
 		      ctx = SSLContext.getInstance("SSL");
@@ -140,22 +141,27 @@ public class TimerTaskGiornaliero extends TimerTask {
 		    }
 	    
 	    }else{
-	    	if(StringUtils.isBlank(jksPath)) logger.warn("Parametro "+this.KEY_JKS_PATH+" non impostato");
-	    	if(StringUtils.isBlank(jksPwd)) logger.warn("Parametro "+this.KEY_JKS_PASSWORD+" non impostato");
+	    	if(StringUtils.isBlank(jksPath)) logger.warn("Parametro "+this.KEY_JKS_PATH+" non impostato: verificare che il certificato sia presente nei cacerts JRE");
+	    	if(StringUtils.isBlank(jksPwd)) logger.warn("Parametro "+this.KEY_JKS_PASSWORD+" non impostato: verificare che il certificato sia presente nei cacerts JRE");
 	    }
 	}	
 	
 	private String readJsonFile() throws IOException{
-
-		FileReader fileReader = new FileReader("C:\\Load\\SISO\\response_siru.json");
-		StringBuffer stringBuffer = new StringBuffer();
-		int numCharsRead;
-		char[] charArray = new char[1024];
-		while ((numCharsRead = fileReader.read(charArray)) > 0) {
-			stringBuffer.append(charArray, 0, numCharsRead);
+		String file = null;
+		FileReader fileReader = null;
+		try{
+			fileReader = new FileReader("C:\\Load\\SISO\\response_siru.json");
+			StringBuffer stringBuffer = new StringBuffer();
+			int numCharsRead;
+			char[] charArray = new char[1024];
+			while ((numCharsRead = fileReader.read(charArray)) > 0) {
+				stringBuffer.append(charArray, 0, numCharsRead);
+			}
+			file = stringBuffer.toString();
+		}finally{
+			try{if(fileReader!=null)fileReader.close();}catch(Exception e){e.printStackTrace();}
 		}
-		
-		return stringBuffer.toString();
+		return file;
 	}
 	
 

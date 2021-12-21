@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:security="http://www.springframework.org/schema/security"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd">
+
+
+
+
+
+<security:http use-expressions="false" pattern="/rest/**" security="none"/>
+
+	<security:http use-expressions="true" auto-config="false">
+		<security:custom-filter ref="sessionManagementFilter" before="SESSION_MANAGEMENT_FILTER" />
+	  	<security:intercept-url pattern="/jsp/protected/**" access="hasAnyRole('IS_AUTHENTICATED')" />
+		 
+		<security:form-login login-page="/login.xhtml"
+							 authentication-success-handler-ref="loginSuccessHandler"
+							 authentication-failure-url="/login.xhtml?error" 
+							 username-parameter="username"
+							 password-parameter="password" />
+		
+	 	
+	</security:http>
+	
+	<security:authentication-manager alias="authenticationManager">
+		<security:authentication-provider ref="authenticationProvider" />
+	</security:authentication-manager>
+
+	<bean id="authenticationProvider" class="it.umbriadigitale.soclav.security.CredentialAuthenticationProvider" />
+	
+	
+ 	<bean id="sessionManagementFilter" class="org.springframework.security.web.session.SessionManagementFilter">
+        <constructor-arg name="securityContextRepository" ref="httpSessionSecurityContextRepository" />
+        <property name="invalidSessionStrategy" ref="jsfRedirectStrategy" />
+    </bean>
+    
+   <bean id="loginSuccessHandler" class="it.umbriadigitale.soclav.security.CustomLoginSuccessHandler" >
+	    <constructor-arg value="/home.xhtml" />
+	</bean>
+	 <bean id="httpSessionSecurityContextRepository" class="org.springframework.security.web.context.HttpSessionSecurityContextRepository"/>
+	 
+	  <bean id="jsfRedirectStrategy" class="it.umbriadigitale.soclav.security.JsfRedirectStrategy">
+        <property name="invalidSessionUrl" value="/sessionExpired.xhtml" />
+    </bean>
+    
+<!-- </security:http> -->
+
+
+<!-- <security:http pattern="/javax.faces.resource/**" security="none" />
+<security:http pattern="/rest/**" security="none" />
+<security:http pattern="/jsp/protected/**" security="none" /> -->
+
+    <!-- Enable security annotations usage -->
+
+    <!-- <bean id="myAuthenticationDetailsSource"
+        class="it.umbriadigitale.soclav.security.MyAuthenticationDetailsSource">
+    </bean>
+
+    <bean id="myAuthenticationProvider"
+        class="it.umbriadigitale.soclav.security.MyAuthenticationProvider">
+    </bean>
+
+
+    <security:authentication-manager>
+        create a custom AuthenticationProvider class to tune the login 
+            process
+        <security:authentication-provider
+            ref="myAuthenticationProvider" />
+    </security:authentication-manager>
+
+    <security:http use-expressions="true">
+    
+        refers to http://docs.spring.io/spring-security/site/docs/3.0.x/reference/el-access.html
+        <security:intercept-url pattern="/login.xhtml"
+            access="anonymous" />
+        <security:intercept-url pattern="/css/**"
+            access="anonymous" />
+        <security:intercept-url pattern="/**"
+            access="authenticated" />
+        <security:form-login login-page="/login.xhtml"
+            authentication-failure-url="/login.xhtml?error=1"
+            default-target-url="/index.xhtml"
+            authentication-details-source-ref="myAuthenticationDetailsSource"
+            username-parameter="username" password-parameter="password" />
+    </security:http> -->
+
+</beans>

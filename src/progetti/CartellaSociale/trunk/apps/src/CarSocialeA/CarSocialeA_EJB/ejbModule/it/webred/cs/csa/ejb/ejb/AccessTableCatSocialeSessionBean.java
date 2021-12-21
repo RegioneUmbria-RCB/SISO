@@ -1,5 +1,6 @@
 package it.webred.cs.csa.ejb.ejb;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -10,6 +11,7 @@ import it.webred.cs.csa.ejb.CarSocialeBaseSessionBean;
 import it.webred.cs.csa.ejb.client.AccessTableCatSocialeSessionBeanRemote;
 import it.webred.cs.csa.ejb.dao.CatSocialeDAO;
 import it.webred.cs.csa.ejb.dto.BaseDTO;
+import it.webred.cs.csa.ejb.dto.KeyValueDTO;
 import it.webred.cs.data.model.CsCCategoriaSociale;
 import it.webred.cs.data.model.CsRelCatsocTipoInter;
 import it.webred.cs.data.model.CsRelCatsocTipoInterPK;
@@ -31,8 +33,9 @@ public class AccessTableCatSocialeSessionBean extends CarSocialeBaseSessionBean 
 	private CatSocialeDAO catSocialeDao;
 	
 	@Override
-	public CsCCategoriaSociale getCategoriaSocialeById(BaseDTO dto) {
-		return catSocialeDao.getCategoriaSocialeById((Long) dto.getObj());
+	public String getCategoriaSocialeById(BaseDTO dto) {
+		CsCCategoriaSociale c = catSocialeDao.getCategoriaSocialeById((Long) dto.getObj());
+		return c!=null ? c.getDescrizione() : null;
 	}
 	
 	@Override
@@ -98,6 +101,18 @@ public class AccessTableCatSocialeSessionBean extends CarSocialeBaseSessionBean 
 	@Override
 	public List<CsRelSettoreCatsoc> findRelSettoreCatsocBySettore(BaseDTO dto) {
 		return catSocialeDao.findRelSettoreCatsocBySettore((Long) dto.getObj());
+	}
+	
+	@Override
+	public List<KeyValueDTO> getCategorieSocialiBySettore(BaseDTO dto) {
+		List<KeyValueDTO> lstItems = new ArrayList<KeyValueDTO>();
+		List<CsRelSettoreCatsoc> beanLstCatSociali = catSocialeDao.findRelSettoreCatsocBySettore((Long) dto.getObj());
+		for (CsRelSettoreCatsoc cat : beanLstCatSociali) {
+			KeyValueDTO si = new KeyValueDTO(cat.getId().getCategoriaSocialeId(), cat.getCsCCategoriaSociale().getTooltip());
+		    si.setAbilitato(cat.getAbilitato()!=null ? cat.getAbilitato() : Boolean.FALSE);
+		    lstItems.add(si);
+		}
+		return lstItems;
 	}
 	
 	@Override

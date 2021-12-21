@@ -59,8 +59,6 @@ public abstract class AbitazioneManBaseBean extends SchedaValutazioneManBean imp
 			// instanziare una versione intermedia tra la prima e la max
 			String defaultVersion = "";
 			interfaccia = (IAbitazione) WebredClassFactory.newInstance(className, IAbitazione.class, defaultVersion);
-			
-			// Initialize scheda barthel
 			interfaccia.init(null, val);
 		}
 		return interfaccia;

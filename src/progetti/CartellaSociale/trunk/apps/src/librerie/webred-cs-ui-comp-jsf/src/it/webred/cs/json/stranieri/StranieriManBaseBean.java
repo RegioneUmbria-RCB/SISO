@@ -3,6 +3,7 @@ package it.webred.cs.json.stranieri;
 import it.webred.classfactory.WebredClassFactory;
 import it.webred.cs.csa.ejb.client.AccessTableNazioniSessionBeanRemote;
 import it.webred.cs.csa.ejb.dto.BaseDTO;
+import it.webred.cs.csa.ejb.dto.KeyValueDTO;
 import it.webred.cs.data.model.CsDValutazione;
 import it.webred.cs.data.model.CsTbAssenzaPermesso;
 import it.webred.cs.data.model.CsTbPermesso;
@@ -187,10 +188,10 @@ public abstract class StranieriManBaseBean extends SchedaValutazioneManBean impl
 		try{
 		CeTBaseObject stat = new CeTBaseObject();
 		   fillEnte(stat);
-		   List<CsTbStatus> lstS = confService.getStatus(stat);
-		   for(CsTbStatus p : lstS){
-			   SelectItem st = new SelectItem(p.getId(),p.getDescrizione());
-			   abilitaSelectItem(st,"0".equals(p.getAbilitato()),valoreCorrente );
+		   List<KeyValueDTO> lstS = confService.getStatus(stat);
+		   for(KeyValueDTO p : lstS){
+			   SelectItem st = new SelectItem(p.getCodice(),p.getDescrizione());
+			   abilitaSelectItem(st,!p.isAbilitato(),valoreCorrente );
 			   listaStatus.add(st);
 		   }
 		   

@@ -4,7 +4,9 @@ import it.webred.cs.csa.ejb.CarSocialeBaseDAO;
 import it.webred.cs.csa.ejb.client.CarSocialeServiceException;
 import it.webred.cs.csa.ejb.dto.CodificaINPS;
 import it.webred.cs.csa.ejb.dto.InformativaDTO;
+import it.webred.cs.csa.ejb.dto.InterventoBaseDTO;
 import it.webred.cs.csa.ejb.dto.KeyValueDTO;
+import it.webred.cs.data.DataModelCostanti;
 import it.webred.cs.data.model.ArFfProgetto;
 import it.webred.cs.data.model.ArFfProgettoAttivita;
 import it.webred.cs.data.model.ArRelClassememoPresInps;
@@ -46,6 +48,7 @@ import it.webred.ct.support.validation.annotation.AuditSaltaValidazioneSessionID
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -53,10 +56,13 @@ import java.util.List;
 import javax.inject.Named;
 import javax.persistence.Query;
 
+import org.apache.commons.lang3.StringUtils;
+
 @Named
 public class InterventoDAO extends CarSocialeBaseDAO implements Serializable {
 
 	private static final long serialVersionUID = 1L;
+	protected SimpleDateFormat ddMMyyyy = new SimpleDateFormat("dd/MM/yyyy");
 
 	public void saveIntervento(CsIIntervento nuovoIntervento) throws Exception {
 		em.persist(nuovoIntervento);
@@ -86,10 +92,13 @@ public class InterventoDAO extends CarSocialeBaseDAO implements Serializable {
 
 	@SuppressWarnings("unchecked")
 	public List<CsCTipoIntervento> findTipiInterventoSettoreCatsoc(Long idSettore, List<Long> idCatsoc) {
+		logger.debug("findTipiInterventoSettoreCatsoc idSettore["+idSettore+"] idCatSoc["+idCatsoc+"]");
 		Query q = em.createNamedQuery("CsRelSettCsocTipoInter.findTipiInterventoSettCatsoc");
 		q.setParameter("idSettore", idSettore);
 		q.setParameter("idCatsoc", idCatsoc);
-		return (List<CsCTipoIntervento>) q.getResultList();
+		List<CsCTipoIntervento> lst = (List<CsCTipoIntervento>) q.getResultList();
+		logger.debug("findTipiInterventoSettoreCatsoc RESULT["+lst.size()+"]");
+		return lst;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -132,7 +141,7 @@ public class InterventoDAO extends CarSocialeBaseDAO implements Serializable {
 	@SuppressWarnings("unchecked")
 	public List<CsIIntervento> getListaInterventiByIdCaso(Long id) {
 		List<CsIIntervento> lstI = new ArrayList<CsIIntervento>();
-		logger.info("getListaInterventiByIdCaso " + id);
+		logger.info("getListaInterventiByIdCaso id["+id+"]");
 
 		Query q;
 		try{
@@ -146,6 +155,72 @@ public class InterventoDAO extends CarSocialeBaseDAO implements Serializable {
 		}
 		
 		return lstI;
+	}
+	
+	public List<InterventoBaseDTO> getListaInfoInterventiByIdCaso(Long id){
+		List<InterventoBaseDTO> lstInt = new ArrayList<InterventoBaseDTO>();
+		Query q;
+		try{
+			String sql ="select distinct i.id, TIPOINT.DESCRIZIONE tipoIntervento, tipoCust.descrizione tipoInterventoCustom, "
+					+ "i.inizio_dal, i.inizio_al, i.fine_dal, i.fine_al, s.tipo stato "
+					+ "from cs_d_diario d, cs_flg_intervento fgl, cs_i_intervento i  "
+					+ "left join cs_i_intervento_eseg_mast m on i.id=m.intervento_id "
+                    + "left join cs_i_intervento_eseg e on e.intervento_eseg_mast_id=m.id "
+                    + "left join CS_CFG_INT_ESEG_STATO s on (s.id=e.stato_id and s.tipo='E') "
+                    + "left join CS_C_TIPO_INTERVENTO tipoInt on (tipoInt.id = I.SCTI_TIPO_INTERVENTO_ID) "
+                    + "left join CS_C_TIPO_INTERVENTO_CUSTOM tipoCust on (tipoCust.id = I.TIPO_INTERVENTO_CUSTOM_ID) "
+                    + "where d.caso_id = :casoId and d.id=fgl.diario_id and fgl.intervento_id=i.id "
+                    + "order by i.id";
+			
+			q = em.createNativeQuery(sql);
+			q.setParameter("casoId", id);
+			
+			List<Object[]> lst = q.getResultList();
+			
+			for(Object[] res : lst){
+				int index = 0;
+				BigDecimal idIntervento = (BigDecimal)res[index++];
+				String tipoIntervento = (String)res[index++];
+				String tipoInterventoCustom = (String)res[index++];
+				Date inizioDal = (Date)res[index++];
+				Date inizioAl = (Date)res[index++];
+				Date fineDal = (Date)res[index++];
+				Date fineAl = (Date)res[index++];
+				Character stato = (Character)res[index++];
+				
+				boolean erogato = stato!=null ? DataModelCostanti.TipoStatoErogazione.EROGATIVO.equalsIgnoreCase(stato.toString()) : false;
+			
+				String dtInizioDal = inizioDal!=null ? ddMMyyyy.format(inizioDal) : "";
+				String dtInizioAl = inizioAl!=null ? ddMMyyyy.format(inizioAl) : "";
+				
+				String inizio = dtInizioDal;
+				if(!StringUtils.isBlank(dtInizioDal) && !StringUtils.isBlank(dtInizioAl))
+				   inizio = "Dal "+ dtInizioDal +" al "+ dtInizioAl;
+				
+				String dtFineDal = fineDal!=null ? ddMMyyyy.format(fineDal) : "";
+				String dtFineAl = fineAl!=null ? ddMMyyyy.format(fineAl) : "";
+				
+				String fine = dtFineDal;
+				if(!StringUtils.isBlank(dtFineDal) && !StringUtils.isBlank(dtFineAl))
+					fine = "Dal "+ dtFineDal +" al "+ dtFineAl;
+				 
+				InterventoBaseDTO intout = new InterventoBaseDTO();
+				intout.setTipoIntervento(tipoIntervento);
+				intout.setTipoInterventoCustom(tipoInterventoCustom);
+				intout.setInizio(inizio);
+				intout.setFine(fine);
+				intout.setErogato(erogato);
+				
+				lstInt.add(intout);
+			}
+			
+		}catch(Throwable e){
+			logger.error(e.getMessage(),e);
+			throw new CarSocialeServiceException(e);
+		}
+		
+		return lstInt;
+	
 	}
 
 	public Integer countInterventiByIdCaso(Long id) {
@@ -195,8 +270,11 @@ public class InterventoDAO extends CarSocialeBaseDAO implements Serializable {
 
 	@SuppressWarnings("unchecked")
 	public List<VGerrarchiaServizi> findAllNodesTipoIntervento() {
+		logger.debug("INIT findAllNodesTipoIntervento");
 		Query q = em.createNamedQuery("VGerrarchiaServizi.findAll");
-		return (List<VGerrarchiaServizi>) q.getResultList();
+		List<VGerrarchiaServizi> lista = (List<VGerrarchiaServizi>) q.getResultList();
+		logger.debug("END findAllNodesTipoIntervento");
+		return lista;
 	}
 
 	//SISO-1110 Inizio
@@ -467,7 +545,7 @@ public class InterventoDAO extends CarSocialeBaseDAO implements Serializable {
 
 	//INIZIO MOD-RL
 	public List<ArRelClassememoPresInps> findArRelClassememoPresInpbyTipoInterventoId( long tipoInterventoId) {
-
+		logger.debug("findArRelClassememoPresInpbyTipoInterventoId["+tipoInterventoId+"]");
 		Query q = em.createNamedQuery("ArRelClassememoPresInps.findByTipoInterventoId");  
 
 		q.setParameter("tipoInterventoId", tipoInterventoId);
@@ -536,43 +614,6 @@ public class InterventoDAO extends CarSocialeBaseDAO implements Serializable {
 	
 
 	//SISO-1110 Fine
-
-
-	public CsFlgIntervento getPrimoFoglioAmministrativo(Long idIntervento) {
-		try{
-			Query q = em.createNamedQuery("CsFlgIntervento.getPrimoFoglioByIdIntervento");
-			q.setParameter("interventoId", idIntervento);
-			List<CsFlgIntervento> lst = q.getResultList();
-			if(!lst.isEmpty()){
-				CsFlgIntervento f =  lst.get(0);
-				f.getCsDDiario().getCsOOperatoreSettore();
-				return f;
-			}
-		}catch(Throwable e){
-			logger.error(e);
-			throw new CarSocialeServiceException(e);
-		}
-		return null;
-	}
-	
-	//FINE MOD-RL
-
-
-	//INIZIO SISO-522
-	public List<ArFfProgetto> getProgetti(){			
-		Query q = em.createNamedQuery("ArFfProgetto.findAll"); 
-		return (List<ArFfProgetto>) q.getResultList();  
-	}
-	//FINE SISO-522
-
-	//INIZIO SISO-575
-	public List<ArFfProgetto> findProgettiByBelfioreOrganizzazione(String belfiore){			
-		Query q = em.createNamedQuery("ArFfProgetto.findByBelfioreOrganizzazione"); 
-		q.setParameter( "belfiore", belfiore );
-		return (List<ArFfProgetto>) q.getResultList();  
-	}
-	//FINE SISO-575
-
 	public CsCfgAttrUnitaMisura findAttrUnitaMisura(Long obj, Long obj2) {
 		Query q = null;
 		if(obj2!=null){
@@ -596,9 +637,10 @@ public class InterventoDAO extends CarSocialeBaseDAO implements Serializable {
 						"FROM AR_REL_CLASSEMEMO_PRES_INPS R, AR_TB_PRESTAZIONI_INPS I, AR_T_CLASSE C "+
 						"WHERE R.PRESTAZIONI_INPS_CODICE = I.CODICE "+
 						"AND C.ID = R.T_CLASSE_ID "+
-						"AND C.ID ="+obj;
+						"AND C.ID = :idClasse ";
 			
 			q = em.createNativeQuery(sql);
+			q.setParameter("idClasse", obj);
 			List<Object[]> lst = q.getResultList();
 			if(lst!=null && !lst.isEmpty()){
 				 i = new InformativaDTO();
@@ -635,13 +677,6 @@ public class InterventoDAO extends CarSocialeBaseDAO implements Serializable {
 		}
 	}
 	
-	//INIZIO SISO-790
-		public List<ArFfProgettoAttivita> getSottocorsi(){			
-			Query q = em.createNamedQuery("ArFfProgettoAttivita.findByAbilitato"); 
-			return (List<ArFfProgettoAttivita>) q.getResultList();  
-		}
-		//FINE SISO 790
-		
 		//INIZIO SISO-1131
 		public List<CsTbProgettoAltro> findProgettiAltro(){			
 			Query q = em.createNamedQuery("CsTbProgettoAltro.findAll"); 

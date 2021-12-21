@@ -1,5 +1,6 @@
 package eu.smartpeg.rilevazionepresenze;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -10,6 +11,7 @@ import eu.smartpeg.rilevazionepresenze.StruttureSessionBeanLocal;
 import eu.smartpeg.rilevazionepresenze.StruttureSessionBeanRemote;
 import eu.smartpeg.rilevazionepresenze.data.model.Area;
 import eu.smartpeg.rilevazionepresenze.data.model.Struttura;
+import eu.smartpeg.rilevazionepresenze.data.model.TipoStruttura;
 import eu.smartpeg.rilevazionepresenze.ejb.dao.StruttureDAO;
 
 
@@ -34,6 +36,32 @@ public class StruttureSessionBean implements StruttureSessionBeanRemote, Struttu
     	return struttureDao.getStrutture();
 	}
 
+    @Override
+   	public List<Struttura> findStruttureByTipoFunzione(Long idTipoFunzione) {
+        List<Struttura> lstToReturn = new ArrayList<Struttura>() ;
+    	List<Long> lstTipiStrutture = struttureDao.getIdTipoStrutturaByTipoFunzione(idTipoFunzione);
+    	
+    	if ( lstTipiStrutture.size()>0) {
+    		//Faccio query su Ar_Rp_struttura per tipo struttura
+    		lstToReturn = struttureDao.getStruttureByTipo(lstTipiStrutture);
+    	}
+       	return lstToReturn; // struttureDao.getTipoStrutturaByTipoFunzione(idTipoFUnzione);
+   	}
+    
+    
+
+    @Override
+   	public TipoStruttura findTipoStruttura(Long idTipoFunzione) {
+    	TipoStruttura tipoStruttura = new TipoStruttura() ;
+    	List<TipoStruttura> lstTipiStrutture = struttureDao.getTipoStrutturaByTipoFunzione(idTipoFunzione);
+    	
+    	if ( lstTipiStrutture.size()==1) {
+    		
+    		tipoStruttura = lstTipiStrutture.get(0);// SO CHE attualmente esiste solo un tipo struttura in ROma Capitale
+    	}
+       	return tipoStruttura; 
+   	}
+    
 	@Override
 	public Struttura salva(Struttura struttura) {
 		
@@ -93,12 +121,16 @@ public class StruttureSessionBean implements StruttureSessionBeanRemote, Struttu
 		{
 			return  "L'indirizzo della struttura è obbligatorio";
 		}
-		if(struttura.getTipoStruttura()<0)
+		if(struttura.getFlagAttrezzato()<0)
 		{
 			return  "La tipologia di Struttura è obbligatoria";
 		}
  		return messaggio;
 				
+	}
+	
+	public Struttura findStrutturaByCodBelfFittizio(String codBelfioreFittizio) {
+		return struttureDao.findStrutturaByCodBelfFittizio(codBelfioreFittizio);
 	}
 
 }

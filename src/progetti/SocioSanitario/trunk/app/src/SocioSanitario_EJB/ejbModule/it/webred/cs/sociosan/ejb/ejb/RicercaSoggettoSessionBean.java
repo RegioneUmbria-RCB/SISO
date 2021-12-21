@@ -14,6 +14,7 @@ import it.webred.ct.config.model.AmTabNazioni;
 import it.webred.ct.data.access.basic.anagrafe.AnagrafeService;
 import it.webred.ct.data.access.basic.anagrafe.dto.ComponenteFamigliaDTO;
 import it.webred.ct.data.access.basic.anagrafe.dto.RicercaSoggettoAnagrafeDTO;
+import it.webred.ct.data.model.anagrafe.SitDPersona;
 import it.webred.siso.esb.Medico;
 import it.webred.siso.esb.client.MedicoClient;
 import it.webred.siso.ws.client.agag.marche.dto.RicercaAnagraficaDTO;
@@ -31,7 +32,6 @@ import it.webred.siso.ws.ricerca.dto.RicercaAnagraficaParams;
 import it.webred.siso.ws.ricerca.dto.RicercaAnagraficaResult;
 
 import java.net.URL;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -63,7 +63,9 @@ public class RicercaSoggettoSessionBean extends CsBaseSessionBean implements Ric
 	@Override
 	public RicercaAnagraficaResult ricercaPerDatiAnagrafici(RicercaAnagraficaParams params){
 		logger.debug("ricercaPerDatiAnagrafici:"+params.stampaParametri()); 
-		if(DataModelCostanti.TipoRicercaSoggetto.ANAG_SANITARIA_MARCHE.equalsIgnoreCase(params.getProvenienza()))
+		if(DataModelCostanti.TipoRicercaSoggetto.DEFAULT.equalsIgnoreCase(params.getProvenienza()))
+			return this.ricercaAnaComunaleInterna(params);
+		else if(DataModelCostanti.TipoRicercaSoggetto.ANAG_SANITARIA_MARCHE.equalsIgnoreCase(params.getProvenienza()))
 			return this.ricercaAnaSanRegionaleMarche(params);
 		else if(DataModelCostanti.TipoRicercaSoggetto.ANAG_SANITARIA_UMBRIA.equalsIgnoreCase(params.getProvenienza()))
 			return this.ricercaAnaSanRegionaleUmbria(params);
@@ -75,7 +77,9 @@ public class RicercaSoggettoSessionBean extends CsBaseSessionBean implements Ric
 	@Override 
 	public RicercaAnagraficaResult getDettaglioPersona(RicercaAnagraficaParams params){
 		logger.debug(params.stampaParametri()); 
-		if(DataModelCostanti.TipoRicercaSoggetto.ANAG_SANITARIA_MARCHE.equalsIgnoreCase(params.getProvenienza()))
+		if(DataModelCostanti.TipoRicercaSoggetto.DEFAULT.equalsIgnoreCase(params.getProvenienza()))
+			return this.ricercaAnaComunaleInterna(params);
+		else if(DataModelCostanti.TipoRicercaSoggetto.ANAG_SANITARIA_MARCHE.equalsIgnoreCase(params.getProvenienza()))
 			return this.ricercaAnaSanRegionaleMarche(params);
 		else if(DataModelCostanti.TipoRicercaSoggetto.ANAG_SANITARIA_UMBRIA.equalsIgnoreCase(params.getProvenienza()))
 			return this.getPersonaAnaSanRegionaleUmbria(params);
@@ -141,7 +145,7 @@ public class RicercaSoggettoSessionBean extends CsBaseSessionBean implements Ric
 					PersonaDettaglio pn = this.initFromAnaSanUmbria(p, params.isCaricaMedico());
 					lstout.add(pn);			
 				}
-				result.setElencoAssisiti(lstout);
+				result.setElencoAssistiti(lstout);
 				anag.closeSession();
 				
 			}else
@@ -186,7 +190,6 @@ public class RicercaSoggettoSessionBean extends CsBaseSessionBean implements Ric
 		List<PersonaDettaglio> lstout = new ArrayList<PersonaDettaglio>();
 	
 		try{
-			List<PersonaFindResult> lstin = new ArrayList<PersonaFindResult>();
 			PersonaFindResult p = null;
 			CredenzialiWS anagRegUser = this.getCredenzialiWS();
 			
@@ -229,7 +232,7 @@ public class RicercaSoggettoSessionBean extends CsBaseSessionBean implements Ric
 					lstout.add(pn);
 				}
 				
-				result.setElencoAssisiti(lstout);
+				result.setElencoAssistiti(lstout);
 			}else
 				result.setMessaggio("Non è stato possibile effettuare la ricerca in anagrafe sanitaria: parametri di connessione non impostati");
 					
@@ -320,7 +323,7 @@ public class RicercaSoggettoSessionBean extends CsBaseSessionBean implements Ric
 				if(!StringUtils.isEmpty(p.getAssistitoId()))
 					lstout.add(this.initFromAnaSanMarche(p));
 			}
-			result.setElencoAssisiti(lstout);
+			result.setElencoAssistiti(lstout);
 		}else
 			result.setMessaggio("Non è stato possibile effettuare la ricerca in anagrafe sanitaria: parametri di connessione non impostati");
 		
@@ -381,18 +384,22 @@ public class RicercaSoggettoSessionBean extends CsBaseSessionBean implements Ric
 		pn.setDocumentoSanitarioScadenza(p.getDocumentoSanitarioScadenza());
 		
 		//Residenza
-		
+		String codIstatResidenza = p.getIstatComResidenza();
 		String[] residenza = this.estraiCivicoMarche(p.getIndirizzoResidenza());
 		pn.setIndirizzoResidenza(residenza!=null ? residenza[0].trim() : p.getIndirizzoResidenza());
 		pn.setCivicoResidenza(residenza!=null ? residenza[1].trim() : null);
-		pn.setComuneResidenza(this.findComune(p.getIstatComResidenza()));
+		pn.setComuneResidenza(this.findComune(codIstatResidenza));
+		
+		boolean domicilioComeResidenza = p.getIstatComResidenza()!=null && p.getIstatComResidenza().equalsIgnoreCase(p.getIstatComDomicilio()) &&
+										 p.getIndirizzoResidenza()!=null && p.getIndirizzoResidenza().equalsIgnoreCase(p.getIndirizzoDomicilio());
 		
 		//Domicilio
-		String[] domicilio = this.estraiCivicoMarche(p.getIndirizzoDomicilio());
-		pn.setIndirizzoDomicilio(domicilio!=null ? domicilio[0].trim() : p.getIndirizzoDomicilio());
-		pn.setCivicoDomicilio(domicilio!=null ? domicilio[1].trim() : null);
-		pn.setComuneDomicilio(this.findComune(p.getIstatComDomicilio()));
-		
+		if(!domicilioComeResidenza){
+			String[] domicilio = this.estraiCivicoMarche(p.getIndirizzoDomicilio());
+			pn.setIndirizzoDomicilio(domicilio!=null ? domicilio[0].trim() : p.getIndirizzoDomicilio());
+			pn.setCivicoDomicilio(domicilio!=null ? domicilio[1].trim() : null);
+			pn.setComuneDomicilio(this.findComune(p.getIstatComDomicilio()));
+		}
 		//?
 		pn.setIstatNazione(p.getIstatNazione());
 		
@@ -475,14 +482,20 @@ public class RicercaSoggettoSessionBean extends CsBaseSessionBean implements Ric
 			pn.setNazioneResidenza(nazRes);
 		}
 		
+		boolean domicilioComeResidenza = p.getIndirizzoResidenza()!=null && p.getIndirizzoResidenza().equalsIgnoreCase(p.getIndirizzoDomicilio()) &&
+										 p.getCivicoResidenza()!=null && p.getCivicoResidenza().equalsIgnoreCase(p.getCivicoDomicilio()) &&
+										 p.getIstatComResidenza()!=null && p.getIstatComResidenza().equalsIgnoreCase(p.getIstatComDomicilio());
+		
 		//Domicilio
-		pn.setIndirizzoDomicilio(p.getIndirizzoDomicilio());
-		pn.setCivicoDomicilio(p.getCivicoDomicilio());
-		AmTabComuni comDom = this.findComune(p.getIstatComDomicilio());
-		pn.setComuneDomicilio(comDom);
-		if(comDom==null){
-			AmTabNazioni nazDom = this.findNazione(p.getIstatComDomicilio(), null);
-			pn.setNazioneResidenza(nazDom);
+		if(!domicilioComeResidenza){
+			pn.setIndirizzoDomicilio(p.getIndirizzoDomicilio());
+			pn.setCivicoDomicilio(p.getCivicoDomicilio());
+			AmTabComuni comDom = this.findComune(p.getIstatComDomicilio());
+			pn.setComuneDomicilio(comDom);
+			if(comDom==null){
+				AmTabNazioni nazDom = this.findNazione(p.getIstatComDomicilio(), null);
+				pn.setNazioneResidenza(nazDom);
+			}
 		}
 		//?
 		pn.setIstatNazione(null);
@@ -522,6 +535,83 @@ public class RicercaSoggettoSessionBean extends CsBaseSessionBean implements Ric
 		RicercaAnagraficaResult result = new RicercaAnagraficaResult();
 		//TODO:Implementare integrazione
 		return result;
+	}
+	
+	private PersonaDettaglio initFromDiogene(SitDPersona p, String enteId, String sessionId){
+		PersonaDettaglio pd = new PersonaDettaglio(DataModelCostanti.TipoRicercaSoggetto.DEFAULT);
+		/*Campi necessari per creazione ID*/
+		if(p!=null){
+			
+			ComponenteFamigliaDTO info = new ComponenteFamigliaDTO();
+			info.setEnteId(enteId);
+			info.setSessionId(sessionId);
+			info.setPersona(p);
+			info = anagrafeService.fillInfoAggiuntiveComponente(info);
+			
+			pd.setIdentificativo(p.getIdExt());
+			pd.setCognome(p.getCognome());
+			pd.setNome(p.getNome());
+			pd.setCodfisc(p.getCodfisc());
+			pd.setCittadinanza(info.getCittadinanza());
+			pd.setDataNascita(p.getDataNascita());
+			pd.setDataMorte(p.getDataMor());
+			pd.setSesso(p.getSesso());
+			
+			if("ITALIA".equalsIgnoreCase(info.getDesStatoNas())){
+				AmTabComuni comNas = this.findComune(info.getCodComNas());
+				pd.setComuneNascita(comNas);
+			}else{
+				pd.setNazioneNascita(findNazione(info.getCodStatoNas(), info.getDesStatoNas()));
+			}
+			
+			AmTabComuni comRes = this.findComune(info.getCodComRes());
+			pd.setComuneResidenza(comRes);
+			
+			pd.setIndirizzoResidenza(info.getIndirizzoResidenza());
+			pd.setCivicoResidenza(info.getCivicoResidenza());
+			
+			boolean emigrato = p.getDataEmi()!=null && (p.getDataImm()==null || p.getDataImm().before(p.getDataEmi()));
+			pd.setEmigrato(emigrato);
+			
+			pd.setStatoCivile(p.getStatoCivile());
+			
+		}
+		return pd;
+	}
+	
+	private RicercaAnagraficaResult ricercaAnaComunaleInterna(RicercaAnagraficaParams params){
+		RicercaAnagraficaResult result = new RicercaAnagraficaResult();
+		List<PersonaDettaglio> lstout = new ArrayList<PersonaDettaglio>();
+		
+		if(this.isAnagrafeComunaleInternaAbilitata()){
+			RicercaSoggettoAnagrafeDTO rsDto = new RicercaSoggettoAnagrafeDTO();
+			rsDto.setEnteId(params.getEnteId());
+			rsDto.setSessionId(params.getSessionId());
+			rsDto.setMaxResult(params.getMaxResult());
+			
+			List<SitDPersona> list = new ArrayList<SitDPersona>();
+			if(!StringUtils.isBlank(params.getIdentificativo())){
+				rsDto.setIdSogg(params.getIdentificativo());
+				list = anagrafeService.searchSISOAnagrafiche(rsDto);
+			}else{
+				rsDto.setCognome(params.getCognome());
+				rsDto.setNome(params.getNome());
+				rsDto.setCodFis(params.getCf());
+				rsDto.setSesso(params.getSesso());
+				rsDto.setDtRif(new Date());
+				rsDto.setAnnoNascitaDa(params.getAnnoNascitaDa());
+				rsDto.setAnnoNascitaA(params.getAnnoNascitaA());
+				list = anagrafeService.searchSISOAnagrafiche(rsDto);
+			}
+			
+			for(SitDPersona s: list){
+				PersonaDettaglio pd = this.initFromDiogene(s, params.getEnteId(), params.getSessionId());
+				lstout.add(pd);
+			}
+		}
+		
+		result.setElencoAssistiti(lstout);
+	    return result;
 	}
 	
 	private RicercaAnagraficaResult loadFamigliaGIT(RicercaAnagraficaParams dto){

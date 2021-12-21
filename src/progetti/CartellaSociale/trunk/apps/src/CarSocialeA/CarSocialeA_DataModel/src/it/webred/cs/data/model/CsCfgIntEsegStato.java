@@ -39,7 +39,7 @@ public class CsCfgIntEsegStato implements Serializable {
 	@Column(name="ORDINE_DESC_FASE")
 	private Integer ordineDescFase;
 	
-	 @ManyToMany
+/*	 @ManyToMany
 		@JoinTable(
 			name="CS_CFG_INT_ESEG_STATO_INT"
 			, joinColumns={
@@ -49,7 +49,7 @@ public class CsCfgIntEsegStato implements Serializable {
 				@JoinColumn(name="CFG_INT_ESEG_ID")
 				}
 			)
-	private List<CsCfgIntEseg> csCfgIntEseg;
+	private List<CsCfgIntEseg> csCfgIntEseg;*/
 	
 	public CsCfgIntEsegStato() {
 	}
@@ -86,13 +86,13 @@ public class CsCfgIntEsegStato implements Serializable {
 		this.erogazionePossibile = erogazionePossibile;
 	}
 
-	public List<CsCfgIntEseg> getCsCfgIntEseg() {
+/*	public List<CsCfgIntEseg> getCsCfgIntEseg() {
 		return csCfgIntEseg;
 	}
 
 	public void setCsCfgIntEseg(List<CsCfgIntEseg> csCfgIntEseg) {
 		this.csCfgIntEseg = csCfgIntEseg;
-	}
+	}*/
 
 	public Integer getOrdine() {
 		return ordine;

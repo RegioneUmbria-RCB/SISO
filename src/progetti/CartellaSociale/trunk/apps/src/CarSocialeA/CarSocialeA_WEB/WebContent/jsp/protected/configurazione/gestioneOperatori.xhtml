@@ -1,0 +1,306 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:webred="http://java.sun.com/jsf/composite/webred"
+	xmlns:webredcs="http://java.sun.com/jsf/composite/webredcs">
+
+<ui:fragment>
+	<h:form id="frmGestioneOperatori">
+	<p:dataTable id="dtOperatori" var="op" lazy="true" widgetVar="dtOperatori"
+		value="#{gestioneOperatoriBean.operatoriDataModel}"
+    	rowIndexVar="rowKeyInd" rowKey="#{op.amUser.name}" 
+    	selection="#{gestioneOperatoriBean.operatoriSelezionati}"
+    	emptyMessage="Nessun elemento trovato"
+    	rows="10" paginator="true" paginatorPosition="bottom"
+                 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                 rowsPerPageTemplate="10,20,50,100" filterEvent="enter" >
+                 
+        <f:facet name="header">Utenti configurati in AmProfiler per Cartella Sociale</f:facet>
+         <p:column style="width:16px"><p:rowToggler/></p:column>
+        <p:column selectionMode="multiple" style="width:16px;text-align:center" disabledSelection="#{gestioneOperatoriBean.pnlGestioneRendered}"/>        			        			        
+         <p:column headerText="Username" filterBy="username" filterMatchMode="startsWith" >
+            <h:outputText value="#{op.amUser.name}" />
+        </p:column>
+        <p:column headerText="Cognome" filterBy="cognome" filterMatchMode="startsWith" >
+            <h:outputText value="#{op.cognome}" />
+        </p:column>
+        
+        <p:column headerText="Nome" filterBy="nome" filterMatchMode="startsWith" >
+            <h:outputText value="#{op.nome}" />
+        </p:column>
+        
+        <p:column headerText="Codice fiscale" filterBy="#{op.codiceFiscale}" filterMatchMode="startsWith" >
+            <h:outputText value="#{op.codiceFiscale}" />
+        </p:column>
+        
+         <p:column>
+           	 <f:facet name="header" >
+				<h:outputText value="" />
+				<p:selectCheckboxMenu label="Enti configurati in AmProfiler" 
+				 					  value="#{gestioneOperatoriBean.operatoriDataModel.filtroEnti}" 
+                                      panelStyle="width:200px"  scrollHeight="150" 
+                                      filter="true" filterMatchMode="startsWith">
+                    <f:selectItems value="#{gestioneOperatoriBean.operatoriDataModel.listaEnti}"  />
+                     <p:ajax event="toggleSelect" update="dtOperatori" process="@this" />
+                     <p:ajax update="dtOperatori"  process="@this"/>  
+                </p:selectCheckboxMenu>
+			</f:facet>	
+           	
+           	<p:outputLabel value="#{op.enti}" style="font-size:0.6em;" />
+        </p:column>
+        
+        <p:column style="text-align:center">
+	        <f:facet name="header">
+	        	<h:outputText value="Attivo" /><br/>
+               <p:selectOneMenu  value="#{gestioneOperatoriBean.operatoriDataModel.filtroAbilitato}" 
+                				 panelStyle="width:200px"  scrollHeight="150"    >
+                    <f:selectItem itemLabel="- seleziona -" noSelectionOption="true"  />
+                    <f:selectItem itemLabel="Si" itemValue="1" />
+                    <f:selectItem itemLabel="No" itemValue="0" />
+                     <p:ajax event="valueChange" update="dtOperatori" process="@this" />
+                     <p:ajax update="dtOperatori"  process="@this"/>  
+                </p:selectOneMenu>
+            </f:facet>
+           <webred:pnlImgBoolean value="#{op.abilitato}"/>
+        </p:column>
+        
+        <p:rowExpansion>
+        
+        	<h:panelGrid columns="5" styleClass="noBorder" >
+			<p:outputLabel value="Data Nascita: #{op.dataNascitaToString}" rendered="#{op.dataNascitaToString!=null}" />
+			<p:outputLabel value="Comune Nascita: #{op.comuneProvNascita}" rendered="#{op.comuneProvNascita!=null}"/>
+			<p:outputLabel value="Residenza: #{op.indirizzoResidenza} #{op.comuneProvResidenza}" rendered="#{op.indirizzoResidenza!=null or op.comuneProvResidenza!=null}"/>
+			<p:outputLabel value="Tel.: #{op.telefonoResidenza}" rendered="#{op.telefonoResidenza!=null}"/>
+			
+			<p:outputLabel value="Cell.: #{op.cellulareResidenza}" rendered="#{op.cellulareResidenza!=null}"/>
+			<p:outputLabel value="Direzione: #{op.ufficio.direzione}" rendered="#{op.ufficio.direzione!=null}"/>
+			<p:outputLabel value="Settore: #{op.ufficio.settore}" rendered="#{op.ufficio.settore!=null}"/>
+			<p:outputLabel value="E-mail ufficio: #{op.ufficio.email}" rendered="#{op.ufficio.email!=null}"/>
+			<p:outputLabel value="Tel. Ufficio: #{op.ufficio.telefono}" rendered="#{op.ufficio.telefono!=null}"/>
+        
+        </h:panelGrid>
+        </p:rowExpansion>
+        
+       <f:facet name="footer">
+        				 <p:commandButton value="Carica Configurazione" icon="ui-icon-search" 
+				action="#{gestioneOperatoriBean.configuraAccesso()}"
+				update="@form" process="dtOperatori"/>
+			<p:commandButton id="btnOperatoreOn" value="Attiva" icon="ui-icon-check" 
+       	    	title="Attiva operatore nella cartella sociale" 
+        					action="#{gestioneOperatoriBean.abilitaOperatori()}" 
+        					update="dtOperatori" process="dtOperatori">
+        					<p:confirm header="Conferma" message="Procedere con l\'attivazione?" icon="ui-icon-alert"/>
+        				</p:commandButton>
+        				<p:commandButton id="btnOperatoreOff" value="Disattiva" icon="ui-icon-closethick" 
+       	    	title="Attiva operatore nella cartella sociale" 
+        					action="#{gestioneOperatoriBean.disabilitaOperatori()}" 
+        					update="@form" process="dtOperatori">
+        					<p:confirm header="Conferma" message="Procedere con la disattivazione? Verrà disattivato anche nelle configurazioni di acceesso ai vari settori." 
+        					icon="ui-icon-alert"/>
+        				</p:commandButton>	
+       </f:facet>
+       
+    </p:dataTable>
+		
+ <p:panel header="Configurazione operatori" rendered="#{gestioneOperatoriBean.pnlGestioneRendered}" >
+   <p:ajax event="close" listener="#{gestioneOperatoriBean.onClose}" update="@form" />
+	<p:outputPanel id="pnlGestioneOperatore" layout="none">
+	<table class="span-20">
+		<tr>
+			<td class="span-2" style="text-align: right; padding-right: 5px;">
+				<p:outputLabel value="Organizzazione"/>
+			</td>
+			<td class="span-3">
+				<p:selectOneMenu id="cboOrg" value="#{gestioneOperatoriBean.insUpdDelGestOperatoriBean.selOrganizzazione}" 
+				                 style="width: 95%;" filter="true" filterMatchMode="contains">
+					<p:ajax listener="#{gestioneOperatoriBean.insUpdDelGestOperatoriBean.onSelOrganizzazione}" process="@this" update="cboSett, cboTipoOpe, chkOpeSet, lblRuoli, lstRuoli, pnlLblRuoli, pnlLstRuoli" />								
+					<f:selectItem noSelectionOption="true" itemLabel="- seleziona -"/>
+					<f:selectItems value="#{gestioneOperatoriBean.insUpdDelGestOperatoriBean.organizzazioni}" />								
+				</p:selectOneMenu>
+			</td>
+			
+			<td style="text-align: right; padding-right: 5px;">
+				<p:outputLabel value="Settore"/>
+			</td>
+			<td>
+				<p:selectOneMenu id="cboSett" value="#{gestioneOperatoriBean.insUpdDelGestOperatoriBean.selSettore}" style="width: 95%;">
+					<p:ajax listener="#{gestioneOperatoriBean.insUpdDelGestOperatoriBean.onSelSettore}" process="@this" update="cboTipoOpe, chkOpeSet, lblRuoli, lstRuoli, pnlLblRuoli, pnlLstRuoli" />								
+					<f:selectItem noSelectionOption="true" itemLabel="- seleziona -"/>
+					<f:selectItems value="#{gestioneOperatoriBean.insUpdDelGestOperatoriBean.settori}" />							
+				</p:selectOneMenu>
+			</td>	
+			
+			<td class="span-3" style="text-align: right; padding-right: 5px;">								
+				<p:outputLabel value="Tipo Operatore"/>
+			</td>
+			<td class="span-3">
+				<p:selectOneMenu id="cboTipoOpe" value="#{gestioneOperatoriBean.insUpdDelGestOperatoriBean.selTipoOperatore}" 
+				                 style="width: 95%;" filter="true" filterMatchMode="contains">
+					<f:selectItem noSelectionOption="true" itemLabel="- seleziona -"/>
+					<f:selectItems value="#{gestioneOperatoriBean.insUpdDelGestOperatoriBean.tipiOperatore}" />									
+				</p:selectOneMenu>
+			</td>
+			
+			<td rowspan="3" class="span-9" style="vertical-align: bottom; padding-left: 10px;">
+				<p:commandButton value="Aggiungi" style="width: 90px;" icon="ui-icon-plus"
+					process="@form" update="@form"
+					action="#{gestioneOperatoriBean.salvaConfigurazione}"/>
+				<p:commandButton value="Chiudi Configurazione" icon="ui-icon-close" 
+				action="#{gestioneOperatoriBean.onClose()}"
+				update="@form"/>           	
+			</td>
+		</tr>
+		<tr>					
+			<td rowspan="2" style="text-align: right; vertical-align: top; padding-right: 5px;">
+				<h:panelGroup id="pnlLblRuoli">
+					<p:outputLabel id="lblRuoli" value="Ruolo" rendered="#{gestioneOperatoriBean.insUpdDelGestOperatoriBean.viewRuoli}"/>
+				</h:panelGroup>
+			</td>
+			<td rowspan="2" class="span-3" style="vertical-align: top;">
+				<h:panelGrid columns="1" id="pnlLstRuoli">
+					<p:selectManyMenu id="lstRuoli" value="#{gestioneOperatoriBean.insUpdDelGestOperatoriBean.selRuoli}" style="width: 95%; height: 90px;" rendered="#{gestioneOperatoriBean.insUpdDelGestOperatoriBean.viewRuoli}">
+						<f:selectItems value="#{gestioneOperatoriBean.insUpdDelGestOperatoriBean.ruoli}" />	
+						<p:ajax listener="#{gestioneOperatoriBean.insUpdDelGestOperatoriBean.refreshFirma}" update="pnlFirma" process="@this"/>
+					</p:selectManyMenu>
+					<h:panelGrid id="pnlFirma" columns="2">
+						<webredcs:tooltipInfo title="Firma documenti del settore" rendered="#{!gestioneOperatoriBean.insUpdDelGestOperatoriBean.disableFirma}" 
+					    	stringDescr="Per ciascun settore deve essere impostato un UNICO responsabile addetto alla firma dei documenti. Selezionando l'opzione, eventuali permessi di firma concessi precedentamente ad altri operatori verranno rimossi."/>
+					  
+					   <p:selectBooleanCheckbox id="chkFirma" itemLabel="Firma documenti del Settore" value="#{gestioneOperatoriBean.insUpdDelGestOperatoriBean.firmaSettore}"  
+					                           rendered="#{!gestioneOperatoriBean.insUpdDelGestOperatoriBean.disableFirma}"/>
+					  
+	            	 </h:panelGrid>
+				</h:panelGrid>
+			</td>
+			
+			<td class="span-3" style="text-align: right; padding-right: 5px; vertical-align: top;"><p:outputLabel value="Visualizza notifiche"/></td>
+			<td>
+				<p:selectManyMenu value="#{gestioneOperatoriBean.insUpdDelGestOperatoriBean.riceviNotifiche}"
+                           style="width:250px; height: 90px;">
+			            <f:selectItems value="#{gestioneOperatoriBean.insUpdDelGestOperatoriBean.tipiAlert}" />
+			    </p:selectManyMenu>
+			</td>
+			
+			<td class="span-3" style="text-align: right; padding-right: 5px; vertical-align: top;"><p:outputLabel value="Ricevi e-mail"/></td>
+			<td>
+				<p:selectManyMenu value="#{gestioneOperatoriBean.insUpdDelGestOperatoriBean.riceviEmail}" multiple="true"
+                             style="width:250px; height: 90px;">
+			            <f:selectItems value="#{gestioneOperatoriBean.insUpdDelGestOperatoriBean.tipiAlert}" />
+			    </p:selectManyMenu>
+			</td>
+										
+		</tr>
+		<tr>
+		    <td></td>
+			<td colspan="2" >
+				<p:selectBooleanCheckbox id="chkOpeSet" value="#{gestioneOperatoriBean.insUpdDelGestOperatoriBean.appartieneSettore}" itemLabel="Appartiene al settore" />
+			</td>
+			
+		</tr>
+	</table>
+  
+	<p:spacer height="30"/>
+	
+	<p:outputLabel id="lblMultiOpe" style="color:red; font-weight:bold;"
+		value="Per visualizzare il dettaglio della configurazione, selezionare un solo utente" 
+		rendered="#{!gestioneOperatoriBean.pnlGestioneSingola}" />
+	
+	<p:dataTable id="dataTableOpeSet" width="100%" var="row" 
+				 rendered="#{gestioneOperatoriBean.pnlGestioneSingola}"
+				 emptyMessage="Nessuna associazione operatore/settore inserita"
+				 value="#{gestioneOperatoriBean.insUpdDelGestOperatoriBean.dataTableDati}">
+
+		<p:column headerText="" style="text-align:center">
+			<p:selectBooleanCheckbox value="#{row.selezionato}"/>
+		</p:column>
+		
+		<p:column headerText="Organizzazione">
+			<h:outputText value="#{row.lblOrganizzazione}" />
+		</p:column>
+		
+		<p:column headerText="Settore">
+			<h:outputText value="#{row.lblSettore}" />
+		</p:column>
+								
+		<p:column headerText="Ruoli">
+			<h:outputText value="#{row.lblRuoli}" escape="false" style="white-space:pre-line;"/>
+			<p:spacer width="4px" />
+			
+		</p:column>
+		
+		<p:column headerText="Tipo operatore">
+			<h:outputText value="#{row.lblTipoOperatore}" />
+		</p:column>
+		
+		<p:column headerText="Appartiene" style="text-align:center">
+			<h:outputText value="#{row.lblAppartiene}" />
+		</p:column>
+		
+		<p:column headerText="Validità" style="text-align:center">
+			<h:panelGrid columns="3" styleClass="noBorder">
+				<h:outputText value="#{row.dataInizioApp}" >
+					<f:convertDateTime pattern="dd/MM/yyyy" />
+				</h:outputText> 
+				<h:outputText value=" - "/>
+				<h:outputText value="#{row.dataFineApp}" rendered="#{!row.attivo}">
+					<f:convertDateTime pattern="dd/MM/yyyy" />
+				</h:outputText>
+				<h:outputText value="ATTIVO" rendered="#{row.attivo}" />
+			</h:panelGrid>
+		</p:column>
+		
+		<p:column headerText="Firma" style="text-align:center">
+		    <p:graphicImage rendered="#{row.firma}" value="/images/check.png" title="Firma i documenti come Responsabile del Settore"/>
+		</p:column>
+		
+		<p:column headerText="Notifiche">
+			<ui:repeat value="#{row.lstAlertConfig}" var="cfg">
+				<h:panelGroup rendered="#{cfg.flgNotifica}">
+					<p:outputLabel value="#{cfg.csTbTipoAlert.descrizione}" style="font-size:0.6em;" /><br/>
+				</h:panelGroup>
+			</ui:repeat>
+		</p:column>
+		<p:column headerText="e-mail">
+			<ui:repeat value="#{row.lstAlertConfig}" var="cfg">
+				<h:panelGroup rendered="#{cfg.flgEmail}">
+					<p:outputLabel value="#{cfg.csTbTipoAlert.descrizione}" style="font-size:0.6em;"/><br/>
+				</h:panelGroup>
+			</ui:repeat>
+		</p:column>
+		
+		<f:facet name="footer">
+		
+			<p:commandButton value="Attiva" process="@form" update="@form" icon="ui-icon-check"
+				action="#{gestioneOperatoriBean.attivaOperatoreSettore}">
+				<p:confirm header="Conferma" message="Procedere con l\'attivazione?" icon="ui-icon-alert"/>
+			</p:commandButton>
+			<p:commandButton value="Disattiva" process="@form" update="@form" icon="ui-icon-closethick"
+				action="#{gestioneOperatoriBean.disattivaOperatoreSettore}">
+				<p:confirm header="Conferma" message="Procedere con la disattivazione?" icon="ui-icon-alert"/>
+			</p:commandButton>
+			<p:commandButton value="Elimina" process="@form" update="@form" icon="ui-icon-trash"
+				action="#{gestioneOperatoriBean.eliminaOperatoreSettore}">
+				<p:confirm header="Conferma" message="Procedere con l\'eliminazione? Se il profilo è stato usato, non sarà possibile eliminarlo." icon="ui-icon-alert"/>
+			</p:commandButton>
+			
+			<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+				<h:panelGrid columns="2" styleClass="centerAlign">
+		        <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>
+		        <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>
+	       	 </h:panelGrid>     
+    		</p:confirmDialog>
+		</f:facet>
+		
+	</p:dataTable>
+		
+								
+	</p:outputPanel>
+	</p:panel>			
+	</h:form>
+
+</ui:fragment>
+
+</html>

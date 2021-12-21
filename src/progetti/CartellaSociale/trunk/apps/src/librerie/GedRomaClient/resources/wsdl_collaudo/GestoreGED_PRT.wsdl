@@ -252,7 +252,7 @@
   </wsdl:binding>
   <wsdl:service name="GestoreGED_PRTService">
     <wsdl:port binding="impl:GestoreGED_PRTSoapBinding" name="GestoreGED_PRT">
-      <wsdlsoap:address location="http://10.150.130.117:80/protocollowebsoap/services/GestoreGED_PRT"/>
+      <wsdlsoap:address location="http://gwwssoap-collaudo-trged-coll.ecaas.datacenter.comune.roma/protocollo-web-services/GestoreGED_PRT"/>
     </wsdl:port>
   </wsdl:service>
 </wsdl:definitions>

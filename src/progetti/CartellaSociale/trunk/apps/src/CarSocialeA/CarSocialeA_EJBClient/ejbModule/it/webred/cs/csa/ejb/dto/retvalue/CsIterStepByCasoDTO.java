@@ -3,15 +3,15 @@ package it.webred.cs.csa.ejb.dto.retvalue;
 import it.webred.cs.data.model.CsItStepLAZY;
 
 import java.io.Serializable;
+import java.util.Date;
 
 
 public class CsIterStepByCasoDTO implements Serializable {
 
 	private CsItStepLAZY csItStep;
 	
-	private java.util.Date dataAmministrativa;
-	private String responsabileUsername;
-	
+	private Date dataAmministrativa;
+	private String resposabileDenominazione;
 	
 	
 	public CsIterStepByCasoDTO(CsItStepLAZY csItStep) {
@@ -26,6 +26,17 @@ public class CsIterStepByCasoDTO implements Serializable {
 	public void setDataAmministrativa(java.util.Date dataAmministrativa) {
 		this.dataAmministrativa = dataAmministrativa;
 	}
+	
+
+
+	public String getResposabileDenominazione() {
+		return resposabileDenominazione;
+	}
+
+
+	public void setResposabileDenominazione(String resposabileDenominazione) {
+		this.resposabileDenominazione = resposabileDenominazione;
+	}
 
 
 	public CsItStepLAZY getCsItStep() {
@@ -34,17 +45,5 @@ public class CsIterStepByCasoDTO implements Serializable {
 
 	public void setCsItStep(CsItStepLAZY csItStep) {
 		this.csItStep = csItStep;
-	}
-
-
-	public String getResponsabileUsername() {
-		return responsabileUsername;
-	}
-
-
-	public void setResponsabileUsername(String responsabile) {
-		this.responsabileUsername = responsabile;
-	}
-	
-	
+	}	
 }

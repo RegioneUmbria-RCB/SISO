@@ -21,6 +21,7 @@ public class AtlanteSessionBean extends CsBaseSessionBean implements AtlanteSess
 	@Override
 	public ServiziDTO getServizi(String codiceFisclae) throws  SocioSanitarioException {
 		ServiziDTO servizi = new ServiziDTO();
+		logger.debug("START getServizi Atlante "+codiceFisclae);
 		try {
 			
 			servizi = atlanteDao.getServizi(codiceFisclae);
@@ -30,7 +31,7 @@ public class AtlanteSessionBean extends CsBaseSessionBean implements AtlanteSess
 		} catch (Exception e) {
 			throw new SocioSanitarioException(e);
 		}
-		
+		logger.debug("END getServizi Atlante "+codiceFisclae);
 		return servizi;
 	}
 	

@@ -12,7 +12,6 @@ import it.webred.cs.jsf.manbean.superc.CsUiCompBaseBean;
 import it.webred.ejb.utility.ClientUtility;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -45,7 +44,6 @@ public class DatiFglInterventoBean extends CsUiCompBaseBean implements Serializa
 	private Long punteggio;
 	private String fascia;
 	
-	private Long responsabile;
 	private Long visSecondoLivello;
 	
 	public Date getDataAmministrativa() {
@@ -170,7 +168,7 @@ public class DatiFglInterventoBean extends CsUiCompBaseBean implements Serializa
 			this.setDtTipoAttA(dataA);			
 		}
 				
-		this.setFlagRespinto((cs.getFlagRespinto()!=null && cs.getFlagRespinto().intValue()==1) ? Boolean.TRUE : Boolean.FALSE); 
+		this.setFlagRespinto(cs.getFlagRespinto()!=null ? cs.getFlagRespinto().booleanValue() : Boolean.FALSE); 
 		
 		this.setMotivoChiusura(cs.getCsTbMotivoChiusuraInt()!=null ? String.valueOf(cs.getCsTbMotivoChiusuraInt().getId()): null);
 		this.setMotivoRespinto(cs.getMotivoRespinto());
@@ -182,7 +180,7 @@ public class DatiFglInterventoBean extends CsUiCompBaseBean implements Serializa
 		List<CsDDiario> lstDiario = new LinkedList<CsDDiario>( cs.getCsDDiario().getCsDDiariFiglio() );
 		if(lstDiario!=null && lstDiario.size()>0)
 			for(CsDDiario d : lstDiario)  {
-				if(d.getCsTbTipoDiario().getId().equals( DataModelCostanti.TipoDiario.RELAZIONE_ID ))
+				if(d.getCsTbTipoDiario().getId() == DataModelCostanti.TipoDiario.RELAZIONE_ID )
 					this.setIdRelazione(d.getId());
 			}
 	}
@@ -218,8 +216,7 @@ public class DatiFglInterventoBean extends CsUiCompBaseBean implements Serializa
 			cs.getCsDDiario().setDtChiusuraA(this.getDtTipoAttA());
 		}
 			
-		cs.setFlagRespinto((this.getFlagRespinto()!=null && this.getFlagRespinto()) ? new BigDecimal(1) : new BigDecimal(0)); 
-		cs.getCsDDiario().setResponsabileCaso(this.responsabile);
+		cs.setFlagRespinto((this.getFlagRespinto()!=null && this.getFlagRespinto()) ? Boolean.TRUE : Boolean.FALSE); 
 		cs.getCsDDiario().setVisSecondoLivello(visSecondoLivello);
 		
 		//Recupero motivo chiusura
@@ -294,14 +291,6 @@ public class DatiFglInterventoBean extends CsUiCompBaseBean implements Serializa
 		this.visSecondoLivello = visSecondoLivello;
 	}
 
-	public Long getResponsabile() {
-		return responsabile;
-	}
-
-	public void setResponsabile(Long responsabile) {
-		this.responsabile = responsabile;
-	}
-
 	public Long getPunteggio() {
 		return punteggio;
 	}
@@ -316,6 +305,17 @@ public class DatiFglInterventoBean extends CsUiCompBaseBean implements Serializa
 
 	public void setFascia(String fascia) {
 		this.fascia = fascia;
+	}
+	
+	public String getLabelDettaglioOperazione(){
+		String s = "";
+		if(this.isAttivazione()) 
+			s = "Tipo Attivazione";
+		else if(this.isSospensione()) 
+			s = "Tipo Sospensione";
+		else if(this.isChiusura()) 
+			s = "Motivo Chiusura";
+		return s;
 	}
 	
 }

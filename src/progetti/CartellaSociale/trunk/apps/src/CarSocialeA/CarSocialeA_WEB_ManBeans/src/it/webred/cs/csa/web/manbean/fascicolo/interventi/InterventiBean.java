@@ -2,18 +2,24 @@ package it.webred.cs.csa.web.manbean.fascicolo.interventi;
 
 import it.webred.cs.csa.ejb.client.AccessTableInterventoSessionBeanRemote;
 import it.webred.cs.csa.ejb.dto.BaseDTO;
+import it.webred.cs.csa.ejb.dto.erogazioni.ErogazioneDettaglioSintesiDTO;
+import it.webred.cs.csa.ejb.dto.pai.CsPaiMastSoggDTO;
+import it.webred.cs.csa.ejb.dto.pai.pti.InserimentoConsuntivazioneDTO;
+import it.webred.cs.csa.ejb.dto.pai.pti.StrutturaDisponibilitaDTO;
 import it.webred.cs.csa.web.manbean.fascicolo.FascicoloCompBaseBean;
 import it.webred.cs.csa.web.manbean.fascicolo.FglInterventoBean;
 import it.webred.cs.csa.web.manbean.fascicolo.erogazioniInterventi.ErogazioniInterventiBean;
 import it.webred.cs.csa.web.manbean.fascicolo.initialize.InitInterventi;
 import it.webred.cs.csa.web.manbean.fascicolo.interventiTreeView.TipoInterventoManBean;
-import it.webred.cs.data.model.CsCCategoriaSocialeBASIC;
+import it.webred.cs.data.model.CsAComponente;
+import it.webred.cs.data.model.CsASoggettoLAZY;
+import it.webred.cs.data.model.CsCCategoriaSociale;
 import it.webred.cs.data.model.CsFlgIntervento;
 import it.webred.cs.data.model.CsIIntervento;
-import it.webred.cs.data.model.CsIInterventoEseg;
 import it.webred.cs.data.model.CsIInterventoEsegMast;
 import it.webred.cs.jsf.bean.DatiInterventoBean;
 import it.webred.cs.jsf.interfaces.IDatiInterventi;
+import it.webred.cs.jsf.manbean.superc.CsUiCompBaseBean;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -33,7 +39,6 @@ public class InterventiBean extends FascicoloCompBaseBean implements IDatiInterv
 	private List<DatiInterventoBean> lstInterventi;
 	private List<SelectItem> listTipoInterventos = null;
 	private String filterCategorie="";
-	private String filterIdCategorie="";
 	protected boolean isTreeViewIntervento; //SISO-1110
 	
 	@PostConstruct
@@ -55,15 +60,37 @@ public class InterventiBean extends FascicoloCompBaseBean implements IDatiInterv
 		loadListaTipiIntervento();
 		refreshListaInterventi(data);
 		
-		if (fglInterventoBean.getCatsocCorrenti() != null) {
-			for (CsCCategoriaSocialeBASIC item : fglInterventoBean.getCatsocCorrenti()) {
-				filterCategorie =filterCategorie+ item.getDescrizione() + "|"; //SISO_1110 separo con |perchè c'è unca categoria sociale con ","
-			}
-		}
-	
+		filterCategorie = this.getFilterCategorie(fglInterventoBean.getCatsocCorrenti());
 		tipoIntTreeView = new TipoInterventoManBean(listTipoInterventos,filterCategorie);		
 		erogazioniInterventiBean.setTipoIntTreeView(this.tipoIntTreeView);
-	};
+	}
+	
+	public void initializeDataFromExtPai(CsPaiMastSoggDTO soggettoSelezionato) {
+		erogazioniInterventiBean = new ErogazioniInterventiBean();
+		erogazioniInterventiBean.SetFromPai(soggettoSelezionato);
+
+		fglInterventoBean.initialize(soggettoSelezionato);
+		fglInterventoBean.initializeData(null);
+		loadListaTipiIntervento();
+		refreshListaInterventi(null);
+		//Manca il recupero di filterCategorie!?
+		tipoIntTreeView = new TipoInterventoManBean(listTipoInterventos,filterCategorie);		
+		erogazioniInterventiBean.setTipoIntTreeView(this.tipoIntTreeView);
+	}
+	
+	public void initializeDataFromExtPai(CsASoggettoLAZY soggetto, List<CsCCategoriaSociale> catSoc) {
+		erogazioniInterventiBean = new ErogazioniInterventiBean();
+		erogazioniInterventiBean.SetFromPai(soggetto);
+
+		fglInterventoBean.initialize(soggetto, catSoc, null);
+		fglInterventoBean.initializeData(null);
+		loadListaTipiIntervento();
+		refreshListaInterventi(null);
+		
+		filterCategorie = this.getFilterCategorie(fglInterventoBean.getCatsocCorrenti());
+		tipoIntTreeView = new TipoInterventoManBean(listTipoInterventos,filterCategorie);		
+		erogazioniInterventiBean.setTipoIntTreeView(this.tipoIntTreeView);
+	}
 
 	public void refreshListaInterventi(Object data) {
 		loadListaInterventi(data);
@@ -95,7 +122,7 @@ public class InterventiBean extends FascicoloCompBaseBean implements IDatiInterv
 	protected void loadListaInterventi(Object data) {
 		lstInterventi = new ArrayList<DatiInterventoBean>();
 		try {
-			logger.info("InterventiBean - Recupero lista Interventi");
+			logger.info("INIT InterventiBean - Recupero lista Interventi");
 			if (idCaso != null && idCaso > 0) {
 				BaseDTO dto = new BaseDTO();
 				fillEnte(dto);
@@ -105,31 +132,27 @@ public class InterventiBean extends FascicoloCompBaseBean implements IDatiInterv
 					lsti = InitInterventi.loadLista(dto);
 				else
 					lsti = (List<CsIIntervento>) data;
+				
+				List<CsAComponente> listaParenti = CsUiCompBaseBean.caricaParenti(idSoggetto, null);
 				for (CsIIntervento i : lsti) {
-					DatiInterventoBean dib = new DatiInterventoBean(i, idSoggetto);
-					dib.setListaErogazioni(getListaSintesiErogazione(i.getCsIInterventoEsegMast()!=null ? i.getCsIInterventoEsegMast().getId() : null));
+					DatiInterventoBean dib = new DatiInterventoBean(i, idSoggetto, listaParenti);
+					
+					//Recupero le informazioni di sintesi delle erogazioni effettuate 
+					dto.setObj(i.getId());
+					List<ErogazioneDettaglioSintesiDTO> lstErogazioni = interventoService.getSintesiErogazioniByInterventoId(dto);
+					dib.setListaSintesiErogazioni(lstErogazioni);
 					this.lstInterventi.add(dib);
 				}
 			}
-
+			logger.info("END InterventiBean - Recupero lista Interventi");
 		} catch (Exception e) {
 			addErrorFromProperties("caricamento.error");
 			logger.error(e.getMessage(), e);
 		}
 	}
 	
-	private List<CsIInterventoEseg> getListaSintesiErogazione(Long masterId){
-		if(masterId!=null && masterId>0){
-			BaseDTO b = new BaseDTO();
-			fillEnte(b);
-			b.setObj(masterId);
-			b.setObj2(false); //Non caricare i dettagli
-			return interventoService.getInterventoEsegByMasterId(b);
-		}
-		return null;
-	}
-
 	public void inizializzaNuovaErogazione() {
+		fglInterventoBean.setFromPai(false);
 		erogazioniInterventiBean.inizializzaDialogo(null);
 		fglInterventoBean.setDatiErogazioniTabRendered(true);
 		fglInterventoBean.setDatiInterventoTabRendered(false);
@@ -142,18 +165,43 @@ public class InterventiBean extends FascicoloCompBaseBean implements IDatiInterv
 	
 	//SISO-748
 	public void inizializzaNuovaErogazione(TipoInterventoManBean tipoIntTreeView, Boolean cambiaBeneficiario){
+		fglInterventoBean.setFromPai(true);
 		erogazioniInterventiBean.inizializzaDialogoByTreeView(tipoIntTreeView);
 		fglInterventoBean.setDatiErogazioniTabRendered(true);
 		fglInterventoBean.setDatiInterventoTabRendered(false);
 		fglInterventoBean.getErogazioneInterventoBean().setCambiaBeneficiarioRiferimento(cambiaBeneficiario);
 	}
-
+	public void inizializzaNuovaErogazione(TipoInterventoManBean tipoIntTreeView, Boolean cambiaBeneficiario, StrutturaDisponibilitaDTO struttDisp){
+		fglInterventoBean.setFromPai(true);
+		erogazioniInterventiBean.inizializzaDialogoByTreeView(tipoIntTreeView,struttDisp);
+		fglInterventoBean.setDatiErogazioniTabRendered(true);
+		fglInterventoBean.setDatiInterventoTabRendered(false);
+		fglInterventoBean.getErogazioneInterventoBean().setCambiaBeneficiarioRiferimento(cambiaBeneficiario);
+	}
+	public void inizializzaNuovaErogazione(TipoInterventoManBean tipoIntTreeView, Boolean cambiaBeneficiario, StrutturaDisponibilitaDTO struttDisp, InserimentoConsuntivazioneDTO consuntivazione){
+		erogazioniInterventiBean.inizializzaDialogoByTreeView(tipoIntTreeView,struttDisp);
+		fglInterventoBean.setDatiErogazioniTabRendered(true);
+		fglInterventoBean.setDatiInterventoTabRendered(false);
+		fglInterventoBean.getErogazioneInterventoBean().setCambiaBeneficiarioRiferimento(cambiaBeneficiario);
+	}
+	
 	//inizio evoluzione-pai
-	public boolean inizializzaNuovoIntervento(TipoInterventoManBean tipoIntTreeView) { 
+	public boolean inizializzaNuovoIntervento(TipoInterventoManBean tipoIntTreeView, CsPaiMastSoggDTO soggettoPai, StrutturaDisponibilitaDTO  strutturaDispoDTO) { 
+		fglInterventoBean.setFromPai(true);
 		boolean datiErogazioniTabRendered = isPermessoAutorizzativo();
-		//fglInterventoBean.inizializzaDialog(tipoIntTreeView.getSelTipoInterventoId(), tipoIntTreeView.getSelTipoInterventoCutomId());
-		fglInterventoBean.inizializzaDialog(true,datiErogazioniTabRendered, 0L, 0L, tipoIntTreeView.getSelTipoInterventoId(), tipoIntTreeView.getSelTipoInterventoCutomId(), tipoIntTreeView.getSelCatSocialeId(), readOnly, true, "Nuovo Intervento",null,true);
-		 
+		boolean readOnly = this.readOnly;
+		
+		Long tipoInterventoId = tipoIntTreeView.getSelTipoInterventoId();
+		Long tipoInterventoCustomId = tipoIntTreeView.getSelTipoInterventoCutomId();
+		Long catSoc = tipoIntTreeView.getSelCatSocialeId();
+		
+		if (soggettoPai != null) {
+			fglInterventoBean.inizializzaErogazione(soggettoPai);
+			readOnly = true;
+		}
+		
+		fglInterventoBean.inizializzaDialog(true,datiErogazioniTabRendered, 0L, 0L, tipoInterventoId, tipoInterventoCustomId, catSoc, readOnly, true, "Nuovo Intervento",null,DENTRO_FASCICOLO, strutturaDispoDTO, null);
+		
 		boolean interventoSelezionato;
 		if (tipoIntTreeView.getSelTipoInterventoId() == null || tipoIntTreeView.getSelTipoInterventoId() <= 0) {
 			interventoSelezionato = false; 
@@ -171,21 +219,22 @@ public class InterventiBean extends FascicoloCompBaseBean implements IDatiInterv
 	
 	public void inizializzaNuovoIntervento() { 
 		boolean datiErogazioniTabRendered = isPermessoAutorizzativo();
-		//fglInterventoBean.inizializzaDialog(tipoIntTreeView.getSelTipoInterventoId(), tipoIntTreeView.getSelTipoInterventoCutomId());
 		Long tipoInterventoId = tipoIntTreeView.getSelTipoInterventoId();
 		Long tipoInterventoCustomId = tipoIntTreeView.getSelTipoInterventoCutomId();
 		Long catSoc = tipoIntTreeView.getSelCatSocialeId();
 		
-		boolean categoriaCaso = false;
-		for(CsCCategoriaSocialeBASIC cat : this.getCatsocCorrenti()){
-			if(cat.getId()==catSoc) categoriaCaso = false;
-		}
-		if(!categoriaCaso){
-			this.addWarning("Operazione non consentita", "E' possibile programmare interventi solo per le categorie sociali del caso corrente");
-			return;
+		if(catSoc!=null){
+			boolean categoriaCaso = false;
+			for(CsCCategoriaSociale cat : this.getCatsocCorrenti()){
+				if(cat.getId()==catSoc.longValue()) categoriaCaso = true;
+			}
+			if(!categoriaCaso){
+				this.addWarning("Operazione non consentita", "E' possibile programmare interventi solo per le categorie sociali del caso corrente");
+				return;
+			}
 		}
 			
-		fglInterventoBean.inizializzaDialog(true,datiErogazioniTabRendered, 0L, 0L, tipoInterventoId, tipoInterventoCustomId, catSoc, readOnly, true, "Nuovo Intervento",null,DENTRO_FASCICOLO);
+		fglInterventoBean.inizializzaDialog(true,datiErogazioniTabRendered, 0L, 0L, tipoInterventoId, tipoInterventoCustomId, catSoc, readOnly, true, "Nuovo Intervento",null,DENTRO_FASCICOLO, null, null);
 		if (isTreeViewTipoIntervento())	// SISO-1110
 			tipoIntTreeView.reset();
 		else
@@ -193,12 +242,21 @@ public class InterventiBean extends FascicoloCompBaseBean implements IDatiInterv
 	}
 	public void inizializzaNuovoFoglioAmministrativo( DatiInterventoBean intervento ) {
 		boolean datiErogazioniTabRendered = isPermessoAutorizzativo();
+		
+		Long interventoId = intervento.getIdIntervento();
+		Long tipoInterventoId = intervento.getIdTipoIntervento();
+		Long tipoInterventoCustomId = intervento.getIdTipoIntrCustom();
+		Long catSoc = intervento.getIdCatSociale();
+		
 		CsIInterventoEsegMast master = null;
-		if(datiErogazioniTabRendered && intervento.getListaErogazioni()!=null && !intervento.getListaErogazioni().isEmpty()) {
-			master = intervento.getListaErogazioni().get(0).getCsIInterventoEsegMast();
+		if(datiErogazioniTabRendered && intervento.getIdMasterErogazione()!=null && intervento.getIdMasterErogazione().longValue()>0) {
+			BaseDTO dto = new BaseDTO();
+			fillEnte(dto);
+			dto.setObj(intervento.getIdMasterErogazione());
+			master = interventoService.getCsIInterventoEsegMastById(dto);
 		}
 			
-		fglInterventoBean.inizializzaDialog(true,datiErogazioniTabRendered, intervento.getIdIntervento(), 0L, intervento.getIdTipoIntervento(), intervento.getIdTipoIntrCustom(), intervento.getIdCatSociale(), readOnly, true, "Nuovo Foglio Amministrativo", master, DENTRO_FASCICOLO);
+		fglInterventoBean.inizializzaDialog(true,datiErogazioniTabRendered, interventoId, 0L, tipoInterventoId, tipoInterventoCustomId, catSoc, readOnly, true, "Nuovo Foglio Amministrativo", master, DENTRO_FASCICOLO, null, null);
 		
 		if (isTreeViewTipoIntervento())// SISO-1110
 			tipoIntTreeView.reset();
@@ -213,7 +271,7 @@ public class InterventiBean extends FascicoloCompBaseBean implements IDatiInterv
 		BaseDTO dto = new BaseDTO();
 		fillEnte(dto);
 		dto.setObj(fog.getCsIIntervento().getId());
-		CsIInterventoEsegMast csIInterventoEsegMast = interventoService.getCsIInterventoEsegMastByByInterventoId(dto);
+		CsIInterventoEsegMast csIInterventoEsegMast = interventoService.getCsIInterventoEsegMastByInterventoId(dto);
 		//fine SISO-500 
 		
 		Long idTipoIntervento = fog.getCsIIntervento().getCsRelSettCsocTipoInter().getCsRelCatsocTipoInter().getCsCTipoIntervento().getId();
@@ -221,12 +279,8 @@ public class InterventiBean extends FascicoloCompBaseBean implements IDatiInterv
 		Long idCatSoc = fog.getCsIIntervento().getCsRelSettCsocTipoInter().getCsRelSettoreCatsoc().getCsCCategoriaSociale().getId();
 		Long idDiario = fog.getDiarioId();
 		Long idIntervento = fog.getCsIIntervento().getId();
-		fglInterventoBean.inizializzaDialog
-		        (datiIntTabRendered,datiErogazioniTabRendered, idIntervento, idDiario, 
-		        		idTipoIntervento, idTipoInterventoCustom , idCatSoc,  readOnly, true, "Modifica Foglio Amministrativo", 
-		        		csIInterventoEsegMast,  //SISO-500 
-		        		DENTRO_FASCICOLO
-					);
+		fglInterventoBean.inizializzaDialog(datiIntTabRendered,datiErogazioniTabRendered, idIntervento, idDiario, 
+		        		idTipoIntervento, idTipoInterventoCustom , idCatSoc,  readOnly, true, "Modifica Foglio Amministrativo", csIInterventoEsegMast, DENTRO_FASCICOLO, null, null);
 		
 		if (isTreeViewTipoIntervento())// SISO-1110
 			tipoIntTreeView.reset();
@@ -236,8 +290,6 @@ public class InterventiBean extends FascicoloCompBaseBean implements IDatiInterv
 
 	@Override
 	public List<DatiInterventoBean> getListaInterventi() {
-		/*if (lstInterventi == null || this.lstInterventi.size() == 0)
-			this.loadListaInterventi(null);*/
 		return lstInterventi;
 	}
 

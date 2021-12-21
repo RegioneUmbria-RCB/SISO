@@ -1,0 +1,44 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui" xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:webred="http://java.sun.com/jsf/composite/webred" xmlns:webredcs="http://java.sun.com/jsf/composite/webredcs"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+<h:head>
+	<title>Componente Schede</title>
+</h:head>
+<h:body>
+	<composite:interface componentType="pnlReddCittadinanza">
+		<composite:attribute name="iReddCittadinanza" type="it.webred.cs.jsf.interfaces.IReddCittadinanza" />
+	</composite:interface>
+	<composite:implementation>
+
+		<style type="text/css">
+.bold {
+	font-weight: bold;
+}
+
+.noBorderBackground {
+	border: none !important;
+	background: none !important;
+	
+	
+}
+.ui-tabs-left>.ui-tabs-nav{
+	    background: none !important;
+	}
+	.ui-tabs.ui-tabs-left>.ui-tabs-nav li{
+	    margin: 0 0 1px 0;
+	    border-right: initial;
+	}
+</style>
+
+		<p:accordionPanel multiple="true" activeIndex="2">
+			<p:tab title="Dati Anagrafici">
+
+			</p:tab>
+		</p:accordionPanel>
+	</composite:implementation>
+</h:body>
+
+</html>

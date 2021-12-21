@@ -1,9 +1,11 @@
 package it.webred.cs.csa.ejb.dao;
 
 import it.webred.cs.csa.ejb.CarSocialeBaseDAO;
+import it.webred.cs.csa.ejb.dto.ParametriDatiEsterniSoggettoDTO;
 import it.webred.cs.data.model.CsADatiEsterni;
 import it.webred.cs.data.model.CsADatiEsterniSoggetto;
 import it.webred.cs.data.model.CsASoggettoDatiEsterni;
+import it.webred.cs.data.model.CsCfgBelfiore;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -12,6 +14,8 @@ import java.util.List;
 import java.util.Set;
 
 import javax.inject.Named;
+import javax.persistence.NoResultException;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
 @Named
@@ -42,8 +46,44 @@ public class DatiEsterniSoggettoDAO extends CarSocialeBaseDAO implements Seriali
 			return result.get(0);
 	}
 
-	public void save(CsASoggettoDatiEsterni soggettoDaDatiEsterni, CsADatiEsterni datiEsterni, String codiceEnte) {
+	//recupero codiceDocumentoGed
+	@SuppressWarnings("unchecked")
+	public CsCfgBelfiore findBelfioreByCodTerritorialeId(String codTerritorialeId) {
+		try {
+			Query q = em.createNamedQuery("CsCfgBelfiore.findByRipTerritorialeId");
+			q.setParameter("codRipartizioneTerritoriale", codTerritorialeId);
+			
+			if(q.getResultList() != null)
+			{
+				return (CsCfgBelfiore)q.getSingleResult();
+			}
+		} 
+		catch (NoResultException nre){
+			//Ignore this because as per your logic this is ok!
+		}
+		catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		}
+		
+		return null;
+	}
+	public void save(CsASoggettoDatiEsterni soggettoDaDatiEsterni, CsADatiEsterni datiEsterni, String codiceEnte, String prestazione, String statoDomanda) {
 		CsADatiEsterniSoggetto relazioneDatiEsterniToSoggetto = new CsADatiEsterniSoggetto(soggettoDaDatiEsterni, datiEsterni, codiceEnte);
+		relazioneDatiEsterniToSoggetto.setCodicePrestazione(prestazione);
+		relazioneDatiEsterniToSoggetto.setStatoDomanda(statoDomanda);
+		 
+		em.persist(relazioneDatiEsterniToSoggetto);
+	}
+	public void save(CsASoggettoDatiEsterni soggettoDaDatiEsterni, CsADatiEsterni datiEsterni, String codiceEnte, ParametriDatiEsterniSoggettoDTO parametriEsterni) {
+		CsADatiEsterniSoggetto relazioneDatiEsterniToSoggetto = new CsADatiEsterniSoggetto(soggettoDaDatiEsterni, datiEsterni, codiceEnte);
+		relazioneDatiEsterniToSoggetto.setCodicePrestazione(parametriEsterni.getCodicePrestazione());
+		relazioneDatiEsterniToSoggetto.setStatoDomanda(parametriEsterni.getStatoDomanda());
+		relazioneDatiEsterniToSoggetto.setCodiceEnte(codiceEnte); 
+		relazioneDatiEsterniToSoggetto.setDtAperturaDomanda(parametriEsterni.getDataApertura());
+		relazioneDatiEsterniToSoggetto.setDtChiusuraDomanda(parametriEsterni.getDataChiusura());
+		relazioneDatiEsterniToSoggetto.setEntitaServizio(parametriEsterni.getEntitaServizio());
+		relazioneDatiEsterniToSoggetto.setIndirizzo(parametriEsterni.getIndirizzo());
+		
 		em.persist(relazioneDatiEsterniToSoggetto);
 	}
 

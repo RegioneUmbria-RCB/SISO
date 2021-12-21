@@ -1,18 +1,14 @@
 package it.webred.cs.csa.web.manbean.report;
 
-import it.webred.cs.csa.ejb.client.AccessTableCasoSessionBeanRemote;
-import it.webred.cs.csa.ejb.client.AccessTableIndirizzoSessionBeanRemote;
 import it.webred.cs.csa.ejb.dto.BaseDTO;
+import it.webred.cs.csa.ejb.dto.PresaInCaricoDTO;
 import it.webred.cs.csa.utils.bean.report.dto.HeaderPdfDTO;
 import it.webred.cs.csa.utils.bean.report.dto.ReportPdfDTO;
-import it.webred.cs.data.model.CsACasoOpeTipoOpe;
 import it.webred.cs.data.model.CsASoggettoLAZY;
-import it.webred.cs.data.model.CsOOperatore;
 import it.webred.cs.data.model.CsOOperatoreSettore;
 import it.webred.cs.data.model.CsOSettore;
 import it.webred.cs.jsf.manbean.superc.CsUiCompBaseBean;
 import it.webred.ct.config.model.AmKeyValueExt;
-import it.webred.ct.config.parameters.ParameterService;
 import it.webred.ct.config.parameters.dto.ParameterSearchCriteria;
 
 import java.io.File;
@@ -30,36 +26,24 @@ import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 @SessionScoped
 public class ReportBaseBean extends CsUiCompBaseBean {
 	
-	protected AccessTableCasoSessionBeanRemote casoService = 
-			(AccessTableCasoSessionBeanRemote) getEjb("CarSocialeA", "CarSocialeA_EJB", "AccessTableCasoSessionBean");
-	
-	protected AccessTableIndirizzoSessionBeanRemote indirizzoService = 
-			(AccessTableIndirizzoSessionBeanRemote) getEjb("CarSocialeA", "CarSocialeA_EJB", "AccessTableIndirizzoSessionBean");
-	
 	protected CsASoggettoLAZY soggetto;
 	
-	public void fillReportCommonData(String reportPath, List<String> listaSubreport, HashMap<String, Object> map, ReportPdfDTO dto ){
+	public void fillReportCommonData(String reportPath, List<String> listaSubreport, HashMap<String, Object> map, ReportPdfDTO pdf ) throws Exception{
 		this.fillReportHeader(reportPath, listaSubreport, map);
-		this.fillReportPieDiPagina(dto);
-		dto.setDataOdierna(ddMMyyyy.format(new Date()));
-		dto.setComune(getNomeEnte());
+		this.fillReportPieDiPagina(pdf);
+		pdf.setDataOdierna(ddMMyyyy.format(new Date()));
+		pdf.setComune(getNomeEnte());
 		
 		if(soggetto!=null){
 			//campi PIC
-	        BaseDTO baseDTO = new BaseDTO();
-	        fillEnte(baseDTO);
-	        baseDTO.setObj(soggetto.getCsACaso().getId());
-			CsACasoOpeTipoOpe casoOpTipoOp = casoService.findCasoOpeResponsabile(baseDTO);
-			if(casoOpTipoOp != null) {
-				CsOOperatore op = casoOpTipoOp.getCsOOperatoreTipoOperatore().getCsOOperatoreSettore().getCsOOperatore();
-				dto.setAssSociale(this.getDenominazioneOperatore(op));
-				
-				Date dataPIC;
-				if(casoOpTipoOp.getDtMod() != null)
-					dataPIC = casoOpTipoOp.getDtMod();
-				else dataPIC = casoOpTipoOp.getDtIns();
-				dto.setDataPIC(ddMMyyyy.format(dataPIC));
-			}	
+	        BaseDTO dto = new BaseDTO();
+	        fillEnte(dto);
+	        dto.setObj(soggetto.getCsACaso().getId());
+			PresaInCaricoDTO pic = iterService.getLastPICByCaso(dto);
+			if(pic!=null){
+				pdf.setAssSociale(pic.getResponsabile().getDenominazione());
+				pdf.setDataPIC(ddMMyyyy.format(pic.getDataAmministrativa()));
+			}
 		}
 	}
 		
@@ -72,8 +56,7 @@ public class ReportBaseBean extends CsUiCompBaseBean {
 		CsOOperatoreSettore opSett = getCurrentOpSettore();
 		
 		//carico path dati
-		ParameterService paramService = (ParameterService) getEjb("CT_Service","CT_Config_Manager" , "ParameterBaseService");
-	    ParameterSearchCriteria criteria = new ParameterSearchCriteria();
+		ParameterSearchCriteria criteria = new ParameterSearchCriteria();
 		criteria.setKey("dir.files.datiDiogene");
 		criteria.setComune(null);
 		criteria.setSection(null);

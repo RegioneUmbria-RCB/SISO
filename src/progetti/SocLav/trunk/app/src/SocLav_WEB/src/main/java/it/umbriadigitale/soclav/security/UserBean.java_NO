@@ -1,0 +1,316 @@
+package it.umbriadigitale.soclav.security;
+
+import java.util.Collection;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.Hashtable;
+import java.util.List;
+
+import javax.enterprise.context.SessionScoped;
+import javax.inject.Named;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+ 
+ 
+@Named
+@SessionScoped
+public class UserBean implements UserDetails {
+
+	public Boolean getSso() {
+		return sso;
+	}
+
+
+	public void setSso(Boolean sso) {
+		this.sso = sso;
+	}
+
+   public void login() {
+	 
+	   
+	   
+   }
+	
+	
+	public boolean isSsoSkip() {
+		return ssoSkip;
+	}
+
+
+	public void setSsoSkip(boolean ssoSkip) {
+		this.ssoSkip = ssoSkip;
+	}
+
+
+	public Boolean getAccountLocked() {
+		return accountLocked;
+	}
+
+
+	public void setAccountLocked(Boolean accountLocked) {
+		this.accountLocked = accountLocked;
+	}
+
+
+	public boolean isEnabled() {
+		return enabled;
+	}
+
+
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
+	}
+
+
+	public String getSsoLogin() {
+		return ssoLogin;
+	}
+
+
+	public void setSsoLogin(String ssoLogin) {
+		this.ssoLogin = ssoLogin;
+	}
+
+
+	public Boolean getForzaCambioPassword() {
+		return forzaCambioPassword;
+	}
+
+
+	public void setForzaCambioPassword(Boolean forzaCambioPassword) {
+		this.forzaCambioPassword = forzaCambioPassword;
+	}
+
+
+	public Long getFailedLoginAttempts() {
+		return failedLoginAttempts;
+	}
+
+
+	public void setFailedLoginAttempts(Long failedLoginAttempts) {
+		this.failedLoginAttempts = failedLoginAttempts;
+	}
+
+
+	public Boolean getSsoRegistered() {
+		return ssoRegistered;
+	}
+
+
+	public void setSsoRegistered(Boolean ssoRegistered) {
+		this.ssoRegistered = ssoRegistered;
+	}
+
+	private static final long serialVersionUID = 1L;
+
+	@SuppressWarnings("unused")
+	private static final short MAX_FAILED_LOGIN_ATTEMPTS = 5;
+
+		//private Utenti utente;
+		//private Hashtable<String,Profili> profili;
+//		private Profili profilo;
+//		
+//		public Profili getProfilo() {
+//			return profilo;
+//		}
+//
+//
+//		public void setProfilo(Profili profilo) {
+//			this.profilo = profilo;
+//		}
+//
+//
+//		public Hashtable<String, Profili> getProfili() {
+//			return profili;
+//		}
+//
+//
+//		public void setProfili(Hashtable<String, Profili> profili) {
+//			this.profili = profili;
+//		}
+
+		//private List<Attribute> attributes;
+		private Boolean sso;
+		private boolean ssoSkip;
+		private Boolean accountLocked;
+		private boolean enabled;
+		private String ssoLogin;
+		private Boolean forzaCambioPassword;
+		private Long failedLoginAttempts;
+		private Boolean ssoRegistered;
+		private Date dataAccesso;
+		private Collection<GrantedAuthority> authorities;
+		
+		private String username;	// Utenti.
+		
+		
+		public Collection<GrantedAuthority> getAuthorities() {
+			return authorities;
+		}
+
+
+		public void setAuthorities(Collection<GrantedAuthority> authorities) {
+			this.authorities = authorities;
+		}
+
+
+		public Date getDataAccesso() {
+			return dataAccesso;
+		}
+
+
+		public void setDataAccesso(Date dataAccesso) {
+			this.dataAccesso = dataAccesso;
+		}
+
+
+		public String getUsername() {
+			return username;
+		}
+
+
+		public void setUsername(String username) {
+			this.username = username;
+		}
+
+
+		public String getNome() {
+			return nome;
+		}
+
+
+		public void setNome(String nome) {
+			this.nome = nome;
+		}
+
+
+		public String getPassword() {
+			return password;
+		}
+
+
+		public void setPassword(String password) {
+			this.password = password;
+		}
+
+
+		public Date getDataPassword() {
+			return dataPassword;
+		}
+
+
+		public void setDataPassword(Date dataPassword) {
+			this.dataPassword = dataPassword;
+		}
+
+
+		public Long getGiorniPassword() {
+			return giorniPassword;
+		}
+
+
+		public void setGiorniPassword(Long giorniPassword) {
+			this.giorniPassword = giorniPassword;
+		}
+
+
+		public Hashtable<String, String> getDefaults() {
+			return defaults;
+		}
+
+
+		public void setDefaults(Hashtable<String, String> defaults) {
+			this.defaults = defaults;
+		}
+
+
+		public Hashtable<String, String> getDenieds() {
+			return denieds;
+		}
+
+
+		public void setDenieds(Hashtable<String, String> denieds) {
+			this.denieds = denieds;
+		}
+
+		private String nome;
+		private String password;
+		private Date dataPassword;
+		private Long giorniPassword;
+		
+		private Hashtable<String, String> defaults;
+		private Hashtable<String, String> denieds;
+		
+		public UserBean() {
+			super();
+		 
+		}
+		 
+
+		public boolean isCredentialsNonExpired() {
+			return true;
+		}
+		public boolean isAccountNonExpired() {
+			if (sso != null && sso.booleanValue())
+				return true;
+			// Oggi
+			GregorianCalendar cal = new GregorianCalendar();
+			cal.set(GregorianCalendar.HOUR, 0);
+			cal.set(GregorianCalendar.MINUTE, 0);
+			cal.set(GregorianCalendar.SECOND, 0);
+			cal.set(GregorianCalendar.MILLISECOND, 0);
+			Date oggi = cal.getTime();
+			// Scadenza account: 180 giorni da ultimo accesso
+			if (dataAccesso == null)
+				dataAccesso = new Date(oggi.getTime());
+			cal.setTimeInMillis(dataAccesso.getTime());
+			cal.set(GregorianCalendar.HOUR, 0);
+			cal.set(GregorianCalendar.MINUTE, 0);
+			cal.set(GregorianCalendar.SECOND, 0);
+			cal.set(GregorianCalendar.MILLISECOND, 0);
+			cal.add(GregorianCalendar.DAY_OF_MONTH, 180);
+			Date scadenzaAccount = cal.getTime();
+			return scadenzaAccount.compareTo(oggi) >= 0;
+		}
+		public boolean isAccountNonLocked() {
+			if (sso != null && sso.booleanValue())
+				return true;
+			if ((accountLocked != null && accountLocked.booleanValue())
+					|| (failedLoginAttempts != null && failedLoginAttempts.shortValue() >= MAX_FAILED_LOGIN_ATTEMPTS))
+				if (accountLocked != null && accountLocked.booleanValue())
+					return false;
+			return true;
+		}
+//		public List<Attribute> getAttributes() {
+//			return attributes;
+//		}
+//		public Attribute getAttribute(String attributeName) {
+//			if (attributes == null || attributes.isEmpty())
+//				return null;
+//
+//			for (Attribute attribute : attributes) {
+//				if (attribute.getName().equals(attributeName))
+//					return attribute;
+//			}
+//
+//			return null;
+//		}
+//		public void setAttributes(List<Attribute> attributes) {
+//			this.attributes = attributes;
+//		}
+//		public Utenti getUtente() {
+//			return utente;
+//		}
+//		public void setUtente(Utenti utente) {
+//			this.utente = utente;
+//		}
+//	  
+		 
+		
+		
+
+	
+		
+}

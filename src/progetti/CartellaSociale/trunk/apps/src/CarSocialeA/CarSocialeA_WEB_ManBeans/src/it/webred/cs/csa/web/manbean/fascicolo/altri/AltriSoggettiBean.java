@@ -4,11 +4,11 @@ import it.webred.cs.csa.ejb.client.AccessTableSoggettoSessionBeanRemote;
 import it.webred.cs.csa.ejb.dto.BaseDTO;
 import it.webred.cs.csa.web.manbean.fascicolo.initialize.bean.InitAltriSoggettiBean;
 import it.webred.cs.data.model.CsAComponente;
-import it.webred.cs.data.model.CsAFamigliaGruppo;
 import it.webred.cs.data.model.CsASoggettoLAZY;
-import it.webred.cs.data.model.CsCCategoriaSocialeBASIC;
+import it.webred.cs.data.model.CsCCategoriaSociale;
 import it.webred.cs.jsf.interfaces.IAltriSoggetti;
 import it.webred.cs.jsf.manbean.superc.CsUiCompBaseBean;
+import it.webred.ct.data.access.basic.anagrafe.AnagrafeService;
 import it.webred.ct.data.access.basic.anagrafe.dto.RicercaSoggettoAnagrafeDTO;
 import it.webred.ct.data.model.anagrafe.SitDPersona;
 
@@ -19,24 +19,23 @@ public class AltriSoggettiBean extends CsUiCompBaseBean implements
 		IAltriSoggetti {
 
 	private AccessTableSoggettoSessionBeanRemote soggettoService = (AccessTableSoggettoSessionBeanRemote) getCarSocialeEjb ( "AccessTableSoggettoSessionBean");
-
+	private AnagrafeService anagrafeService = (AnagrafeService) getEjb("CT_Service", "CT_Service_Data_Access", "AnagrafeServiceBean");
+	
 	private CsASoggettoLAZY csASoggetto;
-	private List<CsCCategoriaSocialeBASIC> catsocCorrenti;
+	private List<CsCCategoriaSociale> catsocCorrenti;
 
 	private List<CsASoggettoLAZY> listaAltriSoggetti;
 	private List<CsASoggettoLAZY> listaAltriSoggettiDaFamiglia;
 	private String labelSoggetto;
 
-	public void initialize(CsASoggettoLAZY soggetto,
-			List<CsCCategoriaSocialeBASIC> catsocCorrenti, Object data) {
+	public void initialize(CsASoggettoLAZY soggetto,List<CsCCategoriaSociale> catsocCorrenti, Object data) {
 
 		try {
 
 			if (soggetto != null) {
 				csASoggetto = soggetto;
 
-				labelSoggetto = csASoggetto.getCsAAnagrafica().getCognome()
-						+ " " + csASoggetto.getCsAAnagrafica().getNome();
+				labelSoggetto = csASoggetto.getCsAAnagrafica().getDenominazione();
 				this.catsocCorrenti = catsocCorrenti;
 
 				caricaAltriSoggetti(data);
@@ -64,23 +63,18 @@ public class AltriSoggettiBean extends CsUiCompBaseBean implements
 		BaseDTO b = new BaseDTO();
 		fillEnte(b);
 
-
-		CsAFamigliaGruppo famigliaGruppo;
+		List<CsAComponente> famigliaComponenti = new ArrayList<CsAComponente>();
 		List<SitDPersona> listaFamiglia_anagrafe;
 		if (altriSoggetti!= null) { // mi è arrivato il dato dal parametro data
-			famigliaGruppo = altriSoggetti.getFamigliaGruppo();
+			if(altriSoggetti.getListaComponenti()!=null)
+				famigliaComponenti = altriSoggetti.getListaComponenti();
 			listaFamiglia_anagrafe = altriSoggetti.getListaFamiglia_anagrafe();
 		} else {
 			RicercaSoggettoAnagrafeDTO rs = new RicercaSoggettoAnagrafeDTO();
 			fillEnte(rs);
 			rs.setCodFis(csASoggetto.getCsAAnagrafica().getCf());
 			listaFamiglia_anagrafe = anagrafeService.getFamigliaByCF(rs);
-
-		
-			BaseDTO dtoFindFamiglia = new BaseDTO();
-			fillEnte(dtoFindFamiglia);
-			dtoFindFamiglia.setObj(csASoggetto.getAnagraficaId());
-			famigliaGruppo = schedaService.findFamigliaAllaDataBySoggettoId(dtoFindFamiglia);
+			famigliaComponenti = CsUiCompBaseBean.caricaParenti(csASoggetto.getAnagraficaId(), null);
 		}		
 
 		if(listaFamiglia_anagrafe!=null){
@@ -92,24 +86,20 @@ public class AltriSoggettiBean extends CsUiCompBaseBean implements
 			}
 		}
 
-		if(famigliaGruppo!=null){
-			for (CsAComponente componente : famigliaGruppo.getCsAComponentes()) {
-				b.setObj(componente.getCsAAnagrafica().getCf());
-				CsASoggettoLAZY altroSoggetto = soggettoService.getSoggettoByCF(b);
-				// se lo trovo ha una cartella
-				if (altroSoggetto != null)
-					listaAltriSoggettiDaFamiglia.add(altroSoggetto);
-			}
-		}else
-			logger.warn("Nessuna famiglia gruppo per "+csASoggetto.getCsAAnagrafica().getCf());
-
+		for (CsAComponente componente : famigliaComponenti) {
+			b.setObj(componente.getCsAAnagrafica().getCf());
+			CsASoggettoLAZY altroSoggetto = soggettoService.getSoggettoByCF(b);
+			// se lo trovo ha una cartella
+			if (altroSoggetto != null)
+				listaAltriSoggettiDaFamiglia.add(altroSoggetto);
+		}
 	}
 
-	public List<CsCCategoriaSocialeBASIC> getCatsocCorrenti() {
+	public List<CsCCategoriaSociale> getCatsocCorrenti() {
 		return catsocCorrenti;
 	}
 
-	public void setCatsocCorrenti(List<CsCCategoriaSocialeBASIC> catsocCorrenti) {
+	public void setCatsocCorrenti(List<CsCCategoriaSociale> catsocCorrenti) {
 		this.catsocCorrenti = catsocCorrenti;
 	}
 

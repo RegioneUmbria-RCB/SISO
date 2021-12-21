@@ -111,9 +111,6 @@ public class SsScheda implements Serializable {
     )	
 	private List<SsCCategoriaSociale>  lstCategorieSociali = null;
 	
-	
-	 
-
 	public List<SsCCategoriaSociale> getLstCategorieSociali() {
 		return lstCategorieSociali;
 	}

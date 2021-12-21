@@ -3,11 +3,10 @@ package it.webred.cs.json.valSinba.ver1.tabs;
 import it.webred.cs.csa.ejb.client.AccessTableConfigurazioneSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.AccessTableNazioniSessionBeanRemote;
 import it.webred.cs.csa.ejb.dto.BaseDTO;
-import it.webred.cs.data.model.ArTbPrestazioniInps;
+import it.webred.cs.csa.ejb.dto.KeyValueDTO;
 import it.webred.cs.data.model.CsAComponente;
-import it.webred.cs.data.model.CsTbTitoloStudio;
 import it.webred.cs.jsf.manbean.ComponenteAltroMan;
-import it.webred.ct.config.model.AmTabComuni;
+import it.webred.cs.jsf.manbean.superc.CsUiCompBaseBean;
 import it.webred.ct.config.model.AmTabNazioni;
 import it.webred.ct.support.datarouter.CeTBaseObject;
 import it.webred.ejb.utility.ClientUtility;
@@ -16,7 +15,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 
 import javax.faces.model.SelectItem;
@@ -25,7 +23,6 @@ import javax.naming.NamingException;
 import org.jboss.logging.Logger;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 public class DatiFamigliaMan {
 	
@@ -104,17 +101,18 @@ public class DatiFamigliaMan {
 		
 		try {
 			AccessTableConfigurazioneSessionBeanRemote bean = (AccessTableConfigurazioneSessionBeanRemote) ClientUtility
-					.getEjbInterface("CarSocialeA", "CarSocialeA_EJB",
-							"AccessTableConfigurazioneSessionBean");
+					.getEjbInterface("CarSocialeA", "CarSocialeA_EJB","AccessTableConfigurazioneSessionBean");
 			CeTBaseObject bo = new CeTBaseObject();
-			List<CsTbTitoloStudio> lst = bean.getTitoliStudio(bo);
+			List<KeyValueDTO> lst = bean.getTitoliStudio(bo);
 			if (lst != null) {
-				for (CsTbTitoloStudio obj : lst) {
-					titoliStudio.add(new SelectItem(obj.getId(), obj.getDescrizione()));
+				for (KeyValueDTO kv : lst) {
+					SelectItem si = new SelectItem(kv.getCodice(), kv.getDescrizione());
+					si.setDisabled(!kv.isAbilitato());
+					titoliStudio.add(si);
 				}
 			}		
 		} catch (NamingException e) {
-			logger.error("getCittadinanze", e);
+			logger.error("getTitoli", e);
 		}
 		
 		return titoliStudio;

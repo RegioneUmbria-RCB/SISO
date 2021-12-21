@@ -1,6 +1,5 @@
 package it.webred.cs.csa.web.manbean.fascicolo.interventiTreeView;
 
-import it.webred.cs.csa.ejb.client.AccessTableInterventoSessionBeanRemote;
 import it.webred.cs.csa.ejb.dto.BaseDTO;
 import it.webred.cs.data.model.VGerrarchiaServizi;
 import it.webred.cs.jsf.manbean.superc.CsUiCompBaseBean;
@@ -21,8 +20,7 @@ import org.primefaces.model.TreeNode;
 @ManagedBean(name = "treeController")
 @ViewScoped
 public class TreeController extends CsUiCompBaseBean {
-	protected AccessTableInterventoSessionBeanRemote interventoService = (AccessTableInterventoSessionBeanRemote) getEjb("CarSocialeA", "CarSocialeA_EJB",
-			"AccessTableInterventoSessionBean");
+	
 	public static final String ICON_SELECTABLE = "ui-icon-unlocked";
 	public static final String ICON_NOSELECTABLE = "ui-icon-locked";
 	public static final String ICON_FOLDER = "ui-icon-folder-collapsed";
@@ -34,15 +32,6 @@ public class TreeController extends CsUiCompBaseBean {
 	private List<SelectItem> lstTipoInterventi = null;
 	private TreeNode root;
 	private String visibleNodes = "";
-
-	public TreeController() {
-		createTreeNodes();
-	}
-
-	public TreeController(List<SelectItem> lstTipoInterventi) {
-		this.lstTipoInterventi = lstTipoInterventi;
-		createTreeNodes();
-	}
 
 	public TreeController(List<SelectItem> lstTipoInterventi, String visibleNodes) {
 		this.lstTipoInterventi = lstTipoInterventi;

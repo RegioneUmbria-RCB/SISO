@@ -39,8 +39,10 @@ public class CsDDocIndividuale implements ICsDDiarioChild {
 	//#ROMACAPITALE inizio
 	@Column(name="DIPARTIMENTO_PROTOCOLLO")
 	private String dipartimentoProtocollo;
+	
 	@Column(name="NUMERO_PROTOCOLLO")
 	private String numeroProtocollo;
+	
 	@Column(name="ANNO_PROTOCOLLO")
 	private String annoProtocollo;
 	
@@ -56,7 +58,6 @@ public class CsDDocIndividuale implements ICsDDiarioChild {
 	private String idUnivocoProceduraChiamante;
 	
 	//#ROMACAPITALE fine
-	
 	
 	@ManyToOne
 	@JoinColumn(name="SUB_DIR_ID")

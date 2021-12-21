@@ -1,0 +1,116 @@
+package it.umbriadigitale.soclav.security;
+
+import java.text.ParseException;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+
+
+public abstract class AbstractUserDetailsService {
+
+//	@Autowired
+//	@Qualifier("securityService")
+//	protected ISecurityService securityService;
+	
+	protected UserDetails loadUser(String username) {
+		List<GrantedAuthority> authList = new ArrayList<GrantedAuthority>();
+		//UtenteDTO utente  = securityService.getUtente(username.toUpperCase());
+		
+		
+		// verifico se l'utente è flaggato come attivo
+		//boolean flagAttivo = isUtenteAttivo(utente);
+		
+		// verifico se l'utenza è temporalmente valida
+		//boolean flagTemporalmenteValido = isUtenteTemporalmenteValido(utente);
+		
+		// verifico se viene rispettata la fascia oraria di validità dell'utenza
+		//boolean flagFasciaOraria = isUtenteInFasciaOrariaAbilitata(utente);
+		
+		
+		// se uno dei controlli non è soddisfatto, l'utente è da considerare disabilitato
+//		if (!flagAttivo || !flagTemporalmenteValido || !flagFasciaOraria) {
+//			throw new DisabledException("Utente disabilitato");
+//		}
+		
+//		utente.getRuoli().forEach(item -> authList.add(new SerenaGrantedAuthority(item)));
+//		UserDetails user = new SerenaUserDetail(utente.getCf(), "", authList, utente.getOrganizzazioni(), utente);
+		
+		UserDetails user = new SoclavUserDetail(username, "test", null);
+		return user;
+	}
+	
+	
+	// L'Utente è considerato attivo se su DB è "true" (e ovviamente non dev'essere null)
+//	private boolean isUtenteAttivo(UtenteDTO utente) {
+//		Boolean attivo = utente.getAttivo();
+//		
+//		return attivo != null && attivo;
+//	}
+	
+	
+	/* L'Utente è considerato temporalmente valido se la data odierna è compresa (estremi inclusi) fra data_inizio_validita e data_fine_validita.
+	 * 
+	 * Eventuali valori null su questi due campi indicano l'assenza di vincolo temporale sulla validità (es: data_fine_validita a NULL significa
+	 * che l'utenza non ha una data di fine validità).
+	 * 
+	 * NB: viene presa in considerazione solo la data; eventuali orari salvati su DB sono ignorati nel confronto */
+//	private boolean isUtenteTemporalmenteValido(UtenteDTO utente) {
+//		java.util.Date dbInizio = utente.getDataInizioValidita();
+//		java.util.Date dbFine = utente.getDataFineValidita();
+//		
+//		LocalDate inizioValidita = dbInizio != null	? convertDate(dbInizio)	: LocalDate.MIN;
+//		LocalDate fineValidita = dbFine != null	? convertDate(dbFine) : LocalDate.MAX;
+//		
+//		LocalDate now = LocalDate.now();
+//		
+//		
+//		return isAfterOrEqual(now, inizioValidita) && isBeforeOrEqual(now, fineValidita);
+//	}
+//	
+//	private LocalDate convertDate(java.util.Date d) {
+//		return d.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+//	}
+//	
+//	private boolean isAfterOrEqual(LocalDate first, LocalDate second) {
+//		return first.isAfter(second) || first.isEqual(second);
+//	}
+//	
+//	private boolean isBeforeOrEqual(LocalDate first, LocalDate second) {
+//		return first.isBefore(second) || first.isEqual(second);
+//	}
+//	
+//	
+//	/* L'Utente è considerato nella fascia oraria abilitata se il momento in cui effettua il login rispetta la accessPolicyCronExpression
+//	 * eventualmente presente (se non è valorizzata si restituisce subito true). */
+//	private boolean isUtenteInFasciaOrariaAbilitata(UtenteDTO utente) {
+		
+		// quick short circuit
+//		if (utente.getAccessPolicyCronExpression() == null) {
+//			return true;
+//		}
+//		
+//		
+//		boolean cronExpressionEvaluation = false;	// default value
+//		
+//		try {
+//			CronExpression ce = new CronExpression(utente.getAccessPolicyCronExpression());
+//			cronExpressionEvaluation = ce.isSatisfiedBy(LocalDateTime.now().toDate());
+//		}
+//		catch (ParseException e) {
+//			// se la Cron Expression è scritta male, la considero come se fosse assente
+//			cronExpressionEvaluation = true;
+//			
+//			e.printStackTrace();
+//		}
+//		
+//		return cronExpressionEvaluation;
+//	}
+}

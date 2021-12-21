@@ -4,10 +4,22 @@ import it.webred.cs.csa.ejb.CarSocialeBaseSessionBean;
 import it.webred.cs.csa.ejb.client.*;
 import it.webred.cs.csa.ejb.dao.*;
 import it.webred.cs.csa.ejb.dto.*;
+import it.webred.cs.csa.ejb.dto.fascicolo.docIndividuali.DocIndividualeBean;
+import it.webred.cs.csa.ejb.dto.fascicolo.scuola.ListaDatiScuolaDTO;
+import it.webred.cs.csa.ejb.dto.pai.ListaDatiPaiDTO;
+import it.webred.cs.csa.ejb.dto.pai.PaiSearchCriteria;
+import it.webred.cs.csa.ejb.dto.pai.PaiSintesiDTO;
+import it.webred.cs.csa.ejb.dto.pai.SoggettoPaiBean;
+import it.webred.cs.csa.ejb.dto.relazione.RelazioneSintesiDTO;
+import it.webred.cs.csa.ejb.dto.relazione.SaveRelazioneDTO;
 import it.webred.cs.data.DataModelCostanti;
+import it.webred.cs.data.DataModelCostanti.TipiAlertCod;
+import it.webred.cs.data.DataModelCostanti.TipoDiario;
+import it.webred.cs.data.DataModelCostanti.TipoVisibilitaDocumento;
 import it.webred.cs.data.base.ICsDDiarioChild;
 import it.webred.cs.data.base.ICsDRelazioneChild;
 import it.webred.cs.data.model.*;
+import it.webred.cs.data.model.view.CsVistaPai;
 import it.webred.ct.support.datarouter.CeTBaseObject;
 import it.webred.ct.support.validation.annotation.AuditConsentiAccessoAnonimo;
 import it.webred.ct.support.validation.annotation.AuditSaltaValidazioneSessionID;
@@ -17,6 +29,7 @@ import java.util.*;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.interceptor.ExcludeDefaultInterceptors;
 import javax.interceptor.Interceptors;
 
 import org.springframework.beans.BeanUtils;
@@ -86,17 +99,20 @@ public class AccessTableDiarioSessionBean extends CarSocialeBaseSessionBean impl
 		//relazione child
 		dChild.setDiarioId(csDiario.getId());
 		diarioDao.saveDiarioChild(dChild);
-		//triage child
+		//triage child or Sal child
 		rChild.setRelazioneId(csDiario.getId());
 		diarioDao.saveDiarioChild(rChild);
 	}
 
-	public void saveDiarioChild(BaseDTO dto) {
-		ICsDDiarioChild dChild = (ICsDDiarioChild) dto.getObj();
+	public void saveDiarioChild(Object relazione, Object triage, Object sal) {
+		ICsDDiarioChild dChild = (ICsDDiarioChild) relazione;
         ICsDRelazioneChild rChild;
         //mi assicuro che l'obj alla posizione 2 sia effettivamente un triage
-        if(dto.getObj2() != null && dto.getObj2() instanceof CsDTriage){
-        	rChild = (ICsDRelazioneChild) dto.getObj2();
+        if(triage!=null && triage instanceof CsDTriage){
+        	rChild = (ICsDRelazioneChild) triage;
+        	saveDiarioChild(dChild,rChild);
+        }else if(sal != null && sal instanceof CsDRelSal){
+        	rChild = (ICsDRelazioneChild) sal;
         	saveDiarioChild(dChild,rChild);
         }
         else {
@@ -157,25 +173,24 @@ public class AccessTableDiarioSessionBean extends CarSocialeBaseSessionBean impl
 		// New Colloquio
 		if (colloquio.getDiarioId() == null) {
 
-			CsACaso caso = casoDao.findCasoById(csASoggetto.getCsACaso().getId());
+			Long idCaso = csASoggetto.getCsACaso().getId();
+			
+			CsACaso caso = casoDao.findCasoById(idCaso);
+			CsOOperatoreBASIC responsabile = casoDao.findResponsabileBASIC(idCaso);
+			
+			colloquio.getCsDDiario().setCsACaso(caso);
+			colloquio.getCsDDiario().setResponsabileCaso(responsabile!=null  ? responsabile.getId() : null);
 
 			CsTbTipoDiario tipo = new CsTbTipoDiario(); 
 		    tipo.setId(new Long(DataModelCostanti.TipoDiario.COLLOQUIO_ID)); 
 		    
-		    CsOOperatoreBASIC opResponsabile = casoDao.findResponsabileBASIC(caso.getId());
-		    
-			colloquio.getCsDDiario().setCsACaso(caso);
 			colloquio.getCsDDiario().setCsTbTipoDiario(tipo);
-			colloquio.getCsDDiario().setResponsabileCaso(opResponsabile.getId());
 			colloquio.getCsDDiario().setCsOOperatoreSettore(opSettore);
 			colloquio.getCsDDiario().setDtIns(new Date());
 			colloquio.getCsDDiario().setUserIns(dto.getUserId());
 			colloquio.getCsDDiario().setVisSecondoLivello(cdto.getVisSecondoLivello());
 			
-			dto.setObj(colloquio);
-			dto.setObj2(null);
-			dto.setObj3(null);
-			this.saveDiarioChild(dto);
+			this.saveDiarioChild(colloquio, null, null);
 			
 			long diarioId = colloquio.getCsDDiario().getId();
 			colloquio.setDiarioId(diarioId);
@@ -225,7 +240,9 @@ public class AccessTableDiarioSessionBean extends CarSocialeBaseSessionBean impl
 		Long idCaso = (Long) i.getObj();
 		List<RelazioneDTO> lst = new ArrayList<RelazioneDTO>();
 		if(idCaso!=null){
+			logger.debug("findRelazioniByCaso CASO_ID["+idCaso+"]");
 			List<CsDRelazione> lstr = diarioDao.findRelazioniByCaso(idCaso);
+			logger.debug("findRelazioniByCaso RES["+lstr.size()+"]");
 			for (CsDRelazione r : lstr) {
 				List <CsRelRelazioneProbl> lstProbematiche = r.getCsRelRelazioneProbl();
 				List<CsRelRelazioneTipoint> listaInterventi  = r.getCsRelRelazioneTipoint();
@@ -234,8 +251,19 @@ public class AccessTableDiarioSessionBean extends CarSocialeBaseSessionBean impl
 				RelazioneDTO dto = new RelazioneDTO(r, doc, lstPai, lstProbematiche,listaInterventi);
 				lst.add(dto);
 			}
+			logger.debug("findRelazioniByCaso END");
+			
 		}
 		return lst;
+	}
+	
+	@Override
+	public List<RelazioneSintesiDTO> findRelazioniSintesiByCaso(BaseDTO i) {
+		Long idCaso = (Long) i.getObj();
+		if(idCaso!=null){
+			return diarioDao.findRelazioniSintesiByCaso(idCaso);
+		}
+		return new ArrayList<RelazioneSintesiDTO>();
 	}
 
 
@@ -256,13 +284,13 @@ public class AccessTableDiarioSessionBean extends CarSocialeBaseSessionBean impl
 		}
 	
 	@Override
-	public List<CsDRelazione> findRelazioniByCasoTipoIntervento(InterventoDTO i) {
+	public List<KeyValueDTO> findRelazioniByCasoTipoIntervento(InterventoDTO i) {
 		Long idCaso = i.getCasoId();
 		Long idTipoIntervento = i.getIdTipoIntervento();
 
 		List<CsDRelazione> lstTmp = diarioDao.findRelazioniByCaso(idCaso);
 		List<CsDRelazione> lstRelTi = new ArrayList<CsDRelazione>();
-
+		List<KeyValueDTO> lst = new ArrayList<KeyValueDTO>();
 		for (CsDRelazione r : lstTmp) {
 			Set<CsCTipoIntervento> lstTi = r.getCsCTipoInterventos();
 			if (lstTi == null || r.getCsCTipoInterventos().size() == 0)
@@ -282,7 +310,24 @@ public class AccessTableDiarioSessionBean extends CarSocialeBaseSessionBean impl
 
 		}
 
-		return lstRelTi;
+		if (lstRelTi != null) {
+			for (CsDRelazione s : lstRelTi) {
+				Date dataRelazione = s.getCsDDiario().getDtAmministrativa();
+				String descrRelazione = "";
+				List<CsDDiarioDoc> lstDocumenti = diarioDao.findDiarioDocById(s.getCsDDiario().getId());
+				if (lstDocumenti != null && !lstDocumenti.isEmpty())
+					descrRelazione = lstDocumenti.iterator().next().getCsLoadDocumento().getNome();
+				else
+					descrRelazione = s.getProposta() != null ? (s
+							.getProposta().length() > 20 ? s
+							.getProposta().substring(0, 20) + "..." : s
+							.getProposta()) : "Nessuna proposta";
+
+				String descrizione = (dataRelazione != null ? ddMMyyyy.format(s.getCsDDiario().getDtAmministrativa()) : "") + " - " + descrRelazione;
+				lst.add(new KeyValueDTO(s.getDiarioId(), descrizione));
+			}
+		}
+		return lst;
 	}
 
 	@Override
@@ -298,29 +343,43 @@ public class AccessTableDiarioSessionBean extends CarSocialeBaseSessionBean impl
 
 		CsLoadDocumento doc = findDocRelazione(rel);
 		RelazioneDTO relDTO;
-		
+		List<PaiDTOExt> listaPai = diarioDao.loadPaiEntities(rel.getCsDDiario());
 		if(rel.getCsDTriage() != null){
-			relDTO = new RelazioneDTO(rel, doc, diarioDao.loadPaiEntities(rel.getCsDDiario()),rel.getCsDTriage());
+			relDTO = new RelazioneDTO(rel, doc, listaPai ,rel.getCsDTriage());
+		} else	if(rel.getCsDRelSal() != null){
+			relDTO = new RelazioneDTO(rel, doc, listaPai,rel.getCsDRelSal());
 		}else{
-			relDTO = new RelazioneDTO(rel, doc, diarioDao.loadPaiEntities(rel.getCsDDiario()));
+			relDTO = new RelazioneDTO(rel, doc, listaPai);
 		}
 		
 		
 		return relDTO;
 	}
 
+	public RelazioneSintesiDTO findRelazioneSintesiById(BaseDTO dto){
+		CsDRelazione rel = diarioDao.findRelazioneById((Long) dto.getObj());
+		List<Long> listaPai = diarioDao.findPadriCollegatiByFiglio(TipoDiario.PAI_ID, TipoDiario.RELAZIONE_ID, rel.getDiarioId());
+		RelazioneSintesiDTO out = this.fillRelazioneSintesi(rel, listaPai);
+		return out;
+	}
+
+	
 	@Override
-	public void updateRelazione(BaseDTO dto) throws Exception {
-		CsDRelazione relazione = (CsDRelazione) dto.getObj();
+	public void updateRelazione(SaveRelazioneDTO dto) throws Exception {
+		CsDRelazione relazione = (CsDRelazione) dto.getRelazione();
 		
 		relazione.getCsDDiario().setUsrMod(dto.getUserId());
 		relazione.getCsDDiario().setDtMod(new Date());
 		
 		//mi assicuro che l'obj alla posizione 2 sia effettivamente un triage
-		if(dto.getObj2() != null && dto.getObj2() instanceof CsDTriage){
-			CsDTriage triage = (CsDTriage) dto.getObj2();
-			diarioDao.updateTriage(relazione,triage);
-		}else{
+		if(dto.getTriage()!=null){
+			diarioDao.updateTriage(relazione,dto.getTriage());
+		}
+		else if(dto.getSal() != null){
+			diarioDao.updateSal(relazione,dto.getSal());
+		}
+		
+		else{
 			diarioDao.updateRelazione(relazione);
 		}
 		
@@ -338,44 +397,45 @@ public class AccessTableDiarioSessionBean extends CarSocialeBaseSessionBean impl
 	}
 
 	@Override
-	public RelazioneDTO saveRelazione(BaseDTO dto) throws Exception {
-		CsDRelazione relazione = (CsDRelazione) dto.getObj();
+	public RelazioneDTO saveRelazione(SaveRelazioneDTO dto) throws Exception {
+		CsDRelazione jpa = (CsDRelazione) dto.getRelazione();
 		
-		CsACaso csa = new CsACaso();
-		csa.setId((Long)dto.getObj2());
+		if (dto.getCasoId() != null) {
+			CsACaso csa = casoDao.findCasoById(dto.getCasoId());
+			CsOOperatoreBASIC responsabile = casoDao.findResponsabileBASIC(dto.getCasoId());
+			
+			jpa.getCsDDiario().setCsACaso(csa);
+			jpa.getCsDDiario().setResponsabileCaso(responsabile!=null  ? responsabile.getId() : null);
+		}
 		
-		CsOOperatoreBASIC responsabile = casoDao.findResponsabileBASIC(csa.getId());
+		if(dto.getOpSettore()!=null)
+			jpa.getCsDDiario().setCsOOperatoreSettore(dto.getOpSettore());
 
 		CsTbTipoDiario cstd = new CsTbTipoDiario();
 		cstd.setId(new Long(DataModelCostanti.TipoDiario.RELAZIONE_ID));
 		
-		CsOOperatoreSettore opSettore = (CsOOperatoreSettore)dto.getObj3();
-		
-		relazione.getCsDDiario().setCsACaso(csa);
-		relazione.getCsDDiario().setResponsabileCaso(responsabile.getId());
-		relazione.getCsDDiario().setCsTbTipoDiario(cstd);
-		relazione.getCsDDiario().setDtIns(new Date());
-		relazione.getCsDDiario().setUserIns(dto.getUserId());
-		relazione.getCsDDiario().setCsOOperatoreSettore(opSettore);
+		jpa.getCsDDiario().setCsTbTipoDiario(cstd);
+		jpa.getCsDDiario().setDtIns(new Date());
+		jpa.getCsDDiario().setUserIns(dto.getUserId());
 		
 //		List<CsCTipoIntervento> listaTipoInt = new ArrayList<CsCTipoIntervento>();
 //		if(relazione.getCsCTipoInterventos()!=null) listaTipoInt.addAll(relazione.getCsCTipoInterventos());
-		relazione.setCsCTipoInterventos(null);
+		jpa.setCsCTipoInterventos(null);
 		
 		List<CsRelRelazioneTipoint> listaInterventi = new ArrayList<CsRelRelazioneTipoint>();
-		if(relazione.getCsRelRelazioneTipoint()!=null) listaInterventi.addAll(relazione.getCsRelRelazioneTipoint());
-		relazione.setCsRelRelazioneTipoint(null);
+		if(jpa.getCsRelRelazioneTipoint()!=null) listaInterventi.addAll(jpa.getCsRelRelazioneTipoint());
+		jpa.setCsRelRelazioneTipoint(null);
 		
 		List<CsRelRelazioneProbl> listaProblematiche = new ArrayList<CsRelRelazioneProbl>();
-		if(relazione.getCsRelRelazioneProbl()!=null) listaProblematiche.addAll(relazione.getCsRelRelazioneProbl());
-		relazione.setCsRelRelazioneProbl(null);
+		if(jpa.getCsRelRelazioneProbl()!=null) listaProblematiche.addAll(jpa.getCsRelRelazioneProbl());
+		jpa.setCsRelRelazioneProbl(null);
 		
-		saveDiarioChild(dto);
+		saveDiarioChild(dto.getRelazione(), dto.getTriage(), dto.getSal());
 		
 		if(listaInterventi !=null)
 		{
 			for (CsRelRelazioneTipoint csRelRelazioneTipoint : listaInterventi) {
-				csRelRelazioneTipoint.getId().setRelazioneDiarioId(relazione.getDiarioId());
+				csRelRelazioneTipoint.getId().setRelazioneDiarioId(jpa.getDiarioId());
 				csRelRelazioneTipoint.setCsDRelazione(null);
 				diarioDao.saveCsRelRelazioneTipoint(csRelRelazioneTipoint);				
 			}
@@ -384,14 +444,17 @@ public class AccessTableDiarioSessionBean extends CarSocialeBaseSessionBean impl
 		if(listaProblematiche != null)
 		{
 			for (CsRelRelazioneProbl csRelRelazioneProbl : listaProblematiche) {
-				csRelRelazioneProbl.getId().setRelazioneDiarioId(relazione.getDiarioId());
+				csRelRelazioneProbl.getId().setRelazioneDiarioId(jpa.getDiarioId());
 				csRelRelazioneProbl.setCsDRelazione(null);
 				diarioDao.saveCsRelRelazioneProbl(csRelRelazioneProbl);				
 			}
 		}		
 		
-		CsLoadDocumento csLoadDoc = findDocRelazione(relazione);
-		RelazioneDTO res = new RelazioneDTO(relazione, csLoadDoc, diarioDao.loadPaiEntities(relazione.getCsDDiario()));
+		CsLoadDocumento csLoadDoc = findDocRelazione(jpa);
+		if(csLoadDoc!=null) {
+			
+		}
+		RelazioneDTO res = new RelazioneDTO(jpa, csLoadDoc, diarioDao.loadPaiEntities(jpa.getCsDDiario()));
 		return res;
 	}
 
@@ -534,8 +597,30 @@ public class AccessTableDiarioSessionBean extends CarSocialeBaseSessionBean impl
 	//SISO-812
 	@Override
 	@Interceptors(AccessoFascicoloInterceptor.class)
-	public List<CsDDocIndividuale> findDocIndividualiByCaso(BaseDTO dto) {
-		return diarioDao.findDocIndividualiByCaso((Long) dto.getObj());
+	public List<DocIndividualeBean> findDocIndividualiByCaso(BaseDTO dto) {
+		List<DocIndividualeBean> lstOut = new ArrayList<DocIndividualeBean>();
+		Long casoId = (Long) dto.getObj();
+		Boolean permessoDownload = (Boolean) dto.getObj2(); // DataModelCostanti.PermessiFascicolo.TAB_DOC_INDIVIDUALI_DOWN
+		CsOOperatoreSettore opSettore = (CsOOperatoreSettore) dto.getObj3();
+		Boolean visibilita = (Boolean) dto.getObj4();
+		
+		List<Long> downBypass = configurazioneDao.findTipoDocAuthDownload(opSettore.getId());
+		
+		List<CsDDocIndividuale> lista = diarioDao.findDocIndividualiByCaso(casoId, visibilita);
+		for (CsDDocIndividuale docInd : lista) {
+			CsLoadDocumento loadDocumento = documentoDao.findLoadDocumentoByDiarioId(docInd.getDiarioId());
+			if(loadDocumento!=null){
+				DocIndividualeBean d = new DocIndividualeBean(docInd, loadDocumento, permessoDownload, dto.getUserId(), downBypass);
+				logger.debug("permessoDownload["+permessoDownload+"], isAutore["+docInd.getCsDDiario().isAutore(dto.getUserId())+"] --> disableDownload["+d.isDisableDownload()+"]");
+				boolean docPrivato = docInd.getPrivato()!=null && docInd.getPrivato().booleanValue();
+				boolean docPrivatoAutorizzato = TipoVisibilitaDocumento.PRIVATO == visibilita.booleanValue() && docPrivato && dto.getUserId().equals(docInd.getCsDDiario().getUserIns());
+				
+				if(TipoVisibilitaDocumento.PUBBLICO == visibilita || docPrivatoAutorizzato)
+					lstOut.add(d);
+			}
+		}
+
+		return lstOut;
 	}
 
 	@Override
@@ -546,8 +631,8 @@ public class AccessTableDiarioSessionBean extends CarSocialeBaseSessionBean impl
 
 	@Override
 	public CsDDiario saveDocIndividuale(BaseDTO dto) throws Exception {
-		saveDiarioChild(dto);
 		CsDDocIndividuale docIndividuale = (CsDDocIndividuale) dto.getObj();
+		saveDiarioChild(docIndividuale, null, null);
 		return docIndividuale.getCsDDiario();
 	}
 
@@ -776,21 +861,60 @@ public class AccessTableDiarioSessionBean extends CarSocialeBaseSessionBean impl
 	//SISO-812
 	@Override
 	@Interceptors(AccessoFascicoloInterceptor.class)
-	public List<CsDScuola> findScuoleByCaso(BaseDTO dto) {
+	public List<ListaDatiScuolaDTO> findScuoleByCaso(BaseDTO dto) {
 		return diarioDao.findScuoleByCaso((Long) dto.getObj());
 	}
 
 	@Override
 	public void updateScuola(BaseDTO dto) throws Exception {
 		CsDScuola scuola = (CsDScuola) dto.getObj();
+		//modifica
+		scuola.getCsDDiario().setUsrMod(dto.getUserId());
+		scuola.getCsDDiario().setDtMod(new Date());
+		
 		diarioDao.updateScuola(scuola);
 	}
 
 	@Override
 	public CsDDiario saveScuola(BaseDTO dto) throws Exception {
-		saveDiarioChild(dto);
-		CsDScuola scuola = (CsDScuola) dto.getObj();
-		return scuola.getCsDDiario();
+		CsDScuola jpa = (CsDScuola)dto.getObj();
+		Long casoId = dto.getObj2()!=null ? (Long)dto.getObj2() : null;
+		CsOOperatoreSettore opSettore = (CsOOperatoreSettore) dto.getObj3();
+        
+		CsACaso csa = casoDao.findCasoById(casoId);
+		CsOOperatoreBASIC responsabile = casoDao.findResponsabileBASIC(casoId);
+			
+		jpa.getCsDDiario().setCsACaso(csa);
+		jpa.getCsDDiario().setResponsabileCaso(responsabile!=null ? responsabile.getId() : null);
+		
+		
+        CsTbTipoDiario cstd = new CsTbTipoDiario(); 
+        cstd.setId(new Long(DataModelCostanti.TipoDiario.DATI_SCUOLA_ID)); 
+        
+        Date dtIns = new Date();
+        jpa.getCsDDiario().setDtIns(dtIns);
+        jpa.getCsDDiario().setUserIns(dto.getUserId());
+        jpa.getCsDDiario().setCsTbTipoDiario(cstd);
+        jpa.getCsDDiario().setCsOOperatoreSettore(opSettore);
+        jpa.getCsDDiario().setDtAmministrativa(dtIns);
+        dto.setObj(jpa);
+		
+		saveDiarioChild(jpa, null, null);
+		
+		try{
+			BaseDTO bdto = new BaseDTO();
+			this.copiaCsTBaseObject(dto, bdto);
+			//Invio alert nuovo inserimento
+			bdto.setObj(csa.getCsASoggetto());
+			bdto.setObj2(opSettore);
+			bdto.setObj3(DataModelCostanti.TipiAlertCod.SCUOLA);
+			bdto.setObj4("una nuova scuola");
+			
+			alertSessionBean.addAlertNuovoInserimentoToResponsabileCaso(bdto);
+		}catch(CarSocialeServiceException e){
+			logger.error("Errore invio alert nuova SCUOLA:"+e.getMessage(), e);
+		}
+		return jpa.getCsDDiario();
 	}
 
 	@Override
@@ -809,14 +933,53 @@ public class AccessTableDiarioSessionBean extends CarSocialeBaseSessionBean impl
 
 	@Override
 	public void updateIsee(BaseDTO dto) throws Exception {
-		CsDIsee isee = (CsDIsee) dto.getObj();
-		diarioDao.updateIsee(isee);
+		CsDIsee jpa = (CsDIsee) dto.getObj();
+		
+		jpa.getCsDDiario().setUsrMod(dto.getUserId());
+		jpa.getCsDDiario().setDtMod(new Date());
+		
+		diarioDao.updateIsee(jpa);
 	}
 
 	@Override
 	public CsDDiario saveIsee(BaseDTO dto) throws Exception {
-		saveDiarioChild(dto);
-		CsDIsee isee = (CsDIsee) dto.getObj();
+		CsDIsee jpa = (CsDIsee)dto.getObj();
+		Long casoId = dto.getObj2()!=null ? (Long)dto.getObj2() : null;
+		CsOOperatoreSettore opSettore = (CsOOperatoreSettore) dto.getObj3();
+        
+		CsACaso csa = casoDao.findCasoById(casoId);
+		CsOOperatoreBASIC responsabile = casoDao.findResponsabileBASIC(casoId);
+		
+		jpa.getCsDDiario().setCsACaso(csa);
+		jpa.getCsDDiario().setResponsabileCaso(responsabile!=null ? responsabile.getId() : null);
+
+		
+        CsTbTipoDiario cstd = new CsTbTipoDiario(); 
+        cstd.setId(new Long(DataModelCostanti.TipoDiario.ISEE_ID)); 
+        
+        jpa.getCsDDiario().setDtIns(new Date());
+        jpa.getCsDDiario().setUserIns(dto.getUserId());
+        jpa.getCsDDiario().setCsTbTipoDiario(cstd);
+        jpa.getCsDDiario().setCsOOperatoreSettore(opSettore);
+		
+        dto.setObj(jpa);
+        
+        CsDIsee isee = (CsDIsee) dto.getObj();
+		saveDiarioChild(isee, null, null);
+		
+		try{
+			//Invio alert nuovo inserimento
+			BaseDTO bdto = new BaseDTO();
+			this.copiaCsTBaseObject(dto, bdto);
+			bdto.setObj(csa.getCsASoggetto());
+			bdto.setObj2(opSettore);
+			bdto.setObj3(DataModelCostanti.TipiAlertCod.ISEE);
+			bdto.setObj4("un nuovo ISEE");
+			alertSessionBean.addAlertNuovoInserimentoToResponsabileCaso(bdto);
+		}catch(CarSocialeServiceException e){
+			logger.error("Errore invio alert nuovo ISEE:"+e.getMessage(), e);
+		}
+		
 		return isee.getCsDDiario();
 	}
 
@@ -957,27 +1120,36 @@ public class AccessTableDiarioSessionBean extends CarSocialeBaseSessionBean impl
 		}
 	*/
 	@Override
+	@AuditConsentiAccessoAnonimo
+    @AuditSaltaValidazioneSessionID
+    @ExcludeDefaultInterceptors
 	public CsDPai savePai(BaseDTO dto) throws Exception {
 		CsDPai pai = (CsDPai) dto.getObj();
-		
-		CsACaso csa = new CsACaso();
-		csa.setId((Long)dto.getObj2());
-		
-		CsOOperatoreBASIC responsabile = casoDao.findResponsabileBASIC(csa.getId());
-
+		//SISO-1280 Inizio
+		Long idCaso = dto.getObj2() != null ? (Long)dto.getObj2() : null;
+		if (idCaso != null) {
+			CsACaso csa = casoDao.findCasoById(idCaso);
+			CsOOperatoreBASIC responsabile = casoDao.findResponsabileBASIC(idCaso);
+			
+			pai.getCsDDiario().setCsACaso(csa);
+			pai.getCsDDiario().setResponsabileCaso(responsabile!=null  ? responsabile.getId() : null);
+		}
+		//SISO-1280 Fine
+		CsOOperatoreSettore opSettore = dto.getObj3() != null ? (CsOOperatoreSettore) dto.getObj3() : null;
 		CsTbTipoDiario cstd = new CsTbTipoDiario();
 		cstd.setId(new Long(DataModelCostanti.TipoDiario.PAI_ID));
 		
-		CsOOperatoreSettore opSettore = (CsOOperatoreSettore)dto.getObj3();
-		
-		pai.getCsDDiario().setCsACaso(csa);
-		pai.getCsDDiario().setResponsabileCaso(responsabile.getId());
 		pai.getCsDDiario().setCsTbTipoDiario(cstd);
 		pai.getCsDDiario().setDtIns(new Date());
 		pai.getCsDDiario().setUserIns(dto.getUserId());
 		pai.getCsDDiario().setCsOOperatoreSettore(opSettore);
 		
-		saveDiarioChild(dto);
+		for(CsPaiMastSogg s : pai.getBeneficiari()){
+			s.setUserIns(dto.getUserId());
+			s.setDtIns(new Date());
+		}
+		
+		saveDiarioChild(pai, null, null);
 		return pai;
 	}
 
@@ -997,6 +1169,11 @@ public class AccessTableDiarioSessionBean extends CarSocialeBaseSessionBean impl
 		
 		pai.getCsDDiario().setUsrMod(dto.getUserId());
 		pai.getCsDDiario().setDtMod(new Date());
+		
+		for(CsPaiMastSogg s : pai.getBeneficiari()){
+			s.setUserMod(dto.getUserId());
+			s.setDtMod(new Date());
+		}
 		
 		diarioDao.updateSchedaPai(pai);		
 	}
@@ -1025,7 +1202,7 @@ public class AccessTableDiarioSessionBean extends CarSocialeBaseSessionBean impl
 		Long idPaiNuovoRif = (Long) dto.getObj2();
 		Long idPaiRifDaSostituireId = (Long) dto.getObj3();		
 		
-		if(idPaiNuovoRif==null) //sostituzione				
+		if(idPaiNuovoRif==null) //rimozione			
 		{			
 			diarioDao.deleteDiarioRif(idPaiRifDaSostituireId, idRelazione);
 		}
@@ -1033,15 +1210,13 @@ public class AccessTableDiarioSessionBean extends CarSocialeBaseSessionBean impl
 		{
 			CsDDiario relazione= diarioDao.findDiarioById(idRelazione);
 			List<CsDDiario> pais =relazione.getCsDDiariPadre();
-			if(pais!=null) for(CsDDiario d: pais)
-			{	
-				if(Long.valueOf(d.getId()).equals(idPaiNuovoRif))
-				{
-					//skip
-					return;
-				}			
+			if(pais!=null){ 
+				for(CsDDiario d: pais){	
+					if(Long.valueOf(d.getId()).equals(idPaiNuovoRif)){
+						return; // skip: è già presente
+					}			
+				}
 			}
-				
 			diarioDao.saveDiarioRif(idPaiNuovoRif, idRelazione);
 		}
 	}
@@ -1087,7 +1262,7 @@ public class AccessTableDiarioSessionBean extends CarSocialeBaseSessionBean impl
 		try {
 			return diarioDao.findDocIndividuale((Long) dto.getObj());			
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 			throw new RuntimeException(e);
 		}
 	}
@@ -1137,15 +1312,11 @@ public class AccessTableDiarioSessionBean extends CarSocialeBaseSessionBean impl
 			CsDDiario diario = new CsDDiario(); 
 			
 			if (dto.getCasoId()!=null) {
-				BaseDTO bdto = new BaseDTO();
-				copiaCsTBaseObject(dto, bdto);
-				bdto.setObj(dto.getCasoId());
-				
-				CsACaso caso = casoSessionBean.findCasoById(bdto); 
+				CsACaso caso = casoDao.findCasoById(dto.getCasoId()); 
 				diario.setCsACaso(caso);
 				
-				CsACasoOpeTipoOpe responsabile = casoDao.findCasoOpeResponsabile(dto.getCasoId());
-				diario.setResponsabileCaso(responsabile!=null ? responsabile.getCsOOperatoreTipoOperatore().getCsOOperatoreSettore().getCsOOperatore().getId() : null);
+				CsOOperatoreBASIC responsabile = casoDao.findResponsabileBASIC(dto.getCasoId());
+				diario.setResponsabileCaso(responsabile!=null ? responsabile.getId() : null);
 			}
 			diario.setSchedaId(csDDiario!=null ? csDDiario.getSchedaId() : null);
 			diario.setCsTbTipoDiario(diarioDao.findTipoDiarioById(DataModelCostanti.TipoDiario.DOC_INDIVIDUALE_ID));
@@ -1206,9 +1377,26 @@ public class AccessTableDiarioSessionBean extends CarSocialeBaseSessionBean impl
 		}
 
 		@Override
-		public List<CsDDocIndividuale> findDocIndividualeByCfSchedaSegnalato(
-				BaseDTO dto) { 
-			return diarioDao.findDocIndividualeByCfSchedaSegnalato((String) dto.getObj(), (Long) dto.getObj2());
+		public List<DocIndividualeBean> findDocIndividualeByCfSchedaSegnalato(BaseDTO dto) {
+			List<DocIndividualeBean> lstOut = new ArrayList<DocIndividualeBean>();
+			String cf = (String) dto.getObj();
+			Boolean permessoDownload = (Boolean)dto.getObj2();
+			CsOOperatoreSettore opSettore = (CsOOperatoreSettore) dto.getObj3();
+			List<Long> downBypass = configurazioneDao.findTipoDocAuthDownload(opSettore.getId());
+			
+			Long organizzazioneId = opSettore.getCsOSettore().getCsOOrganizzazione().getId();
+			if(organizzazioneId!=null){
+				List<CsDDocIndividuale> lst = diarioDao.findDocIndividualeByCfSchedaSegnalato(cf, organizzazioneId);
+				for (CsDDocIndividuale docInd : lst) {
+					CsLoadDocumento loadDocumento = documentoDao.findLoadDocumentoByDiarioId(docInd.getDiarioId());
+					if(loadDocumento!=null){
+						
+						DocIndividualeBean d = new DocIndividualeBean(docInd, loadDocumento, permessoDownload, dto.getUserId(), downBypass);
+						lstOut.add(d);
+					}
+				}
+			}
+			return lstOut;
 		}
 
 
@@ -1267,15 +1455,15 @@ public class AccessTableDiarioSessionBean extends CarSocialeBaseSessionBean impl
 		
 	   //SISO-763
 	   @Override
-	   public List<Long> findDiarioAnaAttProfessionaliCasoIdsByAnagraficaId(BaseDTO bdto) throws Exception {
-		   List<Long> toReturn = new ArrayList<Long>();
+	   public List<RelazioneDTO> findRelazioniCollegate(BaseDTO bdto) throws Exception {
+		   List<RelazioneDTO> lst = new ArrayList<RelazioneDTO>();
 		   Long idAnagrafica = (Long) bdto.getObj();
-		   List<CsACaso> lCasi = diarioDao.findDiarioAnaCasoIdsByAnagraficaId(idAnagrafica,new Long(6)); //6 = ATTIVITA PROFESSIONALI
-		   
-		   for (CsACaso csACaso : lCasi) {
-			   toReturn.add(csACaso.getId());
-		   }
-		   return toReturn;
+		   List<Long> casoIds =  diarioDao.findDiarioAnaCasoIdsByAnagraficaId(idAnagrafica, DataModelCostanti.TipoDiario.RELAZIONE_ID); //6 = ATTIVITA PROFESSIONALI
+		   for (Long id : casoIds){ 
+			   bdto.setObj(id);
+			   lst.addAll(findRelazioniByCaso(bdto));
+			}
+		   return lst;
 	  }
 	   
 		@Override
@@ -1328,9 +1516,188 @@ public class AccessTableDiarioSessionBean extends CarSocialeBaseSessionBean impl
 		}
 
 		@Override
-		@AuditConsentiAccessoAnonimo
-		@AuditSaltaValidazioneSessionID
-		public List<CsDPai> findPaiAperti(CeTBaseObject dto) {
-			return diarioDao.findPaiAperti();
+		public List<KeyValueDTO> findSintesiIseeByCaso(BaseDTO dto){
+			return diarioDao.findSintesiIseeByCaso((Long)dto.getObj());
 		}
+
+		@Override
+		@Interceptors(AccessoFascicoloInterceptor.class)
+		public List<ListaDatiPaiDTO> findListaPaiFascicolo(PaiSearchCriteria dto){
+			List<ListaDatiPaiDTO> lstOut = new ArrayList<ListaDatiPaiDTO>();
+			List<CsVistaPai> lstIn = diarioDao.findListaPaiFascicolo(dto);
+			lstOut = valorizzaPaiViewListaDTO(lstIn);
+			return lstOut;
+		}
+		
+		public Integer countListaPaiFascicolo(PaiSearchCriteria dto){
+			BigDecimal count = diarioDao.countListaPaiFascicolo(dto);
+			return count.intValue();
+		}
+		
+		@Override
+		public List<ListaDatiPaiDTO> findListaPaiEsterni(PaiSearchCriteria dto) {
+			List<ListaDatiPaiDTO> lstOut = new ArrayList<ListaDatiPaiDTO>();
+			List<CsVistaPai> lstIn =  new ArrayList<CsVistaPai>();
+			lstIn = diarioDao.findListaPaiEsterni(dto);
+			lstOut =  this.valorizzaPaiViewListaDTO(lstIn);
+			return lstOut;
+		}
+			
+		private List<ListaDatiPaiDTO> valorizzaPaiViewListaDTO(List<CsVistaPai> lstIn){
+			ArrayList<ListaDatiPaiDTO> lstOut = new ArrayList<ListaDatiPaiDTO>();
+			for(CsVistaPai p : lstIn){
+				ListaDatiPaiDTO dto = new ListaDatiPaiDTO();
+				List<SoggettoPaiBean> beneficiari = new ArrayList<SoggettoPaiBean>();
+				for(CsPaiMastSogg s : p.getBeneficiari()){
+					SoggettoPaiBean b = new SoggettoPaiBean(s);
+					beneficiari.add(b);
+				}
+				dto.setBeneficiari(beneficiari);
+				dto.setChiuso(p.getChiuso());
+				dto.setDaChiudere(p.getDaChiudere());
+				dto.setDaControllare(p.getDaControllare());
+				dto.setDataAttivazioneDa(p.getDataAttivazioneDa());
+				dto.setDataChiusuraDa(p.getDataChiusuraDa());
+				dto.setDataChiusuraPrevista(p.getDataChiusuraPrevista());
+				dto.setDataUltimaModifica(p.getDataUltimaModifica());
+				dto.setDiarioId(p.getDiarioId());
+				dto.setOpModifica(p.getOpUltimaModifica());
+				dto.setTipoBeneficiario(p.getTipoBeneficiario());
+				dto.setTipoPai(p.getTipoPaiDesc());
+				dto.setTxtObiettivi(p.getTxtObiettivi());
+				
+				dto.setIdSettoreDiario(p.getSettoreId());
+				dto.setSettSecondoLivello(p.getVisSecondoLivello());
+				lstOut.add(dto);
+			}
+			return lstOut;
+		}
+		
+	@Override
+	public List<RelazioneDTO> findRelazioniPaiEsterniByCF(BaseDTO dto) {
+		List<CsDRelazione> lstr = diarioDao.findRelazioniPaiEsterniByCF((String) dto.getObj());
+		List<RelazioneDTO> lst = new ArrayList<RelazioneDTO>();
+		for (CsDRelazione r : lstr) {
+			List<CsRelRelazioneProbl> lstProbematiche = r.getCsRelRelazioneProbl();
+			List<CsRelRelazioneTipoint> listaInterventi = r.getCsRelRelazioneTipoint();
+			CsLoadDocumento doc = documentoDao.findLoadDocumentoByDiarioId(r.getDiarioId());
+			List<PaiDTOExt> lstPai = diarioDao.loadPaiEntities(r.getCsDDiario());
+			RelazioneDTO relDTO = new RelazioneDTO(r, doc, lstPai, lstProbematiche, listaInterventi);
+			lst.add(relDTO);
+		}
+		return lst;
+	}
+	
+	@Override
+	public List<RelazioneDTO> findRelazioniByIds(BaseDTO dto) {
+		List<CsDRelazione> lstr = diarioDao.findRelazioniByIds((List<Long>)dto.getObj());
+		List<RelazioneDTO> lst = new ArrayList<RelazioneDTO>();
+		for (CsDRelazione r : lstr) {
+			List<CsRelRelazioneProbl> lstProbematiche = r.getCsRelRelazioneProbl();
+			List<CsRelRelazioneTipoint> listaInterventi = r.getCsRelRelazioneTipoint();
+			CsLoadDocumento doc = documentoDao.findLoadDocumentoByDiarioId(r.getDiarioId());
+			List<PaiDTOExt> lstPai = diarioDao.loadPaiEntities(r.getCsDDiario());
+			RelazioneDTO relDTO = new RelazioneDTO(r, doc, lstPai, lstProbematiche, listaInterventi);
+			lst.add(relDTO);
+		}
+		return lst;
+	}
+	
+	@Override
+	public List<RelazioneSintesiDTO> findRelazioniSintesiPaiEsterniByCF(BaseDTO dto) {
+		List<CsDRelazione> lstr = diarioDao.findRelazioniPaiEsterniByCF((String) dto.getObj());
+		
+		List<RelazioneSintesiDTO> lst = new ArrayList<RelazioneSintesiDTO>();
+		for (CsDRelazione r : lstr) {
+			List<Long> lstPai = diarioDao.findPadriCollegatiByFiglio(TipoDiario.PAI_ID, TipoDiario.RELAZIONE_ID, r.getDiarioId());
+			RelazioneSintesiDTO relDTO = this.fillRelazioneSintesi(r, lstPai);
+			lst.add(relDTO);
+		}
+		return lst;
+	}
+	
+	private RelazioneSintesiDTO fillRelazioneSintesi(CsDRelazione rel, List<Long> lstPai){
+		RelazioneSintesiDTO out = new RelazioneSintesiDTO();
+		out.setDiarioId(rel.getDiarioId());
+		out.setDtAmministrativa(rel.getCsDDiario().getDtAmministrativa());
+    	out.setSituazioneAmbientale(rel.getSituazioneAmb());
+    	out.setSituazioneParentale(rel.getSituazioneParentale());
+    	out.setSituazioneSanitaria(rel.getSituazioneSanitaria());
+    	out.setProposta(rel.getProposta());
+    	out.setDescMacroAttivita(rel.getMacroAttivita().getDescrizione());
+    	out.setDescMicroAttivita(rel.getMicroAttivita().getDescrizione());
+    	out.setTipoFormMicroAttivita(rel.getMicroAttivita().getFlagTipoForm());
+    	out.setPaiCollegati(lstPai);
+    	return out;
+	}
+
+	// SISO-1280
+	@Override
+	@AuditConsentiAccessoAnonimo
+    @AuditSaltaValidazioneSessionID
+    @ExcludeDefaultInterceptors
+	public void saveBeneficiariPai(BaseDTO dto) {
+
+		List <CsPaiMastSogg> lstBeneficiari = (List<CsPaiMastSogg>) dto.getObj();
+		if (lstBeneficiari != null) {
+			diarioDao.saveBeneficiariPai (lstBeneficiari);
+		}
+	}
+
+	@Override
+	public List<CsIIntervento> findInterventiPaiEsterniByCF(BaseDTO dto) {
+		return diarioDao.findInterventiPaiEsterniByCF((String)dto.getObj());
+	}
+
+	@Override
+	@AuditConsentiAccessoAnonimo
+    @AuditSaltaValidazioneSessionID
+    @ExcludeDefaultInterceptors 
+	public List<CsPaiMastSogg> findSoggettiPaiSenzaCaso(BaseDTO dto) {
+		return diarioDao.findSoggettiPaiSenzaCaso();
+	}
+
+	@Override
+	@AuditConsentiAccessoAnonimo
+    @AuditSaltaValidazioneSessionID
+    @ExcludeDefaultInterceptors
+	public void updateSoggettoPai(BaseDTO dto) {
+		diarioDao.updateSoggettoPai((CsPaiMastSogg) dto.getObj());
+	}
+
+	@Override
+	public CsDScuola getScuolaById(BaseDTO dto) {
+		return diarioDao.getScuolaById((Long)dto.getObj());
+	}
+	
+	@Override
+	public PaiSintesiDTO findSintesiPaiById(BaseDTO dto){
+		return diarioDao.findSintesiPaiById((Long)dto.getObj());
+	}
+	
+	@Override
+	@AuditConsentiAccessoAnonimo
+    @AuditSaltaValidazioneSessionID
+    @ExcludeDefaultInterceptors 
+	public CsPaiMastSogg findSoggettoPaiByDiarioId(BaseDTO dto) {
+		return diarioDao.findSoggettoPaiByDiarioId((Long)dto.getObj());
+	}
+
+	@Override
+	public CsDPai getPaiById(BaseDTO dto) {
+		return diarioDao.findPaiByDiarioId((Long)dto.getObj());
+	}
+
+	@Override
+	public Integer countListaPaiEsterni(PaiSearchCriteria dto) {
+		BigDecimal count = diarioDao.countListaPaiEsterni(dto);
+		return count.intValue();
+	}
+
+	@Override
+	public List<PaiSintesiDTO> findDatePai(PaiSearchCriteria psc) {
+		return diarioDao.findDatePai(psc);
+	}
+
+
 }

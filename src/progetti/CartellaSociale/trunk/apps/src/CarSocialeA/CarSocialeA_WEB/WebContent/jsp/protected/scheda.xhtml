@@ -7,14 +7,12 @@
 	xmlns:webredcs="http://java.sun.com/jsf/composite/webredcs"
 	xmlns:webred="http://java.sun.com/jsf/composite/webred">
 
-<style type="text/css">
-      #tab1 {
-        background-color:yellow;
-
-}
- </style>
 <ui:composition template="/jsp/protected/layout/layout.xhtml">
-
+ 
+<style type="text/css">
+      #tab1 {background-color:yellow;}
+ </style>
+ 
 	<ui:define name="content">
 		<p:outputPanel id="schedaContent" style="z-index:-1!important;" >
 			<!--        <h:form id="frmSalva"> 		 -->
@@ -63,13 +61,23 @@
 			
 			<p:tabView id="#{schedaBean.idTabScheda}" activeIndex="#{schedaBean.tabViewIndex}" style="z-index:auto;">
 
-				<p:ajax event="tabChange" listener="#{schedaBean.onChangeTabView}"	immediate="true" global="false" />
-
+			  <p:ajax event="tabChange"  
+                       listener="#{schedaBean.onChangeTabView}" immediate="true" global="false" />  
+	        
 				
 				<p:tab id="tabAnagrafica" title="Anagrafica"
 					rendered="#{schedaBean.renderTabAnagrafica}">
 					<h:form>
-
+						    <h:panelGrid rendered="#{fascicoloBean.schedaDatiEsterni.controllaPresenzaDatiEsterniSoggetto(schedaDatiEsterniSoggettoBean.ANAGRAFICA_GENERICA)}"  columns="2"  columnClasses="leftAlignGrid,  rightAlign" style="vertical-align: top;height: 50px;margin-top: 12px;" width="40%"   cellpadding="0" cellspacing="0">
+					           <p:graphicImage id="lblDatiEsterni"   
+						        				    	   title="Il soggetto ha beneficiato di Prestazioni Sociali"
+						        				    	   value="#{resource['webredcs/img/earth256.png']}" width="20px"/>	
+					         <h:outputLabel
+									value="#{'Presenza di ulteriori dati per il soggetto con c.f. '.concat(anagraficaBean.datiAnaBean.codiceFiscale).concat(' (vedi area notifiche)')} "
+									
+									style="font-weight:bold;color:red;" /> 
+					         </h:panelGrid>		
+								 
 						<h:panelGroup
 							rendered="#{anagraficaBean.soggCatSocialeBean.richiediCategoriaSociale}">
 							<span class="ui-messages-error-icon" />
@@ -93,9 +101,17 @@
 						</h:panelGrid>
 					</h:form>
 				</p:tab>
-				<p:tab id="tabParenti" title="#{parentiBean.nomeTab}"
-					rendered="#{schedaBean.renderTabParenti}">
-
+				<p:tab id="tabParenti" title="#{parentiBean.nomeTab}" rendered="#{schedaBean.renderTabParenti}">
+					 
+					     <h:panelGrid rendered="#{fascicoloBean.schedaDatiEsterni.controllaPresenzaDatiEsterniSoggetto(schedaDatiEsterniSoggettoBean.PRESTAZIONI)}"  columns="2"  columnClasses="leftAlignGrid,  rightAlign" style="vertical-align: top;height: 50px;margin-top: 12px;" width="40%"   cellpadding="0" cellspacing="0">
+					           <p:graphicImage id="lblDatiEsterni"   
+						        				    	   title="Il soggetto ha beneficiato di Prestazioni Sociali"
+						        				    	   value="#{resource['webredcs/img/earth256.png']}" width="20px"/>	
+					         <h:outputLabel
+									value="#{'Presenza di ulteriori dati per il soggetto con c.f. '.concat(anagraficaBean.datiAnaBean.codiceFiscale).concat(' (vedi area notifiche)')} "
+									
+									style="font-weight:bold;color:red;" /> 
+					         </h:panelGrid>	
 					<h:form>
 
 						<p:dataTable emptyMessage="Nessun elemento trovato"
@@ -224,6 +240,16 @@
 					titletip="Dati Invalidità"
 					rendered="#{schedaBean.renderTabInvalidita}">
 					<h:form>
+						 
+						 <h:panelGrid rendered="#{fascicoloBean.schedaDatiEsterni.controllaPresenzaDatiEsterniSoggetto(schedaDatiEsterniSoggettoBean.INVALIDITA)}"  columns="2"  columnClasses="leftAlignGrid,  rightAlign" style="vertical-align: top;height: 50px;margin-top: 12px;" width="40%"   cellpadding="0" cellspacing="0">
+					           <p:graphicImage id="lblDatiEsterni"   
+						        				    	   title="Il soggetto ha beneficiato di Prestazioni Sociali"
+						        				    	   value="#{resource['webredcs/img/earth256.png']}" width="20px"/>	
+					         <h:outputLabel
+									value="#{'Presenza di ulteriori dati per il soggetto con c.f. '.concat(anagraficaBean.datiAnaBean.codiceFiscale).concat(' (vedi area notifiche)')} "
+									
+									style="font-weight:bold;color:red;" /> 
+					         </h:panelGrid>			
 						<webredcs:pnlDataValiditaList iDatiValList="#{datiInvaliditaBean}"
 							dataValiditaStyleClass="accordionFooter"
 							buttonFooterStyleClass="buttonFooter"
@@ -242,6 +268,16 @@
 					titletip="Dati Disabilità"
 					rendered="#{schedaBean.renderTabDisabilita}">
 					<h:form>
+						  
+						 <h:panelGrid rendered="#{fascicoloBean.schedaDatiEsterni.controllaPresenzaDatiEsterniSoggetto(schedaDatiEsterniSoggettoBean.DISABILITA)}"  columns="2"  columnClasses="leftAlignGrid,  rightAlign" style="vertical-align: top;height: 50px;margin-top: 12px;" width="40%"   cellpadding="0" cellspacing="0">
+					           <p:graphicImage id="lblDatiEsterni"   
+						        				    	   title="Il soggetto ha beneficiato di Prestazioni Sociali"
+						        				    	   value="#{resource['webredcs/img/earth256.png']}" width="20px"/>	
+					         <h:outputLabel
+									value="#{'Presenza di ulteriori dati per il soggetto con c.f. '.concat(anagraficaBean.datiAnaBean.codiceFiscale).concat(' (vedi area notifiche)')} "
+									
+									style="font-weight:bold;color:red;" /> 
+					         </h:panelGrid>			
 						<webredcs:pnlDataValiditaList iDatiValList="#{datiDisabilitaBean}"
 							dataValiditaStyleClass="accordionFooter"
 							buttonFooterStyleClass="buttonFooter"
@@ -257,10 +293,19 @@
 					</h:form>
 				</p:tab>
 
-				<p:tab id="tabDatiTribunale" title="#{datiTribunaleBean.nomeTab}"
+		  	<p:tab id="tabDatiTribunale" title="#{datiTribunaleBean.nomeTab}"
 					titletip="Dati Tribunale"
-					rendered="#{schedaBean.renderTabTribunale}">
-					<h:form>
+					rendered="#{schedaBean.renderTabTribunale}">  
+		  			<h:form>
+		  		 		 <h:panelGrid rendered="#{fascicoloBean.schedaDatiEsterni.controllaPresenzaDatiEsterniSoggetto(schedaDatiEsterniSoggettoBean.TRIBUNALE)}"  columns="2"  columnClasses="leftAlignGrid,  rightAlign" style="vertical-align: top;height: 50px;margin-top: 12px;" width="40%"   cellpadding="0" cellspacing="0">
+					           <p:graphicImage id="lblDatiEsterni"   
+						        				    	   title="Il soggetto ha beneficiato di Prestazioni Sociali"
+						        				    	   value="#{resource['webredcs/img/earth256.png']}" width="20px"/>	
+					         <h:outputLabel
+									value="#{'Presenza di ulteriori dati per il soggetto con c.f. '.concat(anagraficaBean.datiAnaBean.codiceFiscale).concat(' (vedi area notifiche)')} "
+									
+									style="font-weight:bold;color:red;" /> 
+					         </h:panelGrid>				
 						<webredcs:pnlDataValiditaList iDatiValList="#{datiTribunaleBean}"
 							dataValiditaStyleClass="accordionFooter"
 							buttonFooterStyleClass="buttonFooter"

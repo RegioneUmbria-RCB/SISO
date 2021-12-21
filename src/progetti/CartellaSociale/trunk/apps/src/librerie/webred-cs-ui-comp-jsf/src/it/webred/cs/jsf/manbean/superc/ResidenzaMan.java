@@ -1,9 +1,10 @@
 package it.webred.cs.jsf.manbean.superc;
 
-import it.webred.cs.csa.ejb.client.AccessTableConfigurazioneSessionBeanRemote;
+import it.webred.cs.csa.ejb.dto.BaseDTO;
+import it.webred.cs.data.DataModelCostanti;
+import it.webred.cs.data.DataModelCostanti.TipoIndirizzo;
 import it.webred.cs.data.model.CsTbTipoIndirizzo;
 import it.webred.ct.support.datarouter.CeTBaseObject;
-import it.webred.ejb.utility.ClientUtility;
 import it.webred.jsf.interfaces.IResidenza;
 
 import java.io.Serializable;
@@ -14,16 +15,40 @@ import java.util.List;
 
 import javax.faces.event.AjaxBehaviorEvent;
 import javax.faces.model.SelectItem;
-import javax.naming.NamingException;
+
+import org.apache.commons.lang3.StringUtils;
 
 public abstract class ResidenzaMan extends CsUiCompBaseBean implements IResidenza {
 	
-	
 	protected static final SimpleDateFormat SDF = new SimpleDateFormat("dd/MM/yyyy");
+	public static enum TIPO_LUOGO{
+		COMUNE("E", "COMUNE"),
+		ALTRO("A", "Altro"),
+		SENZA_FISSA_DIMORA("SDF", DataModelCostanti.SENZA_FISSA_DIMORA);
+		
+		String descrizione;
+        String codice;
+		
+        private TIPO_LUOGO(String codice, String descrizione) {
+			this.descrizione = descrizione;
+			this.codice = codice;
+		}
+
+		public String getDescrizione() {return descrizione;}
+		public void setDescrizione(String descrizione) {this.descrizione = descrizione;}
+		public String getCodice() {return codice;}
+		public void setCodice(String codice) {this.codice = codice;}
+	}
 	
-	private String enteValue = "E";
-	private String altroValue = "A";
-	private String senzaFissaDimoraValue = "SFD";
+	
+	protected List<CsTbTipoIndirizzo> listaTipoIndirizzo;
+	
+	public ResidenzaMan(){
+		listaTipoIndirizzo = new ArrayList<CsTbTipoIndirizzo>();
+		CeTBaseObject bo = new CeTBaseObject();
+		fillEnte(bo);
+		listaTipoIndirizzo = confService.getTipoIndirizzo(bo);
+	}
 	
 	protected static long nullDateTime;
 	static {
@@ -74,10 +99,6 @@ public abstract class ResidenzaMan extends CsUiCompBaseBean implements IResidenz
 		return "Gestione indirizzi";
 	}
 	
-	public String getEnteLabel() {
-		return "COMUNE";
-	}
-	
 	public boolean isIndirizziEmpty() {
 		List<?> lstIndirizzi = getLstIndirizzi();
 		return lstIndirizzi == null || lstIndirizzi.size() == 0;
@@ -85,88 +106,51 @@ public abstract class ResidenzaMan extends CsUiCompBaseBean implements IResidenz
 	
 	public abstract String getWidgetVar();
 	
-	public List<CsTbTipoIndirizzo> getBeanLstTipiIndirizzo() {
-		List<CsTbTipoIndirizzo> beanLstTipiIndirizzo = null;
-		try {
-			AccessTableConfigurazioneSessionBeanRemote tipoIndirizzoBean = (AccessTableConfigurazioneSessionBeanRemote) ClientUtility.getEjbInterface("CarSocialeA", "CarSocialeA_EJB", "AccessTableConfigurazioneSessionBean");
-			CeTBaseObject bo = new CeTBaseObject();
-			fillEnte(bo);
-			beanLstTipiIndirizzo = tipoIndirizzoBean.getTipoIndirizzo(bo);
-		} catch (NamingException e) {
-			logger.error(e);
+	protected CsTbTipoIndirizzo getTipoIndirizzo(String id){
+		CsTbTipoIndirizzo tipo = null;
+		if (!StringUtils.isBlank(id)) {
+			BaseDTO dto = new BaseDTO();
+			fillEnte(dto);
+			dto.setObj(new Long(id));
+			tipo = confService.getTipoIndirizzoById(dto);
 		}
-		return beanLstTipiIndirizzo;
+		return tipo;
 	}
 	
 	@SuppressWarnings("unused")
 	public ArrayList<SelectItem> getLstTipiIndirizzo() {
 		ArrayList<SelectItem> lstTipiIndirizzo = new ArrayList<SelectItem>();
-		lstTipiIndirizzo.add(new SelectItem(null, "- seleziona -"));
-		List<CsTbTipoIndirizzo> beanLstTipiIndirizzo = getBeanLstTipiIndirizzo();
-		if (beanLstTipiIndirizzo != null) {
-			for (CsTbTipoIndirizzo tipoIndirizzo : beanLstTipiIndirizzo) {
-				lstTipiIndirizzo.add(new SelectItem(tipoIndirizzo.getId(), tipoIndirizzo.getDescrizione()));
-			}
+		for (CsTbTipoIndirizzo tipoIndirizzo : listaTipoIndirizzo) {
+			lstTipiIndirizzo.add(new SelectItem(tipoIndirizzo.getId(), tipoIndirizzo.getDescrizione()));
 		}
 		return lstTipiIndirizzo;
 	}
 	
 	public CsTbTipoIndirizzo getTipoIndirizzoResidenza() {
 		CsTbTipoIndirizzo tipoIndirizzoResidenza = null;
-		List<CsTbTipoIndirizzo> beanLstTipiIndirizzo = getBeanLstTipiIndirizzo();
-		if (beanLstTipiIndirizzo != null) {
-			for (CsTbTipoIndirizzo tipoIndirizzo : beanLstTipiIndirizzo) {
-				if (tipoIndirizzo.getDescrizione().equalsIgnoreCase("Residenza")) {
-					tipoIndirizzoResidenza = tipoIndirizzo;
-					break;
-				}
+		for (CsTbTipoIndirizzo tipoIndirizzo : listaTipoIndirizzo) {
+			if (tipoIndirizzo.getDescrizione().equalsIgnoreCase(TipoIndirizzo.RESIDENZA)) {
+				tipoIndirizzoResidenza = tipoIndirizzo;
+				break;
 			}
-		}	
+		}
 		return tipoIndirizzoResidenza;
 	}
 	
 	public CsTbTipoIndirizzo getTipoIndirizzoDomicilio() {
 		CsTbTipoIndirizzo tipoIndirizzoResidenza = null;
-		List<CsTbTipoIndirizzo> beanLstTipiIndirizzo = getBeanLstTipiIndirizzo();
-		if (beanLstTipiIndirizzo != null) {
-			for (CsTbTipoIndirizzo tipoIndirizzo : beanLstTipiIndirizzo) {
-				if (tipoIndirizzo.getDescrizione().equalsIgnoreCase("Domicilio")) {
-					tipoIndirizzoResidenza = tipoIndirizzo;
-					break;
-				}
+		for (CsTbTipoIndirizzo tipoIndirizzo : listaTipoIndirizzo) {
+			if (tipoIndirizzo.getDescrizione().equalsIgnoreCase(TipoIndirizzo.DOMICILIO)) {
+				tipoIndirizzoResidenza = tipoIndirizzo;
+				break;
 			}
-		}	
+		}
 		return tipoIndirizzoResidenza;
 	}
 
-		
 	public abstract void annullaIndirizzo();
 	
 	public abstract void eliminaIndirizzo();
-
-	public String getEnteValue() {
-		return enteValue;
-	}
-
-	public void setEnteValue(String enteValue) {
-		this.enteValue = enteValue;
-	}
-
-	public String getAltroValue() {
-		return altroValue;
-	}
-
-	public void setAltroValue(String altroValue) {
-		this.altroValue = altroValue;
-	}
-	
-	public String getSenzaFissaDimoraValue() {
-		return senzaFissaDimoraValue;
-	}
-
-	public void setSenzaFissaDimoraValue(String senzaFissaDimoraValue) {
-		this.senzaFissaDimoraValue = senzaFissaDimoraValue;
-	}
 
 	public abstract void reset(AjaxBehaviorEvent event);
 	

@@ -4,7 +4,6 @@ import it.webred.ct.support.validation.annotation.AuditConsentiAccessoAnonimo;
 import it.webred.ct.support.validation.annotation.AuditSaltaValidazioneSessionID;
 import it.webred.ss.dao.SsSchedaDAO;
 import it.webred.ss.data.model.ArBufferSsInvio;
-import it.webred.ss.data.model.ArOOrganizzazione;
 import it.webred.ss.data.model.SsAnagrafica;
 import it.webred.ss.data.model.SsAnagraficaLog;
 import it.webred.ss.data.model.SsCCategoriaSociale;
@@ -41,6 +40,7 @@ import it.webred.ss.ejb.dto.BaseDTO;
 import it.webred.ss.ejb.dto.DatiPrivacyDTO;
 import it.webred.ss.ejb.dto.DatiSchedaListDTO;
 import it.webred.ss.ejb.dto.OperatoreDTO;
+import it.webred.ss.ejb.dto.OrganizzazioneDTO;
 import it.webred.ss.ejb.dto.SintesiSchedeUfficioDTO;
 import it.webred.ss.ejb.dto.SsSearchCriteria;
 import it.webred.ss.ejb.dto.report.DatiPrivacyPdfDTO;
@@ -78,7 +78,8 @@ public class SsSchedaSessionBean implements SsSchedaSessionBeanRemote {
 	public void saveConsensoPrivacy(DatiPrivacyDTO dto) {
 		SsSchedaPrivacy privacy = new SsSchedaPrivacy();
 		CsSsPrivacyPK pk = new CsSsPrivacyPK();
-		pk.setCf(dto.getCf());
+		String cf = !StringUtils.isBlank(dto.getCf()) ? dto.getCf().toUpperCase() : null;
+		pk.setCf(cf);
 		pk.setOrganizzazioneId(dto.getOrganizzazioneId());
 		privacy.setId(pk);
 		privacy.setDtSottoscrizione(dto.getDtSottoscrizione());
@@ -95,7 +96,7 @@ public class SsSchedaSessionBean implements SsSchedaSessionBeanRemote {
 			SsOOrganizzazione org = dao.findOrganizzazione(dto.getOrganizzazioneId());
 			if(org!=null) {
 				RdcConsensiSocToLavPK idc = new RdcConsensiSocToLavPK();
-				idc.setCf(dto.getCf());
+				idc.setCf(cf);
 				idc.setCodEnteFrom(org.getCodCatastale());
 				RdcConsensiSocToLav c = dao.findConsensoToLavoro(idc); 
 				if(c==null) {
@@ -688,11 +689,7 @@ public class SsSchedaSessionBean implements SsSchedaSessionBeanRemote {
 		DatiPrivacyDTO res = null;
 		String cf = dto.getCf().toUpperCase();
 		if(!StringUtils.isEmpty(cf)) {
-			CsSsPrivacyPK id = new CsSsPrivacyPK();
-			id.setCf(cf);
-			id.setOrganizzazioneId(dto.getOrganizzazioneId());
-			
-			CsSsPrivacy ssp = dao.findSchedaPrivacy(id);
+			CsSsPrivacy ssp = dao.findSchedaPrivacy(cf, dto.getOrganizzazioneId());
 			if(ssp!=null) {
 				res = new DatiPrivacyDTO();
 				res.setCf(ssp.getId().getCf());
@@ -716,25 +713,14 @@ public class SsSchedaSessionBean implements SsSchedaSessionBeanRemote {
 	}
 
 	@Override
-	public List<ArOOrganizzazione> readOrganizzazioniFuoriZona(BaseDTO dto) {
-		return dao.getListaOrganizzazioniFuoriZona();
-	}
-
-	@Override
 	public List<SsOOrganizzazione> readOrganizzazioniAltre(BaseDTO dto) {
 		return dao.getListaOrganizzazioniAltre();
 	}
 	
 	@Override
-	public ArOOrganizzazione readArOOrganizzazioniById(BaseDTO dto) {
-		return dao.readArOrganizzazione((Long)dto.getObj());
-	}
-	@Override
 	public SsOOrganizzazione readSsOOrganizzazioniById(BaseDTO dto) {
 		return dao.readSsOrganizzazione(dto.getOrganizzazione());
 	}
-	
-	
 	
 	@Override
 	public List<SsRelUffPcontOrg> readUfficiOrganizzazione(BaseDTO dto) {
@@ -801,8 +787,20 @@ public class SsSchedaSessionBean implements SsSchedaSessionBeanRemote {
 	}
 
 	@Override
-	public ArOOrganizzazione readSsArOOrganizzazioniById(BaseDTO dto) {
-		return dao.readSsArOrganizzazione(dto.getOrganizzazione());
+	public OrganizzazioneDTO findOrganizzazioneDestInvio(BaseDTO dto) {
+		boolean zs = (Boolean)dto.getObj();
+		OrganizzazioneDTO dest = null;
+		if(zs){
+			SsOOrganizzazione o  = dao.findOrganizzazione(dto.getOrganizzazione());
+			if(o!=null){
+				dest = new OrganizzazioneDTO();
+				dest.setId(o.getId());
+				dest.setBelfiore(o.getCodCatastale());
+				dest.setNome(o.getNome()); //Non valorizzo la ZS
+			}
+		}else
+			dest = dao.readArOrganizzazione(dto.getOrganizzazione());
+		return dest;
 	}
 
 	@Override

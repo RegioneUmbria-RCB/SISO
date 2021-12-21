@@ -41,5 +41,7 @@ public interface ISoggCatSociale {
 	
 	public String getUfficioSchedaSegr();
 
+	public void carica(Long anagraficaId);
+
 
 }

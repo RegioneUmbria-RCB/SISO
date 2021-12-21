@@ -1,6 +1,7 @@
 package it.webred.cs.csa.ejb.client;
 
 import it.webred.cs.csa.ejb.dto.BaseDTO;
+import it.webred.cs.csa.ejb.dto.KeyValueDTO;
 import it.webred.cs.data.model.CsCMedico;
 import it.webred.cs.data.model.CsVMedico;
 import it.webred.ct.support.datarouter.CeTBaseObject;
@@ -12,7 +13,7 @@ import javax.ejb.Remote;
 @Remote
 public interface AccessTableMediciSessionBeanRemote {
 	
-	public List<CsCMedico> getMedici(CeTBaseObject cet);
+	public List<KeyValueDTO> getMedici(CeTBaseObject cet);
 	
 	public List<CsCMedico> searchMedici(BaseDTO cet);
 	

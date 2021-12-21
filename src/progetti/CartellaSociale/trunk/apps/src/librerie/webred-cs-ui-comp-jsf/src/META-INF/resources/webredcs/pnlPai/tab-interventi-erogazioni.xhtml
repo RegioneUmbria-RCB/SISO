@@ -34,8 +34,16 @@
 									<p:column headerText="Stato Ultima Erog." style="text-align:center;">
 										<h:outputText value="#{rowBean.master.statoUltimaErogazione}" />
 									</p:column>
-					
-					     </p:dataTable>
+									<p:column  style="text-align:center;">
+										<p:commandButton id="idBtnApriDlg" process="@this"
+											value="#{rowBean.nomeRowDiaglogButton}"
+											title="#{rowBean.nomeRowDiaglogButton}"
+											action="#{cc.attrs.iPai.apriErogazioneButton(rowBean)}"
+											oncomplete="if(args &amp;&amp; args.isShowDialog){  updatePaiDlgFglInt(); PF('pnlFglInterventoNuovoPaiWidgetVar').show(); } " 
+											icon="ui-icon-play">
+										</p:commandButton>
+									</p:column>
+								</p:dataTable>
 					     </h:panelGrid>
 					     <h:panelGrid columns="1">
 								<p:commandButton value="Collega erogazioni"
@@ -45,7 +53,8 @@
 									update="@([id$=paiTabViewContainer])" />
 				 	</h:panelGrid>
 					</p:tab>
-					<p:tab title="Lista interventi programmati" id="tabListaInterventi">
+					<p:tab id="tabListaInterventi" title="Lista interventi programmati" 
+						   rendered="#{cc.attrs.iPai.fromFascicoloCartellaUtente || cc.attrs.iPai.idCasoSoggEsterno != null}">
 					<h:panelGrid columns="1">
 					<!--INIZIO  TABELLA LISTA INTERVENTI ASSOCIATI AL PAI   -->
 					<p:dataTable id="paiDataTableInterventi" 

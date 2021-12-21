@@ -8,7 +8,7 @@
 	xmlns:webredcs="http://java.sun.com/jsf/composite/webredcs">
 
 
-<p:panel id="pnlTestata" header="Testata" toggleable="true" styleClass="#{'updateOnListaErogazioniChange updateFlagAttivazioneChange'}">
+<p:panel id="pnlTestata" header="Testata" toggleable="true" styleClass="#{'updateOnListaErogazioniChange updateFlagAttivazioneChange updateFlagRespintoChange'}">
    <p:growl id="growl2" life="2000" />
       	<p:spacer height="20px"/>		     
       <h:panelGrid columns="3" cellpadding="0" style="float:right;" rendered="#{fglInterventoBean.erogazioneInterventoBean.nuovoIntEsegMast.dtIns!=null}" >
@@ -33,7 +33,7 @@
 
       <h:panelGroup>
          <p:outputLabel value="Tipo: " />
-         <p:outputLabel value="'#{fglInterventoBean.erogazioneInterventoBean.nomeTipoErogazione}'" style="font-weight:bold" />
+         <p:outputLabel value="#{fglInterventoBean.erogazioneInterventoBean.nomeTipoErogazione}" style="font-weight:bold" />
       </h:panelGroup>
 
       <h:panelGroup>
@@ -67,7 +67,7 @@
       
       <p:selectOneMenu id="cbxSettErogante" filter="true" filterMatchMode="contains"
          value="#{fglInterventoBean.erogazioneInterventoBean.selSettoreEroganteId}"
-         disabled="#{fglInterventoBean.erogazioneInterventoBean.testataDisabled or !fglInterventoBean.richiediInterventi}">
+         disabled="#{fglInterventoBean.erogazioneInterventoBean.testataDisabled or !fglInterventoBean.richiediInterventi or fglInterventoBean.erogazioneInterventoBean.isStrutturaSelezionata }">
          <p:ajax event="change" update="lblOrgErogante parentDettaglio @parent:@parent:@parent:pnlDettaglio:pnlOperatoreScegliOrInserisci"
             listener="#{fglInterventoBean.erogazioneInterventoBean.onSettEroganteTestaChange}"/>
          <f:selectItem itemLabel="- seleziona -" noSelectionOption="true" />
@@ -187,6 +187,7 @@
                			   fglInterventoBean.erogazioneInterventoBean.testataDisabled}">
                <f:selectItem noSelectionOption="true" itemLabel="- seleziona -" />
                <f:selectItems value="#{fglInterventoBean.erogazioneInterventoBean.listaCodiciPrestazione}" />
+               <p:ajax event="change" partialSubmit="true" process="@this" listener="#{fglInterventoBean.erogazioneInterventoBean.onChangeCodPrestazione()}"/>
             </p:selectOneMenu>
 
 			<p:outputLabel id="lblPresoInCarico" for="cbxPresoInCarico" value="Durante il servizio il beneficiario è in carico? " />
@@ -199,19 +200,21 @@
                <webredcs:tooltipInfo stringDescr="Se si sceglie 'Non so' verrà rimandata ad una fase successiva la
                  specifica sulla presa in carico o meno necessaria per l'invio della prestazione al SIUSS"/>
              </h:panelGrid>
-			
-            <p:outputLabel id="lblDataDsu" for="dataDsu" value="Data presentazione dsu"
-               rendered="#{fglInterventoBean.erogazioneInterventoBean.situazioneEconomicaVerificata}"/>
-            <webred:pnlData id="dataDsu" disabled="#{fglInterventoBean.erogazioneInterventoBean.dataDsuDisabled}"
-               dataValue="#{fglInterventoBean.erogazioneInterventoBean.csIPs.dataDSU}" dataPattern="dd/MM/yyyy"
-               dataPatternLabel="gg/mm/aaaa" rendered="#{fglInterventoBean.erogazioneInterventoBean.situazioneEconomicaVerificata}" />
-               
          </h:panelGrid>
 
 		<webredcs:pnlProtocolloDsu iProtocolloDsu="#{fglInterventoBean.erogazioneInterventoBean.protDsuMan}" 
 		                        disabled="#{fglInterventoBean.erogazioneInterventoBean.dataDsuDisabled}"
 		                        visibile="#{fglInterventoBean.erogazioneInterventoBean.situazioneEconomicaVerificata}"
+		                        onChangeAnnoProtocollo="#{fglInterventoBean.erogazioneInterventoBean.handleChangeAnnoProtocollo()}" 
+			    			    onChangeAnnoProtocolloStyle="onChangeAnnoProtocolloDSU"
 		                        numColumns="2"/>
+		 <h:panelGrid id="pnlDataDSU"  columns="2"  styleClass="#{'onChangeAnnoProtocolloDSU'}">
+		 	<p:outputLabel id="lblDataDsu" for="dataDsu" value="Data presentazione dsu"
+               rendered="#{fglInterventoBean.erogazioneInterventoBean.situazioneEconomicaVerificata}"/>
+            <webred:pnlData id="dataDsu" disabled="#{fglInterventoBean.erogazioneInterventoBean.dataDsuDisabled}"
+               dataValue="#{fglInterventoBean.erogazioneInterventoBean.csIPs.dataDSU}" dataPattern="dd/MM/yyyy"
+               dataPatternLabel="gg/mm/aaaa" rendered="#{fglInterventoBean.erogazioneInterventoBean.situazioneEconomicaVerificata}" />
+		 </h:panelGrid>                      
 			
          <p:commandButton id="cambiaDatiIseeBtn" value="Cambia"
             rendered="#{fglInterventoBean.erogazioneInterventoBean.dentroFascicolo and fglInterventoBean.erogazioneInterventoBean.situazioneEconomicaVerificata}" 
@@ -237,14 +240,14 @@
    <h:panelGrid id="pnlSpeseTestata" columns="1" style="display: inline-block; vertical-align: top; width:60%"
       styleClass="#{'updateFlagAttivazioneChange updateOnListaErogazioniChange'}">
 
-      <p:panel header="Spese" id="fldsetSpese" styleClass="#{'updateOnTariffaUnitariaChange updateOnUnitaMisuraChange updateOnAggiornaTotSpese'}"
+      <p:panel header="Spese e Compartecipazioni" id="fldsetSpese" styleClass="#{'updateOnTariffaUnitariaChange updateOnUnitaMisuraChange updateOnAggiornaTotSpese'}"
          toggleable="true" collapsed="true">
-         <p:selectBooleanButton onLabel="Calcola il totale spese, da dettaglio" offLabel="Imposta manualmente le spese totali"
+         <p:selectBooleanButton onLabel="Calcola il totale spese e compartecipazioni, da dettaglio" offLabel="Imposta manualmente le spese totali e le compartecipazioni"
             onIcon="ui-icon-calculator" offIcon="ui-icon-pencil" id="btnCalcolaSpese"
             value="#{fglInterventoBean.erogazioneInterventoBean.calcolaSpesaDaDettaglio}"
             disabled="#{!fglInterventoBean.abilitaCheckCalcolo}">
             <p:ajax event="change" listener="#{fglInterventoBean.erogazioneInterventoBean.onChangeCalcolaSpeseTotali}"
-               update="pnlQuotaTariffa, pnltestaPercValue, :#{p:component('fldsetCompartecipazioni')}, @parent:@parent:pnlDettaglio:panelAttributiErogazione" process="@this" />
+               update="pnlQuotaTariffa, pnltestaPercValue, pnlTestaCompartecipazione,  @parent:@parent:pnlDettaglio:panelAttributiErogazione" process="@this" />
          </p:selectBooleanButton>
          <h:panelGrid columns="4" id="pnlQuotaTariffa" rendered="false">
             <!--  rendered="#{!fglInterventoBean.erogazioneInterventoBean.calcolaSpesaDaDettaglio and fglInterventoBean.erogazioneInterventoBean.erogazionePossibile and fglInterventoBean.datiTariffeInterventoBean.csIQuota.csTbUnitaMisura.valore!=null and fglInterventoBean.datiTariffeInterventoBean.csIQuota.tariffa>0}" > -->
@@ -256,7 +259,7 @@
             </p:inputText>
 
             <p:outputLabel value="Motivo/Note: " />
-            <p:inputText style="text-transform: uppercase; width:200px;"
+            <p:inputText style="width:200px;"
                value="#{fglInterventoBean.erogazioneInterventoBean.motivazioneQuotaTestata}" maxlength="4000"/>
          </h:panelGrid>
 
@@ -308,49 +311,41 @@
             </p:outputPanel>
 
          </h:panelGrid>
+         <p:fieldset id="fldsetCompartecipazioni" legend="Compartecipazioni alla spesa" styleClass="updateOnUnitaMisuraChange">
+	         <h:panelGrid columns="8" id="pnlTestaCompartecipazione" width="100%">
+	            <p:outputLabel id="testa_lblCompartUtenti" for="testa_txtCompartUtenti" value="Comp.utenti" style="display: block; width: 120px;"/>
+	            <p:outputLabel value="€" />
+	            <p:inputText id="testa_txtCompartUtenti" style="width:90px;"
+	               disabled="#{fglInterventoBean.erogazioneInterventoBean.calcolaSpesaDaDettaglio or !fglInterventoBean.erogazioneInterventoBean.erogazionePossibile or fglInterventoBean.erogazioneInterventoBean.testataDisabled or (fglInterventoBean.datiTariffeInterventoBean.csIQuota.csTbUnitaMisura.valore!=null and fglInterventoBean.datiTariffeInterventoBean.csIQuota.tariffa>0 and fglInterventoBean.datiTariffeInterventoBean.csIQuota.csTbUnitaMisura.valore!='€')}"
+	               value="#{fglInterventoBean.erogazioneInterventoBean.nuovoIntEsegMast.compartUtenti}"/>
+	            <p:tooltip for="testa_lblCompartUtenti, testa_txtCompartUtenti" value="Ex: 1999.99" trackMouse="true" />
+	
+	            <p:outputLabel id="testa_lblCompartSSN" for="testa_txtCompartSSN" value="Comp. SSN" style="display: block; width: 120px;" />
+	            <p:outputLabel value="€" />
+	            <p:inputText id="testa_txtCompartSSN" style="width:90px;"
+	               disabled="#{fglInterventoBean.erogazioneInterventoBean.calcolaSpesaDaDettaglio or !fglInterventoBean.erogazioneInterventoBean.erogazionePossibile or fglInterventoBean.erogazioneInterventoBean.testataDisabled or (fglInterventoBean.datiTariffeInterventoBean.csIQuota.csTbUnitaMisura.valore!=null and fglInterventoBean.datiTariffeInterventoBean.csIQuota.tariffa>0 and fglInterventoBean.datiTariffeInterventoBean.csIQuota.csTbUnitaMisura.valore!='€')}"
+	               value="#{fglInterventoBean.erogazioneInterventoBean.nuovoIntEsegMast.compartSsn}" />
+	            <p:tooltip for="testa_txtCompartSSN, testa_lblCompartSSN" value="Ex: 1999.99" trackMouse="true" />
+	
+	            <p:outputLabel id="testa_lblAltreCompart" for="testa_txtAltreCompart" value="Altre comp."
+	               style="display: block; width: 120px;"/>
+	            <p:outputLabel value="€" />
+	            <p:inputText id="testa_txtAltreCompart" style="width:90px;"
+	               disabled="#{fglInterventoBean.erogazioneInterventoBean.calcolaSpesaDaDettaglio or !fglInterventoBean.erogazioneInterventoBean.erogazionePossibile or fglInterventoBean.erogazioneInterventoBean.testataDisabled or (fglInterventoBean.datiTariffeInterventoBean.csIQuota.csTbUnitaMisura.valore!=null and fglInterventoBean.datiTariffeInterventoBean.csIQuota.tariffa>0 and fglInterventoBean.datiTariffeInterventoBean.csIQuota.csTbUnitaMisura.valore!='€')}"
+	               value="#{fglInterventoBean.erogazioneInterventoBean.nuovoIntEsegMast.compartAltre}"/>
+	            <p:tooltip for="testa_txtAltreCompart, testa_lblAltreCompart" value="Ex: 1999.99" trackMouse="true" />
+	
+	            <p:outputLabel id="testa_lblNoteCompart" for="testa_txtNoteCompart" value="Note su altre comp."
+	               style="display: block; width: 120px;"/>
+	            <p:spacer width="5px" />
+	            <p:inputTextarea id="testa_txtNoteCompart" rows="2" cols="35"
+	               disabled="#{fglInterventoBean.erogazioneInterventoBean.calcolaSpesaDaDettaglio or !fglInterventoBean.erogazioneInterventoBean.erogazionePossibile or fglInterventoBean.erogazioneInterventoBean.testataDisabled or (fglInterventoBean.datiTariffeInterventoBean.csIQuota.csTbUnitaMisura.valore!=null and fglInterventoBean.datiTariffeInterventoBean.csIQuota.tariffa>0 and fglInterventoBean.datiTariffeInterventoBean.csIQuota.csTbUnitaMisura.valore!='€')}"
+	               value="#{fglInterventoBean.erogazioneInterventoBean.nuovoIntEsegMast.noteAltreCompart}" autoResize="false"/>
+	
+	         </h:panelGrid>
+	      </p:fieldset>
       </p:panel>
-      <p:panel id="fldsetCompartecipazioni" header="Compartecipazioni alla spesa" toggleable="true" collapsed="true"
-         styleClass="updateOnUnitaMisuraChange updateOnAggiornaTotCompartecipazioni">
-         <p:selectBooleanButton onLabel="Calcola il totale delle compartecipazioni, da dettaglio"
-            offLabel="Imposta manualmente i valori totali delle compartecipazioni" onIcon="ui-icon-calculator" offIcon="ui-icon-pencil"
-            id="btnCalcolaCompartecipazioni" value="#{fglInterventoBean.erogazioneInterventoBean.calcolaCompartDaDettaglio}"
-            disabled="#{!fglInterventoBean.abilitaCheckCalcolo or fglInterventoBean.erogazioneInterventoBean.calcolaSpesaDaDettaglio}">
-            <p:ajax event="change" update="pnlTestaCompartecipazione,  @parent:@parent:pnlDettaglio:panelAttributiErogazione" process="@this"
-               listener="#{fglInterventoBean.erogazioneInterventoBean.onChangeCalcolaCompartecipazioniTot}"/>
-         </p:selectBooleanButton>
-         <h:panelGrid columns="8" id="pnlTestaCompartecipazione" width="100%">
-            <p:outputLabel id="testa_lblCompartUtenti" for="testa_txtCompartUtenti" value="Comp.utenti"
-               style="display: block; width: 120px;"/>
-            <p:outputLabel value="€" />
-            <p:inputText id="testa_txtCompartUtenti" style="width:90px;"
-               disabled="#{fglInterventoBean.erogazioneInterventoBean.calcolaCompartDaDettaglio or !fglInterventoBean.erogazioneInterventoBean.erogazionePossibile or fglInterventoBean.erogazioneInterventoBean.testataDisabled}"
-               value="#{fglInterventoBean.erogazioneInterventoBean.nuovoIntEsegMast.compartUtenti}"/>
-            <p:tooltip for="testa_lblCompartUtenti, testa_txtCompartUtenti" value="Ex: 1999.99" trackMouse="true" />
-
-            <p:outputLabel id="testa_lblCompartSSN" for="testa_txtCompartSSN" value="Comp. SSN" style="display: block; width: 120px;" />
-            <p:outputLabel value="€" />
-            <p:inputText id="testa_txtCompartSSN" style="width:90px;"
-               disabled="#{fglInterventoBean.erogazioneInterventoBean.calcolaCompartDaDettaglio or !fglInterventoBean.erogazioneInterventoBean.erogazionePossibile or fglInterventoBean.erogazioneInterventoBean.testataDisabled}"
-               value="#{fglInterventoBean.erogazioneInterventoBean.nuovoIntEsegMast.compartSsn}" />
-            <p:tooltip for="testa_txtCompartSSN, testa_lblCompartSSN" value="Ex: 1999.99" trackMouse="true" />
-
-            <p:outputLabel id="testa_lblAltreCompart" for="testa_txtAltreCompart" value="Altre comp."
-               style="display: block; width: 120px;"/>
-            <p:outputLabel value="€" />
-            <p:inputText id="testa_txtAltreCompart" style="width:90px;"
-               disabled="#{fglInterventoBean.erogazioneInterventoBean.calcolaCompartDaDettaglio or !fglInterventoBean.erogazioneInterventoBean.erogazionePossibile or fglInterventoBean.erogazioneInterventoBean.testataDisabled}"
-               value="#{fglInterventoBean.erogazioneInterventoBean.nuovoIntEsegMast.compartAltre}"/>
-            <p:tooltip for="testa_txtAltreCompart, testa_lblAltreCompart" value="Ex: 1999.99" trackMouse="true" />
-
-            <p:outputLabel id="testa_lblNoteCompart" for="testa_txtNoteCompart" value="Note su altre comp."
-               style="display: block; width: 120px;"/>
-            <p:spacer width="5px" />
-            <p:inputTextarea id="testa_txtNoteCompart" rows="2" cols="35"
-               disabled="#{fglInterventoBean.erogazioneInterventoBean.calcolaCompartDaDettaglio or !fglInterventoBean.erogazioneInterventoBean.erogazionePossibile or fglInterventoBean.erogazioneInterventoBean.testataDisabled}"
-               value="#{fglInterventoBean.erogazioneInterventoBean.nuovoIntEsegMast.noteAltreCompart}" autoResize="false"/>
-
-         </h:panelGrid>
-      </p:panel>
+      
 
    </h:panelGrid>
 
@@ -360,7 +355,7 @@
    <!-- SISO-556 il pannello dettaglio è visibile solo se non ci sono righe erogazioni di chiusura -->
    <p:panel id="pnlDettaglio" header="Dettaglio" toggleable="true"
       rendered="#{fglInterventoBean.erogazioneInterventoBean.pnlDettaglioErogazioniRendered}"
-      styleClass="#{'tabDettaglioWhite updateOnFrequenzaDelServizioChange updateFlagAttivazioneChange updateOnTipoBeneficiarioChange'}">
+      styleClass="#{'tabDettaglioWhite updateOnFrequenzaDelServizioChange updateFlagAttivazioneChange updateOnTipoBeneficiarioChange updateFlagRespintoChange'}">
       <!-- SISO-556 gli stati variano in funzione della frequenza del servizio -->
       <h:panelGrid columns="4" style="display: inline-block; vertical-align: top;">
          <p:outputLabel value="Operazione" for="listaStatiErogValue" />
@@ -409,12 +404,11 @@
                <p:radioButton id="rdbnt_scegli" for="rdOpErogante" itemIndex="0" />
 
                <h:outputLabel id="lbl_cbxOperatoreOrgErog" for="rdbnt_scegli" value="Scegli Operatore" />
-               <p:selectOneMenu id="cbxOperatoreOrgErog" style="width:120px"
+               <p:selectOneMenu id="cbxOperatoreOrgErog" style="width:120px" filter="true" filterMatchMode="contains"
                   value="#{fglInterventoBean.erogazioneInterventoBean.operatoreErogId}"
                   disabled="#{fglInterventoBean.erogazioneInterventoBean.operatoreScegliOrInserisci=='inserisci' or !fglInterventoBean.erogazioneInterventoBean.erogazionePossibile}">
                   <f:selectItem itemLabel="- seleziona -" noSelectionOption="true" />
-                  <f:selectItems var="opAn" itemLabel="#{opAn.cognome} #{opAn.nome}" itemValue="#{opAn.id}"
-                     value="#{fglInterventoBean.erogazioneInterventoBean.listaOperAnagrafica}"/>
+                  <f:selectItems var="opAn" value="#{fglInterventoBean.erogazioneInterventoBean.listaOperAnagrafica}"/>
                </p:selectOneMenu>
                <p:tooltip for="lbl_cbxOperatoreOrgErog, cbxOperatoreOrgErog" value="(chi ha effettuato il servizio/intervento)" trackMouse="true" />
 
@@ -496,9 +490,9 @@
 	         </p:dataTable>
 	      
 	      <p:fieldset id="fldsetAttributi" style="background: #ffffff" legend="Importi prestazione" 
-	      			  rendered="#{fglInterventoBean.erogazioneInterventoBean.visualizzaAttributi and (fglInterventoBean.erogazioneInterventoBean.calcolaSpesaDaDettaglio or fglInterventoBean.erogazioneInterventoBean.calcolaCompartDaDettaglio)}">
+	      			  rendered="#{fglInterventoBean.erogazioneInterventoBean.visualizzaAttributi and (fglInterventoBean.erogazioneInterventoBean.calcolaSpesaDaDettaglio)}">
 	        <p:wizard backLabel="indietro" nextLabel="avanti" widgetVar="wizSpese" id="wizardSpese" flowListener="#{fglInterventoBean.flowSpese}"  
-	        		  rendered="#{fglInterventoBean.erogazioneInterventoBean.visualizzaAttributi and (fglInterventoBean.erogazioneInterventoBean.calcolaSpesaDaDettaglio or fglInterventoBean.erogazioneInterventoBean.calcolaCompartDaDettaglio)}">
+	        		  rendered="#{fglInterventoBean.erogazioneInterventoBean.visualizzaAttributi and (fglInterventoBean.erogazioneInterventoBean.calcolaSpesaDaDettaglio)}">
 	            <p:tab id="detta_tbSpese" title="Spese">
 	              <p:fieldset id="fldsetTbSpese">
 	               <webredcs:tooltipInfo title="Spese" stringDescr="#{fglInterventoBean.erogazioneInterventoBean.tooltipText.spese}" />
@@ -513,7 +507,7 @@
 	                        converterMessage="Inserire valore numerico intero o decimale (es.12.34)">
 	 					 </p:inputText>	
 	      				 <p:outputPanel id="pnlOreMinuti"  rendered="#{fglInterventoBean.datiTariffeInterventoBean.csIQuota.oreMinuti}">
-		 					 <p:inputText id="qntOre"  style="width:25px;" value="#{fglInterventoBean.erogazioneInterventoBean.oreErogazione}" maxlength="2"
+		 					 <p:inputText id="qntOre"  style="width:25px;" value="#{fglInterventoBean.erogazioneInterventoBean.oreErogazione}" maxlength="4"
 		 					    converterMessage="Il campo Ore non è corretto:inserire valore numerico intero"  >
 		                      </p:inputText>	:
 		 					  <p:inputText id="qntMinuti"    value="#{fglInterventoBean.erogazioneInterventoBean.minutiErogazione}"
@@ -525,13 +519,13 @@
 	                     <!-- SISO-1132 valore modificato in "Tariffa €: " -->
 	                     <p:outputLabel value="Tariffa €: " />
 						 <p:inputText id="inputTariffaUnitariaPerSpesa" style="width: 50px;"
-									value="#{fglInterventoBean.erogazioneInterventoBean.tariffaLocale}"
+									value="#{fglInterventoBean.erogazioneInterventoBean.nuovocsIntEseg.csIValQuota.tariffaCustom}"
 									styleClass="#{'updateOnUnitaMisuraChange updateFlagAttivazioneChange updateOnListaErogazioniChange updateOnTariffaUnitariaChange'}"
-									disabled="#{fglInterventoBean.tariffaDisabled}">
+									disabled="#{fglInterventoBean.tariffaDettaglioDisabled}">
 								<!-- SISO-1132 aggiunto attributo "disabled" -->			
 	                     </p:inputText>	
 	                     <p:outputLabel value="Motivo/Note: " />
-	                     <p:inputText style="text-transform: uppercase; width:200px;"
+	                     <p:inputText style="width:200px;"
 	                        value="#{fglInterventoBean.erogazioneInterventoBean.nuovocsIntEseg.csIValQuota.note}" maxlength="4000"/>
 	                  </h:panelGrid>
 	                  
@@ -539,7 +533,7 @@
 	               
 	               </p:fieldset>
 	            </p:tab>
-	            <p:tab id="detta_tbCompart" title="Compartecipazioni alla spesa" rendered="#{fglInterventoBean.erogazioneInterventoBean.calcolaCompartDaDettaglio}">
+	            <p:tab id="detta_tbCompart" title="Compartecipazioni alla spesa" rendered="#{fglInterventoBean.erogazioneInterventoBean.calcolaSpesaDaDettaglio}">
 	            <p:fieldset id="fldsetTbCompart" >
 	                   <h:panelGrid columns="4">
 	                  <webredcs:tooltipInfo title="Compartecipazioni" stringDescr="#{fglInterventoBean.erogazioneInterventoBean.tooltipText.compartecipazioni}" />
@@ -576,14 +570,10 @@
 	               </h:panelGrid>
 	               <p:spacer height="20px" />
 	                 <h:panelGrid columns="4" style="width:100%">
-			               <p:commandButton value="Imposta tutto a zero" title="Imposta tutto a zero"
+			               <p:commandButton value="Imposta tutto a zero" title="Imposta tutte le compartecipazioni a zero"
 			                  icon="ui-icon-calculator" action="#{fglInterventoBean.erogazioneInterventoBean.onImpostaTuttoAZero}"
 			                   process="@parent" update=":#{p:component('fldsetAttributi')}"/>
 			                   
-			                <p:commandButton value="Aggiorna totale compartecipazioni" title="Ricalcola i valori totali in testata"
-			                  icon="ui-icon-calculator" action="#{fglInterventoBean.erogazioneInterventoBean.onChangeCalcolaCompartecipazioniTot}"
-			                  process="wizardSpese" update="@(.updateOnAggiornaTotCompartecipazioni)" />
-	                 
 	                  </h:panelGrid>
 				  </p:fieldset>
 	            </p:tab>
@@ -623,8 +613,9 @@
 					         <p:commandButton id="btnConferma" value="Conferma" icon="ui-icon-disk"
 					            actionListener="#{fglInterventoBean.aggiungiAttributiFglIntervento}" validateClient="false"
 					         	process="@form" disabled="#{!fglInterventoBean.erogazioneInterventoBean.enabledAggiungi}"
-	                       		update="@(.updateOnListaErogazioniChange)" />
+	                       		oncomplete="if (args &amp;&amp; !args.validationFailed &amp;&amp; args.added){ wizSpese.loadStep(wizSpese.cfg.steps[0], true); updateWizard(); } else {}"/>
 	    			  </h:panelGrid>
+	    			  <p:remoteCommand name="updateWizard" process="@this" update="@(.updateOnListaErogazioniChange)"  />  
 	    			   </p:fieldset>
 	            </p:tab>
 	          </p:wizard>
@@ -634,7 +625,7 @@
       <h:panelGrid columnClasses="centered" columns="1">
          <p:spacer height="10px" />
          <p:commandButton id="btnAggiungiAttributi" value="Aggiungi"      
-            rendered="#{!(fglInterventoBean.erogazioneInterventoBean.visualizzaAttributi and (fglInterventoBean.erogazioneInterventoBean.calcolaSpesaDaDettaglio or fglInterventoBean.erogazioneInterventoBean.calcolaCompartDaDettaglio))}"
+            rendered="#{!(fglInterventoBean.erogazioneInterventoBean.visualizzaAttributi and (fglInterventoBean.erogazioneInterventoBean.calcolaSpesaDaDettaglio))}"
             actionListener="#{fglInterventoBean.aggiungiAttributiFglIntervento}" validateClient="false"
             process="@form" 
             disabled="#{!fglInterventoBean.erogazioneInterventoBean.enabledAggiungi}"

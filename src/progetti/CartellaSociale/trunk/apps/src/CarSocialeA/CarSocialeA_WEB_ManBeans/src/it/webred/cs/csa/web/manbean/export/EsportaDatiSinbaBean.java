@@ -552,27 +552,23 @@ public class EsportaDatiSinbaBean extends CsUiCompBaseBean {
 	
 
 	public StreamedContent getFile() {
+		InputStream stream = null;
+		StreamedContent file=null;
 		try {
-			StreamedContent file=null;
-			
 			CsDExportSinba exportMast = onBtnEsportaDatiSinbaClick(SchemaVersion.SINBA_2018);
-			InputStream stream = new FileInputStream(tempFile);
+			stream = new FileInputStream(tempFile);
 			file = new DefaultStreamedContent(stream, "text/xml", exportMast.getNomeFile() + ".xml");
 
 			// Refresh caricamento dati
 			onDownloadRefresh();
-				
-			return file;
-			
 		} catch (FileNotFoundException e) {
 			addError("Esportazione fallita", "errore nel recupero del file xml");
 			logger.error("Esportazione fallita", e);
-			return null;
 		} catch (Exception e) {
 			addError("Esportazione fallita","la procedura di esportazione ha segnalato un errore: "+ e.getMessage());
 			logger.error("Esportazione fallita", e);
-			return null;
 		}
+		return file;
 	}
 	//SISO-777 registro i sinbaselezionati per essere esportati
 	

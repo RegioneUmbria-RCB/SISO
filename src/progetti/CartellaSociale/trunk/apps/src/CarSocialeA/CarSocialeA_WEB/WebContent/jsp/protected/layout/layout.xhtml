@@ -221,6 +221,26 @@
 									<p:resetInput target="@all" />
 								</p:menuitem>
 
+								<p:menuitem value="Reddito di Cittadinanza"
+									icon="ui-icon-folder-collapsed"
+									rendered="#{navigationBean.redditoCittadinanzaVisibile}"
+									action="#{navigationBean.goRedditoCittadinanza}"
+									disabled="#{schedaBean.disableHead}">
+									<p:resetInput target="@all" />
+								</p:menuitem>
+								<p:menuitem value="Prestazioni FSE"
+									icon="ui-icon-folder-collapsed"
+									rendered="#{navigationBean.listaFseVisibile}"
+									action="#{navigationBean.goListaFse}"
+									disabled="#{schedaBean.disableHead}">
+									<p:resetInput target="@all" />
+								</p:menuitem>
+								<p:menuitem value="Progetti Individuali" icon="ui-icon-gear"
+									action="#{navigationBean.goProgettiIndividuali}"
+									rendered="#{navigationBean.progettiIndividualiVisible}"
+									disabled="#{schedaBean.disableHead}">
+									<p:resetInput target="@all" />
+								</p:menuitem>
 								<p:menuitem value="Lista casi" icon="ui-icon-clipboard"
 									action="#{navigationBean.goListaCasi(false)}"
 									rendered="#{navigationBean.listaCasiVisible}"
@@ -275,38 +295,42 @@
 
 								<f:facet name="options">
 									<p:outputPanel rendered="#{navigationBean.casoVisible}" >
-									<h:panelGrid columns="5" >
+										<h:panelGrid columns="5" >
 										    <p:outputPanel id="pnlPrivacyHeader" styleClass="#{'updateOnPrivacyChange'}" >
 										    	<webred:iconaConsensoPrivacy labelPrivacy="#{schedaBean.consensoPrivacyMan.privacy}" 
 										    							     utenteAnonimo="#{schedaBean.consensoPrivacyMan.utenteAnonimo}"/>
 										    </p:outputPanel>
 											<webredcs:pnlDatiEsterniSoggetto />
-										<webredcs:pnlServiziSanitari
-											iServiziSanitari="#{serviziSanitariBean}"
-											codiceFiscale="#{soggetto.csAAnagrafica.cf}" />
+											<webredcs:pnlServiziSanitari
+												iServiziSanitari="#{serviziSanitariBean}"
+												codiceFiscale="#{soggetto.csAAnagrafica.cf}" />
 											
-										<p:outputPanel rendered="#{navigationBean.interscambioCartellaSociale}" deferred="true">
-										<p:outputPanel style="margin-right:5px; display:inline-block;">
-											<p:commandLink id="infoExport" title="Caso Esportato"
-											rendered="#{schedaBean.renderedCasoEsportatoInterscambio}"
-											action="#{navigationBean.goListaEventiFiltrataPerCF(schedaBean.getSession().getAttribute('soggetto').getCsAAnagrafica().getCf(), 'EXPORT')}">
-												<p:graphicImage id="imgExp" value="/images/export.png"
-													styleClass="infoSmall" />
-											</p:commandLink>
-	
-											<p:commandLink id="infoImport" title="Caso Importato"
-											rendered="#{schedaBean.renderedCasoImportatoInterscambio}"
-											action="#{navigationBean.goListaEventiFiltrataPerCF(schedaBean.getSession().getAttribute('soggetto').getCsAAnagrafica().getCf(), 'IMPORT')}">
-												<p:graphicImage id="imgImp" value="/images/import.png"
-													styleClass="infoSmall" />
-											</p:commandLink>
-										</p:outputPanel>
-										   <webredcs:pnlDialogEvento
-										    enableButton="true"
-											btnStartExp="#{schedaBean.dialogEsportaCartella(schedaBean.getSession().getAttribute('soggetto').getCsACaso())}"
-											btnConfExp="#{schedaBean.esportaCartella}"
-											iDialogEvento="#{schedaBean.modalBean}"/>
-										</p:outputPanel>
+											<p:graphicImage id="lblRdC" rendered="#{schedaBean.msgBeneficiarioRdC!=null}"  
+		        				    			title="#{schedaBean.msgBeneficiarioRdC}"
+		        				    			value="#{resource['webredcs/img/rdc.png']}" width="20px"/>
+												
+											<p:outputPanel rendered="#{navigationBean.interscambioCartellaSociale}" deferred="true">
+											<p:outputPanel style="margin-right:5px; display:inline-block;">
+												<p:commandLink id="infoExport" title="Caso Esportato"
+												rendered="#{schedaBean.renderedCasoEsportatoInterscambio}"
+												action="#{navigationBean.goListaEventiFiltrataPerCF(schedaBean.getSession().getAttribute('soggetto').getCsAAnagrafica().getCf(), 'EXPORT')}">
+													<p:graphicImage id="imgExp" value="/images/export.png"
+														styleClass="infoSmall" />
+												</p:commandLink>
+		
+												<p:commandLink id="infoImport" title="Caso Importato"
+												rendered="#{schedaBean.renderedCasoImportatoInterscambio}"
+												action="#{navigationBean.goListaEventiFiltrataPerCF(schedaBean.getSession().getAttribute('soggetto').getCsAAnagrafica().getCf(), 'IMPORT')}">
+													<p:graphicImage id="imgImp" value="/images/import.png"
+														styleClass="infoSmall" />
+												</p:commandLink>
+											</p:outputPanel>
+											   <webredcs:pnlDialogEvento
+											    enableButton="true"
+												btnStartExp="#{schedaBean.dialogEsportaCartella(schedaBean.getSession().getAttribute('soggetto').getCsACaso())}"
+												btnConfExp="#{schedaBean.esportaCartella}"
+												iDialogEvento="#{schedaBean.modalBean}"/>
+											</p:outputPanel>
 										</h:panelGrid>
 									</p:outputPanel>
 								</f:facet>
@@ -443,9 +467,11 @@
 				  			  			 <h:outputText rendered="#{(CC.id eq 9999)}" value=": #{rowRel.relazione.conChiAltro}" /><br/>
 				  			  		</ui:repeat>
 								</p:column> 
-								<p:column headerText="Riunione Con">
-									<h:outputText value="#{rowRel.relazione.riunioneCon.nome}" />
-								</p:column>
+								<p:column headerText="Riunione con">
+								  <ui:repeat var="riunioneConChi" value="#{rowRel.relazione.lstRiunioneConChi}" >
+								  		 <h:outputText value="#{riunioneConChi.getCsOOrganizzazione().getNome()} - #{riunioneConChi.getNome()}" /><br/>
+				  			  		</ui:repeat>
+								</p:column> 
 								<p:column headerText="Num. operatori" style="text-align:center" >
 									<h:outputText value="#{rowRel.relazione.numOperatori}" />
 								</p:column>
@@ -568,11 +594,15 @@
 			</p:dialog>
 
      		<p:dialog id="idWvDlgStampaPor"	widgetVar="wVdlgStampaPor"									 
-				 	showEffect="fade"  hideEffect="explode" header="Inserire il Soggetto Attuatore" >
+				 	showEffect="fade"  header="Riepilogo dati sottoscrizione" >
 				<h:form id="frmDatiPor">
                		<h:panelGrid styleClass="noBorder" columns="2" >
-              			<h:outputText value="Sogg. Attuatore"  />
-              			<p:inputText id="soggAttut"  value="#{fglInterventoBean.soggettoAttuatore}"  />
+              			<h:outputLabel value="Data sottoscrizione" style="font-weight:bold;" />
+               		 	<h:outputText value="#{fglInterventoBean.datiProgettoBean.csIInterventoPr.csIInterventoPrFse.dtSottoscrizione}" >
+               		 		<f:convertDateTime pattern="dd/MM/yyyy" />
+               		 	</h:outputText>
+              			<h:outputLabel value="Soggetto Attuatore"  style="font-weight:bold;"/>
+               		 	<h:outputText value="#{fglInterventoBean.datiProgettoBean.csIInterventoPr.csIInterventoPrFse.soggettoAttuatore}" />
                		 	<p:commandButton value="Conferma" ajax="false"  onclick="PF('wVdlgStampaPor').hide();" 
 					  		process="@form"  action="#{fglInterventoBean.chiamaStampa}"/>  
 				    	<p:commandButton value="Annulla" type="button" onclick="PF('wVdlgStampaPor').hide();" />

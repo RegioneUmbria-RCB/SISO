@@ -9,8 +9,6 @@ import it.webred.cs.csa.ejb.client.AccessTableCatSocialeSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.AccessTableConfigurazioneSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.AccessTableIterStepSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.AccessTableOperatoreSessionBeanRemote;
-import it.webred.cs.csa.ejb.dto.OperatoreDTO;
-import it.webred.cs.data.model.CsOOperatore;
 import it.webred.cs.jsf.manbean.superc.CsUiCompBaseBean;
 import it.webred.ejb.utility.ClientUtility;
 
@@ -18,10 +16,6 @@ import java.io.Serializable;
 
 import javax.naming.NamingException;
 
-/**
- * @author alessandro.feriani
- *
- */
 public abstract class IterBaseBean extends CsUiCompBaseBean implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -58,19 +52,5 @@ public abstract class IterBaseBean extends CsUiCompBaseBean implements Serializa
 	protected AccessTableCatSocialeSessionBeanRemote getCatSocSessioBean() throws NamingException {
 		AccessTableCatSocialeSessionBeanRemote catSocBean = (AccessTableCatSocialeSessionBeanRemote) ClientUtility.getEjbInterface("CarSocialeA", "CarSocialeA_EJB", "AccessTableCatSocialeSessionBean");
 		return catSocBean;
-	}
-	
-	protected CsOOperatore getOperatore (String username) throws NamingException{
-		try {
-			AccessTableOperatoreSessionBeanRemote operatoreSessionBean = getOperatoreSessioBean();
-			OperatoreDTO dto = new OperatoreDTO();
-			fillEnte(dto);
-			dto.setUsername(username);
-			return operatoreSessionBean.findOperatoreByUsername(dto);
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-			addError("Operatore non trovato!", "Errore nella ricerca dell'operatore!");
-		}
-		return null;
 	}
 }

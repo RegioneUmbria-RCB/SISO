@@ -287,7 +287,6 @@ public class DatiInvaliditaBean extends SchedaValiditaBaseBean implements IDatiV
 
 	@Override
 	protected void caricaValoriCombo() {
-		// TODO Auto-generated method stub
 		loadDatiInvaliditaSina();
 	}
 
@@ -300,9 +299,16 @@ public class DatiInvaliditaBean extends SchedaValiditaBaseBean implements IDatiV
 	public void onListInvCivClicked(ValueChangeEvent event) {
 		List<String> oldValue = (List<String>) event.getOldValue();
 		List<String> newValue = (List<String>) event.getNewValue();
-
-		vecchioValoreSelezionato = new ArrayList<String>(oldValue);
-		nuovoValoreSelezionato = new ArrayList<String>(newValue);
+		
+		if(oldValue!=null)
+			vecchioValoreSelezionato = new ArrayList<String>(oldValue);
+		else
+			vecchioValoreSelezionato = new ArrayList<String>();
+		
+		if(newValue!=null)
+			nuovoValoreSelezionato = new ArrayList<String>(newValue);
+		else
+			nuovoValoreSelezionato = new ArrayList<String>();
 		
 		if(vecchioValoreSelezionato.size()<nuovoValoreSelezionato.size()) {
 		  nuovoValoreSelezionato.removeAll(vecchioValoreSelezionato);

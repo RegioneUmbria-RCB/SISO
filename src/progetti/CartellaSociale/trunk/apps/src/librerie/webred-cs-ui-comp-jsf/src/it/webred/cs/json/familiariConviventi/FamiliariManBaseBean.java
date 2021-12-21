@@ -1,15 +1,24 @@
 package it.webred.cs.json.familiariConviventi;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.faces.model.SelectItem;
+
 import it.webred.classfactory.WebredClassFactory;
 import it.webred.cs.csa.ejb.dto.BaseDTO;
+import it.webred.cs.csa.ejb.dto.KeyValueDTO;
 import it.webred.cs.data.model.CsDValutazione;
 import it.webred.cs.data.model.CsTbGVulnerabile;
 import it.webred.cs.data.model.CsTbTipologiaFamiliare;
 import it.webred.cs.json.SchedaValutazioneManBean;
+import it.webred.ct.support.datarouter.CeTBaseObject;
 
 public abstract class FamiliariManBaseBean extends SchedaValutazioneManBean implements IFamConviventi{
 	
 	private static final long serialVersionUID = 1L;
+	
+	protected List<SelectItem> lstGruppoVulnerabile;
 	
 	public static IFamConviventi initByVersion(String defaultVersion)
 	{
@@ -60,6 +69,19 @@ public abstract class FamiliariManBaseBean extends SchedaValutazioneManBean impl
 		fillEnte(d);
 		d.setObj(Long.valueOf(codice));
 		return confService.getTipologiaFamiliareById(d);	
+	}
+	
+	
+	public List<SelectItem> getListaGruppoVulnerabile() {
+		if(lstGruppoVulnerabile == null){
+			lstGruppoVulnerabile = new ArrayList<SelectItem>();
+			lstGruppoVulnerabile.add(new SelectItem(null, "- seleziona -"));
+			CeTBaseObject bo = new CeTBaseObject();
+			fillEnte(bo);
+			List<KeyValueDTO> lst = confService.getGruppiVulnerabili(bo);
+			lstGruppoVulnerabile = convertiLista(lst);
+		}
+		return lstGruppoVulnerabile;
 	}
 	
 }

@@ -42,11 +42,8 @@ public class ArgoListener implements ServletContextListener {
 			url= new URL(newpath);
 			Properties props = new Properties();
 			props.load(url.openStream());
-			Enumeration e = props.propertyNames();
-			while (e.hasMoreElements()) {
-		    	String attiva = (String) e.nextElement();
-		    	abilita = attiva.equalsIgnoreCase("ON");
-			}
+			Object val = props.get("ARGO");
+			abilita = val!=null && "ON".equalsIgnoreCase(val.toString());
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 		}
@@ -60,7 +57,7 @@ public class ArgoListener implements ServletContextListener {
 		    if(this.abilita())
 		    		initZsTimerTaskGiornaliero();
 		    else
-		    	logger.warn("I timertask sono stati disattivati: per attivarli impostare ad ON il valore nel file timertask.properties (standalone/configuration");
+		    	logger.warn("I timertask sono stati disattivati: per attivarli impostare ad ARGO=ON il valore nel file timertask.properties (standalone/configuration");
 	    
 		} catch (Exception e) {
 			logger.error("__ EnteTimerTask: Eccezione: " + e.getMessage(), e);

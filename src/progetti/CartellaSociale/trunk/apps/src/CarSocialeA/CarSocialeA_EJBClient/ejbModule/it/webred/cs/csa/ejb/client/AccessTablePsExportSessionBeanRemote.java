@@ -29,10 +29,6 @@ public interface AccessTablePsExportSessionBeanRemote {
 	public List<VErogExportHelp> findVErogExportHelp(BaseDTO dto); //SISO-538
 	
 	public List<EsportazioneDTOView> findErogazioniMasterChiusuraInPeriodo(ErogazioniSearchCriteria bDto); //SISO-538
-
-	public List<CsIPsExport> findCsIPsExportByCsIInterventoEsegIds(BaseDTO dto);  //INIZIO SISO-524 
-
-	//public List<CsIPsExport> findCsIPsExportByCsIInterventoMastId(BaseDTO dto);
 	
 	public void updateCsIPsExportRevocaEsportazione(BaseDTO dto);	// SISO-719
 	
@@ -40,7 +36,7 @@ public interface AccessTablePsExportSessionBeanRemote {
 	
 	public List<EsportazioneDTOView> findErogazPeriodicheByMast(ErogazioniSearchCriteria bDto); //SISO-780
 	
-    public List<CsIPsExport> findCsIPsExportByCsIInterventoEsegIdsExported(BaseDTO dto); //SISO-884
+	public Boolean verificaErogazioniEsportateByEsegIds(BaseDTO dto);  //INIZIO SISO-524 
 	
 	public List<CsIPsExport> findCsIPsExportByCsIInterventoMastIdExported(BaseDTO dto); //SISO-884
 	

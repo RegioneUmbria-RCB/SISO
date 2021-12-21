@@ -24,11 +24,10 @@ public class IndirizzoDAO extends CarSocialeBaseDAO implements Serializable {
 	
 	@SuppressWarnings("unchecked")
 	public List<CsAIndirizzo> getIndirizziBySoggetto(long idSoggetto) {
-
-		Query q = em.createNamedQuery("CsAIndirizzo.findBySoggetto")
-				.setParameter("idSoggetto", idSoggetto);
-		return q.getResultList();
-
+		Query q = em.createNamedQuery("CsAIndirizzo.findBySoggetto");
+		q.setParameter("idSoggetto", idSoggetto);
+		List<CsAIndirizzo> r = q.getResultList();
+		return r;
 	}
 	
 	public void saveIndirizzo(CsAIndirizzo indirizzo) {
@@ -81,6 +80,18 @@ public class IndirizzoDAO extends CarSocialeBaseDAO implements Serializable {
 	public List<KeyValueDTO> getListaComuni(Long tipoId) {
 		List<KeyValueDTO> comuni = new ArrayList<KeyValueDTO>();
 		Query q = em.createNamedQuery("CsAIndirizzo.getListaComuni");
+		q.setParameter("tipo", tipoId);
+		List<Object[]> res = (List<Object[]>) q.getResultList();
+		for(Object[] r :res){
+			KeyValueDTO comune = new KeyValueDTO((String)r[0], (String)r[1]);
+			comuni.add(comune);
+		}
+		return comuni;
+	}
+	
+	public List<KeyValueDTO> getListaNazioni(Long tipoId) {
+		List<KeyValueDTO> comuni = new ArrayList<KeyValueDTO>();
+		Query q = em.createNamedQuery("CsAIndirizzo.getListaNazioni");
 		q.setParameter("tipo", tipoId);
 		List<Object[]> res = (List<Object[]>) q.getResultList();
 		for(Object[] r :res){

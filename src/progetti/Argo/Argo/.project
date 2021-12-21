@@ -6,8 +6,6 @@
 		<project>Argo_DataModel</project>
 		<project>Argo_EJB</project>
 		<project>Argo_EJBClient</project>
-		<project>WebredEJBUtility</project>
-		<project>webred-cs-base</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

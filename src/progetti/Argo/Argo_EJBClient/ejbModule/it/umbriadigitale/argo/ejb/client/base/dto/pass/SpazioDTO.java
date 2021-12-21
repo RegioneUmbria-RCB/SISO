@@ -4,7 +4,7 @@ import it.webred.ct.support.datarouter.CeTBaseObject;
 
 import java.io.Serializable;
 
-public class SpazioDTO extends it.webred.cs.base.BaseDTO implements Serializable {
+public class SpazioDTO extends CeTBaseObject implements Serializable {
 
 	/**
 	 * 

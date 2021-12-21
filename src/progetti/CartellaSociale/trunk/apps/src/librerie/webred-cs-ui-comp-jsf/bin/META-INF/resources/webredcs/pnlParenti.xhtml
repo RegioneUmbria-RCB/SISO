@@ -70,6 +70,9 @@
 					<p:column width="20">
 						<webredcs:tooltipInfo stringDescr="#{cc.attrs.iParenti.loadStatoCartella(comp.csAAnagrafica.cf)}" 
 						                      icona="#{resource['webredcs/img/folder.png']}" rendered="#{cc.attrs.iParenti.loadStatoCartella(comp.csAAnagrafica.cf) != NULL}"/>
+						<webredcs:tooltipInfo stringDescr="Beneficiario di Reddito di Cittadinanza (Patto per il sociale)" 
+						                      icona="#{resource['webredcs/img/rdc.png']}" width="20px" rendered="#{cc.attrs.iParenti.loadStatoRdC(comp)}"/>
+				
 					</p:column>
 					<p:column headerText="Cognome">
 						<h:outputText value="#{comp.csAAnagrafica.cognome}" />
@@ -141,10 +144,11 @@
 						<f:setPropertyActionListener value="true" target="#{cc.attrs.iParenti.nuovo}" />
 						<f:setPropertyActionListener value="true" target="#{cc.attrs.iParenti.showNewParente}" />
 					</p:commandButton> 
-					<p:selectOneMenu id="lstParCalc" label=""  value="#{cc.attrs.iParenti.anagraficaCompDaAltraScheda_id}" process="@this" disabled="#{cc.attrs.disabled}"	>
+					<p:selectOneMenu id="lstParCalc" value="#{cc.attrs.iParenti.anagraficaCompDaAltraScheda_id}" process="@this" disabled="#{cc.attrs.disabled}"	>
 			                    <f:selectItem noSelectionOption="true" itemLabel="- Importa parente da altre cartelle  -"/>
-			                    <f:selectItems value="#{cc.attrs.iParenti.lstComponentiCalc}"/>
-			                    <p:ajax event="change" update="@(.updateParentiDialog)" oncomplete="wdgNewParente#{cc.attrs.iParenti.id}.show()"/>
+			                    <f:selectItems value="#{cc.attrs.iParenti.lstComponentiCalc}" />
+			                    <p:ajax event="change" listener="#{cc.attrs.iParenti.onSelectComponenteDaAltraScheda()}" process="@this"
+			                            update="@(.updateParentiDialog)" oncomplete="wdgNewParente#{cc.attrs.iParenti.id}.show()"/>
 				    </p:selectOneMenu>
 				</h:panelGrid>
 				
@@ -236,105 +240,71 @@
 													<webredcs:pnlFormazioneLavoro iFormazioneLavoro="#{cc.attrs.iNuovoParente.formLavoroMan}"
 														onChangeCondLavoro="#{cc.attrs.iNuovoParente.onChangeCondLavoro()}" 
 														onChangeTitoloStudio="#{cc.attrs.iNuovoParente.onChangeTitoloStudio()}"
-														numColonne="2" soloLettura="#{cc.attrs.disabled}"/>
+														numColonne="2" soloLettura="false"/>
 												</td>
 											</tr>
-											
-											
-											
 								</table>
 					    	<h:outputText value="* campo obbligatorio" styleClass="bold"/>
 				
 					
 						</p:tab>
+						
 						<p:tab id="AltriDatiTab" title="Altri Dati" titletip="Altri Dati" >
-							 <table cellspacing="4" style="width:100%;table-layout: fixed; ">
-									<tr>
-												<td><h:outputLabel value="Data di nascita" /></td>
-												<td style="width:160px"><webred:pnlData dataValue="#{cc.attrs.iNuovoParente.dataNascita}" dataPattern="dd/MM/yyyy" dataReq="false" 
-						            					dataValMes="Data di nascita non valida" dataConMes="Data di nascita non valida"
-						            					dataPatternLabel="gg/mm/aaaa" maxDate="#{commonSessionMan.currentDate}" yearRange="c-100:c+0"/>
-						            			</td>
-												<td style="width:55px">
-												     <h:outputLabel value="Decesso" />
-												</td>
-											    <td>
-													<h:panelGrid columns="2">
-														<p:selectBooleanCheckbox value="#{cc.attrs.iNuovoParente.decesso}" >
-															<p:ajax update="dataDecessoPanel" event="change" listener="#{cc.attrs.iNuovoParente.resetDataDecesso()}"/>
-														</p:selectBooleanCheckbox>
-											        	
-											        	<webred:pnlData  id="dataDecessoPanel" dataValue="#{cc.attrs.iNuovoParente.dataDecesso}" dataPattern="dd/MM/yyyy" 
-											        	    dataReq="#{cc.attrs.iNuovoParente.decesso}" 
-							            					dataValMes="Data decesso non valida" dataConMes="Data decesso non valida" dataReqMes="Impostare la data del decesso"
-							            					dataPatternLabel="gg/mm/aaaa"/>
-							            			
-													</h:panelGrid>
-													</td>
-												
-												</tr>		
-										<tr>
-											<td colspan="5">	
-													<webred:pnlComuneNazione comuneNazioneManBean="#{cc.attrs.iNuovoParente.comuneNazioneNascitaBean}" />
-												</td>
-										</tr>
-										<tr>
-											<td colspan="5">
-												<p:separator style="width:100%;height:3px;border:1px solid #dddddd" />
-											</td>
-										</tr>	
-												<tr>
-												<td><h:outputLabel value="Indirizzo residenza" /></td>
-												<td>
-													<h:panelGrid columns="3" style="padding:0px;">
-														<p:inputText value="#{cc.attrs.iNuovoParente.indirizzo}" onblur="value=value.toUpperCase()"  />
-														<h:outputText value="n°" />
-														<p:inputText value="#{cc.attrs.iNuovoParente.civico}" style="width:25px;"/>
-													</h:panelGrid>
-												</td>	
-												
-										</tr>
-										<tr>
-										<td colspan="5">	
-													<webred:pnlComuneNazione comuneNazioneManBean="#{cc.attrs.iNuovoParente.comuneNazioneResidenzaBean}" />
-												</td>
-										</tr>
-								<tr>
-									<td><h:outputLabel value="Cittadinanza" /></td>
-										<td>
-										<p:selectOneMenu value="#{cc.attrs.iNuovoParente.cittadinanza}" 
-											filter="true" filterMatchMode="startsWith">
-				            				<f:selectItems value="#{cc.attrs.iNuovoParente.lstCittadinanze}"/>
-				            			</p:selectOneMenu>
-				            			</td>
-								</tr>
-								<tr>
-										<td colspan="5">
-											<p:separator style="width:100%;height:3px;border:1px solid #dddddd" />
-										</td>
-									</tr>
-								<tr>									
-												
-											<td><h:outputLabel value="E-mail" /></td>
-											<td><p:inputText value="#{cc.attrs.iNuovoParente.email}"/></td>
-											
-								</tr>
-								<tr>
-											<td><h:outputText value="Telefono" /></td>
-												<td><h:panelGrid columns="2">
-													<h:outputText value="fisso" />
-													<p:inputText style="width: 100px;" value="#{cc.attrs.iNuovoParente.telefono}" maxlength="50"  />
-												
-													<h:outputText value="cellulare" />
-													<p:inputText style="width: 100px;" value="#{cc.attrs.iNuovoParente.cellulare}" maxlength="50" />
-												</h:panelGrid></td>
-								</tr>
-								 
-									<tr>							
-										<td><h:outputLabel value="Note" /></td>
-										<td colspan="4"><p:inputTextarea rows="5" cols="70" value="#{cc.attrs.iNuovoParente.note}"/></td>
-									</tr>
-							</table>
+							<h:panelGrid columns="2">
+								<h:outputLabel value="Data di nascita" />
+									<h:panelGrid columns="2">
+										<webred:pnlData dataValue="#{cc.attrs.iNuovoParente.dataNascita}" dataPattern="dd/MM/yyyy" dataReq="false" 
+							            					dataValMes="Data di nascita non valida" dataConMes="Data di nascita non valida"
+							            					dataPatternLabel="gg/mm/aaaa" maxDate="#{commonSessionMan.currentDate}" yearRange="c-100:c+0"/>
+							            
+							            <webred:pnlComuneNazione comuneNazioneManBean="#{cc.attrs.iNuovoParente.comuneNazioneNascitaBean}" />
+						            </h:panelGrid>
+						            <h:outputLabel value="Decesso" />
+									<h:panelGrid columns="2">
+										<p:selectBooleanCheckbox value="#{cc.attrs.iNuovoParente.decesso}" >
+											<p:ajax update="dataDecessoPanel" event="change" listener="#{cc.attrs.iNuovoParente.resetDataDecesso()}"/>
+										</p:selectBooleanCheckbox>
+							        	
+							        	<webred:pnlData  id="dataDecessoPanel" dataValue="#{cc.attrs.iNuovoParente.dataDecesso}" dataPattern="dd/MM/yyyy" 
+							        	    dataReq="#{cc.attrs.iNuovoParente.decesso}" 
+			            					dataValMes="Data decesso non valida" dataConMes="Data decesso non valida" dataReqMes="Impostare la data del decesso"
+			            					dataPatternLabel="gg/mm/aaaa"/>
+									</h:panelGrid>	
+									<h:outputLabel value="Cittadinanza" />
+									<p:selectOneMenu value="#{cc.attrs.iNuovoParente.cittadinanza}" 
+										filter="true" filterMatchMode="startsWith">
+			            				<f:selectItems value="#{cc.attrs.iNuovoParente.lstCittadinanze}"/>
+			            			</p:selectOneMenu>
+			            			
+			            			<h:outputLabel value="Indirizzo residenza" />
+									<h:panelGrid columns="4" style="padding:0px;">
+										<p:inputText value="#{cc.attrs.iNuovoParente.indirizzo}" onblur="value=value.toUpperCase()"  />
+										<h:outputText value="n°" />
+										<p:inputText value="#{cc.attrs.iNuovoParente.civico}" style="width:25px;"/>
+										<webred:pnlComuneNazione comuneNazioneManBean="#{cc.attrs.iNuovoParente.comuneNazioneResidenzaBean}" />
+									</h:panelGrid>
+									
+									<h:outputLabel value="E-mail" />
+									<p:inputText value="#{cc.attrs.iNuovoParente.email}"/>
+									
+									<h:outputText value="Telefono" />
+									<h:panelGrid columns="2">
+										<h:outputText value="fisso" />
+										<p:inputText style="width: 100px;" value="#{cc.attrs.iNuovoParente.telefono}" maxlength="50"  />
+									
+										<h:outputText value="cellulare" />
+										<p:inputText style="width: 100px;" value="#{cc.attrs.iNuovoParente.cellulare}" maxlength="50" />
+									</h:panelGrid>
+									
+									
+									<h:outputLabel value="Disabile"/>
+									<p:selectBooleanCheckbox value="#{cc.attrs.iNuovoParente.disabile}" />
+									
+									<h:outputLabel value="Note" />
+									<p:inputTextarea rows="5" cols="70" value="#{cc.attrs.iNuovoParente.note}"/>
+								
+			
+							</h:panelGrid>
 						</p:tab>	
 					</p:tabView>
 					

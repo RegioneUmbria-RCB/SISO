@@ -292,8 +292,7 @@ public class TempCodFiscManagerDlg extends CsUiCompBaseBean implements Serializa
 					try {
 						return cfTempService.findCfTempById(dto);
 					} catch (Exception e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						logger.error(e.getMessage(), e);
 					}
 				}
 				return null;

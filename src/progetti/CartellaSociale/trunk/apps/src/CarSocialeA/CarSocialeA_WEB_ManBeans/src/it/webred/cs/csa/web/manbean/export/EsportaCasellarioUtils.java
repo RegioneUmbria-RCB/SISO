@@ -983,7 +983,8 @@ public class EsportaCasellarioUtils {
 		List<Long> listaIds = new ArrayList<Long>();
 		for(Object dto : lista){
 			EsportazioneDTO edto = (EsportazioneDTO)dto;
-			if(edto.getInterventoEsegMastId() != null){
+			Long idMast = edto.getInterventoEsegMastId()!=null ? edto.getInterventoEsegMastId().longValue() : null;
+			if(idMast!=null && !listaIds.contains(idMast.longValue())){
 				listaIds.add(edto.getInterventoEsegMastId());
 			}
 		}

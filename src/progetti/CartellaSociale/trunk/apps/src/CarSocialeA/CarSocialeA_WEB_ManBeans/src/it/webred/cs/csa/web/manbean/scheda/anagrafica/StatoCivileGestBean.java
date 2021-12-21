@@ -1,15 +1,11 @@
 package it.webred.cs.csa.web.manbean.scheda.anagrafica;
 
-import it.webred.cs.csa.ejb.client.AccessTableConfigurazioneSessionBeanRemote;
-import it.webred.cs.data.DataModelCostanti;
-import it.webred.cs.data.model.CsAIndirizzo;
-import it.webred.cs.data.model.CsTbStatoCivile;
+import it.webred.cs.csa.ejb.dto.KeyValueDTO;
 import it.webred.cs.jsf.bean.ValiditaCompBaseBean;
 import it.webred.cs.jsf.interfaces.IDatiValiditaGestione;
 import it.webred.cs.jsf.manbean.DatiValGestioneMan;
 import it.webred.ct.support.datarouter.CeTBaseObject;
 import it.webred.dto.utility.KeyValuePairBean;
-import it.webred.ejb.utility.ClientUtility;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -17,33 +13,24 @@ import java.util.List;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.NoneScoped;
-import javax.naming.NamingException;
 
 @ManagedBean
 @NoneScoped
 public class StatoCivileGestBean extends DatiValGestioneMan implements IDatiValiditaGestione {
 	protected static final SimpleDateFormat SDF = new SimpleDateFormat("dd/MM/yyyy");
+	
 	@Override
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public List<KeyValuePairBean> getLstItems() {
-		
-		lstItems = new ArrayList<KeyValuePairBean>();
+	protected List<KeyValueDTO> loadListItems(){
 		try {
-			AccessTableConfigurazioneSessionBeanRemote bean = (AccessTableConfigurazioneSessionBeanRemote) ClientUtility.getEjbInterface("CarSocialeA", "CarSocialeA_EJB", "AccessTableConfigurazioneSessionBean");
 			CeTBaseObject bo = new CeTBaseObject();
 			fillEnte(bo);
-			List<CsTbStatoCivile> beanLstStato = bean.getStatoCivile(bo);
-			if (beanLstStato != null) {
-				for (CsTbStatoCivile stato : beanLstStato) {			
-					lstItems.add(new KeyValuePairBean(stato.getCod(), stato.getDescrizione()));
-				}
-			}
-		} catch (NamingException e) {
+			return confService.getListaStatoCivile(bo);
+		} catch (Exception e) {
 			addErrorFromProperties("caricamento.error");
 			logger.error(e.getMessage(),e);
+			return null;
 		}
-		
-		return lstItems;
 	}
 
 	@Override

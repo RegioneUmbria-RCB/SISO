@@ -12,4 +12,5 @@ public interface NazioniCacheHelperRemote {
 	public boolean isListaNazioniCaricata();
 	public List<AmTabNazioni> trovaNazioniPerDenominazione(String query);
 	public AmTabNazioni getNazioneByCodiceAnagrafe(String codiceAnagrafe);
+	public AmTabNazioni getNazioneByCodiceIstat(String codiceAnagrafe);
 }

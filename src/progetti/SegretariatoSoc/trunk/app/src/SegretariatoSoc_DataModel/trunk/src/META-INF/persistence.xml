@@ -29,7 +29,6 @@
 		<class>it.webred.ss.data.model.SsRelUffPcontOrg</class>
 		<class>it.webred.ss.data.model.SsRelUffPcontOrgPK</class>
 		<class>it.webred.ss.data.model.SsOOrganizzazione</class>
-		<class>it.webred.ss.data.model.ArOOrganizzazione</class>
 		<class>it.webred.ss.data.model.SsClassificazioneMotivazione</class>
 		<class>it.webred.ss.data.model.ArBufferSsInvio</class>
 		<class>it.webred.ss.data.model.SsSchedaAccessoInviante</class>

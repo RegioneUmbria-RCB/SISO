@@ -1,9 +1,11 @@
 package it.webred.cs.csa.ejb.ejb;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Set;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -11,27 +13,32 @@ import javax.ejb.Stateless;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import it.webred.cs.csa.ejb.CarSocialeBaseSessionBean;
+import it.webred.cs.csa.ejb.client.AccessTableAlertSessionBeanRemote;
+import it.webred.cs.csa.ejb.client.AccessTableDatiPorSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.AccessTableSchedaSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.AccessTableSoggettoSessionBeanRemote;
+import it.webred.cs.csa.ejb.client.CarSocialeServiceException;
 import it.webred.cs.csa.ejb.dao.ParentiDAO;
 import it.webred.cs.csa.ejb.dao.SchedaDAO;
 import it.webred.cs.csa.ejb.dto.BaseDTO;
 import it.webred.cs.csa.ejb.dto.RisorsaFamDTO;
-import it.webred.cs.data.model.CsAAnagrafica;
+import it.webred.cs.csa.ejb.dto.cartella.RisorsaCalcDTO;
+import it.webred.cs.data.DataModelCostanti;
 import it.webred.cs.data.model.CsAComponente;
-import it.webred.cs.data.model.CsAContributi;
 import it.webred.cs.data.model.CsADatiInvalidita;
 import it.webred.cs.data.model.CsADatiSociali;
 import it.webred.cs.data.model.CsADisabilita;
 import it.webred.cs.data.model.CsAFamigliaGruppo;
-import it.webred.cs.data.model.CsAServizi;
+import it.webred.cs.data.model.CsAInvCiv;
 import it.webred.cs.data.model.CsASoggettoLAZY;
 import it.webred.cs.data.model.CsATribunale;
+import it.webred.cs.data.model.CsDDiario;
+import it.webred.cs.data.model.CsExtraFseDatiLavoro;
 import it.webred.ct.support.validation.annotation.AuditConsentiAccessoAnonimo;
 import it.webred.ct.support.validation.annotation.AuditSaltaValidazioneSessionID;
 
 @Stateless
-public class AccessTableSchedaSessionBean extends CarSocialeBaseSessionBean implements AccessTableSchedaSessionBeanRemote  {
+public class AccessTableSchedaSessionBean extends CarSocialeBaseSessionBean implements AccessTableSchedaSessionBeanRemote {
 
 	private static final long serialVersionUID = 1L;
 
@@ -43,7 +50,11 @@ public class AccessTableSchedaSessionBean extends CarSocialeBaseSessionBean impl
 	
 	@EJB
 	public AccessTableSoggettoSessionBeanRemote soggettoSessionBean;
-	
+	@EJB
+	private AccessTableDatiPorSessionBeanRemote porService;
+	@EJB
+	private AccessTableAlertSessionBeanRemote alertService;
+
 	@Override
 	public void saveCsA(BaseDTO dto) {
 		Object obj = dto.getObj();
@@ -55,14 +66,10 @@ public class AccessTableSchedaSessionBean extends CarSocialeBaseSessionBean impl
 			saveDatiInvalidita(dto);
 		if(obj instanceof CsATribunale)
 			saveTribunale(dto);
-		if(obj instanceof CsAServizi)
-			saveServizi(dto);
-		if(obj instanceof CsAContributi)
-			saveContributi(dto);
 		if(obj instanceof CsAFamigliaGruppo)
 			saveFamigliaGruppo(dto);
 	}
-	
+
 	@Override
 	public void updateCsA(BaseDTO dto) {
 		Object obj = dto.getObj();
@@ -74,42 +81,28 @@ public class AccessTableSchedaSessionBean extends CarSocialeBaseSessionBean impl
 			updateDatiInvalidita(dto);
 		if(obj instanceof CsATribunale)
 			updateTribunale(dto);
-		if(obj instanceof CsAServizi)
-			updateServizi(dto);
-		if(obj instanceof CsAContributi)
-			updateContributi(dto);
 		if(obj instanceof CsAFamigliaGruppo)
 			updateFamigliaGruppo(dto);
 	}
-	
+
 	@Override
 	public List<?> findCsBySoggettoId(BaseDTO dto) {
-		
+		Long anagraficaId = (Long)dto.getObj();
 		Object obj = dto.getObj2();
 		if(obj instanceof CsADisabilita)
-			return findDisabilitaBySoggettoId(dto);
+			return schedaDao.findDisabilitaBySoggettoId(anagraficaId);
 		if(obj instanceof CsADatiSociali)
-			return findDatiSocialiBySoggettoId(dto);
+			return schedaDao.findDatiSocialiBySoggettoId(anagraficaId);
 		if(obj instanceof CsADatiInvalidita)
-			return findDatiInvaliditaBySoggettoId(dto);
+			return schedaDao.findDatiInvaliditaBySoggettoId(anagraficaId, null);
 		if(obj instanceof CsATribunale)
-			return findTribunaleBySoggettoId(dto);
-		if(obj instanceof CsAServizi)
-			return findServiziBySoggettoId(dto);
-		if(obj instanceof CsAContributi)
-			return findContributiBySoggettoId(dto);
+			return schedaDao.findTribunaleBySoggettoId(anagraficaId);
 		if(obj instanceof CsAFamigliaGruppo)
-			return findFamigliaGruppoBySoggettoId(dto);
-	
-		
+			return schedaDao.findFamigliaGruppoBySoggettoId(anagraficaId);
+
 		return null;
 	}
-	
-	private List<CsADatiSociali> findDatiSocialiBySoggettoId(BaseDTO dto) {
-		return schedaDao.findDatiSocialiBySoggettoId((Long)dto.getObj());
-	}
 
-	
 	@Override
 	public void eliminaCsById(BaseDTO dto) {
 		Object obj = dto.getObj2();
@@ -121,10 +114,6 @@ public class AccessTableSchedaSessionBean extends CarSocialeBaseSessionBean impl
 			eliminaDatiInvalidita(dto);
 		if(obj instanceof CsATribunale)
 			eliminaTribunale(dto);
-		if(obj instanceof CsAServizi)
-			eliminaServizi(dto);
-		if(obj instanceof CsAContributi)
-			eliminaContributi(dto);
 		if(obj instanceof CsAFamigliaGruppo)
 			eliminaFamigliaGruppo(dto);
 	}
@@ -132,10 +121,6 @@ public class AccessTableSchedaSessionBean extends CarSocialeBaseSessionBean impl
 	@Override
 	public CsADisabilita getDisabilitaById(BaseDTO dto) {		
 		return schedaDao.getDisabilitaById((Long) dto.getObj());
-	}
-	
-	private List<CsADisabilita> findDisabilitaBySoggettoId(BaseDTO dto) {		
-		return schedaDao.findDisabilitaBySoggettoId((Long) dto.getObj());
 	}
 
 	private void saveDisabilita(BaseDTO dto) {
@@ -148,23 +133,23 @@ public class AccessTableSchedaSessionBean extends CarSocialeBaseSessionBean impl
 		cs.setDataInizioSys(new Date());
 		schedaDao.saveDisabilita(cs);
 	}
-	
+
 	private void updateDisabilita(BaseDTO dto) {
 		CsADisabilita cs = (CsADisabilita) dto.getObj();
 		cs.setUsrMod(dto.getUserId());
 		cs.setDtMod(new Date());
 		schedaDao.updateDisabilita(cs);
 	}
-	
+
 	private void eliminaDisabilita(BaseDTO dto) {
 		schedaDao.eliminaDisabilita((Long) dto.getObj());
 	}
-	
+
 	@Override
-	public CsADatiSociali getDatiSocialiById(BaseDTO dto) {		
+	public CsADatiSociali getDatiSocialiById(BaseDTO dto) {
 		return schedaDao.getDatiSocialiById((Long) dto.getObj());
 	}
-	
+
 	@Override
 	public Boolean existsDatiSocialiAttiviBySoggettoCf(BaseDTO dto) {		
 		List<CsADatiSociali> lst =  schedaDao.findDatiSocialiBySoggettoCf((String) dto.getObj());
@@ -177,23 +162,13 @@ public class AccessTableSchedaSessionBean extends CarSocialeBaseSessionBean impl
 		}
 		return esiste;
 	}
-	
-	
+
 	@Override
 	@AuditConsentiAccessoAnonimo
 	@AuditSaltaValidazioneSessionID
 	public CsADatiSociali findDatiSocialiAttiviBySoggettoCf(BaseDTO dto) {		
-		List<CsADatiSociali> lst =  schedaDao.findDatiSocialiBySoggettoCf((String) dto.getObj());
-		if(lst!=null && !lst.isEmpty()){
-			for(CsADatiSociali ds : lst){
-				if(!ds.getDataFineApp().before(new Date()))
-					return ds;
-			}
-		}
-		return null;
+		return schedaDao.findDatiSocialiAttiviBySoggettoCf((String) dto.getObj());
 	}
-	
-	
 
 	private void saveDatiSociali(BaseDTO dto) {
 		CsADatiSociali cs = (CsADatiSociali) dto.getObj();
@@ -203,6 +178,8 @@ public class AccessTableSchedaSessionBean extends CarSocialeBaseSessionBean impl
 		cs.setDtIns(new Date());
 		cs.setUserIns(dto.getUserId());
 		cs.setDataInizioSys(new Date());
+		CsExtraFseDatiLavoro dl = porService.fillDatiLavoroPor(cs.getDatiFse() , dto.getUserId());
+		cs.setDatiFse(dl);
 		schedaDao.saveDatiSociali(cs);
 	}
 	
@@ -210,21 +187,18 @@ public class AccessTableSchedaSessionBean extends CarSocialeBaseSessionBean impl
 		CsADatiSociali cs = (CsADatiSociali) dto.getObj();
 		cs.setUsrMod(dto.getUserId());
 		cs.setDtMod(new Date());
+		CsExtraFseDatiLavoro dl = porService.fillDatiLavoroPor(cs.getDatiFse(), dto.getUserId());
+		cs.setDatiFse(dl);
 		schedaDao.updateDatiSociali(cs);
 	}
-	
+
 	private void eliminaDatiSociali(BaseDTO dto) {
 		schedaDao.eliminaDatiSociali((Long) dto.getObj());
 	}
-	
+
 	@Override
 	public CsADatiInvalidita getDatiInvaliditaById(BaseDTO dto) {		
 		return schedaDao.getDatiInvaliditaById((Long) dto.getObj());
-	}
-	
-	@Override
-	public List<CsADatiInvalidita> findDatiInvaliditaBySoggettoId(BaseDTO dto) {		
-		return schedaDao.findDatiInvaliditaBySoggettoId((Long) dto.getObj());
 	}
 
 	private void saveDatiInvalidita(BaseDTO dto) {
@@ -237,25 +211,21 @@ public class AccessTableSchedaSessionBean extends CarSocialeBaseSessionBean impl
 		cs.setDataInizioSys(new Date());
 		schedaDao.saveDatiInvalidita(cs);
 	}
-	
+
 	private void updateDatiInvalidita(BaseDTO dto) {
 		CsADatiInvalidita cs = (CsADatiInvalidita) dto.getObj();
 		cs.setUsrMod(dto.getUserId());
 		cs.setDtMod(new Date());
 		schedaDao.updateDatiInvalidita(cs);
 	}
-	
+
 	private void eliminaDatiInvalidita(BaseDTO dto) {
 		schedaDao.eliminaDatiInvalidita((Long) dto.getObj());
 	}
-	
+
 	@Override
 	public CsATribunale getTribunaleById(BaseDTO dto) {		
 		return schedaDao.getTribunaleById((Long) dto.getObj());
-	}
-	
-	private List<CsATribunale> findTribunaleBySoggettoId(BaseDTO dto) {		
-		return schedaDao.findTribunaleBySoggettoId((Long) dto.getObj());
 	}
 
 	private void saveTribunale(BaseDTO dto) {
@@ -268,99 +238,31 @@ public class AccessTableSchedaSessionBean extends CarSocialeBaseSessionBean impl
 		cs.setDataInizioSys(new Date());
 		schedaDao.saveTribunale(cs);
 	}
-	
+
 	private void updateTribunale(BaseDTO dto) {
 		CsATribunale cs = (CsATribunale) dto.getObj();
 		cs.setUsrMod(dto.getUserId());
 		cs.setDtMod(new Date());
 		schedaDao.updateTribunale(cs);
 	}
-	
+
 	private void eliminaTribunale(BaseDTO dto) {
 		schedaDao.eliminaTribunale((Long) dto.getObj());
 	}
-	
-	@Override
-	public CsAServizi getServiziById(BaseDTO dto) {		
-		return schedaDao.getServiziById((Long) dto.getObj());
-	}
-	
-	private List<CsAServizi> findServiziBySoggettoId(BaseDTO dto) {		
-		return schedaDao.findServiziBySoggettoId((Long) dto.getObj());
-	}
 
-	private void saveServizi(BaseDTO dto) {
-		CsAServizi cs = (CsAServizi) dto.getObj();
-		dto.setObj(cs.getCsASoggetto().getAnagraficaId());
-		CsASoggettoLAZY soggetto = soggettoSessionBean.getSoggettoById(dto);
-		cs.setCsASoggetto(soggetto);
-		cs.setDtIns(new Date());
-		cs.setUserIns(dto.getUserId());
-		//cs.setDataInizioSys(new Date());
-		schedaDao.saveServizi(cs);
-	}
-	
-	private void updateServizi(BaseDTO dto) {
-		CsAServizi cs = (CsAServizi) dto.getObj();
-		cs.setUsrMod(dto.getUserId());
-		cs.setDtMod(new Date());
-		schedaDao.updateServizi(cs);
-	}
-	
-	private void eliminaServizi(BaseDTO dto) {
-		schedaDao.eliminaServizi((Long) dto.getObj());
-	}
-	
-	@Override
-	public CsAContributi getContributiById(BaseDTO dto) {		
-		return schedaDao.getContributiById((Long) dto.getObj());
-	}
-	
-	private List<CsAContributi> findContributiBySoggettoId(BaseDTO dto) {		
-		return schedaDao.findContributiBySoggettoId((Long) dto.getObj());
-	}
-
-	private void saveContributi(BaseDTO dto) {
-		CsAContributi cs = (CsAContributi) dto.getObj();
-		dto.setObj(cs.getCsASoggetto().getAnagraficaId());
-		CsASoggettoLAZY soggetto = soggettoSessionBean.getSoggettoById(dto);
-		cs.setCsASoggetto(soggetto);
-		cs.setDtIns(new Date());
-		cs.setUserIns(dto.getUserId());
-		//cs.setDataInizioSys(new Date());
-		schedaDao.saveContributi(cs);
-	}
-	
-	private void updateContributi(BaseDTO dto) {
-		CsAContributi cs = (CsAContributi) dto.getObj();
-		cs.setUsrMod(dto.getUserId());
-		cs.setDtMod(new Date());
-		schedaDao.updateContributi(cs);
-	}
-	
-	private void eliminaContributi(BaseDTO dto) {
-		schedaDao.eliminaContributi((Long) dto.getObj());
-	}
-	
 	@Override
 	public CsAFamigliaGruppo getFamigliaGruppoById(BaseDTO dto) {		
 		return schedaDao.getFamigliaGruppoById((Long) dto.getObj());
 	}
-	
-	
-	private List<CsAFamigliaGruppo> findFamigliaGruppoBySoggettoId(BaseDTO dto) {		
-		return schedaDao.findFamigliaGruppoBySoggettoId((Long) dto.getObj());
-	}
-	
+
 	@Override
-	public CsAFamigliaGruppo findFamigliaAllaDataBySoggettoId(BaseDTO dto){
-		Boolean loadComponenti = ((Boolean) dto.getObj3())==null?false: ((Boolean) dto.getObj3()).booleanValue();
-		return schedaDao.findFamigliaGruppoAllaDataBySoggettoId((Long)dto.getObj(), (Date)dto.getObj2(), loadComponenti);
+	public List<CsAComponente> findComponentiFamigliaAllaDataBySoggettoId(BaseDTO dto){
+		return schedaDao.findComponentiFamigliaAllaDataBySoggettoId((Long)dto.getObj(), (Date)dto.getObj2());
 	}
 
 	private void saveFamigliaGruppo(BaseDTO dto) {
 		CsAFamigliaGruppo cs = (CsAFamigliaGruppo) dto.getObj();
-		List<CsAComponente> listaComp = cs.getCsAComponentes();
+		Set<CsAComponente> listaComp = cs.getCsAComponentes();
 		cs.setCsAComponentes(null);
 		dto.setObj(cs.getCsASoggetto().getAnagraficaId());
 		CsASoggettoLAZY soggetto = soggettoSessionBean.getSoggettoById(dto);
@@ -377,15 +279,16 @@ public class AccessTableSchedaSessionBean extends CarSocialeBaseSessionBean impl
 				comp.setDtIns(new Date());
 				comp.setUserIns(dto.getUserId());
 				comp.setCsAFamigliaGruppo(cs);
-			
+
 				schedaDao.saveComponente(comp);
 			}
 		}
 	}
-	
+
 	private void updateFamigliaGruppo(BaseDTO dto) {
+		try{
 		CsAFamigliaGruppo cs = (CsAFamigliaGruppo) dto.getObj();
-		List<CsAComponente> listaComp = cs.getCsAComponentes();
+		Set<CsAComponente> listaComp = cs.getCsAComponentes();
 		cs.setCsAComponentes(null);
 		cs.setUsrMod(dto.getUserId());
 		cs.setDtMod(new Date());
@@ -415,34 +318,41 @@ public class AccessTableSchedaSessionBean extends CarSocialeBaseSessionBean impl
 		}
 		// elimino i componenti non presenti nel nuovo salvataggio
 		schedaDao.eliminaComponenteNotInByFamigliaGruppo(cs.getId(), listaId);
+		}catch(Exception e){
+			logger.error(e.getMessage(), e);
+			throw new CarSocialeServiceException(e);
+		}
 	}
 	
 	private void eliminaFamigliaGruppo(BaseDTO dto) {
 		schedaDao.eliminaComponenteByFamigliaId((Long) dto.getObj());
 		schedaDao.eliminaFamigliaGruppo((Long) dto.getObj());
 	}
-	
+
+	/**Restituisce i familiari di un soggetto individuati in tutte le 
+	 * cartelle in cui è presente sia come titolare che come familiare 
+	 * Specificando la data viene cercato solo nelle famiglie attive alla data di riferimento */
 	@Override
-	public List<CsAAnagrafica> findComponentiGiaFamigliariBySoggettoCf(BaseDTO dto) {
-		Date dataRif = dto.getObj2()!=null ? (Date) dto.getObj2() : null;
-		return schedaDao.findComponentiGiaFamigliariBySoggettoCf((String)dto.getObj(),dataRif);
+	public List<RisorsaCalcDTO> findComponentiGiaFamigliariBySoggettoCf(BaseDTO dto) {
+		String cfSoggetto = (String)dto.getObj();
+		Date dataDa = dto.getObj2()!=null ? (Date) dto.getObj2() : null;
+		Date dataA = dto.getObj3()!=null ? (Date) dto.getObj3() : null;
+		return schedaDao.findComponentiGiaFamigliariBySoggettoCf(cfSoggetto, dataDa, dataA);
 	}
-	
+
 	@Override
 	public Hashtable<String,RisorsaFamDTO> findRisorseFamiliariBySoggettoCf(BaseDTO dto) {
 		Hashtable<String,RisorsaFamDTO> mappaSoggetti =new Hashtable<String, RisorsaFamDTO>();
-		String cf = (String)dto.getObj();
-		
-		Date dataRif = dto.getObj2()!=null ? (Date) dto.getObj2() : null;
-		List<CsAAnagrafica> lst = schedaDao.findComponentiGiaFamigliariBySoggettoCf(cf, dataRif);
+		String cfSoggetto = (String)dto.getObj();
+		List<RisorsaCalcDTO> lst = findComponentiGiaFamigliariBySoggettoCf(dto);
         
-		for(CsAAnagrafica a : lst){
-			if(!mappaSoggetti.containsKey(a.getCf()) && !cf.equalsIgnoreCase(a.getCf())){
+		for(RisorsaCalcDTO a : lst){
+			if(!mappaSoggetti.containsKey(a.getCf()) && !cfSoggetto.equalsIgnoreCase(a.getCf())){
 				RisorsaFamDTO r = new RisorsaFamDTO();
 				r.setCognome(a.getCognome());
 				r.setNome(a.getNome());
 				r.setCf(a.getCf());
-				
+
 				dto.setObj(a.getCf());
 				CsASoggettoLAZY s = soggettoSessionBean.getSoggettoByCF(dto);
 				r.setSoggettoCaso(s);
@@ -450,18 +360,54 @@ public class AccessTableSchedaSessionBean extends CarSocialeBaseSessionBean impl
 					r.setHasDatiSociali(existsDatiSocialiAttiviBySoggettoCf(dto));
 				else
 					r.setHasDatiSociali(false);
-				
+
 				mappaSoggetti.put(a.getCf(), r);
 			}
-			
+
 		}
-		
+
 		return mappaSoggetti;
 	}
 
 	@Override
 	public CsAComponente findComponenteById(BaseDTO dto) {
-		return parentiDAO.findComponenteById((Long)dto.getObj());
+		return parentiDAO.findComponenteById((Long) dto.getObj());
 	}
-	
+
+	@Override
+	public void verificaAllineamentoDatiInvalidita(BaseDTO dto) {
+		CsDDiario diario = (CsDDiario)dto.getObj();
+		List<String> lstSinaParamInvalidita = (List<String>)dto.getObj2();
+		
+		List<Long> lstCsInvalidita = new ArrayList<Long>();
+		List<CsADatiInvalidita> csDatiInvalidita = schedaDao.findDatiInvaliditaBySoggettoId(diario.getCsACaso().getCsASoggetto().getAnagraficaId(), diario.getDtAmministrativa());
+
+		if (csDatiInvalidita != null) {
+			for (CsADatiInvalidita datiCs : csDatiInvalidita) {
+				if (datiCs.getCsAInvCivs() != null && datiCs.getCsAInvCivs().size() > 0) {
+					for (CsAInvCiv invCivs : datiCs.getCsAInvCivs()) {
+						lstCsInvalidita.add(invCivs.getSinaRispostaId());
+					}
+					break;
+				}
+			}
+			if (lstSinaParamInvalidita != null ) {
+				
+				Collections.sort(lstSinaParamInvalidita);
+				Collections.sort(lstCsInvalidita);
+				if (!lstSinaParamInvalidita.equals(lstCsInvalidita)) {
+					dto.setObj(diario.getCsACaso().getCsASoggetto());
+					dto.setObj2(diario.getCsOOperatoreSettore());
+					dto.setObj3(DataModelCostanti.TipiAlertCod.MULTIDIM);
+					dto.setObj4("una nuova valutazione multidimensionale con dati invalidità differenti da quelli salvati in cartella sociale");
+					dto.setObj5(Boolean.TRUE);
+					alertService.addAlertNuovoInserimentoToResponsabileCaso(dto);
+				}
+			 
+			}
+
+		}
+		
+	}
+
 }

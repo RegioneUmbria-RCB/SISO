@@ -64,8 +64,7 @@ public class AggAnagraficaCasoGitTestBean extends CsUiCompBaseBean {
 				result = mapper.writerWithDefaultPrettyPrinter()
 				  .writeValueAsString(hashmap);
 			} catch (JsonProcessingException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				logger.error(e.getMessage(), e);
 			}
 		}
 			

@@ -19,11 +19,11 @@
 	<classpathentry kind="src" path="/CT_Config_ManagerClient"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/CarSocialeA_EJBClient"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/CT_Service_Data_AccessClient"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/CT_Service_Data_Access"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/AmProfilerDataModel"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/AmProfilerEjbClient"/>
 	<classpathentry kind="src" path="/AnagrafeRegionaleClient_DTO"/>
 	<classpathentry kind="src" path="/RilevazionePresenze_DataModel"/>
 	<classpathentry kind="src" path="/RilevazionePresenze_EJBClient"/>
+	<classpathentry kind="src" path="/Argo_EJBClient"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

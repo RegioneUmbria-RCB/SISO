@@ -6,6 +6,7 @@ import it.webred.cs.csa.ejb.dao.ConfigurazioneDAO;
 import it.webred.cs.csa.ejb.dao.SinaDAO;
 import it.webred.cs.csa.ejb.dto.BaseDTO;
 import it.webred.cs.csa.ejb.dto.SinaEsegDTO;
+import it.webred.cs.data.DataModelCostanti;
 import it.webred.cs.data.model.ArTbPrestazioniInps;
 import it.webred.cs.data.model.CsDSina;
 import it.webred.cs.data.model.CsDSinaEseg;
@@ -15,6 +16,7 @@ import it.webred.cs.data.model.CsTbSinaDomanda;
 import it.webred.cs.data.model.CsTbSinaRisposta;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -151,46 +153,10 @@ public class AccessTableSinaSessionBean extends CarSocialeBaseSessionBean implem
 			s = sinaDao.updateSina(s);
 			e.setCsDSina(s);
 		}catch(Exception ex){
-			ex.printStackTrace();
+			logger.error(ex.getMessage(), ex);
 		}
 		return e;
 	}
-	
-	
-	
-//	@Override
-//	public SinaEsegDTO saveSina(SinaEsegDTO e) {
-//		CsDSina s = e.getCsDSina();
-//		Iterator<Long> i = e.getRispostas().keySet().iterator();
-//		
-//		
-//		while(i.hasNext()){
-//			Long idDomanda = i.next();
-//			Long idRisposta = e.getRispostas().get(i);
-//			if(idRisposta!=null){
-//			    CsDSinaEseg eseg = new CsDSinaEseg();
-//			    eseg.setCsDSina(s);
-//			    CsTbSinaDomanda d = new CsTbSinaDomanda();
-//			    d.setId(idDomanda);
-//			    eseg.setCsTbSinaDomanda(d);
-//			    
-//			    CsTbSinaRisposta r = new CsTbSinaRisposta();
-//			    r.setId(idRisposta);
-//			    
-//			    eseg.setCsTbSinaRisposta(r);
-//				s.getCsDSinaEseg().add(eseg);
-//			}else{
-//				//Delete?
-//			}
-//		}
-//		
-//		s = sinaDao.updateSina(s);
-//		Long idSina = s.getId();
-//		//TODO: Implementare salvataggio parametri
-//		
-//		return this.getSinaById(idSina, e.getLstSinaParams());
-//		
-//	}
 
 	@Override
 	public void deleteSina(BaseDTO dto) {
@@ -206,15 +172,44 @@ public class AccessTableSinaSessionBean extends CarSocialeBaseSessionBean implem
 	
 	@Override
 	public HashMap<Long,CsDSinaLIGHT> getSinaByMastIds(BaseDTO dto) {
-		List<Long> ids = (List<Long>) dto.getObj();
-		List<CsDSinaLIGHT> listaSina = sinaDao.getSinaByMastId(ids);	
-		 
+		List<Long> idsTot = (List<Long>) dto.getObj();
 		HashMap<Long,CsDSinaLIGHT> mappaSina = new HashMap<Long,CsDSinaLIGHT>();
-		for(CsDSinaLIGHT sina: listaSina)
-			mappaSina.put(sina.getInterventoEsegMastId(), sina);
+		List<Long> ids = new ArrayList<Long>();
+		int range = DataModelCostanti.MAX_PARAMS_QUERY_IN_CLAUSE;
+		int size = idsTot.size();
 		
+		int numChunck = size / range;
+		int residui = size % range;
+		
+		logger.debug("getSinaByMastIds size["+size+"] maxrange["+range+"] size / range["+numChunck+"] size % range["+residui+"]");
+		
+		int min = 0;
+		int max = numChunck > 0 ? range : size;
+		
+		int i = 0;
+		while(i < numChunck){
+			ids = idsTot.subList(min, max);
+			fillMappaSinaByMastIds(ids, mappaSina);
+			min += range;
+			max += range;
+			i++;
+		}
+		
+		if(residui > 0){
+			max = min + residui;
+			ids = idsTot.subList(min, max);
+			fillMappaSinaByMastIds(ids, mappaSina);
+		}
+					
 		return mappaSina;	
 	}
+	
+	private void fillMappaSinaByMastIds(List<Long> ids, HashMap<Long,CsDSinaLIGHT> mappaSina) {
+		List<CsDSinaLIGHT> listaSina = sinaDao.getSinaByMastId(ids);	
+		for(CsDSinaLIGHT sina: listaSina)
+			mappaSina.put(sina.getInterventoEsegMastId(), sina);
+	}
+	
 	
 	//SISO-783
 	@Override

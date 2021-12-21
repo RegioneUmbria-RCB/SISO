@@ -57,11 +57,6 @@ public class CsASoggettoMedico implements Serializable {
 	@JoinColumn(name="MEDICO_ID", insertable=false, updatable=false)
 	private CsCMedico csCMedico;
 
-	//bi-directional many-to-one association to CsASoggetto
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name="SOGGETTO_ANAGRAFICA_ID", insertable=false, updatable=false)
-	private CsASoggettoLAZY csASoggetto;
-
 	public CsASoggettoMedico() {
 	}
 
@@ -152,13 +147,4 @@ public class CsASoggettoMedico implements Serializable {
 	public void setCsCMedico(CsCMedico csCMedico) {
 		this.csCMedico = csCMedico;
 	}
-
-	public CsASoggettoLAZY getCsASoggetto() {
-		return this.csASoggetto;
-	}
-
-	public void setCsASoggetto(CsASoggettoLAZY csASoggetto) {
-		this.csASoggetto = csASoggetto;
-	}
-
 }

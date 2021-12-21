@@ -8,10 +8,8 @@
 			<attribute name="owner.project.facets" value="java"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry combineaccessrules="false" kind="src" path="/CT_Config_Data_Model"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Argo_DataModel"/>
 	<classpathentry exported="true" kind="lib" path="/CT-LIBS/cet-lib/datarouter.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/webred-cs-base"/>
 	<classpathentry exported="true" kind="lib" path="/CT-LIBS/json/jackson-annotations-2.2.3.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

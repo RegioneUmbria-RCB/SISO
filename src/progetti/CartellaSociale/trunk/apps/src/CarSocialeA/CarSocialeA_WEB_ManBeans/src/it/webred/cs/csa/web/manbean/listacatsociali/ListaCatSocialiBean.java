@@ -15,7 +15,9 @@ import it.webred.cs.csa.ejb.client.AccessTableSoggettoSessionBeanRemote;
 import it.webred.cs.csa.ejb.dto.BaseDTO;
 import it.webred.cs.csa.ejb.dto.CasoSearchCriteria;
 import it.webred.cs.csa.ejb.dto.ContatoreCasiDTO;
+import it.webred.cs.csa.ejb.dto.OperatoreDTO;
 import it.webred.cs.csa.ejb.dto.PaginationDTO;
+import it.webred.cs.csa.ejb.dto.prospettoSintesi.CasiOperatoreBean;
 import it.webred.cs.data.DataModelCostanti;
 import it.webred.cs.data.DataModelCostanti.PermessiErogazioneInterventi;
 import it.webred.cs.data.model.CsOOperatore;
@@ -25,7 +27,6 @@ import it.webred.cs.data.model.CsOSettore;
 import it.webred.cs.data.model.CsRelSettoreCatsoc;
 import it.webred.cs.data.model.CsTbTipoOperatore;
 import it.webred.cs.jsf.bean.CasiCatSocialeBean;
-import it.webred.cs.jsf.bean.CasiOperatoreBean;
 import it.webred.cs.jsf.interfaces.IListaCatSociali;
 import it.webred.cs.jsf.manbean.superc.CsUiCompBaseBean;
 import it.webred.ejb.utility.ClientUtility;
@@ -117,74 +118,15 @@ public class ListaCatSocialiBean extends CsUiCompBaseBean implements IListaCatSo
 
 	public void caricaCaricoLavoro() {
 		try {
-			AccessTableOperatoreSessionBeanRemote opService = (AccessTableOperatoreSessionBeanRemote) ClientUtility
-					.getEjbInterface("CarSocialeA", "CarSocialeA_EJB", "AccessTableOperatoreSessionBean");
 			AccessTableCasoSessionBeanRemote casoService = (AccessTableCasoSessionBeanRemote) ClientUtility
 					.getEjbInterface("CarSocialeA", "CarSocialeA_EJB", "AccessTableCasoSessionBean");
 
-			lstCasiOperatore = new ArrayList<CasiOperatoreBean>();
 			CasiCatSocialeBean comp = lstCasiCatSociale.get(idxSelected);
 			modalHeader = "Carico di lavoro - Cat.Sociale " + comp.getCatSociale().getDescrizione();
 			BaseDTO dto = new BaseDTO();
 			fillEnte(dto);
 			dto.setObj(comp.getCatSociale().getId());
-			List<CsOOperatore> listaOperatori = opService.getOperatoriByCatSocialeOrg(dto);
-
-			for (CsOOperatore op : listaOperatori) {
-				boolean operatorCanBeAdded = false; // SISO-640
-
-				Iterator<CsOOperatoreSettore> itSett = op.getCsOOperatoreSettores().iterator();
-				List<String> orgs = new ArrayList<String>();
-				while (itSett.hasNext()) {
-					CsOOperatoreSettore s = (CsOOperatoreSettore) itSett.next();
-					String org = s.getCsOSettore().getCsOOrganizzazione().getNome();
-					
-					// SISO-640					
-					dto.setObj(s.getId());
-					dto.setObj2(comp.getCatSociale().getId());
-					List<CsOOperatoreTipoOperatore> tipiOperatore = opService.findTipiOperatore(dto);
-					
-					for(CsOOperatoreTipoOperatore oto : tipiOperatore) {
-						CsTbTipoOperatore csTbTipoOperatore = oto.getCsTbTipoOperatore();
-						String descrizioneTipoOperatore = csTbTipoOperatore.getDescrizione();
-						operatorCanBeAdded |=    descrizioneTipoOperatore.equals("Assistente sociale") 
-								                || descrizioneTipoOperatore.equals("COP")
-								                || descrizioneTipoOperatore.equals("Educatore Professionale");
-					}
-					// -----------------------------------------------------------------------~ SISO-640
-					if (!orgs.contains(org))
-						orgs.add(org);
-				}
-				String os = "";
-				for (String s : orgs)
-					os += s + ", ";
-				os = os.substring(0, os.length() - 2);
-
-				CasiOperatoreBean oComp = new CasiOperatoreBean();
-				oComp.setOperatore(op); 
-				oComp.setOrganizzazioni(os);
-				if(operatorCanBeAdded){
-				
-					dto.setObj(op.getId());
-					// SISO-640
-					dto.setObj3(true);
-					Integer numeroCasiEnte  = casoService.countCasiByResponsabileCatSociale(dto);
-				
-					if (numeroCasiEnte > 0) {
-						oComp.setNumCasiEnte(numeroCasiEnte);
-						
-						dto.setObj3(false);
-						Integer numeroCasiAltro = casoService.countCasiByResponsabileCatSociale(dto);
-						oComp.setNumCasiAltro(numeroCasiAltro);
-						lstCasiOperatore.add(oComp);
-					}else {
-						logger.info(String.format("operatore %d <%s> saltato: non ha casi in carico", oComp.getOperatore().getId(), oComp.getOperatore().getDenominazione()));
-					}
-				}else{
-					logger.info(String.format("operatore %d <%s> saltato: non appartenente alla tipologia ['Assistente sociale','COP','Educatore Professionale']", oComp.getOperatore().getId(), oComp.getOperatore().getDenominazione()));
-				}
-			// -----------------------------------------------------------------------~ SISO-640
-			}
+			lstCasiOperatore = casoService.loadCaricoLavoroByCatSocOrg(dto);
 
 		} catch (Exception e) {
 			addErrorFromProperties("caricamento.error");

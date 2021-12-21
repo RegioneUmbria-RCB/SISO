@@ -16,11 +16,12 @@
 			<attribute name="owner.project.facets" value="java"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry combineaccessrules="false" kind="src" path="/CarSocialeA_EJB"/>
 	<classpathentry kind="src" path="/CT_Config_ManagerClient"/>
 	<classpathentry kind="src" path="/CT_Config_Data_Model"/>
 	<classpathentry kind="lib" path="/CT-LIBS/cet-lib/cetsecutil.jar"/>
 	<classpathentry kind="lib" path="/CT-LIBS/cet-lib/datarouter.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/RilevazionePresenze_EJB"/>
+	<classpathentry kind="src" path="/CarSocialeA_DataModel"/>
+	<classpathentry kind="src" path="/CarSocialeA_EJBClient"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

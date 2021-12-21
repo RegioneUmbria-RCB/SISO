@@ -3,7 +3,6 @@ package it.webred.ss.dao;
 import it.webred.ct.support.validation.annotation.AuditConsentiAccessoAnonimo;
 import it.webred.ct.support.validation.annotation.AuditSaltaValidazioneSessionID;
 import it.webred.ss.data.model.ArBufferSsInvio;
-import it.webred.ss.data.model.ArOOrganizzazione;
 import it.webred.ss.data.model.SsAnagrafica;
 import it.webred.ss.data.model.SsAnagraficaLog;
 import it.webred.ss.data.model.SsCCategoriaSociale;
@@ -20,7 +19,6 @@ import it.webred.ss.data.model.SsOOrganizzazione;
 import it.webred.ss.data.model.SsRelUffPcontOrg;
 import it.webred.ss.data.model.SsRelUffPcontOrgPK;
 import it.webred.ss.data.model.SsScheda;
-import it.webred.ss.data.model.SsSchedaAccesso;
 import it.webred.ss.data.model.SsSchedaAccessoInviante;
 import it.webred.ss.data.model.SsSchedaInterventi;
 import it.webred.ss.data.model.SsSchedaMotivazione;
@@ -30,18 +28,17 @@ import it.webred.ss.data.model.SsSchedaSegnalato;
 import it.webred.ss.data.model.SsTipoScheda;
 import it.webred.ss.data.model.SsUfficio;
 import it.webred.ss.data.model.privacy.CsSsPrivacy;
-import it.webred.ss.data.model.privacy.CsSsPrivacyPK;
 import it.webred.ss.data.model.privacy.RdcConsensiSocToLav;
 import it.webred.ss.data.model.privacy.RdcConsensiSocToLavPK;
 import it.webred.ss.data.model.privacy.SsSchedaPrivacy;
 import it.webred.ss.ejb.dto.BaseDTO;
 import it.webred.ss.ejb.dto.DatiSchedaListDTO;
 import it.webred.ss.ejb.dto.OperatoreDTO;
+import it.webred.ss.ejb.dto.OrganizzazioneDTO;
 import it.webred.ss.ejb.dto.SsSearchCriteria;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -50,6 +47,7 @@ import java.util.List;
 
 import javax.inject.Named;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
@@ -241,9 +239,19 @@ public void updateCompletamentoScheda(SsScheda  scheda)throws Exception{
 		return scheda;
 	}
 
-	public ArOOrganizzazione readArOrganizzazione(Long id) {
-		ArOOrganizzazione orga = em.find(ArOOrganizzazione.class, id);
-		return orga;
+	public OrganizzazioneDTO readArOrganizzazione(Long id) {
+		OrganizzazioneDTO dest = null;
+		String sql = "SELECT ID, BELFIORE, NOME, ZONA_NOME FROM AR_O_ORGANIZZAZIONE WHERE id = :id";
+		Query q = em.createNativeQuery(sql);
+		Object[] o = (Object[])q.getSingleResult();
+		if(o!=null){
+			dest = new OrganizzazioneDTO();
+			dest.setId((Long)o[0]);
+			dest.setBelfiore((String)o[1]);
+			dest.setNome((String)o[2]);
+			dest.setZonaSociale((String)o[3]);
+		}
+		return dest;
 	}
 
 	public SsOOrganizzazione readSsOrganizzazione(Long id) {
@@ -253,8 +261,7 @@ public void updateCompletamentoScheda(SsScheda  scheda)throws Exception{
 
 	@SuppressWarnings("unchecked")
 	public List<SsScheda> readSchedeIn(List<Long> idList){
-		Query q = em.createNamedQuery("SsScheda.readSchedeIn")
-				.setParameter("idList", idList);
+		Query q = em.createNamedQuery("SsScheda.readSchedeIn").setParameter("idList", idList);
 		return q.getResultList();
 	}
 
@@ -727,8 +734,10 @@ public void updateCompletamentoScheda(SsScheda  scheda)throws Exception{
 			dto.setDataPrivacy((Date)o[12]);
 			dto.setIdentificativo((BigDecimal)o[13]);
 			dto.setStatoCS((String)o[14]);
-			dto.setCfUtente((String)o[15]);
-			dto.setAlias((String)o[16]);
+			dto.setEnteSegnalazionePIC((String)o[15]);
+			dto.setCfUtente((String)o[16]);
+			dto.setAlias((String)o[17]);
+			
 			lstout.add(dto);
 		}
 		
@@ -781,7 +790,7 @@ public void updateCompletamentoScheda(SsScheda  scheda)throws Exception{
 		String sql = "Select distinct a.id.operatore, a.cognome, a.nome  "+
 					 "from SsUffOperatoreAnagrafica a "+
 				     "where 1=1 ";
-		sql+=organizzazioneId!=null ?  " AND a.id.organizzazioneId = :organizzazioneId" : "";
+		sql+=organizzazioneId!=null ?  " AND a.id.organizzazioneId = :organizzazioneId " : "";
 		sql+=ufficioId!=null ? " AND a.id.ufficioId = :ufficioId " : "";
 		sql+="order by a.cognome, a.nome, a.id.operatore";
 		
@@ -815,33 +824,22 @@ public void updateCompletamentoScheda(SsScheda  scheda)throws Exception{
 		return em.find(RdcConsensiSocToLav.class, pk);
 	}
 
-	public CsSsPrivacy findSchedaPrivacy(CsSsPrivacyPK pk) {
-		return em.find(CsSsPrivacy.class, pk);
+	public CsSsPrivacy findSchedaPrivacy(String cf, Long organizzazioneId) {
+		CsSsPrivacy p = null;
+		try{
+			Query q = em.createNamedQuery("CsSsPrivacy.findById");
+			q.setParameter("cf", cf.toUpperCase());
+			q.setParameter("organizzazioneId", organizzazioneId);
+			p = (CsSsPrivacy)q.getSingleResult();
+		}catch(NoResultException nre){}
+		return p;
 	}
 	
 	public List<SsOOrganizzazione> getListaOrganizzazioniZona() {
 		List<SsOOrganizzazione> result = new ArrayList<SsOOrganizzazione>();
 		List<Object[]> list = new ArrayList<Object[]>();
 
-		Query query = em
-				.createNamedQuery("SsOOrganizzazione.listOrganizzazioneZona");
-		result = query.getResultList();
-		// for (SsOOrganizzazione obj : list) {
-		// SsOOrganizzazione tmp = new SsOOrganizzazione();
-		// tmp = (SsOOrganizzazione) obj[0];
-		//
-		// result.add(tmp);
-		// }
-
-		return result;
-	}
-
-	public List<ArOOrganizzazione> getListaOrganizzazioniFuoriZona() {
-		List<ArOOrganizzazione> result = new ArrayList<ArOOrganizzazione>();
-		List<Object[]> list = new ArrayList<Object[]>();
-
-		Query query = em
-				.createNamedQuery("ArOOrganizzazione.listOrganizzazioneFuoriZona");
+		Query query = em.createNamedQuery("SsOOrganizzazione.listOrganizzazioneZona");
 		result = query.getResultList();
 		// for (SsOOrganizzazione obj : list) {
 		// SsOOrganizzazione tmp = new SsOOrganizzazione();
@@ -953,23 +951,6 @@ public void updateCompletamentoScheda(SsScheda  scheda)throws Exception{
 
 	}
 
-	public ArOOrganizzazione readSsArOrganizzazione(Long idOrganizzazione) {
-		List<ArOOrganizzazione> results = new ArrayList<ArOOrganizzazione>();
-		ArOOrganizzazione result= new ArOOrganizzazione();
-		
-		Query query = em
-				.createNamedQuery("SsArOOrganizzazione.readOrganizzazioneById");
-		query.setParameter("idOrganizzazione",idOrganizzazione);
-		results = query.getResultList();
-		if(results!=null && results.size()>0)
-		{
-			result=results.get(0);
-		}
-		
-
-		return result;
-	}
-
 	public SsSchedaAccessoInviante saveAccessoInviante(SsSchedaAccessoInviante accessoInviante) {
 		return em.merge(accessoInviante);
 	}
@@ -1056,8 +1037,9 @@ public void updateCompletamentoScheda(SsScheda  scheda)throws Exception{
 		String sql = "select distinct u.id from ss_Scheda_segnalato se left join ss_Scheda s on SE.ID = s.segnalato "+
 				"left join ss_Scheda_accesso a on a.id=s.accesso "+
 				"left join ss_ufficio u  on a.rel_upo_ufficio_id = u.id "+
-				"where se.anagrafica = "+anagraficaId;
+				"where se.anagrafica = :anagraficaId";
 		Query q = em.createNativeQuery(sql);
+		q.setParameter("anagraficaId", anagraficaId);
 		return (List<BigDecimal>) q.getResultList();
 	}
 }

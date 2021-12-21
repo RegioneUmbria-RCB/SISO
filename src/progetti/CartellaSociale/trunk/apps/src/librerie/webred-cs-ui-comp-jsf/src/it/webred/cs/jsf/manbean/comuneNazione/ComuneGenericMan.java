@@ -14,9 +14,12 @@ public class ComuneGenericMan extends ComuneMan implements Serializable{
 	private static final long serialVersionUID = 1L;
 	private String tipoComune;
 	
+	public ComuneGenericMan(){
+		super();
+	}
 	
 	public ComuneGenericMan(String tipoComune){
-		super();
+		this();
 		this.tipoComune = tipoComune;
 	}
 	

@@ -9,7 +9,7 @@ public abstract class IseeManBaseBean  extends SchedaValutazioneManBean implemen
 
 	private static final long serialVersionUID = 1L;
 	
-	protected ProtocolloDsuMan protDsuMan;
+	protected static ProtocolloDsuMan protDsuMan;
 	
 	public IseeManBaseBean(){
 		protDsuMan= new ProtocolloDsuMan();
@@ -37,6 +37,9 @@ public abstract class IseeManBaseBean  extends SchedaValutazioneManBean implemen
 			String defaultVersion = "";
 			man = (IIseeJson) WebredClassFactory.newInstance(className, IIseeJson.class, defaultVersion);
 			man.init(null, val);
+			
+			protDsuMan.setCodfisc(val.getCsDDiario().getCsACaso().getCsASoggetto().getCsAAnagrafica().getCf());
+			protDsuMan.setIdRichiesta(val.getCsDDiario().getCsACaso().getIdentificativo().toString());
 		}
 		return man;
 	}

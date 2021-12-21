@@ -1,5 +1,6 @@
 package it.webred.cs.jsf.manbean;
 
+import it.webred.cs.csa.ejb.dto.KeyValueDTO;
 import it.webred.cs.csa.ejb.dto.cartella.ValiditaDTO;
 import it.webred.cs.data.DataModelCostanti;
 import it.webred.cs.jsf.bean.ValiditaCompBaseBean;
@@ -35,6 +36,24 @@ public abstract class DatiValGestioneMan extends CsUiCompBaseBean implements IDa
 	protected Integer indexSelezionato;
 	
 	protected String warningMessage;
+	
+	public DatiValGestioneMan(){
+		init();
+	}
+	
+	private void init(){
+	    lstItems = new ArrayList<KeyValuePairBean>();
+		List<KeyValueDTO> lst = this.loadListItems();
+		if(lst!=null){
+			for(KeyValueDTO kv : lst){
+				if(kv.isAbilitato()){	
+					lstItems.add(new KeyValuePairBean(kv.getCodice(), kv.getDescrizione()));
+				}
+			}
+		}
+	}
+	
+	protected abstract List<KeyValueDTO> loadListItems();
 	
 	public void gestisci() {
 		lstComponentsOld = copyCompList(lstComponents);
@@ -187,7 +206,9 @@ public abstract class DatiValGestioneMan extends CsUiCompBaseBean implements IDa
 	}
 
 	@SuppressWarnings("rawtypes")
-	public abstract List<KeyValuePairBean> getLstItems();
+	public List<KeyValuePairBean> getLstItems(){
+		return lstItems;
+	};
 	
 	@SuppressWarnings("rawtypes")
 	public void setLstItems(List<KeyValuePairBean> lstItems) {

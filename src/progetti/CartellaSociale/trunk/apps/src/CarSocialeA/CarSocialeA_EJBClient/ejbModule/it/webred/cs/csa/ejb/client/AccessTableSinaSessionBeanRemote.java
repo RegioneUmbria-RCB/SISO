@@ -15,8 +15,6 @@ import javax.ejb.Remote;
 @Remote
 public interface AccessTableSinaSessionBeanRemote {
 
-	//public CsDSina newSina(BaseDTO dto);
-
 	public SinaEsegDTO getSinaById(BaseDTO dto);
 	
 	public SinaEsegDTO getSinaByDiarioId(BaseDTO dto);

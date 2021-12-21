@@ -3,7 +3,7 @@ package it.webred.cs.csa.web.manbean.fascicolo.initialize;
 import it.webred.cs.csa.ejb.client.AccessTableSchedaSessionBeanRemote;
 import it.webred.cs.csa.ejb.dto.BaseDTO;
 import it.webred.cs.csa.web.manbean.fascicolo.initialize.bean.InitAltriSoggettiBean;
-import it.webred.cs.data.model.CsAFamigliaGruppo;
+import it.webred.cs.data.model.CsAComponente;
 import it.webred.ct.data.access.basic.anagrafe.AnagrafeService;
 import it.webred.ct.data.access.basic.anagrafe.dto.RicercaSoggettoAnagrafeDTO;
 import it.webred.ct.data.model.anagrafe.SitDPersona;
@@ -26,10 +26,10 @@ public class InitAltriSoggetti extends ForkJoinTask {
 
 	public static InitAltriSoggettiBean loadLista(BaseDTO dto) throws Exception {
 
-		AnagrafeService anagrafeService = (AnagrafeService) getEjb(
-				"CT_Service", "CT_Service_Data_Access", "AnagrafeServiceBean");
-		AccessTableSchedaSessionBeanRemote schedaService = (AccessTableSchedaSessionBeanRemote) getEjb(
-				"CarSocialeA", "CarSocialeA_EJB", "AccessTableSchedaSessionBean");
+		AnagrafeService anagrafeService = 
+				(AnagrafeService) getEjb("CT_Service", "CT_Service_Data_Access", "AnagrafeServiceBean");
+		AccessTableSchedaSessionBeanRemote schedaService = 
+				(AccessTableSchedaSessionBeanRemote) getEjb("CarSocialeA", "CarSocialeA_EJB", "AccessTableSchedaSessionBean");
 
 
 		// nel secondo oggetto del dto si mette il cf ma poi va cancellato 
@@ -40,11 +40,11 @@ public class InitAltriSoggetti extends ForkJoinTask {
 		rs.setCodFis((String)dto.getObj2());
 		dto.setObj2(null);
 
-		CsAFamigliaGruppo famigliaGruppo = schedaService.findFamigliaAllaDataBySoggettoId(dto);
+		List<CsAComponente> famigliaGruppo = schedaService.findComponentiFamigliaAllaDataBySoggettoId(dto);
 		List<SitDPersona> listaFamiglia_anagrafe = anagrafeService.getFamigliaByCF(rs);
 
 		InitAltriSoggettiBean altriSoggetti = new InitAltriSoggettiBean();
-		altriSoggetti.setFamigliaGruppo(famigliaGruppo);
+		altriSoggetti.setListaComponenti(famigliaGruppo);
 		altriSoggetti.setListaFamiglia_anagrafe(listaFamiglia_anagrafe);;
 		
 		return altriSoggetti;

@@ -22,6 +22,7 @@
           <p:outputLabel value="Titolo di studio *" />
           <p:selectOneMenu value="#{cc.attrs.iOrientamentoIstruzione.jsonCurrent.idTitoloStudio}" 
                            disabled="#{cc.attrs.iOrientamentoIstruzione.jsonCurrent.idTitoloStudio!=NULL or cc.attrs.soloLettura}" style="width:300px;">
+            <f:selectItem noSelectionOption="true" itemLabel="- seleziona -" />		
             <f:selectItems value="#{cc.attrs.iOrientamentoIstruzione.jsonCurrent.lstTitoliStudio}" />
           </p:selectOneMenu>
          

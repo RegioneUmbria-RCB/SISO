@@ -7,6 +7,7 @@ import it.webred.cs.csa.ejb.client.AccessTableSchedaSegrSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.AccessTableSoggettoSessionBeanRemote;
 import it.webred.cs.csa.ejb.dto.BaseDTO;
 import it.webred.cs.csa.ejb.dto.IterDTO;
+import it.webred.cs.csa.ejb.dto.KeyValueDTO;
 import it.webred.cs.csa.web.manbean.scheda.SchedaBean;
 import it.webred.cs.csa.web.manbean.scheda.invalidita.DatiInvaliditaComp;
 import it.webred.cs.data.DataModelCostanti;
@@ -15,7 +16,6 @@ import it.webred.cs.data.model.CsASoggettoCategoriaSoc;
 import it.webred.cs.data.model.CsASoggettoCategoriaSocPK;
 import it.webred.cs.data.model.CsASoggettoLAZY;
 import it.webred.cs.data.model.CsOOperatoreSettore;
-import it.webred.cs.data.model.CsRelSettoreCatsoc;
 import it.webred.cs.jsf.bean.ValiditaCompBaseBean;
 import it.webred.cs.jsf.interfaces.ISoggCatSociale;
 import it.webred.cs.jsf.manbean.DatiValGestioneMan;
@@ -56,8 +56,16 @@ public class SoggCatSocialeBean extends DatiValGestioneMan implements ISoggCatSo
 	private boolean richiediCategoriaSociale;
 	
 	@Override
-	public void carica(CsASoggettoLAZY soggetto) {
+	public void carica(Long anagraficaId) {
 		logger.debug("START SoggCatSocialeBean: carica");
+		CsASoggettoLAZY s = this.getSoggettoById(anagraficaId);
+		this.carica(s);
+		logger.debug("END SoggCatSocialeBean: carica");
+	}
+	
+	@Override
+	public void carica(CsASoggettoLAZY soggetto) {
+		
 		try {
 		if(soggetto != null) {
 				this.soggetto = soggetto;
@@ -130,8 +138,8 @@ public class SoggCatSocialeBean extends DatiValGestioneMan implements ISoggCatSo
 							ClientUtility.getEjbInterface("CarSocialeA", "CarSocialeA_EJB", "AccessTableSchedaSegrSessionBean");
 					
 					dto.setObj(schedaSegr.getId());
+					dto.setObj2(DataModelCostanti.SchedaSegr.PROVENIENZA_SS);	// SISO-938
 					List<SsCCategoriaSociale> lst = schedaSegr.getLstCategorieSociali();
-					//CsCCategoriaSocialeBASIC csoc = ssService.findCategoriaSchedaSegrById(dto);
 					if(lst!=null && !lst.isEmpty()){
 						catSocSegr = lst.get(0).getDescrizione();
 						itemSelezionato = lst.get(0).getId()+"|"+lst.get(0).getDescrizione();
@@ -145,41 +153,25 @@ public class SoggCatSocialeBean extends DatiValGestioneMan implements ISoggCatSo
 		} catch (NamingException e) {
 			addErrorFromProperties("caricamento.error");
 			logger.error(e.getMessage(),e);
-		}
-		
-		logger.debug("END SoggCatSocialeBean: carica");
-			
+		}	
 	}
-		
+	
 	@Override
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public List<KeyValuePairBean> getLstItems() {
-		logger.debug("START SoggCatSocialeBean: getLstItems");
-		
-		lstItems = new ArrayList<KeyValuePairBean>();
+	protected List<KeyValueDTO> loadListItems() {
 		try {
 			CsOOperatoreSettore opSettore = getCurrentOpSettore();
 			AccessTableCatSocialeSessionBeanRemote bean = (AccessTableCatSocialeSessionBeanRemote) ClientUtility.getEjbInterface("CarSocialeA", "CarSocialeA_EJB", "AccessTableCatSocialeSessionBean");
 			BaseDTO dto = new BaseDTO();
 			fillEnte(dto);
 			dto.setObj(opSettore.getCsOSettore().getId());
-			List<CsRelSettoreCatsoc> beanLstCatSociali = bean.findRelSettoreCatsocBySettore(dto);
-			if (beanLstCatSociali != null) {
-				for (CsRelSettoreCatsoc cat : beanLstCatSociali) {
-					KeyValuePairBean si = new KeyValuePairBean(cat.getId().getCategoriaSocialeId(), cat.getCsCCategoriaSociale().getTooltip());
-				    if(cat.getAbilitato()!=null && cat.getAbilitato())
-				    	lstItems.add(si);
-				}
-			}
+			return bean.getCategorieSocialiBySettore(dto);
 		} catch (NamingException e) {
 			addErrorFromProperties("caricamento.error");
 			logger.error(e.getMessage(),e);
+			return null;
 		}
-		logger.debug("END SoggCatSocialeBean: getLstItems");
-		return lstItems;
 	}
-	
-	
 	
 	
 	@Override
@@ -240,13 +232,14 @@ public class SoggCatSocialeBean extends DatiValGestioneMan implements ISoggCatSo
 				for(ValiditaCompBaseBean comp: getLstComponents()) {
 					CsASoggettoCategoriaSoc cs = new CsASoggettoCategoriaSoc();
 					CsASoggettoCategoriaSocPK csPK = new CsASoggettoCategoriaSocPK();
-					cs.setCsASoggetto(soggetto);
+					//cs.setCsASoggetto(soggetto);
 					cs.setDataInizioApp(comp.getDataInizio());
 					cs.setDataInizioSys(new Date());
 					cs.setDtIns(new Date());
 					cs.setUserIns(dto.getUserId());
 					cs.setPrevalente(comp.isPrevalente() ? new Integer(1) : new Integer(0));
 					csPK.setCategoriaSocialeId(comp.getId());
+					csPK.setSoggettoAnagraficaId(soggetto.getAnagraficaId());
 					csPK.setDataFineApp(comp.getDataFine());
 					cs.setId(csPK);
 					

@@ -41,14 +41,14 @@
 					<h:outputText value="#{rowStruttura.indirizzo}" />
 				</p:column>
 								
-				<p:column headerText="Tipo"  width="10" filterBy="#{rowStruttura.tipoStruttura}">
+				<p:column headerText="Tipo"  width="10" filterBy="#{rowStruttura.flagAttrezzato}">
 			            <f:facet name="filter">
 			                <p:selectOneMenu onchange="PF('dtStrutture').filter()" styleClass="custom-filter">
 			                    <f:selectItem itemLabel="Seleziona" noSelectionOption="true"  />
 			                    <f:selectItems value="#{struttureController.listaTipologiaVillaggio}" />
 			                </p:selectOneMenu>
 			            </f:facet>
-					<h:outputText value="#{rowStruttura.tipoStrutturaDescrizione}"/>
+					<h:outputText value="#{rowStruttura.flagAttrezzatoDescrizione}"/>
                   
 				</p:column>
 			
@@ -84,8 +84,8 @@
             		<h:panelGroup style="display:block;">
             			<h:outputLabel value="Tipologia * "/>
             				<p:spacer  width="15"/>
-            		<p:selectOneMenu value="#{struttureController.selectedStruttura.tipoStruttura}" style="vertical-align:middle">
-						<f:selectItem noSelectionOption="true" itemLabel="- seleziona -"/>
+            		<p:selectOneMenu value="#{struttureController.selectedStruttura.flagAttrezzato}" style="vertical-align:middle">
+            		    <f:selectItem noSelectionOption="true" itemLabel="- seleziona -"/>
             			<f:selectItems value="#{struttureController.listaTipologiaVillaggio}"  var="itm" itemLabel="#{itm.descrizione}" itemValue="#{itm.value}"/>
             		</p:selectOneMenu>
             		</h:panelGroup>

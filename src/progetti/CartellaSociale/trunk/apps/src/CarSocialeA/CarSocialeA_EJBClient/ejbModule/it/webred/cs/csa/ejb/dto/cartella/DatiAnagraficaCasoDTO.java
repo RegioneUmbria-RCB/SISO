@@ -21,6 +21,7 @@ public class DatiAnagraficaCasoDTO extends CeTBaseObject implements Serializable
 	private List<ValiditaDTO> listaStatoCivile;
 	private List<FamiliareDettaglio> listaFamiliari;
 	private Long ssSchedaId;
+	private String tipoScheda;
 	
 	
 	public CsASoggettoLAZY getSoggetto() {
@@ -82,6 +83,12 @@ public class DatiAnagraficaCasoDTO extends CeTBaseObject implements Serializable
 	}
 	public void setSsSchedaId(Long ssSchedaId) {
 		this.ssSchedaId = ssSchedaId;
+	}
+	public String getTipoScheda() {
+		return tipoScheda;
+	}
+	public void setTipoScheda(String tipoScheda) {
+		this.tipoScheda = tipoScheda;
 	}
 	
 }

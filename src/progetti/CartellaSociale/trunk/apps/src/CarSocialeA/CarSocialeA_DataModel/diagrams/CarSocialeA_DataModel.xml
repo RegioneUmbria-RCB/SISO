@@ -330,17 +330,6 @@
 	</entity>
 
 	<entity>
-		<entity-name>it.webred.cs.data.model.CsItComunicazione</entity-name>
-		<entity-width>120</entity-width>
-		<entity-height>30</entity-height>
-		<entity-X-Coordinate>1739</entity-X-Coordinate>
-		<entity-Y-Coordinate>713</entity-Y-Coordinate>
-		<primary-collapsed>false</primary-collapsed>
-		<relation-collapsed>false</relation-collapsed>
-		<basic-collapsed>false</basic-collapsed>
-	</entity>
-
-	<entity>
 		<entity-name>it.webred.cs.data.model.CsTbTipoIndirizzo</entity-name>
 		<entity-width>120</entity-width>
 		<entity-height>30</entity-height>
@@ -478,17 +467,6 @@
 		<entity-height>206</entity-height>
 		<entity-X-Coordinate>50</entity-X-Coordinate>
 		<entity-Y-Coordinate>1967</entity-Y-Coordinate>
-		<primary-collapsed>false</primary-collapsed>
-		<relation-collapsed>false</relation-collapsed>
-		<basic-collapsed>false</basic-collapsed>
-	</entity>
-
-	<entity>
-		<entity-name>it.webred.cs.data.model.CsItAggiornamento</entity-name>
-		<entity-width>120</entity-width>
-		<entity-height>30</entity-height>
-		<entity-X-Coordinate>1695</entity-X-Coordinate>
-		<entity-Y-Coordinate>461</entity-Y-Coordinate>
 		<primary-collapsed>false</primary-collapsed>
 		<relation-collapsed>false</relation-collapsed>
 		<basic-collapsed>false</basic-collapsed>

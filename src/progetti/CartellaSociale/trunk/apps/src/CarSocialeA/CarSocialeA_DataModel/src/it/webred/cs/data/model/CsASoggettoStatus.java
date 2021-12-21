@@ -13,7 +13,6 @@ import java.util.Date;
  */
 @Entity
 @Table(name="CS_A_SOGGETTO_STATUS")
-@NamedQuery(name="CsASoggettoStatus.findAll", query="SELECT c FROM CsASoggettoStatus c")
 public class CsASoggettoStatus implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -56,11 +55,6 @@ public class CsASoggettoStatus implements Serializable {
 	@ManyToOne
 	@JoinColumn(name="STATUS_ID", insertable=false, updatable=false)
 	private CsTbStatus csTbStatus;
-
-	//bi-directional many-to-one association to CsASoggetto
-	@ManyToOne
-	@JoinColumn(name="SOGGETTO_ANAGRAFICA_ID", insertable=false, updatable=false)
-	private CsASoggettoLAZY csASoggetto;
 
 	public CsASoggettoStatus() {
 	}
@@ -152,13 +146,4 @@ public class CsASoggettoStatus implements Serializable {
 	public void setCsTbStatus(CsTbStatus csTbStatus) {
 		this.csTbStatus = csTbStatus;
 	}
-
-	public CsASoggettoLAZY getCsASoggetto() {
-		return this.csASoggetto;
-	}
-
-	public void setCsASoggetto(CsASoggettoLAZY csASoggetto) {
-		this.csASoggetto = csASoggetto;
-	}
-
 }

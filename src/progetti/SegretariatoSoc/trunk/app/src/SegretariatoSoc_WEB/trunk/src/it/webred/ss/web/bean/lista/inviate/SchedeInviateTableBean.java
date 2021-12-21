@@ -1,6 +1,7 @@
 package it.webred.ss.web.bean.lista.inviate;
 
 import it.webred.cs.csa.ejb.client.AccessTableSchedaSegrSessionBeanRemote;
+import it.webred.cs.data.DataModelCostanti;
 import it.webred.cs.data.model.CsTbCittadinanzaAcq;
 import it.webred.cs.data.model.CsTbTipologiaFamiliare;
 import it.webred.cs.jsf.manbean.FormazioneLavoroMan;
@@ -216,8 +217,9 @@ public class SchedeInviateTableBean extends SegretariatoSocSchedeTblBaseBean {
     		BaseDTO dto = new BaseDTO();
         	fillUserData(dto);
         	dto.setOrganizzazione(organizzazioneId);
+        	dto.setObj(true);
         	 //TODO ricerca organizzazione tramite id in  CS o in AR
-        	title = "Ente: "+schedaService.readSsArOOrganizzazioniById(dto).getNome();
+        	title = "Ente: "+schedaService.findOrganizzazioneDestInvio(dto).getNome();
         	
         	return true;
     		
@@ -376,7 +378,8 @@ public class SchedeInviateTableBean extends SegretariatoSocSchedeTblBaseBean {
 					it.webred.cs.csa.ejb.dto.BaseDTO baseDto = new it.webred.cs.csa.ejb.dto.BaseDTO();
 					fillUserData(baseDto);
 					baseDto.setObj(selectedScheda.getId());
-					statoScheda = schedaSegrService.findStatoSchedaSegrById(baseDto);
+					baseDto.setObj2(DataModelCostanti.SchedaSegr.PROVENIENZA_SS);	// SISO-938
+					statoScheda = schedaSegrService.findStatoSchedaSegrBySchedaIdProvenienza(baseDto);
 				}
     			
     			if (statoScheda==null || statoScheda.isEmpty()) {

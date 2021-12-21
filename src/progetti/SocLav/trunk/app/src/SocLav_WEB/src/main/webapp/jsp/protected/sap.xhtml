@@ -1,0 +1,379 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:webred="http://java.sun.com/jsf/composite/webred"
+	xmlns:webredcs="http://java.sun.com/jsf/composite/webredcs">
+	
+	<p:accordionPanel id="pnlSAP">
+		<p:tab title="Dati anagrafici">
+			<p:accordionPanel id="pnlDatiAnagrafici">
+				<p:tab title="Dati personali">
+					<h:panelGrid columns="4" width="100%">
+						<p:outputLabel value="Cognome "/>
+						<p:outputLabel value="#{sapManBean.sap.datianagrafici.datipersonali.cognome}"/>
+
+						<p:outputLabel value="Nome "/>
+						<p:outputLabel value="#{sapManBean.sap.datianagrafici.datipersonali.nome}"/>
+
+						<p:outputLabel value="Cod.fiscale "/>
+						<p:outputLabel value="#{sapManBean.sap.datianagrafici.datipersonali.codicefiscale}"/>
+						
+						<p:outputLabel value="Sesso "/>
+						<h:panelGroup>
+							<p:graphicImage rendered="#{sapManBean.sap.datianagrafici.datipersonali.sesso eq 'F'}" title="Donna" value="/images/female.png" height="20" />
+							<p:graphicImage rendered="#{sapManBean.sap.datianagrafici.datipersonali.sesso eq 'M'}" title="Uomo" value="/images/male.png" height="20" />
+         						</h:panelGroup>
+							
+						<p:outputLabel value="Data nascita "/>
+						<p:outputLabel value="#{sapManBean.sap.datianagrafici.datipersonali.datanascita}">
+							<f:convertDateTime pattern="dd/MM/yyyy"/>
+						</p:outputLabel>
+						
+						<p:outputLabel value="Luogo di nascita"/>
+						<p:outputLabel value="#{sapManBean.sap.datianagrafici.datipersonali.desLuogoNascita}"/>	
+							
+						<p:outputLabel value="Cittadinanza"/>
+						<p:outputLabel value="#{sapManBean.sap.datianagrafici.datipersonali.desCittadinanza}"/>
+							
+						<p:outputLabel value="Telefono"/>
+						<p:outputLabel value="#{sapManBean.sap.datianagrafici.recapiti.telefono}"/>
+							
+						<p:outputLabel value="e-mail"/>
+						<p:outputLabel value="#{sapManBean.sap.datianagrafici.recapiti.email}"/>
+					</h:panelGrid>
+				</p:tab>
+				<p:tab title="Notizie sui cittadini stranieri">
+					<p:outputLabel value="TODO: dati non presenti nell'XML di prova" style="color:red;"/>
+				</p:tab>
+				<p:tab title="Residenza o domicilio">
+					<h:panelGrid columns="2" width="100%">
+						<p:outputLabel value="Residenza"/>
+						<p:outputLabel value="#{sapManBean.sap.datianagrafici.residenza.indirizzoCompleto}"/>
+					
+						<p:outputLabel value="Domicilio"/>
+						<p:outputLabel value="#{sapManBean.sap.datianagrafici.domicilio.indirizzoCompleto} "/>
+					
+					</h:panelGrid>
+				</p:tab>
+			</p:accordionPanel>
+		</p:tab>
+		<p:tab title="Dati amministrativi ">
+			<p:accordionPanel id="pnlDatiAmministrativi">
+				<p:tab title="Posizione nel mercato del lavoro">
+					<p:panel toggleable="true" header="Stato in anagrafe">
+						<h:panelGrid columns="2"  width="100%">
+							<p:outputLabel value="Stato occupazionale: "/>
+							<p:outputLabel value="#{sapManBean.sap.datiamministrativi.statoinanagrafe.desstatooccupazionale}"/>
+							
+							<p:outputLabel value="Condizione: " />
+							<p:outputLabel value="#{sapManBean.sap.datiamministrativi.statoinanagrafe.desstatus}"/>
+															
+							<p:outputLabel value="Categoria dlg.297: "/>
+							<p:outputLabel value="#{sapManBean.sap.datiamministrativi.statoinanagrafe.descategoria297}"/>
+							
+							<p:outputLabel value="Anzianità di disoccupazione: "/>
+							<p:outputLabel value="#{sapManBean.sap.datiamministrativi.statoinanagrafe.anzianita} mesi"/>
+							
+							<p:outputLabel value="Indice profiling: "/>
+							<p:outputLabel value="#{sapManBean.sap.datiamministrativi.statoinanagrafe.indiceprofiling}"/>
+							
+							<p:outputLabel value="Data evento: "/>
+							<p:outputLabel value="#{sapManBean.sap.datiamministrativi.statoinanagrafe.dataevento}">
+								<f:convertDateTime pattern="dd/MM/yyyy"/>
+							</p:outputLabel>	
+							<p:outputLabel value="Data dichiarazione di disponibilità: "/>
+							<p:outputLabel value="#{sapManBean.sap.datiamministrativi.statoinanagrafe.disponibilita}">
+								<f:convertDateTime pattern="dd/MM/yyyy"/>
+							</p:outputLabel>						
+						</h:panelGrid>
+					</p:panel>
+					<p:panel toggleable="true" header="Periodi di disoccupazione">
+						<h:panelGrid columns="2" width="100%">
+							<p:outputLabel value="Data ingresso: "/>
+							<p:outputLabel value="#{sapManBean.sap.datiamministrativi.periodidisoccupazione.dataingresso}">
+								<f:convertDateTime pattern="dd/MM/yyyy"/>
+							</p:outputLabel>	
+							
+							<p:outputLabel value="Tipo ingresso: "/>
+							<p:outputLabel value="#{sapManBean.sap.datiamministrativi.periodidisoccupazione.destipoingresso}"/>
+						</h:panelGrid>
+						<p:dataTable value="#{sapManBean.sap.datiamministrativi.listespeciali_lst.listespeciali}" var="periodo">
+							<p:column headerText="Lista">
+								<p:outputLabel value="#{periodo.destipolista}"/>
+							</p:column>
+							<p:column headerText="Data iscrizione lista">
+								<p:outputLabel value="#{periodo.dataiscrizione}">
+								<f:convertDateTime pattern="dd/MM/yyyy"/>
+							</p:outputLabel>		
+							</p:column>
+							<p:column headerText="Data termine iscrizione">
+								<p:outputLabel value="#{periodo.datafineiscrizione}">
+								<f:convertDateTime pattern="dd/MM/yyyy"/>
+							</p:outputLabel>		
+							</p:column>
+							<p:column headerText="Data massimo differimento (TODO: Dato non presente in xml prova)" style="color:red;">
+								<p:outputLabel value="">
+								<f:convertDateTime pattern="dd/MM/yyyy"/>
+							</p:outputLabel>		
+							</p:column>
+							<p:column headerText="Provincia di iscrizione alla lista">
+								<p:outputLabel value="#{periodo.desprovincia}"/>
+							</p:column>
+						</p:dataTable>	
+					</p:panel>
+				</p:tab>
+				<p:tab title="Assolvimento diritto/dovere all'istruzione">
+					<h:panelGrid columns="2"  width="100%">
+						<p:outputLabel value="Obbligo formativo assolto "/>
+						<p:outputLabel value="#{sapManBean.sap.datiamministrativi.assolvimentoistruzione.obbligoformativo}"/>
+					</h:panelGrid>
+				</p:tab>
+				<p:tab title="Altre notizie">
+					<p:outputLabel value="TODO: dati non presenti nell'XML di prova" style="color:red;"/>
+				</p:tab>
+			</p:accordionPanel>
+			<h:panelGrid columns="4">
+				
+			</h:panelGrid>
+		</p:tab>
+		<p:tab title="Esperienze di lavoro">
+			<p:scrollPanel style="height:300px">
+			<p:outputLabel value="(TODO: Verificare i dati confrontanto con altri esempi SAP, tag mancanti in XML di prova)" style="color:red;"/>    
+			<p:dataList value="#{sapManBean.sap.esperienzelavoro_lst.esperienzalavoro}" var="lavoro" type="none">
+			     <p:panel>
+			     	<h:panelGrid columns="4" width="100%">
+						
+						<p:outputLabel value="Azienda datore di lavoro"/>
+						<p:outputLabel value="#{lavoro.azienda.datorelavoro}"/>
+
+						<p:outputLabel value="Azienda cod.fiscale"/>
+						<p:outputLabel value="#{lavoro.azienda.codicefiscale}"/>
+							
+						<p:outputLabel value="Azienda indirizzo"/>
+						<p:outputLabel value=" #{lavoro.azienda.indirizzoazienda} "/>
+						
+						<p:outputLabel value="Azienda settore"/>
+						<p:outputLabel value="#{lavoro.azienda.codateco}"/>
+
+						<p:outputLabel value="Data inizio"/>
+						<p:outputLabel value="#{lavoro.datainizio}">
+							<f:convertDateTime pattern="dd/MM/yyyy"/>
+						</p:outputLabel>		
+				
+						<p:outputLabel value="Data fine"/>
+						<p:outputLabel value="#{lavoro.datafine}">
+							<f:convertDateTime pattern="dd/MM/yyyy"/>
+						</p:outputLabel>		
+						
+						<p:outputLabel value="Data fine periodo formativo (TODO: tag non presente in XM)" style="color:red;"/>
+						<p:outputLabel value="">
+							<f:convertDateTime pattern="dd/MM/yyyy"/>
+						</p:outputLabel>		
+				
+						<p:outputLabel value="Qualifica professionale"/>
+						<p:outputLabel value="#{lavoro.descodprofessione}"/>
+					
+						<p:outputLabel value="Principali mansioni e responsabilità (TODO: tag non presente in XM)" style="color:red;"/>
+						<p:outputLabel value=""/>
+					
+						<p:outputLabel value="Tipo contratto"/>
+						<p:outputLabel value="#{lavoro.tiporapporto.destipocontratto}"/>
+						
+						<p:outputLabel value="Categoria di inquadramento (TODO: tag non presente in XM)" style="color:red;"/>
+						<p:outputLabel value=""/>
+						
+						<p:outputLabel value="Assunzione effettuata ai sensi della L.68/99" />
+						<p:outputLabel value="#{lavoro.tiporapporto.assunzioneLegge68}"/>
+						
+						<p:outputLabel value="Lavoro in mobilità"/>
+						<p:outputLabel value="#{lavoro.tiporapporto.lavInMobilita}"/>
+						
+						<p:outputLabel value="Lavoro stagionale"/>
+						<p:outputLabel value="#{lavoro.tiporapporto.lavoroStagionale}"/>
+						
+						<p:outputLabel value="Lavoro in agricoltura"/>
+						<p:outputLabel value="#{lavoro.tiporapporto.lavoroInAgricoltura}"/>
+						
+						<p:outputLabel value="Modalità lavoro"/>
+						<p:outputLabel value="#{lavoro.modalitalavoro.desmodalitalavoro}"/>
+						
+						<p:outputLabel value="Luogo di lavoro"/>
+						<p:outputLabel value="#{lavoro.luogolavoro.indirizzoCompleto}"/>
+				</h:panelGrid>
+				</p:panel>
+		    </p:dataList>
+		    </p:scrollPanel>
+		</p:tab>
+		<p:tab title="Informazioni curricolari utili all'incontro domanda/offerta (in collegamento a ClicLavoro)">
+			<p:accordionPanel id="pnlAllegato">
+			  <p:tab title="Titoli di studio" rendered="#{not empty sapManBean.sap.allegato.titolistudio_lst.titolostudio}">
+			  	<p:dataTable value="#{sapManBean.sap.allegato.titolistudio_lst.titolostudio}" var="studio">
+					<p:column headerText="Liv.scolarizzazione">
+						<p:outputLabel value="#{studio.deslivelloistruzione}"/>
+					</p:column>
+					<p:column headerText="Corso di studio">
+						<p:outputLabel value="#{studio.descorsostudio}"/>
+					</p:column>
+					<p:column headerText="Descrizione">
+						<p:outputLabel value="#{studio.descrizionecorsostudio}"/>
+					</p:column>
+					<p:column headerText="Riconosciuto in Italia">
+						<p:outputLabel value="#{studio.riconosciutoin}"/>
+					</p:column>
+					<p:column headerText="TODO: Tag non presenti in XML di prova" style="color:red;">
+						<p:outputLabel value="Frequentato in "/>
+						<p:outputLabel value="Anno conseguimento "/>
+						<p:outputLabel value="Votazione "/>
+						<p:outputLabel value="Ultimo anno frequentato "/>
+						<p:outputLabel value="Anno di frequenza (in corso) "/>
+					</p:column>							
+				</p:dataTable>
+			  </p:tab>
+			  <p:tab title="Formazione professionale" rendered="#{not empty sapManBean.sap.allegato.formazioneprofessionale_lst.formazioneprofessionale}">
+				 <p:dataTable value="#{sapManBean.sap.allegato.formazioneprofessionale_lst.formazioneprofessionale}" var="formazione">
+					<p:column headerText="Titolo corso di formazione">
+						<p:outputLabel value="#{formazione.titolocorso}"/>
+					</p:column>
+					<p:column headerText="Ente erogatore">
+						<p:outputLabel value="#{formazione.ente}"/>
+					</p:column>
+					<p:column headerText="Sede">
+						<p:outputLabel value="#{formazione.desregione}"/>
+					</p:column>
+					<p:column headerText="Durata">
+						<p:outputLabel value="#{formazione.durata} #{formazione.destipologiadurata}"/>
+					</p:column>				
+					<p:column headerText="Certificazioni ed attestati">
+						<p:outputLabel value="#{formazione.descertificazioniattestati}"/>
+					</p:column>				
+					<p:column headerText="Stage TODO: Tag non presenti in XML di prova" style="color:red;" >
+						<p:outputLabel rendered="#{formazione.stage}"/>
+					</p:column>							
+				</p:dataTable>
+			  </p:tab>
+			  <p:tab title="Lingue straniere conosciute" rendered="#{not empty sapManBean.sap.allegato.linguestraniere_lst.linguastraniera}">
+				 <p:dataTable value="#{sapManBean.sap.allegato.linguestraniere_lst.linguastraniera}" var="lingua">
+					<p:column headerText="Lingua conosciuta">
+						<p:outputLabel value="#{lingua.deslingua}"/>
+					</p:column>
+					<p:column headerText="Lettura">
+						<p:outputLabel value="#{lingua.deslivelloletto}"/>
+					</p:column>
+					<p:column headerText="Scrittura">
+						<p:outputLabel value="#{lingua.deslivelloscritto}"/>
+					</p:column>
+					<p:column headerText="Parlato">
+						<p:outputLabel value="#{lingua.deslivelloparlato}"/>
+					</p:column>
+				</p:dataTable>
+			  </p:tab>
+			  <p:tab title="Conoscenze informatiche" rendered="#{not empty sapManBean.sap.allegato.conoscenzeinformatiche_lst.conoscenzainformatica}">
+				<p:dataTable value="#{sapManBean.sap.allegato.conoscenzeinformatiche_lst.conoscenzainformatica}" var="informatica">
+					<p:column headerText="Tipo">
+						<p:outputLabel value="#{informatica.desconoscenzainformatica}"/>
+					</p:column>
+					<p:column headerText="Grado">
+						<p:outputLabel value="#{informatica.desgrado}"/>
+					</p:column>
+					<p:column headerText="Eventuali specifiche">
+						<p:outputLabel value="#{informatica.specificheinformatica}"/>
+					</p:column>
+				</p:dataTable>
+			  </p:tab>
+			  <p:tab title="Altre informazioni utili all'incontro fra domana e offerta di lavoro" 
+			  		 rendered="#{not empty sapManBean.sap.allegato.altreinformazioni_lst.altreinformazioni}">
+			  		<p:dataList value="#{sapManBean.sap.allegato.altreinformazioni_lst.altreinformazioni}" var="altro" type="none">
+			  		  	<p:outputLabel value="Iscrizione ad albi e ordini professionali: #{altro.desalbo} (TODO: Tag non presenti in XML di prova)" style="color:red;" />
+			  			<p:outputLabel value="Patente di guida: #{altro.despatenteguida}" rendered="#{not empty altro.codpatenteguida}"/>
+			  			<p:outputLabel value="Patentini: #{altro.desabilitazione} (TODO: Tag non presenti in XML di prova)" style="color:red;" />
+			  		</p:dataList>
+			  </p:tab>
+			</p:accordionPanel>
+		</p:tab>
+		<p:tab title="Dati invio">
+			<h:panelGrid columns="4" width="100%">
+				<h:outputLabel value="Data invio"/>
+				<h:outputLabel value="TODO: non presente in XML di prova" style="color:red;"/>
+				
+				<h:outputLabel value="Data ultimo aggiornamento"/>
+				<h:outputLabel value="#{sapManBean.sap.datiinvio.dataultimoagg}">
+					<f:convertDateTime pattern="dd/MM/yyyy"/>
+				</h:outputLabel>
+				
+				<h:outputLabel value="Identificativo SAP"/>
+				<h:outputLabel value="#{sapManBean.sap.datiinvio.identificativosap}"/>
+				
+				<h:outputLabel value="Ente titolare"/>
+				<h:outputLabel value="#{sapManBean.sap.datiinvio.desentetit}"/>
+				
+				<h:outputLabel value="Tipo variazione"/>
+				<h:outputLabel value="#{sapManBean.sap.datiinvio.destipovariazione}"/>
+				
+			</h:panelGrid>
+		</p:tab>
+		<p:tab title="Interventi di Politiche attive">
+			<p:scrollPanel style="height:300px">
+			<p:dataList value="#{sapManBean.sap.politiche_attive_lst.politiche_attive}" var="politica" type="none">
+		     <h:panelGrid columns="4" width="100%">
+		      		<h:outputLabel value="Attività"/>
+		      		<h:outputLabel value="#{politica.desTipo_attivita}"/>
+		      		
+		      		<h:outputLabel value="Denominazione"/>
+		      		<h:outputLabel value="#{politica.titolo_denominazione}"/>
+		      		
+		      		<h:outputLabel value="Data proposta"/>
+		      		<h:outputLabel value="#{politica.data_proposta}">
+		            	<f:convertDateTime pattern="dd/MM/yyyy" />
+		            </h:outputLabel>
+		            
+		            <h:outputLabel value="Data inizio"/>
+		      		<h:outputLabel value="#{politica.data}">
+		            	<f:convertDateTime pattern="dd/MM/yyyy" />
+		            </h:outputLabel>
+		            
+		            <h:outputLabel value="Data fine"/>
+		      		<h:outputLabel value="#{politica.data_fine}">
+		            	<f:convertDateTime pattern="dd/MM/yyyy" />
+		            </h:outputLabel>
+		            
+		            <h:outputLabel value="Durata"/>
+		      		<h:outputLabel value="#{politica.durata} #{politica.desTipologia_durata}"/>
+		      		
+		            <h:outputLabel value="Descrizione"/>
+		      		<h:outputLabel value="#{politica.descrizione}"/>
+		      		
+		    		<h:outputLabel value="Titolo progetto"/>
+		      		<h:outputLabel value="#{politica.desTitolo_progetto}"/>
+		      		
+		      		<h:outputLabel value="Ente promotore"/>
+		      		<h:outputLabel value="#{politica.des_ente_promotore}"/>
+		    		
+		    		<h:outputLabel value="Identificativo politica"/>
+		      		<h:outputLabel value="#{politica.identificativo_politica}"/>  		
+		      		
+		      		<h:outputLabel value="Indice profiling"/>
+		      		<h:outputLabel value="#{politica.indice_profiling}"/>  		
+		      		
+		      		<h:outputLabel value="Identificativo presa in carico"/>
+		      		<h:outputLabel value="#{politica.identificativo_presa_in_carico}"/>  
+		      
+		      		<h:outputLabel value="Ultimo evento"/>
+		      		<h:outputLabel value="#{politica.ultimo_evento.desEvento} (#{politica.ultimo_evento.descrizione_evento})"/>
+		      		<h:outputLabel value="(#{politica.ultimo_evento.descrizione_evento})"
+		      					   rendered="#{not empty politica.ultimo_evento.descrizione_evento and (politica.ultimo_evento.descrizione_evento!=politica.ultimo_evento.desEvento)}"	/>
+		      		
+		      		<h:outputLabel value="Data evento"/>
+		      		<h:outputLabel value="#{politica.ultimo_evento.data_evento}">
+		      			<f:convertDateTime pattern="dd/MM/yyyy"/>
+		      		</h:outputLabel>
+		      	</h:panelGrid>
+		      	<p:separator style="width:500px;height:2px" />
+		    </p:dataList>
+		    </p:scrollPanel>
+		</p:tab>
+	</p:accordionPanel>
+
+</html>

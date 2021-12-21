@@ -204,19 +204,4 @@ public class ArTClasse implements Serializable {
 		return arRelClassememoPresInp;
 	}
 
-
-	
-
-	//bi-directional many-to-one association to CsCTipoIntervento
-	@OneToMany(mappedBy="ArTClasse")
-	private List<CsCTipoIntervento> csCTipoInterventos;
-	
-	public List<CsCTipoIntervento> getCsCTipoInterventos() {
-		return this.csCTipoInterventos;
-	}
-
-	public void setCsCTipoInterventos(List<CsCTipoIntervento> csCTipoInterventos) {
-		this.csCTipoInterventos = csCTipoInterventos;
-	}
-
 }

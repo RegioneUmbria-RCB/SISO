@@ -5,10 +5,7 @@ import it.webred.cs.csa.ejb.client.AccessTableAlertSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.AccessTableCasoSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.AccessTableConfigurazioneSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.AccessTableDiarioSessionBeanRemote;
-import it.webred.cs.csa.ejb.client.AccessTableSinbaSessionBeanRemote;
-import it.webred.cs.csa.ejb.dto.BaseDTO;
 import it.webred.cs.data.model.CsDDiario;
-import it.webred.cs.data.model.CsOOperatoreBASIC;
 import it.webred.cs.jsf.manbean.superc.CsUiCompBaseBean;
 
 import java.io.Serializable;
@@ -42,22 +39,6 @@ public abstract class SchedaValutazioneManBean extends CsUiCompBaseBean implemen
 		String vers = VersionClassComparator.getVersionLowerCase( this.getClass() );
 		//logger.debug(this.getClass()+" versione:" + vers);
 		return vers;
-	}
-	
-	protected CsOOperatoreBASIC getOperResponsabileCaso(Long idCaso) throws Exception {
-		CsOOperatoreBASIC operatoreResponsabile = null;
-		
-	/*	IterDTO itDto = new IterDTO();
-		fillEnte(itDto);
-		itDto.setIdCaso(idCaso);
-		CsACaso csACaso = casoService.findCasoById(itDto);*/
-		
-		BaseDTO dto = new BaseDTO();
-		fillEnte(dto);
-		dto.setObj(idCaso);
-		operatoreResponsabile = casoService.findResponsabileBASIC(dto);
-		
-		return operatoreResponsabile;
 	}
 	
 	public Long getIdCaso() {

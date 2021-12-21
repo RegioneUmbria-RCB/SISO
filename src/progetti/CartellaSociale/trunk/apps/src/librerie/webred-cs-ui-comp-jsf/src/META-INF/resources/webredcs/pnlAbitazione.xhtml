@@ -59,16 +59,16 @@
         			 	<p:selectOneMenu label="Villaggio" id="vilaggio" disabled="#{cc.attrs.soloLettura}"
                   	                   value="#{cc.attrs.iAbitazione.jsonCurrent.struttura}" 
                   	                   effect="fold" editable="false"  >  
-     					<f:selectItem itemLabel="- seleziona -" noSelectionOption="true"  />  
-     					<f:selectItems value="#{cc.attrs.iAbitazione.lstItemsStruttura}" />
-     				 	<p:ajax event="change" partialSubmit="true" listener="#{cc.attrs.iAbitazione.onChangeStruttura}" update=" @(.updateArea)"  />
+     						<f:selectItem itemLabel="- seleziona -" noSelectionOption="true"  />  
+     						<f:selectItems value="#{cc.attrs.iAbitazione.lstItemsStruttura}" />
+     				 		<p:ajax event="change" partialSubmit="true" listener="#{cc.attrs.iAbitazione.onChangeStruttura}" update=" @(.updateArea)"  />
         			 	</p:selectOneMenu>
         			   	<h:outputText value="Area" for="area" />
         			  	<p:selectOneMenu label="Area" id="area" styleClass="updateArea" disabled="#{cc.attrs.soloLettura}"
                   	                   value="#{cc.attrs.iAbitazione.jsonCurrent.area}" 
                   	                   effect="fold" editable="false"  >  
-     					<f:selectItem itemLabel="- seleziona -" noSelectionOption="true"/>  
-     					<f:selectItems value="#{cc.attrs.iAbitazione.lstItemsArea}"/>
+     						<f:selectItem itemLabel="- seleziona -" noSelectionOption="true"/>  
+     						<f:selectItems value="#{cc.attrs.iAbitazione.lstItemsArea}"/>
         			 	</p:selectOneMenu>
         			 	<h:outputText value="Unità Abitativa" for="unitaAbitativa" />
         			 	<p:inputText id="unitaAbitativa" value="#{cc.attrs.iAbitazione.jsonCurrent.unitaAbitativa}" disabled="#{cc.attrs.soloLettura}"/>

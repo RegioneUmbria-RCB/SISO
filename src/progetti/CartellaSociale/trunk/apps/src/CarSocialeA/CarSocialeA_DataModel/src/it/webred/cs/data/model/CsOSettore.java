@@ -18,8 +18,6 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 
 /**
@@ -212,50 +210,6 @@ public class CsOSettore implements Serializable {
 	public void setCsOOrganizzazione(CsOOrganizzazione csOOrganizzazione) {
 		this.csOOrganizzazione = csOOrganizzazione;
 	}
-
-/*	public List<CsAlert> getCsAlerts1() {
-		return this.csAlerts1;
-	}
-
-	public void setCsAlerts1(List<CsAlert> csAlerts1) {
-		this.csAlerts1 = csAlerts1;
-	}
-
-	public CsAlert addCsAlerts1(CsAlert csAlerts1) {
-		getCsAlerts1().add(csAlerts1);
-		csAlerts1.setCsOSettore1(this);
-
-		return csAlerts1;
-	}
-
-	public CsAlert removeCsAlerts1(CsAlert csAlerts1) {
-		getCsAlerts1().remove(csAlerts1);
-		csAlerts1.setCsOSettore1(null);
-
-		return csAlerts1;
-	}
-
-	public List<CsAlert> getCsAlerts2() {
-		return this.csAlerts2;
-	}
-
-	public void setCsAlerts2(List<CsAlert> csAlerts2) {
-		this.csAlerts2 = csAlerts2;
-	}
-
-	public CsAlert addCsAlerts2(CsAlert csAlerts2) {
-		getCsAlerts2().add(csAlerts2);
-		csAlerts2.setCsOSettore2(this);
-
-		return csAlerts2;
-	}
-
-	public CsAlert removeCsAlerts2(CsAlert csAlerts2) {
-		getCsAlerts2().remove(csAlerts2);
-		csAlerts2.setCsOSettore2(null);
-
-		return csAlerts2;
-	}*/
 
 	public Set<CsCComunita> getCsCComunita() {
 		return this.csCComunita;

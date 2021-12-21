@@ -3,6 +3,7 @@ package it.webred.cs.data.model;
 import java.util.List;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -32,7 +33,7 @@ public class CsCfgIntEseg implements java.io.Serializable {
 	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="CS_CFG_INT_ESEG_ID_GENERATOR")
 	private long id;
 
-	@OneToOne
+	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "TIPO_INTERVENTO_ID")
 	private CsCTipoIntervento tipoIntervento;
 

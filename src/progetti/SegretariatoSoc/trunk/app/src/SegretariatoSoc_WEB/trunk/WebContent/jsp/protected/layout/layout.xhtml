@@ -11,9 +11,9 @@
 <h:head>
 	<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 	<title><h:outputText value="#{userBean.labelSegrSociale}" /></title>
-	  <link rel="stylesheet" type="text/css" href="${facesContext.externalContext.requestContextPath}/css/style.css" />
 	<script type="text/javascript" src="${facesContext.externalContext.requestContextPath}/js/it.js" />
 	<script type="text/javascript" src="${facesContext.externalContext.requestContextPath}/js/monitorDownload.js" />
+	<link   type="text/css" rel="stylesheet" href="${facesContext.externalContext.requestContextPath}/css/style.css" />
 </h:head>
 
 <h:body>
@@ -66,7 +66,7 @@
 			<ui:fragment rendered="#{userBean.logged and !empty userBean.listaOrganizzazioni}" >
 				<h:form id="frmUser">
 					<h:panelGrid columns="1" >
-					      <h:panelGrid columns="5" cellpadding="0" cellspacing="0" width="100%" columnClasses="rightAlign">
+					      <h:panelGrid columns="6" cellpadding="0" cellspacing="0" width="100%" columnClasses="rightAlign">
 					  
 							<h:outputLabel value="Benvenuto"/><p:spacer width="5px"/>
 							<h:outputLabel value=" #{userBean.cognomeNomeOperatore}" styleClass="bold"/>
@@ -77,9 +77,28 @@
 							</p:commandLink>
 							
 							<p:outputPanel id="pnlLink" deferred="true">
-							<p:commandButton value="Cartella Sociale" action="#{navigationBean.goCartellaSociale}" 
+								<p:commandButton value="Cartella Sociale" action="#{navigationBean.goCartellaSociale}" 
 							                 disabled="#{!navigationBean.permessoCarSocialeEnte}" ajax="false" icon="ui-icon-folder-open"/>
 						    </p:outputPanel>
+						    
+						    <p:outputPanel deferred="true">
+									<p:commandLink id="setting" title="Pannello di Configurazione"
+										update="@this" global="false">
+										<p:graphicImage id="imgSetting" value="/images/setting.png" styleClass="setting" />
+									</p:commandLink>
+
+									<p:overlayPanel id="panelConfigurazione" for="setting"
+										showEffect="blind" hideEffect="blind" style="width:140px;">
+										<h:panelGrid columns="1" style="text-align:left;">
+											<p:commandLink id="configurazione"
+												action="#{navigationBean.goConfigurazione}"
+												disabled="#{!navigationBean.autorizzatoConfigurazione}">
+												<h:outputText value="Configurazione" />
+											</p:commandLink>
+										</h:panelGrid>
+									</p:overlayPanel>
+							</p:outputPanel>
+						    
 						  </h:panelGrid>
 						 
 						 <p:panel style="background:#f9fbfd !important;">

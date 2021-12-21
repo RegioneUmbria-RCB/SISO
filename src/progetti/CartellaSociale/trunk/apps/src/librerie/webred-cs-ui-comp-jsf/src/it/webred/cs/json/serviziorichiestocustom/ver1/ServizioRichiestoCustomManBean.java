@@ -250,14 +250,17 @@ public class ServizioRichiestoCustomManBean extends ServizioRichiestoCustomManBa
 				List<CsTbMicroIntervento> micro = confService.readPDSMicro(dto);
 				List<SelectItem> lstMicro = new ArrayList<SelectItem>();
 				boolean disabilitaGruppo = !macro1.getAbilitato();
+				boolean vociDisabilitate = true;
+				/*Per il componente non funziona il disabilita item, quindi la voce va eliminata*/
 				for (CsTbMicroIntervento micro1 : micro) {
 					SelectItem si = new SelectItem(micro1.getId(), micro1.getPdsMicro());
 					boolean disabilita = !micro1.getAbilitato() && !micro1.getId().toString().equals(this.getJsonCurrent().getSelezionePDS());
-					si.setDisabled(disabilita); 
-					lstMicro.add(si);
-					disabilitaGruppo = disabilitaGruppo || disabilita;
+					if(!disabilita)
+						lstMicro.add(si);
+					vociDisabilitate = vociDisabilitate && disabilita;
 				}
 				
+				disabilitaGruppo = !macro1.getAbilitato() || vociDisabilitate;
 				if(!disabilitaGruppo){
 					group1.setSelectItems(lstMicro.toArray(new SelectItem[lstMicro.size()]));
 					listaPDS.add(group1);

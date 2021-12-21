@@ -6,8 +6,10 @@ import it.webred.cs.csa.ejb.dto.ErogazionePrestazioneDTO;
 import it.webred.cs.csa.ejb.dto.ErogazioniSearchCriteria;
 import it.webred.cs.csa.ejb.dto.erogazioni.CompartecipazioneDTO;
 import it.webred.cs.csa.ejb.dto.erogazioni.ErogazioneBaseDTO;
+import it.webred.cs.csa.ejb.dto.erogazioni.ErogazioneDettaglioSintesiDTO;
 import it.webred.cs.csa.ejb.dto.erogazioni.ErogazioneMasterDTO;
 import it.webred.cs.csa.ejb.dto.erogazioni.SpesaDTO;
+import it.webred.cs.csa.ejb.queryBuilder.ErogazioniQueryBuilder;
 import it.webred.cs.data.model.CsCTipoIntervento;
 import it.webred.cs.data.model.CsCfgAttrOption;
 import it.webred.cs.data.model.CsCfgIntEseg;
@@ -20,6 +22,7 @@ import it.webred.cs.data.model.CsIInterventoEsegMast;
 import it.webred.cs.data.model.CsIInterventoEsegMastSogg;
 import it.webred.cs.data.model.CsIInterventoEsegValore;
 import it.webred.cs.data.model.CsIInterventoPr;
+import it.webred.cs.data.model.CsIPs;
 import it.webred.cs.data.model.CsIQuota;
 import it.webred.cs.data.model.CsIQuotaRipartiz;
 import it.webred.cs.data.model.CsIRigaQuota;
@@ -59,30 +62,32 @@ public class InterventoErogazioneDAO extends CarSocialeBaseDAO implements Serial
 		return cfg;
 	}
 
-	public CsCfgIntEseg findCfgIntEsegByTipoInterventoId(Long tipoInterventoId) {
-		CsCfgIntEseg cfg = null;
+	public List<CsCfgIntEsegStatoInt> findCfgIntEsegByTipoInterventoId(Long tipoInterventoId) {
+		List<CsCfgIntEsegStatoInt> lst = null;
 		if(tipoInterventoId!=null){
 			try{
+				logger.debug("INIZIO findCfgIntEsegByTipoInterventoId [id:"+tipoInterventoId+"]");
 				Query q = em.createNamedQuery("CsCfgIntEseg.findConfigIntErogByTipoIntervento");
 				q.setParameter("tipoInterventoId", tipoInterventoId);
-				List<CsCfgIntEseg> lst  = (List<CsCfgIntEseg>) q.getResultList();
+				lst  = (List<CsCfgIntEsegStatoInt>) q.getResultList();
 				
 				if(lst!=null && lst.size()>0){
-					cfg = lst.get(0);
-				    if(lst.size()>1)
-				    	logger.warn("findCfgIntEsegByTipoInterventoId[id:"+tipoInterventoId+"] --> CsCfgIntEseg [MULTIPLI]");
+					//cfg = lst.get(0);
+				   /* if(lst.size()>1)
+				    	logger.warn("findCfgIntEsegByTipoInterventoId[id:"+tipoInterventoId+"] CsCfgIntEseg [MULTIPLI -"+lst.size()+"]");*/
 				}else
 					logger.warn("findCfgIntEsegByTipoInterventoId - No Results per Tipo Intervento[id:"+tipoInterventoId+"]");
 				
 				
-				if (cfg != null) {
-					logger.debug("findCfgIntEsegByTipoInterventoId[id:"+tipoInterventoId+"] --> CsCfgIntEseg [id:"+cfg.getId()+"]");
-					for(CsCfgIntEsegStatoInt s : cfg.getCsCfgIntEsegStatoInt()){
+				if (lst != null) {
+					//logger.debug("findCfgIntEsegByTipoInterventoId[id:"+tipoInterventoId+"] --> CsCfgIntEseg [id:"+cfg.getId()+"]");
+					for(CsCfgIntEsegStatoInt s : lst){
 						for(CsCfgIntEsegAttUm ums : s.getCsCfgIntEsegAttUms())
 							ums.getCsCfgAttrUm().getCsCfgAttributo().getCsCfgAttrOptions().size();
 					}
 					
 				}
+				logger.debug("FINE findCfgIntEsegByTipoInterventoId [id:"+tipoInterventoId+"] size["+lst.size()+"]");
 				
 		    }catch(Exception e){	
 				throw new CarSocialeServiceException("findCfgIntEsegByTipoInterventoId",e);
@@ -90,7 +95,7 @@ public class InterventoErogazioneDAO extends CarSocialeBaseDAO implements Serial
 		}else
 			logger.warn("findCfgIntEsegByTipoInterventoId - Tipo Intervento id NON DEFINITO");
 		
-		return cfg;
+		return lst;
 	}
 	
 	public List<CsCfgAttrOption> findCsCfgAttrOptions(Long csCfgAttributoId){
@@ -103,51 +108,35 @@ public class InterventoErogazioneDAO extends CarSocialeBaseDAO implements Serial
 		}
 	}
 
-	public CsIInterventoEseg getErogazioniEseguiteHistory(Long intEseguitoId) {
-
-		CsIInterventoEseg csIInterventoEseg = em.find(CsIInterventoEseg.class, intEseguitoId);
-		csIInterventoEseg.getCsIInterventoEsegValores().size();
-
-		return csIInterventoEseg;
-	}
-
 	@SuppressWarnings("unchecked")
 	public List<CsCfgIntEsegStato> getListaIntEsegStatoByTipiStato(List<String> tipiStato, Long tipoInterventoId) {
 		List<CsCfgIntEsegStato> lst = new ArrayList<CsCfgIntEsegStato>();
 		// Carico gli stati dell'intervento che siano del tipo specificato (se non è attivo il flag BYPASS_TIPO_STATO)
 		try{
+			logger.debug("getListaIntEsegStatoByTipiStato TIPI["+tipiStato+"] INTERVENTO["+tipoInterventoId+"]");
 			Query q = em.createNamedQuery("CsCfgIntEsegStato.findIntEsegStatoByTipiStatoOrBypass");
 			q.setParameter("tipiStato", tipiStato);
 			q.setParameter("tipoInterventoId", tipoInterventoId);
 			lst = (List<CsCfgIntEsegStato>) q.getResultList();
+			logger.debug("getListaIntEsegStatoByTipiStato RESULT["+lst.size()+"]");
 		}catch(Exception e){
 			logger.error("getListaIntEsegStatoByTipiStato", e);
 			throw new CarSocialeServiceException(e);
 		}
 		return lst;
 	}
-	
+		
 	public CsIIntervento getInterventoById(Long interventoId) {
 
 		CsIIntervento csIIntervento = em.find(CsIIntervento.class, interventoId);
 		return csIIntervento;
-	}
-
-	public CsIInterventoEseg getInterventoEsegById(Long interventoId) {
-		//TODO controllare perche non trova l'elemento con la funziona em.find
-		CsIInterventoEseg csIInterventoEseg = em.find(CsIInterventoEseg.class, interventoId);
-	
-	
-		if (csIInterventoEseg != null && csIInterventoEseg.getCsIInterventoEsegValores() != null)
-			csIInterventoEseg.getCsIInterventoEsegValores().size();
-		return csIInterventoEseg;
 	}
 	
 	@SuppressWarnings("unchecked")
 	public List<CsIInterventoEseg> getInterventoEsegByIdMaster(Long masterId, boolean loadDettagli) {
 		List<CsIInterventoEseg>listaInterventi;
 		try{
-			logger.debug("getInterventoEsegByIdMaster:"+ masterId);
+			logger.debug("getInterventoEsegByIdMaster idMaster["+ masterId+"] loadDettagli["+loadDettagli+"]");
 			Query q = em.createNamedQuery("CsIInterventoEseg.findInterventoEsegByMasterId");
 			q.setParameter("masterId", masterId);
 			listaInterventi= (List<CsIInterventoEseg>) q.getResultList();
@@ -158,11 +147,11 @@ public class InterventoErogazioneDAO extends CarSocialeBaseDAO implements Serial
 						val.getCsAttributoUnitaMisura().getCsCfgAttributo().getCsCfgAttrOptions().size();
 				}
 			}
-			
 		}catch(Exception e){
 			logger.error("getInterventoEsegByIdMaster", e);
 			throw new CarSocialeServiceException(e);
 		}
+		logger.debug("getInterventoEsegByIdMaster idMaster["+ masterId+"] loadDettagli["+loadDettagli+"] result["+listaInterventi.size()+"]");
 		return listaInterventi;
 	}
 	
@@ -187,13 +176,13 @@ public class InterventoErogazioneDAO extends CarSocialeBaseDAO implements Serial
 	 
 	//SISO-972
 	@SuppressWarnings("unchecked")
-	public List<CsIInterventoEsegMastSogg> getBeneficiariErogazione(String cf, String attivita, String progetto) {
+	public List<CsIInterventoEsegMastSogg> getBeneficiariErogazione(String cf, Long attivita, Long progetto) {
 		if(!StringUtils.isBlank(cf)){
 			logger.debug("getBeneficiariErogazione cf["+cf+"] progetto["+progetto+"] sottocorso["+attivita+"]");
 			Query q = em.createNamedQuery("CsIInterventoEsegMastSogg.findBeneficiariByCfAttivitaProgetto");
 			q.setParameter("cf", cf);
-			q.setParameter("nSottocorsoAttivita", attivita);
-			q.setParameter("ffProgettoDescrizione", progetto);
+			q.setParameter("attivitaId", attivita);
+			q.setParameter("progettoId", progetto);
 			return (List<CsIInterventoEsegMastSogg>) q.getResultList();
 		}
 		return null;
@@ -201,7 +190,8 @@ public class InterventoErogazioneDAO extends CarSocialeBaseDAO implements Serial
 	//SISO-972 fine
 	public void rimuoviBeneficiari(Long masterId){
 		try{
-		Query q = em.createNativeQuery("DELETE FROM Cs_I_Intervento_Eseg_Mast_Sogg cs where INT_ESEG_MAST_ID="+masterId);
+		Query q = em.createNativeQuery("DELETE FROM Cs_I_Intervento_Eseg_Mast_Sogg cs where INT_ESEG_MAST_ID= :masterId ");
+		q.setParameter("masterId", masterId);
 		q.executeUpdate();
 		}catch(Throwable e){
 			logger.error(e.getMessage(),e);
@@ -222,7 +212,8 @@ public class InterventoErogazioneDAO extends CarSocialeBaseDAO implements Serial
 
 	public void rimuoviInterventoEseguitoMast(Long interEsgMastId){	
 		try{
-			Query q = em.createNativeQuery("DELETE FROM Cs_I_Intervento_Eseg_Mast cs where ID="+interEsgMastId);
+			Query q = em.createNativeQuery("DELETE FROM Cs_I_Intervento_Eseg_Mast cs where ID= :masterId ");
+			q.setParameter("masterId", interEsgMastId);
 			q.executeUpdate();
 			}catch(Throwable e){
 				logger.error(e.getMessage(),e);
@@ -409,8 +400,8 @@ public class InterventoErogazioneDAO extends CarSocialeBaseDAO implements Serial
 			if(sql!=null){
 				logger.debug("COUNT LISTA EROGAZIONI SQL["+sql+"]");
 				Query q = em.createNativeQuery(sql);
-				
-				q.setParameter("settoreId", bDto.getSettoreId());
+				String params = qb.setParameters(q);
+				logger.debug("COUNT LISTA EROGAZIONI PARAMS "+params);
 				//if(!bDto.isSearchConRichiesta())
 				//	q.setParameter("organizzazioneId", bDto.getOrganizzazioneId());
 				return ((BigDecimal) q.getSingleResult()).intValue();
@@ -420,146 +411,6 @@ public class InterventoErogazioneDAO extends CarSocialeBaseDAO implements Serial
 			throw new CarSocialeServiceException(e);
 		}
 	}
-
-/*	public List<DatiAggregatiErogazioneDTO> searchListaErogInterventiBySettoreOLD(ErogazioniSearchCriteria bDto) throws CarSocialeServiceException {
-		List<ErogazioneDTO> lista = new ArrayList<ErogazioneDTO>();
-		List<DatiAggregatiErogazioneDTO> listDatiAggregati = new ArrayList<DatiAggregatiErogazioneDTO>();
-		try{
-		ErogazioniQueryBuilder qb = new ErogazioniQueryBuilder(bDto);
-		
-		String sql = qb.createQueryListaErogazioni(false);
-		if(sql!=null){
-			logger.debug("LISTA EROGAZIONI SQL["+sql+"]");
-			Query q = em.createNativeQuery(sql);
-			
-			q.setParameter("settoreId", bDto.getSettoreId());
-			if(!bDto.isSearchConRichiesta())
-				q.setParameter("organizzazioneId", bDto.getOrganizzazioneId());
-			
-			if(bDto.getFirst()>=0)
-				q.setFirstResult(bDto.getFirst());
-			if(bDto.getPageSize()>=0)
-		    	q.setMaxResults(bDto.getPageSize());
-			
-			List<Object[]> result = (List<Object[]>)q.getResultList();
-		
-			for(Object[] o : result){
-				ErogazioneDTO e = new ErogazioneDTO();
-				
-				//
-				 BigDecimal detailSpesa = (BigDecimal)o[16];
-				 BigDecimal detailPercGest= (BigDecimal)o[17];
-				 BigDecimal detailValGest= (BigDecimal)o[18];
-				 BigDecimal detailCompartUtenti= (BigDecimal)o[19];
-				 BigDecimal detailCompartSsn= (BigDecimal)o[20];
-				 BigDecimal detailCompartAltre= (BigDecimal)o[21];
-				 String detailNoteAltre =(String)o[22];
-				 String masterCognome=(String)o[23];
-				 String masterNome=(String)o[24];
-				 String masterCf=(String)o[25];
-				 String masterDescrIntervento=(String)o[26];
-				 BigDecimal masterSpesa= (BigDecimal)o[27];
-				 BigDecimal masterPercGestitaEnte= (BigDecimal)o[28];
-				 BigDecimal masterValGestitaEnte= (BigDecimal)o[29]; 
-				 BigDecimal masterCompartUtenti= (BigDecimal)o[30];
-				 BigDecimal masterCompartSsn= (BigDecimal)o[31];
-				 BigDecimal masterCompartAltre= (BigDecimal)o[32];
-				 String masterNoteAltre=(String)o[33];
-				 Long masterFFOrigineId= o[34]!=null ? ((BigDecimal)o[34]).longValue() : null;
-				 String masterCodFin1=(String)o[35];				
-				 String tipoInterventoCustom = (String)o[36];
-				 Long tipoInterventoCustomId= o[37]!=null ? ((BigDecimal)o[37]).longValue() : null;
-				 Long masterId = o[39]!=null ?  ((BigDecimal)o[39]).longValue() : null;
-				 
-				 if(detailSpesa != null)
-					 e.setDetailSpesa(detailSpesa);
-				 else
-					 e.setDetailSpesa(new BigDecimal(0));
-				 if(detailPercGest!=null)
-					 e.setDetailPercGest(detailPercGest);
-				 else
-					 e.setDetailPercGest(new BigDecimal(0));
-				 if(detailValGest!=null)
-					 e.setDetailValGest(detailValGest);
-				 else
-					 e.setDetailValGest(new BigDecimal(0));
-				 if(detailCompartUtenti!=null)
-					 e.setDetailCompartUtenti(detailCompartUtenti);
-				 else
-					 e.setDetailCompartUtenti(new BigDecimal(0));
-				 if(detailCompartSsn!=null)
-					 e.setDetailCompartSsn(detailCompartSsn);
-				 else
-					 e.setDetailCompartSsn(new BigDecimal(0));
-				 if(detailCompartAltre!=null)
-					 e.setDetailCompartAltre(detailCompartAltre);
-				 else
-					 e.setDetailCompartAltre(new BigDecimal(0));
-				
-				 e.setDetailNoteAltre(detailNoteAltre);
-				 e.setMasterCognome(masterCognome);
-				 e.setMasterNome(masterNome);
-				 e.setMasterCf(masterCf);
-				 e.setMasterDescrIntervento(masterDescrIntervento);
-				 e.setMasterSpesa(masterSpesa);
-				 e.setMasterPercGestitaEnte(masterPercGestitaEnte);
-				 e.setMasterValGestitaEnte(masterValGestitaEnte);
-				 e.setMasterCompartUtenti(masterCompartUtenti);
-				 e.setMasterCompartSsn(masterCompartSsn);
-				 e.setMasterCompartAltre(masterCompartAltre);
-				 e.setMasterNoteAltre(masterNoteAltre);
-				 e.setMasterFFOrigineId(masterFFOrigineId);
-				 e.setMasterCodFin1(masterCodFin1);
-				 e.setTipoInterventoCustom(tipoInterventoCustom);				 
-				//
-				String tipoDato = o[14].toString();
-				Long idIntervento = o[0]!=null ? ((BigDecimal)o[0]).longValue() : null;
-				Long idErogazione = o[15]!=null ? ((BigDecimal)o[15]).longValue() : null;
-				
-				e.setIdIntervento(idIntervento);
-				e.setIdInterventoEsegMaster(masterId);
-				e.setIdInterventoEseg(idErogazione);
-				
-				e.setDataRichiestaIntervento((Date)o[1]);
-				
-				CsCTipoIntervento tipoInt = new CsCTipoIntervento();
-				tipoInt.setId(o[2]!=null ? ((BigDecimal)o[2]).longValue() : null);
-				tipoInt.setDescrizione((String)o[3]);
-				e.setTipoIntervento(tipoInt);
-				e.setStatoUltimoFlg((String)o[4]);
-				e.setDataUltimoFlg((Date)o[5]);
-				Long casoId = o[6]!=null ? ((BigDecimal)o[6]).longValue() : null;
-				Long anagraficaId = o[7]!=null ? ((BigDecimal)o[7]).longValue() : null;
-				
-				CsASoggettoLAZY soggetto = null;
-				if(casoId!=null){
-					CsACaso caso = em. find(CsACaso.class, casoId);
-					if(caso!=null)
-						soggetto = caso.getCsASoggetto();
-				}
-				if(soggetto==null && anagraficaId!=null)
-					soggetto = em.find(CsASoggettoLAZY.class, anagraficaId);
-					
-				e.setSoggetto(soggetto);
-				e.setCognome((String)o[8]);
-				e.setNome((String)o[9]);
-				e.setCf((String)o[10]);
-				
-				e.setDataUltimaErogazione((Date)o[11]);
-				e.setDiarioId(o[12]!=null ? ((BigDecimal)o[12]).longValue() : null);
-				e.setStatoUltimaErogazione((String)o[13]);
-				
-				lista.add(e);
-			}
-			listDatiAggregati = groupListaErogInterventiBySettoreByIntervento(lista);
-
-		}
-		}catch(Throwable e){
-			logger.error(e.getMessage(),e);
-			throw new CarSocialeServiceException(e);
-		}
-		return listDatiAggregati;
-	}	*/
 	
 	public List<ErogazioneMasterDTO> searchListaErogInterventi(ErogazioniSearchCriteria bDto) throws CarSocialeServiceException {
 		List<ErogazioneMasterDTO> lista = new ArrayList<ErogazioneMasterDTO>();
@@ -569,9 +420,9 @@ public class InterventoErogazioneDAO extends CarSocialeBaseDAO implements Serial
 		if(sql!=null){
 			logger.debug("LISTA EROGAZIONI SQL["+sql+"]");
 			Query q = em.createNativeQuery(sql);
-			
-			q.setParameter("settoreId", bDto.getSettoreId());
-			
+			//q.setParameter("settoreId", bDto.getSettoreId());
+			String params = qb.setParameters(q);
+			logger.debug("LISTA EROGAZIONI PARAMS "+params);
 			//if(!bDto.isSearchConRichiesta())
 			//	q.setParameter("organizzazioneId", bDto.getOrganizzazioneId());
 			
@@ -673,11 +524,11 @@ public class InterventoErogazioneDAO extends CarSocialeBaseDAO implements Serial
 			
 			String sql = qb.createQueryListaSoggettiErogazioni();
 			if(sql!=null){
-				logger.debug("LISTA SOGGETTI EROGAZIONI SQL["+sql+"]");
+				logger.info("LISTA SOGGETTI EROGAZIONI SQL["+sql+"]");
 				Query q = em.createNativeQuery(sql);
-				
+				String params = qb.setParamsListaSoggettiErogazioni(q);
+				logger.info("searchListaMasterIdBySoggetto PARAMS LISTA SOGGETTI EROGAZIONI " + params );
 				return  (List<BigDecimal>)q.getResultList();
-				
 			}
 		}catch(Throwable e){
 			logger.error(e.getMessage(),e);
@@ -686,10 +537,13 @@ public class InterventoErogazioneDAO extends CarSocialeBaseDAO implements Serial
 		return null;	
 	}
 
-	public CsIInterventoEsegMast getErogazioneMasterById(Long obj) {
+	public CsIInterventoEsegMast getCsIInterventoEsegMastById(Long obj) {
+		CsIInterventoEsegMast m = null;
+		logger.debug("INIT getCsIInterventoEsegMastById ["+obj+"]");
 		if(obj!=null)
-			 return em.find(CsIInterventoEsegMast.class, obj);
-		else return null;
+			 m = em.find(CsIInterventoEsegMast.class, obj);
+		logger.debug("END getCsIInterventoEsegMastById ["+obj+"] ["+m!=null+"]");
+		return m;
 	}
 	
 	public CsIInterventoPr getProgettoByMasterId(Long mastId) {
@@ -717,7 +571,8 @@ public class InterventoErogazioneDAO extends CarSocialeBaseDAO implements Serial
 			
 			String sql = "select d.* from Cs_I_Intervento_Eseg_Mast_Sogg d "+
 	                     "where d.caso_id is null and exists "+
-	                     "(select 1 from cs_a_anagrafica a , cs_a_soggetto s where S.ANAGRAFICA_ID= a.id and upper(A.CF) = upper(D.CF))"+
+	                     "(select 1 from cs_a_anagrafica a , cs_a_soggetto s "+
+	                     "where S.ANAGRAFICA_ID= a.id and upper(A.CF) = upper(D.CF)) "+
 	                     " order by d.cf ";
 			Query q = em.createNativeQuery(sql, CsIInterventoEsegMastSogg.class);
 			 lst = (List<CsIInterventoEsegMastSogg>)q.getResultList();
@@ -755,10 +610,12 @@ public class InterventoErogazioneDAO extends CarSocialeBaseDAO implements Serial
 			String sql = "select count(distinct se.INT_ESEG_MAST_ID) "
 					+ "from cs_i_intervento_eseg_mast_Sogg se, cs_i_intervento_eseg e left join CS_CFG_INT_ESEG_STATO stato on stato.id=E.STATO_ID "
 					+ "where SE.INT_ESEG_MAST_ID=E.INTERVENTO_ESEG_MAST_ID "
-					+ "and stato.tipo='"+tipo+"' and se.cf='"+cf+"' ";
+					+ "and stato.tipo= :tipo and se.cf= :cf ";
 		
 			try{
 				Query q = em.createNativeQuery(sql);
+				q.setParameter("tipo", tipo);
+				q.setParameter("cf", cf);
 				count = ((BigDecimal)q.getSingleResult()).intValue();
 			}catch(Exception e){
 				logger.error(e.getMessage(),e);
@@ -776,7 +633,7 @@ public class InterventoErogazioneDAO extends CarSocialeBaseDAO implements Serial
 				" from cs_i_intervento_eseg_mast m, cs_i_intervento_eseg e,Cs_Cfg_Int_Eseg_Stato s, cs_i_intervento_eseg_mast_Sogg se , cs_o_settore sett, cs_o_organizzazione o, cs_c_tipo_intervento ti "+
 				" where  o.id = sett.ORGANIZZAZIONE_ID and sett.id = M.SETTORE_EROGANTE_ID "+
 				" and ti.id=m.TIPO_INTERVENTO_ID and  m.id=E.INTERVENTO_ESEG_MAST_ID and E.STATO_ID=s.id and s.tipo='E' "+
-				" and SE.INT_ESEG_MAST_ID=m.id and upper(SE.CF)='"+cf.toUpperCase()+"' ";
+				" and SE.INT_ESEG_MAST_ID=m.id and upper(SE.CF)=upper(:cf) ";
 				
 				if(erogatiSenzaIntervento!=null && erogatiSenzaIntervento)
 					sqlRaggr+=" AND M.intervento_id is null ";
@@ -789,14 +646,15 @@ public class InterventoErogazioneDAO extends CarSocialeBaseDAO implements Serial
 				String sqlData = "select max(e.data_esecuzione)   "+
 				"from cs_i_intervento_eseg_mast m, cs_i_intervento_eseg e,Cs_Cfg_Int_Eseg_Stato s, cs_i_intervento_eseg_mast_Sogg se, cs_o_settore sett  "+
 				"where  m.id=E.INTERVENTO_ESEG_MAST_ID and E.STATO_ID=s.id and s.tipo='E'  and sett.id = M.SETTORE_EROGANTE_ID  "+
-				"and SE.INT_ESEG_MAST_ID=m.id and upper(SE.CF)='"+cf.toUpperCase()+"' "+
-				"and m.tipo_intervento_id= ? and sett.organizzazione_id = ? ";
+				"and SE.INT_ESEG_MAST_ID=m.id and upper(SE.CF)=upper(:cf) "+
+				"and m.tipo_intervento_id= :tipoInterventoId and sett.organizzazione_id = :organizzazioneId ";
 				
 				if(erogatiSenzaIntervento!=null && erogatiSenzaIntervento)
 					sqlData+=" AND M.intervento_id is null ";
 				
 				Query q2 = em.createNativeQuery(sqlData);
 				
+				q1.setParameter("cf", cf);
 				List<Object[]> lstRagg = q1.getResultList();
 				for(Object[] r : lstRagg){
 					
@@ -806,8 +664,9 @@ public class InterventoErogazioneDAO extends CarSocialeBaseDAO implements Serial
 					e.setNumero((BigDecimal)r[4]);
 					
 					if(r[0]!=null && r[1]!=null){
-						q2.setParameter(1, r[0]);
-						q2.setParameter(2, r[1]);
+						q2.setParameter("cf", cf);
+						q2.setParameter("tipoInterventoId", r[0]);
+						q2.setParameter("organizzazioneId", r[1]);
 						
 						List<Date> lstDataErog = q2.getResultList();
 						Date dataUltimaErogazione = null;
@@ -816,9 +675,7 @@ public class InterventoErogazioneDAO extends CarSocialeBaseDAO implements Serial
 					}
 					
 					lst.add(e);
-					
 				}
-			
 			}
 		}catch(Exception e){
 			logger.error(e.getMessage(),e);
@@ -831,7 +688,7 @@ public class InterventoErogazioneDAO extends CarSocialeBaseDAO implements Serial
 
 	
 	//inizio SISO-500  
-	public CsIInterventoEsegMast getCsIInterventoEsegMastByByInterventoId(Long interventoId) {
+	public CsIInterventoEsegMast getCsIInterventoEsegMastByInterventoId(Long interventoId) {
 		if(interventoId!=null){
 			Query q = em.createNamedQuery("CsIInterventoEsegMast.findByInterventoId");
 			q.setParameter("interventoId", interventoId);
@@ -841,19 +698,25 @@ public class InterventoErogazioneDAO extends CarSocialeBaseDAO implements Serial
 		return null;
 	}
 	//fine SISO-500 
-	
-	//inizio SISO-822  
-		public CsIInterventoEsegMast getCsIInterventoEsegMastById(Long id) {
-			if(id!=null){
-				Query q = em.createNamedQuery("CsIInterventoEsegMast.findById");
-				q.setParameter("id", id);
-				CsIInterventoEsegMast element = (CsIInterventoEsegMast) q.getResultList().get(0);
-				return element;
-			}
-			return null;
+	public Long getCsIInterventoEsegMastIdByInterventoId(Long interventoId) {
+		if(interventoId!=null){
+			Query q = em.createNamedQuery("CsIInterventoEsegMast.findIdByInterventoId");
+			q.setParameter("interventoId", interventoId);
+			List<Long> elementList = q.getResultList();
+			return CollectionsUtils.isEmpty(elementList ) ? null : elementList.get(0);
 		}
-		//fine SISO-822
-
+		return null;
+	}
+	public CsIPs getCsIPsByInterventoId(Long interventoId) {
+		if(interventoId!=null){
+			Query q = em.createNamedQuery("CsIPs.findByInterventoId");
+			q.setParameter("interventoId", interventoId);
+			List<CsIPs> elementList = q.getResultList();
+			return CollectionsUtils.isEmpty(elementList ) ? null : elementList.get(0);
+		}
+		return null;
+	}
+	
 	public void eliminaCsIPsByEsegMaster(Long masterId) {
 		Query delete = em.createNamedQuery("CsIPs.deleteByEsegMastId");
 		delete.setParameter("masterId", masterId);
@@ -883,20 +746,22 @@ public class InterventoErogazioneDAO extends CarSocialeBaseDAO implements Serial
 				logger.debug("LISTA EROGAZIONE DUPLICATE per cod.fiscale: "+cf+" num.:"+lstObj.size());
 				for(Object[] obj : lstObj){
 					ErogazionePrestazioneDTO eiDto=new ErogazionePrestazioneDTO();
-		
-					BigDecimal mastId=(BigDecimal)obj[0];
-					Date dataErog=(Date)obj[1];
-					Date dataErogA=(Date)obj[2];
-					String cF=(String)obj[3];
-					String codPrestazione=(String)obj[4];
-					Date dataDsu=(Date)obj[5];
-					BigDecimal annoProtDsu=(BigDecimal)obj[6];
-					String numProtDsu=(String)obj[7];
-					String prefixProtDsu=(String)obj[8];
-					String progProtDsu=(String)obj[9];
-					BigDecimal organizzazioneId = (BigDecimal)obj[10];
+		            int i = 0;
+					BigDecimal mastId=(BigDecimal)obj[i++];
+					BigDecimal esegId = (BigDecimal)obj[i++];
+					Date dataErog=(Date)obj[i++];
+					Date dataErogA=(Date)obj[i++];
+					String cF=(String)obj[i++];
+					String codPrestazione=(String)obj[i++];
+					Date dataDsu=(Date)obj[i++];
+					BigDecimal annoProtDsu=(BigDecimal)obj[i++];
+					String numProtDsu=(String)obj[i++];
+					String prefixProtDsu=(String)obj[i++];
+					String progProtDsu=(String)obj[i++];
+					BigDecimal organizzazioneId = (BigDecimal)obj[i++];
 					
 					eiDto.setMastId(mastId!=null ? mastId : new BigDecimal(0));
+					eiDto.setEsegId(esegId);
 //					eiDto.setDataErog(dataErog!=null ? dataErog : new Date());
 					eiDto.setDataErog(dataErog);
 //					eiDto.setDataErogA(dataErogA!=null ? dataErogA : new Date());
@@ -935,6 +800,28 @@ public class InterventoErogazioneDAO extends CarSocialeBaseDAO implements Serial
 			deletePr.setParameter("id", id);
 			deletePr.executeUpdate();
 
+		}
+
+		public List<ErogazioneDettaglioSintesiDTO> getSintesiErogazioniByInterventoId(Long masterId) {
+			List<ErogazioneDettaglioSintesiDTO> out = new ArrayList<ErogazioneDettaglioSintesiDTO>();
+			if(masterId!=null){
+				Query q = em.createNamedQuery("CsIInterventoEseg.findSintesiInterventoEsegByInterventoId");
+				q.setParameter("interventoId", masterId);
+				List<Object[]> lst = q.getResultList();
+				for(Object[] o: lst){
+					int index = 0;
+					Date dataEsecuzione = (Date) o[index++];
+					Date dataEsecuzioneA = (Date) o[index++];
+					String stato = (String) o[index++];
+					
+					ErogazioneDettaglioSintesiDTO s = new ErogazioneDettaglioSintesiDTO();
+					s.setDataEsecuzione(dataEsecuzione);
+					s.setDataEsecuzioneA(dataEsecuzioneA);
+					s.setStato(stato);
+					out.add(s);
+				}		
+			}
+			return out;
 		}
 
 	}

@@ -3,8 +3,6 @@ package it.webred.cs.json.OrientamentoLavoro;
 import it.webred.classfactory.WebredClassFactory;
 import it.webred.cs.data.model.CsDValutazione;
 import it.webred.cs.json.SchedaValutazioneManBean;
-import it.webred.cs.json.orientamentoistruzione.IOrientamentoIstruzione;
-import it.webred.cs.json.stranieri.IStranieri;
 
 public abstract class OrientamentoLavoroManBaseBean extends SchedaValutazioneManBean  implements IOrientamentoLavoro {
 

@@ -108,11 +108,17 @@
 			        	<f:facet name="header">
 					        <h:outputText value="Esito intervento"/> 
 					    </f:facet>   
-			            <h:outputText value="#{scheda.intervento}"  />
+			            <h:outputText value="#{scheda.intervento} "  />
+			         </p:column>
+			         <p:column rendered="#{schedeTableBean.gestioneCapofilaPic}">
+			         	<f:facet name="header">
+					        <h:outputText value="Ente Car.Soc." title="Ente destinatario della proposta di presa in carico"/> 
+					    </f:facet>   
+			         	<h:outputText  value=" #{scheda.enteSegnalazionePIC}"  />
 			         </p:column>
 			         <p:column  width="40">
 			         	<f:facet name="header">
-					        <h:outputText value="Car. Sociale"/> 
+					        <h:outputText value="Stato Car.Soc." title="Stato della cartella sociale"/> 
 					    </f:facet>  
 			            <h:outputText rendered="#{scheda.statoCS!=null}" value="#{scheda.statoCS}"/>
 			        </p:column>

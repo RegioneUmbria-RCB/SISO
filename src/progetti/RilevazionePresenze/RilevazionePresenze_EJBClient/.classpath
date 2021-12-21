@@ -13,7 +13,6 @@
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/RilevazionePresenze_DataModel"/>
-	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/CarSocialeA_EJBClient"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/CT_Config_Data_Model"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/webred-cs-ui-comp-jsf"/>
 	<classpathentry kind="output" path="ejbModule"/>

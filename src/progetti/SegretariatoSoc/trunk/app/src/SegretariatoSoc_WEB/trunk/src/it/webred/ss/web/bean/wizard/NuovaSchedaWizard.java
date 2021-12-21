@@ -1,37 +1,48 @@
 package it.webred.ss.web.bean.wizard;
 
+import it.umbriadigitale.argo.ejb.client.cs.bean.ArConfigurazioneService;
+import it.umbriadigitale.argo.ejb.client.cs.dto.configurazione.ArOrganizzazioneDTO;
 import it.webred.amprofiler.ejb.user.UserService;
 import it.webred.amprofiler.model.AmUser;
-import it.webred.cs.csa.ejb.client.AccessTableAlertSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.AccessTableCatSocialeSessionBeanRemote;
-import it.webred.cs.csa.ejb.client.AccessTableConfigurazioneSessionBeanRemote;
+import it.webred.cs.csa.ejb.client.AccessTableDatiPorSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.AccessTableDiarioSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.AccessTableInterventoSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.AccessTableMediciSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.AccessTableNazioniSessionBeanRemote;
-import it.webred.cs.csa.ejb.client.AccessTablePersonaCiviciSessionBeanRemote;
+import it.webred.cs.csa.ejb.client.AccessTableOperatoreSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.AccessTableSchedaSegrSessionBeanRemote;
+import it.webred.cs.csa.ejb.client.CarSocialeServiceException;
+import it.webred.cs.csa.ejb.dto.OperatoreDTO;
 import it.webred.cs.csa.ejb.dto.SchedaSegrDTO;
 import it.webred.cs.csa.ejb.dto.erogazioni.ErogazioneBaseDTO;
+import it.webred.cs.csa.ejb.dto.siru.SiruInputDTO;
+import it.webred.cs.csa.ejb.dto.siru.SiruResultDTO;
+import it.webred.cs.csa.ejb.dto.siru.StampaFseDTO;
 import it.webred.cs.data.DataModelCostanti;
 import it.webred.cs.data.DataModelCostanti.Scheda;
+import it.webred.cs.data.DataModelCostanti.Scheda.ModalitaAccesso;
 import it.webred.cs.data.DataModelCostanti.TabUDC;
 import it.webred.cs.data.DataModelCostanti.TipoRicercaSoggetto;
-import it.webred.cs.data.model.CsAIndirizzo;
 import it.webred.cs.data.model.CsCCategoriaSociale;
 import it.webred.cs.data.model.CsCMedico;
 import it.webred.cs.data.model.CsCTipoInterventoCustom;
 import it.webred.cs.data.model.CsDClob;
 import it.webred.cs.data.model.CsDDiario;
 import it.webred.cs.data.model.CsDValutazione;
+import it.webred.cs.data.model.CsExtraFseDatiLavoro;
+import it.webred.cs.data.model.CsOOperatoreBASIC;
+import it.webred.cs.data.model.CsOOrganizzazione;
 import it.webred.cs.data.model.CsOSettore;
 import it.webred.cs.data.model.CsOSettoreBASIC;
 import it.webred.cs.data.model.CsTbCittadinanzaAcq;
+import it.webred.cs.data.model.CsTbCondLavoro;
 import it.webred.cs.data.model.CsTbStatoCivile;
 import it.webred.cs.data.model.CsTbTipoRapportoCon;
 import it.webred.cs.jsf.bean.DatiUserSearchBean;
 import it.webred.cs.jsf.manbean.ConsensoPrivacyMan;
 import it.webred.cs.jsf.manbean.UserSearchBeanExt;
+import it.webred.cs.jsf.manbean.por.DatiPorSchedaMan;
 import it.webred.cs.jsf.manbean.superc.CsUiCompBaseBean;
 import it.webred.cs.json.OrientamentoLavoro.IOrientamentoLavoro;
 import it.webred.cs.json.abitazione.AbitazioneManBaseBean;
@@ -44,22 +55,16 @@ import it.webred.cs.json.serviziorichiestocustom.IServizioRichiestoCustom;
 import it.webred.cs.json.stranieri.IStranieri;
 import it.webred.cs.json.stranieri.StranieriManBaseBean;
 import it.webred.cs.sociosan.ejb.client.ArgoBufferManagerSessionBeanRemote;
+import it.webred.ct.config.model.AmTabComuni;
 import it.webred.ct.config.model.AmTabNazioni;
-import it.webred.ct.data.access.basic.anagrafe.AnagrafeService;
-import it.webred.ct.data.access.basic.anagrafe.dto.ComponenteFamigliaDTO;
-import it.webred.ct.data.access.basic.anagrafe.dto.IndirizzoAnagDTO;
-import it.webred.ct.data.access.basic.anagrafe.dto.RicercaSoggettoAnagrafeDTO;
-import it.webred.ct.data.model.anagrafe.SitDPersona;
 import it.webred.ct.support.datarouter.CeTBaseObject;
 import it.webred.ejb.utility.ClientUtility;
 import it.webred.jsf.bean.ComuneBean;
-import it.webred.jsf.bean.SessoBean;
 import it.webred.siso.ws.ricerca.dto.FamiliareDettaglio;
 import it.webred.siso.ws.ricerca.dto.PersonaDettaglio;
 import it.webred.siso.ws.ricerca.dto.RicercaAnagraficaParams;
 import it.webred.siso.ws.ricerca.dto.RicercaAnagraficaResult;
 import it.webred.ss.data.model.ArBufferSsInvio;
-import it.webred.ss.data.model.ArOOrganizzazione;
 import it.webred.ss.data.model.SsAnagrafica;
 import it.webred.ss.data.model.SsAnagraficaLog;
 import it.webred.ss.data.model.SsDiario;
@@ -84,9 +89,11 @@ import it.webred.ss.data.model.SsTipoScheda;
 import it.webred.ss.data.model.SsUfficio;
 import it.webred.ss.ejb.client.SsSchedaSessionBeanRemote;
 import it.webred.ss.ejb.dto.BaseDTO;
+import it.webred.ss.ejb.dto.OrganizzazioneDTO;
 import it.webred.ss.ejb.dto.report.DatiPrivacyPdfDTO;
 import it.webred.ss.ejb.dto.report.RiferimentoPdfDTO;
 import it.webred.ss.web.bean.SegretariatoSocBaseBean;
+import it.webred.ss.web.bean.report.ReportPorBean;
 import it.webred.ss.web.bean.report.ReportPrivacyBean;
 import it.webred.ss.web.bean.util.Organizzazione;
 import it.webred.ss.web.bean.util.PuntoContatto;
@@ -133,7 +140,16 @@ public class NuovaSchedaWizard extends SegretariatoSocBaseBean {
 	
 	private static final String HOME = "home.faces";
 
-	private AnagrafeService anagrafeService = (AnagrafeService) getEjb("CT_Service", "CT_Service_Data_Access", "AnagrafeServiceBean");
+	private AccessTableOperatoreSessionBeanRemote operatoreService = 
+			(AccessTableOperatoreSessionBeanRemote) getEjb("CarSocialeA", "CarSocialeA_EJB", "AccessTableOperatoreSessionBean");
+	
+	protected AccessTableDatiPorSessionBeanRemote porService = 
+			(AccessTableDatiPorSessionBeanRemote) getEjb("CarSocialeA", "CarSocialeA_EJB", "AccessTableDatiPorSessionBean");
+	
+	protected AccessTableSchedaSegrSessionBeanRemote schedaSegrService = 
+			(AccessTableSchedaSegrSessionBeanRemote) getEjb("CarSocialeA", "CarSocialeA_EJB", "AccessTableSchedaSegrSessionBean");
+
+	
 	private boolean renderModDatiAnaDlg;
 	
 	private Accesso accesso;
@@ -142,6 +158,8 @@ public class NuovaSchedaWizard extends SegretariatoSocBaseBean {
 	private Segnalante segnalante;
 	private Segnalato segnalato;
 	
+	private DatiPorSchedaMan iDatiPor;
+	
 	/*JSON SEGNALATO*/
 	private IStranieri stranieriMan;
 	private IAbitazione abitazioneMan;
@@ -149,7 +167,6 @@ public class NuovaSchedaWizard extends SegretariatoSocBaseBean {
 
 	// INIZIO SISO-438-Possibilità di allegare documenti in UdC
 	private List<SelectItem> tipoInterventosCustom = new LinkedList<SelectItem>();
-	public AccessTableInterventoSessionBeanRemote interventoService = getAccessTableInterventoService();
 
 	// FINE SISO-438-Possibilità di allegare documenti in UdC
 
@@ -192,9 +209,6 @@ public class NuovaSchedaWizard extends SegretariatoSocBaseBean {
 	// 09/12/2019 SISO-1110
 	private KeyValueDTO selTipoInterventoCustom5;
 	// ISTAT
-	private List<SelectItem> listaTipoInterventoISTAT;
-	private boolean visibleDescrizione = false;
-
 	private List<CsCTipoInterventoCustom> lstTipoInterventiCustom;
 	private List<CsCTipoInterventoCustom> lstTipoInterventi2Custom;
 	private List<CsCTipoInterventoCustom> lstTipoInterventi3Custom;
@@ -337,14 +351,21 @@ public class NuovaSchedaWizard extends SegretariatoSocBaseBean {
 	// SISO-906
 	private static Long AFFIDATARIO_NON_PARENTE;
 
-	private List<SelectItem> categoriePDS;
-	private boolean flagBelfiore = false;
-
 	private String accessoModifica;
 
 	//#ROMACAPITALE inizio	
 	private List<Long> listaIdSettoriByIntervervento;
 	private RilevazionePresenzeDettaglio rilevazionePresenzeDettaglio = null;
+	
+	private List<SelectItem> listaSettoriEroganti;	
+	private KeyValueDTO selSettore;
+	private Boolean visualizzaPannelloDettaglio;
+
+	private StampaFseDTO datiProgettoBean;
+	
+	private CsOOrganizzazione capofila;
+	private boolean capofilaPic;
+	private boolean disabilitaCapofilaPic;
 	
 	public List<Long> getListaIdSettoriByIntervervento() {
 		return listaIdSettoriByIntervervento;
@@ -377,10 +398,6 @@ public class NuovaSchedaWizard extends SegretariatoSocBaseBean {
 		this.selectedSettoreId = selectedSettoreId;
 	}
 	
-
-
-	
-	private List<SelectItem> listaSettoriEroganti;	
 	public List<SelectItem> getListaSettoriEroganti() {		
 		return this.listaSettoriEroganti;
 	}	
@@ -388,15 +405,13 @@ public class NuovaSchedaWizard extends SegretariatoSocBaseBean {
 		this.listaSettoriEroganti = listaSettoriEroganti;
 	}
 
-	private KeyValueDTO selSettore;
 	public KeyValueDTO getSelSettore() {
 		return selSettore;
 	}
 	public void setSettore(KeyValueDTO selSettore) {
 		this.selSettore = selSettore;
 	}
-
-	private Boolean visualizzaPannelloDettaglio;	
+	
 	public Boolean getVisualizzaPannelloDettaglio() {
 		return visualizzaPannelloDettaglio;
 	}
@@ -569,6 +584,10 @@ public class NuovaSchedaWizard extends SegretariatoSocBaseBean {
 	}
 
 	public NuovaSchedaWizard() {
+		CeTBaseObject cet = new CeTBaseObject();
+		this.fillUserData(cet);
+		this.capofila = configurationCsBean.getOrganizzazioneCapofila(cet);
+		
 		this.renderModDatiAnaDlg = false;
 		this.mappaLabelUDC = CsUiCompBaseBean.getMappaLabelUDC();
 
@@ -658,48 +677,45 @@ public class NuovaSchedaWizard extends SegretariatoSocBaseBean {
 
 		}
 
-		String selectedScheda = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap()
-				.get(SCHEDA_KEY);
+		String selectedScheda = (String)getRequestParameter(SCHEDA_KEY);
 
 		// Record presente in ssAnagrafica
-		String selectedSoggetto = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap()
-				.get(SOGGETTO_KEY);
+		String selectedSoggetto = (String)getRequestParameter(SOGGETTO_KEY);
 
-		String selectedCf = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get(CF_KEY);
+		String selectedCf = (String)getRequestParameter(CF_KEY);
 
 		// Seleziono record da anag.ws
-		String tipo = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get(ANAG_WS_TIPO);
+		String tipo = (String)getRequestParameter(ANAG_WS_TIPO);
 
 		Boolean creaNuovaSchedaDaEsistente = null;
 		Boolean riceviSchedaDaRemoto = null;
 		String zsRemoto = null;
 		try {
-			String creaNuova = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap()
-					.get(CREA_NUOVA_SCHEDA);
+			String creaNuova = (String)getRequestParameter(CREA_NUOVA_SCHEDA);
 			creaNuovaSchedaDaEsistente = creaNuova != null ? Boolean.valueOf(creaNuova.toLowerCase()) : Boolean.FALSE;
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 		}
 
 		try {
-			String riceviScheda = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get(RICEVI_SCHEDA);
-			zsRemoto = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap()
-					.get(ZONA_SOCIALE_KEY);
+			String riceviScheda = (String)getRequestParameter(RICEVI_SCHEDA);
+			zsRemoto = (String)getRequestParameter(ZONA_SOCIALE_KEY);
 			riceviSchedaDaRemoto = zsRemoto != null ? Boolean.valueOf(riceviScheda.toLowerCase()) : Boolean.FALSE;
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 		}
 
-		indietroButtonLink = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap()
-				.get("previousPage");
+		indietroButtonLink = (String)getRequestParameter("previousPage");
 
 		try {
 			if (creaNuovaSchedaDaEsistente == null || creaNuovaSchedaDaEsistente == false) {
 				if (selectedScheda != null) {
 					if (riceviSchedaDaRemoto != null && riceviSchedaDaRemoto && zsRemoto != null) {
 						initFromSelectedReceivedScheda(new Long(selectedScheda), zsRemoto);
-					} else
+					} else {
 						initFromSelectedScheda(new Long(selectedScheda));
+					}
+				
 				} else {
 
 					// SISO-438
@@ -710,10 +726,10 @@ public class NuovaSchedaWizard extends SegretariatoSocBaseBean {
 						initFromSelectedSoggetto(new Long(selectedSoggetto), true); // EFFETTUO UNA COPIA
 					else if (tipo != null && (TipoRicercaSoggetto.ANAG_SANITARIA_UMBRIA.equalsIgnoreCase(tipo)
 							|| TipoRicercaSoggetto.ANAG_SANITARIA_MARCHE.equalsIgnoreCase(tipo)
-							|| TipoRicercaSoggetto.SIGESS.equalsIgnoreCase(tipo))) {
+							|| TipoRicercaSoggetto.SIGESS.equalsIgnoreCase(tipo)
+							|| TipoRicercaSoggetto.DEFAULT.equalsIgnoreCase(tipo))) {
 
-						String id = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap()
-								.get(ANAG_WS_KEY);
+						String id = (String)getRequestParameter(ANAG_WS_KEY);
 						PersonaDettaglio p = null;
 						if (id != null)
 							p = CsUiCompBaseBean.getPersonaDaAnagEsterna(tipo, id);
@@ -722,8 +738,7 @@ public class NuovaSchedaWizard extends SegretariatoSocBaseBean {
 
 						this.initSegnalatoByPersonaAnagEsterna(p);
 					} else if (tipo != null && TipoRicercaSoggetto.ANAG_RILEVAZIONE_PRESENZE.equalsIgnoreCase(tipo)) { // #ROMACAPITALE
-						String idAnagrafica = FacesContext.getCurrentInstance().getExternalContext()
-								.getRequestParameterMap().get(ANAG_WS_KEY);
+						String idAnagrafica = (String)getRequestParameter(ANAG_WS_KEY);
 
 						if (idAnagrafica != null) {
 							rilevazionePresenzeDettaglio = AnagraficaRilevazionePresenze.getPersonaDaAnagRilevazionePresenze(tipo, idAnagrafica, null);
@@ -732,10 +747,10 @@ public class NuovaSchedaWizard extends SegretariatoSocBaseBean {
 							rilevazionePresenzeDettaglio = AnagraficaRilevazionePresenze.getPersonaDaAnagRilevazionePresenze(tipo, idAnagrafica, selectedCf);
 						}
 						this.initSegnalatoByPersonaAnagRilevazionePresenze(rilevazionePresenzeDettaglio);
-					} else if (selectedCf != null) {
+					} /*else if (selectedCf != null) {
 						SitDPersona soggetto = readSoggettoFromAnagrafeByCf(selectedCf);
 						initFromSitDPersona(soggetto);
-					}
+					}*/
 				}
 
 			} else {
@@ -744,8 +759,6 @@ public class NuovaSchedaWizard extends SegretariatoSocBaseBean {
 				 * CREO DA SCHEDA GIA' ESISTENTE MA IMPORTANDO I DATI AGGIORNATI DELL'ANAGRAFICA
 				 * - SE NON LA TROVO USO QUELLI VECCHI
 				 */
-				// serviziRichiestiInterventiCustomBean.initManJsonServiziRichiesti(scheda,
-				// VER_MAX); //SISO-438
 
 				// Matteo Leandri 04/07/2016
 				// sono arrivato qui passando come parametro la creazione di una nuova scheda
@@ -761,50 +774,28 @@ public class NuovaSchedaWizard extends SegretariatoSocBaseBean {
 				SsSchedaSegnalato ssSchedaSegnalato = readSegnalatoById(schedaPrecedente.getSegnalato());
 
 				boolean trovato = false;
-
+				PersonaDettaglio p = null;
 				if (this.isAnagrafeComunaleInternaAbilitata()) {
 					// Ricerco per codice fiscale in anagrafica comune
-					SitDPersona sitDPersona = readSoggettoFromAnagrafeByCf(ssSchedaSegnalato.getAnagrafica().getCf());
-					// avendo a disposizione nome, cognome e cf recupero i dati dall'anagrafe del
-					// comune e dall'anagrafe sanitaria
-					if (sitDPersona != null) {
-						if (sitDPersona.getDataMor() != null) {
-							addWarning("policy.error", "Il soggetto selezionato è deceduto il "
-									+ ddMMyyyy.format(sitDPersona.getDataMor()));
-							FacesContext.getCurrentInstance().getExternalContext().redirect(HOME);
-						} else
-							trovato = initFromSitDPersona(sitDPersona);
-					}
+					 p = CsUiCompBaseBean.getPersonaDaAnagEsterna(DataModelCostanti.TipoRicercaSoggetto.DEFAULT, null, null, ssSchedaSegnalato.getAnagrafica().getCf());
+					 trovato = this.loadSegnalato(p, ssSchedaSegnalato.getAnagrafica().getCf());
 				}
 
-				PersonaDettaglio p = null;
 				String idTipo = ssSchedaSegnalato.getAnagrafica().getIdOrigWsTipo();
 				if (idTipo != null) {
 					String idWs = ssSchedaSegnalato.getAnagrafica().getIdOrigWsId();
 
-					if (!trovato && (TipoRicercaSoggetto.ANAG_SANITARIA_UMBRIA.equalsIgnoreCase(idTipo)
+					if (!trovato && (TipoRicercaSoggetto.DEFAULT.equalsIgnoreCase(idTipo)
+							||TipoRicercaSoggetto.ANAG_SANITARIA_UMBRIA.equalsIgnoreCase(idTipo)
 							|| TipoRicercaSoggetto.ANAG_SANITARIA_MARCHE.equalsIgnoreCase(idTipo)
 							|| TipoRicercaSoggetto.SIGESS.equalsIgnoreCase(idTipo))) {
 
 						if (idWs != null)
 							p = CsUiCompBaseBean.getPersonaDaAnagEsterna(idTipo, idWs);
 						else
-							p = CsUiCompBaseBean.getPersonaDaAnagEsterna(idTipo, null, null,
-									ssSchedaSegnalato.getAnagrafica().getCf());
+							p = CsUiCompBaseBean.getPersonaDaAnagEsterna(idTipo, null, null, ssSchedaSegnalato.getAnagrafica().getCf());
 
-						if (p != null) {
-							if (p.isDefunto()) {
-								String msg = "Il soggetto selezionato è deceduto";
-								msg += p.getDataMorte() != null ? "il " + ddMMyyyy.format(p.getDataMorte()) : "";
-								addWarning("policy.error", msg);
-								FacesContext.getCurrentInstance().getExternalContext().redirect(HOME);
-							} else {
-								if (p.getCodfisc().equalsIgnoreCase(ssSchedaSegnalato.getAnagrafica().getCf())) {
-									initSegnalatoByPersonaAnagEsterna(p);
-									trovato = true;
-								}
-							}
-						}
+						trovato = this.loadSegnalato(p, ssSchedaSegnalato.getAnagrafica().getCf());
 					}
 
 				} else {
@@ -813,18 +804,8 @@ public class NuovaSchedaWizard extends SegretariatoSocBaseBean {
 						p = CsUiCompBaseBean.getPersonaDaAnagEsterna(TipoRicercaSoggetto.ANAG_SANITARIA_UMBRIA,
 								ssSchedaSegnalato.getAnagrafica().getCognome(),
 								ssSchedaSegnalato.getAnagrafica().getNome(), ssSchedaSegnalato.getAnagrafica().getCf());
-						if (p != null) {
-							if (p.getDataMorte() != null) {
-								addWarning("policy.error",
-										"Il soggetto selezionato è deceduto il " + ddMMyyyy.format(p.getDataMorte()));
-								FacesContext.getCurrentInstance().getExternalContext().redirect(HOME);
-							} else {
-								initSegnalatoByPersonaAnagEsterna(p);
-								trovato = true;
-							}
-						}
+						trovato = this.loadSegnalato(p, ssSchedaSegnalato.getAnagrafica().getCf());
 					}
-
 				}
 
 				if (!trovato) {
@@ -840,19 +821,18 @@ public class NuovaSchedaWizard extends SegretariatoSocBaseBean {
 			}
 
 			initStatoPrivacy();
+			
+/*
 			if (segnalato.getAnagrafica() != null && segnalato.getAnagrafica().getCodiceFiscale() != null
 					&& segnalato.getAnagrafica().getIdExtAnagrafeEnte() == null
 					&& segnalato.getAnagrafica().getIdOrigWs() == null)
-				segnalato.getAnagrafica()
-						.setIdExtAnagrafeEnte(getIdExtSoggetto(segnalato.getAnagrafica().getCodiceFiscale()));
+				segnalato.getAnagrafica().setIdExtAnagrafeEnte(getIdExtSoggetto(segnalato.getAnagrafica().getCodiceFiscale()));*/
 
 			verificaAggiornamentoDatiSanitari();
 
 			if (selectedScheda == null)
-				loadUltimaSchedaSoggettoUfficio(segnalato.getAnagrafica().getCodiceFiscale(),
-						accesso.getPuntoContatto());
-			abilitaLoadPrecedente = (selectedScheda == null || creaNuovaSchedaDaEsistente)
-					&& this.schedaPrecedente != null;
+				loadUltimaSchedaSoggettoUfficio(segnalato.getAnagrafica().getCodiceFiscale(),accesso.getPuntoContatto());
+			abilitaLoadPrecedente = (selectedScheda == null || creaNuovaSchedaDaEsistente) && this.schedaPrecedente != null;
 
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
@@ -862,6 +842,50 @@ public class NuovaSchedaWizard extends SegretariatoSocBaseBean {
 		// set operatore selezionato
 		if (accesso.getOperatore() == null)
 			accesso.setOperatore(getUserNameOperatore());
+		
+		loadDatiPor();
+		
+	}
+	
+	private boolean loadSegnalato(PersonaDettaglio p, String cfRif) throws IOException, NamingException{
+		boolean trovato = false;
+		if (p != null) {
+			if (p.isDefunto()) {
+				String msg = "Il soggetto selezionato è deceduto";
+				msg += p.getDataMorte() != null ? " il " + ddMMyyyy.format(p.getDataMorte()) : "";
+				addWarning("policy.error", msg);
+				FacesContext.getCurrentInstance().getExternalContext().redirect(HOME);
+			} else {
+				if (p.getCodfisc().equalsIgnoreCase(cfRif)) {
+					initSegnalatoByPersonaAnagEsterna(p);
+					trovato = true;
+				}
+			}
+		}
+		return trovato;
+	}
+	
+	private void loadDatiPor(){
+		if(this.isVisualizzaModuloPorUdc()){
+			CsExtraFseDatiLavoro por = null;
+			if(scheda!=null && scheda.getId()!=null){
+				it.webred.cs.csa.ejb.dto.BaseDTO dto = new it.webred.cs.csa.ejb.dto.BaseDTO();
+				this.fillUserData(dto);
+				dto.setObj(this.scheda.getId());
+				por = porService.findDatiPorUdcBySchedaId(dto);
+			}
+			
+			BigDecimal idclav = this.segnalato!=null&&this.segnalato.getFormLavoroMan()!=null?this.segnalato.getFormLavoroMan().getIdCondLavorativa():BigDecimal.ZERO;
+			String belfioreAccesso = accesso.getPuntoContatto().getOrganizzazione().getBelfiore();
+			String enteProgetti = !StringUtils.isBlank(belfioreAccesso) ? belfioreAccesso : this.getBelfioreSceltaEnte();
+			//SISO 1306 - OSMOSIT
+			if(por!=null) {
+				this.iDatiPor = new DatiPorSchedaMan(por, enteProgetti , idclav);
+			} else {
+				this.iDatiPor = new DatiPorSchedaMan(enteProgetti, idclav);
+				logger.info("Creo NEW DATI POR");
+			}
+		}
 	}
 
 	private void verificaAggiornamentoDatiSanitari() {
@@ -997,22 +1021,17 @@ public class NuovaSchedaWizard extends SegretariatoSocBaseBean {
 	public void onChangeTipoScheda() {
 
 		resetCatSociale();
-
-//		resetValoriInvioScheda();
-//		
-//		if (isVisPanelInvioUfficio() || this.isVisPanelInvioEnte() ) {
-//			if(isVisPanelInvioUfficio()){
-//				// ho scelto invio ad altro ufficio, quindi seleziono la mia zona
-//				// come OrganizzazioneDiZonaId
-//				PuntoContatto pContMan = this.getAccesso().getPuntoContatto();
-//				Organizzazione currOrgInviante = pContMan.getOrganizzazione();
-//				setOrganizzazioneDiZonaId(currOrgInviante.getId());
-//				// inizializzo la lista degli uffici
-//				getUfficiOrganizzazione();
-//			}
-//			initInvioSchedaGeneric();
-//		}else
-//			schedaInfoInvio=null;
+		aggiornaFlagCapofilaPic();
+		
+	}
+	
+	public void aggiornaFlagCapofilaPic(){
+		disabilitaCapofilaPic = true;
+		capofilaPic = false;
+		if(this.isRenderCapofilaPic()){
+			if(this.isPropostaPresaInCarico() && !this.isSchedaPicInCS())
+				disabilitaCapofilaPic = false;
+		}
 	}
 
 	public Nota getNotaDiarioPubblica() {
@@ -1218,12 +1237,9 @@ public class NuovaSchedaWizard extends SegretariatoSocBaseBean {
 
 	public List<String> getModalita() {
 		if (modalita.isEmpty()) {
-			modalita.add("Di Persona");
-			modalita.add("e-mail");
-			modalita.add("Rilevato a domicilio");
-			modalita.add("Segnalazione scritta");
-			modalita.add("Segnalazione telefonica");
-
+			ModalitaAccesso[] mods = DataModelCostanti.Scheda.ModalitaAccesso.values();
+			for(ModalitaAccesso mod : mods)
+				modalita.add(mod.getDescrizione());
 		}
 		return modalita;
 	}
@@ -1234,35 +1250,20 @@ public class NuovaSchedaWizard extends SegretariatoSocBaseBean {
 
 	// INIZIO SISO-346
 
-//	public List<String> getInterlocutori() {
-//		if (interlocutori.isEmpty()) {
-//			interlocutori.add("Autorità giudiziaria");
-//			interlocutori.add("Istituzionale");
-//			interlocutori.add("Utente");
-//			interlocutori.add("Altro soggetto");
-//		}
-//		return interlocutori;
-//		
-//	}
-
 	public List<SelectItem> getInterlocutori() {
 		if (interlocutori.isEmpty()) {
 			interlocutori.add(new SelectItem(Scheda.Interlocutori.UTENTE, Scheda.Interlocutori.UTENTE));
-			interlocutori.add(new SelectItem(Scheda.Interlocutori.PARENTE_O_CONOSCENTE,
-					Scheda.Interlocutori.PARENTE_O_CONOSCENTE));
+			interlocutori.add(new SelectItem(Scheda.Interlocutori.PARENTE_O_CONOSCENTE, Scheda.Interlocutori.PARENTE_O_CONOSCENTE));
 			interlocutori.add(new SelectItem(Scheda.Interlocutori.ORGANIZZAZIONE, Scheda.Interlocutori.ORGANIZZAZIONE));
 			interlocutori.add(new SelectItem(Scheda.Interlocutori.ALTRO_SOGGETTO, Scheda.Interlocutori.ALTRO_SOGGETTO));
 
-			SelectItem item = new SelectItem(Scheda.Interlocutori.ATTIVITA_GIUDIZIARIA,
-					Scheda.Interlocutori.ATTIVITA_GIUDIZIARIA);
-			if (accesso.getInterlocutore() == null
-					|| !accesso.getInterlocutore().equals(Scheda.Interlocutori.ATTIVITA_GIUDIZIARIA)) {
+			SelectItem item = new SelectItem(Scheda.Interlocutori.ATTIVITA_GIUDIZIARIA, Scheda.Interlocutori.ATTIVITA_GIUDIZIARIA);
+			if (accesso.getInterlocutore() == null || !accesso.getInterlocutore().equals(Scheda.Interlocutori.ATTIVITA_GIUDIZIARIA)) {
 				item.setDisabled(true);
 			}
 			interlocutori.add(item);
 			item = new SelectItem(Scheda.Interlocutori.ISTITUZIONALE, Scheda.Interlocutori.ISTITUZIONALE);
-			if (accesso.getInterlocutore() == null
-					|| !accesso.getInterlocutore().equals(Scheda.Interlocutori.ISTITUZIONALE)) {
+			if (accesso.getInterlocutore() == null || !accesso.getInterlocutore().equals(Scheda.Interlocutori.ISTITUZIONALE)) {
 				item.setDisabled(true);
 			}
 			interlocutori.add(item);
@@ -1284,11 +1285,9 @@ public class NuovaSchedaWizard extends SegretariatoSocBaseBean {
 
 			CeTBaseObject bo = new CeTBaseObject();
 			fillUserData(bo);
-			AccessTableConfigurazioneSessionBeanRemote confService;
 			try {
-				confService = this.getCsConfigurazioneService();
-				List<CsTbTipoRapportoCon> lstParenti = confService.getTipoRapportoConParenti(bo);
-				List<CsTbTipoRapportoCon> lstConoscenti = confService.getTipoRapportoConConoscenti(bo);
+				List<CsTbTipoRapportoCon> lstParenti = configurationCsBean.getTipoRapportoConParenti(bo);
+				List<CsTbTipoRapportoCon> lstConoscenti = configurationCsBean.getTipoRapportoConConoscenti(bo);
 
 				valorizzaCodAffidatarioNonParente(lstParenti);
 
@@ -1329,13 +1328,11 @@ public class NuovaSchedaWizard extends SegretariatoSocBaseBean {
 
 	public List<SelectItem> getInviatiDa() {
 		if (inviatiDa.isEmpty()) {
-			AccessTableConfigurazioneSessionBeanRemote bean;
 			try {
-				bean = this.getCsConfigurazioneService();
 				inviatiDa = new ArrayList<SelectItem>();
 				CeTBaseObject bo = new CeTBaseObject();
 				fillUserData(bo);
-				List<CsOSettore> lst = bean.getSettoreAll(bo);
+				List<CsOSettore> lst = configurationCsBean.getSettoreAll(bo);
 
 				loadListaSettoriInviante(lst);
 
@@ -1464,14 +1461,13 @@ public class NuovaSchedaWizard extends SegretariatoSocBaseBean {
 		if (statiCiviliSelectItem == null || statiCiviliSelectItem.isEmpty()) {
 			try {
 				statiCiviliSelectItem = new ArrayList<SelectItem>();
-				AccessTableConfigurazioneSessionBeanRemote bean = this.getCsConfigurazioneService();
 				CeTBaseObject cet = new CeTBaseObject();
 				fillUserData(cet);
-				List<CsTbStatoCivile> list = bean.getStatoCivile(cet);
+				List<it.webred.cs.csa.ejb.dto.KeyValueDTO> list = configurationCsBean.getListaStatoCivile(cet);
 
 				if (list != null) {
-					for (CsTbStatoCivile stato : list) {
-						statiCiviliSelectItem.add(new SelectItem(stato.getCod(), stato.getDescrizione()));
+					for (it.webred.cs.csa.ejb.dto.KeyValueDTO stato : list) {
+						statiCiviliSelectItem.add(new SelectItem(stato.getCodice(), stato.getDescrizione()));
 					}
 				}
 			} catch (Exception e) {
@@ -1504,7 +1500,7 @@ public class NuovaSchedaWizard extends SegretariatoSocBaseBean {
 					}
 				}
 			} catch (NamingException e) {
-				this.addError("Errore recupero valori Cittadinanze");
+				addError("Errore recupero valori Cittadinanze");
 				logger.error("getCittadinanze", e);
 			}
 		}
@@ -1574,22 +1570,17 @@ public class NuovaSchedaWizard extends SegretariatoSocBaseBean {
 		this.segnalato = segnalato;
 	}
 
-	public boolean isPropostaPresaInCarico(Long idTipo) {
+	public boolean isPropostaPresaInCarico() {
+		boolean pic = false;
 		try {
-			SsSchedaSessionBeanRemote schedaService = this.getSsSchedaService();
-
-			BaseDTO dto = new BaseDTO();
-			fillUserData(dto);
-			dto.setObj(idTipo);
-			SsTipoScheda tipo = schedaService.readTipoSchedaById(dto);
-			return tipo != null ? tipo.getPresa_in_carico() : false;
+			SsTipoScheda tipo = readTipoSchedaFromIdTipoScheda(tipoScheda);
+			pic =  tipo != null ? tipo.getPresa_in_carico() : false;
 
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 			addError("caricamento.error");
-
-			return false;
 		}
+		return pic;
 	}
 
 	private boolean isSchedaCompleta() {
@@ -1696,6 +1687,7 @@ public class NuovaSchedaWizard extends SegretariatoSocBaseBean {
 		if(consensoMan!=null){
 			if (consensoMan.getPrivacyDate()==null && accesso != null && accesso.getDataAccesso() != null)
 				consensoMan.setPrivacyDate(accesso.getDataAccesso());
+			consensoMan.setCf(segnalato.getAnagrafica().getCodiceFiscale());
 			consensoMan.setSchedaUdcId(scheda.getId());
 			consensoMan.salva();
 		}
@@ -1703,21 +1695,17 @@ public class NuovaSchedaWizard extends SegretariatoSocBaseBean {
 	
 	public void salvaSchedaCompletaUDC() {
 		Long idScheda = scheda != null ? scheda.getId() : null;
-		if (validaPresaInCarico() /* && this.validaInvioAltroEnteUfficio() */) {
+		
+		if (validaPresaInCarico()  && validaDatiPor()) {
 
 			logger.debug("SalvaSchedaCompletaUDC - ID_SCHEDA:" + idScheda);
 			boolean cartella = true;
 
 			try {
 
-				AccessTableSchedaSegrSessionBeanRemote schedaSegrService = (AccessTableSchedaSegrSessionBeanRemote) ClientUtility
-						.getEjbInterface("CarSocialeA", "CarSocialeA_EJB", "AccessTableSchedaSegrSessionBean");
-
-				AccessTableAlertSessionBeanRemote alertService = (AccessTableAlertSessionBeanRemote) ClientUtility
-						.getEjbInterface("CarSocialeA", "CarSocialeA_EJB", "AccessTableAlertSessionBean");
-
-				boolean schedaInCS = this.isSchedaPicInCS();
 				this.salvaConsenso();
+				
+				this.salvaDatiPor();
 				
 				boolean modified = isSchedaCompleta();
 
@@ -1731,41 +1719,15 @@ public class NuovaSchedaWizard extends SegretariatoSocBaseBean {
 						SchedaSegrDTO cartellaDto = new SchedaSegrDTO();
 						fillUserData(cartellaDto);
 						cartellaDto.setId(scheda.getId());
+						cartellaDto.setProvenienza(DataModelCostanti.SchedaSegr.PROVENIENZA_SS);
 
-						String flag = modified ? "M" : "I";
-						cartellaDto.setFlgStato(flag);
-
-						// fase di invio scheda se tipoScheda un invio
-//						
-//						if (isTipoSchedaInvio() && !isSchedaInviata())
-//						  cartella = invioScheda();
-//						
-						// ****** fine fase invio scheda
-
-						// Modifico CS_SS_SCHEDA_SEGR solo se non è presa in carico in CS, altrimenti
-						// mando un alert.
-						if (!schedaInCS) {
-							if (isPropostaPresaInCarico(tipoScheda)) {
-								/*
-								 * if (categoriaSociale != null) cartellaDto.setIdCatSociale(categoriaSociale);
-								 */
-								schedaSegrService.saveSchedaSegr(cartellaDto);
-							} else
-								schedaSegrService.deleteSchedaSegr(cartellaDto);
-
-							// Invio alert solo se è nuovo inserimento (non in modifica)
-							if (!modified) {
-								it.webred.cs.csa.ejb.dto.BaseDTO dto = new it.webred.cs.csa.ejb.dto.BaseDTO();
-								fillUserData(dto);
-								dto.setObj(this.segnalato.getAnagrafica().getCodiceFiscale().toUpperCase());
-								dto.setObj2(this.accesso.getPuntoContatto().getOrganizzazione().getId());
-								dto.setObj3(DataModelCostanti.TipiAlertCod.UDC);
-								dto.setObj4("una nuova scheda UDC");
-								alertService.addAlertNuovoInserimentoToResponsabileCaso(dto);
-							}
-
-						}
-
+						cartellaDto.setNuovoInserimento(!modified);
+						cartellaDto.setEnteDestinatario(capofilaPic ? capofila.getCodRouting() : cartellaDto.getEnteId());
+						cartellaDto.setTipoSchedaPropostaPic(this.isPropostaPresaInCarico());
+						cartellaDto.setCf(segnalato.getAnagrafica().getCodiceFiscale().toUpperCase());
+						cartellaDto.setEnteSchedaAccessoId(accesso.getPuntoContatto().getOrganizzazione().getId());
+						schedaSegrService.salvaSchedaSegr(cartellaDto);
+						
 					} catch (Exception e) {
 						cartella = false;
 						logger.error(e.getMessage(), e);
@@ -1796,6 +1758,130 @@ public class NuovaSchedaWizard extends SegretariatoSocBaseBean {
 			}
 		}
 
+	}
+
+	private boolean validaDatiPor(){
+		boolean ok = true;
+		boolean okPor = true;
+		if(this.isVisualizzaModuloPorUdc() && this.iDatiPor.isRenderFSE()) {
+			okPor =	this.iDatiPor.valida();
+			
+			if(!okPor){
+				this.iDatiPor.showWarning();
+				return okPor;
+			}
+			
+			List<String> valRecapito = iDatiPor.validaRecapiti(this.segnalato.getTel(), this.segnalato.getCel(), this.segnalato.getEmail());
+			boolean okRecapiti = valRecapito.isEmpty();
+			if(!valRecapito.isEmpty()){
+				StringBuilder errorRec = new StringBuilder();
+				int i = 0;
+				for(String msg: valRecapito) {
+					errorRec.append(msg);
+					if(i<valRecapito.size()-1)
+						errorRec.append(", ");
+					i++;
+				}
+				this.addWarningMessage("Utente - valori recapito non validi ai fini POR-FSE", errorRec.toString());
+
+				return okRecapiti;
+			}
+			
+			ok = okPor && okRecapiti;
+				
+			//Valdo SIRU
+			SiruInputDTO pds = new SiruInputDTO();
+			pds.setCittadinanza(this.segnalato.getAnagrafica().getCittadinanza());
+			pds.setCodiceFiscale(this.segnalato.getAnagrafica().getCodiceFiscale());
+			pds.setSesso(this.segnalato.getAnagrafica().getDatiSesso().getSesso());
+			pds.setDataNascita(this.segnalato.getAnagrafica().getDataNascita());
+			
+			pds.setFlagResDom(this.iDatiPor.getDescFlagResDom());
+			
+			pds.setCodIstatComuneResidenza(this.segnalato.getResidenza().getComuneNazioneMan().getComuneMan().getComune().getCodIstatComune());
+			if(this.segnalato.getDomicilio()!=null)
+				pds.setCodIstatComuneDomicilio(this.segnalato.getDomicilio().getComuneNazioneMan().getComuneMan().getComune().getCodIstatComune());
+
+			if(this.iDatiPor.isComunicaVul()) {
+				pds.setGrpVulnerabilita(this.famConviventiMan.getGruppoVulnerabile().getId());
+			}else{
+				if(this.isModuloPorMarche())
+					pds.setGrpVulnerabilita(DataModelCostanti.GrVulnerabile.NON_COMUNICA_VULNERABILITA);
+			}
+			
+			if(this.segnalato.getAnagrafica().getComuneNazioneNascitaMan().isComune())
+				pds.setComuneNascitaCod(this.segnalato.getAnagrafica().getComuneNazioneNascitaMan().getComuneMan().getComune().getCodIstatComune());
+			else
+				pds.setStatoNascitaCod(this.segnalato.getAnagrafica().getComuneNazioneNascitaMan().getNazioneNascitaMan().getNazione().getCodIstatNazione());
+		
+			pds.setIdTitoloStudio(this.segnalato.getFormLavoroMan().getIdTitoloStudio().toString());
+			
+			BigDecimal clId = this.segnalato.getFormLavoroMan().getIdCondLavorativa();
+			it.webred.cs.csa.ejb.dto.BaseDTO d = new it.webred.cs.csa.ejb.dto.BaseDTO();
+	    	fillEnte(d);
+	    	if(clId!=null){
+	    		d.setObj(clId.toString());
+	    		CsTbCondLavoro cl = getConfigurationCsBean().getCondLavoroById(d);
+	    		pds.setCsTbIngMercato(cl.getCsTbIngMercato());
+	    	}
+			
+			pds.setAzCodAteco(this.iDatiPor.getCsCDatiLavoro().getAzCodAteco());
+			pds.setDescDimAzienda(this.iDatiPor.getCsCDatiLavoro().getDescDimAzienda());
+			pds.setAzFormaGiuridica(this.iDatiPor.getCsCDatiLavoro().getAzFormaGiuridica());
+			pds.setDescOrarioLavoro(this.iDatiPor.getCsCDatiLavoro().getDescOrarioLavoro());
+			pds.setDescTipoLavoro(this.iDatiPor.getCsCDatiLavoro().getDescTipoLavoro());
+			pds.setAzPi(this.iDatiPor.getCsCDatiLavoro().getAzPi());
+			pds.setAzCf(this.iDatiPor.getCsCDatiLavoro().getAzCf());
+			pds.setAzRagioneSociale(this.iDatiPor.getCsCDatiLavoro().getAzRagioneSociale());
+			pds.setAzVia(this.iDatiPor.getCsCDatiLavoro().getAzVia());
+			pds.setDurataRicLavoroId(this.iDatiPor.getCsCDatiLavoro().getDurataRicLavoroId());
+			pds.setAzComuneCod(this.iDatiPor.getCsCDatiLavoro().getAzComuneCod());
+
+			it.webred.cs.csa.ejb.dto.BaseDTO dto = new it.webred.cs.csa.ejb.dto.BaseDTO();
+			fillEnte(dto);				
+			dto.setObj(pds);
+			dto.setObj2(this.iDatiPor.getMappaCampiFse());
+			SiruResultDTO val = porService.validaSiru(dto);
+			if(val.getErrori()!=null&&val.getErrori().size()>0) {
+				for(String sert: val.getErrori()) {
+					addError("Errore in validazione campi FSE ", sert);
+				}
+				ok=false;
+			} else {
+				this.iDatiPor.getCsCDatiLavoro().getMaster().setSiru(val.getSiruExtra());
+			}
+		}
+		
+		return ok;
+	}
+	
+	private void salvaDatiPor(){
+		if(this.isVisualizzaModuloPorUdc() && this.iDatiPor.isRenderFSE()) {
+			//Salvo i dati por
+			try {
+				iDatiPor.getCsCDatiLavoro().getMaster().setSchedaId(scheda.getId());
+				iDatiPor.getCsCDatiLavoro().getMaster().setTipo(DataModelCostanti.TipoPOR.SCHEDA_ACCESSO);
+				iDatiPor.getCsCDatiLavoro().getMaster().setOrganizzazioneId(accesso.getPuntoContatto().getOrganizzazione().getId());
+				
+				OperatoreDTO opDto = new OperatoreDTO();
+				this.fillUserData(opDto);
+				opDto.setUsername(accesso.getOperatore());
+				CsOOperatoreBASIC opAccesso = operatoreService.findOperatoreBASICByUsername(opDto);
+				iDatiPor.getCsCDatiLavoro().getMaster().setOperatoreId(opAccesso!=null ? opAccesso.getId() : null);
+				
+				it.webred.cs.csa.ejb.dto.BaseDTO dto = new it.webred.cs.csa.ejb.dto.BaseDTO();
+				fillUserData(dto);
+				dto.setObj(this.iDatiPor.getCsCDatiLavoro());
+				CsExtraFseDatiLavoro savetpor = porService.saveDatiPor(dto);
+				this.iDatiPor.setCsCDatiLavoro(savetpor);
+				
+			} catch (Throwable e1) {
+				String msg = "Errore nel salvataggio dati POR ";
+				logger.error(msg, e1);
+				addError("salva.error", msg);
+				throw new CarSocialeServiceException(e1);
+			}
+		}
 	}
 
 	private boolean setSchedaCompleta(boolean completa) {
@@ -1850,20 +1936,26 @@ public class NuovaSchedaWizard extends SegretariatoSocBaseBean {
 		schedaService.annullaInvioScheda(dto);
 	}
 
-	private boolean resetTipoScheda() {
-		boolean result = true;
-		this.tipoScheda = null;
+	private boolean invioSchedaEmail(String emailDest){
+		boolean inviataEmail = false;
 		try {
-			salvaSchedaCompletaUDC();
+			String htmlEmailTxt = this.emailTxt.replaceAll("(\r\n|\n)", "<br/>");
+			
+			ArgoBufferManagerSessionBeanRemote service = 
+					(ArgoBufferManagerSessionBeanRemote) getEjb("SocioSanitario", "SocioSanitario_EJB", "ArgoBufferManagerSessionBean");
+
+			service.sendSimpleMailFromSISO(this.emailDest, this.emailSubj, htmlEmailTxt);
+			inviataEmail = true;
+			
 		} catch (Exception e) {
-			result = false;
+		    logger.error("__ Errore in invio email per invio scheda UDC  ad altro ente/organizzazione con id["+scheda.getId()+"]: "+e.getMessage());
 		}
-
-		return result;
+		
+		return inviataEmail;
 	}
-
-	private boolean invioScheda() {
-		boolean result = false;
+	
+	private boolean invioSchedaBuffer() {
+		boolean inviataScheda = false;
 		try {
 			SsSchedaSessionBeanRemote schedaService = this.getSsSchedaService();
 			BaseDTO dto = new BaseDTO();
@@ -1908,57 +2000,17 @@ public class NuovaSchedaWizard extends SegretariatoSocBaseBean {
 			schedaBuffer.setDestOrganizzazioneId(this.destOrganizzazioneId);
 			dto.setObj(schedaBuffer);
 
-			ArgoBufferManagerSessionBeanRemote argoBufferManager = (ArgoBufferManagerSessionBeanRemote) ClientUtility
-					.getEjbInterface("SocioSanitario", "SocioSanitario_EJB", "ArgoBufferManagerSessionBean");
-
-			boolean inviataEmail = false;
-			boolean inviataScheda = false;
-			try {
-				String htmlEmailTxt = this.emailTxt.replaceAll("(\r\n|\n)", "<br/>");
-				// htmlEmailTxt=StringEscapeUtils.escapeHtml(htmlEmailTxt);
-
-				/*
-				 * String s1 = StringEscapeUtils.escapeHtml(htmlEmailTxt); String s2 =
-				 * StringEscapeUtils.unescapeHtml(htmlEmailTxt);
-				 */
-
-				argoBufferManager.sendSimpleMailFromSISO(this.emailDest, this.emailSubj, htmlEmailTxt);
-				inviataEmail = true;
-
-			} catch (Exception e) {
-				inviataEmail = false;
-				logger.error(e.getMessage(), e);
-//				addError("invia_email.error");
-			}
-
 			try {
 				schedaService.inviaScheda(dto);
 				inviataScheda = true;
 			} catch (Exception e) {
-				inviataScheda = false;
 				logger.error(e.getMessage(), e);
 			}
-
-			if (inviataScheda) {
-				result = true;
-				if (inviataEmail) {
-					result = true;
-				} else {
-					addError("invia_email.error");
-					result = false;
-				}
-			} else {
-				addError("invia_scheda.error");
-				result = false;
-			}
-
+	
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
-			addError("salva.error");
-
-			result = false;
 		}
-		return result;
+		return inviataScheda;
 	}
 
 	public boolean isSchedaInviata() {
@@ -1981,10 +2033,12 @@ public class NuovaSchedaWizard extends SegretariatoSocBaseBean {
 			try {
 				SsSchedaSessionBeanRemote schedaService = this.getSsSchedaService();
 
+				String currentZonaSociale = getZonaSociale();
+				
 				BaseDTO dto = new BaseDTO();
 				fillUserData(dto);
 				dto.setObj(scheda.getId());
-				dto.setObj2(getZonaSociale());
+				dto.setObj2(currentZonaSociale);
 
 				List<ArBufferSsInvio> schedeTrovateInvio = schedaService.readSchedeInviateByIdOrigZs(dto);
 				// non dovrebbe esserci mai più di un invio per scheda, per sicurezza ordino per
@@ -1992,29 +2046,31 @@ public class NuovaSchedaWizard extends SegretariatoSocBaseBean {
 				if (schedeTrovateInvio != null && schedeTrovateInvio.size() > 0) {
 
 					this.schedaInfoInvio = schedeTrovateInvio.get(0);
-
-					// cerco l'organizzazione tra le Ar e le Cs
-					ArOOrganizzazione currentDestOrganizzazione = readSsArOrganizzazione(
-							this.schedaInfoInvio.getDestOrganizzazioneId());
-
-					if (currentDestOrganizzazione.getBelfiore() == null) {
+					OrganizzazioneDTO orgDest = null;
+					String zsDest = schedaInfoInvio.getDestZonaSoc();
+					if(currentZonaSociale.equalsIgnoreCase(zsDest)) {
+						// cerco l'organizzazione tra le Cs
+						orgDest = readSsArOrganizzazione(this.schedaInfoInvio.getDestOrganizzazioneId(), true);
+					}else {
+						// cerco l'organizzazione tra le Ar e le Cs 
+						orgDest = readSsArOrganizzazione(this.schedaInfoInvio.getDestOrganizzazioneId(), false);
+					}
+					Long orgDestId = orgDest.getId();
+					if (orgDest.getBelfiore() == null) {
 						// è una altra organizzazione
-						this.setOrganizzazioneAltreId(currentDestOrganizzazione.getId());
+						this.setOrganizzazioneAltreId(orgDestId);
 
 					} else {
-						if (currentDestOrganizzazione.getZona_nome() != null
-								&& !currentDestOrganizzazione.getZona_nome().isEmpty()) {
-							// è organizzazione di altra zona
-							this.setOrganizzazioneAltraZonaId(currentDestOrganizzazione.getId());
-						} else {
+						if (StringUtils.isEmpty(orgDest.getZonaSociale())) {
 							// è organizzazione di zona
-							this.setOrganizzazioneDiZonaId(currentDestOrganizzazione.getId());
+							this.setOrganizzazioneDiZonaId(orgDestId);
+						} else {
+							// è organizzazione di altra zona
+							this.setOrganizzazioneAltraZonaId(orgDestId);
 						}
 					}
 
-					setUfficioOrganizzazioneId(
-							this.schedaInfoInvio.getDestUfficioId() != null ? this.schedaInfoInvio.getDestUfficioId()
-									: -1);
+					setUfficioOrganizzazioneId(this.schedaInfoInvio.getDestUfficioId() != null ? this.schedaInfoInvio.getDestUfficioId(): -1);
 					// necessario inserimento id in buffer_invio
 					// secondo documentazione dovrei trovare ufficio dal nome
 					this.emailDest = this.schedaInfoInvio.getEmailDest();
@@ -2051,23 +2107,8 @@ public class NuovaSchedaWizard extends SegretariatoSocBaseBean {
 		return uri;
 	}
 
-	public boolean isTipoPicSs() {
-		boolean tipoPicSs = false;
-		if (tipoScheda != null) {
-			try {
-				SsTipoScheda tipo = this.readTipoSchedaFromIdTipoScheda(tipoScheda);
-				if (tipo != null && tipo.getPresa_in_carico() != null)
-					tipoPicSs = tipo.getPresa_in_carico();
-
-			} catch (Exception e) {
-				logger.error(e.getMessage(), e);
-			}
-		}
-		return tipoPicSs;
-	}
-
 	public void resetCatSociale() {
-		if (tipoScheda == null || !this.isTipoPicSs())
+		if (tipoScheda == null || !this.isPropostaPresaInCarico())
 			categoriaSociale = null;
 	}
 
@@ -2231,8 +2272,7 @@ public class NuovaSchedaWizard extends SegretariatoSocBaseBean {
 			}
 
 			// save intervento economico per enti esterni
-			if (isEnteEsterno() && interventoEconomicoTipo != null && !interventoEconomicoTipo.isEmpty()
-					&& !interventoEconomicoImporto.isEmpty()) {
+			if (isEnteEsterno() && interventoEconomicoTipo != null && !interventoEconomicoTipo.isEmpty() && !interventoEconomicoImporto.isEmpty()) {
 				SsInterventoEconomico ie = new SsInterventoEconomico();
 				ie.setData(new Date());
 
@@ -2261,11 +2301,21 @@ public class NuovaSchedaWizard extends SegretariatoSocBaseBean {
 				if (this.validaInvioAltroEnteUfficio()) {
 					Long idScheda = scheda != null ? scheda.getId() : null;
 					logger.debug("INVIO SCHEDA - idScheda: " + idScheda);
-					boolean ok = invioScheda();
-
-					if (!ok)
+					boolean okBuffer = this.invioSchedaBuffer();
+					
+					if(!StringUtils.isBlank(this.emailDest)){
+						boolean okEmail  = this.invioSchedaEmail(emailDest);
+						if (!okEmail)
+							addWarning("invia_email.error");
+						else
+							addInfo("invia_email.ok");
+					}
+					
+					if (!okBuffer){
+						addError("invia_scheda.error");
 						throw new Exception("INVIO SCHEDA - Errore idScheda: " + idScheda);
-					else {
+					}else {
+						addInfo("invia_scheda.ok");
 						this.infoSuInvioSchedaRecuperate = false;
 						this.recuperaInfoSuInvioScheda(scheda);
 						logger.debug("INVIO SCHEDA - OK idScheda: " + idScheda);
@@ -2688,7 +2738,18 @@ public class NuovaSchedaWizard extends SegretariatoSocBaseBean {
 				dto.setObj(scheda);
 				scheda = schedaService.saveScheda(dto);
 			}
-
+			
+			/*Valorizzo Dati POR*/
+			if(this.isVisualizzaModuloPorUdc()){
+				this.iDatiPor.setBelfiore(this.accesso.getPuntoContatto().getOrganizzazione().getBelfiore());
+				this.iDatiPor.getCsCDatiLavoro().getMaster().setOrganizzazioneId(accesso.getPuntoContatto().getOrganizzazione().getId());
+			
+				OperatoreDTO opDto = new OperatoreDTO();
+				this.fillUserData(opDto);
+				opDto.setUsername(accesso.getOperatore());
+				CsOOperatoreBASIC opAccesso = operatoreService.findOperatoreBASICByUsername(opDto);
+				iDatiPor.getCsCDatiLavoro().getMaster().setOperatoreId(opAccesso!=null ? opAccesso.getId() : null);
+			}
 			return true;
 
 		} catch (Exception e) {
@@ -2824,6 +2885,13 @@ public class NuovaSchedaWizard extends SegretariatoSocBaseBean {
 			
 			//Salvataggio privacy
 			salvaConsenso();
+			
+			// SISO 1306: Imposto la scheda per i dati POR
+			if(this.isVisualizzaModuloPorUdc()){
+				BigDecimal idclav = this.segnalato!=null&&this.segnalato.getFormLavoroMan()!=null?this.segnalato.getFormLavoroMan().getIdCondLavorativa():BigDecimal.ZERO;
+				this.iDatiPor.impostaCondizioneLavorativa(idclav);
+				this.iDatiPor.changeGruppoVulnerabile(this.famConviventiMan.getGruppoVulnerabile());
+			}
 
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
@@ -2845,8 +2913,6 @@ public class NuovaSchedaWizard extends SegretariatoSocBaseBean {
 			// Salvo il Log
 
 			if (validaSegnalatoModifica()) {
-				SsAnagraficaLog ssAnagraficaLog = new SsAnagraficaLog();
-
 				SsSchedaSegnalato segnalatoModel = new SsSchedaSegnalato();
 				segnalato.fillModel(segnalatoModel);
 
@@ -2977,12 +3043,12 @@ public class NuovaSchedaWizard extends SegretariatoSocBaseBean {
 	private boolean validaPresaInCarico() {
 		boolean ok = true;
 
-		if (isPropostaPresaInCarico(tipoScheda) && (categoriaSociale == null || categoriaSociale == 0)) {
+		if (isPropostaPresaInCarico() && (categoriaSociale == null || categoriaSociale == 0)) {
 			ok = false;
 			addError("salva.validate.error");
 		}
 
-		if (isPropostaPresaInCarico(tipoScheda)
+		if (isPropostaPresaInCarico()
 				&& (Anagrafica.SEGNALATO_CF_ANONIMO.equals(segnalato.getAnagrafica().getCodiceFiscale()))) {
 			ok = false;
 			addErrorMessage("La scheda per Soggetto anonimo non può essere Presa in carico", "");
@@ -3407,8 +3473,7 @@ public class NuovaSchedaWizard extends SegretariatoSocBaseBean {
 			if (bufferSchedeSelected != null && bufferSchedeSelected.size() > 0) {
 				ArBufferSsInvio bufferSchedaSelected = bufferSchedeSelected.get(0);
 				SsScheda remoteScheda = null;
-				boolean zonaSocialeLocale = this.getZonaSociale()
-						.equalsIgnoreCase(bufferSchedaSelected.getOrigZonaSoc());
+				boolean zonaSocialeLocale = this.getZonaSociale().equalsIgnoreCase(bufferSchedaSelected.getOrigZonaSoc());
 
 				BaseDTO bDto = new BaseDTO();
 				fillUserData(bDto);
@@ -3567,8 +3632,7 @@ public class NuovaSchedaWizard extends SegretariatoSocBaseBean {
 				this.saveMotivazioneIntoDB(false);
 
 				// recupero i dati di ACCESSO dal buffer invio
-				SsSchedaAccessoInviante copiaSchedaAccessoInviante = fromArBufferSSInvioToSsSchedaAccessoInviante(
-						bufferSchedaSelected, this.scheda.getId());
+				SsSchedaAccessoInviante copiaSchedaAccessoInviante = fromArBufferSSInvioToSsSchedaAccessoInviante(bufferSchedaSelected, this.scheda.getId());
 
 				// salvo i dati di accesso in SS_SCHEDA_ACCESSO_INVIANTE con FK l'id della nuova
 				// scheda appena creata
@@ -3741,7 +3805,18 @@ public class NuovaSchedaWizard extends SegretariatoSocBaseBean {
 			loadManJsonServiziRichiesti(segnalatoModel, false);
 
 			tipoScheda = scheda.getTipo();
-
+			aggiornaFlagCapofilaPic();
+			
+			
+			//Settare il valore pregresso per il flag invio a capofila
+			if(this.isRenderCapofilaPic()){
+				it.webred.cs.csa.ejb.dto.BaseDTO csss = new it.webred.cs.csa.ejb.dto.BaseDTO();
+				this.fillUserData(csss);
+				csss.setObj(scheda.getId());
+				csss.setObj2(DataModelCostanti.SchedaSegr.PROVENIENZA_SS);
+				String belfiore = schedaSegrService.findEnteToSchedaSegrBySchedaIdProvenienza(csss);
+				this.capofilaPic = capofila!=null && capofila.getCodRouting().equalsIgnoreCase(belfiore);
+			}
 			inizializzaCategoria();
 
 			// initDiarioSociale(segnalato);
@@ -3791,11 +3866,11 @@ public class NuovaSchedaWizard extends SegretariatoSocBaseBean {
 				it.webred.cs.csa.ejb.dto.BaseDTO dto2 = new it.webred.cs.csa.ejb.dto.BaseDTO();
 				fillUserData(dto2);
 				dto2.setObj(scheda.getId());
-				String statoCsSs = schedaSS.findStatoSchedaSegrById(dto2);
+				dto2.setObj2(DataModelCostanti.SchedaSegr.PROVENIENZA_SS);	// SISO-938
+				String statoCsSs = schedaSS.findStatoSchedaSegrBySchedaIdProvenienza(dto2);
 				statoCartella = statoCsSs != null ? statoCsSs : "";
 
-				String statoCS = (new CsUiCompBaseBean())
-						.loadStatoCartella(segnalato.getAnagrafica().getCodiceFiscale());
+				String statoCS = (new CsUiCompBaseBean()).loadStatoCartella(segnalato.getAnagrafica().getCodiceFiscale());
 				statoCartella += statoCS != null ? statoCS : "";
 
 				if (statoCartella.trim().isEmpty())
@@ -3807,79 +3882,6 @@ public class NuovaSchedaWizard extends SegretariatoSocBaseBean {
 
 		}
 	}
-
-	/*
-	 * private void inizializzaCartella() { statoCartella = null; try{
-	 * AccessTableIterStepSessionBeanRemote schedaService =
-	 * (AccessTableIterStepSessionBeanRemote)
-	 * ClientUtility.getEjbInterface("CarSocialeA", "CarSocialeA_EJB",
-	 * "AccessTableIterStepSessionBean");
-	 * 
-	 * AccessTableSoggettoSessionBeanRemote soggettiService =
-	 * (AccessTableSoggettoSessionBeanRemote)
-	 * ClientUtility.getEjbInterface("CarSocialeA", "CarSocialeA_EJB",
-	 * "AccessTableSoggettoSessionBean");
-	 * 
-	 * AccessTableOperatoreSessionBeanRemote operatoreService =
-	 * (AccessTableOperatoreSessionBeanRemote)
-	 * ClientUtility.getEjbInterface("CarSocialeA", "CarSocialeA_EJB",
-	 * "AccessTableOperatoreSessionBean");
-	 * 
-	 * //Recupero lo stato della cartella associata alla scheda (per id)
-	 * AccessTableSchedaSegrSessionBeanRemote schedaSS =
-	 * (AccessTableSchedaSegrSessionBeanRemote)
-	 * ClientUtility.getEjbInterface("CarSocialeA", "CarSocialeA_EJB",
-	 * "AccessTableSchedaSegrSessionBean");
-	 * 
-	 * 
-	 * it.webred.cs.csa.ejb.dto.BaseDTO dto2 = new
-	 * it.webred.cs.csa.ejb.dto.BaseDTO(); fillUserData(dto2);
-	 * dto2.setObj(scheda.getId()); statoCartella =
-	 * schedaSS.findStatoSchedaSegrById(dto2);
-	 * 
-	 * it.webred.cs.csa.ejb.dto.BaseDTO dto1 = new
-	 * it.webred.cs.csa.ejb.dto.BaseDTO(); fillUserData(dto1);
-	 * dto1.setObj(segnalato.getAnagrafica().getCodiceFiscale());
-	 * 
-	 * //Recupero lo stato della cartella in C.Sociale per il soggetto
-	 * List<CsASoggettoLAZY> soggetti = soggettiService.getSoggettiByCF(dto1);
-	 * if(soggetti!=null && soggetti.size()>0){ for(CsASoggettoLAZY soggetto :
-	 * soggetti){ IterDTO itr = new IterDTO(); fillUserData(itr);
-	 * itr.setIdCaso(soggetto.getCsACaso().getId()); CsIterStepByCasoDTO stato =
-	 * schedaService.getLastIterStepByCasoDTO(itr);
-	 * 
-	 * if(stato!=null){ if(statoCartella!=null) statoCartella+="<br/>"; else
-	 * statoCartella="<br/>";
-	 * 
-	 * Long idResponsabile =
-	 * stato.getCsItStep().getCsDDiario().getResponsabileCaso(); statoCartella +=
-	 * stato.getCsItStep().getCsCfgItStato().getNome()+"<br/>"; statoCartella +=
-	 * stato.getCsItStep().getCsDDiario().getDtAmministrativa()!=null ?
-	 * "<b>il</b> "+
-	 * ddMMyyyyORA.format(stato.getCsItStep().getCsDDiario().getDtAmministrativa
-	 * ())+"<br/>" : "<br/>"; if(idResponsabile!=null){ OperatoreDTO odto = new
-	 * OperatoreDTO(); this.fillUserData(odto); odto.setIdOperatore(idResponsabile);
-	 * try { CsOOperatore asResponsabile = operatoreService.findOperatoreById(odto);
-	 * if(asResponsabile != null) statoCartella
-	 * +="<b>Responsabile:</b>"+getCognomeNomeUtente(asResponsabile.
-	 * getUsername())+"<br/>"; } catch (Exception e) { logger.error(e); } }
-	 * 
-	 * dto1.setObj(soggetto.getAnagraficaId()); List<CsASoggettoCategoriaSocLAZY>
-	 * lstCatSoc = soggettiService.getSoggettoCategorieAttualiBySoggetto(dto1);
-	 * String catSocs = ""; if(lstCatSoc!=null){ catSocs ="<b>Aree Target: </b>";
-	 * for(CsASoggettoCategoriaSocLAZY cs : lstCatSoc) catSocs+=
-	 * cs.getCsCCategoriaSociale().getDescrizione()+ (cs.getPrevalente()==1 ? "*" :
-	 * ""); statoCartella += catSocs+"<br/>"; }
-	 * 
-	 * } } }
-	 * 
-	 * 
-	 * } catch(Exception e) { logger.error(e.getMessage(), e);
-	 * addError("cartellaPrint.error");
-	 * 
-	 * 
-	 * } }
-	 */
 
 	private void inizializzaCategoria() {
 		try {
@@ -3903,7 +3905,7 @@ public class NuovaSchedaWizard extends SegretariatoSocBaseBean {
 		return true;
 	}
 
-	private void initFromAnonimo() throws Exception {
+/*	private void initFromAnonimo() throws Exception {
 		SsSchedaSessionBeanRemote schedaService = this.getSsSchedaService();
 		BaseDTO dto = new BaseDTO();
 		fillUserData(dto);
@@ -3911,33 +3913,7 @@ public class NuovaSchedaWizard extends SegretariatoSocBaseBean {
 
 		SsAnagrafica anagraficaAnonimo = schedaService.readAnagraficaByCf(dto);
 		segnalato.getAnagrafica().initFromAnagrafica(anagraficaAnonimo, false);
-	}
-
-	private boolean initFromSitDPersona(SitDPersona soggetto) {
-		if (soggetto != null) {
-			String cf = soggetto.getCodfisc();
-			IndirizzoAnagDTO indirizzo = getResidenzaFromAnagrafe(cf);
-			segnalato.setResidenza(indirizzo, getCurrentEnte());
-
-			// SitComune luogoNascita =
-			// getComuneFromIdExt(soggetto.getIdExtComuneNascita());
-
-			ComponenteFamigliaDTO compDto = new ComponenteFamigliaDTO();
-			compDto.setPersona(soggetto);
-			fillUserData(compDto);
-			compDto = anagrafeService.fillInfoAggiuntiveComponente(compDto);
-
-			// Recupero l'id della tabella CS a partire dall'ID anagrafico
-			CsTbStatoCivile statoCivile = getStatoCivileByIdExtCeT(soggetto.getStatoCivile());
-			String statoCivileString = statoCivile != null ? statoCivile.getDescrizione() : null;
-			segnalato.getAnagrafica().initFromAnagrafe(soggetto, compDto, statoCivileString);
-
-			// initDiarioSociale(segnalato);
-
-			return true;
-		}
-		return false;
-	}
+	}*/
 
 	private void initSegnalatoByPersonaAnagEsterna(PersonaDettaglio p) throws NamingException {
 		if (p != null) {
@@ -3958,21 +3934,6 @@ public class NuovaSchedaWizard extends SegretariatoSocBaseBean {
 			
 			
 		}
-	}
-
-
-	private SitDPersona readSoggettoFromAnagrafeByCf(String cf) {
-
-		if (this.isAnagrafeComunaleInternaAbilitata()) {
-			RicercaSoggettoAnagrafeDTO dto = new RicercaSoggettoAnagrafeDTO();
-			fillUserData(dto);
-			dto.setCodFis(cf);
-
-			List<SitDPersona> results = anagrafeService.getListaPersoneByCF(dto);
-			if (results != null && !results.isEmpty())
-				return results.get(0);
-		}
-		return null;
 	}
 
 	private boolean readUfficiFromDB(List<SelectItem> uffici) {
@@ -4000,19 +3961,34 @@ public class NuovaSchedaWizard extends SegretariatoSocBaseBean {
 		}
 	}
 
-	private List<ComponenteFamigliaDTO> getNucleoFamiliare(SsAnagrafica soggetto) {
-		List<ComponenteFamigliaDTO> componenti = new ArrayList<ComponenteFamigliaDTO>();
-		RicercaSoggettoAnagrafeDTO dto = new RicercaSoggettoAnagrafeDTO();
-		fillUserData(dto);
+	private List<Soggetto> getNucleoFamiliare(SsAnagrafica soggetto) {
+		List<Soggetto> componenti = new ArrayList<Soggetto>();
+		
+		List<FamiliareDettaglio> lista = new ArrayList<FamiliareDettaglio>();
+		String tipo = soggetto.getIdOrigWsTipo();
+		String id = soggetto.getIdOrigWsId();
 
-		dto.setCodFis(soggetto.getCf());
-		dto.setIdSogg(anagrafeService.getIdPersonaByCF(dto));
-		dto.setCognome(soggetto.getCognome());
-		dto.setNome(soggetto.getNome());
-		dto.setDtNas(soggetto.getData_nascita());
+		RicercaAnagraficaParams params = new RicercaAnagraficaParams(tipo != null ? tipo : DataModelCostanti.TipoRicercaSoggetto.DEFAULT, true);
+		params.setEnteId(getCurrentEnte());
+		params.setIdentificativo(id);
+		params.setCf(soggetto.getCf());
+		RicercaAnagraficaResult res = CsUiCompBaseBean.getComposizioneFamiliare(params);
 
-		componenti = anagrafeService.getListaCompFamiglia(dto);
+		if (res != null) {
+			if (res.getMessaggio() == null)
+				lista = res.getElencoFamiliari();
+			else
+				logger.error("Errore ricerca componenti familiari per il soggetto["
+						+ segnalato.getAnagrafica().getCodiceFiscale() + "]" + "[" + id + "] " + tipo + " CODICE["
+						+ res.getCodice() + "]" + res.getMessaggio(), res.getEccezione());
+		}
 
+		for (FamiliareDettaglio p : lista) {
+			Soggetto s = new Soggetto(p.getProvenienzaRicerca(), p.getIdentificativo(), null, p.getCognome(),
+					p.getNome(), p.getCodfisc(), p.getDataNascita(), p.getDataMorte(), p.getSesso());
+			s.setParentela(p.getParentela() != null ? p.getParentela().getDescrizione() : "(codice non mappato)");
+			componenti.add(s);
+		}
 		return componenti;
 	}
 
@@ -4033,11 +4009,11 @@ public class NuovaSchedaWizard extends SegretariatoSocBaseBean {
 
 			if (canReadInterventiEconomiciNucleo()) {
 				try {
-					List<ComponenteFamigliaDTO> famiglia = getNucleoFamiliare(anagrafica);
-					for (ComponenteFamigliaDTO comp : famiglia) {
+					List<Soggetto> famiglia = getNucleoFamiliare(anagrafica);
+					for (Soggetto comp : famiglia) {
 						BaseDTO dto = new BaseDTO();
 						fillUserData(dto);
-						dto.setObj(comp.getPersona().getCodfisc());
+						dto.setObj(comp.getCf());
 						if (schedaService.isAnagraficaEsterna(dto))
 							nucleo.add(schedaService.readAnagraficaByCf(dto));
 					}
@@ -4439,7 +4415,7 @@ public class NuovaSchedaWizard extends SegretariatoSocBaseBean {
 			try {
 				CeTBaseObject cet = new CeTBaseObject();
 				this.fillUserData(cet);
-				List<CsTbCittadinanzaAcq> lst = this.getCsConfigurazioneService().getCittadinanzeAcquisite(cet);
+				List<CsTbCittadinanzaAcq> lst = configurationCsBean.getCittadinanzeAcquisite(cet);
 				for (CsTbCittadinanzaAcq p : lst) {
 					SelectItem si = new SelectItem(p.getId(), p.getDescrizione());
 					si.setDisabled(!p.getAbilitato());
@@ -4505,17 +4481,20 @@ public class NuovaSchedaWizard extends SegretariatoSocBaseBean {
 		if (segnalato != null && segnalato.getFormLavoroMan() != null) {
 			BigDecimal idLavoro = segnalato.getFormLavoroMan().getIdCondLavorativa();
 			boolean esistente = false;
-			if (idLavoro != null)
+			if (idLavoro != null){
 				if(man==null)
 					esistente = serviziRichiestiInterventiCustomBean.preValorizzaLavoro(idLavoro);
 				else{
 					esistente = true;
 					man.preValorizzaLavoro(idLavoro);
 				}
-			
+			}
 			if(idLavoro == null || !esistente)
 				logger.warn("Impossibile aggiornare CondLavoro in OrientamentoLavoroManBean[ NON PRESENTE ], idLavoro["+ idLavoro + "]");
-
+			
+			if(this.isVisualizzaModuloPorUdc()){
+			   this.iDatiPor.impostaCondizioneLavorativa(idLavoro);
+			}
 		}
 	}
 
@@ -4821,10 +4800,10 @@ public class NuovaSchedaWizard extends SegretariatoSocBaseBean {
 				fillUserData(dtoCS);
 		
 				dtoCS.setObj(riferimento.getCodStatoCivile());
-				CsTbStatoCivile csTbStatoCivile = this.getCsConfigurazioneService().getStatoCivileByCodice(dtoCS);
+				CsTbStatoCivile csTbStatoCivile = configurationCsBean.getStatoCivileByCodice(dtoCS);
 		
 				dtoCS.setObj(riferimento.getCodRelazione());
-				CsTbTipoRapportoCon csTbTipoRelazine = this.getCsConfigurazioneService().getTipoRapportoConByCodice(dtoCS);
+				CsTbTipoRapportoCon csTbTipoRelazine = configurationCsBean.getTipoRapportoConByCodice(dtoCS);
 		
 				rifPdf.setCognome_rif(format(riferimento.getCognome()).toUpperCase());		
 				rifPdf.setNome_rif(format(riferimento.getNome()).toUpperCase());
@@ -4884,24 +4863,7 @@ public class NuovaSchedaWizard extends SegretariatoSocBaseBean {
 		}
 
 	}
-
-	private SsTipoScheda readTipoSchedaFromIdTipoScheda(Long idTipoScheda) {
-		try {
-			if (idTipoScheda != null) {
-				BaseDTO dto = new BaseDTO();
-				fillUserData(dto);
-				dto.setObj(tipoScheda);
-				SsTipoScheda tipo = this.getSsSchedaService().readTipoSchedaById(dto);
-				return tipo;
-			}
-		} catch (Exception e) {
-			logger.error("Errore recupero Esito Intervento ", e);
-			addErrorMessage("Errore recupero esito intervento", "");
-		}
-
-		return null;
-	}
-
+	
 	public boolean isTipoSchedaInvio() {
 		return (isVisPanelInvioUfficio() || isVisPanelInvioEnte());
 	}
@@ -4913,8 +4875,7 @@ public class NuovaSchedaWizard extends SegretariatoSocBaseBean {
 
 		SsTipoScheda ssTipoScheda = readTipoSchedaFromIdTipoScheda(this.tipoScheda);
 		boolean oldInvio = false;
-		if (ssTipoScheda != null && ssTipoScheda.getTipo().toLowerCase().contains("invio")
-				&& ssTipoScheda.getTipo().toLowerCase().contains("ufficio"))
+		if (ssTipoScheda != null && ssTipoScheda.getTipo().toLowerCase().contains("invio") && ssTipoScheda.getTipo().toLowerCase().contains("ufficio"))
 			oldInvio = true;
 
 		return !l.isEmpty() || oldInvio;
@@ -4983,14 +4944,13 @@ public class NuovaSchedaWizard extends SegretariatoSocBaseBean {
 		if (organizzazioniAltraZona == null || organizzazioniAltraZona.isEmpty()) {
 			organizzazioniAltraZona = new ArrayList<SelectItem>();
 			try {
-				SsSchedaSessionBeanRemote schedaService = this.getSsSchedaService();
-
-				BaseDTO dto = new BaseDTO();
-				fillUserData(dto);
-				List<ArOOrganizzazione> orgs = schedaService.readOrganizzazioniFuoriZona(dto);
+				ArConfigurazioneService arConfService = (ArConfigurazioneService) getArgoEjb( "ArConfigurazioneServiceBean");
+				
+				String zs = this.getZonaSociale();
+				List<ArOrganizzazioneDTO> orgs = arConfService.getListaOrganizzazioniFuoriZona(zs);
 				this.organizzazioniAltraZona = new ArrayList<SelectItem>();
-				for (ArOOrganizzazione org : orgs)
-					this.organizzazioniAltraZona.add(new SelectItem(org.getId(), org.getNome()));
+				for (ArOrganizzazioneDTO org : orgs)
+					this.organizzazioniAltraZona.add(new SelectItem(org.getId(), org.getDescrizione()));
 
 			} catch (Exception e) {
 				logger.error(e.getMessage(), e);
@@ -5074,10 +5034,10 @@ public class NuovaSchedaWizard extends SegretariatoSocBaseBean {
 	public void setOrganizzazioneAltraZonaId(long organizzazioneAltraZonaId) {
 		if (this.organizzazioneAltraZonaId != organizzazioneAltraZonaId) {
 
-			ArOOrganizzazione selectedOrg = readArOrganizzazione(organizzazioneAltraZonaId);
-			this.destBelfiore = selectedOrg != null ? selectedOrg.getBelfiore() : null;
+			ArOrganizzazioneDTO selectedOrg = readArOrganizzazione(organizzazioneAltraZonaId);
+			this.destBelfiore = selectedOrg != null ? selectedOrg.getCodRouting() : null;
 			this.destOrganizzazioneId = selectedOrg != null ? selectedOrg.getId() : null;
-			this.destZonaSoc = selectedOrg != null ? selectedOrg.getZona_nome() : null;
+			this.destZonaSoc = selectedOrg != null ? selectedOrg.getZonaSociale() : null;
 			this.organizzazioneAltraZonaId = selectedOrg != null ? organizzazioneAltraZonaId : -1;
 
 		}
@@ -5087,15 +5047,10 @@ public class NuovaSchedaWizard extends SegretariatoSocBaseBean {
 		this.ufficioOrganizzazioneId = -1;
 	}
 
-	private ArOOrganizzazione readArOrganizzazione(long organizzazioneAltraZonaId2) {
+	private ArOrganizzazioneDTO readArOrganizzazione(long organizzazioneAltraZonaId2) {
 		try {
-			SsSchedaSessionBeanRemote schedaService = this.getSsSchedaService();
-			BaseDTO dto = new BaseDTO();
-			fillUserData(dto);
-			dto.setObj(organizzazioneAltraZonaId2);
-
-			return schedaService.readArOOrganizzazioniById(dto);
-
+			ArConfigurazioneService arConfService = (ArConfigurazioneService) getArgoEjb( "ArConfigurazioneServiceBean");
+			return arConfService.getOrganizzazioneById(organizzazioneAltraZonaId2);
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 			addError("lettura.error");
@@ -5104,7 +5059,7 @@ public class NuovaSchedaWizard extends SegretariatoSocBaseBean {
 		}
 	}
 
-	private ArOOrganizzazione readSsArOrganizzazione(long organizzazioneId) {
+	private OrganizzazioneDTO readSsArOrganizzazione(long organizzazioneId, boolean orgZonaSociale) {
 		// cerca sia in Ar che Cs e restituisce una pseudo ArOOrganizzazione
 		// da cui si capisce se è una org di zona, fuori zona o altra org.
 		try {
@@ -5112,8 +5067,9 @@ public class NuovaSchedaWizard extends SegretariatoSocBaseBean {
 			BaseDTO dto = new BaseDTO();
 			fillUserData(dto);
 			dto.setOrganizzazione(organizzazioneId);
+			dto.setObj(orgZonaSociale);
 
-			return schedaService.readSsArOOrganizzazioniById(dto);
+			return schedaService.findOrganizzazioneDestInvio(dto);
 
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
@@ -5130,10 +5086,10 @@ public class NuovaSchedaWizard extends SegretariatoSocBaseBean {
 	public void setOrganizzazioneAltreId(long organizzazioneAltreId) {
 		if (this.organizzazioneAltreId != organizzazioneAltreId) {
 
-			ArOOrganizzazione selectedOrg = readSsArOrganizzazione(organizzazioneAltreId);
+			OrganizzazioneDTO selectedOrg = readSsArOrganizzazione(organizzazioneAltreId, false);
 			this.destBelfiore = selectedOrg != null ? selectedOrg.getBelfiore() : null;
 			this.destOrganizzazioneId = selectedOrg != null ? selectedOrg.getId() : null;
-			this.destZonaSoc = selectedOrg != null ? selectedOrg.getZona_nome() : null;
+			this.destZonaSoc = selectedOrg != null ? selectedOrg.getZonaSociale() : null;
 			this.organizzazioneAltreId = selectedOrg != null ? organizzazioneAltreId : -1;
 		}
 
@@ -5412,8 +5368,7 @@ public class NuovaSchedaWizard extends SegretariatoSocBaseBean {
 		String tipo = segnalato.getAnagrafica().getIdOrigWsTipo();
 		String id = segnalato.getAnagrafica().getIdOrigWsId();
 
-		RicercaAnagraficaParams params = new RicercaAnagraficaParams(
-				tipo != null ? tipo : DataModelCostanti.TipoRicercaSoggetto.DEFAULT, true);
+		RicercaAnagraficaParams params = new RicercaAnagraficaParams(tipo != null ? tipo : DataModelCostanti.TipoRicercaSoggetto.DEFAULT, true);
 		params.setEnteId(getCurrentEnte());
 		params.setIdentificativo(id);
 		params.setCf(segnalato.getAnagrafica().getCodiceFiscale());
@@ -5447,7 +5402,8 @@ public class NuovaSchedaWizard extends SegretariatoSocBaseBean {
 				it.webred.cs.csa.ejb.dto.BaseDTO baseDto = new it.webred.cs.csa.ejb.dto.BaseDTO();
 				fillUserData(baseDto);
 				baseDto.setObj(scheda.getId());
-				statoScheda = schedaSegrService.findStatoSchedaSegrById(baseDto);
+				baseDto.setObj2(DataModelCostanti.SchedaSegr.PROVENIENZA_SS);	// SISO-938
+				statoScheda = schedaSegrService.findStatoSchedaSegrBySchedaIdProvenienza(baseDto);
 			}
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
@@ -5602,13 +5558,11 @@ public class NuovaSchedaWizard extends SegretariatoSocBaseBean {
 
 	public List<SelectItem> getSettoriInterlocutore() {
 		if (settori.isEmpty()) {
-			AccessTableConfigurazioneSessionBeanRemote bean;
 			try {
-				bean = this.getCsConfigurazioneService();
 				settori = new ArrayList<SelectItem>();
 				CeTBaseObject bo = new CeTBaseObject();
 				fillUserData(bo);
-				List<CsOSettore> lst = bean.getSettoreAll(bo);
+				List<CsOSettore> lst = configurationCsBean.getSettoreAll(bo);
 
 				loadListaSettoriInterlocutore(lst, settori);
 
@@ -6146,104 +6100,30 @@ public class NuovaSchedaWizard extends SegretariatoSocBaseBean {
 			return;
 		}
 
-		if (id.trim().startsWith(TipoRicercaSoggetto.ANAG_SANITARIA_UMBRIA)) {
+		if (se.isAnagrafeSanitariaUmbria()) {
 			loadInterlocutoreDaAnaEsterna(TipoRicercaSoggetto.ANAG_SANITARIA_UMBRIA,
 					id.replace(TipoRicercaSoggetto.ANAG_SANITARIA_UMBRIA, ""), (PersonaDettaglio) se.getSoggetto());
 		} else if (id.trim().startsWith(TipoRicercaSoggetto.ANAG_SANITARIA_MARCHE)) {
 			loadInterlocutoreDaAnaEsterna(TipoRicercaSoggetto.ANAG_SANITARIA_MARCHE,
 					id.replace(TipoRicercaSoggetto.ANAG_SANITARIA_MARCHE, ""), (PersonaDettaglio) se.getSoggetto());
-		} else if (id.trim().startsWith(TipoRicercaSoggetto.SIGESS)) {
+		} else if (se.isAnagrafeSigess()) {
 			loadInterlocutoreDaAnaEsterna(TipoRicercaSoggetto.SIGESS, id.replace(TipoRicercaSoggetto.SIGESS, ""),
 					(PersonaDettaglio) se.getSoggetto());
 		} else {
-			loadInterlocutoreDaAnagrafe(id);
+			loadInterlocutoreDaAnaEsterna(TipoRicercaSoggetto.DEFAULT, id.replace(TipoRicercaSoggetto.DEFAULT, ""),
+					(PersonaDettaglio) se.getSoggetto());
 		}
 
 		UserSearchBeanExt ubean = (UserSearchBeanExt) CsUiCompBaseBean.getReferencedBean("userSearchBeanExt");
 		ubean.clearParameters();
 	}
 
-	public void loadInterlocutoreDaAnagrafe(String id) {
-
-		try {
-			// precarico anagrafica
-			RicercaSoggettoAnagrafeDTO ricercaDto = new RicercaSoggettoAnagrafeDTO();
-			fillEnte(ricercaDto);
-			ricercaDto.setIdVarSogg(id);
-			SitDPersona p = anagrafeService.getPersonaById(ricercaDto);
-
-			if (p != null) {
-
-				if (p.getDataMor() != null && p.getDataMor().before(new Date())) {
-					addWarning("Non è possibile inserire come interlocutore",
-							"Il soggetto selezionato è deceduto il " + ddMMyyyy.format(p.getDataMor()));
-					return;
-				}
-
-				segnalante.setCognome(p.getCognome());
-				segnalante.setNome(p.getNome());
-				segnalante.setCf(p.getCodfisc());
-				segnalante.setDataNascita(p.getDataNascita());
-				SessoBean sb = new SessoBean(p.getSesso());
-				segnalante.setDatiSesso(sb);
-
-				ComponenteFamigliaDTO compDto = new ComponenteFamigliaDTO();
-				compDto.setPersona(p);
-				fillEnte(compDto);
-				compDto = anagrafeService.fillInfoAggiuntiveComponente(compDto);
-
-				// nascita
-				if ("ITALIA".equals(compDto.getDesStatoNas())) {
-					ComuneBean comuneBean = new ComuneBean(compDto.getCodComNas(), compDto.getDesComNas(),
-							compDto.getSiglaProvNas());
-					segnalante.getComuneNazioneNascitaMan().getComuneNascitaMan().setComune(comuneBean);
-				} else {
-					AmTabNazioni amTabNazioni = CsUiCompBaseBean.getNazioneByIstat(compDto.getIstatStatoNas(),
-							compDto.getDesStatoNas());
-					segnalante.getComuneNazioneNascitaMan().setNazioneValue();
-					segnalante.getComuneNazioneNascitaMan().getNazioneMan().setNazione(amTabNazioni);
-				}
-
-				// indirizzo res
-				if (p.getCodfisc() != null) {
-					AccessTablePersonaCiviciSessionBeanRemote personaCiviciService = (AccessTablePersonaCiviciSessionBeanRemote) ClientUtility
-							.getEjbInterface("CarSocialeA", "CarSocialeA_EJB", "AccessTablePersonaCiviciSessionBean");
-					it.webred.cs.csa.ejb.dto.BaseDTO dto = new it.webred.cs.csa.ejb.dto.BaseDTO();
-					fillEnte(dto);
-					dto.setObj(p.getCodfisc());
-					CsAIndirizzo indResidenza = personaCiviciService.getIndirizzoResidenzaByCodFisc(dto);
-					if (indResidenza != null) {
-						segnalante.setIndirizzo(indResidenza.getCsAAnaIndirizzo().getIndirizzo() + ", "
-								+ indResidenza.getCsAAnaIndirizzo().getComDes() + " ("
-								+ indResidenza.getCsAAnaIndirizzo().getProv() + ") " + ", "
-								+ indResidenza.getCsAAnaIndirizzo().getStatoDes());
-						try {
-							segnalante.setNumero(Integer.valueOf(indResidenza.getCsAAnaIndirizzo().getCivicoNumero()));
-						} catch (NumberFormatException e) {
-						}
-						ComuneBean comune = new ComuneBean(indResidenza.getCsAAnaIndirizzo().getComCod(),
-								indResidenza.getCsAAnaIndirizzo().getComDes(),
-								indResidenza.getCsAAnaIndirizzo().getProv());
-						segnalante.setComune(comune);
-					}
-				}
-
-				// stato civile
-				CsTbStatoCivile csTbStatoCivile = this.getStatoCivileByIdExtCeT(p.getStatoCivile());
-				segnalante.setCodStatoCivile(csTbStatoCivile != null ? csTbStatoCivile.getCod() : null);
-			}
-		} catch (Exception e) {
-			addError("Errore", "Errore durante il caricamento dell'anagrafica");
-			logger.error("", e);
-		}
-	}
-
 	public void loadInterlocutoreDaAnaEsterna(String tipoRicerca, String idSearch, PersonaDettaglio pIn) {
 		try {
 			PersonaDettaglio p = pIn;
 			String id = !StringUtils.isBlank(idSearch) && !idSearch.startsWith("@") ? idSearch : null;
-			String codFiscale = !StringUtils.isBlank(idSearch) && idSearch.startsWith("@") ? idSearch.replace("@", "")
-					: null;
+			String codFiscale = !StringUtils.isBlank(idSearch) && idSearch.startsWith("@") ? idSearch.replace("@", ""): null;
+			
 			if (!StringUtils.isBlank(id))
 				p = CsUiCompBaseBean.getPersonaDaAnagEsterna(tipoRicerca, id);
 			else if (!DataModelCostanti.TipoRicercaSoggetto.ANAG_SANITARIA_MARCHE.equals(tipoRicerca))
@@ -6253,7 +6133,7 @@ public class NuovaSchedaWizard extends SegretariatoSocBaseBean {
 
 				if (p.isDefunto()) {
 					String msg = "Il soggetto selezionato è deceduto";
-					msg += p.getDataMorte() != null ? "il " + ddMMyyyy.format(p.getDataMorte()) : "";
+					msg += p.getDataMorte() != null ? " il " + ddMMyyyy.format(p.getDataMorte()) : "";
 					addWarning("Non è possibile inserire come interlocutore", msg);
 					return;
 				}
@@ -6274,10 +6154,20 @@ public class NuovaSchedaWizard extends SegretariatoSocBaseBean {
 			segnalante.setAffidatario(true);
 	}
 
-	public void onChangeTipoRiferimento(AjaxBehaviorEvent event, PersonaRiferimento riferimentoSelected) {
-		riferimentoSelected.setAffidatario(false);
-		if (riferimentoSelected.getCodRelazione().equals(AFFIDATARIO_NON_PARENTE))
-			riferimentoSelected.setAffidatario(true);
+	public void onChangeTipoRiferimento(Long numRiferimento) {
+		if (numRiferimento==1L) {
+			this.riferimento.setAffidatario(false);
+			if (this.riferimento.getCodRelazione().equals(AFFIDATARIO_NON_PARENTE))
+				this.riferimento.setAffidatario(true);
+		}else if (numRiferimento==2L) {
+			this.riferimento2.setAffidatario(false);
+			if (this.riferimento2.getCodRelazione().equals(AFFIDATARIO_NON_PARENTE))
+				this.riferimento2.setAffidatario(true);
+		}else if (numRiferimento==3L) {
+			this.riferimento3.setAffidatario(false);
+			if (this.riferimento3.getCodRelazione().equals(AFFIDATARIO_NON_PARENTE))
+				this.riferimento3.setAffidatario(true);
+		}
 	}
 
 	private boolean validaRiferimenti() {
@@ -6487,14 +6377,12 @@ public class NuovaSchedaWizard extends SegretariatoSocBaseBean {
 					dto.setObj(idTipoIntervento);
 				}
 
-				AccessTableConfigurazioneSessionBeanRemote confService = this.getCsConfigurazioneService();
-				
 				//lista degli idsettori filtrati per intervento selezionato
 				//listaIdSettoriByIntervervento = confService.findIdSettoriByInterventoISTATandInterventoCustom(dto);
-				listaIdSettoriByIntervervento = confService.findIdSettoriByInterventoCustom(dto);
+				listaIdSettoriByIntervervento = configurationCsBean.findIdSettoriByInterventoCustom(dto);
 				
 				//lista dei settori
-				listaSettori = confService.findSettoriById(listaIdSettoriByIntervervento);
+				listaSettori = configurationCsBean.findSettoriById(listaIdSettoriByIntervervento);
 
 				//lista dei settori per riempire tendina
 				listaSettoriEroganti = new ArrayList<SelectItem>();
@@ -6556,5 +6444,154 @@ public class NuovaSchedaWizard extends SegretariatoSocBaseBean {
 	public void handleDialogModAnaClose() {
 		this.renderModDatiAnaDlg = false;
 	}
+	public DatiPorSchedaMan getiDatiPor() {
+		return iDatiPor;
+	}
+	public void setiDatiPor(DatiPorSchedaMan iDatiPor) {
+		this.iDatiPor = iDatiPor;
+	}
+	
+	private void stampaErroriPOR(List<String> lst){
+		String s  = "<ul>";
+		for(String sm : lst) s+= "<li>"+ sm.replace("'", "&#39;") +"</li>";
+		s+="</ul>";	
+		this.addWarning("por.validate.error", s);
+	}
+	
+	// SISO 1306 - OSMOSIT
+	public void inizializzaEStampaModelloPOR() {
+		List<String> valida = this.iDatiPor.aggiornaEntityXStampa();
+		if(valida!=null && !valida.isEmpty()) {
+			stampaErroriPOR(valida);
+			return;
+		}
+		
+		this.datiProgettoBean = new StampaFseDTO();
+		this.datiProgettoBean.setCognome(this.segnalato.getAnagrafica().getCognome().toUpperCase());
+		this.datiProgettoBean.setNome(this.segnalato.getAnagrafica().getNome().toUpperCase());
+		this.datiProgettoBean.setSesso(this.segnalato.getAnagrafica().getDatiSesso().getSesso());
+		this.datiProgettoBean.setCodiceFiscale(this.segnalato.getAnagrafica().getCodiceFiscale());
+		this.datiProgettoBean.setCittadinanza(this.segnalato.getAnagrafica().getCittadinanza());
+        this.datiProgettoBean.setTelefono(this.segnalato.getTel());
+		this.datiProgettoBean.setCellulare(this.segnalato.getCel());
+		this.datiProgettoBean.setEmail(this.segnalato.getEmail());
+		this.datiProgettoBean.setSesso(this.getSegnalato().getAnagrafica().getDatiSesso().getSesso());
+		
+		this.datiProgettoBean.setDataNascita(ddMMyyyy.format(this.segnalato.getAnagrafica().getDataNascita()));
+		String annon = "";
+		if(this.segnalato.getAnagrafica().getDataNascita()!=null) {
+			try {
+						Calendar calendar = Calendar.getInstance();
+						calendar.setTime(this.segnalato.getAnagrafica().getDataNascita());
+						annon = Integer.toString(calendar.get(Calendar.YEAR));
+			} catch (Exception e) {
+				// TODO: handle exception
+			}
+		}
+		this.datiProgettoBean.setAnnoNascita(annon);
+		this.datiProgettoBean.setLuogoNascita(this.segnalato.getAnagrafica().getComuneNazioneNascitaMan().getDescrizioneLuogoDiNascita());
+			
+		AmTabComuni capRes = luoghiService.getComuneItaByIstat(this.segnalato.getResidenza().getComuneNazioneMan().getComuneMan().getComune().getCodIstatComune());
+		this.datiProgettoBean.setCapResidenza(capRes!=null ? capRes.getCap() : "");
+		this.datiProgettoBean.setSiglaProvResidenza(this.segnalato.getResidenza().getComuneNazioneMan().getComuneMan().getComune().getSiglaProv());
+		this.datiProgettoBean.setComuneResidenza(this.segnalato.getResidenza().getComuneNazioneMan().getComuneMan().getComune().getDenominazione());
+		this.datiProgettoBean.setViaResidenza(this.segnalato.getResidenza().getVia());
 
+		if(this.segnalato.getResidenza()!=null){
+			String istat = this.segnalato.getResidenza().getComuneNazioneMan().getComuneMan().getComune().getCodIstatComune();
+			AmTabComuni tb = luoghiService.getComuneItaByIstat(istat);
+			if(tb!=null){
+				this.datiProgettoBean.setCapResidenza(tb.getCap());
+				this.datiProgettoBean.setComuneResidenza(tb.getDenominazione());
+				this.datiProgettoBean.setSiglaProvResidenza(tb.getSiglaProv());
+			}				
+			this.datiProgettoBean.setViaResidenza(this.segnalato.getResidenza().getVia());
+		}
+		
+		if(this.segnalato.getDomicilio()!=null) {
+			String istat = this.segnalato.getDomicilio().getComuneNazioneMan().getComuneMan().getComune().getCodIstatComune();
+			AmTabComuni tb = luoghiService.getComuneItaByIstat(istat);
+			if(tb!=null){
+				this.datiProgettoBean.setDomicilioCap(tb.getCap());
+				this.datiProgettoBean.setDomicilioComune(tb.getDenominazione());
+				this.datiProgettoBean.setDomicilioSiglaProv(tb.getSiglaProv());
+			}
+			this.datiProgettoBean.setViaDomicilio(this.segnalato.getDomicilio().getVia());
+		}
+		
+		this.iDatiPor.valorizzaStampa(datiProgettoBean);
+		
+		this.datiProgettoBean.setTitoloStudio(this.segnalato.getFormLavoroMan().getTitoloStudioIstat());
+		this.datiProgettoBean.setDescrizioneVulnerabile(this.famConviventiMan.getGruppoVulnerabile().getTooltip());
+		this.datiProgettoBean.setIdVulnerabile(this.famConviventiMan.getGruppoVulnerabile().getId());
+		
+		this.stampaModelloPOR(this.datiProgettoBean);
+		
+	}
+	
+	
+	public void stampaModelloPOR(StampaFseDTO datiProgettoBean){
+		this.datiProgettoBean = datiProgettoBean;
+		it.webred.cs.csa.ejb.dto.BaseDTO dto = new it.webred.cs.csa.ejb.dto.BaseDTO();
+		fillEnte(dto);
+		dto.setObj(datiProgettoBean);
+		dto.setObj2(iDatiPor.getMappaCampiFse());
+		List<String> msg = porService.validaStampa(dto);
+	
+		if(!msg.isEmpty()){
+			this.stampaErroriPOR(msg);
+			return;
+		}
+		RequestContext.getCurrentInstance().execute("PF('wVdlgStampaPorFSE0').show()");
+		RequestContext.getCurrentInstance().update("idWvDlgStampaPorFSE");
+		//chiamare la stampa 
+	}
+
+	public void chiamaStampa(){
+		RequestContext.getCurrentInstance().execute("PF('wVdlgStampaPorFSE0').hide();");
+		
+		ReportPorBean bean = (ReportPorBean)CsUiCompBaseBean.getReferencedBean("ReportPorBean");
+		if(bean == null)//Se non è gia stato chiamato lo inizializzo
+			bean = new ReportPorBean(); 
+		bean.esportaModelloPor(datiProgettoBean);
+	}
+
+	public void onChangeGruppoVulnerabile(){
+		if(this.isVisualizzaModuloPorUdc()){
+			this.iDatiPor.changeGruppoVulnerabile(this.famConviventiMan.getGruppoVulnerabile());
+		}
+	}
+	public boolean isCapofilaPic() {
+		return capofilaPic;
+	}
+	public void setCapofilaPic(boolean capofilaPic) {
+		this.capofilaPic = capofilaPic;
+	}
+	public CsOOrganizzazione getCapofila() {
+		return capofila;
+	}
+	public void setCapofila(CsOOrganizzazione capofila) {
+		this.capofila = capofila;
+	}
+	public boolean isDisabilitaCapofilaPic() {
+		return disabilitaCapofilaPic;
+	}
+	public void setDisabilitaCapofilaPic(boolean disabilitaCapofilaPic) {
+		this.disabilitaCapofilaPic = disabilitaCapofilaPic;
+	}
+	public String getCapofilaNome(){
+		 if(this.capofila!=null) 
+			 return this.capofila.getNome();
+		 else{
+			 this.disabilitaCapofilaPic=true;
+			 this.capofilaPic = false;
+			 return "-";
+		 }
+	}
+	
+	public boolean isRenderCapofilaPic(){
+		boolean isCurrentCapofila = this.getCurrentEnte().equalsIgnoreCase(this.capofila.getCodRouting());
+		return this.isGestioneCapofilaPic() && !isCurrentCapofila;
+	}
+	
 }

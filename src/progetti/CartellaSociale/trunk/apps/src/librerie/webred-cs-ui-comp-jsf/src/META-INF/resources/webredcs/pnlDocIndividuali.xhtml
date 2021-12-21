@@ -75,7 +75,7 @@
 				<!-- #ROMACAPITALE -->
 				<p:column headerText="Numero Protocollo" style="text-align:center;" rendered="#{cc.attrs.iDocIndividuali.colonnaProtocolloVisibile}">
 					<h:outputText value="#{rowInd.csDDocIndividuale.protocolloStringaConcatenata}" rendered="#{rowInd.csDDocIndividuale.csTbSottocartellaDoc.protocollo or not empty rowInd.csDDocIndividuale.numeroAllegato}"></h:outputText>
-					<p:commandButton title="Protocolla" value="Protocolla" action="#{cc.attrs.iDocIndividuali.staccaProtocollo}" update=":#{p:component('pnlDocIndividuali')}"
+					<p:commandButton title="Protocolla" value="Protocolla" action="#{cc.attrs.iDocIndividuali.staccaProtocollo_docPubblico}" update=":#{p:component('pnlDocIndividuali')}"
 						process="@this"	rendered="#{rowInd.csDDocIndividuale.csTbSottocartellaDoc.protocolloDaSigess and empty rowInd.csDDocIndividuale.numeroAllegato}">
 						<f:setPropertyActionListener value="#{rowKeyInd}" target="#{cc.attrs.iDocIndividuali.idxSelected}" />
 					</p:commandButton>
@@ -91,13 +91,14 @@
 					    title="Modifica" icon="ui-icon-pencil" value="Modifica"
 						action="#{cc.attrs.iDocIndividuali.caricaPubblico}" 
 						update="@form" process="@this" 
-						disabled="#{cc.attrs.iDocIndividuali.readOnly or rowInd.disableDownload}">
+						disabled="#{cc.attrs.iDocIndividuali.readOnly or rowInd.soloLettura}">
 						<f:setPropertyActionListener value="#{rowKeyInd}" target="#{cc.attrs.iDocIndividuali.idxSelected}" />
 					</p:commandButton>
 					<p:spacer width="5"/>
 					<p:commandButton process="@this" icon="ui-icon-trash" title="Elimina"
 						action="#{cc.attrs.iDocIndividuali.caricaPubblico}" 
-						oncomplete="confermaEliminaDocInd.show()" disabled="#{cc.attrs.iDocIndividuali.readOnly or rowInd.disableDownload}">
+						oncomplete="confermaEliminaDocInd.show()" 
+						disabled="#{cc.attrs.iDocIndividuali.readOnly or rowInd.soloLettura}">
 						<f:setPropertyActionListener value="#{rowKeyInd}" target="#{cc.attrs.iDocIndividuali.idxSelected}" />
 					</p:commandButton>
 				</p:column>
@@ -140,7 +141,7 @@
 				<!-- #ROMACAPITALE -->
 				<p:column headerText="Numero Protocollo" style="text-align:center;" rendered="#{cc.attrs.iDocIndividuali.colonnaProtocolloVisibile}"> 
 						<h:outputText value="#{rowInd.csDDocIndividuale.protocolloStringaConcatenata}" rendered="#{rowInd.csDDocIndividuale.csTbSottocartellaDoc.protocollo or not empty rowInd.csDDocIndividuale.numeroAllegato}"></h:outputText>
-					<p:commandButton title="Protocolla" value="Protocolla" action="#{cc.attrs.iDocIndividuali.staccaProtocollo}" update=":#{p:component('pnlDocIndividuali')}"
+					<p:commandButton title="Protocolla" value="Protocolla" action="#{cc.attrs.iDocIndividuali.staccaProtocollo_docPrivato}" update=":#{p:component('pnlDocIndividuali')}"
 						process="@this"	rendered="#{rowInd.csDDocIndividuale.csTbSottocartellaDoc.protocolloDaSigess and empty rowInd.csDDocIndividuale.numeroAllegato}">
 						<f:setPropertyActionListener value="#{rowKeyInd}" target="#{cc.attrs.iDocIndividuali.idxSelected}" />
 					</p:commandButton>
@@ -154,13 +155,14 @@
 				<p:column headerText="" style="text-align:right;" width="150px;" >
 					<p:commandButton value="Modifica" process="@this" icon="ui-icon-pencil"
 							action="#{cc.attrs.iDocIndividuali.caricaPrivato}" update="@form"
-							oncomplete="wdgDocIndModal#{cc.attrs.var}.show()" disabled="#{cc.attrs.iDocIndividuali.readOnly or rowInd.disableDownload}">
+							oncomplete="wdgDocIndModal#{cc.attrs.var}.show()" 
+							disabled="#{cc.attrs.iDocIndividuali.readOnly or rowInd.soloLettura}">
 							<f:setPropertyActionListener value="#{rowKeyInd}" target="#{cc.attrs.iDocIndividuali.idxSelected}" />
 						</p:commandButton>
 					<p:spacer width="5"/>
 					<p:commandButton process="@this" icon="ui-icon-trash" title="Elimina"
 							action="#{cc.attrs.iDocIndividuali.caricaPrivato}" 
-							oncomplete="confermaEliminaDocInd.show()" disabled="#{cc.attrs.iDocIndividuali.readOnly or rowInd.disableDownload }">
+							oncomplete="confermaEliminaDocInd.show()" disabled="#{cc.attrs.iDocIndividuali.readOnly or rowInd.soloLettura }">
 							<f:setPropertyActionListener value="#{rowKeyInd}" target="#{cc.attrs.iDocIndividuali.idxSelected}" />
 					</p:commandButton>
 				</p:column>

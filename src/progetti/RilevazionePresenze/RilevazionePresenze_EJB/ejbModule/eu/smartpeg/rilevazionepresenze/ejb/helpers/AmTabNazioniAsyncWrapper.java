@@ -1,5 +1,8 @@
 package eu.smartpeg.rilevazionepresenze.ejb.helpers;
 
+import it.webred.ct.config.luoghi.LuoghiService;
+import it.webred.ct.config.model.AmTabNazioni;
+
 import java.util.List;
 import java.util.concurrent.Future;
 
@@ -9,9 +12,6 @@ import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 
-import it.webred.cs.csa.ejb.client.AccessTableNazioniSessionBeanRemote;
-import it.webred.ct.config.model.AmTabNazioni;
-
 /**
  * Session Bean implementation class AmTabNazioniAsyncWrapper
  */
@@ -19,11 +19,10 @@ import it.webred.ct.config.model.AmTabNazioni;
 @LocalBean
 public class AmTabNazioniAsyncWrapper {
 
-	@EJB(lookup = "java:global/CarSocialeA/CarSocialeA_EJB/AccessTableNazioniSessionBean!it.webred.cs.csa.ejb.client.AccessTableNazioniSessionBeanRemote") 
-	private AccessTableNazioniSessionBeanRemote accessTableNazioniSessionBeanRemote;
-    /**
-     * Default constructor. 
-     */
+	private static final long serialVersionUID = 1L;
+	@EJB(mappedName = "java:global/CT_Service/CT_Config_Manager/LuoghiServiceBean")
+	protected LuoghiService luoghiService;
+	
     public AmTabNazioniAsyncWrapper() {
         // TODO Auto-generated constructor stub
     }
@@ -31,20 +30,20 @@ public class AmTabNazioniAsyncWrapper {
     @Asynchronous
     public Future<List<AmTabNazioni>> caricaNazioniDaDatabse(){
     		
-		List<AmTabNazioni> beanLstComuni = accessTableNazioniSessionBeanRemote.getNazioni();
+		List<AmTabNazioni> beanLstComuni = luoghiService.getNazioni();
    			
     	return new AsyncResult<List<AmTabNazioni>>(beanLstComuni);      	
     }
     
     @Asynchronous
     public Future<AmTabNazioni> getNazioneByCodiceGenerico(String codice) {
-    	AmTabNazioni res =  accessTableNazioniSessionBeanRemote.getNazioneByCodiceGenerico(codice);
+    	AmTabNazioni res =  luoghiService.getNazioneByCodiceGenerico(codice);
     	return new AsyncResult<AmTabNazioni>(res);
     }
 
     @Asynchronous
 	public Future<List<AmTabNazioni>> trovaComuniPerDenominazione(String denominazione) {
-    	List<AmTabNazioni> res =  accessTableNazioniSessionBeanRemote.getNazioniByDenomContains(denominazione);
+    	List<AmTabNazioni> res =  luoghiService.getNazioniByDenominazioneContains(denominazione);
     	return new AsyncResult<List<AmTabNazioni>>(res);
 	}    
 

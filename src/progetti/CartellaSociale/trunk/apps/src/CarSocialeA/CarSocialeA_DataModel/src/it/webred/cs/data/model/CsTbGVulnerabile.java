@@ -12,7 +12,7 @@ public class CsTbGVulnerabile implements Serializable {
 	@Id
 	private String id;
 
-	private String abilitato;
+	private Boolean abilitato;
 
 	private String descrizione;
 
@@ -37,14 +37,15 @@ public class CsTbGVulnerabile implements Serializable {
 		this.id = id;
 	}
 
-
-	public String getAbilitato() {
-		return this.abilitato;
+	public Boolean getAbilitato() {
+		return abilitato;
 	}
 
-	public void setAbilitato(String abilitato) {
+
+	public void setAbilitato(Boolean abilitato) {
 		this.abilitato = abilitato;
 	}
+
 
 	public String getDescrizione() {
 		return this.descrizione;

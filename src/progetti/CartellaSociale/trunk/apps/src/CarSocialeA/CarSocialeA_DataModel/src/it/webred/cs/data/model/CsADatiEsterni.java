@@ -29,8 +29,33 @@ public class CsADatiEsterni {
 	private byte[] contenuti;
 
 	@Column(name = "DATA_IMPORTAZIONE")
-	@Temporal(TemporalType.TIMESTAMP)
+ 	@Temporal(TemporalType.TIMESTAMP)
 	private Date dataImportazione;
+
+	@Column(name = "TIPOLOGIA")
+	private String tipologia;
+	
+	@Column(name = "CONFIGURAZIONE_FILE")
+	private String configurazioneFile;
+	
+	 
+	
+	
+	public String getConfigurazioneFile() {
+		return configurazioneFile;
+	}
+
+	public void setConfigurazioneFile(String configurazioneFile) {
+		this.configurazioneFile = configurazioneFile;
+	}
+
+	public String getTipologia() {
+		return tipologia;
+	}
+
+	public void setTipologia(String tipologia) {
+		this.tipologia = tipologia;
+	}
 
 	public Long getId() {
 		return id;

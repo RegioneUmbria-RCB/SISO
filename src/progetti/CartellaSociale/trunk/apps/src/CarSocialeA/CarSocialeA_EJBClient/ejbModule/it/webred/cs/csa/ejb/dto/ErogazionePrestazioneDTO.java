@@ -9,6 +9,7 @@ public class ErogazionePrestazioneDTO implements Serializable{
 	private static final long serialVersionUID = 1L;
 	private BigDecimal idEnteTitolare;
 	private BigDecimal mastId;
+	private BigDecimal esegId;
 	private Date dataErog;
 	private Date dataErogA;
 	private String cf;
@@ -84,5 +85,11 @@ public class ErogazionePrestazioneDTO implements Serializable{
 	}
 	public void setIdEnteTitolare(BigDecimal idEnteTitolare) {
 		this.idEnteTitolare = idEnteTitolare;
+	}
+	public BigDecimal getEsegId() {
+		return esegId;
+	}
+	public void setEsegId(BigDecimal esegId) {
+		this.esegId = esegId;
 	}
 }

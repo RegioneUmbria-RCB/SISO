@@ -52,11 +52,8 @@ public class CSListener implements ServletContextListener {
 			url= new URL(newpath);
 			Properties props = new Properties();
 			props.load(url.openStream());
-			Enumeration e = props.propertyNames();
-			while (e.hasMoreElements()) {
-		    	String attiva = (String) e.nextElement();
-		    	abilita = attiva.equalsIgnoreCase("ON");
-			}
+			Object val = props.get("CSOCIALE");
+			abilita = val!=null && "ON".equalsIgnoreCase(val.toString());
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 		}
@@ -106,7 +103,7 @@ public class CSListener implements ServletContextListener {
 	    		incremento++;
 	    	}
 		    
-		    if(!abilita) logger.warn("I timertask sono stati disattivati: per attivarli impostare ad ON il valore nel file timertask.properties (standalone/configuration");
+		    if(!abilita) logger.warn("I timertask sono stati disattivati: per attivarli impostare il valore CSOCIALE=ON nel file timertask.properties (standalone/configuration");
 	    
 		} catch (Exception e) {
 			logger.error("__ EnteTimerTask: Eccezione: " + e.getMessage(), e);

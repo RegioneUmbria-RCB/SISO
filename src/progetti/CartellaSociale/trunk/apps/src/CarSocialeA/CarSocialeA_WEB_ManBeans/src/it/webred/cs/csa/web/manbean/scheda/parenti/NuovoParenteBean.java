@@ -31,6 +31,8 @@ public class NuovoParenteBean extends AnagraficaNucleoBean implements INuovoPare
 	private boolean decesso;
 	private Date dataDecesso;
 	
+	private boolean disabile;
+	
 	private Long idPotesta;
 	private Long idContatto;
 	private Long idDisponibilita;
@@ -46,6 +48,10 @@ public class NuovoParenteBean extends AnagraficaNucleoBean implements INuovoPare
 	
 	public NuovoParenteBean(){
 		super();
+		this.resetPnlFormazioneLavoro();
+	}
+	
+	private void resetPnlFormazioneLavoro(){
 		formLavoroMan=new FormazioneLavoroMan();
 		formLavoroMan.setRenderSettoreImpiego(false);
 		formLavoroMan.setRenderTitoloStudio(false);
@@ -57,20 +63,18 @@ public class NuovoParenteBean extends AnagraficaNucleoBean implements INuovoPare
 		super.reset();
 
 		decesso = false;
+		disabile = false;
 		dataDecesso = null;
 		idContatto = null;
 		idDisponibilita = null;
 		idPotesta = null;
 		cittadinanza = null;
-		
-		formLavoroMan=new FormazioneLavoroMan();
-		formLavoroMan.setRenderSettoreImpiego(false);
-		formLavoroMan.setRenderTitoloStudio(false);
+		this.resetPnlFormazioneLavoro();
 	}
 	
 	
 	public void precaricaParenteDaComponente(CsAAnagrafica anagraficaComponenteDaAltraScheda) {
-		
+		this.reset();
 		setCognome(anagraficaComponenteDaAltraScheda.getCognome());
 		setNome(anagraficaComponenteDaAltraScheda.getNome());
 		setDatiSesso(new SessoBean(anagraficaComponenteDaAltraScheda.getSesso()));
@@ -191,6 +195,15 @@ public class NuovoParenteBean extends AnagraficaNucleoBean implements INuovoPare
 
 	public void setDecesso(boolean decesso) {
 		this.decesso = decesso;
+	}
+	
+	@Override
+	public boolean getDisabile() {
+		return disabile;
+	}
+
+	public void setDisabile(boolean disabile) {
+		this.disabile = disabile;
 	}
 
 	@Override

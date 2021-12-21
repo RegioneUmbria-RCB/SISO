@@ -1,27 +1,18 @@
 package it.webred.cs.data.model;
 
-
 import java.io.Serializable;
 import javax.persistence.*;
 import java.util.Date;
-import java.util.List;
 
-
-/**
- * The persistent class for the AR_FF_PROGETTO database table.
-
- * 
- */
 @Entity
 @Table(name="AR_FF_PROGETTO")
-@NamedQuery(name="ArFfProgetto.findAll", query="SELECT a FROM ArFfProgetto a")
 public class ArFfProgetto implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
 	private long id;
 
-	private String abilitato;
+	private Boolean abilitato;
 
 	@Column(name="CODICE_MEMO")
 	private String codiceMemo;
@@ -42,26 +33,22 @@ public class ArFfProgetto implements Serializable {
 	@Column(name="USR_MOD")
 	private String usrMod;
 
-	//bi-directional many-to-one association to ArFfProgettoOrg
-	@OneToMany(mappedBy="arFfProgetto")
-	private List<ArFfProgettoOrg> arFfProgettoOrgs;
-
 	public ArFfProgetto() {
 	}
 
-	public long getId() {
+	public Long getId() {
 		return this.id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
-	public String getAbilitato() {
-		return this.abilitato;
+	public Boolean getAbilitato() {
+		return abilitato;
 	}
 
-	public void setAbilitato(String abilitato) {
+	public void setAbilitato(Boolean abilitato) {
 		this.abilitato = abilitato;
 	}
 
@@ -112,27 +99,4 @@ public class ArFfProgetto implements Serializable {
 	public void setUsrMod(String usrMod) {
 		this.usrMod = usrMod;
 	}
-
-	public List<ArFfProgettoOrg> getArFfProgettoOrgs() {
-		return this.arFfProgettoOrgs;
-	}
-
-	public void setArFfProgettoOrgs(List<ArFfProgettoOrg> arFfProgettoOrgs) {
-		this.arFfProgettoOrgs = arFfProgettoOrgs;
-	}
-
-	public ArFfProgettoOrg addArFfProgettoOrg(ArFfProgettoOrg arFfProgettoOrg) {
-		getArFfProgettoOrgs().add(arFfProgettoOrg);
-		arFfProgettoOrg.setArFfProgetto(this);
-
-		return arFfProgettoOrg;
-	}
-
-	public ArFfProgettoOrg removeArFfProgettoOrg(ArFfProgettoOrg arFfProgettoOrg) {
-		getArFfProgettoOrgs().remove(arFfProgettoOrg);
-		arFfProgettoOrg.setArFfProgetto(null);
-
-		return arFfProgettoOrg;
-	}
-
 }

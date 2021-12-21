@@ -8,11 +8,12 @@ import it.webred.cs.csa.ejb.client.AccessTableOperatoreSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.AccessTableSoggettoSessionBeanRemote;
 import it.webred.cs.csa.ejb.dto.BaseDTO;
 import it.webred.cs.csa.ejb.dto.IterDTO;
+import it.webred.cs.csa.ejb.dto.KeyValueDTO;
 import it.webred.cs.csa.ejb.dto.OperatoreDTO;
 import it.webred.cs.data.DataModelCostanti;
 import it.webred.cs.data.DataModelCostanti.StatoTransizione;
 import it.webred.cs.data.model.CsACaso;
-import it.webred.cs.data.model.CsASoggettoCategoriaSocLAZY;
+import it.webred.cs.data.model.CsASoggettoCategoriaSoc;
 import it.webred.cs.data.model.CsCfgAttr;
 import it.webred.cs.data.model.CsCfgItStato;
 import it.webred.cs.data.model.CsCfgItStatoAttr;
@@ -214,7 +215,7 @@ public class IterDialogCambioStatoBean extends IterBaseBean implements Serializa
 			AccessTableSoggettoSessionBeanRemote soggettoService = 
 					(AccessTableSoggettoSessionBeanRemote) CsUiCompBaseBean.getCarSocialeEjb("AccessTableSoggettoSessionBean");
 			dto.setObj(itLastStep.getCsACaso().getCsASoggetto().getAnagraficaId());
-			List<CsASoggettoCategoriaSocLAZY> lista = soggettoService.getSoggettoCategorieAttualiBySoggetto(dto);
+			List<CsASoggettoCategoriaSoc> lista = soggettoService.getSoggettoCategorieAttualiBySoggetto(dto);
 			if(lista.isEmpty()){
 				String messaggio = "Il caso non ha categorie sociali collegate. Prima di gestire l'iter del caso, assegnarne almeno una.";
 				addError("Salvataggio non effettuato", messaggio);
@@ -230,9 +231,9 @@ public class IterDialogCambioStatoBean extends IterBaseBean implements Serializa
 				CsOOperatoreSettore opSettore = getCurrentOpSettore();
 				dto.setObj(opSettore.getCsOOperatore().getId());
 				dto.setObj2(opSettore.getCsOSettore().getId());
-				CsOOperatoreTipoOperatore opTipoOp = casoSessionBean.findOperatoreTipoOperatoreByOpSettore(dto);
+				Boolean tipoOpEsistente = casoSessionBean.existsTipoOperatore(dto);
 				//se è "preso in carico" controllo che l'operatore abbia un tipo op associato 
-				if(opTipoOp == null) {
+				if(!tipoOpEsistente) {
 					addError("Salvataggio non effettuato", "La sua utenza non è associata a nessun TIPO OPERATORE per il settore scelto");
 					logger.error("Salvataggio non effettuato: La sua utenza non è associata a nessun TIPO OPERATORE per il settore scelto");
 					return false;
@@ -252,7 +253,7 @@ public class IterDialogCambioStatoBean extends IterBaseBean implements Serializa
 			
 				List<Long> catsocAttive = new ArrayList<Long>();
 				String descrCS = "";
-				for(CsASoggettoCategoriaSocLAZY cs: lista) {
+				for(CsASoggettoCategoriaSoc cs: lista) {
 					if(!cs.getId().getDataFineApp().before(new Date())){
 						catsocAttive.add(cs.getCsCCategoriaSociale().getId());
 						descrCS=cs.getCsCCategoriaSociale().getDescrizione()+", ";
@@ -514,8 +515,9 @@ public class IterDialogCambioStatoBean extends IterBaseBean implements Serializa
 				fillEnte(opDto);
 				opDto.setIdSettore(settoreId);
 				operatores = new LinkedList<SelectItem>();
-				for (CsOOperatoreSettore it : operatoreSessionBean.findOperatoreSettoreBySettore(opDto) )
-					operatores.add(new SelectItem( it.getId(), getDenominazioneOperatore(it.getCsOOperatore())));
+				List<KeyValueDTO> result = operatoreSessionBean.findListaOperatoreSettoreBySettore(opDto);
+				for (KeyValueDTO it : result)
+					operatores.add(new SelectItem( it.getCodice(), it.getDescrizione()));
 			}
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);

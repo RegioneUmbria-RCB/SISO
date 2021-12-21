@@ -19,6 +19,7 @@ public class RicercaAnagraficaParams extends CeTBaseObject{
      private boolean caricaMedico=false;
      
      private String filtro;
+     private Integer maxResult;
 
      public RicercaAnagraficaParams(String provenienza, boolean dettaglio){
     	 this.provenienza=provenienza;
@@ -110,6 +111,14 @@ public class RicercaAnagraficaParams extends CeTBaseObject{
 
 	public void setCaricaMedico(boolean caricaMedico) {
 		this.caricaMedico = caricaMedico;
+	}
+	
+	public Integer getMaxResult() {
+		return maxResult;
+	}
+
+	public void setMaxResult(Integer maxResult) {
+		this.maxResult = maxResult;
 	}
 
 	public String stampaParametri(){

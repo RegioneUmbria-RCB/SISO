@@ -34,8 +34,9 @@ public class StranieriManBean extends StranieriManBaseBean{
 		
 		boolean validazioneOk = true;
 		List<String> messagges;
-		((StranieriBean)controller.getJsonCurrent()).setValidaConoscenzaLingua(this.validaConoscenzaLingua);
-		((StranieriBean)controller.getJsonCurrent()).setValidaDatiImmigrazione(this.validaDatiImmigrazione);
+		getJsonCurrent().setComuneUltimoArrivoREG(this.getComuneManREG().getComune());
+		getJsonCurrent().setValidaConoscenzaLingua(this.validaConoscenzaLingua);
+		getJsonCurrent().setValidaDatiImmigrazione(this.validaDatiImmigrazione);
 		messagges = controller.validaData();
 		if( messagges.size() > 0 ) {
 			addWarning(controller.getDescrizioneScheda(), messagges);
@@ -59,9 +60,7 @@ public class StranieriManBean extends StranieriManBaseBean{
 				return ok;
 			
 			getJsonCurrent().setComuneValicoFrontiera(this.getComuneManITA().getComune());
-			getJsonCurrent().setComuneUltimoArrivoREG(this.getComuneManREG().getComune());
 			getJsonCurrent().setComuneRilascio(this.getComuneManRilascio().getComune());
-			
 			controller.save(this.getClass().getName());
 			
 			//ora salva

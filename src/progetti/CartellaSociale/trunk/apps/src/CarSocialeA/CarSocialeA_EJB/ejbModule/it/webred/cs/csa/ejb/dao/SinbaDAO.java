@@ -57,5 +57,36 @@ public class SinbaDAO extends CarSocialeBaseDAO implements Serializable {
 		 */
 	}
 
+	@SuppressWarnings("unchecked")
+	public CsDSinba getLastSchedaSinbaByIdCaso(Long idCaso, Long idTipoDiario) {
+		CsDSinba csDSinba = null ;
+		List<CsDSinba> lstI = new ArrayList<CsDSinba>();
+		logger.info("getLastSchedaSinbaByCaso " + idCaso);
+		try{
+		String qq = "SELECT cds.*  FROM CS_D_SINBA cds " + 
+				" INNER JOIN CS_D_DIARIO diario " + 
+				" ON cds.DIARIO_ID = diario.ID " + 
+				" WHERE diario.CASO_ID = :idCaso "+
+				" AND diario.TIPO_DIARIO_ID = :idTipoDiario "+
+				" AND ROWNUM = 1 " +
+				" ORDER BY diario.DT_AMMINISTRATIVA  DESC  ";
+				
+		Query q = em.createNativeQuery(qq);
+		q.setParameter("idCaso", idCaso);
+		q.setParameter("idTipoDiario", idTipoDiario);
+		
+		lstI = q.getResultList();
+		for (CsDSinba dd : lstI) {
+			csDSinba = lstI.get(0);
+		}
+		
+			logger.info("getLastSchedaSinbaByIdCaso id["+idCaso+"]");
+		}catch(Throwable e){
+			logger.error(e);
+			throw new CarSocialeServiceException(e);
+		}
+		
+		return csDSinba;
+	}
 	
 }

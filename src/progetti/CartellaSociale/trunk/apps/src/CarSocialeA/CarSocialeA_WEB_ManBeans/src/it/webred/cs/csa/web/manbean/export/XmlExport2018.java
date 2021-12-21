@@ -1,9 +1,12 @@
 package it.webred.cs.csa.web.manbean.export;
 
+import it.webred.cs.csa.ejb.dto.EsportazioneDTO;
+import it.webred.cs.data.DataModelCostanti;
+import it.webred.cs.data.DataModelCostanti.CSIPs.FLAG_IN_CARICO;
+
 import java.io.File;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -12,10 +15,6 @@ import java.util.Map;
 
 import com.osmosit.siso.flussoinps.logic.Cost;
 import com.osmosit.siso.flussoinps.psa_2016.XmlExporter;
-
-import it.webred.cs.csa.ejb.dto.EsportazioneDTO;
-import it.webred.cs.data.DataModelCostanti;
-import it.webred.cs.data.DataModelCostanti.CSIPs.FLAG_IN_CARICO;
 
 final class XmlExport2018 extends PsaXmlExporter {
 

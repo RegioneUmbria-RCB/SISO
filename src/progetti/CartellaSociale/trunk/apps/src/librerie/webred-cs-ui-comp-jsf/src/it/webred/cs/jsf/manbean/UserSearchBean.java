@@ -52,7 +52,8 @@ public class UserSearchBean extends CsUiCompBaseBean implements IUserSearch{
 		
 		if(isAnagrafeComunaleInternaAbilitata()){
 			try {
-				AnagrafeService anagrafeService = (AnagrafeService) ClientUtility.getEjbInterface("CT_Service", "CT_Service_Data_Access", "AnagrafeServiceBean");
+				AnagrafeService anagrafeService = (AnagrafeService) getEjb("CT_Service", "CT_Service_Data_Access", "AnagrafeServiceBean");
+				
 				RicercaSoggettoAnagrafeDTO rsDto = new RicercaSoggettoAnagrafeDTO();
 				fillEnte(rsDto);
 				rsDto.setDenom(query);
@@ -79,7 +80,7 @@ public class UserSearchBean extends CsUiCompBaseBean implements IUserSearch{
 					if(contatore>=maxResult) break;
 				}
 				
-			} catch (NamingException e) {
+			} catch (Exception e) {
 				addError("general", "caricamento.error");
 				logger.error(e.getMessage(), e);
 			}

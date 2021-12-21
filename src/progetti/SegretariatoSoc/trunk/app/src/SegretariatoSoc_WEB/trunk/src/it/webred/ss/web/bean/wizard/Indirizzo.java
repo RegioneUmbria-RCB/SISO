@@ -2,10 +2,8 @@ package it.webred.ss.web.bean.wizard;
 
 import it.webred.cs.csa.ejb.client.AccessTableComuniSessionBeanRemote;
 import it.webred.cs.data.DataModelCostanti;
-import it.webred.cs.jsf.manbean.NazioneResidenzaMan;
 import it.webred.cs.jsf.manbean.comuneNazione.ComuneNazioneGenericMan;
 import it.webred.cs.jsf.manbean.superc.CsUiCompBaseBean;
-import it.webred.ct.config.luoghi.LuoghiService;
 import it.webred.ct.config.model.AmTabComuni;
 import it.webred.ct.config.model.AmTabNazioni;
 import it.webred.ejb.utility.ClientUtility;
@@ -15,14 +13,9 @@ import it.webred.ss.web.bean.SegretariatoSocBaseBean;
 
 import javax.naming.NamingException;
 
-import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.jboss.logging.Logger;
 
 public class Indirizzo extends SegretariatoSocBaseBean{
-	
-	protected static Logger logger = Logger.getLogger("segretariatosoc.log");
-	
 	private Long id;
 	private String via;
 	//private String numero;
@@ -68,11 +61,10 @@ public class Indirizzo extends SegretariatoSocBaseBean{
 
   public ComuneBean getComuneByBelfiore(String belfiore){
 		try {
-			LuoghiService bean = (LuoghiService) ClientUtility.getEjbInterface("CT_Service", "CT_Config_Manager", "LuoghiServiceBean");
-			AmTabComuni comune = bean.getComuneItaByBelfiore(belfiore);
+			AmTabComuni comune = luoghiService.getComuneItaByBelfiore(belfiore);
 			return new ComuneBean(comune);
 						
-		} catch (NamingException e) {
+		} catch (Exception e) {
 			logger.error(e);
 		}
 		return null;
@@ -110,41 +102,25 @@ public class Indirizzo extends SegretariatoSocBaseBean{
 		model.setId(id);
 		model.setVia(via);
 		model.setStrutturaAccoglienza(strutturaAccoglienza);
-		//model.setNumero(numero);
-		
-		//Tolta la pulizia dei campi dato che non c'è più nessuna condizione che lo richieda task 907
-		
-//		if((this.tipoComune.equalsIgnoreCase(DataModelCostanti.TipoIndirizzo.RESIDENZA) ) 
-//	    || (this.tipoComune.equalsIgnoreCase(DataModelCostanti.TipoIndirizzo.DOMICILIO)) 
-//		){
-//			model.setProvCod(null);
-//			model.setProvCod(null);
-//			model.setComuneCod(null);
-//			model.setComuneDes(null);
-//			model.setStatoDes(null);
-//			model.setStatoCod(null);
-//		}else{
-			AmTabNazioni nazione;
-			if (comuneNazioneMan.isComune()) {
-				//comune italiano
-				ComuneBean comune = comuneNazioneMan.getComuneMan().getComune();
-				nazione = NazioneResidenzaMan.getCurrNazione();
-				model.setProvCod  (comune == null ? null : comune.getSiglaProv());
-				model.setComuneCod(comune == null ? null : comune.getCodIstatComune());
-				model.setComuneDes(comune == null ? null : comune.getDenominazione());
-				model.setStatoCod(nazione == null ? null : nazione.getCodIstatNazione());
-				model.setStatoDes(nazione == null ? null : nazione.getNazione());
-			} else if (comuneNazioneMan.isNazione()) {
-				//stato estero
-				nazione = comuneNazioneMan.getNazioneMan().getNazione();
-				model.setStatoCod(nazione == null ? null : nazione.getCodIstatNazione());
-				model.setStatoDes(nazione == null ? null : nazione.getNazione());
-				model.setProvCod(null);
-				model.setComuneCod(null);
-				model.setComuneDes(null);
-			}
+	
+		if (comuneNazioneMan.isComune()) {
+			//comune italiano
+			ComuneBean comune = comuneNazioneMan.getComuneMan().getComune();
+			model.setProvCod  (comune == null ? null : comune.getSiglaProv());
+			model.setComuneCod(comune == null ? null : comune.getCodIstatComune());
+			model.setComuneDes(comune == null ? null : comune.getDenominazione());
+			model.setStatoCod(null);
+			model.setStatoDes(null);
+		} else if (comuneNazioneMan.isNazione()) {
+			//stato estero
+			AmTabNazioni nazione = comuneNazioneMan.getNazioneMan().getNazione();
+			model.setStatoCod(nazione == null ? null : nazione.getCodIstatNazione());
+			model.setStatoDes(nazione == null ? null : nazione.getNazione());
+			model.setProvCod(null);
+			model.setComuneCod(null);
+			model.setComuneDes(null);
 		}
-	//}
+	}
 
 
 	public void initFromModel(SsIndirizzo model, boolean copia) {
@@ -152,14 +128,14 @@ public class Indirizzo extends SegretariatoSocBaseBean{
 		via = model.getVia();
 		strutturaAccoglienza = model.getStrutturaAccoglienza();
 		
-		if("ITALIA".equals(model.getStatoDes()) || model.getStatoCod()==null) {
-			if(model.getComuneCod()!=null){
+		if(DataModelCostanti.STATO_ITA.equals(model.getStatoDes()) || StringUtils.isBlank(model.getStatoCod())) {
+			if(!StringUtils.isBlank(model.getComuneCod())){
 				ComuneBean comuneBean = new ComuneBean(model.getComuneCod(), model.getComuneDes(), model.getProvCod());
 				this.comuneNazioneMan.setComuneValue();
 				this.comuneNazioneMan.getComuneGenericMan().setComune(comuneBean);
 			}
 		} else {
-			if(model.getStatoCod()!=null){
+			if(!StringUtils.isBlank(model.getStatoCod())){
 				AmTabNazioni amTabNazioni = CsUiCompBaseBean.getNazioneByIstat(model.getStatoCod(), model.getStatoDes());
 				this.comuneNazioneMan.setNazioneValue();
 				this.comuneNazioneMan.getNazioneMan().setNazione(amTabNazioni);

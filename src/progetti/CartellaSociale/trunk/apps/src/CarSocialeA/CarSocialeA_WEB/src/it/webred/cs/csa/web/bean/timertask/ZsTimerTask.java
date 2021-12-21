@@ -1,12 +1,14 @@
 package it.webred.cs.csa.web.bean.timertask;
 
 import it.webred.cs.csa.ejb.client.AccessTableAlertSessionBeanRemote;
+import it.webred.cs.csa.ejb.client.AccessTableDiarioSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.AccessTableInterventoErogazioneSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.AccessTableInterventoSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.AccessTableSoggettoSessionBeanRemote;
 import it.webred.cs.csa.ejb.dto.BaseDTO;
 import it.webred.cs.data.model.CsASoggettoLAZY;
 import it.webred.cs.data.model.CsIInterventoEsegMastSogg;
+import it.webred.cs.data.model.CsPaiMastSogg;
 import it.webred.cs.data.model.persist.CsAlert;
 import it.webred.cs.sociosan.ejb.client.CTConfigClientSessionBeanRemote;
 import it.webred.ct.support.datarouter.CeTBaseObject;
@@ -32,8 +34,7 @@ public class ZsTimerTask extends TimerTask {
 
 	private static Logger logger = Logger.getLogger("carsociale_timertask.log");
 	private String enteId;
-	
-	
+
 	public ZsTimerTask(String enteId) {
 		super();
 		this.enteId = enteId;
@@ -47,10 +48,17 @@ public class ZsTimerTask extends TimerTask {
 			logger.debug("__ INIZIO Esecuzione ZsTimerTask ENTEID " + enteId +" __");
 			
 			associaCasoASoggettiErogazione();
+			associaCasoASoggettiPai();
 			gestisciInvioMail();
+
+			// caricaDatiStagingMobile();
+
+			TimerTaskPTI taskPTI = new TimerTaskPTI(enteId);
 			
-			//caricaDatiStagingMobile();
-			
+			taskPTI.gestisciInsMinoriStruttura();
+			taskPTI.gestisciAcquisizionePai();
+			taskPTI.gestisciAcquisizioneConsuntivazioni();
+
 			logger.debug("__ FINE Esecuzione ZsTimerTask __");
 
 		} catch (Exception e) {
@@ -93,12 +101,46 @@ public class ZsTimerTask extends TimerTask {
 		}
 	}
 	
+	private void associaCasoASoggettiPai(){
+		
+    	try {
+    		
+    		AccessTableDiarioSessionBeanRemote diarioService = (AccessTableDiarioSessionBeanRemote) ClientUtility.getEjbInterface("CarSocialeA", "CarSocialeA_EJB", "AccessTableDiarioSessionBean");
+    		AccessTableSoggettoSessionBeanRemote soggettoService = (AccessTableSoggettoSessionBeanRemote) ClientUtility.getEjbInterface("CarSocialeA", "CarSocialeA_EJB", "AccessTableSoggettoSessionBean");
+    		
+    		BaseDTO bDto = new BaseDTO();
+        	bDto.setEnteId(enteId);
+    		
+    	    List<CsPaiMastSogg> lst = diarioService.findSoggettiPaiSenzaCaso(bDto);
+    	    logger.debug("Trovati "+lst.size()+" soggetti (pai) da collegare al caso (esistente)");
+    	    
+    	    for(CsPaiMastSogg sogg : lst){
+    	    	if(sogg.getCf()!=null && !sogg.getCf().trim().isEmpty()){
+    	    		String cf = sogg.getCf()!=null ? sogg.getCf().toUpperCase() : null;
+    	    		bDto.setObj(cf.toUpperCase());
+    	    		CsASoggettoLAZY s = soggettoService.getSoggettoByCF(bDto);
+    	    		if(s!=null && s.getCsACaso()!=null){
+    	    			logger.debug("ZsTimerTask_Individuato caso per il soggetto: "+cf);
+    	    			sogg.setCaso(s.getCsACaso());
+    	    			sogg.setDtMod(new Date());
+    	    			sogg.setUserMod("ZsTimerTask");
+    	    			bDto.setObj(sogg);
+    	    			diarioService.updateSoggettoPai(bDto);
+    	    		}
+    	    	}
+    	    }
+		
+    	} catch (Exception e2) {
+			logger.error("__ ZsTimerTask: Eccezione " + e2.getMessage(), e2);
+		}
+	}
+
 	public static void setLogger(Logger logger) {
 		ZsTimerTask.logger = logger;
 	}
 	
 	private void gestisciInvioMail() throws NamingException {
-		
+
 		logger.debug("__ INIZIO ZsTimerTask: gestisciInvioMail__");
 		
 		CTConfigClientSessionBeanRemote mailConf = (CTConfigClientSessionBeanRemote)   ClientUtility.getEjbInterface("SocioSanitario","SocioSanitario_EJB", "CTConfigClientSessionBean");
@@ -106,7 +148,7 @@ public class ZsTimerTask extends TimerTask {
 
 		BaseDTO bDto = new BaseDTO();
 		bDto.setEnteId(enteId);
-		
+
 		List<CsAlert> lstAlert = alertService.findAlertEmail(bDto);
 		logger.debug("__ Trovati "+lstAlert.size()+" alert, per i quali deve ancora essere inviata la notifica e-mail");
 		HashMap<String, Boolean> mappaEmail = new HashMap<String, Boolean>();
@@ -147,7 +189,7 @@ public class ZsTimerTask extends TimerTask {
 						MailAddressList addressTO = new MailAddressList(emailSegnalatoA);
 						MailAddressList addressCC = new MailAddressList();
 						MailAddressList addressBCC = new MailAddressList(emailSettoreSegnalante);
-			
+
 						// Segnalibri
 						String subject = a.getTitoloDescrizione();
 						String messageBody = a.getDescrizione();

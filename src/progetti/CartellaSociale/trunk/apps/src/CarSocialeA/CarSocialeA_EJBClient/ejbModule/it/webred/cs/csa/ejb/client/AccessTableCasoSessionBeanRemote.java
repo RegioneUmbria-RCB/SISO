@@ -1,13 +1,13 @@
 package it.webred.cs.csa.ejb.client;
 
 import it.webred.cs.csa.ejb.dto.BaseDTO;
+import it.webred.cs.csa.ejb.dto.DatiOperatoreDTO;
+import it.webred.cs.csa.ejb.dto.prospettoSintesi.CasiOperatoreBean;
 import it.webred.cs.data.model.CsACaso;
 import it.webred.cs.data.model.CsACasoAccessoFascicolo;
 import it.webred.cs.data.model.CsACasoOpeTipoOpe;
 import it.webred.cs.data.model.CsACasoOpeTipoOpe2;
-import it.webred.cs.data.model.CsOOperatoreBASIC;
 import it.webred.cs.data.model.CsOOperatoreSettore;
-import it.webred.cs.data.model.CsOOperatoreTipoOperatore;
 import it.webred.cs.data.model.view.VSsSchedeUdcDiff;
 import it.webred.ct.support.datarouter.CeTBaseObject;
 
@@ -33,14 +33,10 @@ public interface AccessTableCasoSessionBeanRemote {
 	public List<CsACasoOpeTipoOpe> getListaOperatoreTipoOpByCasoId(BaseDTO dto);
 	
 	public List<CsACasoAccessoFascicolo> getListaAccessoFascicoloByCasoId(BaseDTO dto); //SISO-812
-	
-	public CsACasoOpeTipoOpe findCasoOpeResponsabile(BaseDTO dto);
-	
-	public CsOOperatoreSettore findCreatoreCaso(BaseDTO dto);
 
-	public CsOOperatoreTipoOperatore findOperatoreTipoOperatoreByOpSettore(BaseDTO dto);
+	public Boolean existsTipoOperatore(BaseDTO dto);
 	
-	public Integer countCasiByResponsabileCatSociale(BaseDTO dto);
+	public List<CasiOperatoreBean> loadCaricoLavoroByCatSocOrg(BaseDTO dto) throws Exception;
 
 	public void updateCaso(BaseDTO dto);
 	
@@ -54,7 +50,7 @@ public interface AccessTableCasoSessionBeanRemote {
 
 	public List<CsACasoOpeTipoOpe2> getListaOperatoreTipoOp2ByCasoId(BaseDTO dto);
 
-	public CsOOperatoreBASIC findResponsabileBASIC(BaseDTO dto);
+	public DatiOperatoreDTO findResponsabileCaso(BaseDTO dto);
 	
 	public Long aggiornaResponsabileCaso(BaseDTO dto);
 
@@ -71,4 +67,6 @@ public interface AccessTableCasoSessionBeanRemote {
 	public List<VSsSchedeUdcDiff> controllaModificheSchedaCompletaUDC(CeTBaseObject dto);
 
 	public CsACaso inizializzaNuovoCaso(CeTBaseObject dto);
+	
+	public CsOOperatoreSettore findDestinatarioAlertCaso(BaseDTO dto);
 }

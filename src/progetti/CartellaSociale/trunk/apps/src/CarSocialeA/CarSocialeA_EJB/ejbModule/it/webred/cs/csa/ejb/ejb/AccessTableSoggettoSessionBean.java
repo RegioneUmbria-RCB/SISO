@@ -26,12 +26,9 @@ import it.webred.cs.data.model.CsAAnaIndirizzo;
 import it.webred.cs.data.model.CsAAnagrafica;
 import it.webred.cs.data.model.CsAAnagraficaLog;
 import it.webred.cs.data.model.CsACaso;
-import it.webred.cs.data.model.CsAComponente;
 import it.webred.cs.data.model.CsAComponenteAnagCasoGit;
-import it.webred.cs.data.model.CsAFamigliaGruppo;
 import it.webred.cs.data.model.CsAIndirizzo;
 import it.webred.cs.data.model.CsASoggettoCategoriaSoc;
-import it.webred.cs.data.model.CsASoggettoCategoriaSocLAZY;
 import it.webred.cs.data.model.CsASoggettoLAZY;
 import it.webred.cs.data.model.CsASoggettoMedico;
 import it.webred.cs.data.model.CsASoggettoMedicoPK;
@@ -39,7 +36,7 @@ import it.webred.cs.data.model.CsASoggettoStatoCivile;
 import it.webred.cs.data.model.CsASoggettoStatoCivilePK;
 import it.webred.cs.data.model.CsASoggettoStatus;
 import it.webred.cs.data.model.CsASoggettoStatusPK;
-import it.webred.cs.data.model.CsCCategoriaSocialeBASIC;
+import it.webred.cs.data.model.CsCCategoriaSociale;
 import it.webred.cs.data.model.CsCMedico;
 import it.webred.cs.data.model.CsOOperatoreSettore;
 import it.webred.cs.data.model.CsOSettore;
@@ -50,15 +47,12 @@ import it.webred.ct.support.validation.annotation.AuditSaltaValidazioneSessionID
 import it.webred.siso.ws.ricerca.dto.PersonaDettaglio;
 
 import java.math.BigDecimal;
-import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map.Entry;
 
 import javax.ejb.EJB;
@@ -66,7 +60,6 @@ import javax.ejb.Stateless;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.LinkedMultiValueMap;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -80,9 +73,6 @@ public class AccessTableSoggettoSessionBean extends CarSocialeBaseSessionBean im
 	
 	@Autowired
 	private ConfigurazioneDAO configurazioneDAO;
-	
-	//@Autowired
-	//private SchedaSegrDAO schedaSegrDao;
 	
 	@EJB
 	private AccessTableIterStepSessionBeanRemote iterStepService;
@@ -184,8 +174,8 @@ public class AccessTableSoggettoSessionBean extends CarSocialeBaseSessionBean im
 	}
 	
 	@Override
-	public List<CsASoggettoCategoriaSocLAZY> getSoggettoCategorieAttualiBySoggetto(BaseDTO dto) {
-		return soggettoDAO.getSoggCategorieAttualiLAZYBySoggetto((Long) dto.getObj());
+	public List<CsASoggettoCategoriaSoc> getSoggettoCategorieAttualiBySoggetto(BaseDTO dto) {
+		return soggettoDAO.getSoggCategorieAttualiBySoggetto((Long) dto.getObj());
 	}
 	
 	@Override
@@ -199,13 +189,32 @@ public class AccessTableSoggettoSessionBean extends CarSocialeBaseSessionBean im
 	}
 	
 	@Override
-	public List<CsCCategoriaSocialeBASIC> getCatSocAttualiBySoggetto(BaseDTO dto) {
-		List<CsASoggettoCategoriaSocLAZY> lst = soggettoDAO.getSoggCategorieAttualiLAZYBySoggetto((Long) dto.getObj());
-		List<CsCCategoriaSocialeBASIC> attuale = new ArrayList<CsCCategoriaSocialeBASIC>();
-		for(CsASoggettoCategoriaSocLAZY cs : lst)
+	public List<CsCCategoriaSociale> getCatSocAttualiBySoggetto(BaseDTO dto) {
+		List<CsASoggettoCategoriaSoc> lst = soggettoDAO.getSoggCategorieAttualiBySoggetto((Long) dto.getObj());
+		List<CsCCategoriaSociale> attuale = new ArrayList<CsCCategoriaSociale>();
+		for(CsASoggettoCategoriaSoc cs : lst)
 			attuale.add(cs.getCsCCategoriaSociale());
 		
 		return attuale;
+	}
+	
+	@Override 
+	public List<CsCCategoriaSociale> getCatSocAttualiByCF(BaseDTO dto){
+		List<CsCCategoriaSociale> attuale = new ArrayList<CsCCategoriaSociale>();
+		String cf = (String) dto.getObj();
+		if (!StringUtils.isBlank(cf)) {
+			CsASoggettoLAZY sogg = soggettoDAO.getSoggettoByCF(cf);
+			if (sogg != null) {
+				dto.setObj(sogg.getAnagraficaId());
+				attuale = this.getCatSocAttualiBySoggetto(dto);
+			}
+		}
+		return attuale;
+	}
+	
+	public Boolean existsCatSocAttualiBySoggetto(BaseDTO dto) {
+		List<CsASoggettoCategoriaSoc> lst = soggettoDAO.getSoggCategorieAttualiBySoggetto((Long) dto.getObj());
+		return !lst.isEmpty();
 	}
 
 	@Override
@@ -433,9 +442,6 @@ public class AccessTableSoggettoSessionBean extends CarSocialeBaseSessionBean im
 			}
 				//se indirizzo Res è nullo
 
-			
-			
-			
 			if(c.getCittadinanza() != null && !compare(c.getCittadinanza(), csASoggetto.getCsAAnagrafica().getCittadinanza())){
 				segnalazione=true;
 				anagraficaCaso.setCittadinanza(c.getCittadinanza());
@@ -447,10 +453,6 @@ public class AccessTableSoggettoSessionBean extends CarSocialeBaseSessionBean im
 				mappaVariazioniAnag.put(TipoAggiornamentoAnagrafica.ANAGRAFICA_SESSO, c.getSesso() );
 			}
 			
-			
-			
-
-			
 			//Inizio modifiche 29-09-2020
 			/****
 			 * Importante 
@@ -458,18 +460,18 @@ public class AccessTableSoggettoSessionBean extends CarSocialeBaseSessionBean im
 			 * 
 			 * */
 			if(c.getIndirizzoRes() != null) {
-				segnalazione = (compareIndirizzoDomToIndirizzoDb(c, indirizzoRes,mappaVariazioniAnag, 2) == false ? segnalazione : true);;
+				segnalazione = (compareIndirizzoToIndirizzoDb(c, indirizzoRes,mappaVariazioniAnag, 2) == false ? segnalazione : true);;
 			}
 			//Confronto il precedente indirizzo su DB con il domicilio, se DIVERSI  procedo...
 			// Se indirizzo DOM non presente nel database ed uguale all'indirizzo residenza NON procedo
 			if(c.getIndirizzoDom() != null && indirizzoDom != null && indirizzoDom.getId() != 0L) {
-					segnalazione = ( this.compareIndirizzoDomToIndirizzoDb(c, indirizzoDom,mappaVariazioniAnag, 1) == false ?  segnalazione : true);
+					segnalazione = ( this.compareIndirizzoToIndirizzoDb(c, indirizzoDom,mappaVariazioniAnag, 1) == false ?  segnalazione : true);
 					
 			}
 			else if(c.getIndirizzoDom() != null) {
 	
-				if(this.compareIndirizzoDomToIndirizzoDb(c, indirizzoRes,null, 1)) {
-				   segnalazione = (this.compareIndirizzoDomToIndirizzoDb(c, indirizzoDom,mappaVariazioniAnag, 1) == false ? segnalazione : true);
+				if(this.compareIndirizzoToIndirizzoDb(c, indirizzoRes,null, 1)) {
+				   segnalazione = (this.compareIndirizzoToIndirizzoDb(c, indirizzoDom,mappaVariazioniAnag, 1) == false ? segnalazione : true);
 				}
  			
 			}		
@@ -609,8 +611,7 @@ public class AccessTableSoggettoSessionBean extends CarSocialeBaseSessionBean im
 			try {
 				result = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(hashmap);
 			} catch (JsonProcessingException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				logger.error(e.getMessage(), e);
 			}
 		}
 			
@@ -625,15 +626,12 @@ public class AccessTableSoggettoSessionBean extends CarSocialeBaseSessionBean im
 	
 	public CsAComponenteAnagCasoGit getAnagraficaCasoGitAggiornataBySoggettoId(BaseDTO dto) {
 		Long idSoggetto = (Long)dto.getObj();
-		String dateString =  "1900-01-01";
 		try {
-			DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.ITALIAN);
-			Date dateDefault = format.parse(dateString);
-			 
-	    	return soggettoDAO.getAnagraficaCasoGitAggiornatoBySoggettoId(idSoggetto, ( dto.getObj2() == null ? dateDefault : (java.util.Date)dto.getObj2()));
+			Date dtRif =  dto.getObj2() == null ? DataModelCostanti.START_DATE : (java.util.Date)dto.getObj2();
+	    	return soggettoDAO.getAnagraficaCasoGitAggiornatoBySoggettoId(idSoggetto, dtRif);
 		}
 		catch(Exception ex) {
-			ex.printStackTrace();
+			logger.error(ex.getMessage(), ex);
 		}
 		return null;
     }
@@ -647,21 +645,7 @@ public class AccessTableSoggettoSessionBean extends CarSocialeBaseSessionBean im
 	    	 soggettoDAO.updateAnagraficaCasoGIT((CsAComponenteAnagCasoGit) bDto.getObj());
 	       
 	}
-/*	private boolean getHasFineVal(Date dataVal) {
-		
-		SimpleDateFormat SDF = new SimpleDateFormat("dd/MM/yyyy");
-	
-		boolean result = false;
-		
-		if (dataVal == null)
-			return result = false;
-		else{
-			String descData = SDF.format(dataVal);
-			result = descData.equals("31/12/9999") ? false : true ;
-		}
-		
-		return false;
-	}*/
+
 	private String dateToStringVal(Date dataVal) {
 		
 		SimpleDateFormat SDF = new SimpleDateFormat("dd/MM/yyyy");
@@ -674,8 +658,6 @@ public class AccessTableSoggettoSessionBean extends CarSocialeBaseSessionBean im
 			String descData = SDF.format(dataVal);
 			return descData;
 		}
-		
-		
 	}
 	
 	 private void popolaAnagraficaCasoGit(CsAComponenteAnagCasoGit anagraficaCaso, LinkedHashMap<String, String> mappaVariazioniAnag) {
@@ -683,32 +665,33 @@ public class AccessTableSoggettoSessionBean extends CarSocialeBaseSessionBean im
 		  if(mappaVariazioniAnag.containsKey(TipoAggiornamentoAnagrafica.INDIRIZZO_DOMICILIO)) {
 			  anagraficaCaso.setIndirizzoDom(mappaVariazioniAnag.get(TipoAggiornamentoAnagrafica.INDIRIZZO_DOMICILIO));
 		  }
+		  if(mappaVariazioniAnag.containsKey(TipoAggiornamentoAnagrafica.CODICE_COMUNE_DOMICILIO)) {
+			  anagraficaCaso.setComDomCod(mappaVariazioniAnag.get(TipoAggiornamentoAnagrafica.CODICE_COMUNE_DOMICILIO));
+		  }
 		  if(mappaVariazioniAnag.containsKey(TipoAggiornamentoAnagrafica.COMUNE_DOMICILIO)) {
-			  anagraficaCaso.setIndirizzoDom(mappaVariazioniAnag.get(TipoAggiornamentoAnagrafica.COMUNE_DOMICILIO));
+			  anagraficaCaso.setComDomDes(mappaVariazioniAnag.get(TipoAggiornamentoAnagrafica.COMUNE_DOMICILIO));
 		  }
 		  if(mappaVariazioniAnag.containsKey(TipoAggiornamentoAnagrafica.NUM_CIVICO_DOMICILIO)) {
-			  anagraficaCaso.setIndirizzoDom(mappaVariazioniAnag.get(TipoAggiornamentoAnagrafica.NUM_CIVICO_DOMICILIO));
+			  anagraficaCaso.setNumCivDom(mappaVariazioniAnag.get(TipoAggiornamentoAnagrafica.NUM_CIVICO_DOMICILIO));
 		  }
 		  if(mappaVariazioniAnag.containsKey(TipoAggiornamentoAnagrafica.PROVINCIA_DI_DOMICILIO)) {
-			  anagraficaCaso.setIndirizzoDom(mappaVariazioniAnag.get(TipoAggiornamentoAnagrafica.PROVINCIA_DI_DOMICILIO));
+			  anagraficaCaso.setProvDomCod(mappaVariazioniAnag.get(TipoAggiornamentoAnagrafica.PROVINCIA_DI_DOMICILIO));
 		  }
-		  if(mappaVariazioniAnag.containsKey(TipoAggiornamentoAnagrafica.CODICE_COMUNE_DOMICILIO)) {
-			  anagraficaCaso.setIndirizzoDom(mappaVariazioniAnag.get(TipoAggiornamentoAnagrafica.CODICE_COMUNE_DOMICILIO));
-		  }
+		  
 		  if(mappaVariazioniAnag.containsKey(TipoAggiornamentoAnagrafica.INDIRIZZO_RESIDENZA)) {
-			  anagraficaCaso.setIndirizzoDom(mappaVariazioniAnag.get(TipoAggiornamentoAnagrafica.INDIRIZZO_RESIDENZA));
-		  }
-		  if(mappaVariazioniAnag.containsKey(TipoAggiornamentoAnagrafica.COMUNE_DI_RESIDENZA)) {
-			  anagraficaCaso.setIndirizzoDom(mappaVariazioniAnag.get(TipoAggiornamentoAnagrafica.COMUNE_DI_RESIDENZA));  
-		  }
-		  if(mappaVariazioniAnag.containsKey(TipoAggiornamentoAnagrafica.NUM_CIVICO_RESIDENZA)) {
-			  anagraficaCaso.setIndirizzoDom(mappaVariazioniAnag.get(TipoAggiornamentoAnagrafica.NUM_CIVICO_RESIDENZA));
-		  }
-		  if(mappaVariazioniAnag.containsKey(TipoAggiornamentoAnagrafica.PROVINCIA_DI_RESIDENZA)) {
-			  anagraficaCaso.setIndirizzoDom(mappaVariazioniAnag.get(TipoAggiornamentoAnagrafica.PROVINCIA_DI_RESIDENZA));
+			  anagraficaCaso.setIndirizzoRes(mappaVariazioniAnag.get(TipoAggiornamentoAnagrafica.INDIRIZZO_RESIDENZA));
 		  }
 		  if(mappaVariazioniAnag.containsKey(TipoAggiornamentoAnagrafica.COD_COM_RESIDENZA)) {
-			  anagraficaCaso.setIndirizzoDom(mappaVariazioniAnag.get(TipoAggiornamentoAnagrafica.COD_COM_RESIDENZA));
+			  anagraficaCaso.setComResCod(mappaVariazioniAnag.get(TipoAggiornamentoAnagrafica.COD_COM_RESIDENZA));
+		  }
+		  if(mappaVariazioniAnag.containsKey(TipoAggiornamentoAnagrafica.COMUNE_DI_RESIDENZA)) {
+			  anagraficaCaso.setComResDes(mappaVariazioniAnag.get(TipoAggiornamentoAnagrafica.COMUNE_DI_RESIDENZA));  
+		  }
+		  if(mappaVariazioniAnag.containsKey(TipoAggiornamentoAnagrafica.NUM_CIVICO_RESIDENZA)) {
+			  anagraficaCaso.setNumCivRes(mappaVariazioniAnag.get(TipoAggiornamentoAnagrafica.NUM_CIVICO_RESIDENZA));
+		  }
+		  if(mappaVariazioniAnag.containsKey(TipoAggiornamentoAnagrafica.PROVINCIA_DI_RESIDENZA)) {
+			  anagraficaCaso.setProvResCod(mappaVariazioniAnag.get(TipoAggiornamentoAnagrafica.PROVINCIA_DI_RESIDENZA));
 		  }
 	   }
 	
@@ -720,7 +703,9 @@ public class AccessTableSoggettoSessionBean extends CarSocialeBaseSessionBean im
 	 * @param tipoIndirizzoDB 1 = confronta indirizzo input con domicilio 2= confronta indirizzo input con indirizzo Residenza
 	 * @return
 	 */
-	private  boolean compareIndirizzoDomToIndirizzoDb(CsAComponenteAnagCasoGit componenteInput, 
+
+	 
+	private  boolean compareIndirizzoToIndirizzoDb(CsAComponenteAnagCasoGit componenteInput, 
 			CsAAnaIndirizzo indirizzo,LinkedHashMap<String, String> mapVariazioni,
 			int tipoIndirizzoDB ) {
 		boolean diversi = false;
@@ -730,28 +715,28 @@ public class AccessTableSoggettoSessionBean extends CarSocialeBaseSessionBean im
 		 
 			switch(tipoIndirizzoDB) {
 				case 1 : // DOMICILIO 
-					if(componenteInput.getIndirizzoDom() != null && !componenteInput.getIndirizzoDom().equals("")) {
+					if(!StringUtils.isBlank(componenteInput.getIndirizzoDom())) {
 						if(!compareB(componenteInput.getIndirizzoDom(), indirizzo.getIndirizzo()) ) {
 							diversi = true;
 							if(mapVariazioni != null)
 								mapVariazioni.put(TipoAggiornamentoAnagrafica.INDIRIZZO_DOMICILIO, componenteInput.getIndirizzoDom());
 						}
 					}
-					if(componenteInput.getComDomDes() != null && !componenteInput.getComDomDes().equals("")) {
+					if(!StringUtils.isBlank(componenteInput.getComDomDes())) {
 						if(!compareB(componenteInput.getComDomDes(), indirizzo.getComDes()) ) {
 							diversi = true;
 							if(mapVariazioni != null)
 								mapVariazioni.put(TipoAggiornamentoAnagrafica.COMUNE_DOMICILIO, componenteInput.getComDomDes());
 						}
 					}
-					if(componenteInput.getNumCivDom() != null && !componenteInput.getNumCivDom().equals("")) {
+					if(!StringUtils.isBlank(componenteInput.getNumCivDom())) {
 						if(!compareB(componenteInput.getNumCivDom(), indirizzo.getCivicoNumero()) ) {
 							diversi = true;
 							if(mapVariazioni != null)
 								mapVariazioni.put(TipoAggiornamentoAnagrafica.NUM_CIVICO_DOMICILIO, componenteInput.getNumCivDom());
 						}
 					}
-					if(componenteInput.getProvDomCod() != null && !componenteInput.getProvDomCod().equals("") ){
+					if(!StringUtils.isBlank(componenteInput.getProvDomCod())){
 						
 						if(!compareB(componenteInput.getProvDomCod(), indirizzo.getProv() ) ) {
 							diversi = true;
@@ -759,68 +744,61 @@ public class AccessTableSoggettoSessionBean extends CarSocialeBaseSessionBean im
 								mapVariazioni.put(TipoAggiornamentoAnagrafica.PROVINCIA_DI_DOMICILIO, componenteInput.getProvDomCod());
 						}
 					}
-					if(componenteInput.getComDomCod() != null   && !componenteInput.getComDomCod().equals("") 
-								&& !compareB(componenteInput.getComDomCod() , indirizzo.getComCod())){
+					if(!StringUtils.isBlank(componenteInput.getComDomCod()) && !compareB(componenteInput.getComDomCod() , indirizzo.getComCod())){
 						diversi = true;
 						if(mapVariazioni != null)
 							mapVariazioni.put(TipoAggiornamentoAnagrafica.CODICE_COMUNE_DOMICILIO,componenteInput.getComDomCod());
 					}
 					break;
 				case 2: // RESIDENZA
-					if(componenteInput.getIndirizzoRes() != null && !componenteInput.getIndirizzoRes().equals("")) {
+					if(!StringUtils.isBlank(componenteInput.getIndirizzoRes())) {
 						if(!compareB(componenteInput.getIndirizzoRes(), indirizzo.getIndirizzo()) ) {
 							diversi = true;
 							if(mapVariazioni != null)
 								mapVariazioni.put(TipoAggiornamentoAnagrafica.INDIRIZZO_RESIDENZA, componenteInput.getIndirizzoRes());
 						}
 					}
-					if(componenteInput.getComResDes() != null && !componenteInput.getComResDes().equals("")) {
+					if(!StringUtils.isBlank(componenteInput.getComResDes())) {
 						if(!compareB(componenteInput.getComResDes(), indirizzo.getComDes()) ) {
 							diversi = true;
 							if(mapVariazioni != null)
 								mapVariazioni.put(TipoAggiornamentoAnagrafica.COMUNE_DI_RESIDENZA, componenteInput.getComResDes());
 						}
 					}
-					if(componenteInput.getNumCivRes() != null && !componenteInput.getNumCivRes().equals("")) {
+					if(!StringUtils.isBlank(componenteInput.getNumCivRes())) {
 						if(!compareB(componenteInput.getNumCivRes(), indirizzo.getCivicoNumero()) ) {
 							diversi = true;
 							if(mapVariazioni != null)
 								mapVariazioni.put(TipoAggiornamentoAnagrafica.NUM_CIVICO_RESIDENZA, componenteInput.getNumCivRes());
 						}
 					}
-					if(componenteInput.getProvResCod() != null   && !componenteInput.getProvResCod().equals("") 
+					if(!StringUtils.isBlank(componenteInput.getProvResCod()) 
 							&& !compareB(componenteInput.getProvResCod() , indirizzo.getProv())){
 						diversi = true;
 						if(mapVariazioni != null)
 							mapVariazioni.put(TipoAggiornamentoAnagrafica.PROVINCIA_DI_RESIDENZA, componenteInput.getProvResCod());
 					}
-					if(componenteInput.getComResCod() != null   && !componenteInput.getComResCod().equals("") 
-							&& !compareB(componenteInput.getComResCod() , indirizzo.getComCod())){
-					diversi = true;
-					if(mapVariazioni != null)
-						mapVariazioni.put(TipoAggiornamentoAnagrafica.COD_COM_RESIDENZA,componenteInput.getComResCod());
-				}
+					if(!StringUtils.isBlank(componenteInput.getComResCod()) && !compareB(componenteInput.getComResCod() , indirizzo.getComCod())){
+						diversi = true;
+						if(mapVariazioni != null)
+							mapVariazioni.put(TipoAggiornamentoAnagrafica.COD_COM_RESIDENZA,componenteInput.getComResCod());
+					}
 				
 					break;
 				case 3: // RESIDENZA INPUT -DOMICILIO INPUT
-					if((componenteInput.getIndirizzoRes() == null || componenteInput.getIndirizzoRes().equals("")) && 
-								(componenteInput.getIndirizzoDom() != null) && !componenteInput.getIndirizzoDom().equals("")) {
+					if(StringUtils.isBlank(componenteInput.getIndirizzoRes()) && !StringUtils.isBlank(componenteInput.getIndirizzoDom())) {
 						diversi = true;
 						break;
 					}
 						
-					if(componenteInput.getIndirizzoRes() != null && !componenteInput.getIndirizzoRes().equals("")
-							&& componenteInput.getIndirizzoDom() != null && !componenteInput.getIndirizzoDom().equals("")) {
+					if(!StringUtils.isBlank(componenteInput.getIndirizzoRes()) && !StringUtils.isBlank(componenteInput.getIndirizzoDom())) {
 						if(!compareB(componenteInput.getIndirizzoRes(), componenteInput.getIndirizzoDom()) ) {
 							diversi = true;
-							 
 						}
 					}
-					if(componenteInput.getComResDes() != null && !componenteInput.getComResDes().equals("")
-							&& componenteInput.getComDomDes() != null && !componenteInput.getComDomDes().equals("")) {
+					if(!StringUtils.isBlank(componenteInput.getComResDes()) && !StringUtils.isBlank(componenteInput.getComDomDes())) {
 						if(!compareB(componenteInput.getComResDes(), componenteInput.getComDomDes()) ) {
 							diversi = true;
-							 
 						}
 					}
 //					if(componenteInput.getNumCivRes() != null && !componenteInput.getNumCivRes().equals("")) {
@@ -829,11 +807,9 @@ public class AccessTableSoggettoSessionBean extends CarSocialeBaseSessionBean im
 //							 
 //						}
 //					}
-					if(componenteInput.getProvResCod() != null   && !componenteInput.getProvResCod().equals("") 
-							&& componenteInput.getProvDomCod() != null   && !componenteInput.getProvDomCod().equals("") 
+					if(!StringUtils.isBlank(componenteInput.getProvResCod()) && !StringUtils.isBlank(componenteInput.getProvDomCod())
 							&& !compareB(componenteInput.getProvResCod() , componenteInput.getProvDomCod())){
 						diversi = true;
-						 
 					}
 //					if(componenteInput.getComResCod() != null   && !componenteInput.getComResCod().equals("") 
 //							&& !compareB(componenteInput.getComResCod() , indirizzo.getComCod())){
@@ -841,10 +817,6 @@ public class AccessTableSoggettoSessionBean extends CarSocialeBaseSessionBean im
 //					 
 //				}		
 			}
-		
-		 
-		 
-		
 		return diversi;
 		
 	}
@@ -991,7 +963,9 @@ public class AccessTableSoggettoSessionBean extends CarSocialeBaseSessionBean im
 		
 		if(nuovoInserimento && casoDTO.getSsSchedaId()!=null){ //Se è la creazione aggiorno la CS_SS
 			dto.setObj(casoDTO.getSsSchedaId());
-			dto.setObj2(soggetto);
+			// SISO-938
+			dto.setObj2(casoDTO.getTipoScheda());
+			dto.setObj3(soggetto);
 			schedaSegrService.agganciaCartellaASchedaUDC(dto);
 		}
 		
@@ -999,7 +973,7 @@ public class AccessTableSoggettoSessionBean extends CarSocialeBaseSessionBean im
 
 		//indirizzi
 		if(!nuovoInserimento) {
-			dto.setObj(soggetto.getAnagraficaId());
+			dto.setObj(soggettoId);
 			indirizzoService.eliminaIndirizziBySoggetto(dto);
 		}
 		for(CsAIndirizzo csInd: casoDTO.getListaIndirizzi()) {
@@ -1026,14 +1000,14 @@ public class AccessTableSoggettoSessionBean extends CarSocialeBaseSessionBean im
 		for(ValiditaDTO comp: casoDTO.getListaMedici()) {
 			CsASoggettoMedico cs = new CsASoggettoMedico();
 			CsASoggettoMedicoPK csPK = new CsASoggettoMedicoPK();
-			cs.setCsASoggetto(soggetto);
+			//cs.setCsASoggetto(soggetto);
 			cs.setDataInizioApp(comp.getDataInizio());
 			cs.setDataInizioSys(new Date());
 			cs.setDtIns(new Date());
 			cs.setUserIns(username);
 			csPK.setMedicoId(comp.getId());
 			csPK.setDataFineApp(comp.getDataFine());
-			csPK.setSoggettoAnagraficaId(soggetto.getAnagraficaId());
+			csPK.setSoggettoAnagraficaId(soggettoId);
 			cs.setId(csPK);
 			
 			dto.setObj(cs);
@@ -1050,14 +1024,14 @@ public class AccessTableSoggettoSessionBean extends CarSocialeBaseSessionBean im
 		for(ValiditaDTO comp: casoDTO.getListaStatus()) {
 			CsASoggettoStatus cs = new CsASoggettoStatus();
 			CsASoggettoStatusPK csPK = new CsASoggettoStatusPK();
-			cs.setCsASoggetto(soggetto);
+			//cs.setCsASoggetto(soggetto);
 			cs.setDataInizioApp(comp.getDataInizio());
 			cs.setDataInizioSys(new Date());
 			cs.setDtIns(new Date());
 			cs.setUserIns(username);
 			csPK.setStatusId(comp.getId());
 			csPK.setDataFineApp(comp.getDataFine());
-			csPK.setSoggettoAnagraficaId(soggetto.getAnagraficaId());
+			csPK.setSoggettoAnagraficaId(soggettoId);
 			cs.setId(csPK);
 			
 			dto.setObj(cs);
@@ -1074,7 +1048,7 @@ public class AccessTableSoggettoSessionBean extends CarSocialeBaseSessionBean im
 		for(ValiditaDTO comp: casoDTO.getListaStatoCivile()) {
 			CsASoggettoStatoCivile cs = new CsASoggettoStatoCivile();
 			CsASoggettoStatoCivilePK csPK = new CsASoggettoStatoCivilePK();
-			cs.setCsASoggetto(soggetto);
+			//cs.setCsASoggetto(soggetto);
 			cs.setDataInizioApp(comp.getDataInizio());
 			cs.setDataInizioSys(new Date());
 			cs.setDtIns(new Date());
@@ -1082,7 +1056,7 @@ public class AccessTableSoggettoSessionBean extends CarSocialeBaseSessionBean im
 			
 			csPK.setStatoCivileCod(comp.getId().toString());
 			csPK.setDataFineApp(comp.getDataFine());
-			csPK.setSoggettoAnagraficaId(soggetto.getAnagraficaId());
+			csPK.setSoggettoAnagraficaId(soggettoId);
 			cs.setId(csPK);
 			
 			dto.setObj(cs);
@@ -1111,6 +1085,7 @@ public class AccessTableSoggettoSessionBean extends CarSocialeBaseSessionBean im
 		CsAComponenteAnagCasoGit csCompAnagCasoGit = this.getAnagraficaSoggettoGitBySoggettoId(soggetto.getAnagraficaId());
 		if(csCompAnagCasoGit == null) {
 			csCompAnagCasoGit = new CsAComponenteAnagCasoGit();
+			csCompAnagCasoGit.setIdOrigWs(soggetto.getCsAAnagrafica().getIdOrigWs());
 			csCompAnagCasoGit.setCf(soggetto.getCsAAnagrafica().getCf());
 			csCompAnagCasoGit.setDtIns(new Date());
 			csCompAnagCasoGit.setCognome(soggetto.getCsAAnagrafica().getCognome());
@@ -1158,28 +1133,12 @@ public class AccessTableSoggettoSessionBean extends CarSocialeBaseSessionBean im
 	@Override
 	public Boolean hasNucleoBeneficiarioRdC(BaseDTO dto) {
 		Long idSoggetto = (Long)dto.getObj(); 
+		String cfSoggetto = (String)dto.getObj2(); 
+		Date dtVal = (Date)dto.getObj3();
 		boolean exists = false;
-		if(idSoggetto!=null) {
-			List<String> listaCf = new ArrayList<String>();
-			dto.setObj2(new Date());
-			dto.setObj3(true);
-			CsAFamigliaGruppo gruppo = schedaService.findFamigliaAllaDataBySoggettoId(dto);
-			if(gruppo!=null) {
-				String cf = gruppo.getCsASoggetto().getCsAAnagrafica().getCf();
-				listaCf.add(cf.toUpperCase());
-				for(CsAComponente c : gruppo.getCsAComponentes()) {
-					String cfc = c.getCsAAnagrafica().getCf();
-					if(!StringUtils.isEmpty(cfc))
-						listaCf.add(cfc.toUpperCase());
-				}
-			}
-			
-			exists = soggettoDAO.existsBeneficiarioRdC(listaCf);
-		}
+		if(idSoggetto!=null && !StringUtils.isBlank(cfSoggetto))
+			exists = soggettoDAO.hasNucleoBeneficiarioRdC(idSoggetto, cfSoggetto, dtVal);
 		return exists;
 	}
  
-	
-	
-
 }

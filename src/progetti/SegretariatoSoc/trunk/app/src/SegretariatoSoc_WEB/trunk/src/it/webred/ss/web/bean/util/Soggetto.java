@@ -1,8 +1,8 @@
 package it.webred.ss.web.bean.util;
 
+import it.webred.cs.csa.ejb.dto.KeyValueDTO;
 import it.webred.cs.data.DataModelCostanti;
 import it.webred.ct.data.access.basic.anagrafe.dto.IndirizzoAnagDTO;
-import it.webred.ct.data.access.basic.common.dto.KeyValueDTO;
 import it.webred.ss.web.bean.SegretariatoSocBaseBean;
 import it.webred.ss.web.bean.wizard.Anagrafica;
 
@@ -21,7 +21,7 @@ public class Soggetto {
 	private String cf;
 	private Date dataNascita;
     private Date dataMorte;	
-	private String idExt;     //IDENTIFICATIVO NECESSARIO IN DIOGENE (solamente)
+	//private String idExt;     //IDENTIFICATIVO NECESSARIO IN DIOGENE (solamente)
 	private String parentela;
 	private String sesso;
 	private String privacy;
@@ -44,6 +44,8 @@ public class Soggetto {
 	private boolean anagEsistenteUDC  =false;
 	private String tipoRicercaSoggetto = null;
 	
+	//SISO-1531 
+	private boolean presenzaDatiEsterni = false;
 	private boolean beneficiarioRdC = false;
 	
 	public Soggetto(String provenienza, String identificativo, Long idSSAnag,  String cognome, String nome, String cf, Date dataNascita, Date dataMorte, String sesso) {
@@ -59,6 +61,20 @@ public class Soggetto {
 		this.dataMorte = dataMorte;
 		this.sesso = sesso!=null ? sesso.toUpperCase() : "";
 	}
+
+	
+	
+	public boolean isPresenzaDatiEsterni() {
+		return presenzaDatiEsterni;
+	}
+
+
+
+	public void setPresenzaDatiEsterni(boolean presenzaDatiEsterni) {
+		this.presenzaDatiEsterni = presenzaDatiEsterni;
+	}
+
+
 
 	public Long getIdSsAnag() {
 		return idSsAnag;
@@ -82,10 +98,6 @@ public class Soggetto {
 
 	public Date getDataMorte() {
 		return dataMorte;
-	}
-
-	public String getIdExt() {
-		return idExt;
 	}
 
 	public boolean isCs() {
@@ -160,9 +172,6 @@ public class Soggetto {
 		this.dataMorte = dataMorte;
 	}
 
-	public void setIdExt(String idExt) {
-		this.idExt = idExt;
-	}
 
 	public void setCs(boolean cs) {
 		this.cs = cs;

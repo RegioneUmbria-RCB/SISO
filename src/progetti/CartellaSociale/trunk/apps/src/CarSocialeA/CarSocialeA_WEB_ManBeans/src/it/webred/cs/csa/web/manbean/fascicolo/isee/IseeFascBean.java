@@ -24,14 +24,12 @@ import java.util.List;
 import javax.faces.model.SelectItem;
 
 public class IseeFascBean extends FascicoloCompBaseBean implements IIsee {
-		
-	//private List<IseeBean> listaIsee;
+
 	private IIseeJson manIsee;
 	private int idxSelected;
 	private List<CsTbTipoIsee> listaTooltip;
 	private List<IIseeJson> listaIsee;
 	
-
 	@Override
 	public void initializeData() {
 		listaIsee = new ArrayList<IIseeJson>();
@@ -116,6 +114,13 @@ public class IseeFascBean extends FascicoloCompBaseBean implements IIsee {
 		}
 	}
 	
+	public void handleChangeAnnoProtocollo(){
+		manIsee.onChangeAnnoRiferimento();
+	}
+	
+	public void handleChangeTipologia(){
+		manIsee.onChangeTipologia();
+	}
 	
 	//SISO-812
 	public void salvaSecondoLivello(){

@@ -3,6 +3,7 @@ package it.webred.cs.csa.ejb.client;
 import java.util.List;
 
 import it.webred.cs.csa.ejb.dto.BaseDTO;
+import it.webred.cs.csa.ejb.dto.KeyValueDTO;
 import it.webred.cs.data.model.CsCCategoriaSociale;
 import it.webred.cs.data.model.CsRelCatsocTipoInter;
 import it.webred.cs.data.model.CsRelSettCatsocEsclusiva;
@@ -15,13 +16,15 @@ import javax.ejb.Remote;
 @Remote
 public interface AccessTableCatSocialeSessionBeanRemote {
 
-	public CsCCategoriaSociale getCategoriaSocialeById(BaseDTO dto);
+	public String getCategoriaSocialeById(BaseDTO dto);
 	
 	public List<CsCCategoriaSociale> getCategorieSociali(CeTBaseObject cet);
 	
 	public List<CsCCategoriaSociale> getCategorieSocialiAll(CeTBaseObject cet);
 	
 	public List<CsCCategoriaSociale> getCategorieSocialiByDesc(BaseDTO dto);
+	
+	public List<KeyValueDTO> getCategorieSocialiBySettore(BaseDTO dto);
 	
 	public List<CsRelCatsocTipoInter> findRelCatsocTipoInterByCatSoc(BaseDTO dto);
 		

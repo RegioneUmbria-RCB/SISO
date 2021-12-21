@@ -2,6 +2,8 @@ package it.webred.cs.csa.ejb.client;
 
 import it.webred.cs.csa.ejb.dto.BaseDTO;
 import it.webred.cs.csa.ejb.dto.IterDTO;
+import it.webred.cs.csa.ejb.dto.KeyValueDTO;
+import it.webred.cs.csa.ejb.dto.PresaInCaricoDTO;
 import it.webred.cs.csa.ejb.dto.StatoCartellaDTO;
 import it.webred.cs.csa.ejb.dto.retvalue.CsIterStepByCasoDTO;
 import it.webred.cs.data.model.CsCfgItStato;
@@ -30,9 +32,11 @@ public interface AccessTableIterStepSessionBeanRemote {
 
 	public List<StatoCartellaDTO> getStatoCasoBySoggetto(BaseDTO d) throws Exception;
 	
+	public PresaInCaricoDTO getLastPICByCaso(BaseDTO d);
+	
 	public CsItStep getLastIterStepByCaso(IterDTO dto) throws Exception;
 
-	public List<CsCfgItStato> getListaIterStati(CeTBaseObject cet);
+	public List<KeyValueDTO> getListaIterStati(CeTBaseObject cet);
 	
 	//SISO-1297
 	public  CsIterStepByCasoDTO getLastIterStepByCasoDTOAnonimo(BaseDTO dto)throws Exception;

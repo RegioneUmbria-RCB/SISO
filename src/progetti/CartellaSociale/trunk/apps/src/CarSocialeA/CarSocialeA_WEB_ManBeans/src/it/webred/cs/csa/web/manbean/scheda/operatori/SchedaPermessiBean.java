@@ -5,6 +5,7 @@ import it.webred.cs.csa.ejb.client.AccessTableConfigurazioneSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.AccessTableOperatoreSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.AccessTableSoggettoSessionBeanRemote;
 import it.webred.cs.csa.ejb.dto.BaseDTO;
+import it.webred.cs.csa.ejb.dto.KeyValueDTO;
 import it.webred.cs.csa.ejb.dto.OperatoreDTO;
 import it.webred.cs.csa.web.manbean.scheda.SchedaBean;
 import it.webred.cs.csa.web.manbean.scheda.SchedaValiditaCompUtils;
@@ -18,6 +19,7 @@ import it.webred.cs.data.model.CsOOperatoreAnagrafica;
 import it.webred.cs.data.model.CsOOperatoreSettore;
 import it.webred.cs.data.model.CsOOperatoreTipoOperatore;
 import it.webred.cs.data.model.CsOOrganizzazione;
+import it.webred.cs.data.model.CsOSettore;
 import it.webred.cs.data.model.CsOSettoreBASIC;
 import it.webred.cs.data.model.CsTbTipoOperatore;
 import it.webred.cs.jsf.bean.ValiditaCompBaseBean;
@@ -27,14 +29,12 @@ import it.webred.ct.support.datarouter.CeTBaseObject;
 import it.webred.dto.utility.KeyValuePairBean;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.event.AjaxBehaviorEvent;
-import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.SelectItem;
 
 import org.apache.commons.lang3.StringUtils;
@@ -160,13 +160,14 @@ public class SchedaPermessiBean extends DatiValGestioneMan  implements ISchedaPe
 			}
 			
 			for(CsACasoAccessoFascicolo ls : lstSecondoLivello){
-				
+				String descrizione = ls.getCsOOrganizzazione()!=null ? ls.getCsOOrganizzazione().getNome() : " ";
+				descrizione += ls.getCsOSettore()!=null ? ls.getCsOSettore().getDescrizione() : "";
 				if(ls.getTipologia().equals(this.SECONDOLIVELLO)){
 					SecondoLivelloComp b = new SecondoLivelloComp();
 					b.setDataFine (ls.getDataFineApp());
 					b.setDataInizio(ls.getDataInizioApp());
 					b.setTipologia(this.SECONDOLIVELLO);
-					b.setDescrizione(ls.getCsOOrganizzazione().getNome()+" "+ls.getCsOSettore().getDescrizione());
+					b.setDescrizione(descrizione);
 					b.setIdOrganizzazione(ls.getIdOrganizzazione());
 					b.setIdSettore(ls.getIdSettore());
 					b.setNascondiInformazioni(ls.getFlagNascondiInformazioni());
@@ -180,7 +181,7 @@ public class SchedaPermessiBean extends DatiValGestioneMan  implements ISchedaPe
 					o.setDataFine (ls.getDataFineApp());
 					o.setDataInizio(ls.getDataInizioApp());
 					o.setTipologia(this.ORGANIZZAZIONE);
-					o.setDescrizione(ls.getCsOOrganizzazione().getNome()+" "+ls.getCsOSettore().getDescrizione());
+					o.setDescrizione(descrizione);
 					o.setIdOrganizzazione(ls.getIdOrganizzazione());
 					o.setIdSettore(ls.getIdSettore());
 					o.setNascondiInformazioni(ls.getFlagNascondiInformazioni());
@@ -290,7 +291,7 @@ public class SchedaPermessiBean extends DatiValGestioneMan  implements ISchedaPe
 			lstOrganizzazioni = new ArrayList<SelectItem>();
 			try {
 				CeTBaseObject dto = new CeTBaseObject();		
-	fillEnte(dto);
+				fillEnte(dto);
 				List<CsOOrganizzazione> beanLst = confService.getOrganizzazioni(dto);
 				if (beanLst != null) {
 					for (CsOOrganizzazione s : beanLst){
@@ -425,43 +426,23 @@ public class SchedaPermessiBean extends DatiValGestioneMan  implements ISchedaPe
 			 
 			 try {
 				   //trovo denominazione organizzazione selezionata
-				   CeTBaseObject dto = new CeTBaseObject();
+				   BaseDTO dto = new BaseDTO();
 					fillEnte(dto);
-					List<CsOOrganizzazione> orgLst = confService.getOrganizzazioni(dto);
-					if (orgLst != null) {
-						for (CsOOrganizzazione s : orgLst){
-							if(s.getId().longValue()==idEnte.longValue()){
-								nomeOrganizzazione=s.getNome();
-								break;
-							}
-						}
-					}
+					dto.setObj(this.idEnte);
+					CsOOrganizzazione org = confService.getOrganizzazioneById(dto);
+					nomeOrganizzazione = org!=null ? org.getNome() : "";		
+					
+					
 					//trovo denominazione settore selezionato
-					OperatoreDTO dtoOp = new OperatoreDTO();
-					fillEnte(dtoOp);
-					if(this.idEnte!=null){
-						dtoOp.setIdOrganizzazione(idEnte);
-						List<CsOSettoreBASIC> settLst = operatoreService.findSettoreBASICByOrganizzazione(dtoOp);
-						if (settLst != null) {
-							for (CsOSettoreBASIC s : settLst){
-								if(s.getId().longValue()==idSettore.longValue()){
-									nomeSettore=s.getNome();
-									break;
-								}
-							} 
-						}
-					}
+					dto.setObj(this.idSettore);
+					CsOSettore sett = confService.getSettoreById(dto);
+					nomeSettore= sett!=null ? sett.getNome() : "";
 					
 					//trovo denominazione tipo selezionato
-					List<CsTbTipoOperatore> tipiLst = this.getTipiOperatore();
-					if (tipiLst != null) {
-						for (CsTbTipoOperatore s : tipiLst){
-							if(s.getId()==idTipoOperatore.longValue()){
-								nomeTipo=s.getDescrizione();
-								break;
-							}
-						} 
-						}
+					dto.setObj(this.idSettore);
+					CsTbTipoOperatore tipoOp = confService.getTipoOperatoreById(dto);
+					nomeTipo=tipoOp!=null ? tipoOp.getDescrizione() : "";
+								
 					//procedo col salvataggio nella lista provvisoria
 					if(gestisciPermessi.equals(this.SECONDOLIVELLO)){
 						SecondoLivelloComp compSecondoLivello = new SecondoLivelloComp();
@@ -655,7 +636,7 @@ public class SchedaPermessiBean extends DatiValGestioneMan  implements ISchedaPe
 						
 						CsACasoOpeTipoOpe cs = new CsACasoOpeTipoOpe();
 					
-						cs.setCsACaso(soggetto.getCsACaso());
+						//cs.setCsACaso(soggetto.getCsACaso());
 						cs.setCasoId (soggetto.getCsACaso().getId());
 						cs.setOperatoreTipoOperatoreId(comp.getId());
 						cs.setDataInizioApp(comp.getDataInizio());
@@ -676,8 +657,8 @@ public class SchedaPermessiBean extends DatiValGestioneMan  implements ISchedaPe
                         CsACasoAccessoFascicolo cs = new CsACasoAccessoFascicolo();
                      
 						cs.setCasoId (soggetto.getCsACaso().getId());
-						cs.setIdSettore(comp.getIdSettore());
-						cs.setIdOrganizzazione(comp.getIdOrganizzazione());
+						cs.setIdSettore(comp.getIdSettore()!=null && comp.getIdSettore()>0 ? comp.getIdSettore() : null);
+						cs.setIdOrganizzazione(comp.getIdOrganizzazione()!=null && comp.getIdOrganizzazione()>0 ? comp.getIdOrganizzazione() : null);
 						cs.setTipologia(SECONDOLIVELLO);
 					    cs.setDtIns(comp.getDataInizio());
 						cs.setDataFineApp(comp.getDataFine());
@@ -694,8 +675,8 @@ public class SchedaPermessiBean extends DatiValGestioneMan  implements ISchedaPe
 						OrganizzazioneComp comp = (OrganizzazioneComp)baseComp;
                         CsACasoAccessoFascicolo cs = new CsACasoAccessoFascicolo();
                         cs.setCasoId (soggetto.getCsACaso().getId());
-						cs.setIdOrganizzazione(comp.getIdOrganizzazione());
-						cs.setIdSettore(comp.getIdSettore());
+                        cs.setIdSettore(comp.getIdSettore()!=null && comp.getIdSettore()>0 ? comp.getIdSettore() : null);
+						cs.setIdOrganizzazione(comp.getIdOrganizzazione()!=null && comp.getIdOrganizzazione()>0 ? comp.getIdOrganizzazione() : null);
 						cs.setTipologia(ORGANIZZAZIONE);
 					    if(comp.getDataInizio() == null) {
 					    	cs.setDtIns(new Date());
@@ -716,10 +697,6 @@ public class SchedaPermessiBean extends DatiValGestioneMan  implements ISchedaPe
 						cs.setFlagNascondiInformazioni(comp.getNascondiInformazioni());
 						dto.setObj(cs);
 						casoService.salvaAccessoFascicoloCaso(dto);
-						
-						
-						
-						
 					}
 				}
 				RequestContext.getCurrentInstance().addCallbackParam("saved", true);
@@ -962,6 +939,11 @@ public class SchedaPermessiBean extends DatiValGestioneMan  implements ISchedaPe
 
 	public void setNascondiInformazioniHelp(String nascondiInformazioniHelp) {
 		this.nascondiInformazioniHelp = nascondiInformazioniHelp;
+	}
+
+	@Override
+	protected List<KeyValueDTO> loadListItems() {
+		return null;
 	}
 
 	// fine SISO-812	

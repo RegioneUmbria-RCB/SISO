@@ -22,7 +22,7 @@ public class CsCfgIntEsegStatoInt implements Serializable {
 	private long id;
 
 	//bi-directional many-to-one association to CsCfgAttr
-	@ManyToOne
+	@ManyToOne (fetch=FetchType.LAZY)
 	@JoinColumn(name="CFG_INT_ESEG_ID")
 	private CsCfgIntEseg csCfgIntervEseg;
 	

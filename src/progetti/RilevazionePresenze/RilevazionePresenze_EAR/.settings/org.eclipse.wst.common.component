@@ -144,8 +144,5 @@
         <dependent-module archiveName="org.springframework.transaction-3.0.4.RELEASE.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/spring/3.0.4/org.springframework.transaction-3.0.4.RELEASE.jar">
             <dependency-type>uses</dependency-type>
         </dependent-module>
-        <dependent-module archiveName="CarSocialeA_EJBClient.jar" deploy-path="/lib" handle="module:/resource/CarSocialeA_EJBClient/CarSocialeA_EJBClient">
-            <dependency-type>uses</dependency-type>
-        </dependent-module>
     </wb-module>
 </project-modules>

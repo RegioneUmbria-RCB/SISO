@@ -8,7 +8,6 @@
 		<project>RilevazionePresenze_EJB</project>
 		<project>RilevazionePresenze_EJBClient</project>
 		<project>WebredEJBUtility</project>
-		<project>CarSocialeA_EJBClient</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

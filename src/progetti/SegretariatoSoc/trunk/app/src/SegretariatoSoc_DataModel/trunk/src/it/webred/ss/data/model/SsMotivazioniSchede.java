@@ -30,7 +30,7 @@ public class SsMotivazioniSchede implements Serializable {
 	
 	//bi-directional many-to-one association to SsSchedaAccesso
 	@ManyToOne
-	@JoinColumn(name="SCHEDA")
+	@JoinColumn(name="SCHEDA_MOTIVAZIONE_ID")
 	private SsSchedaMotivazione scheda;
 
 	public SsMotivazione getMotivazione() {

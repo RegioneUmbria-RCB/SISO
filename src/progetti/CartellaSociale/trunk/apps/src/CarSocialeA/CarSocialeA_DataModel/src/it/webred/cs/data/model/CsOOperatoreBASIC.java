@@ -5,14 +5,7 @@ import java.io.Serializable;
 import javax.persistence.*;
 
 import java.util.Date;
-import java.util.List;
-import java.util.Set;
 
-
-/**
- * The persistent class for the CS_O_OPERATORE database table.
- * 
- */
 @Entity
 @Table(name="CS_O_OPERATORE")
 public class CsOOperatoreBASIC implements Serializable {
@@ -45,7 +38,10 @@ public class CsOOperatoreBASIC implements Serializable {
 	@Basic
 	@Transient
 	private String denominazione;
-
+	
+	@ManyToOne
+	@JoinColumn(name="ID", insertable=false, updatable=false)
+	private CsOOperatoreAnagrafica csOOperatoreAnagrafica;
 
 	public CsOOperatoreBASIC() {
 	}
@@ -98,13 +94,25 @@ public class CsOOperatoreBASIC implements Serializable {
 		this.username = username;
 	}
 
-	public String getDenominazione() {
-		return denominazione;
-	}
-
 	public void setDenominazione(String denominazione) {
 		this.denominazione = denominazione;
 	}
+	
+	public CsOOperatoreAnagrafica getCsOOperatoreAnagrafica() {
+		return csOOperatoreAnagrafica;
+	}
 
-
+	public void setCsOOperatoreAnagrafica(
+			CsOOperatoreAnagrafica csOOperatoreAnagrafica) {
+		this.csOOperatoreAnagrafica = csOOperatoreAnagrafica;
+	}
+	
+	public String getDenominazione(){
+		denominazione = "";
+		if (this.csOOperatoreAnagrafica != null) 
+			denominazione = this.csOOperatoreAnagrafica.getDenominazione();
+		if(denominazione.trim().isEmpty())
+			denominazione = this.username;
+		return denominazione;
+	}
 }

@@ -3,7 +3,6 @@ package it.webred.cs.json.OrientamentoLavoro.ver1;
 import it.webred.cs.csa.ejb.client.AccessTableConfigurazioneSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.CarSocialeServiceException;
 import it.webred.cs.data.model.CsDValutazione;
-import it.webred.cs.data.model.CsOOperatoreSettore;
 import it.webred.cs.data.model.CsTbCondLavoro;
 import it.webred.cs.data.model.CsTbProfessione;
 import it.webred.cs.json.ISchedaValutazione;
@@ -13,11 +12,8 @@ import it.webred.ct.support.datarouter.CeTBaseObject;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.TreeMap;
 
 import javax.faces.application.FacesMessage;
@@ -101,7 +97,6 @@ public class OrientamentoLavoroManBean extends OrientamentoLavoroManBaseBean {
 	{
 		if(lstCondLavorativa == null){
 			lstCondLavorativa = new ArrayList<SelectItem>();
-			lstCondLavorativa.add(new SelectItem(null, "- seleziona -"));
 			CeTBaseObject  xo = new CeTBaseObject();
 			fillEnte(xo);
 			TreeMap<String, List<CsTbCondLavoro>> tree = confService.getMappaCondLavoro(xo);
@@ -112,8 +107,8 @@ public class OrientamentoLavoroManBean extends OrientamentoLavoroManBaseBean {
 					List<SelectItem> siList = new ArrayList<SelectItem>();
 					for (CsTbCondLavoro obj : lst) {
 						SelectItem si = new SelectItem(obj.getId(), obj.getDescrizione());
-						if("0".equals(obj.getAbilitato()))
-							si.setDisabled(true);
+						boolean abilitato = obj.getAbilitato()!=null ? obj.getAbilitato().booleanValue() : Boolean.FALSE;
+					    si.setDisabled(!abilitato);
 						siList.add(si);
 					}
 					gr.setSelectItems(siList.toArray(new SelectItem[siList.size()]));

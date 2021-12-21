@@ -44,7 +44,7 @@ public class VLineaFin implements Serializable{
 	@Column(name="DT_MOD") 
 	private Date dtMod;
 	
-	private char abilitato;		
+	private Boolean abilitato;		
 	
 	@Temporal(TemporalType.DATE)
 	@Column(name="DATA_INIZIO_VAL")
@@ -137,11 +137,11 @@ public class VLineaFin implements Serializable{
 		this.dtMod = dtMod;
 	}
 
-	public char getAbilitato() {
+	public Boolean getAbilitato() {
 		return abilitato;
 	}
 
-	public void setAbilitato(char abilitato) {
+	public void setAbilitato(Boolean abilitato) {
 		this.abilitato = abilitato;
 	}
 

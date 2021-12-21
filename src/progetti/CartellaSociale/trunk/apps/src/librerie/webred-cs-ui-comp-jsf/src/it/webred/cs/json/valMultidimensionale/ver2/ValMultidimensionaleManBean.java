@@ -12,9 +12,7 @@ import it.webred.cs.data.model.ArTbPrestazioniInps;
 import it.webred.cs.data.model.CsAAnagrafica;
 import it.webred.cs.data.model.CsAComponente;
 import it.webred.cs.data.model.CsADatiSociali;
-import it.webred.cs.data.model.CsAFamigliaGruppo;
 import it.webred.cs.data.model.CsDDiario;
-import it.webred.cs.data.model.CsDSina;
 import it.webred.cs.data.model.CsDSinaEseg;
 import it.webred.cs.data.model.CsDValutazione;
 import it.webred.cs.data.model.CsTbAbitGestProprietario;
@@ -180,47 +178,38 @@ public class ValMultidimensionaleManBean extends ValMultidimensionaleManBaseBean
 	protected void loadCommonList()
 	{
 
-		BaseDTO anaFamCurrDto = new BaseDTO();
-		fillEnte(anaFamCurrDto);
-		
-		
 		if (soggetto != null) {
-			anaFamCurrDto.setObj(soggetto.getAnagraficaId());
-			anaFamCurrDto.setObj3(true);
-			CsAFamigliaGruppo famGr = schedaService.findFamigliaAllaDataBySoggettoId(anaFamCurrDto);
+			List<CsAComponente> famAllComponentes = CsUiCompBaseBean.caricaParenti(soggetto.getAnagraficaId(), null);
 			
-			
-			if(famGr!=null){
-				List<CsAComponente> famAllComponentes = famGr.getCsAComponentes();
+			if(famAllComponentes != null) {
 				famNonConvComponentes = new ArrayList<CsAComponente>();
 				famConvComponentes = new ArrayList<CsAComponente>();
 				famAltriComponentes = new ArrayList<CsAComponente>();
 				apriAnaConvButton = false;
 				apriAnaNonConvButton = false;
 				apriAltrifamButton = false;
-				if(famAllComponentes != null) {
-					for (CsAComponente it : famAllComponentes) {
-						if (it.getCsTbTipoRapportoCon().getParente()) {
-							if (it.getConvivente()) {
-								//famConvComponentes = new ArrayList<CsAComponente>();
-								famConvComponentes.add(it);
-								apriAnaConvButton = apriAnaConvButton || true;
-								apriAnaNonConvButton = apriAnaNonConvButton || false;
-								apriAltrifamButton = apriAltrifamButton || false;
-							} else {
-								//famNonConvComponentes = new ArrayList<CsAComponente>(); 
-								famNonConvComponentes.add(it);
-								apriAnaConvButton = apriAnaConvButton || false;
-								apriAnaNonConvButton = apriAnaNonConvButton || true;
-								apriAltrifamButton = apriAltrifamButton || false;
-							}
-						} else {
-							//famAltriComponentes = new ArrayList<CsAComponente>();
-							famAltriComponentes.add(it);
-							apriAnaConvButton = apriAnaConvButton || false;
+				
+				for (CsAComponente it : famAllComponentes) {
+					if (it.getCsTbTipoRapportoCon().getParente()) {
+						if (it.getConvivente()) {
+							//famConvComponentes = new ArrayList<CsAComponente>();
+							famConvComponentes.add(it);
+							apriAnaConvButton = apriAnaConvButton || true;
 							apriAnaNonConvButton = apriAnaNonConvButton || false;
-							apriAltrifamButton = apriAltrifamButton || true;
+							apriAltrifamButton = apriAltrifamButton || false;
+						} else {
+							//famNonConvComponentes = new ArrayList<CsAComponente>(); 
+							famNonConvComponentes.add(it);
+							apriAnaConvButton = apriAnaConvButton || false;
+							apriAnaNonConvButton = apriAnaNonConvButton || true;
+							apriAltrifamButton = apriAltrifamButton || false;
 						}
+					} else {
+						//famAltriComponentes = new ArrayList<CsAComponente>();
+						famAltriComponentes.add(it);
+						apriAnaConvButton = apriAnaConvButton || false;
+						apriAnaNonConvButton = apriAnaNonConvButton || false;
+						apriAltrifamButton = apriAltrifamButton || true;
 					}
 				}
 			}

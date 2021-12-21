@@ -1,10 +1,14 @@
 package it.webred.cs.csa.ejb.domini;
 
+import it.webred.cs.csa.ejb.CarSocialeBaseSessionBean;
 import it.webred.cs.csa.ejb.client.domini.AccessTableDominiPaiSessionBeanRemote;
 import it.webred.cs.csa.ejb.dao.PaiAffidoDAO;
+import it.webred.cs.csa.ejb.dao.PaiSalDAO;
 import it.webred.cs.csa.ejb.dto.BaseDTO;
 import it.webred.cs.csa.ejb.dto.pai.affido.CsPaiAffidoDominioDTO;
+import it.webred.cs.csa.ejb.dto.pai.sal.CsPaiSalDominioDTO;
 import it.webred.cs.data.model.affido.CsTbPaiAffido;
+import it.webred.cs.data.model.sal.CsTbPaiSal;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,17 +25,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 @Singleton
 @Startup
-public class AccessTableDominiPaiSessionBean implements AccessTableDominiPaiSessionBeanRemote {
+public class AccessTableDominiPaiSessionBean extends CarSocialeBaseSessionBean implements AccessTableDominiPaiSessionBeanRemote {
 	
 	@Autowired
 	private PaiAffidoDAO affidoDAO;
+	@Autowired
+	private PaiSalDAO salDAO;
 	
 	private HashMap<String, List<CsPaiAffidoDominioDTO>> cache;
+	private HashMap<String, List<CsPaiSalDominioDTO>> cacheSal;
 	
 	@PostConstruct
 	@Schedule(hour="0", persistent=false) //ricarica i domini ogni notte a mezzanotte
 	public void initDominiSingleton(){
 		this.cache = new HashMap<String, List<CsPaiAffidoDominioDTO>>();
+		logger.debug("INIZIO caricamento AccessTableDominiPaiSessionBean");
 		try {
 			List<CsTbPaiAffido> domini = affidoDAO.findAll();
 			
@@ -49,6 +57,31 @@ public class AccessTableDominiPaiSessionBean implements AccessTableDominiPaiSess
 				
 				listaDom.add(pad);
 				cache.put(d.getDominio(), listaDom);
+			}
+			logger.debug("FINE caricamento AccessTableDominiPaiSessionBean");
+		} catch (Exception e) {
+			logger.error(e);
+		}
+		
+		//SISO-1257
+		this.cacheSal = new HashMap<String, List<CsPaiSalDominioDTO>>();
+		try {
+			List<CsTbPaiSal> domini = salDAO.findAll();
+			
+			for(CsTbPaiSal d : domini){
+				//SISO-981 Inizio
+				CsPaiSalDominioDTO pad = new CsPaiSalDominioDTO(d.getId().getDominio(), d.getId().getCodice(), d.getDescrizione());
+				//SISO-981 Fine
+				List<CsPaiSalDominioDTO> listaDom;
+				
+				if(!cacheSal.containsKey(d.getId().getDominio())){
+					listaDom = new ArrayList<CsPaiSalDominioDTO>();
+				}else{
+					listaDom = cacheSal.get(d.getId().getDominio());
+				}
+				
+				listaDom.add(pad);
+				cacheSal.put(d.getId().getDominio(), listaDom);
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -88,4 +121,13 @@ public class AccessTableDominiPaiSessionBean implements AccessTableDominiPaiSess
 		return -1; 
 	}
 	//SISO-981 Fine
+
+	//SISO-1257
+	@Override
+	@Lock(LockType.READ)
+	public List<CsPaiSalDominioDTO> findSalByDominio(BaseDTO base) {
+		return cacheSal.get((String) base.getObj());
+	}
+	
+	
 }

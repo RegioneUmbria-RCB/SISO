@@ -29,42 +29,10 @@ public class CsDDiario implements Serializable {
 	@JoinColumn(name = "CASO_ID")
 	private CsACaso csACaso;
 
-	// bi-directional one-to-many association to CsDSina
+/*	// bi-directional one-to-many association to CsDSina
 	@OneToMany(mappedBy = "csDDiario", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<CsDSina> csDSinas;
-
-	// //bi-directional one-to-one association to CsDColloquio
-	// @OneToOne(mappedBy="csDDiario")
-	// private CsDColloquio csDColloquio;
-	//
-	// //bi-directional one-to-one association to CsDColloquio
-	// @OneToOne(mappedBy="csDDiario", cascade={CascadeType.ALL})
-	// private CsDPai csDPai;
-
-	// //bi-directional one-to-one association to CsDNote
-	// @OneToOne(mappedBy="csDDiario")
-	// private CsDNote csDNote;
-	//
-	// //bi-directional one-to-one association to CsDRelazionePeriodica
-	// @OneToOne(mappedBy="csDDiario")
-	// private CsDRelazione csDRelazione;
-	//
-	// //bi-directional one-to-one association to CsDDocIndividuale
-	// @OneToOne(mappedBy="csDDiario")
-	// private CsDDocIndividuale csDDocIndividuale;
-
-	// //bi-directional one-to-one association to CsDDocIndividuale
-	// @OneToOne(mappedBy="csDDiario")
-	// private CsDIsee csDIsee;
-	//
-	// //bi-directional one-to-one association to CsDScuola
-	// @OneToOne(mappedBy="csDDiario")
-	// private CsDScuola csDScuola;
-
-	// //bi-directional one-to-one association to CsFlgIntervento
-	// @OneToOne(mappedBy="csDDiario")
-	// private CsFlgIntervento csFlgIntervento;
-
+*/
 	@ManyToOne
 	@JoinColumn(name = "TIPO_DIARIO_ID")
 	private CsTbTipoDiario csTbTipoDiario;
@@ -326,14 +294,6 @@ public class CsDDiario implements Serializable {
 		this.schedaId = schedaId;
 	}
 
-	public List<CsDSina> getCsDSinas() {
-		return csDSinas;
-	}
-
-	public void setCsDSinas(List<CsDSina> csDSinas) {
-		this.csDSinas = csDSinas;
-	}
-
 	public Long getVisSecondoLivello() {
 		return visSecondoLivello;
 	}
@@ -342,6 +302,21 @@ public class CsDDiario implements Serializable {
 		this.visSecondoLivello = visSecondoLivello;
 	}
 
+	public Date getDataUltimaModifica(){
+		Date dtModifica = dtMod != null ? dtMod : dtIns;
+		return dtModifica;
+	}
 	
+	public String getOperatoreUltimaModifica(){
+		String ultimo = usrMod != null ? usrMod : userIns;
+		return ultimo;
+	}
+	
+	public boolean isAutore(String currUsername){
+		boolean isAutore = currUsername.equals(this.userIns) || currUsername.equals(this.usrMod)  ||
+				(this.csOOperatoreSettore!=null &&  currUsername.equals(this.csOOperatoreSettore.getCsOOperatore().getUsername()));
+		
+		return isAutore;
+	}
 
 }

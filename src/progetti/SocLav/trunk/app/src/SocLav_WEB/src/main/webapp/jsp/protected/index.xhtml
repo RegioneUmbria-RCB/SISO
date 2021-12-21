@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui" xmlns:adm="http://github.com/adminfaces"
+                template="#{layoutMB.template}">
+
+    <ui:define name="title">
+        Benvenuto 
+    </ui:define>
+ 	
+    <ui:define name="body">
+       
+
+        <h:form id="form" prependId="false">
+         <h:panelGrid columns="2">
+          <h:outputLabel value="Ultimo aggiornamento flusso GePI (TODO:Recuperare dai flussi):"/> 
+		  <p:outputLabel value="#{homeBean.dataAggiornamentoGepi}" >
+				<f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+			</p:outputLabel>	
+		<h:outputLabel value="Ultimo aggiornamento flusso ANPAL (TODO:Recuperare dai flussi): "/> 
+		  <p:outputLabel value="#{homeBean.dataAggiornamentoANPAL}" >
+				<f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+			</p:outputLabel>	
+		 </h:panelGrid>
+        </h:form>
+
+
+    </ui:define>
+
+</ui:composition>

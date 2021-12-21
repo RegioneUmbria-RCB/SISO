@@ -6,8 +6,6 @@ import it.webred.cs.jsf.manbean.ComuneNazioneNascitaMan;
 import it.webred.cs.jsf.manbean.common.CommonDatiAnaBean;
 import it.webred.cs.jsf.manbean.superc.CsUiCompBaseBean;
 import it.webred.ct.config.model.AmTabNazioni;
-import it.webred.ct.data.access.basic.anagrafe.dto.ComponenteFamigliaDTO;
-import it.webred.ct.data.model.anagrafe.SitDPersona;
 import it.webred.jsf.bean.ComuneBean;
 import it.webred.jsf.bean.SessoBean;
 import it.webred.siso.ws.ricerca.dto.PersonaDettaglio;
@@ -37,7 +35,6 @@ public class Anagrafica implements CommonDatiAnaBean {
 	private String cittadinanza;
 	private Long cittadinanzaAcq;
 	private String cittadinanza2;
-	private String idExtAnagrafeEnte;
 	private String idOrigWs;
 	private String alias;
 	//private MinEtnicaBean minEtnicaMan = new MinEtnicaBean();;
@@ -113,36 +110,7 @@ public class Anagrafica implements CommonDatiAnaBean {
 	public void setAlias(String alias) {
 		this.alias = alias;
 	}
-	
-	public void initFromAnagrafe(SitDPersona soggetto, ComponenteFamigliaDTO compDto, String codCsStaCiv){
-		cognome = soggetto.getCognome();
-		nome = soggetto.getNome();
-		codiceFiscale = soggetto.getCodfisc();
-		dataNascita = soggetto.getDataNascita();
 
-		//Cittadinanza
-		cittadinanza = compDto.getCittadinanza();
-		
-		if("ITALIA".equals(compDto.getDesStatoNas())) {
-			if(compDto.getCodComNas()!=null){
-				ComuneBean comuneBean = new ComuneBean(compDto.getCodComNas(), compDto.getDesComNas(), compDto.getSiglaProvNas());
-				this.comuneNazioneNascitaMan.getComuneNascitaMan().setComune(comuneBean);
-			}else this.comNascNonValido=true;
-		} else {
-			if(compDto.getIstatStatoNas()!=null){
-				AmTabNazioni amTabNazioni = CsUiCompBaseBean.getNazioneByIstat(compDto.getIstatStatoNas(), compDto.getDesStatoNas());
-				this.comuneNazioneNascitaMan.setNazioneValue();
-				this.comuneNazioneNascitaMan.getNazioneMan().setNazione(amTabNazioni);
-			}else this.comNascNonValido=true;
-		}
-		
-		datiSesso.setSesso(soggetto.getSesso());
-		statoCivile = codCsStaCiv; 
-		
-		disableAnagrafica = true;
-		idExtAnagrafeEnte = soggetto.getIdExt();
-	}
-	
 	
 	public void fillModel(SsAnagrafica anagrafica) {
 		anagrafica.setId(id);
@@ -254,12 +222,6 @@ public class Anagrafica implements CommonDatiAnaBean {
 	}
 	public void setDatiSesso(SessoBean datiSesso) {
 		this.datiSesso = datiSesso;
-	}
-	public String getIdExtAnagrafeEnte() {
-		return idExtAnagrafeEnte;
-	}
-	public void setIdExtAnagrafeEnte(String idExtAnagrafeEnte) {
-		this.idExtAnagrafeEnte = idExtAnagrafeEnte;
 	}
 	public boolean isCittadinanzaStraniera(){
 		boolean straniero = !DataModelCostanti.CITTADINANZA_ITA.equalsIgnoreCase(cittadinanza); // && !DataModelCostanti.CITTADINANZA_ITA.equalsIgnoreCase(cittadinanza2) ;

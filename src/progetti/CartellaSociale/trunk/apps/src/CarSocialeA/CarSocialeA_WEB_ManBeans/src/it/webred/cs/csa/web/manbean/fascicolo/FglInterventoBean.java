@@ -1,36 +1,38 @@
 package it.webred.cs.csa.web.manbean.fascicolo;
 
-import it.webred.cs.csa.ejb.client.AccessTableConfigurazioneSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.AccessTableNazioniSessionBeanRemote;
-import it.webred.cs.csa.ejb.client.AccessTableOperatoreSessionBeanRemote;
-import it.webred.cs.csa.ejb.client.AccessTablePsExportSessionBeanRemote;
-import it.webred.cs.csa.ejb.client.AccessTableSchedaSessionBeanRemote;
 import it.webred.cs.csa.ejb.dto.BaseDTO;
 import it.webred.cs.csa.ejb.dto.InterventoDTO;
+import it.webred.cs.csa.ejb.dto.KeyValueDTO;
 import it.webred.cs.csa.ejb.dto.PaiDTO;
 import it.webred.cs.csa.ejb.dto.erogazioni.SoggettoErogazioneBean;
+import it.webred.cs.csa.ejb.dto.pai.CsPaiMastSoggDTO;
+import it.webred.cs.csa.ejb.dto.pai.pti.InserimentoConsuntivazioneDTO;
+import it.webred.cs.csa.ejb.dto.pai.pti.StrutturaDisponibilitaDTO;
+import it.webred.cs.csa.ejb.dto.siru.StampaFseDTO;
 import it.webred.cs.csa.web.manbean.fascicolo.erogazioniInterventi.ErogInterventoRowBean;
 import it.webred.cs.csa.web.manbean.fascicolo.interventi.DatiProgettoBean;
+import it.webred.cs.csa.web.manbean.fascicolo.pai.ProgettiIndividualiExtBean;
 import it.webred.cs.csa.web.manbean.report.ReportBean;
 import it.webred.cs.data.DataModelCostanti;
 import it.webred.cs.data.DataModelCostanti.FoglioAmministrativo.STATO;
 import it.webred.cs.data.DataModelCostanti.PermessiErogazioneInterventi;
+import it.webred.cs.data.DataModelCostanti.TariffeErogazioni.TIPO_FREQUENZA_SERVIZIO;
 import it.webred.cs.data.DataModelCostanti.TariffeErogazioni.TIPO_RENDICONTO;
+import it.webred.cs.data.DataModelCostanti.TipiCategoriaSociale;
 import it.webred.cs.data.DataModelCostanti.TipoStatoErogazione;
-import it.webred.cs.data.model.ArFfProgetto;
 import it.webred.cs.data.model.CsAAnaIndirizzo;
+import it.webred.cs.data.model.CsAComponente;
 import it.webred.cs.data.model.CsASoggettoLAZY;
-import it.webred.cs.data.model.CsCCategoriaSocialeBASIC;
+import it.webred.cs.data.model.CsCCategoriaSociale;
 import it.webred.cs.data.model.CsCTipoIntervento;
 import it.webred.cs.data.model.CsCTipoInterventoCustom;
+import it.webred.cs.data.model.CsCfgIntEsegStato;
 import it.webred.cs.data.model.CsDDiario;
-import it.webred.cs.data.model.CsDDiarioDoc;
-import it.webred.cs.data.model.CsDRelazione;
 import it.webred.cs.data.model.CsFlgIntervento;
 import it.webred.cs.data.model.CsIIntervento;
 import it.webred.cs.data.model.CsIInterventoEseg;
 import it.webred.cs.data.model.CsIInterventoEsegMast;
-import it.webred.cs.data.model.CsIInterventoEsegMastSogg;
 import it.webred.cs.data.model.CsIInterventoPr;
 import it.webred.cs.data.model.CsIQuota;
 import it.webred.cs.data.model.CsOOperatoreSettore;
@@ -38,13 +40,12 @@ import it.webred.cs.data.model.CsOOperatoreTipoOperatore;
 import it.webred.cs.data.model.CsOOrganizzazione;
 import it.webred.cs.data.model.CsOSettore;
 import it.webred.cs.data.model.CsRelSettCsocTipoInterPK;
-import it.webred.cs.data.model.CsTbInterventiUOL;
+import it.webred.cs.data.model.CsRelSettoreStruttura;
 import it.webred.cs.data.model.CsTbMotivoChiusuraInt;
-import it.webred.cs.data.model.CsTbTipoCirc4;
 import it.webred.cs.data.model.CsTbTipoContributo;
-import it.webred.cs.data.model.CsTbTipoProgetto;
 import it.webred.cs.data.model.CsTbTipoRetta;
 import it.webred.cs.data.model.CsTbTipoRientriFami;
+import it.webred.cs.data.model.CsTbTitoloStudio;
 import it.webred.cs.jsf.bean.DatiFglInterventoBean;
 import it.webred.cs.jsf.bean.DatiInterventoBean;
 import it.webred.cs.jsf.bean.DatiTariffeInterventoBean;
@@ -54,6 +55,7 @@ import it.webred.cs.jsf.interfaces.IDatiFglIntervento;
 import it.webred.cs.jsf.manbean.ComponenteAltroMan;
 import it.webred.cs.jsf.manbean.ComuneNascitaMan;
 import it.webred.cs.jsf.manbean.ComuneNazioneNascitaMan;
+import it.webred.cs.jsf.manbean.ComuneResidenzaMan;
 import it.webred.cs.jsf.manbean.SinaMan;
 import it.webred.cs.jsf.manbean.superc.CsUiCompBaseBean;
 import it.webred.ct.config.model.AmTabNazioni;
@@ -61,9 +63,10 @@ import it.webred.ct.support.datarouter.CeTBaseObject;
 import it.webred.ejb.utility.ClientUtility;
 import it.webred.jsf.bean.ComuneBean;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -86,19 +89,13 @@ import org.apache.commons.lang3.StringUtils;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.FlowEvent;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 @ManagedBean(eager = true)
 @SessionScoped
 public class FglInterventoBean extends FascicoloCompSecondoLivello implements IDatiFglIntervento {
-
-	protected String datiPresaCaricoName = "datiPresaCarico";
-
-	protected AccessTableConfigurazioneSessionBeanRemote confService = (AccessTableConfigurazioneSessionBeanRemote) getCarSocialeEjb("AccessTableConfigurazioneSessionBean");
-	protected AccessTableSchedaSessionBeanRemote schedaService = (AccessTableSchedaSessionBeanRemote) getCarSocialeEjb("AccessTableSchedaSessionBean");
-	protected AccessTableOperatoreSessionBeanRemote operatoreService = (AccessTableOperatoreSessionBeanRemote) getCarSocialeEjb("AccessTableOperatoreSessionBean");
-	// SISO-884
-	protected AccessTablePsExportSessionBeanRemote psExportService = (AccessTablePsExportSessionBeanRemote) getCarSocialeEjb("AccessTablePsExportSessionBean");
-
-	private SimpleDateFormat SDF = new SimpleDateFormat("dd/MM/yyyy");
 
 	protected String headerDialogo = "";
 	protected boolean abilitaSalvataggio = false;
@@ -121,7 +118,7 @@ public class FglInterventoBean extends FascicoloCompSecondoLivello implements ID
 	private ErogazioneInterventoBean erogazioneInterventoBean = new ErogazioneInterventoBean();
 
 	private CsASoggettoLAZY soggettoCorrente;
-	private List<SelectItem> lstTipoIntervento;
+
 	private List<DatiInterventoBean> listaInterventi;
 
 	private SoggettoErogazioneBean soggettoNuovaErogazione; //USARE SOLO PER INIZIALIZZARE
@@ -143,6 +140,40 @@ public class FglInterventoBean extends FascicoloCompSecondoLivello implements ID
 	//SISO 972
 	private String FSEMessage = "";
 	
+	private Boolean fromPai=false;
+	
+	//Parametri Stampa POR
+	private StampaFseDTO stampaFseDTO;
+	
+	//ComboBox
+	private List<SelectItem> lstTipoIntervento;
+	private List<SelectItem> lstMotiviChiusura;
+	private List<SelectItem> lstCittadinanze;
+	private List<SelectItem> lstTipoQuotaPasti;
+	private List<SelectItem> lstTipoQuotaCentroD;
+	private List<SelectItem> lstTipoRiscossione;
+	private List<SelectItem> lstTipoOreVoucher;
+	private List<SelectItem> lstTipoPeriodoErogazione;
+	private List<SelectItem> lstTipoAttivita;
+	private List<SelectItem> lstTipoSospensione;
+	private List<SelectItem> lstTipoAttivazione;
+	private List<SelectItem> lstModalitaIntervento;
+	private List<SelectItem> lstTipoPeriodo;
+	private List<SelectItem> lstTipoGestione;
+	private List<SelectItem> lstTipoDeroghe;
+	private List<SelectItem> lstTipoRientriFam;
+	private List<SelectItem> lstTipoRetta;
+	private List<SelectItem> lstTipoAffido;
+	private List<SelectItem> lstSpeseExtra;
+	private List<SelectItem> lstSpeseExtraSRM;
+	private List<SelectItem> lstTipoAdmAdh;
+	private List<SelectItem> lstEducatori;
+	private List<SelectItem> lstTipoCirc4;
+	private List<SelectItem> lstTipoInterventi;
+	private List<SelectItem> lstTipoProgetto;
+	private List<SelectItem> lstTipoContributo;
+	private List<CsTbTipoContributo> lstTipoContributoTooltip;
+	
 	public String getFSEMessage() {
 		return FSEMessage;
 	}
@@ -162,13 +193,26 @@ public class FglInterventoBean extends FascicoloCompSecondoLivello implements ID
 			setIdCaso(null);
 		}
 	}
+	
+	public void inizializzaErogazione(CsPaiMastSoggDTO soggettoPai) {
+		csASoggetto = null;
+		if (soggettoPai != null)
+			csASoggetto = soggettoPai.getCsASoggetto();
+		soggettoNuovaErogazione = new SoggettoErogazioneBean(soggettoPai);
+		if (csASoggetto != null)
+			initialize(csASoggetto);
+		else {
+			setIdCaso(null);
+		}
+	}
 
 	public void inizializzaErogazione(SoggettoErogazioneBean soggettoErogazione, ComuneNazioneNascitaMan comuneNazioneNascitaMan) {
+		this.fromPai = false;
 		inizializzaErogazione(soggettoErogazione);
 		this.comuneNazioneNascitaMan = comuneNazioneNascitaMan;
 	}
 	
-	public void inizializzaRiferimentoErogazione(ErogInterventoRowBean row){//List<SoggettoErogazioneBean> beneficiari, SoggettoErogazioneBean beneficiarioRif) {
+	public void inizializzaRiferimentoErogazione(ErogInterventoRowBean row){
 		csASoggetto = null;
 		if (row.getBeneficiarioRiferimento() != null)
 			csASoggetto = row.getBeneficiarioRiferimento().getCsASoggetto();
@@ -187,14 +231,20 @@ public class FglInterventoBean extends FascicoloCompSecondoLivello implements ID
 	}
 	
 	@Override
-	public void initialize(CsASoggettoLAZY soggetto,List<CsCCategoriaSocialeBASIC> catsocCorrenti, Object data) {
-		super.initialize(soggetto, catsocCorrenti, null);
+	public void initialize(CsASoggettoLAZY soggetto,List<CsCCategoriaSociale> catsocCorrenti, Object data) {
+		super.initialize(soggetto, catsocCorrenti, data);
 		
 		//SISO-962 Inizio
 		CsAAnaIndirizzo residenza = findIndirizzoResidenzaCaso(soggetto);
 		String comune = getCasoComuneResidenza(residenza);
 		String via = residenza!=null ? residenza.getLabelIndirizzo() : null;
-		soggettoNuovaErogazione = new SoggettoErogazioneBean(soggetto, via , comune, true);
+		String statoEstero = residenza!=null ? residenza.getStatoCod() : null;
+		
+		String cfCaso = soggetto!=null && soggetto.getCsAAnagrafica()!=null ? soggetto.getCsAAnagrafica().getCf() : null;
+		if(this.soggettoNuovaErogazione!=null && this.soggettoNuovaErogazione.getCodiceFiscale().equalsIgnoreCase(cfCaso))
+			soggettoNuovaErogazione.integraDatiMancanti(soggetto, via, comune);
+		else
+			soggettoNuovaErogazione = new SoggettoErogazioneBean(soggetto, via , comune, statoEstero, true);
 		//else
 		//	soggettoNuovaErogazione.verificaAllineamento(soggetto, via, comune ,true);
 		
@@ -205,12 +255,11 @@ public class FglInterventoBean extends FascicoloCompSecondoLivello implements ID
 		//SISO-962 Fine
 	}
 
-	//SISO-962 Inizio 
-	public void initialize(CsASoggettoLAZY soggetto,List<CsCCategoriaSocialeBASIC> catsocCorrenti, String viaResidenza, String indirizzoCompleto, Object data) {
-		super.initialize(soggetto, catsocCorrenti, null);
-		soggettoNuovaErogazione = new SoggettoErogazioneBean(soggetto, viaResidenza, indirizzoCompleto, true);
+	public void initialize(CsPaiMastSoggDTO soggettoPaiRiferimento) {
+		if(soggettoNuovaErogazione==null)
+		   soggettoNuovaErogazione = new SoggettoErogazioneBean(soggettoPaiRiferimento);
 	}
-	//SISO-962 Fine
+
 	@Override
 	public void initializeData(Object data) {
 		CsOOperatoreSettore opSettore = getCurrentOpSettore();
@@ -246,10 +295,14 @@ public class FglInterventoBean extends FascicoloCompSecondoLivello implements ID
 		erogazioneInterventoBean.resetFlagProvaMezzi();
 		csIIntervento = null; // SISO-556 fix di un bug non censito evidenziatosi durante la SISO-556
 	}
-	public void inizializzaDialog(boolean datiIntTabRendered, boolean datiErogazioniTabRendered, Long interventoId, Long diarioId, Long tipoInterventoId, Long tipoInterventoCustomId, Long catSocId, boolean readOnly, boolean abilitaSalvataggio, String headerDialogo, CsIInterventoEsegMast master, boolean dentroFascicolo) {
+	
+	public void inizializzaDialog(boolean datiIntTabRendered, boolean datiErogazioniTabRendered, 
+								  Long interventoId, Long diarioId, Long tipoInterventoId, Long tipoInterventoCustomId, Long catSocId, 
+								  boolean readOnly, boolean abilitaSalvataggio, String headerDialogo, CsIInterventoEsegMast master, boolean dentroFascicolo, 
+								  StrutturaDisponibilitaDTO struttDispo, InserimentoConsuntivazioneDTO consuntivazione) {
 
 		logger.info("Inizializzazione Dialog FglInterventoBean");
-       
+	       
 		this.toSaveSecondoLivello=false;
 		
 		try {
@@ -258,7 +311,6 @@ public class FglInterventoBean extends FascicoloCompSecondoLivello implements ID
 			//#ROMACAPITALE
 			//carico i settori eroganti filtrati per interventoISTAT e interventoCUSTOM 
 			erogazioneInterventoBean.caricaListaIdSettoriByIntervento(idTipoIntevento, idTipoIntrCustom);
-					
 			loadListaSettori();
 
 			datiInterventoTabRendered = datiIntTabRendered && csASoggetto != null;
@@ -270,11 +322,11 @@ public class FglInterventoBean extends FascicoloCompSecondoLivello implements ID
 				idTipoIntrCustom = datiInterventoBean.getIdTipoIntrCustom();
 
 				if (idTipoIntevento == null || idTipoIntevento <= 0) {
-					addErrorDialog("Selezionare un tipo di intervento", "");
+					addErrorDialog("Dati mancanti", "Selezionare un tipo intervento");
 					return;
 				}
 			} else csIIntervento = null;
-
+			
 			if (datiErogazioniTabRendered) {
 				if (datiInterventoBean != null) {
 					if (datiInterventoBean.getInizioDa() != null && diarioId != null && diarioId != 0)
@@ -293,14 +345,14 @@ public class FglInterventoBean extends FascicoloCompSecondoLivello implements ID
 						CsAAnaIndirizzo residenza = findIndirizzoResidenzaCaso(csASoggetto);
 						String via = residenza!=null ? residenza.getLabelIndirizzo() : null;
 						String json = getCasoComuneResidenza(residenza);
-						erogazioneInterventoBean.inizializzaErogazione(idTipoIntevento, idTipoIntrCustom, this.interventoId, new SoggettoErogazioneBean(csASoggetto, via, json, true), beneficiari,dentroFascicolo);				
+						String statoEstero = residenza!=null ? residenza.getStatoCod() : null;
+						erogazioneInterventoBean.inizializzaErogazione(idTipoIntevento, idTipoIntrCustom, this.interventoId, new SoggettoErogazioneBean(csASoggetto, via, json, statoEstero, true), beneficiari,dentroFascicolo);				
 					}else
 					  erogazioneInterventoBean.inizializzaNuovaErogazione(idTipoIntevento, idTipoIntrCustom, soggettoNuovaErogazione, idCatSociale,dentroFascicolo);		
 				}
 
 				if (this.interventoId != null && this.interventoId > 0) {
-					if(datiFglIntBean!=null && datiFglIntBean.getFlagAttivazione()!=null && 
-							!datiFglIntBean.isAttivazione() && !datiFglIntBean.getFlagRespinto())
+					if(datiFglIntBean!=null && datiFglIntBean.getFlagAttivazione()!=null && !datiFglIntBean.isAttivazione() && !datiFglIntBean.getFlagRespinto())
 						erogazioneInterventoBean.setErogazionePossibile(false);
 					else erogazioneInterventoBean.setErogazionePossibile(true);
 				} else erogazioneInterventoBean.setErogazionePossibile(true);
@@ -308,63 +360,11 @@ public class FglInterventoBean extends FascicoloCompSecondoLivello implements ID
 
 			loadDatiTariffeInterventoBean();
 			loadDatiProgettoBean(catSocId);
+			loadDatiPai(master != null && master.getDiarioPaiId() != null ? master.getDiarioPaiId().longValue() : null);
+			initDatiSina(catSocId, master);
+			initStrutturaDisponibilita(struttDispo);
+			initConsuntivazione(consuntivazione);
 			
-			//SISO-760
-			if(master != null && master.getDiarioPaiId() != null){
-				BaseDTO bdto = new BaseDTO();
-				bdto.setObj(master.getDiarioPaiId().longValue());
-				fillEnte(bdto);
-				paidto =  diarioService.findPaiFullById(bdto);
-			}else{
-				paidto=null;
-			}
-			//SISO-783
-			//la tab sina è visualizzabile solo se cat sociale è anziani(4) o disabili(2)
-			visualizzaSinaTab = (DataModelCostanti.TipiCategoriaSociale.ANZIANI_ID.equals(catSocId) ||
-								 DataModelCostanti.TipiCategoriaSociale.DISABILI_ID.equals(catSocId));
-			//CsOOperatoreSettore currentOpSettore = getCurrentOpSettore();
-			if(visualizzaSinaTab){
-				//INIT SINA TAB
-				Boolean esportata = false;
-				String cf ="";
-				if (master != null) {
-					cf = master.getBeneficiarioRiferimento().getCf();
-					// ordinamento decrescente per data erogazione
-					Collections.sort(erogazioneInterventoBean.getErogazioneHistory().getRows(), new Comparator<InterventoErogazHistoryRowBean>() {
-
-								@Override
-								public int compare(
-										InterventoErogazHistoryRowBean o1,
-										InterventoErogazHistoryRowBean o2) {
-									if (o1.getDataErogazione().after(o2.getDataErogazione())) {
-										return -1;
-									}
-									if (o1.getDataErogazione().before(o2.getDataErogazione())) {
-										return 1;
-									}
-									return 0;
-								}
-							});
-
-					InterventoErogazHistoryRowBean ultimaErogE = null;
-					for (InterventoErogazHistoryRowBean interventoErogazHistoryRowBean : erogazioneInterventoBean.getErogazioneHistory().getRows()) {
-						if (interventoErogazHistoryRowBean.getStato().getTipo().equals(DataModelCostanti.TipoStatoErogazione.EROGATIVO) ) {
-							ultimaErogE = interventoErogazHistoryRowBean;
-							break;
-						}
-					}
-					
-					//SISO-783 fix
-					if(ultimaErogE != null){
-						esportata = erogazioneInterventoBean.erogazioneEsportata(ultimaErogE);
-					}
-
-					sinaMan = new SinaMan(idCaso, master.getId(), cf, esportata);
-					
-				}else{
-					sinaMan = new SinaMan(idCaso, new Long(0), cf, esportata);
-				}
-			}			
 			logger.info("Fine Inizializzazione Dialog FglInterventoBean");
 
 			RequestContext.getCurrentInstance().addCallbackParam("isShowDialog", true);
@@ -380,10 +380,109 @@ public class FglInterventoBean extends FascicoloCompSecondoLivello implements ID
 		}
 	}
 	
-	private void inizializzaDatiSina(){
+	private void initStrutturaDisponibilita(StrutturaDisponibilitaDTO struttDispo){
+		if (struttDispo != null) {
+			erogazioneInterventoBean.setDataErog(struttDispo.getRichiesteDisponibilita().getDataInizioPermamenza());
+			erogazioneInterventoBean.setDataErogA(struttDispo.getRichiesteDisponibilita().getDataFinePermanenza());
+			
+			CsRelSettoreStruttura csRelSettStrutt = new CsRelSettoreStruttura();
+			BaseDTO dto = new BaseDTO();
+			dto.setObj(struttDispo.getRichiesteDisponibilita().getIdStruttura());
+			fillEnte(dto);
+			csRelSettStrutt = confService.findSettoreByIdStruttura(dto);	
+            erogazioneInterventoBean.setSelSettoreEroganteId(csRelSettStrutt.getIdSettore());
+            erogazioneInterventoBean.setIsStrutturaSelezionata(struttDispo.getRichiesteDisponibilita().getStatoRichiesta().equalsIgnoreCase("ACCETTATA"));
+            datiTariffeInterventoBean.setFrequenzaAccessoAlServizio(TIPO_FREQUENZA_SERVIZIO.PERIODICO.getCodice());
+            datiTariffeInterventoBean.selectedUnitaMisuraChange(erogazioneInterventoBean);
+            datiTariffeInterventoBean.getCsIQuota().getCsIQuotaRipartiz().setFlagRendiconto(TIPO_RENDICONTO.PERIODICO.getCodice());
+		}
+	}
+	
+	private void initConsuntivazione(InserimentoConsuntivazioneDTO consuntivazione){
+		if (consuntivazione != null) {
+			Long selectedStato = 0L;
+			erogazioneInterventoBean.setDataErog(consuntivazione.getDataDa());
+			erogazioneInterventoBean.setDataErogA(consuntivazione.getDataA());
+			erogazioneInterventoBean.getNuovocsIntEseg().getCsIValQuota().setValQuota(BigDecimal.valueOf(consuntivazione.getNumGiorni()));
+			List<CsCfgIntEsegStato> listaStatiErogazione = erogazioneInterventoBean.getListaStatiErogazione();
+
+			for (CsCfgIntEsegStato stato : listaStatiErogazione) {
+				if (TipoStatoErogazione.EROGATIVO.equals(stato.getTipo())
+						&& DataModelCostanti.CsCfgIntEsegStato.FLAG_CHIUDI_APERTO == stato.getFlagChiudi()
+						&& stato.getNome().equalsIgnoreCase("EROGAZIONE")) {
+					selectedStato = (Long) stato.getId();
+				}
+				
+			}
+			
+			erogazioneInterventoBean.setStatoSelezionatoId(selectedStato);
+			// SIMULO l'onchange del menu a tendina degli stati erogazione
+
+			erogazioneInterventoBean.onStatoChanged();
+			erogazioneInterventoBean.onUpdateTariffa(this.datiTariffeInterventoBean.getCsIQuota().getTariffa(),this.datiTariffeInterventoBean.getCsIQuota().isOreMinuti());
+		}
+	}
+	
+	private void initDatiSina(Long catSocId, CsIInterventoEsegMast master){
+		//SISO-783
+		//la tab sina è visualizzabile solo se cat sociale è anziani(4) o disabili(2)
+		visualizzaSinaTab = (TipiCategoriaSociale.ANZIANI_ID.equals(catSocId) || TipiCategoriaSociale.DISABILI_ID.equals(catSocId));
 		
+		if(visualizzaSinaTab){
+			Boolean esportata = false;
+			String cf ="";
+			if (master != null) {
+				cf = master.getBeneficiarioRiferimento().getCf();
+				// ordinamento decrescente per data erogazione
+				Collections.sort(erogazioneInterventoBean.getStoricoOperazioni(), new Comparator<InterventoErogazHistoryRowBean>() {
+
+							@Override
+							public int compare(
+									InterventoErogazHistoryRowBean o1,
+									InterventoErogazHistoryRowBean o2) {
+								if (o1.getDataErogazione().after(o2.getDataErogazione())) {
+									return -1;
+								}
+								if (o1.getDataErogazione().before(o2.getDataErogazione())) {
+									return 1;
+								}
+								return 0;
+							}
+						});
+
+				InterventoErogazHistoryRowBean ultimaErogE = null;
+				for (InterventoErogazHistoryRowBean interventoErogazHistoryRowBean : erogazioneInterventoBean.getStoricoOperazioni()) {
+					if (interventoErogazHistoryRowBean.getStato().getTipo().equals(DataModelCostanti.TipoStatoErogazione.EROGATIVO) ) {
+						ultimaErogE = interventoErogazHistoryRowBean;
+						break;
+					}
+				}
+				
+				//SISO-783 fix
+				if(ultimaErogE != null){
+					esportata = erogazioneInterventoBean.erogazioneEsportata(ultimaErogE);
+				}
+
+				sinaMan = new SinaMan(idCaso, master.getId(), cf, esportata);
+				
+			}else{
+				sinaMan = new SinaMan(idCaso, new Long(0), cf, esportata);
+			}
+		}	
 	}
 
+	private void loadDatiPai(Long paiId){
+		//SISO-760
+		if(paiId!=null && paiId>0){
+			BaseDTO bdto = new BaseDTO();
+			bdto.setObj(paiId);
+			fillEnte(bdto);
+			paidto =  diarioService.findPaiFullById(bdto);
+		}else{
+			paidto=null;
+		}
+	}
+	
 	//TODO ML: il risultato di questo metodo dipende dalla posizione in cui è chiamato dal metodo chiamante,
 	//cioè il risultato prodotto dipende dalle proprietà che sono state popolate in precedenza.
 	//forse sarebbe meglio chiamarlo in questa maniera loadDatiTariffeInterventoBean(interventoId) e popolare gli oggetti in base all'intevento
@@ -401,7 +500,7 @@ public class FglInterventoBean extends FascicoloCompSecondoLivello implements ID
 		 * che si trovano in lista casi la cui prima riga di storico (AVVIO) è stata fatta dall'ente
 		 * verifico solo l'operatore che ha inserito l'erogazione master */
 		boolean tabQuoteSolaLettura = false;
-		if(this.isPermessoErogativo() && erogazioneInterventoBean!=null && erogazioneInterventoBean.getNuovoIntEsegMast()!=null){
+		if(isPermessoErogativo() && erogazioneInterventoBean!=null && erogazioneInterventoBean.getNuovoIntEsegMast()!=null){
 			CsOOperatoreSettore ops = erogazioneInterventoBean.getNuovoIntEsegMast().getCsOOperatoreSettore();
 			if (ops != null)
 				tabQuoteSolaLettura = !currentOperatoreId.equals(ops.getCsOOperatore().getId());
@@ -423,7 +522,7 @@ public class FglInterventoBean extends FascicoloCompSecondoLivello implements ID
 		boolean tabProgettoSolaLettura = false;
 		// erogazioneInterventoBean.getSoggettoErogazione
 		//siso-972 AGGIUNTO UN NUOVO PARAMETRO  erogazioneInterventoBean.getSoggettoErogazione
-		datiProgettoBean.loadDatiProgetto(progetto,tabProgettoSolaLettura,this.idTipoIntevento, this.idTipoIntrCustom, catSocialeID, erogazioneInterventoBean.getSoggettoErogazione());
+		datiProgettoBean.loadDatiProgetto(progetto,tabProgettoSolaLettura,this.idTipoIntevento, this.idTipoIntrCustom, catSocialeID, erogazioneInterventoBean.getSoggettoErogazione(), this.getZonaSociale());
 		/* SISO-663 SM */
 		erogazioneInterventoBean.setSettoreTitolare(datiProgettoBean.getSettoreTitolare());
 		erogazioneInterventoBean.setSettoreGestore(datiProgettoBean.getSettoreGestore());
@@ -448,15 +547,9 @@ public class FglInterventoBean extends FascicoloCompSecondoLivello implements ID
 
 	}
 
-	private CsFlgIntervento getPrimoFoglioAmministrativo(Long interventoId) {
-		BaseDTO dto = new BaseDTO();
-		fillEnte(dto);
-		dto.setObj(interventoId);
-		return interventoService.getPrimoFoglioAmministrativo(dto);
-	}
-
 	private void loadDatiInterventoBean() {
-		datiInterventoBean = new DatiInterventoBean(settoreId, idSoggetto);
+		List<CsAComponente> listaParenti = CsUiCompBaseBean.caricaParenti(idSoggetto, null);
+		datiInterventoBean = new DatiInterventoBean(settoreId, idSoggetto, listaParenti);
 		BaseDTO dto = new BaseDTO();
 		fillEnte(dto);
 
@@ -464,6 +557,7 @@ public class FglInterventoBean extends FascicoloCompSecondoLivello implements ID
 		datiInterventoBean.setComponente(componente);
 
 		try {
+			
 			if (diarioId != null && diarioId.intValue() > 0) {
 				CsFlgIntervento cs;
 				// try {
@@ -471,7 +565,7 @@ public class FglInterventoBean extends FascicoloCompSecondoLivello implements ID
 				dto.setObj(diarioId);
 				cs = interventoService.getFoglioInterventoById(dto);
 				csIIntervento = cs.getCsIIntervento();
-				datiInterventoBean = new DatiInterventoBean(csIIntervento, idSoggetto);
+				datiInterventoBean = new DatiInterventoBean(csIIntervento, idSoggetto, listaParenti);
 				idTipoIntevento = datiInterventoBean.getIdTipoIntervento();
 				idTipoIntrCustom = datiInterventoBean.getIdTipoIntrCustom();
 
@@ -488,7 +582,7 @@ public class FglInterventoBean extends FascicoloCompSecondoLivello implements ID
 				else {
 					dto.setObj(interventoId);
 					csIIntervento = interventoService.getInterventoById(dto);
-					datiInterventoBean = new DatiInterventoBean(csIIntervento, idSoggetto);
+					datiInterventoBean = new DatiInterventoBean(csIIntervento, idSoggetto, listaParenti);
 					idTipoIntevento = datiInterventoBean.getIdTipoIntervento();
 					idTipoIntrCustom = datiInterventoBean.getIdTipoIntrCustom();
 				}
@@ -567,32 +661,44 @@ public class FglInterventoBean extends FascicoloCompSecondoLivello implements ID
 
 	public void reset() {
 		datiFglIntBean = new DatiFglInterventoBean();
-		datiInterventoBean = new DatiInterventoBean(settoreId, idSoggetto);
+		List<CsAComponente> listaParenti = CsUiCompBaseBean.caricaParenti(idSoggetto, null);
+		datiInterventoBean = new DatiInterventoBean(settoreId, idSoggetto,listaParenti);
 		datiProgettoBean = new DatiProgettoBean();
 		interventoId = null;
 		diarioId = null;
+		this.setFromPai(Boolean.FALSE);
 	}
 
+	private boolean validaArchiTemporaliFogli(){
+		boolean valido = true;
+		
+		/**
+		 * http://progetti.asc.webred.it/browse/SISO-451 i range di date non si devono sovrapporre 
+		 */
+		for (CsFlgIntervento foglio : this.datiInterventoBean.getListaFogli()) {
+			CsDDiario csDDiario = foglio.getCsDDiario();
+			try {
+				if (diarioId != null && diarioId.intValue() > 0 && diarioId.intValue() == csDDiario.getId())
+					continue;
+					
+				if (csDDiario.getDtAttivazioneDa().compareTo(datiFglIntBean.getDtTipoAttA())<=0 && datiFglIntBean.getDtTipoAttDa().compareTo(csDDiario.getDtAttivazioneA())<=0) {
+					valido =  false;
+				}
+			} catch(NullPointerException npe) {
+				continue;
+			}
+		}
+		return valido;
+	}
+	
 	protected boolean salvaDatiIntervento(CsIQuota quota, CsIInterventoPr progetto) {
 		boolean bSaved = false;
 
 		try {
-			/**
-			 * http://progetti.asc.webred.it/browse/SISO-451 i range di date non si devono sovrapporre 
-			 */
-			for (CsFlgIntervento foglio : this.datiInterventoBean.getListaFogli()) {
-				CsDDiario csDDiario = foglio.getCsDDiario();
-				try {
-					if (diarioId != null && diarioId.intValue() > 0 && diarioId.intValue() == csDDiario.getId())
-						continue;
-
-					if (csDDiario.getDtAttivazioneDa().compareTo(datiFglIntBean.getDtTipoAttA())<=0 && datiFglIntBean.getDtTipoAttDa().compareTo(csDDiario.getDtAttivazioneA())<=0) {
-						addWarningDialogFromProperties("archi.temporali.sovrapposti");
-						return false;
-					}
-				} catch(NullPointerException npe) {
-					continue;
-				}
+			boolean archiTemporaliValidi = this.validaArchiTemporaliFogli();
+			if(!archiTemporaliValidi){
+				addWarningDialogFromProperties("archi.temporali.sovrapposti");
+				return archiTemporaliValidi;
 			}
 
 			BaseDTO dto = new BaseDTO();
@@ -603,7 +709,6 @@ public class FglInterventoBean extends FascicoloCompSecondoLivello implements ID
 			if (diarioId != null && diarioId.intValue() > 0)
 				cs = interventoService.getFoglioInterventoById(dto);
 		
-			datiFglIntBean.setResponsabile(getOperResponsabileCaso().getId()); // Valorizzo Responsabile
 			datiFglIntBean.setVisSecondoLivello(this.toSaveSecondoLivello ? getCurrentOpSettore().getCsOSettore().getId() : null); //SISO-812
 			datiFglIntBean.valorizzaJpa(cs);
 
@@ -670,14 +775,6 @@ public class FglInterventoBean extends FascicoloCompSecondoLivello implements ID
 			foglioDTO.setIdRelazione(datiFglIntBean.getIdRelazione());
 			interventoService.salvaFoglioAmministrativo(foglioDTO);
 
-		/*	// Refresh dei dati della lista
-			FascicoloBean fbean = (FascicoloBean) this.getBean("fascicoloBean");
-			//inizio modifica evoluzione-pai
-			if (fbean != null) {
-				fbean.getInterventiBean().refreshListaInterventi(null);
-				fbean.getPaiBean().refreshPicklistInterventi(inter);
-			}*/
-			// fine modifica evoluzione-pai
 			lstTipoIntervento = null;
 
 			// frida
@@ -704,10 +801,6 @@ public class FglInterventoBean extends FascicoloCompSecondoLivello implements ID
 
 		return bSaved;
 	}
-
-	// public void onCheckIfErogazionePossibile(AjaxBehaviorEvent event){
-	// checkIfErogazionePossibile();
-	// }
 
 	public void onCheckRespinto(AjaxBehaviorEvent event) {
 		// se esiste almeno un foglio attivo non si può respingere
@@ -747,6 +840,7 @@ public class FglInterventoBean extends FascicoloCompSecondoLivello implements ID
 		if (checkIfErogazionePossibile()) {
 			this.erogazioneInterventoBean.onStatoChanged();
 			erogazioneInterventoBean.onUpdateTariffa(this.datiTariffeInterventoBean.getCsIQuota().getTariffa(),this.datiTariffeInterventoBean.getCsIQuota().isOreMinuti());
+			//QUi vanno caricate le date
 		}
 	}
 
@@ -754,13 +848,14 @@ public class FglInterventoBean extends FascicoloCompSecondoLivello implements ID
 
 		// SISO-720 SM
 		// in ogni caso si dovrebbe aggiornare il valore corrente della spesa
-		{
-		BigDecimal tariffa = datiTariffeInterventoBean.getCsIQuota().getTariffa();
+//		BigDecimal tariffa = datiTariffeInterventoBean.getCsIQuota().getTariffa();
+		//SISO-1602
+		BigDecimal tariffa = erogazioneInterventoBean.getNuovocsIntEseg().getCsIValQuota().getTariffaCustom();
 		erogazioneInterventoBean.onUpdateQuotaDettaglio(tariffa,datiTariffeInterventoBean.getCsIQuota().isOreMinuti());
-		}
+
 		// FINE SISO-720 SM
-		if(erogazioneInterventoBean.getErogazioneHistory().isVisualizzaStorico() && !erogazioneInterventoBean.getErogazioneHistory().getRows().isEmpty()){
-			if(	erogazioneInterventoBean.getStatoSelezionato().getOrdineDescFase() < erogazioneInterventoBean.getErogazioneHistory().getRows().get(0).getStato().getOrdineDescFase()){
+		if(erogazioneInterventoBean.getErogazioneHistory().isVisualizzaStorico() && !erogazioneInterventoBean.getStoricoOperazioni().isEmpty()){
+			if(	erogazioneInterventoBean.getStatoSelezionato().getOrdineDescFase() < erogazioneInterventoBean.getStoricoOperazioni().get(0).getStato().getOrdineDescFase()){
 				addMessage(FacesMessage.SEVERITY_ERROR, "Non è possibile aggiungere erogazioni con stato in una fase precedente all'ultima erogazione");
 				return;
 			}
@@ -825,7 +920,6 @@ public class FglInterventoBean extends FascicoloCompSecondoLivello implements ID
  */
 
 		this.erogazioneInterventoBean.onChangeCalcolaSpeseTotali();
-		this.erogazioneInterventoBean.onChangeCalcolaCompartecipazioniTot();
 		
 		BigDecimal valQuota = this.erogazioneInterventoBean.getNuovocsIntEseg().getCsIValQuota().getValQuota();
 		BigDecimal valQuotaEnte = this.erogazioneInterventoBean.getNuovocsIntEseg().getValoreGestitaEnte();
@@ -854,9 +948,12 @@ public class FglInterventoBean extends FascicoloCompSecondoLivello implements ID
 			ctrlSomma = compUt != null ? (ctrlSomma + compUt.doubleValue()) : ctrlSomma; 
 			ctrlSomma = compSSN != null ? (ctrlSomma + compSSN.doubleValue()) : ctrlSomma; 
 			ctrlSomma = altreComp != null ? (ctrlSomma + altreComp.doubleValue()) : ctrlSomma; 
+		
+			BigDecimal ctrlSommaBd = new BigDecimal(ctrlSomma).setScale(2, RoundingMode.HALF_UP);
+			ctrlSomma = ctrlSommaBd.doubleValue();
 			
 			if(ctrlSomma.compareTo(spesa.doubleValue())!= 0 ){
-				addMessage(FacesMessage.SEVERITY_ERROR, "La somma dei parametri non corrispende all'importo prestazione,\r\n somma = " + ctrlSomma.toString() + " mentre l'importo prestazione = " + spesa.toString());
+				addMessage(FacesMessage.SEVERITY_ERROR, "La somma dei parametri non corrisponde all'importo prestazione,\r\n somma = " + ctrlSomma.toString() + " mentre l'importo prestazione = " + spesa.toString());
 				return;
 				}
 		}
@@ -869,14 +966,12 @@ public class FglInterventoBean extends FascicoloCompSecondoLivello implements ID
 			ctrlSomma = altreComp != null ? (ctrlSomma + altreComp.doubleValue()) : ctrlSomma; 
 			
 			if(ctrlSomma.compareTo(spesa.doubleValue())!= 0 ){
-				addMessage(FacesMessage.SEVERITY_ERROR, "La somma dei parametri non corrispende all'importo prestazione,\r\n somma = " + ctrlSomma.toString() + " mentre l'importo prestazione = " + spesa.toString());
+				addMessage(FacesMessage.SEVERITY_ERROR, "La somma dei parametri non corrisponde all'importo prestazione,\r\n somma = " + ctrlSomma.toString() + " mentre l'importo prestazione = " + spesa.toString());
 				return;
 				}
 		}
 		
-		boolean rendicontoPeriodico = TIPO_RENDICONTO.PERIODICO.getCodice().
-								equals(this.getDatiTariffeInterventoBean().getCsIQuota().getCsIQuotaRipartiz().getFlagRendiconto());
-		
+		boolean rendicontoPeriodico = this.datiTariffeInterventoBean.isRendicontoPeriodico();
 		this.erogazioneInterventoBean.aggiungiAttributi(rendicontoPeriodico,
 				this.getDatiTariffeInterventoBean().getCsIQuota().getCsIQuotaRipartiz().getFlagPeriodoRipartiz(),  // SISO-556
 				isVisualizzaIntervalloDateErogazione(), this.getDatiTariffeInterventoBean().getCsIQuota().getCsTbUnitaMisura().getValore()); //SISO-958
@@ -893,7 +988,7 @@ public class FglInterventoBean extends FascicoloCompSecondoLivello implements ID
 			// TODO OK foglio attivazione controlli
 			if (this.datiFglIntBean != null) { // controlli solo dentro il foglio amministrativo
 				if(this.datiFglIntBean.isAttivazione()){
-					List<InterventoErogazHistoryRowBean> listaErogazioni=this.erogazioneInterventoBean.getErogazioneHistory().getRows();
+					List<InterventoErogazHistoryRowBean> listaErogazioni=this.erogazioneInterventoBean.getStoricoOperazioni();
 					if (listaErogazioni.size() == 0) {
 						addMessage(FacesMessage.SEVERITY_WARN, "Inserire almeno una riga di erogazione");
 						bSaved = false;
@@ -907,7 +1002,7 @@ public class FglInterventoBean extends FascicoloCompSecondoLivello implements ID
 					}
 				}
 			}else{ //erogazione fuori foglio amministrativo: almeno una riga dovrebbe esserci
-				List<InterventoErogazHistoryRowBean> listaErogazioni=this.erogazioneInterventoBean.getErogazioneHistory().getRows();
+				List<InterventoErogazHistoryRowBean> listaErogazioni=this.erogazioneInterventoBean.getStoricoOperazioni();
 				if (listaErogazioni.size() == 0) {
 					addMessage(FacesMessage.SEVERITY_WARN, "Inserire almeno una riga di erogazione");
 					bSaved = false;
@@ -927,7 +1022,7 @@ public class FglInterventoBean extends FascicoloCompSecondoLivello implements ID
 				}
 				//SISO-972 fine
 				
-				boolean savedQuota = this.datiTariffeInterventoBean.salva();
+				boolean savedQuota = this.datiTariffeInterventoBean.salva(isUnitaMisuraRequired());
 				CsIQuota quotaCorrente = datiTariffeInterventoBean.getCsIQuota();
 				if (quotaCorrente != null && (quotaCorrente.getId() == null || quotaCorrente.getId() == 0))
 					quotaCorrente = null;
@@ -958,27 +1053,57 @@ public class FglInterventoBean extends FascicoloCompSecondoLivello implements ID
 
 			if (bSaved) {
 
-				// Refresh dei dati della lista
-				FascicoloBean fbean = (FascicoloBean) getReferencedBean("fascicoloBean");
-				// inizio modifica evoluzione-pai
-				if (fbean != null) {
-					if (fbean.getInterventiBean() != null){
-						fbean.getInterventiBean().refreshListaInterventi(null);
+				try {
+					// Refresh dei dati della lista
+					FascicoloBean fbean = (FascicoloBean) getReferencedBean("fascicoloBean");
+				
+					// inizio modifica evoluzione-pai
+					if (fbean != null) {
+						if (fbean.getInterventiBean() != null) {
+							fbean.getInterventiBean().refreshListaInterventi(null);
+						}
+						if (csIIntervento != null && fbean.getPaiBean() != null) {
+							if (fbean.isPaiTabSelected())
+								fbean.getPaiBean().refreshPicklistInterventi(csIIntervento);
+							else
+								fbean.getPaiBean().refreshPicklistInterventi(null);
+						} else if (erogazioneInterventoBean != null && fbean.getPaiBean() != null) {
+							if (fbean.isPaiTabSelected())
+								fbean.getPaiBean().refreshPicklistErogazioni(this.erogazioneInterventoBean.getNuovoIntEsegMast().getId());
+							else if (fbean.getPaiBean().getProvenienzaConsuntivazione())
+							    fbean.getPaiBean().refreshConsuntivazione(this.erogazioneInterventoBean.getNuovoIntEsegMast().getId());
+							else
+								fbean.getPaiBean().refreshPicklistErogazioni(null);
+						}
 					}
-					if(csIIntervento!=null && fbean.getPaiBean()!=null){
-						if (fbean.isPaiTabSelected())
-							fbean.getPaiBean().refreshPicklistInterventi(csIIntervento);
-						else
-							fbean.getPaiBean().refreshPicklistInterventi(null);
-					}else if(erogazioneInterventoBean!=null && fbean.getPaiBean()!=null){
-						if(fbean.isPaiTabSelected())
-							fbean.getPaiBean().refreshPicklistErogazioni(this.erogazioneInterventoBean.getNuovoIntEsegMast().getId());
-						else
-							fbean.getPaiBean().refreshPicklistErogazioni(null);
+				}catch (Exception e) {
+				
+					logger.error(e.getMessage(), e);
+				}
+
+				try {
+
+					if (this.getFromPai()) {
+						ProgettiIndividualiExtBean paiExtBean = (ProgettiIndividualiExtBean) getReferencedBean("progettiInvidualiExt");
+						if (paiExtBean != null && paiExtBean.getPaiBean() != null) {
+							if (paiExtBean.getInterventiBean() != null) {
+								paiExtBean.getInterventiBean().refreshListaInterventi(null);
+							}
+							if (csIIntervento != null) {
+								paiExtBean.getPaiBean().refreshPicklistInterventi(csIIntervento);
+							} else if (erogazioneInterventoBean != null) {
+								paiExtBean.getPaiBean().refreshPicklistErogazioni(this.erogazioneInterventoBean.getNuovoIntEsegMast().getId());
+								if (paiExtBean.getPaiBean().getProvenienzaConsuntivazione())
+									paiExtBean.getPaiBean().refreshConsuntivazione(this.erogazioneInterventoBean.getNuovoIntEsegMast().getId());
+							}
+						}
 					}
+				} catch (Exception e) {
+
+					logger.error(e.getMessage(), e);
 				}
 				// fine modifica evoluzione-pai
-				
+				setFromPai(Boolean.FALSE);
 				RequestContext.getCurrentInstance().addCallbackParam("saved", true);
 				addInfoDialogFromProperties("salva.ok");
 			}
@@ -1040,8 +1165,6 @@ public class FglInterventoBean extends FascicoloCompSecondoLivello implements ID
 		this.datiFglIntBean = datiFglIntBean;
 	}
 
-	private List<SelectItem> lstCittadinanze;
-
 	public List<SelectItem> getLstCittadinanze() {
 		if (lstCittadinanze == null) {
 			lstCittadinanze = new ArrayList<SelectItem>();
@@ -1067,8 +1190,6 @@ public class FglInterventoBean extends FascicoloCompSecondoLivello implements ID
 		}
 		return lstCittadinanze;
 	}
-
-	private List<SelectItem> lstMotiviChiusura;
 
 	@Override
 	public List<SelectItem> getLstMotiviChiusura() {
@@ -1097,22 +1218,8 @@ public class FglInterventoBean extends FascicoloCompSecondoLivello implements ID
 			lstTipoIntervento = new ArrayList<SelectItem>();
 			try {
 
-				// HashMap<String, DatiInterventoBean> mappaIAperti = new
-				// HashMap<String, DatiInterventoBean>();
-				// Creo la mappa degli interventi aperti
-				// categoria@tipointervento per omettere i tipi intervento
-				// corrispondenti dalla lista
-				// for (DatiInterventoBean dib : this.listaInterventi) {
-				// if (!dib.getInterventoChiuso().booleanValue()) {
-				// // mappaIAperti.put(dib.getTipoInterventoCatSoc(), dib);
-				// // //Posso erogare lo creare lo stesso tipo di
-				// // intervento per più categorie
-				// mappaIAperti.put(dib.getTipoIntervento().toString(), dib);
-				// }
-				// }
-
 				if (settoreId != null && catsocCorrenti != null && !catsocCorrenti.isEmpty()) {
-					for (CsCCategoriaSocialeBASIC cs : catsocCorrenti) {
+					for (CsCCategoriaSociale cs : catsocCorrenti) {
 						InterventoDTO dto = new InterventoDTO();
 						fillEnte(dto);
 						dto.setIdSettore(settoreId);
@@ -1123,21 +1230,7 @@ public class FglInterventoBean extends FascicoloCompSecondoLivello implements ID
 							SelectItemGroup gr = new SelectItemGroup(cs.getDescrizione());
 							List<SelectItem> grItems = new ArrayList<SelectItem>();
 							for (CsCTipoIntervento tipo : beanlst) {
-								String chiaveInterventoTB = cs.getId() + "@" + tipo.getId(); // Posso
-								// erogare
-								// lo
-								// creare
-								// lo
-								// stesso
-								// tipo
-								// di
-								// intervento
-								// per
-								// più
-								// categorie
-								String chiaveIntervento = tipo.getId().toString();
-								// if
-								// (!mappaIAperti.containsKey(chiaveIntervento))
+								String chiaveInterventoTB = cs.getId() + "@" + tipo.getId(); 
 								grItems.add(new SelectItem(chiaveInterventoTB, tipo.getDescrizione()));
 							}
 							if (!grItems.isEmpty()) {
@@ -1196,8 +1289,6 @@ public class FglInterventoBean extends FascicoloCompSecondoLivello implements ID
 		this.soggettoCorrente = soggettoCorrente;
 	}
 
-	private List<SelectItem> lstTipoQuotaPasti;
-
 	@Override
 	public List<SelectItem> getLstTipoQuotaPasti() {
 		if (lstTipoQuotaPasti == null) {
@@ -1208,8 +1299,6 @@ public class FglInterventoBean extends FascicoloCompSecondoLivello implements ID
 		}
 		return lstTipoQuotaPasti;
 	}
-
-	private List<SelectItem> lstTipoQuotaCentroD;
 
 	@Override
 	public List<SelectItem> getLstTipoQuotaCentroD() {
@@ -1222,8 +1311,6 @@ public class FglInterventoBean extends FascicoloCompSecondoLivello implements ID
 		return lstTipoQuotaCentroD;
 	}
 
-	private List<SelectItem> lstTipoRiscossione;
-
 	@Override
 	public List<SelectItem> getLstTipoRiscossione() {
 		if (lstTipoRiscossione == null) {
@@ -1234,8 +1321,6 @@ public class FglInterventoBean extends FascicoloCompSecondoLivello implements ID
 		}
 		return lstTipoRiscossione;
 	}
-
-	private List<SelectItem> lstTipoOreVoucher;
 
 	@Override
 	public List<SelectItem> getLstTipoOreVoucher() {
@@ -1249,8 +1334,6 @@ public class FglInterventoBean extends FascicoloCompSecondoLivello implements ID
 		return lstTipoOreVoucher;
 	}
 
-	private List<SelectItem> lstTipoPeriodoErogazione;
-
 	@Override
 	public List<SelectItem> getLstTipoPeriodoErogazione() {
 		if (lstTipoPeriodoErogazione == null) {
@@ -1263,8 +1346,6 @@ public class FglInterventoBean extends FascicoloCompSecondoLivello implements ID
 		return lstTipoPeriodoErogazione;
 	}
 
-	private List<SelectItem> lstTipoAttivita;
-
 	@Override
 	public List<SelectItem> getLstTipoAttivita() {
 		if (lstTipoAttivita == null) {
@@ -1276,8 +1357,6 @@ public class FglInterventoBean extends FascicoloCompSecondoLivello implements ID
 		return lstTipoAttivita;
 	}
 
-	private List<SelectItem> lstTipoSospensione;
-
 	@Override
 	public List<SelectItem> getLstTipoSospensione() {
 		if (lstTipoSospensione == null) {
@@ -1288,8 +1367,6 @@ public class FglInterventoBean extends FascicoloCompSecondoLivello implements ID
 		}
 		return lstTipoSospensione;
 	}
-
-	private List<SelectItem> lstTipoAttivazione;
 
 	@Override
 	public List<SelectItem> getLstTipoAttivazione() {
@@ -1303,8 +1380,6 @@ public class FglInterventoBean extends FascicoloCompSecondoLivello implements ID
 		return lstTipoAttivazione;
 	}
 
-	private List<SelectItem> lstModalitaIntervento;
-
 	@Override
 	public List<SelectItem> getLstModalitaIntervento() {
 		if (lstModalitaIntervento == null) {
@@ -1315,8 +1390,6 @@ public class FglInterventoBean extends FascicoloCompSecondoLivello implements ID
 		return lstModalitaIntervento;
 	}
 
-	private List<SelectItem> lstTipoPeriodo;
-
 	@Override
 	public List<SelectItem> getLstTipoPeriodo() {
 		if (lstTipoPeriodo == null) {
@@ -1326,8 +1399,6 @@ public class FglInterventoBean extends FascicoloCompSecondoLivello implements ID
 		}
 		return lstTipoPeriodo;
 	}
-
-	private List<SelectItem> lstTipoGestione;
 
 	@Override
 	public List<SelectItem> getLstTipoGestione() {
@@ -1340,8 +1411,6 @@ public class FglInterventoBean extends FascicoloCompSecondoLivello implements ID
 		return lstTipoGestione;
 	}
 
-	private List<SelectItem> lstTipoDeroghe;
-
 	@Override
 	public List<SelectItem> getLstTipoDeroghe() {
 		if (lstTipoDeroghe == null) {
@@ -1351,8 +1420,6 @@ public class FglInterventoBean extends FascicoloCompSecondoLivello implements ID
 		}
 		return lstTipoDeroghe;
 	}
-
-	private List<SelectItem> lstTipoRientriFam;
 
 	@Override
 	public List<SelectItem> getLstTipoRientriFam() {
@@ -1374,8 +1441,6 @@ public class FglInterventoBean extends FascicoloCompSecondoLivello implements ID
 		}
 		return lstTipoRientriFam;
 	}
-
-	private List<SelectItem> lstTipoRetta;
 
 	@Override
 	public List<SelectItem> getLstTipoRetta() {
@@ -1409,28 +1474,9 @@ public class FglInterventoBean extends FascicoloCompSecondoLivello implements ID
 				fillEnte(i);
 				i.setCasoId(this.idCaso);
 				i.setIdTipoIntervento(idTipoIntervento);
-				List<CsDRelazione> beanLst = diarioService.findRelazioniByCasoTipoIntervento(i);
-				if (beanLst != null) {
-					for (CsDRelazione s : beanLst) {
-						Date dataRelazione = s.getCsDDiario().getDtAmministrativa();
-						String descrRelazione = "";
-
-						BaseDTO bd = new BaseDTO();
-						fillEnte(bd);
-						bd.setObj(s.getCsDDiario().getId());
-						List<CsDDiarioDoc> lstDocumenti = diarioService.findDiarioDocById(bd);
-						if (lstDocumenti != null && !lstDocumenti.isEmpty())
-							descrRelazione = lstDocumenti.iterator().next().getCsLoadDocumento().getNome();
-						else
-							descrRelazione = s.getProposta() != null ? (s
-									.getProposta().length() > 20 ? s
-									.getProposta().substring(0, 20) + "..." : s
-									.getProposta()) : "Nessuna proposta";
-
-						String descrizione = (dataRelazione != null ? SDF.format(s.getCsDDiario().getDtAmministrativa()) : "") + " - " + descrRelazione;
-						lst.add(new SelectItem(s.getDiarioId(), descrizione));
-					}
-				}
+				List<KeyValueDTO> beanLst = diarioService.findRelazioniByCasoTipoIntervento(i);
+				lst = this.convertiLista(beanLst);
+				
 			}
 		} catch (Exception e) {
 			addErrorDialogFromProperties("caricamento.error");
@@ -1438,8 +1484,6 @@ public class FglInterventoBean extends FascicoloCompSecondoLivello implements ID
 		}
 		return lst;
 	}
-
-	private List<SelectItem> lstTipoAffido;
 
 	@Override
 	public List<SelectItem> getLstTipoAffido() {
@@ -1452,8 +1496,6 @@ public class FglInterventoBean extends FascicoloCompSecondoLivello implements ID
 		}
 		return lstTipoAffido;
 	}
-
-	private List<SelectItem> lstSpeseExtra;
 
 	@Override
 	public List<SelectItem> getLstSpeseExtra() {
@@ -1469,8 +1511,6 @@ public class FglInterventoBean extends FascicoloCompSecondoLivello implements ID
 		return lstSpeseExtra;
 	}
 
-	private List<SelectItem> lstSpeseExtraSRM;
-
 	@Override
 	public List<SelectItem> getLstSpeseExtraSRM() {
 		if (lstTipoQuotaCentroD == null) {
@@ -1483,8 +1523,6 @@ public class FglInterventoBean extends FascicoloCompSecondoLivello implements ID
 		return lstSpeseExtraSRM;
 	}
 
-	private List<SelectItem> lstTipoAdmAdh;
-
 	@Override
 	public List<SelectItem> getLstTipoAdmAdh() {
 		if (lstTipoAdmAdh == null) {
@@ -1495,8 +1533,6 @@ public class FglInterventoBean extends FascicoloCompSecondoLivello implements ID
 		}
 		return lstTipoAdmAdh;
 	}
-
-	private List<SelectItem> lstEducatori;
 
 	public List<SelectItem> getLstEducatori() {
 		Date dataRif = new Date();
@@ -1519,7 +1555,7 @@ public class FglInterventoBean extends FascicoloCompSecondoLivello implements ID
 					boolean isAttivo = !dataRif.after(cs.getDataFineApp()) && !dataRif.before(cs.getDataInizioApp());
 					if (isAttivo && opSett.getCsOSettore().getCsOOrganizzazione().getId().equals(org.getId())
 							&& !mapEducatori.containsKey(opSett.getCsOOperatore().getId())) {
-						String anagrafica = this.getDenominazioneOperatore(opSett.getCsOOperatore());
+						String anagrafica = opSett.getCsOOperatore().getDenominazione();
 						if (anagrafica != null && !anagrafica.isEmpty()) {
 							mapEducatori.put(opSett.getCsOOperatore().getId(), opSett.getCsOOperatore().getId());
 							SelectItem si = new SelectItem(opSett.getCsOOperatore().getId(), anagrafica);
@@ -1536,22 +1572,16 @@ public class FglInterventoBean extends FascicoloCompSecondoLivello implements ID
 		return lstEducatori;
 	}
 
-	private List<SelectItem> lstTipoCirc4;
-
 	public List<SelectItem> getLstTipoCirc4() {
 		if (lstTipoCirc4 == null) {
 			lstTipoCirc4 = new ArrayList<SelectItem>();
 			CeTBaseObject cet = new CeTBaseObject();
 			fillEnte(cet);
-			List<CsTbTipoCirc4> lista = confService.getTipiCirc4(cet);
-			for (CsTbTipoCirc4 cs : lista) {
-				lstTipoCirc4.add(new SelectItem(cs.getId(), cs.getDescrizione()));
-			}
+			List<KeyValueDTO> lista = confService.getTipiCirc4(cet);
+			lstTipoCirc4 = this.convertiLista(lista);
 		}
 		return lstTipoCirc4;
 	}
-
-	private List<SelectItem> lstTipoInterventi;
 
 	public List<SelectItem> getLstTipoInterventi() {
 		if (lstTipoInterventi == null) {
@@ -1559,32 +1589,20 @@ public class FglInterventoBean extends FascicoloCompSecondoLivello implements ID
 
 			CeTBaseObject cet = new CeTBaseObject();
 			fillEnte(cet);
-			List<CsTbInterventiUOL> lista = confService.getinterventiUOL(cet);
-			for (CsTbInterventiUOL cs : lista) {
-				lstTipoInterventi.add(new SelectItem(cs.getId(), cs.getDescrizione()));
-			}
+			List<KeyValueDTO> lista = confService.getinterventiUOL(cet);
+			lstTipoInterventi = convertiLista(lista);
 		}
 		return lstTipoInterventi;
 	}
 
-	private List<SelectItem> lstTipoProgetto;
-
 	public List<SelectItem> getLstTipoProgetto() {
 		if (lstTipoProgetto == null) {
-			lstTipoProgetto = new ArrayList<SelectItem>();
-
 			CeTBaseObject cet = new CeTBaseObject();
 			fillEnte(cet);
-			List<CsTbTipoProgetto> lista = confService.getTipiProgetto(cet);
-			for (CsTbTipoProgetto cs : lista) {
-				lstTipoProgetto.add(new SelectItem(cs.getId(), cs.getDescrizione()));
-			}
+			lstTipoProgetto = convertiLista(confService.getTipiProgetto(cet));
 		}
 		return lstTipoProgetto;
 	}
-
-	private List<SelectItem> lstTipoContributo;
-	private List<CsTbTipoContributo> lstTipoContributoTooltip;
 
 	@Override
 	public List<SelectItem> getLstTipoContributo() {
@@ -1705,7 +1723,7 @@ public class FglInterventoBean extends FascicoloCompSecondoLivello implements ID
 				this.datiFglIntBean.isGraduatoria() ||
 				this.isReadOnly() || 
 				(this.datiFglIntBean.getFlagRespinto()!=null ? this.datiFglIntBean.getFlagRespinto() : false) || 
-				this.isAnyErogazioniBetweenDataInizioDataFine();
+				(this.isAnyErogazioniBetweenDataInizioDataFine() && this.validaArchiTemporaliFogli()); //Se ci sono fogli con stesse date, poi non me li fa più cambiare
 		return disable;
 	}
 
@@ -1719,17 +1737,8 @@ public class FglInterventoBean extends FascicoloCompSecondoLivello implements ID
 
 	// inizio SISO-556
 	public boolean isVisualizzaIntervalloDateErogazione() {
-
-		boolean res = false;
-		if (erogazioneInterventoBean.getStatoSelezionato() != null) {
-				// Il range di date deve essere proposto SOLO se lo stato selezionato è di tipo "E" e il rendiconto è periodico
-			if (TipoStatoErogazione.EROGATIVO.equals(erogazioneInterventoBean.getStatoSelezionato().getTipo())
-						&&  getDatiTariffeInterventoBean().getCsIQuota().getCsIQuotaRipartiz().getFlagRendiconto().
-								equals(TIPO_RENDICONTO.PERIODICO.getCodice())  ) {
-				res = true;
-			}
-		}
-
+		// Il range di date deve essere proposto SOLO se lo stato selezionato è di tipo "E" e il rendiconto è periodico
+		boolean res = erogazioneInterventoBean.isStatoErogativo() && this.datiTariffeInterventoBean.isRendicontoPeriodico();
 		return res;
 	}
 
@@ -1768,7 +1777,7 @@ public class FglInterventoBean extends FascicoloCompSecondoLivello implements ID
 		// Abilito anche quando non è vuoto, ma non sono state inserite erogazioni!
 		boolean storicoVuoto = true; // erogazioneInterventoBean.getErogazioneHistory().getRows().isEmpty();
 
-		for (InterventoErogazHistoryRowBean interventoErogazHistoryRowBean : erogazioneInterventoBean.getErogazioneHistory().getRows()) {
+		for (InterventoErogazHistoryRowBean interventoErogazHistoryRowBean : erogazioneInterventoBean.getStoricoOperazioni()) {
 			if (interventoErogazHistoryRowBean.getStato().getTipo().equals(DataModelCostanti.TipoStatoErogazione.EROGATIVO)) {
 				storicoVuoto = false;
 			}
@@ -1811,7 +1820,10 @@ public class FglInterventoBean extends FascicoloCompSecondoLivello implements ID
 
 	// INIZIO SISO-524
 	public boolean isTariffaDisabled() {
-		return datiTariffeInterventoBean.isSolaLettura() || erogazioneInterventoBean.isErogazioniPresenti() || datiTariffeInterventoBean.isValuta();
+		return isTariffaDettaglioDisabled() || erogazioneInterventoBean.isErogazioniPresenti();
+	}
+	public boolean isTariffaDettaglioDisabled() {
+		return datiTariffeInterventoBean.isSolaLettura() || datiTariffeInterventoBean.isValuta();
 	}
 
 	public boolean isFrequenzaAccessoAlServizioDisabled() {
@@ -1989,100 +2001,48 @@ public class FglInterventoBean extends FascicoloCompSecondoLivello implements ID
 		return true;
 	}
 	
-	private SoggettoErogazioneBean beneficRif = null;
-	private String soggettoAttuatore = "";
 	
-	public SoggettoErogazioneBean getBeneficRif() {
-		return beneficRif;
-	}
-
-	public void setBeneficRif(SoggettoErogazioneBean beneficRif) {
-		this.beneficRif = beneficRif;
-	}
-	
-	
-	public String getSoggettoAttuatore() {
-		return soggettoAttuatore;
-	}
-
-	public void setSoggettoAttuatore(String soggettoAttuatore) {
-		this.soggettoAttuatore = soggettoAttuatore;
-	}
 	public void stampaModelloPOR(Object obj){
+		SoggettoErogazioneBean beneficRif = null;
 		List<String> msg = new ArrayList<String>();
-		setSoggettoAttuatore("");
 		if(obj != null){//quando è null provengo dal tab progetti e non c'è bisogno di inizializzare
 			ErogInterventoRowBean row = (ErogInterventoRowBean) obj;
 			beneficRif = row.getBeneficiarioRiferimento();
 			CsIInterventoPr progetto = row.getUltimoCsIInterventoEseg().getCsIInterventoEsegMast().getCsIInterventoPr(); 
 			datiProgettoBean = new DatiProgettoBean();
-			datiProgettoBean.loadDatiProgetto(progetto,false,row.getIdTipoIntervento(),row.getIdTipoInterventoCustom(), row.getIdCatSociale(), beneficRif);
+			datiProgettoBean.loadDatiProgetto(progetto,false,row.getIdTipoIntervento(),row.getIdTipoInterventoCustom(), row.getIdCatSociale(), beneficRif, null);
 		}else{
 			beneficRif = erogazioneInterventoBean.getSoggettoErogazione();// se mi arriva dal tab progetti lui è beneficiario
 		}
-		
-		String nomeModulo = getModuloPorRegionale();
-		if(nomeModulo!=null && (nomeModulo.equals("stampaPorMarche") || nomeModulo.equals("stampaPorUmbria"))){// Possibili tipologie di POR 
 			
-		}else{
-			msg.add("Nome del modulo configurato erroneamente: "+getModuloPorRegionale() +" ,contattare l'assistenza." );
-			return;
-		}
-		
 		if(beneficRif == null){
 			msg.add("Impossibile stampare il modello, nessun beneficiario presente");
-			
 		}
+		
 		if(beneficRif.getCsASoggetto() == null){
 			BaseDTO dto = new BaseDTO();
 			fillEnte(dto);
 			dto.setObj(beneficRif.getCodiceFiscale());
 			beneficRif.setCsASoggetto(soggettoService.getSoggettoByCF(dto));
 		}
-			
-		if(datiProgettoBean.getCsIInterventoPr().getCsTbTitoloStudio() == null || datiProgettoBean.getCsIInterventoPr().getCsTbTitoloStudio().getId() == 0)
-			msg.add("Informazioni insufficienti: selezionare il titolo di studio");
-		else if(datiProgettoBean.getCsIInterventoPr().getCsTbTitoloStudio().getDescrizione() == null){
-			for(SelectItem stud : datiProgettoBean.getLstTitoliStudio()){
-				if(stud.getValue() == datiProgettoBean.getTitoloStudioId())
-					datiProgettoBean.getCsIInterventoPr().getCsTbTitoloStudio().setDescrizione(stud.getLabel());
-			}
+		
+	   if(datiProgettoBean.getCsIInterventoPr().getCsTbTitoloStudio()!=null &&
+		  datiProgettoBean.getCsIInterventoPr().getCsTbTitoloStudio().getDescrizione() == null){
+		   BaseDTO dto = new BaseDTO();
+		   fillEnte(dto);
+		   dto.setObj(datiProgettoBean.getTitoloStudioId());
+		   CsTbTitoloStudio tb = confService.getTitoloStudioById(dto);
+		   datiProgettoBean.getCsIInterventoPr().setCsTbTitoloStudio(tb);
 		}
 		
-		if(datiProgettoBean.getCsIInterventoPr().getCsTbTitoloStudio()!=null && 
-				"Non rilevato".equalsIgnoreCase(datiProgettoBean.getCsIInterventoPr().getCsTbTitoloStudio().getDescrizione()))
-			msg.add("Valore 'Non rilevato' non ammesso per 'Titolo di Studio'");
-		
-		
-		if(datiProgettoBean.getCsIInterventoPr().getCsTbCondLavoro() == null || datiProgettoBean.getCsIInterventoPr().getCsTbCondLavoro().getId() == 0)
-			msg.add("Informazioni insufficienti: selezionare la condizione lavorativa");
-		else if("Non rilevato".equalsIgnoreCase(datiProgettoBean.getCsIInterventoPr().getCsTbCondLavoro().getDescrizione()))
-			msg.add("Valore 'Non rilevato' non ammesso per 'Condizione lavorativa'");
-		
-		if(datiProgettoBean.isDurataRicercaLavoro()){
-			if( datiProgettoBean.getCsIInterventoPr().getCsIInterventoPrFse().getLavoroDurataRicerca() == null || datiProgettoBean.getCsIInterventoPr().getCsIInterventoPrFse().getLavoroDurataRicerca().isEmpty())
-				msg.add("Informazioni insufficienti: selezionare la Durata ricerca lavoro");
-		}
-		if(datiProgettoBean.getCsIInterventoPr().getFfProgettoDescrizione() == null){
-			for(ArFfProgetto prog : datiProgettoBean.getListaProgetti()){
-				if(datiProgettoBean.getIdProgettoSelezionato().longValue()==prog.getId()){
-					datiProgettoBean.getCsIInterventoPr().setFfProgettoDescrizione(prog.getDescrizione());
-				}
-			}
-		}
-		//DA SISO-1002 IL MODULO DELLE MARCHE PREVEDE UNA SEZIONE APPOSITA DA COMPILARE SE IL RICHIEDENTE NON COMUNICA QUESTO VALORE
-//		if(datiProgettoBean.getCsIInterventoPr().getCsIInterventoPrFse().getCsTbGrVulnerabile() == null){		
-//			addMessage(FacesMessage.SEVERITY_ERROR, "Informazioni insufficienti, Selezionare la vulnerabilità");
-//			return;
-//		}//DA SISO-1010 
-		if(datiProgettoBean.getCsIInterventoPr().getCsIInterventoPrFse().getComunicaVul()==null)
-			msg.add("Informazioni insufficienti: indicare se l'utente comunica la vulnerabilità");
-		else if(datiProgettoBean.getCsIInterventoPr().getCsIInterventoPrFse().getComunicaVul() && 
-				(datiProgettoBean.getCsIInterventoPr().getCsIInterventoPrFse().getCsTbGrVulnerabile() == null ||
-				 datiProgettoBean.getCsIInterventoPr().getCsIInterventoPrFse().getCsTbGrVulnerabile().getId() == null)){
-			msg.add("Informazioni insufficienti: selezionare la vulnerabilità");
-		}
-		
+		inizializzaStampa(beneficRif);
+		BaseDTO dto = new BaseDTO();
+		fillEnte(dto);
+		dto.setObj(stampaFseDTO);
+		dto.setObj2(datiProgettoBean.getMappaCampiFse());
+		List<String> msgPor = datiPorService.validaStampa(dto);
+		msg.addAll(msgPor);
+					
 		if(!msg.isEmpty()){
 			String s  = "<ul>";
 			for(String sm : msg) s+= "<li>"+ sm.replace("'", "&#39;") +"</li>";
@@ -2093,20 +2053,95 @@ public class FglInterventoBean extends FascicoloCompSecondoLivello implements ID
 		
 		////FINE SISO-1010 
 		RequestContext.getCurrentInstance().execute("PF('wVdlgStampaPor').show()");
-		//chiamare la stampa 
+		//chiamare la stampa
 	}
 
+	private void inizializzaStampa(SoggettoErogazioneBean beneficRif){
+		stampaFseDTO = new StampaFseDTO();
+
+		//Dati beneficiario
+		stampaFseDTO.setCognome(beneficRif.getCognome());
+		stampaFseDTO.setNome(beneficRif.getNome());
+		stampaFseDTO.setCodiceFiscale(beneficRif.getCodiceFiscale());
+		stampaFseDTO.setCittadinanza(beneficRif.getCittadinanza());
+		stampaFseDTO.setAnnoNascita(beneficRif.getAnnoNascita()!=null ? beneficRif.getAnnoNascita().toString() : null);
+		/**
+		 * Prendendo i dati dal codice fiscale va considerato se prevedere i casi di omocodia!!?
+		 * */
+		if(beneficRif.getCodiceFiscale().length() <= 16 ){//se > 16 è temporaneo e lo ignoro
+				String beneficGiornoNascita = beneficRif.getCodiceFiscale().substring(9, 11);
+				String letteraMeseNascita = beneficRif.getCodiceFiscale().substring(8,9).toUpperCase();
+				String meseNascita= "";
+				String beneficAnnoNascita = beneficRif.getAnnoNascita().toString(); 
+				int benefSessoGiorno = Integer.parseInt(beneficGiornoNascita);
+				
+				stampaFseDTO.setSesso(benefSessoGiorno > 31 ? "F" : "M");
+				
+				if(letteraMeseNascita.equals("A")){
+			           meseNascita="01";
+			    }else if(letteraMeseNascita.equals("B")){
+			           meseNascita="02";
+			    }else if(letteraMeseNascita.equals("C")){
+			           meseNascita="03";
+			    }else if(letteraMeseNascita.equals("D")){
+			           meseNascita="04";
+			    }else if(letteraMeseNascita.equals("E")){
+			           meseNascita="05";
+			    }else if(letteraMeseNascita.equals("H")){
+			           meseNascita="06";
+			    }else if(letteraMeseNascita.equals("L")){
+			           meseNascita="07";
+			    }else if(letteraMeseNascita.equals("M")){
+			           meseNascita="08";
+			    }else if(letteraMeseNascita.equals("P")){
+			           meseNascita="09";
+			    }else if(letteraMeseNascita.equals("R")){
+			           meseNascita="10";
+			    }else if(letteraMeseNascita.equals("S")){
+			           meseNascita="11";
+			    }else if(letteraMeseNascita.equals("T")){
+			           meseNascita="12";
+			    }
+				
+				benefSessoGiorno = benefSessoGiorno > 31 ? benefSessoGiorno - 40 : benefSessoGiorno ;
+				stampaFseDTO.setDataNascita(String.valueOf(benefSessoGiorno).concat("/").concat(meseNascita).concat("/").concat(beneficAnnoNascita));
+				
+		}
+		
+		ComuneResidenzaMan residenzaComuneMan = new ComuneResidenzaMan();
+		ObjectMapper mapper = new ObjectMapper();
+		if(!beneficRif.getJsonComuneResidenza().isEmpty()){
+			try {
+				residenzaComuneMan.setComune(mapper.readValue(beneficRif.getJsonComuneResidenza(), ComuneBean.class));
+			} catch (JsonParseException e) {
+				logger.error(e.getMessage(), e);
+			} catch (JsonMappingException e) {
+				logger.error(e.getMessage(), e);
+			} catch (IOException e) {
+				logger.error(e.getMessage(), e);
+			}
+			
+			stampaFseDTO.setCapResidenza(residenzaComuneMan.getComune().getCap());
+			stampaFseDTO.setSiglaProvResidenza(residenzaComuneMan.getComune().getSiglaProv());
+			stampaFseDTO.setComuneResidenza(residenzaComuneMan.getComune().getDenominazione());
+		}
+		stampaFseDTO.setViaResidenza(beneficRif.getViaResidenza());
+		this.datiProgettoBean.valorizzaStampaFse(stampaFseDTO);
+		
+	}
+	
+
 	public void chiamaStampa(){
-		if(soggettoAttuatore.isEmpty()){
+ 		if(StringUtils.isBlank(stampaFseDTO.getSoggettoAttuatore())){
 			addMessage(FacesMessage.SEVERITY_ERROR, "Inserire il soggetto Attuatore");
 			return;
 		}
-		//RequestContext.getCurrentInstance().execute("PF('wVdlgStampaPor').hide();");
 		
 		ReportBean bean = (ReportBean)CsUiCompBaseBean.getReferencedBean("ReportBean");
 		if(bean == null)//Se non è gia stato chiamato lo inizializzo
 			bean = new ReportBean(); 
-		bean.esportaModelloPor(beneficRif,datiProgettoBean,soggettoAttuatore);
+		
+		bean.esportaModelloPor(stampaFseDTO);
 	}
 	
 	//SISO-783
@@ -2121,7 +2156,7 @@ public class FglInterventoBean extends FascicoloCompSecondoLivello implements ID
 		List<String> lst = new ArrayList<String>();
         //SISO-985
 		List<String> s = this.sinaMan.validaSinaErogazione(erogazioneInterventoBean.getCsIPs().getFlagInCarico(),
-														   erogazioneInterventoBean.getErogazioneHistory().getRows());
+														   erogazioneInterventoBean.getStoricoOperazioni());
 		if(s!=null && s.size()>0){
 			valido = false;
 			lst.addAll(s);
@@ -2189,7 +2224,8 @@ public class FglInterventoBean extends FascicoloCompSecondoLivello implements ID
 		}
 		datiProgettoBean.setComuneNazioneNascitaBean(comuneNazioneNascitaMan);
 		
-		datiProgettoBean.onChangeBeneficiarioRiferimento(this.erogazioneInterventoBean.getSoggettoErogazione(), comuneNazioneNascitaMan);
+		String cfRiferimento = this.erogazioneInterventoBean.getSoggettoErogazione()!=null ? this.erogazioneInterventoBean.getSoggettoErogazione().getCodiceFiscale() : null;
+		datiProgettoBean.onChangeBeneficiarioRiferimento(cfRiferimento, comuneNazioneNascitaMan);
 	}
     //fine-SISO-722
 
@@ -2202,28 +2238,36 @@ public class FglInterventoBean extends FascicoloCompSecondoLivello implements ID
 	}
 
 	//SISO-1133
-public String flowSpese(FlowEvent event){
-	BigDecimal tariffa = datiTariffeInterventoBean.getCsIQuota().getTariffa();
-		try{
-			if(event.getNewStep().equals("detta_tbCompart")){
-				if(datiTariffeInterventoBean.getCsIQuota().isOreMinuti() && erogazioneInterventoBean.getMinutiErogazione() >= 60L) {
-					addMessage(FacesMessage.SEVERITY_ERROR, "Il campo Minuti non è corretto:inserire valore numerico intero compreso tra 0 e 59");
-					return event.getOldStep();
-				}else {
-				
-				erogazioneInterventoBean.onUpdateQuotaDettaglio(tariffa,datiTariffeInterventoBean.getCsIQuota().isOreMinuti());
+	public String flowSpese(FlowEvent event){
+		BigDecimal tariffa = erogazioneInterventoBean.getNuovocsIntEseg().getCsIValQuota().getTariffaCustom();
+			try{
+				if(event.getNewStep().equals("detta_tbCompart")){
+					if(datiTariffeInterventoBean.getCsIQuota().isOreMinuti() && erogazioneInterventoBean.getMinutiErogazione() >= 60L) {
+						addMessage(FacesMessage.SEVERITY_ERROR, "Il campo Minuti non è corretto:inserire valore numerico intero compreso tra 0 e 59");
+						return event.getOldStep();
+					}else {
+						erogazioneInterventoBean.onUpdateQuotaDettaglio(tariffa,datiTariffeInterventoBean.getCsIQuota().isOreMinuti());
+					}
 				}
+				else if(event.getNewStep().equals("detta_tbCaricoEnte")){
+					//calcolo importo a carico dell'ente
+					erogazioneInterventoBean.onUpdateQuotaDettaglio(tariffa,datiTariffeInterventoBean.getCsIQuota().isOreMinuti());
+					erogazioneInterventoBean.onCalcoloValoreGestitaEnte();
+				}
+				
+			} catch (Exception e) {
+				
+				logger.error(e.getMessage(), e);
 			}
-			else if(event.getNewStep().equals("detta_tbCaricoEnte")){
-				//calcolo importo a carico dell'ente
-				erogazioneInterventoBean.onUpdateQuotaDettaglio(tariffa,datiTariffeInterventoBean.getCsIQuota().isOreMinuti());
-				erogazioneInterventoBean.onCalcoloValoreGestitaEnte();
-			}
-			
-		} catch (Exception e) {
-			
-			logger.error(e.getMessage(), e);
-		}
-		return event.getNewStep();
+			return event.getNewStep();
 	}
+
+	public Boolean getFromPai() {
+		return fromPai;
+	}
+	
+	public void setFromPai(Boolean fromPai) {
+		this.fromPai = fromPai;
+	}
+
 }

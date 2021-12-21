@@ -69,7 +69,6 @@ public class CsAComponenteGit implements Serializable {
 
 	private String email;
 	
-	//bi-directional many-to-one association to CsAFamigliaGruppo
 	@ManyToOne
 	@JoinColumn(name="FAMIGLIA_GRUPPO_GIT_ID")
 	private CsAFamigliaGruppoGit csAFamigliaGruppoGit;

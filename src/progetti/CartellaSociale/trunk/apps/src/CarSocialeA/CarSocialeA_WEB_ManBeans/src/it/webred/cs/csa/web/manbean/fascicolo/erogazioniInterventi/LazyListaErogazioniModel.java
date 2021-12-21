@@ -1,15 +1,11 @@
 package it.webred.cs.csa.web.manbean.fascicolo.erogazioniInterventi;
 
-import it.webred.cs.csa.ejb.client.AccessTableConfigurazioneSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.AccessTableInterventoSessionBeanRemote;
-import it.webred.cs.csa.ejb.dto.BaseDTO;
 import it.webred.cs.csa.ejb.dto.ErogazioniSearchCriteria;
 import it.webred.cs.csa.ejb.dto.erogazioni.ErogazioneMasterDTO;
 import it.webred.cs.csa.ejb.dto.erogazioni.SoggettoErogazioneBean;
-import it.webred.cs.csa.web.manbean.fascicolo.interventi.DatiProgettoBean;
 import it.webred.cs.data.DataModelCostanti;
 import it.webred.cs.data.model.CsOOperatoreSettore;
-import it.webred.cs.jsf.Costanti.TipoPermessoErogazioneInterventi;
 import it.webred.cs.jsf.manbean.superc.CsUiCompBaseBean;
 import it.webred.ejb.utility.ClientUtility;
 
@@ -98,7 +94,7 @@ public class LazyListaErogazioniModel extends LazyDataModel<ErogInterventoRowBea
 			bDto.setCodiceFiscale( soggettoErogazioneSelezionato.getCodiceFiscale() );
 		
 		if(this.dataUltimaErogazione!=null)
-			bDto.setDataErogazione(ddMMyyyy.format(this.dataUltimaErogazione));
+			bDto.setDataErogazione(this.dataUltimaErogazione);
 			
 		if(this.selectedTipoIntervento!=null && this.selectedTipoIntervento.length>0)
 			bDto.setLstTipoIntervento(this.selectedTipoIntervento);
@@ -120,7 +116,7 @@ public class LazyListaErogazioniModel extends LazyDataModel<ErogInterventoRowBea
 				
 				List<ErogazioneMasterDTO> lst = interventoService.searchListaErogInterventi(bDto);
 				for (ErogazioneMasterDTO datiAggregatiErogazioneDTO : lst) {
-					ErogInterventoRowBean row = new ErogInterventoRowBean(datiAggregatiErogazioneDTO);
+					ErogInterventoRowBean row = new ErogInterventoRowBean(datiAggregatiErogazioneDTO, true);
 					listaInterventiAll.add(row);
 				}
 			
@@ -140,6 +136,7 @@ public class LazyListaErogazioniModel extends LazyDataModel<ErogInterventoRowBea
     
     protected void elaboraCriteriFiltro( Map filters, ErogazioniSearchCriteria searchCriteria){
     	String denominazione = (String) filters.get("denominazione");
+    	String cf = (String)filters.get("cf");
 		String statoErogazione = (String) filters.get("statoErogazione");
 		String lineaFinanziamento = (String)filters.get("lineaFinanziamento");
 		String catSociale = (String)filters.get("descCategoriaSociale");
@@ -148,6 +145,7 @@ public class LazyListaErogazioniModel extends LazyDataModel<ErogInterventoRowBea
 		searchCriteria.setStatoErogazione(statoErogazione!=null ? statoErogazione : null);
 		searchCriteria.setLineaFinanziamento(lineaFinanziamento!=null ? lineaFinanziamento : null);
 		searchCriteria.setDescCatSociale(catSociale);
+		searchCriteria.setCodiceFiscale(cf);
     }
 
 	public int getTipoFiltroInterventiSelezionato() {

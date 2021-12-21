@@ -1,6 +1,7 @@
 package it.webred.ss.data.model.tb;
 
 import java.io.Serializable;
+
 import javax.persistence.*;
 
 /**
@@ -9,11 +10,6 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name="CS_TB_TITOLO_STUDIO")
-@NamedQueries({
-	@NamedQuery(name="CsTbTitoloStudio.findAll", query="SELECT c FROM CsTbTitoloStudio c"),
-	@NamedQuery(name="CsTbTitoloStudio.findAllAbilit", query="SELECT c FROM CsTbTitoloStudio c where c.abilitato = '1'")
-,
-}) 
 public class CsTbTitoloStudio implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -27,6 +23,9 @@ public class CsTbTitoloStudio implements Serializable {
 	private String descrizione;
 
 	private String tooltip;
+	
+	@Column(name="COD_ISTAT")
+	private String codIstat;
 
 	public CsTbTitoloStudio() {
 	}
@@ -61,5 +60,13 @@ public class CsTbTitoloStudio implements Serializable {
 
 	public void setTooltip(String tooltip) {
 		this.tooltip = tooltip;
+	}
+
+	public String getCodIstat() {
+		return codIstat;
+	}
+
+	public void setCodIstat(String codIstat) {
+		this.codIstat = codIstat;
 	}
 }

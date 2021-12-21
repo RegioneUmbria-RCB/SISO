@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite">
+
+<p:growl id="msgs" showDetail="true"/>
+<p:dataTable id="dtDocumentiPAI" var="rowDocumento"
+	widgetVar="dtWDocumentiPAI" emptyMessage="Nessun elemento presente"
+	value="#{cc.attrs.iPai.paiPTIBean.listDocumentiPAI}" rows="10"
+	paginator="true"
+	paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+	rowsPerPageTemplate="5,10,15" rowKey="#{rowDocumento.id}"
+	scrollable="false" rowExpandMode="single" sortMode="single"
+	sortBy="#{rowDocumento.validoDa}" sortOrder="descending"
+	style="width:1000px"
+	editable="true">
+	<p:ajax event="rowToggle"
+		listener="#{cc.attrs.iPai.paiPTIBean.setSelectedPaiPTI(rowDocumento)}" />
+
+	<p:ajax event="rowEdit" listener="#{cc.attrs.iPai.paiPTIBean.onDocPaiRowEdit}" update="dtDocumentiPAI @parent:msgs"/>
+<!-- 	<p:ajax event="rowEditCancel" listener="#{cc.attrs.iPai.paiPTIBean.onDocPaiRowCancel}" update="dtDocumentiPAI"/>
+ -->	
+	<p:column style="width:16px">
+		<p:rowToggler />
+	</p:column>
+	<p:column headerText="Valido da" width="10">
+		<h:outputText value="#{rowDocumento.validoDa}">
+			<f:convertDateTime pattern="dd/MM/yyyy" />
+		</h:outputText>
+	</p:column>
+	<p:column headerText="Valido a" width="10">
+		<h:outputText value="#{rowDocumento.validoA}">
+			<f:convertDateTime pattern="dd/MM/yyyy" />
+		</h:outputText>
+	</p:column>
+	<p:column headerText="Documento" width="30">
+		<p:commandLink immediate="true"
+			actionListener="#{cc.attrs.iPai.paiPTIBean.prepareFile(rowDocumento)}"
+			value="#{rowDocumento.nome}" ajax="false"
+			onclick="PrimeFaces.monitorDownload(start, stop)">
+			<p:fileDownload value="#{cc.attrs.iPai.paiPTIBean.file}" />
+		</p:commandLink>
+	</p:column>
+	<p:column headerText="Appropriato" width="5" style="text-align:center">
+		<p:cellEditor>
+			<f:facet name="output">
+				<p:graphicImage rendered="#{rowDocumento.flgAppropriato}" value="/images/check.png" />
+			</f:facet>
+			<f:facet name="input">
+				<p:selectBooleanCheckbox value="#{rowDocumento.flgAppropriato}" />
+			</f:facet>
+			
+		</p:cellEditor>
+	</p:column>
+	<p:column headerText="Note" width="50" style="text-align:center">
+		<p:cellEditor>
+			<f:facet name="output">
+				<h:outputText value="#{rowDocumento.note}"/>
+			</f:facet>
+			<f:facet name="input">
+				<p:inputTextarea value="#{rowDocumento.note}"/>
+			</f:facet>	
+		</p:cellEditor>
+	</p:column>
+	
+	<p:column style="width:6rem">
+		<p:rowEditor rendered="#{rowDocumento.validoA == null}" editTitle="Modifica" cancelTitle="Annulla" saveTitle="Salva" />
+	</p:column>
+	<p:rowExpansion>
+		<p:outputPanel>
+			<p:dataTable id="panelDatiMinimi"
+				value="#{cc.attrs.iPai.paiPTIBean.readInfoSintetiche()}"
+				var="rowInfoSintetiche" styleClass="updatePresenteChanged">
+				<f:facet name="header">
+					<h:outputText value="Dati del Minore" />
+				</f:facet>
+				<p:column headerText="Minore Straniero Non Accompagnato" width="20">
+					<p:selectBooleanCheckbox id="flagMsna"
+						value="#{cc.attrs.iPai.paiPTIBean.infoSintetichePaiSelected.msna}">
+						<p:ajax event="change" process="@this"
+							update="@(.updatePresenteChanged)"></p:ajax>
+					</p:selectBooleanCheckbox>
+				</p:column>
+				<p:column headerText="Alfabetizzato" width="20">
+					<p:selectBooleanCheckbox id="flagalfabetizzato"
+						
+						value="#{cc.attrs.iPai.paiPTIBean.infoSintetichePaiSelected.flagAlfabetizzato}">
+						<p:ajax event="change" process="@this"
+							update="@(.updatePresenteChanged)"></p:ajax>
+					</p:selectBooleanCheckbox>
+				</p:column>
+				<p:column headerText="Copia PAI fornita" width="20">
+					<p:selectBooleanCheckbox id="flagCopiaFornita"
+						
+						value="#{cc.attrs.iPai.paiPTIBean.infoSintetichePaiSelected.flagCopiaFornita}">
+						<p:ajax event="change" process="@this"
+							update="@(.updatePresenteChanged)"></p:ajax>
+					</p:selectBooleanCheckbox>
+				</p:column>
+				<p:column headerText="Età accertata" width="20">
+					<p:selectBooleanCheckbox id="flagEtaAccertata"
+						
+						value="#{cc.attrs.iPai.paiPTIBean.infoSintetichePaiSelected.flagEtaAccertata}">
+						<p:ajax event="change" process="@this"
+							update="@(.updatePresenteChanged)"></p:ajax>
+					</p:selectBooleanCheckbox>
+				</p:column>
+				<p:column headerText="Beneficiario di supporto legale" width="20">
+					<p:selectBooleanCheckbox id="flagSuppLegale"
+						
+						value="#{cc.attrs.iPai.paiPTIBean.infoSintetichePaiSelected.flagSuppLegale}">
+						<p:ajax event="change" process="@this"
+							update="@(.updatePresenteChanged)"></p:ajax>
+					</p:selectBooleanCheckbox>
+				</p:column>
+				<p:column
+					headerText="Beneficiario di servizi di informazione e orientamento"
+					width="20">
+					<p:selectBooleanCheckbox id="flagServizioInfOr"
+						
+						value="#{cc.attrs.iPai.paiPTIBean.infoSintetichePaiSelected.flagServizioInfOr}">
+						<p:ajax event="change" process="@this"
+							update="@(.updatePresenteChanged)"></p:ajax>
+					</p:selectBooleanCheckbox>
+				</p:column>
+				<p:column
+					headerText="Vittima di tratta o con esigenze particolari di cui all'articolo 17 del d.lgs. 142/2015"
+					width="20">
+					<p:selectBooleanCheckbox id="flagTrattaArt17"
+						
+						value="#cc.attrs.iPai.paiPTIBean.infoSintetichePaiSelected.flagTrattaArt17}">
+						<p:ajax event="change" process="@this"
+							update="@(.updatePresenteChanged)"></p:ajax>
+					</p:selectBooleanCheckbox>
+				</p:column>
+			</p:dataTable>
+		</p:outputPanel>
+	</p:rowExpansion>
+</p:dataTable>
+</html>

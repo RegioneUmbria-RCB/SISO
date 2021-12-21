@@ -23,7 +23,7 @@ import eu.smartpeg.rilevazionepresenze.data.model.Anagrafica;
 import eu.smartpeg.rilevazionepresenze.data.model.Area;
 import eu.smartpeg.rilevazionepresenze.data.model.Motivazione;
 import eu.smartpeg.rilevazionepresenze.data.model.Struttura;
-
+import eu.smartpeg.rilevazionepresenze.datautil.DataModelCostanti;
 import eu.smartpeg.rilevazionepresenze.ejb.helpers.ComuniCacheHelperRemote;
 import eu.smartpeg.rilevazionepresenze.ejb.helpers.NazioniCacheHelperRemote;
 import eu.smartpeg.rilevazionepresenze.web.manbean.DocumentoController;
@@ -75,6 +75,8 @@ public class AnagraficaController extends RilevazionePresenzeBaseController impl
 	private AmTabComuni selectedAnagraficaComuneDomicilio;
 	private AmTabNazioni selectedAnagraficaStatoTitoloConseguito;
 
+	private String tipoFunzione;
+	 
 	@EJB
 	private AnagraficaSessionBeanRemote anagraficaEjb;
 	@EJB
@@ -91,6 +93,7 @@ public class AnagraficaController extends RilevazionePresenzeBaseController impl
 	
 	public AnagraficaController() {
 		this.anagrafiche = new ArrayList<>();
+		setTipoFunzione(HomeController.getGlobalParameter(DataModelCostanti.AmParameterKey.TIPO_FUNZIONE_STRUTTURA));
 	}
 
 	@PostConstruct
@@ -121,7 +124,7 @@ public class AnagraficaController extends RilevazionePresenzeBaseController impl
 		setModalHeader("Nuova Anagrafica");
 		Anagrafica nuovaAnagrafica = new Anagrafica();
 		setSelectedAnagrafica(nuovaAnagrafica);
-		readStrutture();
+		readStruttureByTipoFunzione(Long.valueOf(this.getTipoFunzione()));
 		readReferenti();
 	
 	}
@@ -137,6 +140,20 @@ public class AnagraficaController extends RilevazionePresenzeBaseController impl
 			strutture.put(String.valueOf(struttura.getId()), struttura);
 		}
 	}	
+	
+	public void readStruttureByTipoFunzione(Long idTipoFunzione) {	
+		
+        List<Struttura> listaStrutture = struttureEjb.findStruttureByTipoFunzione(idTipoFunzione);
+		
+		if(strutture != null) {
+			strutture.clear();
+		}
+		
+		for (Struttura struttura : listaStrutture) {
+			strutture.put(String.valueOf(struttura.getId()), struttura);
+		}
+	}
+	
 	
 	//TODO: questo metodo è strano ... 
 	public String readTipoDocumento(Long idTipologiaDocumento) {
@@ -161,7 +178,9 @@ public class AnagraficaController extends RilevazionePresenzeBaseController impl
 	 * @return
 	 */
 	public List<AmTabComuni> completaLuogo(String query) {
-		List<AmTabComuni> result = comuniCacheHelper.trovaComuniPerDenominazione(query);
+		List<AmTabComuni> result = new ArrayList<AmTabComuni>();
+		if (query.length()>2)
+			result = comuniCacheHelper.trovaComuniPerDenominazione(query);
 		return result;
 	}
 
@@ -181,6 +200,11 @@ public class AnagraficaController extends RilevazionePresenzeBaseController impl
 	public void salva() throws Exception {
 		logger.info("salvataggio anagrafica...");
 		try {
+			
+			selectedAnagrafica.setComuneNascita(selectedAnagraficaComuneNascita);
+			selectedAnagrafica.setComuneResidenza(selectedAnagraficaComuneResidenza);
+			selectedAnagrafica.setComuneDomicilio(selectedAnagraficaComuneDomicilio);
+
 			if (anagraficaEjb.validaAnagrafica(this.getSelectedAnagrafica()).isEmpty()) {
 				
 				Long idAnagraficaSalvata = anagraficaEjb.salva(this.getSelectedAnagrafica());
@@ -410,18 +434,18 @@ public class AnagraficaController extends RilevazionePresenzeBaseController impl
 	//	
 
 	public void onComuneNascitaSelect(javax.faces.event.AjaxBehaviorEvent event) {
-		selectedAnagrafica.setComuneNascita(selectedAnagraficaComuneNascita);
+		//selectedAnagrafica.setComuneNascita(selectedAnagraficaComuneNascita);
 	}
 
 	public void onComuneResidenzaSelect(javax.faces.event.AjaxBehaviorEvent event) {
-		selectedAnagrafica.setComuneResidenza(selectedAnagraficaComuneResidenza);
+		//selectedAnagrafica.setComuneResidenza(selectedAnagraficaComuneResidenza);
 		if(selectedAnagraficaComuneResidenza!=null) {
 			this.setAbilitaMunicipioRes(selectedAnagraficaComuneResidenza.getSiglaProv().equalsIgnoreCase("RM"));
 		}
 	}
 
 	public void onComuneDomicilioSelect(javax.faces.event.AjaxBehaviorEvent event) {		
-		selectedAnagrafica.setComuneDomicilio(selectedAnagraficaComuneDomicilio);
+		//selectedAnagrafica.setComuneDomicilio(selectedAnagraficaComuneDomicilio);
 		if(selectedAnagraficaComuneDomicilio!=null) {
 			this.setAbilitaMunicipioDom(selectedAnagraficaComuneDomicilio.getSiglaProv().equalsIgnoreCase("RM"));
 		}		
@@ -564,11 +588,9 @@ public class AnagraficaController extends RilevazionePresenzeBaseController impl
 	}
 
 	public void onStatoNascitaSelect(javax.faces.event.AjaxBehaviorEvent event) {
-		logger.debug("onStatoNascitaSelect - selectedAnagraficaStatoNascita: "
-				+ this.selectedAnagraficaStatoNascita.getCodNazioneAnagrafe());
+		logger.debug("onStatoNascitaSelect - selectedAnagraficaStatoNascita: "+ this.selectedAnagraficaStatoNascita.getCodNazioneAnagrafe());
 		selectedAnagrafica.setStatoNascitaCod(selectedAnagraficaStatoNascita.getCodNazioneAnagrafe());
 		selectedAnagrafica.setStatoNascitaDes(selectedAnagraficaStatoNascita.getNazione());
-
 		logger.debug("selected Stato Nascita des: " + this.selectedAnagrafica.getStatoNascitaDes());
 	}
 
@@ -781,10 +803,8 @@ public class AnagraficaController extends RilevazionePresenzeBaseController impl
 	}	
 	
 	public List<SelectItem> getLstTitoliStudio() {
-		if (lstTitoliStudio == null) {
+		if (lstTitoliStudio == null)
 			lstTitoliStudio = ListeSelezioneHelper.costruisciListaTitoliDiStudio();
-		}
-		
 		return lstTitoliStudio;
 	}
 
@@ -878,6 +898,14 @@ public class AnagraficaController extends RilevazionePresenzeBaseController impl
 
 	public void setListaMotivazioni(Map<String, Motivazione> listaMotivazioni) {
 		this.listaMotivazioni = listaMotivazioni;
+	}
+
+	public String getTipoFunzione() {
+		return tipoFunzione;
+	}
+
+	public void setTipoFunzione(String tipoFunzione) {
+		this.tipoFunzione = tipoFunzione;
 	}
 	
 	// 

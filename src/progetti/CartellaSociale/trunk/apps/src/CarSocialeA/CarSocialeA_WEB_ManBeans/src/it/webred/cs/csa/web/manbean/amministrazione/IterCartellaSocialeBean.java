@@ -2,7 +2,6 @@ package it.webred.cs.csa.web.manbean.amministrazione;
 
 import it.webred.cs.csa.ejb.client.AccessTableCasoSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.AccessTableCatSocialeSessionBeanRemote;
-import it.webred.cs.csa.ejb.client.AccessTableOperatoreSessionBeanRemote;
 import it.webred.cs.csa.ejb.dto.BaseDTO;
 import it.webred.cs.csa.ejb.dto.EventoDTO;
 import it.webred.cs.csa.ejb.dto.IterDTO;
@@ -11,14 +10,11 @@ import it.webred.cs.csa.web.manbean.interscambio.InterscambioDialogEventoBean;
 import it.webred.cs.csa.web.manbean.listacasi.LazyListaCasiModel;
 import it.webred.cs.data.DataModelCostanti;
 import it.webred.cs.data.model.CsACaso;
-import it.webred.cs.data.model.CsASoggettoCategoriaSocLAZY;
+import it.webred.cs.data.model.CsASoggettoCategoriaSoc;
 import it.webred.cs.data.model.CsASoggettoLAZY;
-import it.webred.cs.data.model.CsCfgItStato;
 import it.webred.cs.data.model.CsOOperatore;
 import it.webred.cs.data.model.CsOOperatoreSettore;
-import it.webred.cs.data.model.CsOOperatoreTipoOperatore;
 import it.webred.cs.data.model.CsOOrganizzazione;
-import it.webred.cs.data.model.CsOSettore;
 import it.webred.cs.data.model.CsOSettoreBASIC;
 import it.webred.cs.data.model.CsRelSettoreCatsoc;
 import it.webred.cs.jsf.manbean.superc.CsUiCompBaseBean;
@@ -27,15 +23,14 @@ import it.webred.ejb.utility.ClientUtility;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.StringTokenizer;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
-import javax.faces.event.AjaxBehaviorEvent;
 import javax.faces.component.UIOutput;
+import javax.faces.event.AjaxBehaviorEvent;
 import javax.faces.model.SelectItem;
 import javax.naming.NamingException;
 
@@ -114,11 +109,11 @@ public class IterCartellaSocialeBean  extends CsUiCompBaseBean {
 				this.listaSettori = listaSettori;
 			}
 
-			public List<CsCfgItStato> getListaStato() {
+			public List<SelectItem> getListaStato() {
 				return listaStato;
 			}
 
-			public void setListaStato(List<CsCfgItStato> listaStato) {
+			public void setListaStato(List<SelectItem> listaStato) {
 				this.listaStato = listaStato;
 			}
 
@@ -131,10 +126,10 @@ public class IterCartellaSocialeBean  extends CsUiCompBaseBean {
 			}
 
 			private  List<CsOSettoreBASIC>  listaSettori;
-			private List<CsCfgItStato> listaStato;
+			private List<SelectItem> listaStato;
 			private List<CsOOrganizzazione> listaOrganizzazione;
 			private List<CsOOperatore> listaOperatore;
-			private List<CsOOperatoreSettore> listaOperatoreSettore;
+			private List<SelectItem> listaOperatoreSettore;
 			private List<IterSoggettoLAZY> listaIterSoggettoLAZY;
 			
 			public List<IterSoggettoLAZY> getListaIterSoggettoLAZY() {
@@ -146,12 +141,11 @@ public class IterCartellaSocialeBean  extends CsUiCompBaseBean {
 				this.listaIterSoggettoLAZY = listaIterSoggettoLAZY;
 			}
 
-			public List<CsOOperatoreSettore> getListaOperatoreSettore() {
+			public List<SelectItem> getListaOperatoreSettore() {
 				return listaOperatoreSettore;
 			}
 
-			public void setListaOperatoreSettore(
-					List<CsOOperatoreSettore> listaOperatoreSettore) {
+			public void setListaOperatoreSettore(List<SelectItem> listaOperatoreSettore) {
 				this.listaOperatoreSettore = listaOperatoreSettore;
 			}
 
@@ -236,10 +230,10 @@ public class IterCartellaSocialeBean  extends CsUiCompBaseBean {
 
 			public IterCartellaSocialeBean() {
 				   listaSettori = new ArrayList<CsOSettoreBASIC>();
-				   listaStato = new ArrayList<CsCfgItStato>();
+				   listaStato = new ArrayList<SelectItem>();
 				   listaOrganizzazione = new ArrayList<CsOOrganizzazione>();
 				   listaOperatore = new ArrayList<CsOOperatore>();
-				   listaOperatoreSettore = new ArrayList<CsOOperatoreSettore>(); 
+				   listaOperatoreSettore = new ArrayList<SelectItem>(); 
 				   this.username = getCurrentUsername(); 
 			}
 
@@ -288,22 +282,19 @@ public class IterCartellaSocialeBean  extends CsUiCompBaseBean {
 			    bdto.setIdSettore(new Long(settoreSel));
 				fillEnte(bdto);
 				this.listaOperatoreSettore.clear();
-			    this.listaOperatoreSettore =  ics.getOperatoreSettore(bdto);
+			    this.listaOperatoreSettore =  ics.findOperatoriSettore(bdto);
 				
 			}
 			public void onOperatoreChange(AjaxBehaviorEvent event) {
 
 			    String operatoreSel = (String) ((UIOutput) event.getSource()).getValue();
 			    		
-			    System.out.print(operatoreSel);
-			   
-			    for(CsOOperatoreSettore csOpSett : listaOperatoreSettore){
-			    	if(csOpSett.getId() == Long.parseLong(operatoreSel)){
-			    		this.csOpSettSel = csOpSett;
-			    		break;
-			    	}
-			    }
-			 
+			    logger.debug("onOperatoreChange:"+operatoreSel);
+			    
+			    OperatoreDTO bdto = new OperatoreDTO();
+			    fillEnte(bdto);
+			    bdto.setIdOperatoreSettore(Long.parseLong(operatoreSel));
+			    this.csOpSettSel = ics.getOperatoreSettore(bdto);
 			}
 		 
 			public String getSettTo() {
@@ -409,9 +400,9 @@ public class IterCartellaSocialeBean  extends CsUiCompBaseBean {
 							}
 							//devo verificare che l'ORGANIZZAZIONE  abbia il SETTORE abilitato.
 							BaseDTO dto = new BaseDTO();
-				   			List<CsASoggettoCategoriaSocLAZY> listaCatSocLazy = iterIesimo.getListaCsSoggettoCatSocLazy();
+				   			List<CsASoggettoCategoriaSoc> listaCatSocLazy = iterIesimo.getListaCsSoggettoCatSocLazy();
 				   			
-				   			for(CsASoggettoCategoriaSocLAZY catSocLazy : listaCatSocLazy){
+				   			for(CsASoggettoCategoriaSoc catSocLazy : listaCatSocLazy){
 				   				dto.setObj(catSocLazy.getId().getCategoriaSocialeId() );
 								fillEnte(dto);
 								List<CsRelSettoreCatsoc> listaRelSettoreCatSoc = catSocService.findRelSettoreCatsocByCatSoc(dto);

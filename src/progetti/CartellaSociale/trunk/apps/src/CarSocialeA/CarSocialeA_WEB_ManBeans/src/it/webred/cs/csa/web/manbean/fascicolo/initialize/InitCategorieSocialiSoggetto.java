@@ -2,10 +2,8 @@ package it.webred.cs.csa.web.manbean.fascicolo.initialize;
 
 import it.webred.cs.csa.ejb.client.AccessTableSoggettoSessionBeanRemote;
 import it.webred.cs.csa.ejb.dto.BaseDTO;
-import it.webred.cs.data.model.CsCCategoriaSocialeBASIC;
-import it.webred.cs.jsf.bean.colloquio.ColloquioRowBean;
+import it.webred.cs.data.model.CsCCategoriaSociale;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ForkJoinTask;
 
@@ -19,16 +17,14 @@ public class InitCategorieSocialiSoggetto extends ForkJoinTask {
 
 	public static Logger logger = Logger.getLogger("carsociale.log");
 	 BaseDTO dto;
-	 List<CsCCategoriaSocialeBASIC> catsocCorrenti;
+	 List<CsCCategoriaSociale> catsocCorrenti;
 	
 
-	public static List<CsCCategoriaSocialeBASIC> loadListaCategorieSociali(BaseDTO dto) throws Exception {
-		
-		ArrayList<ColloquioRowBean> listaColloquios = new ArrayList<ColloquioRowBean>();
+	public static List<CsCCategoriaSociale> loadListaCategorieSociali(BaseDTO dto) throws Exception {
 				
 		AccessTableSoggettoSessionBeanRemote soggettoService = (AccessTableSoggettoSessionBeanRemote) getEjb("CarSocialeA", "CarSocialeA_EJB", "AccessTableSoggettoSessionBean");
 
-		List<CsCCategoriaSocialeBASIC> catsocCorrenti = soggettoService.getCatSocAttualiBySoggetto(dto);
+		List<CsCCategoriaSociale> catsocCorrenti = soggettoService.getCatSocAttualiBySoggetto(dto);
 	
 		return catsocCorrenti;
 	}

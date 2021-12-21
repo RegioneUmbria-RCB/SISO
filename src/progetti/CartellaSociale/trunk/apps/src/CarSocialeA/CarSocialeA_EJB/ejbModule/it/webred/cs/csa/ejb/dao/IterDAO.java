@@ -1,6 +1,7 @@
 package it.webred.cs.csa.ejb.dao;
 
 import it.webred.cs.csa.ejb.CarSocialeBaseDAO;
+import it.webred.cs.csa.ejb.dto.KeyValueDTO;
 import it.webred.cs.data.model.CsACaso;
 import it.webred.cs.data.model.CsCfgAttr;
 import it.webred.cs.data.model.CsCfgAttrOption;
@@ -14,6 +15,7 @@ import it.webred.ct.support.validation.annotation.AuditConsentiAccessoAnonimo;
 import it.webred.ct.support.validation.annotation.AuditSaltaValidazioneSessionID;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Named;
@@ -29,9 +31,13 @@ public class IterDAO extends CarSocialeBaseDAO implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
-	public List<CsCfgItStato> getListaIterStati(){
-		Query q = em.createNamedQuery("CsCfgItStato.findAll");
-		return (List<CsCfgItStato>)q.getResultList();
+	public List<KeyValueDTO> getListaIterStati(){
+		List<KeyValueDTO> lst = new ArrayList<KeyValueDTO>();
+		Query q = em.createNamedQuery("CsCfgItStato.findListItems");
+		List<Object[]> res = q.getResultList();
+		for(Object[] o : res)
+			lst.add(new KeyValueDTO(o[0], (String)o[1]));
+		return lst;
 	}
 
 	protected void loadRelatedEntities( CsCfgItStato itStato ) throws Exception
@@ -50,8 +56,7 @@ public class IterDAO extends CarSocialeBaseDAO implements Serializable {
 	//SISO-1297
 	@AuditConsentiAccessoAnonimo
     @AuditSaltaValidazioneSessionID
-	protected void loadRelatedLAZYEntities( CsItStepLAZY itStep ) throws Exception
-	{
+	protected void loadRelatedLAZYEntities( CsItStepLAZY itStep ){
 		if( itStep != null )
 		{
 			
@@ -123,7 +128,29 @@ public class IterDAO extends CarSocialeBaseDAO implements Serializable {
 
 		return null;
 	}
-	
+    
+	public CsItStepLAZY getLastIterStepLAZYByTipoCaso(long idCaso, long idStato, boolean loadRelated) {
+		CsItStepLAZY itStep = null;
+		try{
+			Query q = em.createNamedQuery("CsItStepLAZY.getLastIterStepLAZYByTipoCaso");
+			q.setParameter("idCaso", idCaso);
+			q.setParameter("idStato", idStato);
+			itStep = (CsItStepLAZY)q.getSingleResult();
+			
+			if(loadRelated)
+				loadRelatedLAZYEntities(itStep);
+			return itStep;
+			
+		}catch(NoResultException nre){
+			logger.warn("Nessun IterStep per "+idCaso);
+		}catch(Throwable e){
+			logger.error(e.getMessage());
+		}
+
+		return null;
+	}
+    
+   
 	@SuppressWarnings("rawtypes")
 	public CsItStep getFirstIterStepByCaso(long idCaso) {
 		Query q = em.createNamedQuery("CsItStep.getFirstIterStepByCaso");

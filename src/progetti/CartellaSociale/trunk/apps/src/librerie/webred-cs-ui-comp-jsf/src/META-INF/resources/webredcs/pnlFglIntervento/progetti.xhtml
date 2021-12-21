@@ -65,26 +65,22 @@
       		
 	   <p:outputLabel for="cbxProgetto" value="Progetto* " />
 	   <p:selectOneMenu id="cbxProgetto" style="width:400px" 
-	      value="#{fglInterventoBean.datiProgettoBean.csIInterventoPr.ffProgettoDescrizione}" filter="true" filterMatchMode="contains" >
+	      value="#{fglInterventoBean.datiProgettoBean.idProgettoSel}" filter="true" filterMatchMode="contains" >
 	      <f:selectItem itemLabel="- seleziona -" noSelectionOption="true" />
-	      <f:selectItems var="prog" itemLabel="#{prog.descrizione} [#{prog.codiceMemo}]" itemValue="#{prog.descrizione}"
-	         value="#{fglInterventoBean.datiProgettoBean.listaProgetti}"/>
+	      <f:selectItems var="prog" value="#{fglInterventoBean.datiProgettoBean.listaProgetti}"/>
 	      <p:ajax event="change" partialSubmit="true" listener="#{fglInterventoBean.onChangeProgetto}" process="@this" update="@(.updateOnProgettiChange)"/> 
 	   </p:selectOneMenu>
 	<!--  inizio SISO-790 -->
 	   <p:outputLabel for="cbxSottocorso" value="Sottocorso/attività#{fglInterventoBean.datiProgettoBean.renderFSE ? '*' :''}" styleClass="#{'updateOnProgettiChange'}" />
 	   <p:selectOneMenu  id="cbxSottocorso" style="width:400px" styleClass="#{'updateOnProgettiChange'}" 
-	      value="#{fglInterventoBean.datiProgettoBean.csIInterventoPr.nSottocorsoAttivita}" filter="true" filterMatchMode="contains" >
-	      <f:selectItem itemLabel="- seleziona -" itemValue="" noSelectionOption="true" />
-	      <f:selectItems var="sottocorso" itemLabel="#{sottocorso.descrizione}" itemValue="#{sottocorso.codice}"
-	         value="#{fglInterventoBean.datiProgettoBean.copiaListaSottocorsi}"/>
+	      value="#{fglInterventoBean.datiProgettoBean.idProgettoAttivitaSel}" filter="true" filterMatchMode="contains" >
+	      <f:selectItem itemLabel="- seleziona -" noSelectionOption="true" />
+	      <f:selectItems var="sottocorso"  value="#{fglInterventoBean.datiProgettoBean.listaSottocorsi}"/>
 	    	  <!--  inizio SISO-972 -->
 	    	   <p:ajax event="change" partialSubmit="true" listener="#{fglInterventoBean.onChangeAttivita}"  update="@(.updateOnProgettiChange)"/> 
 	     <!--  fine SISO-972 -->
 	   </p:selectOneMenu>
 	   <!-- fine SIS-790 -->
-	
-	   
 	</h:panelGrid>
 	    <!--  inizio SISO-1131 -->
 
@@ -117,7 +113,7 @@
 	<p:outputPanel id="pnlProgettiDettaglio" styleClass="#{'updateOnProgettiChange updateOnChangeBeneficiarioRif'}">
 	
 	   <h:panelGrid id="pnlProgettoDatiSociali" columns="4" width="100%"
-	   				rendered="#{!empty fglInterventoBean.datiProgettoBean.csIInterventoPr.ffProgettoDescrizione}" >
+	   				rendered="#{fglInterventoBean.datiProgettoBean.csIInterventoPr.progetto!=null}" >
 		   
 		   <h:outputText value="Condizione Lavorativa " style="display: block; width: 100px;" />
 		    <h:panelGroup>
@@ -146,8 +142,8 @@
 	   	   <h:outputText value="Titolo di studio più elevato " style="display: block; width: 150px;" />
 		   <h:panelGroup>
 		      <p:selectOneMenu label="Titolo di studio più elevato" id="titolo_studio_datiutente" 
-		         value="#{fglInterventoBean.datiProgettoBean.titoloStudioId}" style="width:300px"  filter="true" filterMatchMode="contains"
-		         effect="fold">
+		         value="#{fglInterventoBean.datiProgettoBean.titoloStudioId}" style="width:300px"  filter="true" filterMatchMode="contains" effect="fold">
+		         <f:selectItem noSelectionOption="true" itemLabel="- seleziona -"/>
 		         <f:selectItems  value="#{fglInterventoBean.datiProgettoBean.lstTitoliStudio}" />
 		         <p:ajax event="change" process="@this" />
 		      </p:selectOneMenu>
@@ -188,9 +184,7 @@
 								comuneNazioneManBean="#{fglInterventoBean.datiProgettoBean.comuneNazioneNascitaBean}" 
 								disabled="#{false}" extraLabelRequired="true" />
 					</h:panelGrid>	
-					 <p:commandButton id="stampaPor" value="Stampa POR" title="Stampa Modello iscrizione POR" rendered="#{fglInterventoBean.datiProgettoBean.stampaPor}" icon="ui-icon-print">
-					 		<p:ajax  listener="#{fglInterventoBean.stampaModelloPOR(null)}" process="pnlProgettiDettaglio" update=":#{p:component('idWvDlgStampaPor')}"/>
-					 </p:commandButton>
+					
 			</h:panelGrid>	
 		  </h:panelGroup>	
 				<!--  fine siso 945  -->
@@ -228,31 +222,29 @@
 	      </h:panelGrid>
 	     
 	      <p:spacer height="10px" />
-	      <p:selectBooleanCheckbox itemLabel="Utente inattivo: indicare se si sta seguendo un altro corso di insegnamento o di formazione"
+	      <p:selectBooleanCheckbox itemLabel="#{fglInterventoBean.datiProgettoBean.mappaCampiFse.inattivoAltroCorso.labelReq}"
 	         value="#{fglInterventoBean.datiProgettoBean.csIInterventoPr.csIInterventoPrFse.flagAltroCorso}"
-	         rendered="#{fglInterventoBean.datiProgettoBean.inattivo}"/>
+	         rendered="#{fglInterventoBean.datiProgettoBean.renderAltroCorso}"/>
 	      <p:spacer height="10px" />
-	      <h:panelGrid columns="2"
-	         rendered="#{fglInterventoBean.datiProgettoBean.disoccupato or fglInterventoBean.datiProgettoBean.ricercaPrimaOccupazione}">
-	         <p:outputLabel value="Durata ricerca lavoro#{fglInterventoBean.datiProgettoBean.durataRicercaLavoro ? '*' :''}" />
-	         <p:selectOneRadio value="#{fglInterventoBean.datiProgettoBean.csIInterventoPr.csIInterventoPrFse.lavoroDurataRicerca}"
+	      <h:panelGrid columns="2" rendered="#{fglInterventoBean.datiProgettoBean.renderDurataRicLavoro}">
+	         <p:outputLabel value="#{fglInterventoBean.datiProgettoBean.mappaCampiFse.durataRicercaLavoro.labelReq}" />
+	         <p:selectOneRadio value="#{fglInterventoBean.datiProgettoBean.csIInterventoPr.csIInterventoPrFse.durataRicLavoroId}"
 	            layout="grid" columns="2">
-	            <f:selectItem itemLabel="Fino a 6 mesi" itemValue="Fino a 6 mesi" />
-	            <f:selectItem itemLabel="Da 6 a 12 mesi" itemValue="Da 6 a 12 mesi" />
-	            <f:selectItem itemLabel="Oltre 12 mesi" itemValue="Oltre 12 mesi" />
-	            <f:selectItem itemLabel="Informazione non disponibile" itemValue="Informazione non disponibile" />
+	        	<f:selectItems value="#{fglInterventoBean.datiProgettoBean.lstDurataRicLavoro}" />
 	         </p:selectOneRadio>
 	      </h:panelGrid>
 	
-	      <p:fieldset rendered="#{fglInterventoBean.datiProgettoBean.occupato}" legend="A cura del partecipante">
+	      <p:fieldset rendered="#{fglInterventoBean.datiProgettoBean.renderSezLavoro}" legend="A cura del partecipante">
 	         <h:panelGrid columns="2">
-	            <p:outputLabel value="Tipo lavoro#{fglInterventoBean.datiProgettoBean.occupato ? '*' :''}" />
+	            <p:outputLabel value="#{fglInterventoBean.datiProgettoBean.mappaCampiFse.lavoroTipo.labelReq}"
+	             			   rendered="#{fglInterventoBean.datiProgettoBean.mappaCampiFse.lavoroTipo.abilitato}" />
 	            <p:selectOneRadio value="#{fglInterventoBean.datiProgettoBean.csIInterventoPr.csIInterventoPrFse.lavoroDescTipo}">
 	               <f:selectItem itemLabel="Alle dipendenze" itemValue="Alle dipendenze" />
 	               <f:selectItem itemLabel="Autonomo" itemValue="Autonomo" />
 	            </p:selectOneRadio>
 	
-	            <p:outputLabel value="Orario lavoro#{fglInterventoBean.datiProgettoBean.occupato ? '*' :''}" />
+	            <p:outputLabel value="#{fglInterventoBean.datiProgettoBean.mappaCampiFse.lavoroOrario.labelReq}" 
+	            			   rendered="#{fglInterventoBean.datiProgettoBean.mappaCampiFse.lavoroOrario.abilitato}" />
 	            <p:selectOneRadio value="#{fglInterventoBean.datiProgettoBean.csIInterventoPr.csIInterventoPrFse.lavoroDescOrario}">
 	               <f:selectItem itemLabel="Full time" itemValue="Full time" />
 	               <f:selectItem itemLabel="Part Time" itemValue="Part Time" />
@@ -260,50 +252,67 @@
 	
 	         </h:panelGrid>
 	      </p:fieldset>
-	      <p:fieldset rendered="#{fglInterventoBean.datiProgettoBean.occupato}" legend="A cura del soggetto gestore: dati azienda">
+	      <p:fieldset rendered="#{fglInterventoBean.datiProgettoBean.renderSezAzienda}" legend="A cura del soggetto gestore: dati azienda">
 	         <h:panelGrid columns="6" width="100%">
-	            <p:outputLabel value="Ragione sociale#{fglInterventoBean.datiProgettoBean.occupato ? '*' :''}" />
-	            <p:inputText value="#{fglInterventoBean.datiProgettoBean.csIInterventoPr.csIInterventoPrFse.azRagioneSociale}" >
+	            <p:outputLabel value="#{fglInterventoBean.datiProgettoBean.mappaCampiFse.azRagioneSociale.labelReq}" 
+	            			   rendered="#{fglInterventoBean.datiProgettoBean.mappaCampiFse.azRagioneSociale.abilitato}"/>
+	            <p:inputText value="#{fglInterventoBean.datiProgettoBean.csIInterventoPr.csIInterventoPrFse.azRagioneSociale}" 
+	             			 rendered="#{fglInterventoBean.datiProgettoBean.mappaCampiFse.azRagioneSociale.abilitato}" >
 	           		 <p:ajax event="blur"  />
 			 	</p:inputText>
 	
-	            <p:outputLabel value="Partita IVA#{fglInterventoBean.datiProgettoBean.occupato ? '**' :''}" />
-	            <p:inputText value="#{fglInterventoBean.datiProgettoBean.csIInterventoPr.csIInterventoPrFse.azPIVA}" >
+	            <p:outputLabel value="#{fglInterventoBean.datiProgettoBean.mappaCampiFse.azPi.labelReq}"
+	            			   rendered="#{fglInterventoBean.datiProgettoBean.mappaCampiFse.azPi.abilitato}" />
+	            <p:inputText value="#{fglInterventoBean.datiProgettoBean.csIInterventoPr.csIInterventoPrFse.azPIVA}"
+	            			 rendered="#{fglInterventoBean.datiProgettoBean.mappaCampiFse.azPi.abilitato}" >
 					<p:ajax event="blur"  />
 				 </p:inputText>
 				 
-	            <p:outputLabel value="Cod.fiscale#{fglInterventoBean.datiProgettoBean.occupato ? '**' :''}" />
-	            <p:inputText value="#{fglInterventoBean.datiProgettoBean.csIInterventoPr.csIInterventoPrFse.azCF}" >
+	            <p:outputLabel value="#{fglInterventoBean.datiProgettoBean.mappaCampiFse.azCf.labelReq}" 
+	            			   rendered="#{fglInterventoBean.datiProgettoBean.mappaCampiFse.azCf.abilitato}"/>
+	            <p:inputText value="#{fglInterventoBean.datiProgettoBean.csIInterventoPr.csIInterventoPrFse.azCF}"
+	           			     rendered="#{fglInterventoBean.datiProgettoBean.mappaCampiFse.azCf.abilitato}" >
 	            	<p:ajax event="blur" />
 			 	</p:inputText>
 	
-	            <p:outputLabel value="Via#{fglInterventoBean.datiProgettoBean.occupato ? '*' :''}" />
-	            <p:inputText value="#{fglInterventoBean.datiProgettoBean.csIInterventoPr.csIInterventoPrFse.azVia}" >
+	            <p:outputLabel value="#{fglInterventoBean.datiProgettoBean.mappaCampiFse.azVia.labelReq}"
+	            			   rendered="#{fglInterventoBean.datiProgettoBean.mappaCampiFse.azVia.abilitato}" />
+	            <p:inputText value="#{fglInterventoBean.datiProgettoBean.csIInterventoPr.csIInterventoPrFse.azVia}"
+	            			 rendered="#{fglInterventoBean.datiProgettoBean.mappaCampiFse.azVia.abilitato}" >
 	            	<p:ajax event="blur"  />
 			 	</p:inputText>
 	
-	            <p:outputLabel value="Comune#{fglInterventoBean.datiProgettoBean.occupato ? '*' :''} " for="comune_azienda" />
-	            <webred:pnlComune id="comune_azienda" comuneManBean="#{fglInterventoBean.datiProgettoBean.comuneMan}"
-	               value="#{fglInterventoBean.datiProgettoBean.comuneMan.comuneBean}"/>
+	            <p:outputLabel value="#{fglInterventoBean.datiProgettoBean.mappaCampiFse.azComune.labelReq} " for="comune_azienda" />
+	            <h:panelGroup rendered="#{fglInterventoBean.datiProgettoBean.mappaCampiFse.azComune.abilitato}">
+	            	<webred:pnlComune id="comune_azienda" comuneManBean="#{fglInterventoBean.datiProgettoBean.comuneMan}" 
+	            					  value="#{fglInterventoBean.datiProgettoBean.comuneMan.comuneBean}" />
+	             </h:panelGroup>
 	
 	            <!-- SISO-850 -->
-	           <p:outputLabel value="Cod.Ateco#{fglInterventoBean.datiProgettoBean.occupato ? '*' :''}" />
-	            <p:selectOneMenu id="cbxCodAteco"    style="width:300px"  value="#{fglInterventoBean.datiProgettoBean.csIInterventoPr.csIInterventoPrFse.azCodAteco}"
+	           <p:outputLabel value="#{fglInterventoBean.datiProgettoBean.mappaCampiFse.azCodAteco.labelReq}" 
+	           				  rendered="#{fglInterventoBean.datiProgettoBean.mappaCampiFse.azCodAteco.abilitato}"/>
+	            <p:selectOneMenu id="cbxCodAteco"    style="width:300px"  
+	            				 value="#{fglInterventoBean.datiProgettoBean.csIInterventoPr.csIInterventoPrFse.azCodAteco}"
+	            				 rendered="#{fglInterventoBean.datiProgettoBean.mappaCampiFse.azCodAteco.abilitato}"
 	                effect="fold" editable="false" panelStyle="width:300px" 
 	                 filter="true" filterMatchMode="contains" >
 	                <f:selectItem  noSelectionOption="true" itemLabel="- seleziona -" />
 	                <f:selectItems value="#{fglInterventoBean.datiProgettoBean.lstAteco}" />
 	             </p:selectOneMenu>
 	
-	            <p:outputLabel value="Forma giuridica#{fglInterventoBean.datiProgettoBean.occupato ? '*' :''}" />
-	            <p:selectOneMenu value="#{fglInterventoBean.datiProgettoBean.fseAzFormaGiuridicaId}" filter="true"
-	               filterMatchMode="contains">
+	            <p:outputLabel value="#{fglInterventoBean.datiProgettoBean.mappaCampiFse.azFormaGiuridica.labelReq}" 
+	            			   rendered="#{fglInterventoBean.datiProgettoBean.mappaCampiFse.azFormaGiuridica.abilitato}"/>
+	            <p:selectOneMenu value="#{fglInterventoBean.datiProgettoBean.fseAzFormaGiuridicaId}" 
+	           				     rendered="#{fglInterventoBean.datiProgettoBean.mappaCampiFse.azFormaGiuridica.abilitato}"
+	            				 filter="true"  filterMatchMode="contains">
 	               <f:selectItems value="#{fglInterventoBean.datiProgettoBean.lstFormeGiuridiche}" />
 	            </p:selectOneMenu>
 	
-	            <p:outputLabel value="Dimensione azienda#{fglInterventoBean.datiProgettoBean.occupato ? '*' :''}" />
+	            <p:outputLabel value="#{fglInterventoBean.datiProgettoBean.mappaCampiFse.azDimensione.labelReq}" 
+	            			   rendered="#{fglInterventoBean.datiProgettoBean.mappaCampiFse.azDimensione.abilitato}"/>
 	            <p:selectOneRadio value="#{fglInterventoBean.datiProgettoBean.csIInterventoPr.csIInterventoPrFse.azDescDimensioni}"
-	               layout="grid" columns="2">
+	            				  rendered="#{fglInterventoBean.datiProgettoBean.mappaCampiFse.azDimensione.abilitato}"
+	               				  layout="grid" columns="2">
 	               <f:selectItem itemLabel="Micro" itemValue="Micro" />
 	               <f:selectItem itemLabel="Piccola" itemValue="Piccola" />
 	               <f:selectItem itemLabel="Media" itemValue="Media" />
@@ -315,9 +324,10 @@
 	
 	      <h:panelGrid columns="2">
 	
-	         <h:outputLabel for="annoTitolo" value="Anno coseguimento titolo di studio" style="display: block; width: 200px;" />
+	         <h:outputLabel for="annoTitolo" value="#{fglInterventoBean.datiProgettoBean.mappaCampiFse.annoTitoloStudio.labelReq}" 
+	         				rendered="#{fglInterventoBean.datiProgettoBean.mappaCampiFse.annoTitoloStudio.abilitato}" style="display: block; width: 200px;" />
 	         <p:spinner id="annoTitolo" value="#{fglInterventoBean.datiProgettoBean.csIInterventoPr.csIInterventoPrFse.titoloStudioAnno}"
-	            size="4" min="1930" />
+	         		    rendered="#{fglInterventoBean.datiProgettoBean.mappaCampiFse.annoTitoloStudio.abilitato}" maxlength="4" min="1930" />
 			 
 			 <p:outputLabel value="L'utente intende comunicare la propria condizione di vulnerabilità?" style="display: block; width: 200px;" />
 			 <p:selectOneRadio id="radioVulner" value="#{fglInterventoBean.datiProgettoBean.csIInterventoPr.csIInterventoPrFse.comunicaVul}"   >
@@ -331,25 +341,45 @@
 	         	value="#{fglInterventoBean.datiProgettoBean.gruppoVulnerabileId}" 
 	         	filter="true" filterMatchMode="contains" style="width:300px;">
 	            <p:ajax process="@this" />
+	            <f:selectItem noSelectionOption="true" itemLabel="- seleziona -"/>
 	            <f:selectItems value="#{fglInterventoBean.datiProgettoBean.lstGruppoVulnerabile}" />
 	         </p:selectOneMenu>
 	
 	      </h:panelGrid>
 	      <p:spacer height="10px" />
-	      <p:fieldset legend="Solo se previsto il pagamento delle indennità di Tirocinio Extracurricolare">
-	
+	      <p:fieldset legend="Solo se previsto il pagamento delle indennità di Tirocinio Extracurricolare" 
+	      			  rendered="#{fglInterventoBean.datiProgettoBean.mappaCampiFse.renderSezPagamento}">
 	         <h:panelGrid columns="4">
-	            <h:outputLabel value="IBAN (se tramite bonifico)" />
-	            <p:inputText style="width:100px;" maxlength="27"
-	               value="#{fglInterventoBean.datiProgettoBean.csIInterventoPr.csIInterventoPrFse.iban}"
-	            />
-	            <h:outputLabel value="RES/DOM (se presso residenza/domicilio) " />
-	            <p:selectOneRadio value="#{fglInterventoBean.datiProgettoBean.csIInterventoPr.csIInterventoPrFse.flagResDom}">
+	            <h:outputLabel value="#{fglInterventoBean.datiProgettoBean.mappaCampiFse.pagIban.labelReq}" 
+	            			   rendered="#{fglInterventoBean.datiProgettoBean.mappaCampiFse.pagIban.abilitato}" />
+	            <p:inputText style="width:100px;" maxlength="27" value="#{fglInterventoBean.datiProgettoBean.csIInterventoPr.csIInterventoPrFse.iban}"
+	            			 rendered="#{fglInterventoBean.datiProgettoBean.mappaCampiFse.pagIban.abilitato}" />
+	            			 
+	            <h:outputLabel value="#{fglInterventoBean.datiProgettoBean.mappaCampiFse.pagResDom.labelReq} " 
+	            			   rendered="#{fglInterventoBean.datiProgettoBean.mappaCampiFse.pagResDom.abilitato}" />
+	            <p:selectOneRadio value="#{fglInterventoBean.datiProgettoBean.csIInterventoPr.csIInterventoPrFse.flagResDom}"
+	            			   rendered="#{fglInterventoBean.datiProgettoBean.mappaCampiFse.pagResDom.abilitato}" >
 	               <f:selectItems value="#{fglInterventoBean.datiProgettoBean.lstFlagResDom}" />
 	            </p:selectOneRadio>
 	         </h:panelGrid>
 	      </p:fieldset>
-	
+		<p:spacer height="10px" />
+		<h:panelGrid columns="5">
+			<p:outputLabel value="#{fglInterventoBean.datiProgettoBean.mappaCampiFse.dataSottoscrizione.labelReq}" 
+						   rendered="#{fglInterventoBean.datiProgettoBean.mappaCampiFse.dataSottoscrizione.abilitato}"/>
+			<webred:pnlData  dataValue="#{fglInterventoBean.datiProgettoBean.csIInterventoPr.csIInterventoPrFse.dtSottoscrizione}" 
+							 rendered="#{fglInterventoBean.datiProgettoBean.mappaCampiFse.dataSottoscrizione.abilitato}" 
+							 dataPattern="dd/MM/yyyy" dataPatternLabel="gg/mm/aaaa" />	
+							 
+			 <p:outputLabel value="#{fglInterventoBean.datiProgettoBean.mappaCampiFse.soggettoAttuatore.labelReq}" 
+						   rendered="#{fglInterventoBean.datiProgettoBean.mappaCampiFse.soggettoAttuatore.abilitato}"/>
+			 <p:inputText value="#{fglInterventoBean.datiProgettoBean.csIInterventoPr.csIInterventoPrFse.soggettoAttuatore}" 
+			 			  rendered="#{fglInterventoBean.datiProgettoBean.mappaCampiFse.soggettoAttuatore.abilitato}"/>
+			 
+			<p:commandButton id="stampaPor" value="Stampa POR" title="Stampa Modello iscrizione POR" rendered="#{fglInterventoBean.datiProgettoBean.stampaPor}" icon="ui-icon-print">
+					 		<p:ajax  listener="#{fglInterventoBean.stampaModelloPOR(null)}" process="pnlProgettiDettaglio" update=":#{p:component('idWvDlgStampaPor')}"/>
+			</p:commandButton>			     
+		</h:panelGrid>
 	
 	   </p:panel>
 	</p:outputPanel>

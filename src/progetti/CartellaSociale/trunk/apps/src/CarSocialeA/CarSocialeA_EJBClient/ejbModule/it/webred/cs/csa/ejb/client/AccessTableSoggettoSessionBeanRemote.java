@@ -14,12 +14,11 @@ import it.webred.cs.data.model.CsAAnagrafica;
 import it.webred.cs.data.model.CsAAnagraficaLog;
 import it.webred.cs.data.model.CsAComponenteAnagCasoGit;
 import it.webred.cs.data.model.CsASoggettoCategoriaSoc;
-import it.webred.cs.data.model.CsASoggettoCategoriaSocLAZY;
 import it.webred.cs.data.model.CsASoggettoLAZY;
 import it.webred.cs.data.model.CsASoggettoMedico;
 import it.webred.cs.data.model.CsASoggettoStatoCivile;
 import it.webred.cs.data.model.CsASoggettoStatus;
-import it.webred.cs.data.model.CsCCategoriaSocialeBASIC;
+import it.webred.cs.data.model.CsCCategoriaSociale;
 import it.webred.cs.data.model.CsOSettore;
 import it.webred.cs.data.model.view.CsRdcAnagraficaGepi;
 
@@ -36,13 +35,17 @@ public interface AccessTableSoggettoSessionBeanRemote {
 	
 	public List<CsASoggettoCategoriaSoc> getSoggettoCategorieBySoggetto(BaseDTO dto);
 	
-	public List<CsASoggettoCategoriaSocLAZY> getSoggettoCategorieAttualiBySoggetto(BaseDTO dto);
+	public List<CsASoggettoCategoriaSoc> getSoggettoCategorieAttualiBySoggetto(BaseDTO dto);
 	
 	public void saveSoggettoCategoria(BaseDTO dto);
 	
 	public boolean eliminaSoggettoCategorieBySoggetto(BaseDTO dto);
 	
-	public List<CsCCategoriaSocialeBASIC> getCatSocAttualiBySoggetto(BaseDTO dto);
+	public List<CsCCategoriaSociale> getCatSocAttualiBySoggetto(BaseDTO dto);
+	
+	public List<CsCCategoriaSociale> getCatSocAttualiByCF(BaseDTO dto);
+	
+	public Boolean existsCatSocAttualiBySoggetto(BaseDTO dto);
 		
 	public List<DatiCasoListaDTO> getCasiSoggettoLAZY(PaginationDTO dto) throws Throwable;
 

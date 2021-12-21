@@ -5,8 +5,6 @@ import it.webred.cs.data.model.CsAComponente;
 import java.util.Date;
 import java.util.List;
 
-import javax.faces.event.ActionEvent;
-
 public interface IParenti {
 	
 	public void salvaNuovoParente();
@@ -26,5 +24,7 @@ public interface IParenti {
 	public String getHaParenti();
 	public String getParentiSconosciuti();
 	public String getViveSolo();
+	public boolean loadStatoRdC(CsAComponente c);
+	public void onSelectComponenteDaAltraScheda();
 	
 }

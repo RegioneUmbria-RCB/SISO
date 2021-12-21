@@ -1,22 +1,20 @@
 package it.webred.cs.csa.web.manbean.scheda.sociali;
 
 import it.webred.cs.csa.ejb.client.AccessTableSchedaSegrSessionBeanRemote;
+import it.webred.cs.csa.ejb.client.AccessTableSchedaSessionBeanRemote;
 import it.webred.cs.csa.ejb.dto.BaseDTO;
+import it.webred.cs.csa.ejb.dto.KeyValueDTO;
 import it.webred.cs.csa.web.manbean.fascicolo.schedeSegr.SchedaSegrBean;
 import it.webred.cs.csa.web.manbean.scheda.SchedaBean;
 import it.webred.cs.csa.web.manbean.scheda.SchedaValiditaBaseBean;
 import it.webred.cs.csa.web.manbean.scheda.anagrafica.AnagraficaBean;
 import it.webred.cs.data.DataModelCostanti;
-import it.webred.cs.data.model.CsAComponente;
 import it.webred.cs.data.model.CsADatiSociali;
 import it.webred.cs.data.model.CsASoggettoLAZY;
 import it.webred.cs.data.model.CsDValutazione;
+import it.webred.cs.data.model.CsExtraFseDatiLavoro;
 import it.webred.cs.data.model.CsOSettore;
 import it.webred.cs.data.model.CsSsSchedaSegr;
-import it.webred.cs.data.model.CsTbMotivoSegnal;
-import it.webred.cs.data.model.CsTbProblematica;
-import it.webred.cs.data.model.CsTbStesuraRelazioniPer;
-import it.webred.cs.data.model.CsTbTipoContratto;
 import it.webred.cs.jsf.bean.ValiditaCompBaseBean;
 import it.webred.cs.jsf.interfaces.IDatiValiditaList;
 import it.webred.cs.jsf.manbean.ComponenteAltroMan;
@@ -46,6 +44,9 @@ import javax.faces.model.SelectItem;
 import javax.faces.model.SelectItemGroup;
 import javax.naming.NamingException;
 
+import org.primefaces.context.RequestContext;
+import org.springframework.beans.BeanUtils;
+
 @ManagedBean
 @SessionScoped
 public class DatiSocialiBean extends SchedaValiditaBaseBean implements IDatiValiditaList{
@@ -62,7 +63,10 @@ public class DatiSocialiBean extends SchedaValiditaBaseBean implements IDatiVali
 	
 	private AccessTableSchedaSegrSessionBeanRemote schedaSegrService = 
 			(AccessTableSchedaSegrSessionBeanRemote)CsUiCompBaseBean.getCarSocialeEjb("AccessTableSchedaSegrSessionBean");
-	
+		
+	protected AccessTableSchedaSessionBeanRemote schedaService = (AccessTableSchedaSessionBeanRemote) getEjb(
+			"CarSocialeA", "CarSocialeA_EJB", "AccessTableSchedaSessionBean");
+
 	@Override
 	public Object getTypeClass() {
 		return new CsADatiSociali();
@@ -75,7 +79,7 @@ public class DatiSocialiBean extends SchedaValiditaBaseBean implements IDatiVali
 	
 	@Override
 	public void nuovo() {
-		DatiSocialiComp comp = new DatiSocialiComp(this.getSoggettoId(), casoId);
+		DatiSocialiComp comp = new DatiSocialiComp(soggettoId, casoId);
 		valorizzaComboComp(comp);
 		comp.setDataInizio(new Date());
 		
@@ -97,7 +101,22 @@ public class DatiSocialiBean extends SchedaValiditaBaseBean implements IDatiVali
 		listaComponenti.add(0, comp);
 		super.nuovo();
 	}
-	
+
+	private void popolaDatiPORDaSegretariato(DatiSocialiComp comp, Long schedaId) {
+		try {
+			
+			BaseDTO bDto = new BaseDTO();
+			CsUiCompBaseBean.fillEnte(bDto);
+
+			bDto.setObj(schedaId);
+			CsExtraFseDatiLavoro sdl = datiPorService.findDatiPorUdcBySchedaId(bDto);
+			comp.valorizzaDatiPorDaUDC(sdl);
+			
+		} catch (Exception e) {
+			logger.error("Errore nell'importazione dei dati POR da Segretariato ", e);
+		}
+	}
+
 	private void verificaCittadinanza(DatiSocialiComp comp){
 	  try{	
 		
@@ -145,8 +164,8 @@ public class DatiSocialiBean extends SchedaValiditaBaseBean implements IDatiVali
 			dto.setObj(soggettoId);
 			
 			CsSsSchedaSegr csScheda = schedaSegrService.findSchedaSegrCreataByIdAnagrafica(dto);
-			if(csScheda!=null){
-				long schedaId = csScheda.getId();
+			if(csScheda!=null && csScheda.getProvenienza().equals(DataModelCostanti.SchedaSegr.PROVENIENZA_SS)){
+				long schedaId = csScheda.getSchedaId();
 				popolaDatiSocialiDaSegretariato(comp, schedaId);
 			}
 			
@@ -220,13 +239,14 @@ public class DatiSocialiBean extends SchedaValiditaBaseBean implements IDatiVali
    			  comp.setCodPermesso(segnalato.getPermesso() != null ? new BigDecimal(segnalato.getPermesso()):null);
    			  comp.setStranieroNonAcc(segnalato.getStranieroNAcc() != null ? new Boolean(segnalato.getStranieroNAcc()) : false);
  			  comp.setIdTipologiaFam(segnalato.getTipologia_familiare() != null ? new BigDecimal(segnalato.getTipologia_familiare()): null);*/
-
-		    }
-			
-			 //TODO: Valorizzare gli altri parametri
-		 }
+			}
+		}
+		
+		if(this.isVisualizzaModuloPorCs() && this.isVisualizzaModuloPorUdc()){
+			popolaDatiPORDaSegretariato(comp, ssScheda.getId());
+		}
 	}
-	
+
 	@Override
 	public CsADatiSociali getCsFromComponente(Object obj) {
 		
@@ -309,17 +329,58 @@ public class DatiSocialiBean extends SchedaValiditaBaseBean implements IDatiVali
 		cs.setDataFineApp(comp.getDataFine());
 		if(comp.getDataFine() == null)
 			cs.setDataFineApp(DataModelCostanti.END_DATE);
-			
+
+		// Valorizzo i dati POR
+		if (this.isVisualizzaModuloPorCs() && comp.getDatiPorMan() != null)
+			cs.setDatiFse(comp.getDatiPorMan().getCsCDatiLavoro());
+		
 		return cs;
 		
 	}
+	
+	@Override
+	public ValiditaCompBaseBean copiaComponenteFromCs(Object obj) {
+		CsADatiSociali cs = (CsADatiSociali) obj;
+		DatiSocialiComp comp = new DatiSocialiComp(cs.getCsASoggetto().getAnagraficaId(), casoId, new Date(), null);
+		this.copiaDatiComuni(cs, comp);
 		
+		if(this.isVisualizzaModuloPorCs()){
+			CsExtraFseDatiLavoro dl = duplicaDatiPor(cs.getDatiFse());		
+			comp.initDatiPorMan(dl, casoId, null);
+		}
+		return comp;
+	}
+
+	public CsExtraFseDatiLavoro duplicaDatiPor(CsExtraFseDatiLavoro sdl){
+		CsExtraFseDatiLavoro dl = new CsExtraFseDatiLavoro();
+		BeanUtils.copyProperties(sdl, dl);
+		dl.setId(null);
+		dl.setDtSottoscrizione(null);
+		dl.setUserIns(null);
+		dl.setDtIns(null);
+		dl.setUserMod(null);
+		dl.setDtMod(null);
+		dl.getMaster().setId(null);
+		dl.getMaster().setUsrIns(null);
+		dl.getMaster().setDtIns(null);
+		dl.getMaster().setDtMod(null);
+		dl.getMaster().setDtMod(null);
+		dl.getMaster().setSiru(null);
+		return dl;
+	}
+	
+
 	@Override
 	public DatiSocialiComp getComponenteFromCs(Object obj) {
-		
 		CsADatiSociali cs = (CsADatiSociali) obj;
 		
-		DatiSocialiComp comp = new DatiSocialiComp(cs.getCsASoggetto().getAnagraficaId(), casoId);
+		DatiSocialiComp comp = new DatiSocialiComp(cs.getCsASoggetto().getAnagraficaId(), casoId, cs.getDataInizioApp(), cs.getDataFineApp());
+		this.copiaDatiComuni(cs, comp);
+		comp.initDatiPorMan(cs.getDatiFse(), casoId, cs.getId());
+		return comp;
+	}
+	
+	private void copiaDatiComuni(CsADatiSociali cs, DatiSocialiComp comp){
 		comp.setAbilitaInfoStranieri(isVisPanelStranieri());
 		comp.setRenderProblematicaSogg(isVisProblematicaSoggetto());
 		
@@ -330,99 +391,32 @@ public class DatiSocialiBean extends SchedaValiditaBaseBean implements IDatiVali
 		comp.setIdProblematicaNucleo(cs.getProblematicaNucleoId());
 		comp.valorizzaFormazioneLavoroDaCS(cs);
 		
-	/*	comp.setIdTipologiaFam(cs.getTipologiaFamiliareId());
-		comp.setIdGrVulnerabile(cs.getGrVulnerabileId());
-		comp.setCodStatus(cs.getStatus());
-		comp.setCodPermesso(cs.getPermesso());
-		comp.setStranieroNonAcc("1".equals(cs.getStranieroNonAcc()));*/
+		ComponenteAltroMan sostegno = comp.fillComponente(cs.getSostegnoComponente(), cs.getSostegnoDenominazione(), cs.getSostegnoIndirizzo(), cs.getSostegnoCitta(), cs.getSostegnoTel(),this.soggettoId);
+		ComponenteAltroMan curatela = comp.fillComponente(cs.getCuratelaComponente(), cs.getCuratelaDenominazione(), cs.getCuratelaIndirizzo(), cs.getCuratelaCitta(), cs.getCuratelaTel(),this.soggettoId);
+		ComponenteAltroMan tutela = comp.fillComponente(cs.getTutelaComponente(), cs.getTutelaDenominazione(), cs.getTutelaIndirizzo(), cs.getTutelaCitta(), cs.getTutelaTel(),this.soggettoId);
+		comp.setSostegno(sostegno);
+		comp.setCuratela(curatela);
+		comp.setTutela(tutela);
 		
-		
-		comp.setSostegno(fillComponente(cs.getSostegnoComponente(), cs.getSostegnoDenominazione(), cs.getSostegnoIndirizzo(), cs.getSostegnoCitta(), cs.getSostegnoTel(),cs.getDataInizioApp()));
-		comp.setCuratela(fillComponente(cs.getCuratelaComponente(), cs.getCuratelaDenominazione(), cs.getCuratelaIndirizzo(), cs.getCuratelaCitta(), cs.getCuratelaTel(),cs.getDataInizioApp()));
-		comp.setTutela(fillComponente(cs.getTutelaComponente(), cs.getTutelaDenominazione(), cs.getTutelaIndirizzo(), cs.getTutelaCitta(), cs.getTutelaTel(),cs.getDataInizioApp()));
 		comp.setAffServSociali(cs.getAffidamento()!=null ? cs.getAffidamento() : false);
-		
-		
 		comp.setAutosufficienza(cs.getAutosufficienza());
-		/*if(cs.getPatologia()!=null && cs.getPatologia().startsWith("Altro:")){
-			comp.setPatologia("Altro");
-			comp.setPatologiaAltro(cs.getPatologia().replaceFirst("Altro:", ""));
-		}else
-			comp.setPatologia(cs.getPatologia());*/
-		//comp.setInterventiNucleo("1".equals(cs.getInterventiSuNucleo()));
-		//comp.setInterventiTipo(cs.getTipoInterventi());
-		/*if(cs.getnMinori() != null)
-			comp.setnMinori(cs.getnMinori().intValue());*/
-		
+	
 		comp.setDataInizio(cs.getDataInizioApp());
 		comp.setDataFine(cs.getDataFineApp());
 		comp.setId(cs.getId());
-	
+		
 		// SISO-1060
 		comp.setDataInserimento(cs.getDtIns());
 		comp.setDataModifica(cs.getDtMod());
 		comp.setUsrInserimento(super.getCognomeNomeUtente(cs.getUserIns())); //
 		comp.setUsrModifica(super.getCognomeNomeUtente(cs.getUsrMod()));
-
+		
 		this.verificaCittadinanza(comp);
 	
-		if(comp.isStranieriRequired()){
-			IStranieri straMan;
-			try {
-				straMan = StranieriManBaseBean.initByModel(cs.getStraniero());
-			if(straMan!=null)
-				comp.setStranieriMan(straMan);
-			comp.getStranieriMan().setIdCaso(this.casoId);
-			} catch (Exception e) {
-				logger.error(e);
-			}
-		}
-		if(isVisPanelStranieri()){
-			IAbitazione abiMan;
-			try {
-				abiMan = AbitazioneManBaseBean.initByModel(cs.getAbitazione());
-			if(abiMan!=null)
-				comp.setAbitazioneMan(abiMan);
-			comp.getAbitazioneMan().setIdCaso(this.casoId);
-			} catch (Exception e) {
-				logger.error(e);
-			}
-			
-			IFamConviventi famMan;
-			try {
-				famMan = FamiliariManBaseBean.initByModel(cs.getFamiliariConviventi());
-			if(famMan!=null)
-				comp.setFamConviventiMan(famMan);
-			comp.getFamConviventiMan().setIdCaso(this.casoId);
-			} catch (Exception e) {
-				logger.error(e);
-			}
-			
-		}
-		return comp;
-		
+		comp.initStranieriMan(cs.getStraniero(), casoId);
+		comp.initAbitazioneMan(cs.getAbitazione(), casoId);
+		comp.initFamiliariMan(cs.getFamiliariConviventi(), casoId);
 	}
-	
-	private ComponenteAltroMan fillComponente(CsAComponente comp, String denom, String indirizzo, String citta, String tel, Date dtRif){
-		
-		ComponenteAltroMan componente = new ComponenteAltroMan(this.getSoggettoId());
-		
-		//Valorizzo dati componente familiare
-		componente.setCompIndirizzo(indirizzo);
-		componente.setCompCitta(citta);
-		componente.setCompDenominazione(denom);
-		componente.setCompTelefono(tel);
-		if(citta!=null){
-			int index = citta.lastIndexOf('-');
-			String scitta = citta.substring(0,index);
-			String sprov = citta.substring(index+1);
-			componente.setComuneResidenzaMan(scitta, sprov);
-		}
-		componente.setIdComponente(comp!=null ? comp.getId() : null);
-		componente.setDtRif(dtRif);
-		return componente;
-	}
-	
 	
 	@Override
 	public boolean validaComponenti() {
@@ -449,11 +443,11 @@ public class DatiSocialiBean extends SchedaValiditaBaseBean implements IDatiVali
 				if(!disComp.getFamConviventiMan().validaData())
 					ok=false;
 			}
-				
-		/*if(disComp.getIdStesuraRelPer() == null || disComp.getIdStesuraRelPer().intValue() == 0) {
-				ok = false;
-				addError("Il campo Stesura relazioni per è obbligatorio", "");
-			}*/
+			
+			if(this.isVisualizzaModuloPorCs()){
+				if(!disComp.validaDatiPor())
+					ok = false;
+			}
 		}
 		
 		return ok;
@@ -534,6 +528,7 @@ public class DatiSocialiBean extends SchedaValiditaBaseBean implements IDatiVali
 		comp.getStranieriMan().elimina();
 		comp.getAbitazioneMan().elimina();
 		comp.getFamConviventiMan().elimina();
+		comp.getDatiPorMan().elimina();
 	}
 
 	@Override
@@ -552,16 +547,19 @@ public class DatiSocialiBean extends SchedaValiditaBaseBean implements IDatiVali
 
 	@Override
 	protected void caricaValoriCombo() {
-		this.loadLstInviante();
-		this.loadLstInviatoA();
-		this.loadLstCaricoA();
+		CeTBaseObject cet = new CeTBaseObject();
+		fillEnte(cet);
+		List<CsOSettore> lst = confService.getSettoriDatiSociali(cet);
+		
+		this.loadLstInviante(lst);
+		this.loadLstInviatoA(lst);
+		this.loadLstCaricoA(lst);
 		
 		this.loadLstProblematiche();
 		this.loadLstProblematicheNucleo();
 		this.loadLstStesuraRelPer();
 	
 		this.loadLstTipoContratto();
-		
 	}
 
 	@Override
@@ -576,64 +574,68 @@ public class DatiSocialiBean extends SchedaValiditaBaseBean implements IDatiVali
 		comp.setLstStesuraRelPer(lstStesuraRelPer);
 		
 		comp.setLstTipoContratto(lstTipoContratto);
+		//TODO: valorizzare le combo dei ManBean Json
 	}
 	
-	private void loadLstCaricoA() {
-		lstCaricoA = this.loadListaSettoriFlag(true, false, false);
+	private void loadLstCaricoA(List<CsOSettore> lst) {
+		lstCaricoA = this.loadListaSettoriFlag(lst, true, false, false);
 	}
 	
-	private void loadLstInviatoA() {
-		lstInviatoA = this.loadListaSettoriFlag(false, true, false);
+	private void loadLstInviatoA(List<CsOSettore> lst) {
+		lstInviatoA = this.loadListaSettoriFlag(lst, false, true, false);
 	}
 	
-	private void loadLstInviante() {
-		lstInviante = this.loadListaSettoriFlag(false, false, true);
+	private void loadLstInviante(List<CsOSettore> lst) {
+		lstInviante = this.loadListaSettoriFlag(lst, false, false, true);
 	}
 	
 	private void loadLstProblematiche() {
 		lstProblematiche = new ArrayList<SelectItem>();
-		lstProblematiche.add(new SelectItem(null, "- seleziona -"));
 		CeTBaseObject bo = new CeTBaseObject();
 		fillEnte(bo);
-		List<CsTbProblematica> lst = confService.getProblematiche(bo);
-		if (lst != null) {
-			for (CsTbProblematica obj : lst) {
-				lstProblematiche.add(new SelectItem(obj.getId(), obj.getDescrizione()));
-			}
-		}		
+		List<KeyValueDTO> lst = confService.getProblematiche(bo);
+		lstProblematiche = convertiLista(lst);
+		lstProblematiche.add(0, new SelectItem(null, "- seleziona -"));
 	}
 
 	private void loadLstStesuraRelPer() {
 		lstStesuraRelPer = new ArrayList<SelectItem>();
-		lstStesuraRelPer.add(new SelectItem(null, "- seleziona -"));
 		CeTBaseObject bo = new CeTBaseObject();
 		fillEnte(bo);
-		List<CsTbStesuraRelazioniPer> lst = confService.getStesuraRelazioniPer(bo);
-		if (lst != null) {
-			for (CsTbStesuraRelazioniPer obj : lst) {
-				lstStesuraRelPer.add(new SelectItem(obj.getId(), obj.getDescrizione()));
-			}
-		}
+		List<KeyValueDTO> lst = confService.getStesuraRelazioniPer(bo);
+		lstStesuraRelPer = convertiLista(lst);
+		lstStesuraRelPer.add(0, new SelectItem(null, "- seleziona -"));
 	}
 	
-	private List<SelectItem> loadListaSettoriFlag(boolean inCarico, boolean inviato, boolean inviante) {
-		List<SelectItem> lista = new ArrayList<SelectItem>();
-		lista.add(new SelectItem(null, "- seleziona -"));
+	private void loadLstTipoContratto() {
+		lstTipoContratto = new ArrayList<SelectItem>();
 		CeTBaseObject bo = new CeTBaseObject();
 		fillEnte(bo);
-		List<CsOSettore> lst = confService.getSettoreAll(bo);
+		List<KeyValueDTO> lst = confService.getTipoContratto(bo);
+		lstTipoContratto = convertiLista(lst);
+		lstTipoContratto.add(0, new SelectItem(null, "- seleziona -"));
+	}
+	
+	private void loadLstProblematicheNucleo() {	
+		lstProblematicheNucleo = new ArrayList<SelectItem>();
+		CeTBaseObject bo = new CeTBaseObject();
+		fillEnte(bo);
+		List<KeyValueDTO> lst = confService.getMotivoSegnalazioni(bo);
+		lstProblematicheNucleo = convertiLista(lst);
+		lstProblematicheNucleo.add(0, new SelectItem(null, "- seleziona -"));
+	}
+	
+	private List<SelectItem> loadListaSettoriFlag(List<CsOSettore> lst , boolean inCarico, boolean inviato, boolean inviante) {
+		List<SelectItem> lista = new ArrayList<SelectItem>();
+		lista.add(new SelectItem(null, "- seleziona -"));
 		LinkedHashMap<String,List<SelectItem>> mappa = new LinkedHashMap<String,List<SelectItem>>();
-		
 		if (lst != null) {
 			for (CsOSettore obj : lst) {
-				//String belfioreOrg = obj.getCsOOrganizzazione().getCodCatastale();
-				//boolean comuneValido = belfioreOrg==null || belfioreOrg.equals(bo.getEnteId());	
 				boolean aggiungi = 	
 						(inCarico && obj.getFlgInCaricoA()!=null && obj.getFlgInCaricoA()) ||
 						(inviato && obj.getFlgInviatoA()!=null && obj.getFlgInviatoA()) ||
 						(inviante && obj.getFlgInviante()!=null && obj.getFlgInviante());
 						
-				//if(comuneValido && aggiungi){
 				if(aggiungi){
 					String nomeOrg = obj.getCsOOrganizzazione().getNome();
 					SelectItem si = new SelectItem(obj.getId(), obj.getNome());
@@ -662,33 +664,10 @@ public class DatiSocialiBean extends SchedaValiditaBaseBean implements IDatiVali
 
 		return lista;
 	}
-	
-	private void loadLstTipoContratto() {
-			lstTipoContratto = new ArrayList<SelectItem>();
-			lstTipoContratto.add(new SelectItem(null, "- seleziona -"));
-			CeTBaseObject bo = new CeTBaseObject();
-			fillEnte(bo);
-			List<CsTbTipoContratto> lst = confService.getTipoContratto(bo);
-			if (lst != null) {
-				for (CsTbTipoContratto obj : lst) {
-					lstTipoContratto.add(new SelectItem(obj.getId(), obj.getDescrizione()));
-				}
-			}		
-	}
-	
-	private void loadLstProblematicheNucleo() {	
-		lstProblematicheNucleo = new ArrayList<SelectItem>();
-		lstProblematicheNucleo.add(new SelectItem(null, "- seleziona -"));
-		CeTBaseObject bo = new CeTBaseObject();
-		fillEnte(bo);
-		List<CsTbMotivoSegnal> lst = confService.getMotivoSegnalazioni(bo);
-		if (lst != null) {
-			for (CsTbMotivoSegnal obj : lst) {
-				SelectItem si = new SelectItem(obj.getId(), obj.getDescrizione());
-				si.setDisabled(si.isDisabled());
-				lstProblematicheNucleo.add(si);
-			}
-		}		
-	}
 
+	public void updateComponent(String comp) {
+		RequestContext.getCurrentInstance().update("p:component('" + comp + "')");
+		logger.info("Aggiorno " + "p:component('" + comp + "')");
+
+	}
 }

@@ -3,6 +3,7 @@ package it.webred.cs.jsf.bean.colloquio;
 import it.webred.amprofiler.model.AmAnagrafica;
 import it.webred.cs.csa.ejb.client.AccessTableCasoSessionBeanRemote;
 import it.webred.cs.csa.ejb.dto.BaseDTO;
+import it.webred.cs.csa.ejb.dto.PresaInCaricoDTO;
 import it.webred.cs.data.model.CsACaso;
 import it.webred.cs.data.model.CsACasoOpeTipoOpe;
 import it.webred.cs.data.model.CsDColloquioBASIC;
@@ -18,7 +19,7 @@ public class ColloquioRowBean extends CsUiCompBaseBean {
 
 	private static final long serialVersionUID = 1L;
 	private CsDColloquioBASIC collBASIC;
-	private AmAnagrafica opAnagrafica;
+	private String operatoreDaChi;
 	private Long diarioId;
 	
 	private String nome;
@@ -33,8 +34,6 @@ public class ColloquioRowBean extends CsUiCompBaseBean {
 	private Date dtModifica;
 	private String opModifica;
 	private Date dtAmministrativa;
-	private String nomeDaChi;
-	private String cognomeDaChi;
 	private String usernameMod;
 	private String usernameOp;
 
@@ -50,11 +49,11 @@ public class ColloquioRowBean extends CsUiCompBaseBean {
 		if( collBASIC.getCsDDiario() != null ){
 			CsACaso caso = collBASIC.getCsDDiario().getCsACaso();
 			dto.setObj(caso.getId());
-			CsACasoOpeTipoOpe opResponsabile = casoService.findCasoOpeResponsabile(dto);
+			PresaInCaricoDTO pic = iterService.getLastPICByCaso(dto);
 			
-			if( opResponsabile != null ){
-				bIsResponsabileCaso &= opResponsabile.getCsOOperatoreTipoOperatore().getCsOOperatoreSettore().getCsOOperatore().getId().equals(currentOpSettore.getCsOOperatore().getId());
-				bIsResponsabileCaso &= opResponsabile.getCsOOperatoreTipoOperatore().getCsOOperatoreSettore().getCsOSettore().getId().equals(currentOpSettore.getCsOSettore().getId());
+			if( pic != null ){
+				bIsResponsabileCaso &= pic.getResponsabile().getId().equals(currentOpSettore.getCsOOperatore().getId());
+				bIsResponsabileCaso &= pic.getSettore().getCodice().equals(currentOpSettore.getCsOSettore().getId());
 			}
 			else
 				bIsResponsabileCaso = false;
@@ -94,7 +93,7 @@ public class ColloquioRowBean extends CsUiCompBaseBean {
 
 	public void Initialize( CsDColloquioBASIC collBasic, String opUsername ) {
 		collBASIC = collBasic;
-		opAnagrafica = getAnagraficaByUsername(opUsername);
+		operatoreDaChi = getCognomeNomeUtente(opUsername);
 		
 		campoTestoRid = getCampoTestoRid(collBasic);
 		diarioId = collBasic.getDiarioId();
@@ -116,12 +115,7 @@ public class ColloquioRowBean extends CsUiCompBaseBean {
 		usernameOp = usernameMod!=null? usernameMod : collBasic.getCsDDiario().getUserIns();
 		if( StringUtils.isEmpty(usernameOp) )
 			usernameOp = collBasic.getCsDDiario().getUserIns();		
-        
-		if(opAnagrafica!=null){
-        	nomeDaChi = opAnagrafica.getNome();
-        	cognomeDaChi = opAnagrafica.getCognome();
-		}
-		
+        	
 		riservato = collBASIC!=null && "1".equals( collBASIC.getRiservato() ) ? true : false;
 		abilitato4riservato = true;
 		if( collBASIC!=null && collBASIC.getDiarioId() != null ) { 
@@ -180,15 +174,15 @@ public class ColloquioRowBean extends CsUiCompBaseBean {
 	public String getUsernameOp() {
 		return usernameOp;
 	}
-
-	public String getNomeDaChi() {
-		return nomeDaChi;
-	}
-
-	public String getCognomeDaChi() {
-		return cognomeDaChi;
-	}
 	
+	public String getOperatoreDaChi() {
+		return operatoreDaChi;
+	}
+
+	public void setOperatoreDaChi(String operatoreDaChi) {
+		this.operatoreDaChi = operatoreDaChi;
+	}
+
 	public boolean isRiservato(){
 		return riservato;
 	}

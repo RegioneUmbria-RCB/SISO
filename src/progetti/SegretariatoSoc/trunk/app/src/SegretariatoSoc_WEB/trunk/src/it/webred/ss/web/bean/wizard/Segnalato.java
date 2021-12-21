@@ -255,7 +255,7 @@ public class Segnalato {
 			//residenza.setNumero(indirizzo.getCivico());
 			residenza.setVia(indirizzo.getIndirizzoCompleto());
 		}
-		if(residenza.getVia() != null && !residenza.getVia().isEmpty())
+		if(!StringUtils.isBlank(residenza.getVia()))
 			residenza.setComune(residenza.getComuneByBelfiore(belfiore));
 	}
 

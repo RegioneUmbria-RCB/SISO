@@ -1,8 +1,10 @@
 package eu.smartpeg.rilevazionepresenze;
 
 import java.util.List;
+
 import javax.ejb.Remote;
 
+import eu.smartpeg.rievazionepresenze.dto.AnagraficaDTO;
 import eu.smartpeg.rilevazionepresenze.data.dto.RpSearchCriteria;
 import eu.smartpeg.rilevazionepresenze.data.model.Anagrafica;
 import eu.smartpeg.rilevazionepresenze.data.model.DocumentiAnag;
@@ -23,7 +25,7 @@ public interface AnagraficaSessionBeanRemote {
 	public String validaEliminazioneAnagrafica(Anagrafica anagrafica);
 	public Anagrafica findReferenteByID(Long idReferente);
 	public Anagrafica findByID(long idAnagrafica);
-	public List<Anagrafica> searchAnagraficaRPBySoggetto(RpSearchCriteria dto);
-	public Anagrafica findAnagraficaById(Long idAnagrafica);
-	public Anagrafica findAnagraficaByCf(String cf);
+	public List<AnagraficaDTO> searchAnagraficaRPBySoggetto(RpSearchCriteria dto);
+	public AnagraficaDTO findAnagraficaById(Long idAnagrafica);
+	public AnagraficaDTO findAnagraficaByCf(String cf);
 }

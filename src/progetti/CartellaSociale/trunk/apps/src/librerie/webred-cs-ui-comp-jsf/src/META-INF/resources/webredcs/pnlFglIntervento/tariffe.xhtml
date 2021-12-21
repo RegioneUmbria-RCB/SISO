@@ -13,13 +13,13 @@
 		
 		<p:outputLabel value="Unità di misura " for="selectUnitaDiMisura"  styleClass="#{'updateFlagAttivazioneChange '}"/>
 		<p:selectOneMenu id="selectUnitaDiMisura" style="width:150px" 
-				disabled="#{fglInterventoBean.selectUnitaDiMisuraDisabled}"
+				disabled="#{fglInterventoBean.selectUnitaDiMisuraDisabled  or fglInterventoBean.erogazioneInterventoBean.isStrutturaSelezionata}"
 				value="#{fglInterventoBean.datiTariffeInterventoBean.selUnitaMisura}"
 				required="#{fglInterventoBean.unitaMisuraRequired}"
 				requiredMessage="'Unità di misura' è un campo obbligatorio"
 				styleClass="#{'updateFlagAttivazioneChange updateOnListaErogazioniChange'}" >
 			<f:selectItem itemLabel="- seleziona -"  noSelectionOption="true" />	
-			<f:selectItems value="#{fglInterventoBean.datiTariffeInterventoBean.lstCsTbUnitaMisuraForInsert}" var="item" itemLabel="#{item.valore}" itemValue="#{item.id}" />
+			<f:selectItems value="#{fglInterventoBean.datiTariffeInterventoBean.lstCsTbUnitaMisuraForInsert}"/>
 			<p:ajax event="change" update="@(.updateOnUnitaMisuraChange) pnlQuotaDett" process="@this" listener="#{fglInterventoBean.datiTariffeInterventoBean.selectedUnitaMisuraChange(fglInterventoBean.erogazioneInterventoBean)}"/>
 		</p:selectOneMenu>	
 	
@@ -106,7 +106,7 @@
 		
 	<p:selectOneRadio id="selectFrequenzaDelServizio" layout="grid" columns="1"
 					  value="#{fglInterventoBean.datiTariffeInterventoBean.frequenzaAccessoAlServizio}"
-					  disabled="#{fglInterventoBean.frequenzaAccessoAlServizioDisabled}" 
+					  disabled="#{fglInterventoBean.frequenzaAccessoAlServizioDisabled or fglInterventoBean.erogazioneInterventoBean.isStrutturaSelezionata}" 
 					  required="true" 
 					  requiredMessage="Tariffe: 'Frequenza del servizio' è un campo obbligatorio"	
 					  styleClass="#{'updateOnListaErogazioniChange'}" >
@@ -256,7 +256,7 @@
 					converterMessage="Inserire valore numerico intero o decimale (es.12.34)">  
 	         </p:inputText>
     	     <h:panelGrid id="pnlOreMinutiTar" columns="3"  rendered="#{fglInterventoBean.datiTariffeInterventoBean.csIQuota.oreMinuti}"  >  
-			   <p:inputText id="qntOreTar"  style="width:25px; text-align: right;" maxlength="2" styleClass="#{'updateOnAggiungiRigaQuota'}"
+			   <p:inputText id="qntOreTar"  style="width:25px; text-align: right;" maxlength="4" styleClass="#{'updateOnAggiungiRigaQuota'}"
 			       value="#{fglInterventoBean.datiTariffeInterventoBean.oreErogazioneProgrammata}"
 			       converterMessage="Il campo Ore non è corretto:inserire valore numerico intero"  
 			       rendered="#{fglInterventoBean.datiTariffeInterventoBean.csIQuota.oreMinuti}"> 

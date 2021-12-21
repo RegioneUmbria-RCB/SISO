@@ -27,7 +27,6 @@ public class ArSiruServiceBean implements ArSiruService {
 		int numInsert = 0;
 		HashMap<String,String> mappaCodiciCapofila = new HashMap<String, String>();
 		if(elenco!=null && !elenco.isEmpty()){
-			List<ImportSiruProgettiAttivita> lst = new ArrayList<ImportSiruProgettiAttivita>();
 			for(SiruJsonProgettiDTO json : elenco){
 				
 				ImportSiruProgettiAttivitaPK id = new ImportSiruProgettiAttivitaPK();
@@ -59,12 +58,10 @@ public class ArSiruServiceBean implements ArSiruService {
 					}
 					jpa.setBelfiore(belfiore);
 					jpa.setDtIns(new Date());
-					lst.add(jpa);
+					arSiruDAO.save(jpa);
+					numInsert++;
 				}
 			}
-			
-			if(!lst.isEmpty())
-				numInsert = arSiruDAO.save(lst);
 		}
 		return numInsert;
 	}

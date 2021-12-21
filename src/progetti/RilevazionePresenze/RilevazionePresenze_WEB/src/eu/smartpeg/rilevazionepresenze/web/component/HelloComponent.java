@@ -23,13 +23,19 @@ public class HelloComponent extends UIComponentBase {
       Date time = (Date) getAttributes().get("time");
       String formattedTime = DateFormat.dateToString(time, "yyyy.MM.dd G 'at' HH:mm:ss z\"");
 
-      ResponseWriter writer = context.getResponseWriter();
-      writer.startElement("p", this);
-      writer.write("Message: " + message);
-      writer.endElement("p");
-
-      writer.startElement("p", this);
-      writer.write("Time: " + formattedTime);
-      writer.endElement("p");
+      ResponseWriter writer = null;
+      
+      try{ 
+    	  writer = context.getResponseWriter();
+	      writer.startElement("p", this);
+	      writer.write("Message: " + message);
+	      writer.endElement("p");
+	
+	      writer.startElement("p", this);
+	      writer.write("Time: " + formattedTime);
+	      writer.endElement("p");
+      }finally{
+		 try{if(writer!=null)writer.close();}catch(Exception e){}
+	  }
   }
 }

@@ -1,41 +1,6 @@
 package eu.smartpeg.rilevazionepresenze.web.bean;
-import java.util.List;
-
-import eu.smartpeg.rievazionepresenze.dto.BaseDTO;
-
-import java.util.ResourceBundle;
-
-import javax.faces.application.FacesMessage;
-import javax.faces.context.FacesContext;
-import javax.faces.model.SelectItem;
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.math.BigDecimal;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.ResourceBundle;
-
-import org.apache.commons.lang3.StringUtils;
-import org.jboss.logging.Logger;
-
 import it.webred.amprofiler.ejb.anagrafica.AnagraficaService;
+import it.webred.amprofiler.ejb.perm.LoginBeanService;
 import it.webred.amprofiler.ejb.user.UserService;
 import it.webred.amprofiler.model.AmAnagrafica;
 import it.webred.amprofiler.model.AmGroup;
@@ -44,17 +9,32 @@ import it.webred.cs.csa.ejb.client.AccessTableConfigurazioneSessionBeanRemote;
 import it.webred.cs.data.model.CsOOrganizzazione;
 import it.webred.cs.jsf.manbean.superc.CsUiCompBaseBean;
 import it.webred.ct.config.model.AmInstance;
-import it.webred.ct.config.model.AmKeyValueExt;
-import it.webred.ct.config.parameters.ParameterService;
 import it.webred.ct.config.parameters.application.ApplicationService;
-import it.webred.ct.config.parameters.dto.ParameterSearchCriteria;
 import it.webred.ct.support.datarouter.CeTBaseObject;
 import it.webred.ejb.utility.ClientUtility;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.ResourceBundle;
+
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import org.apache.commons.lang3.StringUtils;
+import org.jboss.logging.Logger;
 
 public class RilevazionePresenzeBaseBean {
 	public static Logger logger = Logger.getLogger("rilevazionepresenze.log");
 	
 	private AccessTableConfigurazioneSessionBeanRemote configurationCsBean;
+	protected static LoginBeanService loginService = (LoginBeanService) getEjb("AmProfiler", "AmProfilerEjb", "LoginBean");
 	
 	private static ResourceBundle bundle;
 
@@ -71,7 +51,7 @@ public class RilevazionePresenzeBaseBean {
 	public static final String delete = "DELETE";
 	public static final String print = "PRINT";
 	
-	protected List<SelectItem> listaOrganizzazioni;
+	protected List<String> listaOrganizzazioni;
 	
 	public String getLogoTitolo() {
 		String titolo = "titolo_RP.png";
@@ -278,7 +258,7 @@ public void loadListaOrganizzazioni(boolean load){
 		
 		try{
 		 //if(this.listaOrganizzazioni==null || this.listaOrganizzazioni.isEmpty()){
-			listaOrganizzazioni = new ArrayList<SelectItem>();
+			listaOrganizzazioni = new ArrayList<String>();
 			
 			if(load) {	
 				List<String> listaEntiAM = new ArrayList<String>();
@@ -290,20 +270,9 @@ public void loadListaOrganizzazioni(boolean load){
 							listaEntiAM.add(gr.getFkAmComune());
 					}
 				}
-					
-				if(!listaEntiAM.isEmpty()){
-			   //Recupero tutti gli enti configurati nella zona sociale
-				List<CsOOrganizzazione> lstEnti = getListaEnti();
-				for(CsOOrganizzazione o : lstEnti){
-					String idLista = o.getCodRouting()+"|"+o.getId();
-					//Verifico che l'utente sia abilitato all'accesso per l'ente
-					if(listaEntiAM.contains(o.getCodRouting())){
-							SelectItem si = new SelectItem(idLista,o.getNome());
-							listaOrganizzazioni.add(si);
-				  }
-				}
-			  }//else this.addWarning("login.no.organizzazione");
-			}
+				
+				listaOrganizzazioni.addAll(listaEntiAM);
+		}
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 			addError("lettura.error", "Caricamento Enti non riuscito !");
@@ -380,4 +349,40 @@ public void loadListaOrganizzazioni(boolean load){
 				return null;
 		}
 		
+		public static boolean hasPermessoStruttureNomadi(){
+			return checkPermesso("RilevazionePresenze", "RilevazionePresenze");
+		}
+		
+		public static boolean isVisualizzaRichiesteMinori(){
+			return checkPermesso("Minori in struttura", "Visualizza richieste");
+		}
+		
+		public static boolean isInserimentoEmergenzaMinori(){
+			return checkPermesso("Minori in struttura", "Inserimento in emergenza");
+		}
+		
+		
+		public static boolean checkPermesso(String item, String permesso) {
+			String patternPermesso = getPatternPermessoRilPres(item, permesso);
+			CeTUser user = (CeTUser) getSession().getAttribute("user");
+			if (user != null) {
+				String lvl = getListaPermessi(user.getUsername(), user.getCurrentEnte()).get(patternPermesso);
+				if (lvl != null && !lvl.isEmpty())
+					return true;
+			}
+			return false;
+		}
+		
+		public static HashMap<String, String> getListaPermessi(String username, String ente){
+			HashMap<String, String> lista = loginService.getPermissions(username, ente);
+			return lista;
+		}
+		
+		@SuppressWarnings("unused")
+		private static String getPatternPermessoRilPres(String item, String nomePermesso) {
+			String istanza = "RilevazionePresenze";
+			return "permission@-@" + istanza + "@-@" + item + "@-@" + nomePermesso;
+		}
+		
+	
 }

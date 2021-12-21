@@ -4,9 +4,7 @@ import java.io.Serializable;
 
 import javax.persistence.*;
 
-import java.sql.Clob;
 import java.util.Date;
-import java.util.List;
 import java.util.Set;
  
 
@@ -69,15 +67,12 @@ public class CsIIntervento implements Serializable {
 	
 	private String note;
 	
-	//bi-directional many-to-one association to CsDPai
-	@ManyToOne
-	@JoinColumn(name="DIARIO_PAI_ID")
-	private CsDPai csDPai;
+	@Column(name="DIARIO_PAI_ID")
+	private Long diarioPaiId;
 	
 	//bi-directional many-to-one association to CsAComponente
-	@ManyToOne
-	@JoinColumn(name="COMPONENTE_ID")
-	private CsAComponente csAComponente;
+	@Column(name="COMPONENTE_ID")
+	private Long componenteId;
 
 	@Column(name="USER_INS")
 	private String userIns;
@@ -168,9 +163,6 @@ public class CsIIntervento implements Serializable {
 	@JoinColumn(name ="INT_PROGETTO_ID")
 	private CsIInterventoPr csIInterventoPr;
 	
-	@OneToOne(mappedBy="csIIntervento")
-	private CsIInterventoEsegMast csIInterventoEsegMast;
-
 	public CsIIntervento() {
 	}
 
@@ -420,20 +412,12 @@ public class CsIIntervento implements Serializable {
 		this.compTel = compTel;
 	}
 
-	public CsAComponente getCsAComponente() {
-		return csAComponente;
+	public Long getComponenteId() {
+		return componenteId;
 	}
 
-	public void setCsAComponente(CsAComponente csAComponente) {
-		this.csAComponente = csAComponente;
-	}
-	
-	public CsDPai getCsDPai() {
-		return csDPai;
-	}
-	
-	public void setCsDPai(CsDPai csDPai) {
-		this.csDPai = csDPai;
+	public void setComponenteId(Long componenteId) {
+		this.componenteId = componenteId;
 	}
 
 	//TODO ML:http://progetti.asc.webred.it/browse/SISO-456	
@@ -441,16 +425,16 @@ public class CsIIntervento implements Serializable {
 		return csIQuota;
 	}
 
+	public Long getDiarioPaiId() {
+		return diarioPaiId;
+	}
+
+	public void setDiarioPaiId(Long diarioPaiId) {
+		this.diarioPaiId = diarioPaiId;
+	}
+
 	public void setCsIQuota(CsIQuota csIQuota) {
 		this.csIQuota = csIQuota;
-	}
-
-	public CsIInterventoEsegMast getCsIInterventoEsegMast() {
-		return csIInterventoEsegMast;
-	}
-
-	public void setCsIInterventoEsegMast(CsIInterventoEsegMast csIInterventoEsegMast) {
-		this.csIInterventoEsegMast = csIInterventoEsegMast;
 	}
 
 	public String getNote() {

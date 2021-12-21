@@ -24,7 +24,7 @@ public abstract class SchedaValiditaBaseBean extends SchedaUtils {
 	public String nuovoAttiva;
 	public boolean flagMsg=false;
 	protected boolean modificheNonSalvate;
-	
+
 	public boolean isFlagMsg() {
 		return flagMsg;
 	}
@@ -40,8 +40,8 @@ public abstract class SchedaValiditaBaseBean extends SchedaUtils {
 
 	public void initialize(Long sId) {
 		
-		
-		logger.debug("*** INIZIO SchedaValiditaBAseBean.initialize ....sId=" + sId);
+		Object typeClass = getTypeClass();
+		logger.debug("*** INIZIO "+typeClass+" ....sId=" + sId);
 
 		caricaValoriCombo();
 		
@@ -58,20 +58,16 @@ public abstract class SchedaValiditaBaseBean extends SchedaUtils {
 			List<?> listaCs = schedaService.findCsBySoggettoId(dto);
 			
 			for(Object cs: listaCs){
-				
-				logger.debug("*** INIZIO chiamata getComponenteFromCs da SchedaValiditaBAseBean.initialize");
 				ValiditaCompBaseBean comp = getComponenteFromCs(cs);
 				valorizzaComboComp(comp);
 				listaComponenti.add(comp);
-				logger.debug("*** FINE chiamata getComponenteFromCs da SchedaValiditaBAseBean.initialize");
-				
 			}
 			
 			if(listaComponenti.size() > 0)
 				currentIndex = 0;
 		}
 		
-		logger.debug("*** FINE SchedaValiditaBAseBean.initialize ....");
+		logger.debug("*** FINE "+typeClass+" ....sId=" + sId);
 	}
 	
 	public abstract Object getTypeClass();
@@ -238,10 +234,10 @@ public abstract class SchedaValiditaBaseBean extends SchedaUtils {
 			
 			ValiditaCompBaseBean comp = listaComponenti.get(currentIndex);
 			Object cs = getCsFromComponenteCopy(comp);
-			ValiditaCompBaseBean newComp = getComponenteFromCs(cs);
+			ValiditaCompBaseBean newComp = copiaComponenteFromCs(cs);
 			//Sovrascrivo i JSON valorizzati dal data model
 			newComp = duplicaJsonCollegati(comp,newComp);
-			
+			valorizzaComboComp(newComp);
 			newComp.setDataInizio(new Date());
 			newComp.setDataFine(null);
 			newComp.setId(null);
@@ -279,6 +275,12 @@ public abstract class SchedaValiditaBaseBean extends SchedaUtils {
 	public abstract Object getCsFromComponente(Object obj);
 	
 	public abstract ValiditaCompBaseBean getComponenteFromCs(Object obj);
+	
+	/*  Questo metodo va sovrascritto se nel comp devono
+	 *  essere caricate delle liste in funzione delle date di inizio/fine validità es.DatiSociali*/
+	public ValiditaCompBaseBean copiaComponenteFromCs(Object obj){
+		return getComponenteFromCs(obj);
+	}
 			
 	public List<ValiditaCompBaseBean> getListaComponenti() {
 		return listaComponenti;
@@ -327,5 +329,5 @@ public abstract class SchedaValiditaBaseBean extends SchedaUtils {
 	public void setModificheNonSalvate(boolean modificheNonSalvate) {
 		this.modificheNonSalvate = modificheNonSalvate;
 	}
-	
+
 }

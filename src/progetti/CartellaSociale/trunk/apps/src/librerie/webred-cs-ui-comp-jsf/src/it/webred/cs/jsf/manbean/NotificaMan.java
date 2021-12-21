@@ -49,7 +49,7 @@ public class NotificaMan extends CsUiCompBaseBean implements INotifica {
 	@PostConstruct
 	public void initializeNotifica() {
 		try {
-			
+			logger.debug("INIT initializeNotifica");
 			CsOOperatoreSettore opSettore = getCurrentOpSettore();
 			ArrayList<CsOOperatoreSettore> tempLista = getTempListaSett();
 
@@ -83,8 +83,7 @@ public class NotificaMan extends CsUiCompBaseBean implements INotifica {
 					if (hasPermessoSettore) itDto.setIdSettTo(idSettoreUtente);
 					if (hasPermessoEnte) itDto.setIdOrgTo(idOrganizzazione);
 					
-					List<CsAlertBASIC> listaAlert = alertSessionBean.getNotificas(itDto);
-			 
+					List<CsAlertBASIC> listaAlert = alertSessionBean.getNotificheVisibili(itDto);
 					for( CsAlertBASIC csa : listaAlert ){
 						if(csa.getVisibile()){
 							TipoAlertBean curTipoAlert = IsTipoAlertPresent(tipoAlerts, csa.getLabelTipo()); 
@@ -94,8 +93,8 @@ public class NotificaMan extends CsUiCompBaseBean implements INotifica {
 								curTipoAlert.setLabelTipo(csa.getLabelTipo());
 								tipoAlerts.add(curTipoAlert);
 							}
-				
-							curTipoAlert.getListaAlert().add(new AlertBean( csa, idSettoreUtente, idOperatore, hasPermessoSettore, hasPermessoEnte, tempLista));
+							AlertBean alBean = new AlertBean( csa, idSettoreUtente, idOperatore, hasPermessoSettore, hasPermessoEnte, tempLista);
+							curTipoAlert.getListaAlert().add(alBean);
 							
 						}
 					}
@@ -104,10 +103,9 @@ public class NotificaMan extends CsUiCompBaseBean implements INotifica {
 				logger.warn("Permessi di visualizzazione notifiche (ITEM: Notifiche Cartella) non configurati per i gruppi: "+ opSettore.getAmGroup());
 				addWarning("Permessi di visualizzazione notifiche non configurati per i gruppi: "+ opSettore.getAmGroup(),"");
 			}
-		
 				initializeNotificationMenu();
 			}
-		
+			logger.debug("END initializeNotifica");
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 			addError("Inizializzazione Fallita", "Inizializzazione del componente notifica fallito!");
@@ -278,21 +276,10 @@ public class NotificaMan extends CsUiCompBaseBean implements INotifica {
 	protected List<String> getListaTipo(BaseDTO bDto) throws NamingException {
 		/*Ricerco in configurazione, quali notifiche (TIPO) l'opSettore è abilitato a ricevere*/
 		AccessTableAlertSessionBeanRemote alertSessionBean = getAlertSessioBean();
-		
 		List<String> listaTipo = new LinkedList<String>();
 		HashMap<String, String> permessiGruppoSettore = (HashMap<String, String>) getSession().getAttribute("permessiGruppoSettore");
-		if(permessiGruppoSettore != null) {
-			for (String it : permessiGruppoSettore.values()) {
-				int idx = it.lastIndexOf("@-@");
-				String permesso = it.substring(idx+3);
-				if( permesso.startsWith(PermessiNotifiche.VISUALIZZA_NOTIFICHE_TIPO) ){
-					String tipo = permesso.replace(PermessiNotifiche.VISUALIZZA_NOTIFICHE_TIPO, "");
-					bDto.setObj3(tipo);
-					if(alertSessionBean.isRicNotificaAttiva(bDto)) listaTipo.add( "'" + tipo + "'" );
-				}
-			}
-		}
-			
+		bDto.setObj3(permessiGruppoSettore);
+		listaTipo = alertSessionBean.loadTipoNotificaAttiva(bDto);
 		return listaTipo;
 	}
 	

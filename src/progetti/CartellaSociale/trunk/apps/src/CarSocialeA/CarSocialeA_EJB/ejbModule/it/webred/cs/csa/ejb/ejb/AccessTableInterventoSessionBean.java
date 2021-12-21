@@ -2,15 +2,17 @@ package it.webred.cs.csa.ejb.ejb;
 
 import it.webred.cs.csa.ejb.CarSocialeBaseSessionBean;
 import it.webred.cs.csa.ejb.client.AccessTableAlertSessionBeanRemote;
-import it.webred.cs.csa.ejb.client.AccessTableCasoSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.AccessTableConfigurazioneSessionBeanRemote;
+import it.webred.cs.csa.ejb.client.AccessTableDatiPorSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.AccessTableDiarioSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.AccessTableIndirizzoSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.AccessTableInterventoSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.AccessTableOperatoreSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.AccessTablePsExportSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.AccessTableSoggettoSessionBeanRemote;
+import it.webred.cs.csa.ejb.client.CarSocialeServiceException;
 import it.webred.cs.csa.ejb.client.domini.AccessTableDominiSiruSessionBeanRemote;
+import it.webred.cs.csa.ejb.dao.CasoDAO;
 import it.webred.cs.csa.ejb.dao.InterventoDAO;
 import it.webred.cs.csa.ejb.dao.InterventoErogazioneDAO;
 import it.webred.cs.csa.ejb.dao.SinaDAO;
@@ -23,17 +25,17 @@ import it.webred.cs.csa.ejb.dto.InformativaDTO;
 import it.webred.cs.csa.ejb.dto.InterventoBaseDTO;
 import it.webred.cs.csa.ejb.dto.InterventoDTO;
 import it.webred.cs.csa.ejb.dto.KeyValueDTO;
-import it.webred.cs.csa.ejb.dto.SiruDominioDTO;
-import it.webred.cs.csa.ejb.dto.SiruResultDTO;
 import it.webred.cs.csa.ejb.dto.erogazioni.ErogazioneBaseDTO;
+import it.webred.cs.csa.ejb.dto.erogazioni.ErogazioneDettaglioSintesiDTO;
 import it.webred.cs.csa.ejb.dto.erogazioni.ErogazioneMasterDTO;
 import it.webred.cs.csa.ejb.dto.erogazioni.IntEsegAttrUtilsBean;
 import it.webred.cs.csa.ejb.dto.erogazioni.SoggettoErogazioneBean;
 import it.webred.cs.csa.ejb.dto.erogazioni.configurazione.ErogStatoCfgDTO;
-import it.webred.cs.csa.ejb.enumeratori.SiruEnum;
+import it.webred.cs.csa.ejb.dto.siru.ConfigurazioneFseDTO;
+import it.webred.cs.csa.ejb.dto.siru.SiruInputDTO;
+import it.webred.cs.csa.ejb.dto.siru.SiruResultDTO;
 import it.webred.cs.data.DataModelCostanti;
 import it.webred.cs.data.model.ArFfProgetto;
-import it.webred.cs.data.model.ArFfProgettoAttivita;
 import it.webred.cs.data.model.ArRelClassememoPresInps;
 import it.webred.cs.data.model.ArRelIntCustomIstat;
 import it.webred.cs.data.model.ArRelIntCustomPresInps;
@@ -48,8 +50,10 @@ import it.webred.cs.data.model.CsCfgAttrOption;
 import it.webred.cs.data.model.CsCfgAttrUnitaMisura;
 import it.webred.cs.data.model.CsCfgIntEseg;
 import it.webred.cs.data.model.CsCfgIntEsegStato;
+import it.webred.cs.data.model.CsCfgIntEsegStatoInt;
 import it.webred.cs.data.model.CsDDiario;
 import it.webred.cs.data.model.CsDPai;
+import it.webred.cs.data.model.CsDRelazione;
 import it.webred.cs.data.model.CsDSina;
 import it.webred.cs.data.model.CsFlgIntervento;
 import it.webred.cs.data.model.CsIAdmAdh;
@@ -65,6 +69,7 @@ import it.webred.cs.data.model.CsIInterventoPr;
 import it.webred.cs.data.model.CsIInterventoPrFse;
 import it.webred.cs.data.model.CsIInterventoPrFseSiru;
 import it.webred.cs.data.model.CsIPasti;
+import it.webred.cs.data.model.CsIPs;
 import it.webred.cs.data.model.CsIPsExport;
 import it.webred.cs.data.model.CsIPsExportMast;
 import it.webred.cs.data.model.CsIQuota;
@@ -74,10 +79,10 @@ import it.webred.cs.data.model.CsIRigaQuota;
 import it.webred.cs.data.model.CsISchedaLavoro;
 import it.webred.cs.data.model.CsISemiResiMin;
 import it.webred.cs.data.model.CsIVouchersad;
+import it.webred.cs.data.model.CsOOperatoreBASIC;
 import it.webred.cs.data.model.CsRelRelazioneTipoint;
 import it.webred.cs.data.model.CsRelSettCsocTipoInter;
 import it.webred.cs.data.model.CsRelSettCsocTipoInterPK;
-import it.webred.cs.data.model.CsTbIngMercato;
 import it.webred.cs.data.model.CsTbProgettoAltro;
 import it.webred.cs.data.model.CsTbTipoDiario;
 import it.webred.cs.data.model.VArCTariffa;
@@ -85,8 +90,6 @@ import it.webred.cs.data.model.VGerrarchiaServizi;
 import it.webred.cs.data.model.VLineaFin;
 import it.webred.cs.data.model.VServiziCustom;
 import it.webred.cs.data.model.VTipiInterventoUsati;
-import it.webred.ct.config.model.AmKeyValueExt;
-import it.webred.ct.config.parameters.dto.ParameterSearchCriteria;
 import it.webred.ct.support.datarouter.CeTBaseObject;
 import it.webred.ct.support.validation.annotation.AuditConsentiAccessoAnonimo;
 import it.webred.ct.support.validation.annotation.AuditSaltaValidazioneSessionID;
@@ -96,10 +99,8 @@ import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -129,12 +130,12 @@ public class AccessTableInterventoSessionBean extends CarSocialeBaseSessionBean 
 	//SISO - 884
 	@Autowired
 	private SinaDAO sinaDao;
+	@Autowired
+	private CasoDAO casoDao;
 	@EJB
 	public AccessTableOperatoreSessionBeanRemote operatoreSessionBean;
 	@EJB
 	public AccessTableDiarioSessionBeanRemote diarioSessionBean;
-	@EJB
-	public AccessTableCasoSessionBeanRemote casoSessionBean;
 	@EJB
 	public AccessTableConfigurazioneSessionBeanRemote confSessionBean;
 	@EJB
@@ -145,6 +146,8 @@ public class AccessTableInterventoSessionBean extends CarSocialeBaseSessionBean 
 	private AccessTableDominiSiruSessionBeanRemote dominiSiruService;
 	@EJB
 	private AccessTableIndirizzoSessionBeanRemote indirizziService;
+	@EJB 
+	private AccessTableDatiPorSessionBeanRemote datiPorService;
 	
 	//SISO - 884
 	@EJB
@@ -243,11 +246,19 @@ public class AccessTableInterventoSessionBean extends CarSocialeBaseSessionBean 
 
 		BaseDTO bdto = new BaseDTO();
 		copiaCsTBaseObject(dto, bdto);
+		
+		//Recupero il diario associato alla relazione da inserire
+		CsDDiario relazione = null;
+		if (dto.getIdRelazione() != null) {
+			bdto.setObj(dto.getIdRelazione());
+			relazione = diarioSessionBean.findDiarioById(bdto);
+		}
+		
 
 		if (inter.getDiarioId() == null) {
 
-			bdto.setObj(dto.getCasoId());
-			CsACaso caso = casoSessionBean.findCasoById(bdto);
+			CsACaso caso = casoDao.findCasoById(dto.getCasoId());
+			CsOOperatoreBASIC responsabile = casoDao.findResponsabileBASIC(dto.getCasoId());
 			
 			if (inter.getCsDDiario().getId() <= 0) {
 				
@@ -257,11 +268,10 @@ public class AccessTableInterventoSessionBean extends CarSocialeBaseSessionBean 
 				inter.getCsDDiario().setUserIns(dto.getUserId());
 				inter.getCsDDiario().setUsrMod(null);
 				inter.getCsDDiario().setCsTbTipoDiario(tipo);
+				inter.getCsDDiario().setResponsabileCaso(responsabile!=null ? responsabile.getId() : null);
 
 				//Recupero il diario associato alla relazione da inserire
-				if (dto.getIdRelazione() != null) {
-					bdto.setObj(dto.getIdRelazione());
-					CsDDiario relazione = diarioSessionBean.findDiarioById(bdto);
+				if (relazione != null) {
 					inter.getCsDDiario().addCsDDiariFiglio(relazione);
 				}
 
@@ -287,23 +297,21 @@ public class AccessTableInterventoSessionBean extends CarSocialeBaseSessionBean 
 		} else {
 
 			List<CsDDiario> lstd = new LinkedList<CsDDiario>(inter.getCsDDiario().getCsDDiariFiglio());
-			CsDDiario relazione = null;
+			CsDDiario relazioneOld = null;
 			if (lstd != null && lstd.size() > 0) {
 				for (CsDDiario d : lstd) {
 					//La rimuovo e riaggiungo
-					if (d.getCsTbTipoDiario().getId().equals(DataModelCostanti.TipoDiario.RELAZIONE_ID)) {
-						relazione = d;
+					if (d.getCsTbTipoDiario().getId() == DataModelCostanti.TipoDiario.RELAZIONE_ID) {
+						relazioneOld = d;
 					}
 				}
-				if (relazione != null)
-					inter.getCsDDiario().getCsDDiariFiglio().remove(relazione);
+				if (relazioneOld != null)
+					inter.getCsDDiario().getCsDDiariFiglio().remove(relazioneOld);
 			}
 
 			//Recupero il diario associato alla relazione da inserire
-			if (dto.getIdRelazione() != null) {
-				bdto.setObj(dto.getIdRelazione());
-				CsDDiario nrelazione = diarioSessionBean.findDiarioById(bdto);
-				inter.getCsDDiario().addCsDDiariFiglio(nrelazione);
+			if (relazione != null) {
+				inter.getCsDDiario().addCsDDiariFiglio(relazione);
 			}
 
 			inter.getCsDDiario().setDtMod(oggi);
@@ -319,13 +327,30 @@ public class AccessTableInterventoSessionBean extends CarSocialeBaseSessionBean 
 	}
 
 	@Override
-	public List<CsCTipoIntervento> findAllTipiIntervento(CeTBaseObject dto) {
-		return interventoDao.findTipiIntervento(false);
+	public List<KeyValueDTO> findAllTipiIntervento(CeTBaseObject dto) {
+		List<KeyValueDTO> lstOut = new ArrayList<KeyValueDTO>();
+		List<CsCTipoIntervento> lst = interventoDao.findTipiIntervento(false);
+		for(CsCTipoIntervento c : lst){
+			KeyValueDTO kv = new KeyValueDTO(c.getId(), c.getDescrizione());
+			kv.setAbilitato(c.getAbilitato()!=null ? c.getAbilitato().booleanValue() : false);
+			lstOut.add(kv);
+		}
+		return lstOut;
 	}
 	
 	@Override
-	public List<CsCTipoIntervento> findTipiInterventoAbilitati(CeTBaseObject dto) {
-		return interventoDao.findTipiIntervento(true);
+	public List<KeyValueDTO> findTipiInterventoAbilitati(BaseDTO dto) {
+		List<KeyValueDTO> lstOut = new ArrayList<KeyValueDTO>();
+		List<CsCTipoIntervento> lst = interventoDao.findTipiIntervento(true);
+		String tipo = (String)dto.getObj();
+		for(CsCTipoIntervento c : lst){
+			if(StringUtils.isBlank(tipo) || tipo.equalsIgnoreCase(c.getTipo())){
+				KeyValueDTO kv = new KeyValueDTO(c.getId(), c.getDescrizione());
+				kv.setAbilitato(true);
+				lstOut.add(kv);
+			}
+		}
+		return lstOut;
 	}
 
 	@Override
@@ -365,44 +390,10 @@ public class AccessTableInterventoSessionBean extends CarSocialeBaseSessionBean 
 		return interventoDao.getListaInterventiByIdCaso((Long) dto.getObj());
 	}
 	
-	@Override
 	public List<InterventoBaseDTO> getListaInfoInterventiByCaso(BaseDTO dto){
-		List<InterventoBaseDTO> lstInt = new ArrayList<InterventoBaseDTO>();
-		List<CsIIntervento> lst = interventoDao.getListaInterventiByIdCaso((Long) dto.getObj());
-		for(CsIIntervento inter : lst){
-			Collection<CsIInterventoEseg> esegs = inter.getCsIInterventoEsegMast()!= null ? inter.getCsIInterventoEsegMast().getCsIInterventoEsegs() : new ArrayList<CsIInterventoEseg>();
-			boolean eseguito=false;
-			int i=0;
-			Iterator<CsIInterventoEseg> it = esegs.iterator();
-			while(it.hasNext() && !eseguito){
-				CsIInterventoEseg es = (CsIInterventoEseg)it.next();
-				if(es.getStato().getTipo().equals(DataModelCostanti.TipoStatoErogazione.EROGATIVO))
-					eseguito = true;
-				i++;
-			}
-			
-			CsCTipoIntervento tipoIntervento = inter.getCsRelSettCsocTipoInter().getCsRelCatsocTipoInter().getCsCTipoIntervento();
-			CsCTipoInterventoCustom tipoInterventoC = inter.getCsIInterventoCustom();
-			
-			String inizio = inter.getInizioDal()!=null ? "Dal "+ ddMMyyyy.format(inter.getInizioDal()) : "";
-			inizio+= inter.getInizioAl()!=null ? " al "+ ddMMyyyy.format(inter.getInizioAl()) : "";
-			
-			String fine = inter.getFineDal()!=null ? "Dal "+ ddMMyyyy.format(inter.getFineDal()) : "";
-			fine+= inter.getFineAl()!=null ? " al "+ ddMMyyyy.format(inter.getFineAl()) : "";
-			
-			
-			InterventoBaseDTO intout = new InterventoBaseDTO();
-			intout.setTipoIntervento(tipoIntervento);
-			intout.setTipoInterventoCustom(tipoInterventoC);
-			intout.setInizio(inizio);
-			intout.setFine(fine);
-			intout.setErogato(eseguito);
-			
-			lstInt.add(intout);
-		}
-		return lstInt;
+		return interventoDao.getListaInfoInterventiByIdCaso((Long) dto.getObj());
 	}
-
+	
 	@Override
 	public Integer countInterventiByCaso(BaseDTO dto) throws Exception {
 		return interventoDao.countInterventiByIdCaso((Long) dto.getObj());
@@ -443,7 +434,7 @@ public class AccessTableInterventoSessionBean extends CarSocialeBaseSessionBean 
 	}
 	public List<CsIInterventoEsegMastSogg> getBeneficiariErogazione(BaseDTO dto) {
 		//String cf, String attivita, String progetto
-		return  interventoErogazioneDao.getBeneficiariErogazione((String)(dto.getObj()),(String)(dto.getObj2()), (String)(dto.getObj3()));
+		return  interventoErogazioneDao.getBeneficiariErogazione((String)(dto.getObj()),(Long)(dto.getObj2()), (Long)(dto.getObj3()));
 	}
 	//SISO-972 Fine
 /*	@Override
@@ -453,19 +444,13 @@ public class AccessTableInterventoSessionBean extends CarSocialeBaseSessionBean 
 	
 	public HashMap<Long, ErogStatoCfgDTO> findConfigIntEsegByTipoIntervento(BaseDTO bdto){
 		Long tipoInterventoId = (Long) bdto.getObj();
-		CsCfgIntEseg csCfgIntEseg = interventoErogazioneDao.findCfgIntEsegByTipoInterventoId(tipoInterventoId);
+		List<CsCfgIntEsegStatoInt> lst = interventoErogazioneDao.findCfgIntEsegByTipoInterventoId(tipoInterventoId);
 		HashMap<Long, ErogStatoCfgDTO> mappaEseg = new HashMap<Long, ErogStatoCfgDTO> ();
-		if(csCfgIntEseg!=null)
-			mappaEseg = IntEsegAttrUtilsBean.getMappaStatoAttributi(csCfgIntEseg.getCsCfgIntEsegStatoInt());
+		if(lst!=null)
+			mappaEseg = IntEsegAttrUtilsBean.getMappaStatoAttributi(lst);
 		else
 			logger.warn("Lista 'CsCfgIntEseg' vuota per il tipo intervento:"+tipoInterventoId);	
 		return mappaEseg;
-	}
-
-	@Override
-	public CsIInterventoEseg getErogazioniEseguiteHistory(BaseDTO bDto) {
-		return interventoErogazioneDao.getErogazioniEseguiteHistory((Long) bDto.getObj());
-
 	}
 
 	@SuppressWarnings("unchecked")
@@ -475,11 +460,6 @@ public class AccessTableInterventoSessionBean extends CarSocialeBaseSessionBean 
 		return interventoErogazioneDao.getListaIntEsegStatoByTipiStato(obj, (Long) bDto.getObj2());
 	}
 
-	@Override
-	public CsIInterventoEseg getInterventoEsegById(BaseDTO bDto) {
-		return interventoErogazioneDao.getInterventoEsegById((Long) bDto.getObj());
-	}
-	
 	@Override
 	public List<CsIInterventoEseg> getInterventoEsegByMasterId(BaseDTO bDto) {
 		boolean caricaDettagli = bDto.getObj2()!=null ? (Boolean) bDto.getObj2() : false;
@@ -508,12 +488,12 @@ public class AccessTableInterventoSessionBean extends CarSocialeBaseSessionBean 
 		//Rimuovo CSIPS
 		interventoErogazioneDao.eliminaCsIPsByEsegMaster(masterId);
 		
-		CsIInterventoEsegMast master = interventoErogazioneDao.getErogazioneMasterById(masterId);
+		CsIInterventoEsegMast master = interventoErogazioneDao.getCsIInterventoEsegMastById(masterId);
 		
 		//controlla se esiste sina con intervento_eseg_mast_id uguale a masterId; se sì non cancello
 		gestisciMaster(master);
 		
-		Long idProgetto = master.getCsIIntervento()==null ? master.getCsIInterventoPr().getId() : null;
+		Long idProgetto = master.getCsIInterventoPr()!=null ? master.getCsIInterventoPr().getId() : null;
 		Long idQuota = master.getCsIQuota()!=null ? master.getCsIQuota().getId() : null;
 		
 		interventoErogazioneDao.rimuoviInterventoEseguitoMast(masterId);
@@ -678,7 +658,7 @@ public class AccessTableInterventoSessionBean extends CarSocialeBaseSessionBean 
 					CsASoggettoLAZY soggetto = diario.getCsACaso().getCsASoggetto();
 					dto.setObj(soggetto.getCsAAnagrafica().getId());
 					CsAAnaIndirizzo residenza = indirizziService.getIndirizzoResidenza(dto);
-					SoggettoErogazioneBean b = new SoggettoErogazioneBean(soggetto, residenza.getLabelIndirizzo(), this.getCasoComuneResidenza(residenza),  true);
+					SoggettoErogazioneBean b = new SoggettoErogazioneBean(soggetto, residenza.getLabelIndirizzo(), this.getCasoComuneResidenza(residenza),  residenza.getStatoCod(), true);
 					beneficiari.add(b);
 				}
 				
@@ -722,7 +702,7 @@ public class AccessTableInterventoSessionBean extends CarSocialeBaseSessionBean 
 	}
 
 	@Override
-	public List<VGerrarchiaServizi> findAllNodesTipoIntervento(BaseDTO dto) {
+	public List<VGerrarchiaServizi> findAllNodesTipoIntervento(CeTBaseObject cet) {
 		return interventoDao.findAllNodesTipoIntervento();
 	}
 
@@ -957,13 +937,12 @@ public class AccessTableInterventoSessionBean extends CarSocialeBaseSessionBean 
 	//SISO-972 Inizio
 	public void salvaFseAttivitaStorico(BaseDTO dto, CsIInterventoPr csiInterventoPr)
 	{   
+		Long progettoId = csiInterventoPr.getProgetto()!=null ? csiInterventoPr.getProgetto().getId() : null;
+		Long attivitaId = csiInterventoPr.getProgettoAttivita()!=null ? csiInterventoPr.getProgettoAttivita().getId() : null;
 		SoggettoErogazioneBean seb = (SoggettoErogazioneBean) dto.getObj2();
 		dto.setObj(seb.getCodiceFiscale());
-		List<CsIInterventoEsegMastSogg> lsti = interventoErogazioneDao.getBeneficiariErogazione(seb.getCodiceFiscale(), 
-																									csiInterventoPr.getnSottocorsoAttivita(), 
-																										csiInterventoPr.getFfProgettoDescrizione());
-		 
 		
+		List<CsIInterventoEsegMastSogg> lsti = interventoErogazioneDao.getBeneficiariErogazione(seb.getCodiceFiscale(), attivitaId, progettoId);
 		if(lsti != null)
 			for(CsIInterventoEsegMastSogg csInterventoMastSogg : lsti){
 				
@@ -973,6 +952,19 @@ public class AccessTableInterventoSessionBean extends CarSocialeBaseSessionBean 
 				
 				//Non riaggiorno quello corrente 
 				if(prCurrent.getCsIInterventoPrFse() != null && !prCurrent.getId().equals(csiInterventoPr.getId())){
+					
+					ConfigurazioneFseDTO mappaCampiFse = null;
+					String codRoutingTitolare = prCurrent.getSettoreTitolare().getCsOOrganizzazione().getCodRouting();
+					ArFfProgetto progetto = prCurrent.getProgetto();
+					if (progetto!=null && progetto.getId()>0) {  
+						BaseDTO bdto = new BaseDTO();
+						bdto.setEnteId(dto.getEnteId());
+						bdto.setSessionId(dto.getSessionId());
+						bdto.setUserId(dto.getUserId());
+						bdto.setObj(progetto.getId());
+						//bdto.setObj2(codRoutingTitolare);
+						mappaCampiFse = confSessionBean.loadCampiFse(bdto);
+					}
 					 
 					//csiInterventoPrFseUpdate.setInterventoPrId(prCurrent.getCsIInterventoPrFse().getInterventoPrId());
 					prCurrent.getCsIInterventoPrFse().setAzCF(csiInterventoPr.getCsIInterventoPrFse().getAzCF());
@@ -1008,18 +1000,16 @@ public class AccessTableInterventoSessionBean extends CarSocialeBaseSessionBean 
 					prCurrent.getCsIInterventoPrFse().setIban(csiInterventoPr.getCsIInterventoPrFse().getIban());
 					prCurrent.getCsIInterventoPrFse().setLavoroDescOrario(csiInterventoPr.getCsIInterventoPrFse().getLavoroDescOrario());
 					prCurrent.getCsIInterventoPrFse().setLavoroDescTipo(csiInterventoPr.getCsIInterventoPrFse().getLavoroDescTipo());
-					prCurrent.getCsIInterventoPrFse().setLavoroDurataRicerca(csiInterventoPr.getCsIInterventoPrFse().getLavoroDurataRicerca());
+					prCurrent.getCsIInterventoPrFse().setDurataRicLavoroId(csiInterventoPr.getCsIInterventoPrFse().getDurataRicLavoroId());
 					prCurrent.getCsIInterventoPrFse().setTelefono(csiInterventoPr.getCsIInterventoPrFse().getTelefono());
 					prCurrent.getCsIInterventoPrFse().setTitoloStudioAnno(csiInterventoPr.getCsIInterventoPrFse().getTitoloStudioAnno());
 					prCurrent.getCsIInterventoPrFse().setViaDomicilio(csiInterventoPr.getCsIInterventoPrFse().getViaDomicilio());
 					//csiInterventoPrFseUpdate.setViaResidenza(csiInterventoPr.getCsIInterventoPrFse().getViaResidenza());
 					
-					prCurrent.getCsIInterventoPrFse().setCsTbGrVulnerabile(csiInterventoPr.getCsIInterventoPrFse().getCsTbGrVulnerabile());
 					prCurrent.getCsIInterventoPrFse().setStatoNascitaCod(csiInterventoPr.getCsIInterventoPrFse().getStatoNascitaCod());
 					prCurrent.getCsIInterventoPrFse().setStatoNascitaDes(csiInterventoPr.getCsIInterventoPrFse().getStatoNascitaDes());
 
 					prCurrent.getCsIInterventoPrFse().setTitoloStudioAnno(csiInterventoPr.getCsIInterventoPrFse().getTitoloStudioAnno());
-					
 					
 					//prCurrent.setCsIInterventoPrFse(csiInterventoPrFseUpdate);
 					prCurrent.setUsrMod(dto.getUserId());
@@ -1031,11 +1021,12 @@ public class AccessTableInterventoSessionBean extends CarSocialeBaseSessionBean 
 					BaseDTO bdto = new BaseDTO();
 					bdto.setObj(prCurrent);
 					bdto.setObj2(seb);
+					bdto.setObj3(mappaCampiFse);
 					bdto.setEnteId(dto.getEnteId());
 					bdto.setSessionId(dto.getSessionId());
 					bdto.setUserId(dto.getUserId());
 					
-					CsIInterventoPrFseSiru csiInterventoPrSiru = validaSiru(bdto).getSiru();
+					CsIInterventoPrFseSiru csiInterventoPrSiru = validaSiru(bdto).getSiruInterventi();
 					BeanUtils.copyProperties(csiInterventoPrSiru, prCurrent.getCsIInterventoPrFseSiru());
 					
 					prCurrent.getCsIInterventoPrFseSiru().setCsIInterventoPr(prCurrent);
@@ -1050,12 +1041,6 @@ public class AccessTableInterventoSessionBean extends CarSocialeBaseSessionBean 
 	
 	//SISO-972 Fine
 	
-	
-	@Override
-	public CsIInterventoEsegMast getErogazioneMasterById(BaseDTO dto) {
-		return interventoErogazioneDao.getErogazioneMasterById((Long)dto.getObj());
-	}
-	
 	@Override
 	public CsIInterventoPr getProgettoByMasterId(BaseDTO dto) {
 		return interventoErogazioneDao.getProgettoByMasterId((Long)dto.getObj());
@@ -1067,21 +1052,18 @@ public class AccessTableInterventoSessionBean extends CarSocialeBaseSessionBean 
 	{
 		Long idIntervento = (Long) dto.getObj();
 		CsDPai csDPaiNuovoRif = (CsDPai) dto.getObj2();
-		Long csDPaiRifDaSostituireId = (Long) dto.getObj3();		
+		Long csDPaiRifDaSostituireId = (Long) dto.getObj3();
 		CsIIntervento intervento= interventoDao.getInterventoById(idIntervento);
-		
-		if(csDPaiNuovoRif==null && //sostituzione 
-				intervento.getCsDPai()!=null && csDPaiRifDaSostituireId!=null &&
-				! intervento.getCsDPai().getDiarioId().equals(csDPaiRifDaSostituireId))
-		{
-			
-			//skip
-		}
-		else
-		{
-			intervento.setCsDPai(csDPaiNuovoRif);
+
+		if (csDPaiNuovoRif==null && //sostituzione
+				intervento!=null && csDPaiRifDaSostituireId!=null
+				&& !csDPaiRifDaSostituireId.equals(intervento.getDiarioPaiId())){
+
+			// skip
+		} else {
+			intervento.setDiarioPaiId(csDPaiNuovoRif.getDiarioId());
 			interventoDao.updateIntervento(intervento);
-		}			
+		}
 	}
 	
 
@@ -1135,31 +1117,27 @@ public class AccessTableInterventoSessionBean extends CarSocialeBaseSessionBean 
 	
 	//inizio SISO-500  
 	@Override
-	public CsIInterventoEsegMast getCsIInterventoEsegMastByByInterventoId(BaseDTO bDto) { 
-		return interventoErogazioneDao.getCsIInterventoEsegMastByByInterventoId((Long) bDto.getObj());
+	public CsIInterventoEsegMast getCsIInterventoEsegMastByInterventoId(BaseDTO bDto) { 
+		return interventoErogazioneDao.getCsIInterventoEsegMastByInterventoId((Long) bDto.getObj());
 	}
 	//fine SISO-500 
 	
+	@Override
+	public Long getCsIInterventoEsegMastIdByInterventoId(BaseDTO bDto) { 
+		return interventoErogazioneDao.getCsIInterventoEsegMastIdByInterventoId((Long) bDto.getObj());
+	}
+	
+	@Override
+	public CsIPs getCsIPsByInterventoId(BaseDTO bDto) { 
+		return interventoErogazioneDao.getCsIPsByInterventoId((Long) bDto.getObj());
+	}
 	//inizio SISO-822  
     @Override
      public CsIInterventoEsegMast getCsIInterventoEsegMastById(BaseDTO bDto) { 
 		return interventoErogazioneDao.getCsIInterventoEsegMastById((Long) bDto.getObj());
 	}
 	//fine SISO-822 
-
-	@Override
-	public CsFlgIntervento getPrimoFoglioAmministrativo(BaseDTO dto) {
-		return interventoDao.getPrimoFoglioAmministrativo((Long) dto.getObj());
-	}
- 
 	
-	//INIZIO SISO-522 - modificato da SISO-575
-	@Override
-	public List<ArFfProgetto> findProgettiByBelfioreOrganizzazione(BaseDTO dto) {				
-		return interventoDao.findProgettiByBelfioreOrganizzazione((String) dto.getObj());
-	}
-	//FINE SISO-522 - modificato da SISO-575
-
 	//INIZIO SISO-1131
 		@Override
 		public List<CsTbProgettoAltro> findProgettiAltro() {				
@@ -1186,69 +1164,74 @@ public class AccessTableInterventoSessionBean extends CarSocialeBaseSessionBean 
 	}
 
 	@Override
-	public void gestisciAlertErogazioni(BaseDTO in) throws Exception {
-		CsIInterventoEsegMast master = (CsIInterventoEsegMast)in.getObj();
-		
-		//Invio notifica al responsabile del caso, se esiste, di avvenuta erogazione
-		if((Boolean)in.getObj2()){
-			BaseDTO bdto = new BaseDTO();
-			bdto.setEnteId(in.getEnteId());
-			bdto.setUserId(in.getUserId());
-			bdto.setSessionId(in.getSessionId());
+	public void gestisciAlertErogazioni(BaseDTO in) throws CarSocialeServiceException {
+		try{
+			CsIInterventoEsegMast master = (CsIInterventoEsegMast)in.getObj();
 			
-			//bdto.setObj(this.soggettoErogazione.getCodiceFiscale());
-			CsIInterventoEsegMastSogg s = master.getBeneficiarioRiferimento();
-			bdto.setObj(s.getCf());
-			bdto.setObj2(master.getCsOOperatoreSettore());
-			bdto.setObj3(DataModelCostanti.TipiAlertCod.EROGAZIONE);
-			bdto.setObj4("una nuova erogazione");
-			
-			alertService.addAlertNuovoInserimentoToResponsabileCaso(bdto);	
-		}
-		
-		//Invio notifica al settore titolare, se diverso dal settore gestore, di avvenuta erogazione
-		List<CsIInterventoEseg> erogAlertTitolare = (List<CsIInterventoEseg>) in.getObj3();
-		for(CsIInterventoEseg e : erogAlertTitolare){
-			
-			AlertDTO a = new AlertDTO();
-			a.setEnteId(in.getEnteId());
-			a.setUserId(in.getUserId());
-			a.setSessionId(in.getSessionId());
-			
-			a.setNotificaSettoreSegnalante(false);
-			a.setOperatoreFrom(e.getCsOOperatoreSettore().getCsOOperatore());
-			a.setSettoreFrom(e.getCsOOperatoreSettore().getCsOSettore());
-			a.setOrganizzazioneFrom(e.getCsOOperatoreSettore().getCsOSettore().getCsOOrganizzazione());
-			
-			a.setSettoreTo(master.getCsIInterventoPr().getSettoreTitolare());
-			a.setTipo(DataModelCostanti.TipiAlertCod.EROGAZIONE);
-			
-			String beneficiari="";
-			for(CsIInterventoEsegMastSogg s : master.getBeneficiari()){
-				beneficiari+= s.getCognome()+" "+s.getNome()+"("+s.getCf()+") ";
-				if(s.getRiferimento()) 
-					a.setCaso(s.getCaso());
+			//Invio notifica al responsabile del caso, se esiste, di avvenuta erogazione
+			if((Boolean)in.getObj2()){
+				BaseDTO bdto = new BaseDTO();
+				bdto.setEnteId(in.getEnteId());
+				bdto.setUserId(in.getUserId());
+				bdto.setSessionId(in.getSessionId());
+				
+				//bdto.setObj(this.soggettoErogazione.getCodiceFiscale());
+				CsIInterventoEsegMastSogg s = master.getBeneficiarioRiferimento();
+				bdto.setObj(s.getCf());
+				bdto.setObj2(master.getCsOOperatoreSettore());
+				bdto.setObj3(DataModelCostanti.TipiAlertCod.EROGAZIONE);
+				bdto.setObj4("una nuova erogazione");
+				
+				alertService.addAlertNuovoInserimentoToResponsabileCaso(bdto);	
 			}
 			
-			String operatore = a.getOperatoreFrom().getCsOOperatoreAnagrafica().getCognome()+" "+a.getOperatoreFrom().getCsOOperatoreAnagrafica().getNome();
-			
-			a.setTitolo("Notifica nuova erogazione: "+beneficiari);
-			
-			CsIInterventoPr pr = e.getCsIInterventoEsegMast().getCsIInterventoPr();
-			
-			
-			String descrizione = "L'operatore "+operatore+" del settore "+
-			a.getSettoreFrom().getNome() +"("+a.getOrganizzazioneFrom().getNome()+") ha aggiunto una nuova erogazione per i beneficiari:"+beneficiari+
-			"- sett. erogante:"+e.getCsIInterventoEsegMast().getSettoreErogante().getNome()+" ("+e.getCsIInterventoEsegMast().getSettoreErogante().getCsOOrganizzazione().getNome()+")";
-			
-			if(pr!=null){
-			descrizione += (pr.getSettoreTitolare()!=null ? ", settore titolare : "+pr.getSettoreTitolare().getNome()+" ("+pr.getSettoreTitolare().getCsOOrganizzazione().getNome()+")" : "")+
-						   (pr.getSettoreGestore()!=null  ? ", settore gestore :"  +pr.getSettoreGestore().getNome() +" ("+pr.getSettoreGestore().getCsOOrganizzazione().getNome()+")"  : "");
+			//Invio notifica al settore titolare, se diverso dal settore gestore, di avvenuta erogazione
+			List<CsIInterventoEseg> erogAlertTitolare = (List<CsIInterventoEseg>) in.getObj3();
+			for(CsIInterventoEseg e : erogAlertTitolare){
+				
+				AlertDTO a = new AlertDTO();
+				a.setEnteId(in.getEnteId());
+				a.setUserId(in.getUserId());
+				a.setSessionId(in.getSessionId());
+				
+				a.setNotificaSettoreSegnalante(false);
+				a.setOperatoreFrom(e.getCsOOperatoreSettore().getCsOOperatore());
+				a.setSettoreFrom(e.getCsOOperatoreSettore().getCsOSettore());
+				a.setOrganizzazioneFrom(e.getCsOOperatoreSettore().getCsOSettore().getCsOOrganizzazione());
+				
+				a.setSettoreTo(master.getCsIInterventoPr().getSettoreTitolare());
+				a.setTipo(DataModelCostanti.TipiAlertCod.EROGAZIONE);
+				
+				String beneficiari="";
+				for(CsIInterventoEsegMastSogg s : master.getBeneficiari()){
+					beneficiari+= s.getCognome()+" "+s.getNome()+"("+s.getCf()+") ";
+					if(s.getRiferimento()) 
+						a.setCaso(s.getCaso());
+				}
+				
+				String operatore = a.getOperatoreFrom().getDenominazione();
+				
+				a.setTitolo("Notifica nuova erogazione: "+beneficiari);
+				
+				CsIInterventoPr pr = e.getCsIInterventoEsegMast().getCsIInterventoPr();
+				
+				
+				String descrizione = "L'operatore "+operatore+" del settore "+
+				a.getSettoreFrom().getNome() +"("+a.getOrganizzazioneFrom().getNome()+") ha aggiunto una nuova erogazione per i beneficiari:"+beneficiari+
+				"- sett. erogante:"+e.getCsIInterventoEsegMast().getSettoreErogante().getNome()+" ("+e.getCsIInterventoEsegMast().getSettoreErogante().getCsOOrganizzazione().getNome()+")";
+				
+				if(pr!=null){
+				descrizione += (pr.getSettoreTitolare()!=null ? ", settore titolare : "+pr.getSettoreTitolare().getNome()+" ("+pr.getSettoreTitolare().getCsOOrganizzazione().getNome()+")" : "")+
+							   (pr.getSettoreGestore()!=null  ? ", settore gestore :"  +pr.getSettoreGestore().getNome() +" ("+pr.getSettoreGestore().getCsOOrganizzazione().getNome()+")"  : "");
+				}
+				
+				a.setDescrizione(descrizione);
+				
+				alertService.addAlert(a);	
 			}
-			
-			a.setDescrizione(descrizione);
-			
-			alertService.addAlert(a);	
+		}catch(Throwable e){
+			logger.error(e.getMessage(), e);
+			throw new CarSocialeServiceException(e);
 		}
 		
 	}
@@ -1259,7 +1242,7 @@ public class AccessTableInterventoSessionBean extends CarSocialeBaseSessionBean 
 	{
 		Long idInterventoEsegMast = (Long) bdto.getObj();
 		Long csDPaiRif = (Long) bdto.getObj2();
-		CsIInterventoEsegMast interventoMast = interventoErogazioneDao.getErogazioneMasterById(idInterventoEsegMast);
+		CsIInterventoEsegMast interventoMast = interventoErogazioneDao.getCsIInterventoEsegMastById(idInterventoEsegMast);
 		
 		if(csDPaiRif==null) //sostituzione
 		{
@@ -1279,252 +1262,76 @@ public class AccessTableInterventoSessionBean extends CarSocialeBaseSessionBean 
 		}
 	}
 	
-	//INIZIO SISO - 790
-	@Override
-	public List<ArFfProgettoAttivita> findSottocorsi(BaseDTO dto) {				
-		return interventoDao.getSottocorsi();
-	}
-	//FINE SISO-790
-
-//	//SISO-817
-	public  SiruResultDTO validaSiru(BaseDTO dto){
+	public SiruResultDTO validaSiru(BaseDTO dto){
 		CsIInterventoPr progetto = (CsIInterventoPr) dto.getObj();
 		SoggettoErogazioneBean seb =(SoggettoErogazioneBean) dto.getObj2();
-		
-		SiruResultDTO result = new SiruResultDTO();
-		List<String> msg = new ArrayList<String>();
 		CsIInterventoPrFse fse = progetto.getCsIInterventoPrFse();
-		CsIInterventoPrFseSiru siru = new CsIInterventoPrFseSiru();
-		//siru.setInterventoPrId(progetto.getId());
-		//setup json handler
-		ObjectMapper objectMapper = new ObjectMapper();
-		//estrazione data di nascita, sesso, nazione/comune da CF
-		Object[] cfExt = estraiDaFC(seb.getCodiceFiscale());
-		siru.setSesso((Character)cfExt[0]);
-		siru.setDataNascita((Date)cfExt[1]);
-		String luogo = (String)cfExt[2];
 		
-		boolean occupato = false;
-		boolean disoccupato = false;
-		boolean inCercaPrimaOccupazione = false;
-		boolean regMarche = false;
-		ParameterSearchCriteria criteria = new ParameterSearchCriteria();
-		criteria.setKey("smartwelfare.stampa.por012019.nome");
-		criteria.setSection("param.globali");
-		AmKeyValueExt amKey = paramService.getAmKeyValueExt(criteria);
-		if (amKey != null && !StringUtils.isEmpty(amKey.getValueConf()))
-			regMarche = amKey.getValueConf().contains("Marche");
+		SiruInputDTO pds = new SiruInputDTO();
+		pds.setCittadinanza(seb.getCittadinanza());
+		pds.setCodiceFiscale(seb.getCodiceFiscale());
 		
+		Object[] cfExt = estraiDaCF(seb.getCodiceFiscale());
+		pds.setSesso(cfExt[0].toString());
+		pds.setDataNascita((Date)cfExt[1]);
 		
-		if(progetto.getCsTbIngMercato() != null &&  DataModelCostanti.TipiIngMercato.OCCUPATO.equalsIgnoreCase(progetto.getCsTbIngMercato().getId())){
-			occupato = true;
-		}
-		if(progetto.getCsTbIngMercato() != null && DataModelCostanti.TipiIngMercato.DISOCCUPATO.equalsIgnoreCase(progetto.getCsTbIngMercato().getId())){
-			disoccupato = true;
-		}
-		if(progetto.getCsTbIngMercato() != null && DataModelCostanti.TipiIngMercato.CERCA_PRIMA_OCCUPAZIONE.equalsIgnoreCase(progetto.getCsTbIngMercato().getId())){
-			inCercaPrimaOccupazione = true;
-		}
+		pds.setFlagResDom(fse.getFlagResDom());
 		
-		//titolo di studio
-		if(!regMarche && progetto.getCsTbTitoloStudio() != null && progetto.getCsTbTitoloStudio().getId() != 0){ 
-				SiruDominioDTO sd = dominiSiruService.findByDesc(SiruEnum.TITOLO_STUDIO.name(), String.valueOf(progetto.getCsTbTitoloStudio().getId()));
-				if(sd==null) msg.add("Titolo di studio non presente nel SIRU");
-				else siru.setTitoloStudio(sd.getCodice());
-		}
-		
-		//condizione mercato ingresso
-		CsTbIngMercato ingMercato = progetto.getCsTbIngMercato();
-		if(ingMercato != null && ingMercato.getId() != null && !ingMercato.getId().isEmpty() && !StringUtils.isBlank(ingMercato.getDescrizione())){ 
-			SiruDominioDTO sd = dominiSiruService.findByDescStartsWith(SiruEnum.CONDIZIONE_MERCATO.name(), progetto.getCsTbIngMercato().getDescrizione());
-			if(sd==null) msg.add("Condizione di ingresso nel mondo del lavoro non presente nel SIRU");
-			else siru.setCondMercatoIngresso(sd.getCodice());
-		}else if(!regMarche && (ingMercato == null   || ingMercato.getId().isEmpty() || StringUtils.isBlank(ingMercato.getDescrizione()))){
-			msg.add("Inserire un valore valido per 'Condizione nel mercato di lavoro in ingresso'");
-		}
-		
-		//ateco
-		if(!regMarche && fse.getAzCodAteco() != null && !fse.getAzCodAteco().isEmpty()){//!regMarche && 
-			SiruDominioDTO sisoAteco = dominiSiruService.findById(SiruEnum.SISO_ATECO.name(), fse.getAzCodAteco());
-			SiruDominioDTO sd = dominiSiruService.findById(SiruEnum.ATECO.name(), sisoAteco.getCodice() + "_" + sisoAteco.getVersione());
-			if(sd == null) msg.add("Ateco non presente nel SIRU");
-			else siru.setCodAtecoAnno(sd.getCodice());
-			
-		}else if(!regMarche && occupato && (fse.getAzCodAteco() == null   || fse.getAzCodAteco().isEmpty())){
-			msg.add("Inserire 'Cod. Ateco'");
-		}
-		
-		//dimensione azienda
-		if(!regMarche && fse.getAzDescDimensioni() != null && !fse.getAzDescDimensioni().isEmpty()){
-			SiruDominioDTO sd = dominiSiruService.findById(SiruEnum.DIMENSIONE_AZIENDA.name(), fse.getAzDescDimensioni());
-			if(sd == null) msg.add( "Dimensione azienda non presente nel SIRU");
-			else siru.setDimensioneAziendaId(sd.getCodice());
-		}else if(!regMarche &&occupato && (fse.getAzDescDimensioni() == null   || fse.getAzDescDimensioni().isEmpty())){
-			msg.add("Inserire 'Dimensione azienda'");
-		}
-		
-		//forma giuridica rna
-		if(!regMarche && fse.getAzFormaGiuridica() != null && fse.getAzFormaGiuridica().getId()!= null ){
-			SiruDominioDTO sd = dominiSiruService.findById(SiruEnum.FORMA_GIURIDICA_RNA.name(), fse.getAzFormaGiuridica().getId());
-			if(sd==null) msg.add( "Forma giuridica non presente nel SIRU");
-			else siru.setFrmGiuridicaCod(sd.getCodice());
-		}else if(!regMarche && occupato && (fse.getAzFormaGiuridica() == null   || fse.getAzFormaGiuridica().getId() == null)){
-			msg.add("Inserire 'Forma giuridica'");
-		}
-		
-		//gruppo vulnerabile
-		if( fse.getCsTbGrVulnerabile() != null && fse.getCsTbGrVulnerabile().getId() != null){
-			SiruDominioDTO sd = dominiSiruService.findByDesc(SiruEnum.GRUPPO_VUL_PART.name(), fse.getCsTbGrVulnerabile().getId());
-			if(sd==null) msg.add("Gruppo vulnerabile non presente nel SIRU");
-			else siru.setCodVulnerabilePa(sd.getCodice());
-		}
-		
-		//tipo orario lavoro
-		if(!regMarche && fse.getLavoroDescOrario() != null && !fse.getLavoroDescOrario().isEmpty()){
-			SiruDominioDTO sd = dominiSiruService.findByDesc(SiruEnum.TIPO_ORARIO_LAVORO.name(), fse.getLavoroDescOrario());
-			if(sd==null) msg.add("Orario di lavoro non presente nel SIRU");
-			else siru.setTipoOrarioLavoroId(sd.getCodice());
-		}else if(!regMarche && occupato && (fse.getLavoroDescOrario() == null   || fse.getLavoroDescOrario().isEmpty())){
-			msg.add("Inserire 'Orario di lavoro'");
-		}
-		
-	
-		//tipologia lavoro
-		if(!regMarche && fse.getLavoroDescTipo() != null && !fse.getLavoroDescTipo().isEmpty()){ 
-			SiruDominioDTO sd = dominiSiruService.findByDescStartsWith(SiruEnum.TIPOLOGIA_LAVORO.name(), fse.getLavoroDescTipo());
-			if(sd==null) msg.add("Tipologia di lavoro non presente nel SIRU");
-			else siru.setTipologiaLavoroId(sd.getCodice());
-		}else if(!regMarche && occupato && (fse.getLavoroDescTipo() == null   || fse.getLavoroDescTipo().isEmpty())){
-			msg.add("Inserire 'Tipologia di lavoro'");
-		}
-		
-		 if(!regMarche && occupato && ((fse.getAzPIVA()  == null || fse.getAzPIVA().isEmpty())  && (fse.getAzCF() == null || fse.getAzCF().isEmpty()))){
-				msg.add("Inserire P.IVA o il Codice Fiscale dell'azienda");
-		 }
-		 if(!regMarche && occupato && (fse.getAzRagioneSociale()   == null || fse.getAzRagioneSociale().isEmpty())){
-				msg.add("Inserire 'Ragione Sociale' dell'azienda");
-		 }
-		 if(!regMarche && occupato && (fse.getAzVia()   == null || fse.getAzVia().isEmpty())){
-				msg.add("Inserire 'Via' dell'azienda");
-		 }
-		//durata ricerca
-		if(fse.getLavoroDurataRicerca() != null && !fse.getLavoroDurataRicerca().isEmpty()){ 
-			SiruDominioDTO sd = dominiSiruService.findByDesc(SiruEnum.DURATA_RICERCA.name(), fse.getLavoroDurataRicerca());
-			if(sd==null) msg.add("Durata di ricerca non presente nel SIRU");
-			else siru.setDurataRicerca(sd.getCodice());
-		}else if((inCercaPrimaOccupazione || disoccupato) && (fse.getLavoroDurataRicerca() == null ||  fse.getLavoroDurataRicerca().isEmpty())){
-			msg.add("Inserire 'Durata di ricerca'");
-		}
-		
-		//cittadinanza
-		if(seb.getCittadinanza() != null && !seb.getCittadinanza().isEmpty()){
-			//Recupero da AM_TAB_NAZIONI il cod.Istat della cittadinanza
-			SiruDominioDTO sd = dominiSiruService.findByDesc(SiruEnum.AM_NAZIONALITA.name(), seb.getCittadinanza());
-			//ITALIA da 1 a -> 0000
-			if(sd != null && sd.getCodice().equals("1")){
-				sd.setCodice("000");
-			}
-			//Verifico che sia mappato correttamente in CFS_CHKCITTADINANZAZA
-			sd = dominiSiruService.findById(SiruEnum.CITTADINANZA.name(), sd.getCodice());
-			if(sd==null) msg.add("Nazione non presente nel SIRU");
-			else siru.setCittadinanza(sd.getCodice());
-		}
-		
- 
-		
-		// SISO 945 INIZIO
-		//comune di nascita - stato di nascita
- 		
 		if(!StringUtils.isBlank(fse.getComuneNascita())){
-			//ITALIANO
-			 JsonNode node;
-				try {
-					node = objectMapper.readValue(fse.getComuneNascita(), JsonNode.class);
-					if(!node.isNull()){
-						SiruDominioDTO sd = dominiSiruService.findById(SiruEnum.LOCALIZZAZIONE_GEOG.name(), node.get("codIstatComune").asText());
-						if(sd != null) siru.setComuneNascitaId(sd.getCodice());	
-					    else msg.add("Comune di nascita non presente nel SIRU");
-					}
-				} catch (JsonParseException e) {
-					// TODO Auto-generated catch block
-					logger.error(e);
-				} catch (JsonMappingException e) {
-					// TODO Auto-generated catch block
-					logger.error(e);
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					logger.error(e);
-				}
-			
+			pds.setComuneNascitaCod(estraiFromJson(fse.getComuneNascita(), "codIstatComune"));
 		}else if(!StringUtils.isBlank(fse.getStatoNascitaCod())){
-			//ESTERO
-			//Recupero da AM_TAB_NAZIONI il cod.AG_ENTRATE della nazione
-			SiruDominioDTO sd = dominiSiruService.findById(SiruEnum.AM_NAZIONE_AG_ENTRATE.name(), fse.getStatoNascitaCod());
-			
-			if(sd!=null){
-				//Verifico che sia mappato correttamente in FSE_CHK_IT_NAZIONE
-				sd = dominiSiruService.findByDesc(SiruEnum.IT_NAZIONE.name(), sd.getDescrizione());
-			}
-			if(sd==null) msg.add("Nazione di nascita non presente nel SIRU");
-			else siru.setNazioneNascitaId(sd.getCodice());
-		}else msg.add("Nazione o Comune di nascita del soggetto non valorizzati");
-		// SISO 945 FINE
-	
-		 
-		//comune azienda
+			pds.setStatoNascitaCod(fse.getStatoNascitaCod());
+		}
+		
+		pds.setCodIstatComuneResidenza(estraiFromJson(seb.getJsonComuneResidenza(), "codIstatComune"));
+		pds.setCodIstatComuneDomicilio(estraiFromJson(fse.getComuneDomicilio(), "codIstatComune"));
+		
+		if(progetto.getCsTbTitoloStudio() != null && progetto.getCsTbTitoloStudio().getId() != 0)
+			pds.setIdTitoloStudio(String.valueOf(progetto.getCsTbTitoloStudio().getId()));
+		pds.setCsTbIngMercato(progetto.getCsTbIngMercato());
+		
+		if(fse.getComunicaVul()) {
+			pds.setGrpVulnerabilita(fse.getCsTbGrVulnerabile()!=null ? fse.getCsTbGrVulnerabile().getId() : null);
+		}else{
+			boolean regMarche = false;
+			String modelloPor = this.getGlobalParameter(DataModelCostanti.AmParameterKey.POR_MODELLO_STAMPA);
+			if (!StringUtils.isBlank(modelloPor))
+				regMarche = modelloPor.contains("Marche");
+			if(regMarche)
+				pds.setGrpVulnerabilita(DataModelCostanti.GrVulnerabile.NON_COMUNICA_VULNERABILITA);
+		}
+		
+		pds.setAzCodAteco(fse.getAzCodAteco());
+		pds.setDescDimAzienda(fse.getAzDescDimensioni());
+		pds.setAzFormaGiuridica(fse.getAzFormaGiuridica()!=null ? fse.getAzFormaGiuridica().getId() : null);
+		pds.setDescOrarioLavoro(fse.getLavoroDescOrario());
+		pds.setDescTipoLavoro(fse.getLavoroDescTipo());
+		pds.setAzPi(fse.getAzPIVA());
+		pds.setAzCf(fse.getAzCF());
+		pds.setAzRagioneSociale(fse.getAzRagioneSociale());
+		pds.setAzVia(fse.getAzVia());
+		pds.setDurataRicLavoroId(fse.getDurataRicLavoroId());
+		pds.setAzComuneCod(fse.getAzComuneCod());
 
-		//SISO-945
-		if(!regMarche &&  fse.getAzComuneCod() != null && !fse.getAzComuneCod().isEmpty()){ //!regMarche && 
-	 
-			SiruDominioDTO sd = dominiSiruService.findById(SiruEnum.LOCALIZZAZIONE_GEOG.name(), fse.getAzComuneCod());
-			if(sd != null) siru.setComuneAziendaId(sd.getCodice());
-			else msg.add("Comune azienda non presente nel SIRU");
-		}else if(!regMarche && occupato && (fse.getAzComuneCod() == null   || fse.getAzComuneCod().isEmpty())){
-			msg.add("Inserire il Comune azienda ");
-		}
-		//SISO-945 FINE
+		BaseDTO dtoVal = new BaseDTO();
+		dtoVal.setEnteId(dto.getEnteId());
+		dtoVal.setSessionId(dto.getSessionId());
+		dtoVal.setUserId(dto.getUserId());
+		dtoVal.setObj(pds);
+		dtoVal.setObj2(dto.getObj3());
+		SiruResultDTO val = datiPorService.validaSiru(dtoVal);
+		return val;
 		
-		//residenza
-		if(fse.getFlagResDom() != null && !fse.getFlagResDom().isEmpty()){
-		    SiruDominioDTO sd = dominiSiruService.findByDesc(SiruEnum.RESIDENZA.name(), fse.getFlagResDom());
-			if(sd != null) siru.setFlagResidenza(new Integer(sd.getCodice()));
-			else msg.add("Residenza non presente nel SIRU");
-		}
-		
-		//SISO-962 Inizio
-		if(seb.getJsonComuneResidenza() != null && !seb.getJsonComuneResidenza().isEmpty()){
-		    JsonNode node;
-			try {
-				node = objectMapper.readValue(seb.getJsonComuneResidenza(), JsonNode.class);
-				if(!node.isNull()){
-					SiruDominioDTO sd = dominiSiruService.findById(SiruEnum.LOCALIZZAZIONE_GEOG.name(), node.get("codIstatComune").asText());
-					if(sd != null) siru.setComuneResId(sd.getCodice());	
-				    else msg.add("Comune residenza non presente nel SIRU");
-				}
-			} catch (JsonParseException e) {
-				// TODO Auto-generated catch block
-				logger.error(e);
-			} catch (JsonMappingException e) {
-				// TODO Auto-generated catch block
-				logger.error(e);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				logger.error(e);
-			}
-		}
-		//SISO-962 Fine
-		
-		//comune domicilio
-		if(fse.getComuneDomicilio() != null && !fse.getComuneDomicilio().isEmpty()) {
-		//if(fse.getComuneDomicilio() != null){
-		//else{
+	}
+	
+	private String estraiFromJson(String json, String attributo){
+		ObjectMapper objectMapper = new ObjectMapper();
+		if(!StringUtils.isBlank(json)) {
 			JsonNode node;
 			try {
-				node = objectMapper.readValue(fse.getComuneDomicilio(), JsonNode.class);
+				node = objectMapper.readValue(json, JsonNode.class);
 				if(!node.isNull()){
-					SiruDominioDTO sd = dominiSiruService.findById(SiruEnum.LOCALIZZAZIONE_GEOG.name(), node.get("codIstatComune").asText());
-					if(sd != null) siru.setComuneDomId(sd.getCodice());
-					else msg.add("Comune domicilio non presente nel SIRU");
+					return node.get(attributo).asText();
 				}
 			} catch (JsonParseException e) {
 				// TODO Auto-generated catch block
@@ -1538,21 +1345,19 @@ public class AccessTableInterventoSessionBean extends CarSocialeBaseSessionBean 
 			}
 			
 		}
-		result.setErrori(msg);
-		result.setSiru(siru);
-		
-		return result;
+		return null;
 	}
-	private Object[] estraiDaFC(String fc) {
+
+	private Object[] estraiDaCF(String cf) {
 		Object[] toReturn = new Object[3];
 		Character sex = new Character('M');
 		
 		//luogo
-		int sizeCf = fc.length();
-		String luogo = fc.substring(sizeCf-5,sizeCf-1);
+		int sizeCf = cf.length();
+		String luogo = cf.substring(sizeCf-5,sizeCf-1);
 
 		// day
-		String day = fc.substring(9, 11);
+		String day = cf.substring(9, 11);
 		int numDay = Integer.parseInt(day);
 		if (numDay > 31) {
 			sex = new Character('F');
@@ -1560,7 +1365,7 @@ public class AccessTableInterventoSessionBean extends CarSocialeBaseSessionBean 
 		}
 		// month
 		int mm = 0;
-		char m = fc.substring(8, 9).toLowerCase().charAt(0);
+		char m = cf.substring(8, 9).toLowerCase().charAt(0);
 		switch (m) {
 		case 'a':
 			mm = 0;
@@ -1603,7 +1408,7 @@ public class AccessTableInterventoSessionBean extends CarSocialeBaseSessionBean 
 		int theYear = 0;
 		int thisYear = Integer.parseInt(String.valueOf(
 				Calendar.getInstance().get(Calendar.YEAR)).substring(2, 4));
-		String yy = fc.substring(6, 8);
+		String yy = cf.substring(6, 8);
 		int y = Integer.parseInt(yy);
 		if (y >= thisYear) {
 			theYear = 1900 + y;
@@ -1690,4 +1495,10 @@ public class AccessTableInterventoSessionBean extends CarSocialeBaseSessionBean 
     	
     	return  interventoDao.findTariffe(codRouting, unitaMisuraId);
       }
+
+	@Override
+	public List<ErogazioneDettaglioSintesiDTO> getSintesiErogazioniByInterventoId(BaseDTO dto){
+		Long masterId = (Long)dto.getObj();
+		return interventoErogazioneDao.getSintesiErogazioniByInterventoId(masterId);
+	}
 }

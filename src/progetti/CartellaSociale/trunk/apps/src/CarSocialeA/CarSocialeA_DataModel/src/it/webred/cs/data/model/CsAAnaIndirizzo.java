@@ -144,12 +144,24 @@ public class CsAAnaIndirizzo implements Serializable {
 		this.statoDes = statoDes;
 	}
 
+	public String getLabelComune(){
+		String lbl = "";
+		lbl += (this.getComDes()!=null) ? " "+this.getComDes(): "";
+		lbl += this.getProv()!=null ? " ("+this.getProv()+")" : "";
+		return lbl;
+	}
+	
+	public String getLabelStato(){
+		String lbl = "";
+		lbl += (this.getStatoDes()!=null) ? " "+this.getStatoDes(): "";
+		return lbl;
+	}
+	
 	@Transient
 	public String getLabelIndirizzoCompleto(){
 		String lbl = "";
 		lbl =  this.getLabelIndirizzo() +" - ";
-		lbl += (this.getComDes()!=null) ?    " "+this.getComDes()+" ("+this.getProv()+")" : "";
-		lbl += (this.getStatoDes()!=null) ?  " "+this.getStatoDes() : "";
+		lbl += this.getLabelComune() + this.getLabelStato();
 		return lbl;
 	}
 	

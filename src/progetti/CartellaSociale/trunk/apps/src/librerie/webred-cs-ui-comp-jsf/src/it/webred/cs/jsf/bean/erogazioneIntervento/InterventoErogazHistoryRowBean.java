@@ -185,8 +185,18 @@ public class InterventoErogazHistoryRowBean implements Serializable {
 		listaInformazioni = new ArrayList<SelectItem>();
 		if(intEseg.getNote()!=null && !intEseg.getNote().isEmpty())
 			listaInformazioni.add(new SelectItem("Note", intEseg.getNote()));
-		if (intEseg.getCsIValQuota() != null && intEseg.getCsIInterventoEsegMast() != null && intEseg.getCsIInterventoEsegMast().getCsIQuota() != null )
+		if (intEseg.getCsIValQuota() != null && intEseg.getCsIInterventoEsegMast() != null && intEseg.getCsIInterventoEsegMast().getCsIQuota() != null ) {
 			listaInformazioni.add(new SelectItem("Tariffa", intEseg.getCsIInterventoEsegMast().getCsIQuota().getTariffa()  + " €" ));
+			//SISO-1602
+			if(intEseg.getCsIValQuota().getTariffaCustom()!=null && !intEseg.getCsIValQuota().getTariffaCustom().equals(intEseg.getCsIInterventoEsegMast().getCsIQuota().getTariffa())){
+				listaInformazioni.add(new SelectItem("Tariffa Applicata", intEseg.getCsIValQuota().getTariffaCustom()  + " €" ));
+			}
+		} else {
+			if(intEseg.getCsIValQuota()!=null && intEseg.getCsIValQuota().getTariffaCustom()!=null) 
+				listaInformazioni.add(new SelectItem("Tariffa Applicata", intEseg.getCsIValQuota().getTariffaCustom()  + " €" ));
+		}
+			
+		
 		if(intEseg.getPercGestitaEnte()!=null)
 			listaInformazioni.add(new SelectItem("% quota a carico dell'ente", intEseg.getPercGestitaEnte().toString())); 
 		if(intEseg.getValoreGestitaEnte()!=null)
@@ -240,20 +250,6 @@ public class InterventoErogazHistoryRowBean implements Serializable {
 		return canCalc!= null ? canCalc : false;
 			
 	}
-	
-	/*private CsCfgIntEsegStatoInt findCsCfgIntEsegStato(CsCfgIntEseg csCfgintEseg, Long statoCorrente){
-		if(csCfgintEseg!=null){
-			List<CsCfgIntEsegStatoInt> statoInt = csCfgintEseg.getCsCfgIntEsegStatoInt();
-			//recupero la configurazione associata allo stato corrente
-			for(CsCfgIntEsegStatoInt sint : statoInt){
-				if(sint.getCsCfgIntEsegStato().getId()== statoCorrente)
-					return sint;
-			}
-		}
-			
-		CsUiCompBaseBean.logger.warn("Nessuna configurazione CsCfgIntEsegStatoInt trovata per ID_STATO="+statoCorrente);	
-		return null;	
-	}*/
 
 	//INIZIO SISO-556
 	private String getDataErogazioneValue(Date data) {

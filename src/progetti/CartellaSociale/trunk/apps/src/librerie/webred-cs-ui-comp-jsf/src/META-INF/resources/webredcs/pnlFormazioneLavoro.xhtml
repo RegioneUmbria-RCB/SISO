@@ -10,6 +10,7 @@
   <composite:interface componentType="pnlFormazioneLavoro">
     <composite:attribute name="iFormazioneLavoro" type="it.webred.cs.jsf.interfaces.IFormazioneLavoro" />
     <composite:attribute name="onChangeCondLavoro" method-signature="void listener()" />
+    <composite:attribute name="condLavoroChangeUpdate" required="false"/>
     <composite:attribute name="onChangeTitoloStudio" method-signature="void listener()" />
     <composite:attribute name="disableModifica" default="false" />
     <composite:attribute name="soloLettura" default="false" />
@@ -24,6 +25,7 @@
       <h:outputText value="Titolo di studio *" rendered="#{cc.attrs.iFormazioneLavoro.renderTitoloStudio}"/>
       <p:selectOneMenu value="#{cc.attrs.iFormazioneLavoro.idTitoloStudio}" style="width:300px" filter="true" filterMatchMode="startsWith"
       		disabled="#{cc.attrs.soloLettura}" rendered="#{cc.attrs.iFormazioneLavoro.renderTitoloStudio}">
+        <f:selectItem noSelectionOption="true" itemLabel="- seleziona -" />		
         <f:selectItems value="#{cc.attrs.iFormazioneLavoro.lstTitoliStudio}" />
         <p:ajax event="change" listener="#{cc.attrs.onChangeTitoloStudio}" />
       </p:selectOneMenu>
@@ -32,8 +34,9 @@
       <p:selectOneMenu label="Condizione Lavorativa" id="cond_lav_datiutente" value="#{cc.attrs.iFormazioneLavoro.idCondLavorativa}" effect="fold"
         editable="false" style="width:300px" filter="true" filterMatchMode="startsWith" panelStyleClass="selectOneMenuGrouped"
         disabled="#{cc.attrs.soloLettura}" rendered="#{cc.attrs.iFormazioneLavoro.renderCondLavorativa}">
+        <f:selectItem noSelectionOption="true" itemLabel="- seleziona -" />
         <f:selectItems value="#{cc.attrs.iFormazioneLavoro.lstConLavorativa}" var="cl" itemLabel="#{cl.descrizione}" itemValue="#{cl}" />
-        <p:ajax event="change" listener="#{cc.attrs.onChangeCondLavoro}" />
+        <p:ajax event="change" listener="#{cc.attrs.onChangeCondLavoro}" update="#{ not empty cc.attrs.condLavoroChangeUpdate ? cc.attrs.condLavoroChangeUpdate : '@none'}"/>
       </p:selectOneMenu>
 
       <h:outputText value="Professione " rendered="#{cc.attrs.iFormazioneLavoro.renderProfessione}"/>

@@ -4,7 +4,7 @@ import java.util.List;
 
 import it.webred.cs.csa.ejb.dto.retvalue.CsIterStepByCasoDTO;
 import it.webred.cs.data.DataModelCostanti;
-import it.webred.cs.data.model.CsASoggettoCategoriaSocLAZY;
+import it.webred.cs.data.model.CsASoggettoCategoriaSoc;
 import it.webred.cs.data.model.CsASoggettoLAZY;
 import it.webred.cs.data.model.CsItStep;
 import it.webred.cs.data.model.CsOOperatore;
@@ -13,8 +13,8 @@ public class IterSoggettoLAZY {
 
 	private CsASoggettoLAZY soggettoLAZY;
 	private String inputCF;
-	private    CsItStep  itStep;
-	private List<CsASoggettoCategoriaSocLAZY> listaCsSoggettoCatSocLazy;
+	private CsItStep  itStep;
+	private List<CsASoggettoCategoriaSoc> listaCsSoggettoCatSocLazy;
 	 
 	public CsASoggettoLAZY getSoggettoLAZY() {
 		return soggettoLAZY;
@@ -22,11 +22,11 @@ public class IterSoggettoLAZY {
 	public void setSoggettoLAZY(CsASoggettoLAZY soggettoLAZY) {
 		this.soggettoLAZY = soggettoLAZY;
 	}
-	public List<CsASoggettoCategoriaSocLAZY> getListaCsSoggettoCatSocLazy() {
+	public List<CsASoggettoCategoriaSoc> getListaCsSoggettoCatSocLazy() {
 		return listaCsSoggettoCatSocLazy;
 	}
 	public void setListaCsSoggettoCatSocLazy(
-			List<CsASoggettoCategoriaSocLAZY> listaCsSoggettoCatSocLazy) {
+			List<CsASoggettoCategoriaSoc> listaCsSoggettoCatSocLazy) {
 		this.listaCsSoggettoCatSocLazy = listaCsSoggettoCatSocLazy;
 	}
 	public String getInputCF() {
@@ -45,9 +45,9 @@ public class IterSoggettoLAZY {
 	public String getCategoriaPrevalente(){
 		boolean trovato = false;
 		int i=0;
-		CsASoggettoCategoriaSocLAZY prevalente=null;
+		CsASoggettoCategoriaSoc prevalente=null;
 		while(i<this.listaCsSoggettoCatSocLazy.size() && !trovato){
-			CsASoggettoCategoriaSocLAZY cs = this.listaCsSoggettoCatSocLazy.get(i);
+			CsASoggettoCategoriaSoc cs = this.listaCsSoggettoCatSocLazy.get(i);
 			if(cs.getPrevalente().intValue()==1){
 				trovato=true;
 				prevalente = cs;
@@ -117,7 +117,7 @@ public class IterSoggettoLAZY {
 //	}
 	public String getCategorieSecondarie(){
 		String catSoc = "";
-		for(CsASoggettoCategoriaSocLAZY soggCat: this.listaCsSoggettoCatSocLazy) {
+		for(CsASoggettoCategoriaSoc soggCat: this.listaCsSoggettoCatSocLazy) {
 			if(soggCat.getPrevalente().intValue()!=1)
 			    catSoc += ", " + soggCat.getCsCCategoriaSociale().getTooltip();
 		}

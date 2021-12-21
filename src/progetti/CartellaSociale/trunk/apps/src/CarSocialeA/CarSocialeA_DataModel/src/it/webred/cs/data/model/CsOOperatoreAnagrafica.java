@@ -1,12 +1,9 @@
 package it.webred.cs.data.model;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import javax.persistence.*;
-
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
 
 @Entity
 @Table(name="CS_O_OPERATORE_ANAGRAFICA")
@@ -129,5 +126,13 @@ public class CsOOperatoreAnagrafica implements Serializable {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-
+	
+	public String getDenominazione(){
+		String denominazione = "";
+		if (cognome!=null || nome!=null)
+			denominazione = cognome + " " + nome;
+		if(denominazione.trim().isEmpty())
+			denominazione = username;
+		return denominazione;
+	}
 }

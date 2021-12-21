@@ -372,16 +372,6 @@
 		</query>
 	</named-query>
 	
-	<named-query name="ArOOrganizzazione.readArOOrganizzazioneById">
-		<query>
-			<![CDATA[
-				SELECT aro 
-				FROM ArOOrganizzazione aro
-				WHERE  aro.id=:organizzaizoneId
-			]]>
-		</query>
-	</named-query>
-	
 	<named-query name="SsOOrganizzazione.readSsOOrganizzazioneById">
 		<query>
 			<![CDATA[
@@ -513,6 +503,71 @@
 		 </query>
 	</named-query>
 	
+	<named-query name="SsUfficio.eliminaUfficioById">
+    	<query>
+			<![CDATA[
+				DELETE FROM SsUfficio ssu
+				WHERE ssu.id = :id
+			]]>
+		</query>
+  	</named-query>
+  	
+  	<named-query name="SsPuntoContatto.eliminaPuntoContattoById">
+    	<query>
+			<![CDATA[
+				DELETE FROM SsPuntoContatto sspc
+				WHERE sspc.id = :id
+			]]>
+		</query>
+  	</named-query>
+  	
+  	<named-query name="SsRelUffPcontOrg.eliminaRelazioneById">
+    	<query>
+			<![CDATA[
+				DELETE FROM SsRelUffPcontOrg ssrel
+				WHERE ssrel.id = :id
+			]]>
+		</query>
+  	</named-query>
+  	<named-query name="SsRelUffPcontOrg.gestisciAttivazioneByUfficio">
+    	<query>
+			<![CDATA[
+				UPDATE SsRelUffPcontOrg ssrel set abilitato = :abilita
+				WHERE ssrel.id.ufficioId = :ufficioId
+			]]>
+		</query>
+  	</named-query>
+  	<named-query name="SsRelUffPcontOrg.gestisciAttivazioneByPuntoContatto">
+    	<query>
+			<![CDATA[
+				UPDATE SsRelUffPcontOrg ssrel set abilitato = :abilita
+				WHERE ssrel.id.puntoContattoId = :puntoContattoId
+			]]>
+		</query>
+  	</named-query>
+  	
+  	
+  	
+  	<named-query name="SsRelUffPcontOrg.existsSchedaAccesso">
+    	<query>
+			<![CDATA[
+				SELECT srupo from SsRelUffPcontOrg srupo where exists (
+					select ssa from SsSchedaAccesso ssa 
+					where ssa.ssRelUffPcontOrg.ssOOrganizzazione.id = :organizzazioneId 
+					and ssa.ssRelUffPcontOrg.ssPuntoContatto.id = :puntoContattoId 
+					and ssa.ssRelUffPcontOrg.ssUfficio.id = :ufficioId)
+			]]>
+		</query>
+  	</named-query>
+  	
+  	<named-query name="CsSsPrivacy.findById">
+    	<query>
+			<![CDATA[
+				SELECT p from CsSsPrivacy p 
+				where upper(p.id.cf) = upper(:cf) and p.id.organizzazioneId = :organizzazioneId
+			]]>
+		</query>
+  	</named-query>
 	<!-- NAMED NATIVE QUERY -->
 	
 	<named-native-query name="SsOOrganizzazione.listOrganizzazioneZona" result-set-mapping="SsOOrganizzazioneZonaMapping">
@@ -525,18 +580,7 @@
 			]]>
 		 </query>
 	</named-native-query>
-	
-
-	<named-native-query name="ArOOrganizzazione.listOrganizzazioneFuoriZona" result-set-mapping="ArOOrganizzazioneFuoriZonaMapping">
-		<query>
-			<![CDATA[
-				    select o.* from  AR_O_ORGANIZZAZIONE o
-					where ZONA_NOME not in (select NOME from CS_O_ZONA_SOC)
-					ORDER BY o.nome
-			]]>
-		 </query>
-	</named-native-query>
-	
+		
 	<named-native-query name="SsOOrganizzazione.listOrganizzazioneAltre" result-set-mapping="SsOOrganizzazioneAltreMapping">
 		<query>
 			<![CDATA[
@@ -547,20 +591,6 @@
 			]]>
 		 </query>
 	</named-native-query>
-		
-	<named-native-query name="SsArOOrganizzazione.readOrganizzazioneById" result-set-mapping="SsArOOrganizzazioneMapping">
-		<query>
-			<![CDATA[
-				select * from (select ID, TOOLTIP, ABILITATO, EMAIL, NOME, BELFIORE, PIVA_CF,ZONA_NOME from AR_O_ORGANIZZAZIONE 
-				UNION
-				select ID, TOOLTIP, ABILITATO, EMAIL, NOME, COD_ROUTING,  null as PIVA_CF, null as ZONA_NOME from CS_O_ORGANIZZAZIONE order by zona_nome) unionOrganizzazione
-				where id=:idOrganizzazione
-			]]>
-		 </query>
-	</named-native-query>
-	
-	
-	
 	
 	<!--  NAMED NATIVE QUERY MAPPING -->
 	
@@ -570,23 +600,8 @@
 		
 	</sql-result-set-mapping>
 	
-	<sql-result-set-mapping name="ArOOrganizzazioneFuoriZonaMapping">
-		<entity-result entity-class="it.webred.ss.data.model.ArOOrganizzazione">
-		</entity-result>
-		
-	</sql-result-set-mapping>
-	
-
-	
 	<sql-result-set-mapping name="SsOOrganizzazioneAltreMapping">
 		<entity-result entity-class="it.webred.ss.data.model.SsOOrganizzazione">
-		</entity-result>
-		
-	</sql-result-set-mapping>
-	
-	
-	<sql-result-set-mapping name="SsArOOrganizzazioneMapping">
-		<entity-result entity-class="it.webred.ss.data.model.ArOOrganizzazione">
 		</entity-result>
 		
 	</sql-result-set-mapping>

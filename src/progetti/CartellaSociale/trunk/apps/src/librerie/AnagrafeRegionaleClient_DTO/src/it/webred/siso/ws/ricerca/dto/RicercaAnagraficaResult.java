@@ -6,15 +6,12 @@ import java.util.List;
 
 public class RicercaAnagraficaResult implements Serializable{
 
-	private List<PersonaDettaglio> elencoAssisiti = new ArrayList<PersonaDettaglio>();
+	private List<PersonaDettaglio> elencoAssistiti = new ArrayList<PersonaDettaglio>();
 	private List<FamiliareDettaglio> elencoFamiliari = new ArrayList<FamiliareDettaglio>();
     private String messaggio;
     private Integer codice;
     private Exception eccezione;
 	
-	public void setElencoAssisiti(List<PersonaDettaglio> elencoAssisiti) {
-		this.elencoAssisiti = elencoAssisiti;
-	}
 
 	public Exception getEccezione() {
 		return eccezione;
@@ -39,13 +36,9 @@ public class RicercaAnagraficaResult implements Serializable{
 	public void setMessaggio(String messaggio) {
 		this.messaggio = messaggio;
 	}
-
-	public List<PersonaDettaglio> getElencoAssisiti() {
-		return elencoAssisiti;
-	}
 	
 	public void addAssistito(PersonaDettaglio personaResult){
-		this.elencoAssisiti.add(personaResult);
+		this.elencoAssistiti.add(personaResult);
 	}
 
 	public List<FamiliareDettaglio> getElencoFamiliari() {
@@ -56,4 +49,11 @@ public class RicercaAnagraficaResult implements Serializable{
 		this.elencoFamiliari = elencoFamiliari;
 	}
 
+	public List<PersonaDettaglio> getElencoAssistiti() {
+		return elencoAssistiti;
+	}
+
+	public void setElencoAssistiti(List<PersonaDettaglio> elencoAssistiti) {
+		this.elencoAssistiti = elencoAssistiti;
+	}
 }

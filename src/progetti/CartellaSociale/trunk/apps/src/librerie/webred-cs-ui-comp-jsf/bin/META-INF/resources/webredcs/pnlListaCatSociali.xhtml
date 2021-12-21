@@ -96,7 +96,7 @@
 			closable="true" header="#{cc.attrs.listaCatSocialiBean.modalHeader}">
 			<p:dataTable var="op" value="#{cc.attrs.listaCatSocialiBean.lstCasiOperatore}" scrollable="true" scrollHeight="350" emptyMessage="Nessun operatore trovato">					
 				<p:column headerText="Operatore">
-					<h:outputText value="#{op.operatore.denominazione} " />
+					<h:outputText value="#{op.operatore} " />
 				</p:column>
 				<p:column headerText="Org. di appartenenza" style="text-align:center;" >
 						<h:outputText value="#{op.organizzazioni}"/>

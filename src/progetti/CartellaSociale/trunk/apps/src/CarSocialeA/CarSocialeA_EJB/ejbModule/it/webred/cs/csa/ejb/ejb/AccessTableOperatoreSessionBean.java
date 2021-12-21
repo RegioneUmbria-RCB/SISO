@@ -4,11 +4,12 @@ import it.webred.cs.csa.ejb.CarSocialeBaseSessionBean;
 import it.webred.cs.csa.ejb.client.AccessTableOperatoreSessionBeanRemote;
 import it.webred.cs.csa.ejb.dao.OperatoreDAO;
 import it.webred.cs.csa.ejb.dto.BaseDTO;
+import it.webred.cs.csa.ejb.dto.KeyValueDTO;
 import it.webred.cs.csa.ejb.dto.OperatoreDTO;
 import it.webred.cs.csa.ejb.dto.OperatoriSearchCriteria;
 import it.webred.cs.csa.ejb.dto.configurazione.CsOOperatoreSettoreEstesa;
+import it.webred.cs.data.DataModelCostanti;
 import it.webred.cs.data.model.CsOOperatore;
-import it.webred.cs.data.model.CsOOperatoreAnagrafica;
 import it.webred.cs.data.model.CsOOperatoreBASIC;
 import it.webred.cs.data.model.CsOOperatoreSettore;
 import it.webred.cs.data.model.CsOOperatoreTipoOperatore;
@@ -23,19 +24,19 @@ import it.webred.ct.support.validation.annotation.AuditConsentiAccessoAnonimo;
 import it.webred.ct.support.validation.annotation.AuditSaltaValidazioneSessionID;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 
 import javax.ejb.Stateless;
+import javax.interceptor.ExcludeDefaultInterceptors;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
-/**
- * @author Andrea
- *
- */
 @Stateless
 public class AccessTableOperatoreSessionBean extends CarSocialeBaseSessionBean implements AccessTableOperatoreSessionBeanRemote {
 
@@ -91,38 +92,24 @@ public class AccessTableOperatoreSessionBean extends CarSocialeBaseSessionBean i
 	
 	
 	@Override
+	@AuditSaltaValidazioneSessionID
+	@AuditConsentiAccessoAnonimo
 	public CsOOperatoreBASIC findOperatoreBASICByUsername(OperatoreDTO dto) throws Exception {
 		CsOOperatoreBASIC operatore = operatoreDao.findOperatoreBASICByUserName(dto.getUsername());
 		return operatore;
 	}
 	
-	
-	
-	@Override
-	public Long findOperatoreIdByUsername(OperatoreDTO dto) throws Exception {
-		CsOOperatoreBASIC operatore = operatoreDao.findOperatoreBASICByUserName(dto.getUsername());
-		return operatore.getId() ;
-	}
-
-	
 	@Override
 	public CsOOperatoreSettore findRespSettoreFirma(OperatoreDTO dto) throws Exception {
-		List<CsOOperatoreSettore> opSett = operatoreDao.findOperatoreSettoreBySettore(dto.getIdSettore());
+		List<CsOOperatoreSettore> respTemp = operatoreDao.findRespSettoreAttivo(dto.getIdSettore(), dto.getEnteId());
 		boolean trovato = false;
-		String gruppo = "CSOCIALE_RESPO_SETTORE_" + dto.getEnteId();
-		
-		List<CsOOperatoreSettore> respTemp = new ArrayList<CsOOperatoreSettore>();
-		
+
 		int i=0;
-		while(!trovato && i<opSett.size()){
-			CsOOperatoreSettore os = opSett.get(i);
-			boolean attivo = os.getDataFineApp()!=null && os.getDataFineApp().after(new Date());
-			if(attivo && os.getAmGroup().contains(gruppo)){
-				respTemp.add(os);
-				if(os.getFirma()){
+		while(!trovato && i<respTemp.size()){
+			CsOOperatoreSettore os = respTemp.get(i);
+			if(os.getFirma()){
 					trovato=true;
 					return os;
-				}
 			}
 			i++;
 		}
@@ -140,17 +127,15 @@ public class AccessTableOperatoreSessionBean extends CarSocialeBaseSessionBean i
 	
 	
 	@Override
-	public List<CsOOperatoreSettore> findOperatoreSettoreBySettore(OperatoreDTO dto) throws Exception {
-		List<CsOOperatoreSettore> opSett = operatoreDao.findOperatoreSettoreBySettore(dto.getIdSettore());
-		return opSett;
+	public List<KeyValueDTO> findListaOperatoreSettoreBySettore(OperatoreDTO dto) throws Exception {
+		return operatoreDao.findListaOperatoreSettoreBySettore(dto.getIdSettore());
 	}
 	
 	@Override
-	public List<CsOOperatoreAnagrafica> findAllOperatoreAnagrafica(CeTBaseObject cet) throws Exception {
-		List<CsOOperatoreAnagrafica> opAna = operatoreDao.findAllOperatoreAnagrafica();
-		return opAna;
+	public List<KeyValueDTO> findListaOperatoreBySettore(OperatoreDTO dto) throws Exception {
+		return operatoreDao.findListaOperatoreBySettore(dto.getIdSettore());
 	}
-
+		
 	@Override
 	public CsOOperatore findOperatoreById(OperatoreDTO dto) throws Exception {
 		CsOOperatore operatore = operatoreDao.findOperatoreById(dto.getIdOperatore()); 
@@ -183,16 +168,7 @@ public class AccessTableOperatoreSessionBean extends CarSocialeBaseSessionBean i
 	public CsOOperatoreTipoOperatore getTipoByOperatoreSettore(OperatoreDTO dto) throws Exception {
     	return operatoreDao.getTipoByOperatoreSettore(dto.getIdOperatoreSettore(), dto.getDate());
     }
-	
-	@Override
-	public List<CsOOperatore> getOperatoriByCatSocialeOrg(BaseDTO dto) throws Exception {
-		Long idCatSoc = (Long) dto.getObj();
-		List<CsOOperatore> lst = operatoreDao.getOperatoriByCatSocialeOrg(idCatSoc, dto.getEnteId());
-		for(CsOOperatore o : lst)
-			o.getCsOOperatoreSettores().size();
-		return lst;
-    }
-	
+		
 	@Override
 	public List<CsOSettoreBASIC> findSettoreBASICByOrganizzazione(OperatoreDTO dto) throws Exception {
 		List<CsOSettoreBASIC> sett = operatoreDao.findSettoreBASICByOrganizzazione(dto.getIdOrganizzazione());
@@ -250,7 +226,7 @@ public class AccessTableOperatoreSessionBean extends CarSocialeBaseSessionBean i
 	}
 	
 	@Override
-	public CsOZonaSoc findZonaSocAbilitata(BaseDTO dto) {
+	public CsOZonaSoc findZonaSocAbilitata(CeTBaseObject dto) {
 		return operatoreDao.findZonaSocAbilitata();
 	}
 
@@ -273,15 +249,6 @@ public class AccessTableOperatoreSessionBean extends CarSocialeBaseSessionBean i
 		
 		for(CsOOpsettoreAlertConfig c : lst)
 			operatoreDao.salvaConfigurazioneAlert(c);
-	}
-
-
-
-	@Override
-	public List<CsOOperatoreTipoOperatore> findTipiOperatore(BaseDTO operatoreSettoreIdDto) throws Exception {
-		Long operatoreSettoreId = (Long) operatoreSettoreIdDto.getObj();
-		List<CsOOperatoreTipoOperatore> list = operatoreDao.findTipiOperatore(operatoreSettoreId);
-		return list;
 	}
 
 	@Override
@@ -364,7 +331,105 @@ public class AccessTableOperatoreSessionBean extends CarSocialeBaseSessionBean i
 		List<CsAmAnagraficaOperatore> lst =  operatoreDao.searchUtentiAmPerCs(criteria, true);
 		return lst!=null ? lst.size() : 0;
 	}
+
+	@Override
+	public List<KeyValueDTO> findOperatoreIdAnagraficaBySettore(OperatoreDTO dto) {
+		List<KeyValueDTO> lst = operatoreDao.findOperatoreIdAnagraficaBySettore(dto.getIdSettore());
+		Collections.sort(lst, new Comparator<KeyValueDTO>() {
+			@Override
+			public int compare(final KeyValueDTO object1, final KeyValueDTO object2) {
+				return object1.getDescrizione().compareTo(object2.getDescrizione());
+			}
+		});
+		return lst;
+	}
 	
+	@Override
+	@AuditConsentiAccessoAnonimo
+    @AuditSaltaValidazioneSessionID
+    @ExcludeDefaultInterceptors
+	public List<CsOOperatoreSettore> findOperatoreSettoreByCodStruttura(BaseDTO dto) throws Exception {
+		String tipo2Liv = (String)dto.getObj();
+		String codRouting = (String) dto.getObj2();
+		return operatoreDao.findOperatoreSettoreByCodStruttura(tipo2Liv, codRouting);
+	}
 	
+	@Override
+	@AuditConsentiAccessoAnonimo
+    @AuditSaltaValidazioneSessionID
+    @ExcludeDefaultInterceptors
+	public CsOOperatoreSettore findOperatoreSettore2LivByIdOperatore(BaseDTO dto) throws Exception {
+		String tipo2Liv = (String)dto.getObj();
+		String codRouting = (String) dto.getObj2();
+		Long idOperatore = (Long)dto.getObj3();
+		return operatoreDao.findOperatoreSettore2LivByIdOperatore(tipo2Liv, idOperatore, codRouting, new Date());
+    }
+
+	@Override
+	@AuditConsentiAccessoAnonimo
+    @AuditSaltaValidazioneSessionID
+    @ExcludeDefaultInterceptors
+	public CsOOperatoreSettore findOperatoreSettore2LivByUsername(BaseDTO dto) throws Exception {
+		String tipo2Liv = (String)dto.getObj();
+		String codRouting = (String) dto.getObj2();
+		String username = (String)dto.getObj3();
+		return operatoreDao.findOperatoreSettore2LivByUsername(tipo2Liv, username, codRouting, new Date());
+    }
+	
+	@Override
+	public void disabilitaOperatoreSettore(BaseDTO dto) throws Exception {
+		List<CsOOperatoreSettoreEstesa> selOpSets = (List<CsOOperatoreSettoreEstesa>)dto.getObj();
+		for (CsOOperatoreSettoreEstesa selOpSet : selOpSets) {
+			CsOOperatoreSettore opSet = operatoreDao.findOperatoreSettoreById(selOpSet.getId());
+			if (opSet != null) {
+				opSet.setDataFineApp(ddMMyyyy.parse(ddMMyyyy.format(new Date())));
+				opSet.setFirma(false);					
+				operatoreDao.insertOrUpdateOperatoreSettore(opSet);
+				
+				//AGGIORNO CS_O_OPERATORE_TIPOOPERATORE
+				CsOOperatoreTipoOperatore tipoOp = operatoreDao.getTipoByOperatoreSettore(opSet.getId(), opSet.getDataFineApp());
+				if(tipoOp!=null){
+            	   tipoOp.setDataFineApp(opSet.getDataFineApp());
+            	   operatoreDao.insertOrUpdateTipoOperatore(tipoOp);
+				}
+               
+				//Azzera flag email CS_O_OPSETTORE_ALERT_CONFIG
+				operatoreDao.setEmailConfigAlertOpSettore(opSet.getId(), Boolean.FALSE);
+			}
+		}
+	}
+	
+	@Override
+	public void abilitaOperatoreSettore(BaseDTO dto) throws Exception {
+		List<CsOOperatoreSettoreEstesa> selOpSets = (List<CsOOperatoreSettoreEstesa>)dto.getObj();
+		for (CsOOperatoreSettoreEstesa selOpSet : selOpSets) {
+			if(!selOpSet.isAttivo()){
+				CsOOperatoreSettore opSet = operatoreDao.findOperatoreSettoreById(selOpSet.getId());
+				if (opSet != null) {
+					Date dataFineOld = opSet.getDataFineApp();
+					Date oggi = new Date();
+					if(!opSet.getDataFineApp().equals(oggi));
+						opSet.setDataInizioApp(new Date());
+						
+					opSet.setDataFineApp(DataModelCostanti.END_DATE);
+					operatoreDao.insertOrUpdateOperatoreSettore(opSet);
+					
+					Iterator<CsOOperatoreTipoOperatore> lstTipo = opSet.getTipoOperatore().iterator();
+					while(lstTipo.hasNext()){
+						CsOOperatoreTipoOperatore tipo = lstTipo.next();
+						if(tipo.getDataFineApp().equals(dataFineOld)){
+							tipo.setDataInizioApp(opSet.getDataInizioApp());
+							tipo.setDataFineApp(opSet.getDataFineApp());
+							 operatoreDao.insertOrUpdateTipoOperatore(tipo);
+						}
+					}
+					
+					//Attiva flag email CS_O_OPSETTORE_ALERT_CONFIG
+					operatoreDao.setEmailConfigAlertOpSettore(opSet.getId(), Boolean.TRUE);
+					
+				}
+			}
+		}
+	}
 
 }

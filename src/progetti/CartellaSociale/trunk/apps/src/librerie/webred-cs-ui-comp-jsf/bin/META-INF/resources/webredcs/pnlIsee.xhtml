@@ -92,9 +92,11 @@
 				widgetVar="wdgIseeModal#{cc.attrs.var}" width="700"
 				closable="false" resizable="true" header="Isee">
 			    
-			    <webredcs:pnlProtocolloDsu iProtocolloDsu="#{cc.attrs.iIsee.protDsuMan}" numColumns="2" />
+			    <webredcs:pnlProtocolloDsu iProtocolloDsu="#{cc.attrs.iIsee.protDsuMan}" numColumns="2" 
+			    	onChangeAnnoProtocollo="#{cc.attrs.iIsee.handleChangeAnnoProtocollo()}" 
+			    	onChangeAnnoProtocolloStyle="onChangeAnnoProtocolloDSU" />
 			    
-				<h:panelGrid columns="2" id="iseePanel" >
+				<h:panelGrid columns="2" id="iseePanel" styleClass="onChangeAnnoProtocolloDSU" >
 					<h:panelGroup>
             			<h:outputLabel value="Tipologia *"/>
             			<webredcs:tooltipInfo valueList="#{cc.attrs.iIsee.listaTooltip}"/>
@@ -102,6 +104,7 @@
 					<p:selectOneMenu value="#{cc.attrs.iIsee.isee.tipo.id}">
 						<f:selectItem noSelectionOption="true" itemLabel="- seleziona -"/>
             			<f:selectItems value="#{cc.attrs.iIsee.listaTipologie}"/>
+            			<p:ajax event="change" process="@this" update="@(.onChangeAnnoProtocolloDSU)" listener="#{cc.attrs.iIsee.handleChangeTipologia}" partialSubmit="true" />
             		</p:selectOneMenu>
             		
             		<h:outputLabel value="Data Dich. Isee/DSU *" />

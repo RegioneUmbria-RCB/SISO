@@ -2,41 +2,34 @@ package it.webred.cs.csa.web.manbean.fascicolo.scuola;
 
 import it.webred.cs.csa.ejb.client.AccessTableConfigurazioneSessionBeanRemote;
 import it.webred.cs.csa.ejb.dto.BaseDTO;
-import it.webred.cs.csa.ejb.dto.IterDTO;
+import it.webred.cs.csa.ejb.dto.fascicolo.scuola.ListaDatiScuolaDTO;
+import it.webred.cs.csa.ejb.dto.fascicolo.scuola.ScuoleSearchCriteria;
 import it.webred.cs.csa.web.manbean.fascicolo.FascicoloCompSecondoLivello;
-import it.webred.cs.data.DataModelCostanti;
-import it.webred.cs.data.model.CsACaso;
 import it.webred.cs.data.model.CsDDiario;
 import it.webred.cs.data.model.CsDScuola;
 import it.webred.cs.data.model.CsOOperatoreSettore;
-import it.webred.cs.data.model.CsTbScuola;
-import it.webred.cs.data.model.CsTbTipoDiario;
-import it.webred.cs.data.model.CsTbTipoProgetto;
-import it.webred.cs.data.model.CsTbTipoScuola;
 import it.webred.cs.jsf.interfaces.IDatiScuola;
 import it.webred.ct.support.datarouter.CeTBaseObject;
 
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.faces.model.SelectItem;
 
+import org.apache.commons.lang3.StringUtils;
 import org.primefaces.context.RequestContext;
 
 public class DatiScuolaBean extends FascicoloCompSecondoLivello implements IDatiScuola {
 
-	private List<CsTbTipoScuola> listaTipoScuole;
-	
-	private List<SelectItem> listaComuni;
-	private List<CsDScuola> listaScuole;
-	private List<SelectItem> listaAnni;
-	private List<SelectItem> listaTipi;
-	private List<SelectItem> listaNomi;
-	private List<SelectItem> listaGradi;
+	private List<SelectItem> listaTipoScuole;
 	private List<SelectItem> listaProgetti;
+	private List<SelectItem> listaComuni;
+	private List<SelectItem> listaAnni;
+	private List<SelectItem> listaGradi;
+	private List<SelectItem> listaNomi;
+	
+	private List<ListaDatiScuolaDTO> listaScuole;
+	
 	private int idxSelected;
 	private String comune; 
 	private CsDScuola scuola;
@@ -53,6 +46,8 @@ public class DatiScuolaBean extends FascicoloCompSecondoLivello implements IDati
 			fillEnte(dto);
 			dto.setObj(idCaso);
 			listaScuole = diarioService.findScuoleByCaso(dto);
+			
+			loadItems();
 
 		} catch (Exception e) {
 			addErrorFromProperties("caricamento.error");
@@ -67,26 +62,29 @@ public class DatiScuolaBean extends FascicoloCompSecondoLivello implements IDati
 	
 	@Override
 	public void nuovo() {
-		
+		comune = null;
 		scuola = new CsDScuola();
-		scuola.setCsTbScuola(new CsTbScuola());
-		scuola.setCsTbTipoScuola(new CsTbTipoScuola());
+		//scuola.setCsTbScuola(new CsTbScuola());
+		//scuola.setCsTbTipoScuola(new CsTbTipoScuola());
 		listaNomi = new ArrayList<SelectItem>();
-		listaNomi.add(new SelectItem("0", "- seleziona -"));
-		
 	}
 	
 	@Override
 	public void carica() {
 		
-		scuola = listaScuole.get(idxSelected);
-		if(scuola.getCsTbScuola()==null)
-		   scuola.setCsTbScuola(new CsTbScuola());
+		ListaDatiScuolaDTO selezione = listaScuole.get(idxSelected);
+		
+		BaseDTO dto = new BaseDTO();
+		fillEnte(dto);
+		dto.setObj(selezione.getDiarioId());
+		scuola = diarioService.getScuolaById(dto);
+		comune = scuola.getCsTbScuola()!=null ? scuola.getCsTbScuola().getComune() : null;
+		
+		/*if(scuola.getCsTbScuola()==null)
+		   scuola.setCsTbScuola(new CsTbScuola());*/
 		scuola.getCsDDiario().setVisSecondoLivello(null); //SISO-812
 		aggiornaNomi();
-		
-		//listaNomi.add(new SelectItem(scuola.getCsTbScuola().getId(), scuola.getCsTbScuola().getDescrizione()));
-		
+
 	}
 	
 	@Override
@@ -100,53 +98,18 @@ public class DatiScuolaBean extends FascicoloCompSecondoLivello implements IDati
 			BaseDTO dto = new BaseDTO();
 			fillEnte(dto);
 	
-		    if(!(scuola.getCsTbScuola().getId()!=null && scuola.getCsTbScuola().getId().longValue()>0))
-	        	scuola.setCsTbScuola(null);
-			
-			if(scuola.getDiarioId() != null) {
-				
-				//modifica
-				scuola.getCsDDiario().setUsrMod(dto.getUserId());
-				scuola.getCsDDiario().setDtMod(new Date());
-				valorizzaSecondoLivello(scuola.getCsDDiario());
-				
-				dto.setObj(scuola);
-				
+			valorizzaSecondoLivello(scuola.getCsDDiario());
+			dto.setObj(scuola);
+			if(scuola.getDiarioId() != null)
 				diarioService.updateScuola(dto);
-			}
 			else {
 				
-				BaseDTO bdto = new BaseDTO();
-				fillEnte(bdto);
-				bdto.setObj(idCaso);
-				CsACaso csa = casoService.findCasoById(bdto);
-		        
-		        CsTbTipoDiario cstd = new CsTbTipoDiario(); 
-		        cstd.setId(new Long(DataModelCostanti.TipoDiario.DATI_SCUOLA_ID)); 
-		        Date dtIns = new Date();
-		        
-		        scuola.getCsDDiario().setCsACaso(csa);
-		        scuola.getCsDDiario().setCsTbTipoDiario(cstd);
-		        scuola.getCsDDiario().setDtIns(dtIns);
-		        scuola.getCsDDiario().setUserIns(dto.getUserId());
-		        scuola.getCsDDiario().setResponsabileCaso(this.getOperResponsabileCaso().getId());
-		        scuola.getCsDDiario().setCsOOperatoreSettore(opSettore);
-		        scuola.getCsDDiario().setDtAmministrativa(dtIns);
-		        valorizzaSecondoLivello(scuola.getCsDDiario());
-		        
-				dto.setObj(scuola);
+				dto.setObj2(idCaso);
+				dto.setObj3(opSettore);
 				
 				CsDDiario csd = diarioService.saveScuola(dto);
 				scuola.setCsDDiario(csd);
 				scuola.setDiarioId(csd.getId());
-
-				//Invio alert nuovo inserimento
-				bdto.setObj(csa.getCsASoggetto());
-				bdto.setObj2(opSettore);
-				bdto.setObj3(DataModelCostanti.TipiAlertCod.SCUOLA);
-				bdto.setObj4("una nuova scuola");
-				
-				alertService.addAlertNuovoInserimentoToResponsabileCaso(bdto);
 				
 			}
 			
@@ -183,6 +146,33 @@ public class DatiScuolaBean extends FascicoloCompSecondoLivello implements IDati
 		
 	}
 	
+	private void loadItems(){
+		CeTBaseObject cet = new CeTBaseObject();
+		fillEnte(cet);
+		
+		if(listaTipoScuole==null)
+			listaTipoScuole = convertiLista(confService.getTipoScuole(cet));
+		
+		if(listaProgetti==null)
+			listaProgetti = convertiLista(confService.getTipiProgetto(cet));
+		
+		if(listaComuni == null)
+			listaComuni =  convertiLista(confService.getComuniScuole(cet));
+		
+		if(listaAnni == null) {
+			listaAnni = convertiLista(confService.getAnniScolastici(cet));
+		}
+		
+		if(listaGradi == null) {
+			listaGradi = new ArrayList<SelectItem>();
+			listaGradi.add(new SelectItem("1", "1"));
+			listaGradi.add(new SelectItem("2", "2"));
+			listaGradi.add(new SelectItem("3", "3"));
+			listaGradi.add(new SelectItem("4", "4"));
+			listaGradi.add(new SelectItem("5", "5"));
+		}
+	}
+		
 	private boolean validaScuola() {
 		
 		boolean ok = true;
@@ -193,7 +183,7 @@ public class DatiScuolaBean extends FascicoloCompSecondoLivello implements IDati
         	addError("Il campo Anno Scolastico è obbligatorio", "");
 		}*/
         
-		boolean tipoScuolaOk =scuola.getCsTbTipoScuola().getId()!=null && scuola.getCsTbTipoScuola().getId().longValue()>0;
+		boolean tipoScuolaOk =scuola.getTipoScuolaId()!=null && scuola.getTipoScuolaId().longValue()>0;
         if(!tipoScuolaOk){
         	ok = false;
         	addError("Il campo Tipo di Scuola è obbligatorio", "");
@@ -207,53 +197,20 @@ public class DatiScuolaBean extends FascicoloCompSecondoLivello implements IDati
 		return ok;
 	}
 	
-	private void setCsTbTipoScuola(){
-		
-		if(scuola.getCsTbTipoScuola().getId() != null && scuola.getCsTbTipoScuola().getId().intValue()>0){
-			long idSel = scuola.getCsTbTipoScuola().getId().intValue();
-			boolean trovato = false;
-			int i=0;
-		    while(!trovato && i<this.getListaTipoScuole().size()){
-		    	CsTbTipoScuola s = this.listaTipoScuole.get(i);
-		    	if(s.getId().intValue()==idSel){
-		    		scuola.setCsTbTipoScuola(s);
-		    		trovato=true;
-		    	}
-		    	i++;
-		    }
-		 }
-	}
-	
-	private void setCsTbScuola(){}
-	
 	public void aggiornaNomi() {
 		
-		setCsTbTipoScuola();
 		renderScuole = false;
 		listaNomi = new ArrayList<SelectItem>();
-		listaNomi.add(new SelectItem("", "- seleziona -"));
-		if(comune!=null && !comune.isEmpty() 
-				&& scuola.getCsTbTipoScuola().getId() != null && scuola.getCsTbTipoScuola().getId().intValue()>0) {
-			BaseDTO dto = new BaseDTO();
+		if(!StringUtils.isBlank(comune) && scuola.getTipoScuolaId()!=null && scuola.getTipoScuolaId().intValue()>0) {
+			ScuoleSearchCriteria dto = new ScuoleSearchCriteria();
 			fillEnte(dto);
 			
-			dto.setObj2(scuola.getCsTbTipoScuola().getId());
-			dto.setObj3(comune);
+			dto.setTipo(scuola.getTipoScuolaId());
+			dto.setComune(comune);
+			dto.setAnno(scuola.getAnnoScolasticoId());
 			
-			 List<CsTbScuola> lstCs = new ArrayList<CsTbScuola>();
-			 boolean searchByAnno = scuola.getAnnoScolastico() != null && !"".equals(scuola.getAnnoScolastico());
-			if(searchByAnno){
-				dto.setObj(scuola.getAnnoScolastico());
-				lstCs = confService.getScuoleByComuneAnnoTipo(dto);
-			}else
-				lstCs = confService.getScuoleByComuneTipo(dto);
+			listaNomi = convertiLista(confService.searchNomiScuole(dto));
 			
-			for(CsTbScuola cs: lstCs){
-				String descrizione = cs.getDescrizione();
-				if(!searchByAnno)
-					descrizione += " - a.s. "+cs.getAnnoScolastico();
-				listaNomi.add(new SelectItem(cs.getId(), descrizione));
-			}
 			renderScuole = true;
 		}
 	}
@@ -278,45 +235,21 @@ public class DatiScuolaBean extends FascicoloCompSecondoLivello implements IDati
 	}
 
 	@Override
-	public List<CsDScuola> getListaScuole() {
+	public List<ListaDatiScuolaDTO> getListaScuole() {
 		return listaScuole;
 	}
 
-	public void setListaScuole(List<CsDScuola> listaScuole) {
+	public void setListaScuole(List<ListaDatiScuolaDTO> listaScuole) {
 		this.listaScuole = listaScuole;
 	}
 
 	@Override
 	public List<SelectItem> getListaComuni() {
-		if(listaComuni == null) {
-			listaComuni = new ArrayList<SelectItem>();
-			listaComuni.add(new SelectItem("", "- seleziona -"));
-			Map<String, CsTbScuola> map = new HashMap<String, CsTbScuola>();
-			CeTBaseObject cet = new CeTBaseObject();
-			fillEnte(cet);
-			List<String> lstCs = confService.getComuniScuole(cet);
-			for(String c: lstCs)
-				listaComuni.add(new SelectItem(c, c));
-		}
 		return listaComuni;
 	}
 	
 	@Override
 	public List<SelectItem> getListaAnni() {
-		if(listaAnni == null) {
-			listaAnni = new ArrayList<SelectItem>();
-			listaAnni.add(new SelectItem("", "- seleziona -"));
-			Map<String, CsTbScuola> map = new HashMap<String, CsTbScuola>();
-			CeTBaseObject cet = new CeTBaseObject();
-			fillEnte(cet);
-			List<CsTbScuola> lstCs = confService.getScuole(cet);
-			for(CsTbScuola cs: lstCs) {
-				if(!map.containsKey(cs.getAnnoScolastico())) {
-					listaAnni.add(new SelectItem(cs.getAnnoScolastico(), cs.getAnnoScolastico()));
-					map.put(cs.getAnnoScolastico(), cs);
-				}
-			}
-		}
 		return listaAnni;
 	}
 
@@ -324,21 +257,6 @@ public class DatiScuolaBean extends FascicoloCompSecondoLivello implements IDati
 		this.listaAnni = listaAnni;
 	}
 	
-	@Override
-	public List<SelectItem> getListaTipi() {
-		if(listaTipi == null) {
-			listaTipi = new ArrayList<SelectItem>();
-			listaTipi.add(new SelectItem("0", "- seleziona -"));
-			for(CsTbTipoScuola cs: this.getListaTipoScuole()) 
-				listaTipi.add(new SelectItem(cs.getId(), cs.getDescrizione()));
-		}
-		return listaTipi;
-	}
-
-	public void setListaTipi(List<SelectItem> listaTipi) {
-		this.listaTipi = listaTipi;
-	}
-
 	@Override
 	public List<SelectItem> getListaNomi() {
 		return listaNomi;
@@ -350,15 +268,6 @@ public class DatiScuolaBean extends FascicoloCompSecondoLivello implements IDati
 
 	@Override
 	public List<SelectItem> getListaGradi() {
-		if(listaGradi == null) {
-			listaGradi = new ArrayList<SelectItem>();
-			listaGradi.add(new SelectItem("", "- seleziona -"));
-			listaGradi.add(new SelectItem("1", "1"));
-			listaGradi.add(new SelectItem("2", "2"));
-			listaGradi.add(new SelectItem("3", "3"));
-			listaGradi.add(new SelectItem("4", "4"));
-			listaGradi.add(new SelectItem("5", "5"));
-		}
 		return listaGradi;
 	}
 
@@ -371,18 +280,6 @@ public class DatiScuolaBean extends FascicoloCompSecondoLivello implements IDati
 	}
 	
 	public List<SelectItem> getListaProgetti() {
-		if (listaProgetti == null) {
-			listaProgetti = new ArrayList<SelectItem>();
-			listaProgetti.add(new SelectItem("", "- seleziona -"));
-			CeTBaseObject cet = new CeTBaseObject();
-			fillEnte(cet);
-			List<CsTbTipoProgetto> lista = confService.getTipiProgetto(cet);
-			for (CsTbTipoProgetto cs : lista) {
-				SelectItem si = new SelectItem(cs.getId(), cs.getDescrizione());
-				si.setDisabled(!cs.isAbilitato());
-				listaProgetti.add(si);
-			}
-		}
 		return listaProgetti;
 	}
 
@@ -391,7 +288,7 @@ public class DatiScuolaBean extends FascicoloCompSecondoLivello implements IDati
 		return comune;
 	}
 
-	public void setListaTipoScuole(List<CsTbTipoScuola> listaTipoScuole) {
+	public void setListaTipoScuole(List<SelectItem> listaTipoScuole) {
 		this.listaTipoScuole = listaTipoScuole;
 	}
 
@@ -421,18 +318,22 @@ public class DatiScuolaBean extends FascicoloCompSecondoLivello implements IDati
 		this.renderScuole = renderScuole;
 	}
 
-	public List<CsTbTipoScuola> getListaTipoScuole() {
-		if(this.listaTipoScuole==null){
-			CeTBaseObject cet = new CeTBaseObject();
-			fillEnte(cet);
-			listaTipoScuole = confService.getTipoScuole(cet);
-		}
-		return this.listaTipoScuole;
-	}
-	
 	@Override
 	public void aggiornaAltroNome(){
-		if(scuola.getCsTbScuola().getId()!=null && scuola.getCsTbScuola().getId()>0)
+		if(this.isDisabilitaCampoLiberoScuola())
 			scuola.setNome(null);
+	}
+
+	@Override
+	public List<SelectItem> getListaTipoScuole() {
+		return listaTipoScuole;
+	}
+	
+	public boolean isDisabilitaCampoLiberoScuola(){
+		return !StringUtils.isBlank(scuola.getScuolaId());
+	}
+	
+	public String getDescrizioneOperatore(String username){
+		return super.getCognomeNomeUtente(username);
 	}
 }

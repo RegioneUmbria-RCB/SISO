@@ -1,5 +1,8 @@
 package it.webred.cs.jsf.interfaces;
 
+import it.webred.cs.csa.ejb.dto.pai.pti.CsPaiPTIDTO;
+import it.webred.cs.csa.ejb.dto.pai.pti.InserimentoConsuntivazioneDTO;
+import it.webred.cs.csa.ejb.dto.pai.pti.RichiestaDisponibilitaPaiPtiDTO;
 import it.webred.cs.data.DataModelCostanti.Pai.PERIODO_TEMPORALE;
 import it.webred.cs.data.model.CsDPai;
 
@@ -14,14 +17,6 @@ public interface IPai {
 	public void onChangeTabView(TabChangeEvent tce);
 	
 	public void initializeData();
-
-	public List<CsDPai> getPais();
-
-	public void setPais(List<CsDPai> pais);
-
-	public List<CsDPai> getFilteredPais();
-
-	public void setFilteredPais(List<CsDPai> filteredPais);
 
 	public void nuovo();
 
@@ -43,9 +38,9 @@ public interface IPai {
 
 	public void setWidgetVar(String widgetVar);
 
-	public int getIdxSelected();
+	public Long getIdxSelected();
 
-	public void setIdxSelected(int idxSelected);
+	public void setIdxSelected(Long idxSelected);
 
 	public CsDPai getSelectedPai();
 
@@ -62,8 +57,6 @@ public interface IPai {
 	public void aggiungiTipoErogazioneButton(); //SISO-748
 	//fine evoluzione-pai
 
-	public SelectItem[] getLstCittadinanza();
-	
 	public void salvaGestioneMonitoraggioObiettivi();
 
 	public PERIODO_TEMPORALE[] getListaPeriodi();
@@ -71,4 +64,22 @@ public interface IPai {
 	//SISO-1172
 	public List<SelectItem> getLstMotivoChiusuraByTipoPai();
 	public boolean isAbilitaMenuProgettiAltro();
+	
+	//Minori in struttura
+	public void apriErogazioneButton(Object obj);
+	public boolean getProvenienzaConsuntivazione();
+	public void erogaServizio(InserimentoConsuntivazioneDTO consuntivazione);
+	public void  verificaPeriodi(InserimentoConsuntivazioneDTO consuntivazione) throws Throwable;
+	public void aggiornaFLagErogatoConsuntivazione() throws Throwable;
+	public void refreshFLagErogatoConsuntivazione() throws Throwable;
+	public void avviaModificaPTI(CsPaiPTIDTO pti) throws Exception;
+	public void verificaSelezioneMotivo() throws Exception;
+	public List<RichiestaDisponibilitaPaiPtiDTO> getLstProgettiAltriEnti();
+	public void setLstProgettiAltriEnti(List<RichiestaDisponibilitaPaiPtiDTO> lstProgettiAltriEnti);
+	public void caricaListaProgettiAltriEnti() throws Exception;
+	public boolean isProgettoPTI();
+	public String decodificaObiettiviRaggiunti(Integer idRaggiunti);
+
+	public void salvaDataChiusuraAggiornata() throws Throwable;
+
 }

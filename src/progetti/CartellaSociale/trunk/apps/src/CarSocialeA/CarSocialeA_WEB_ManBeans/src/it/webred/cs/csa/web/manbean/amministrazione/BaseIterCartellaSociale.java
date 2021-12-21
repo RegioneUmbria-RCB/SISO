@@ -1,26 +1,15 @@
 package it.webred.cs.csa.web.manbean.amministrazione;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import it.umbriadigitale.argo.ejb.client.cs.bean.ArInterscambioService;
-import it.webred.cs.csa.ejb.client.AccessTableAlertSessionBeanRemote;
-import it.webred.cs.csa.ejb.client.AccessTableCasoSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.AccessTableConfigurazioneSessionBeanRemote;
-import it.webred.cs.csa.ejb.client.AccessTableEventiSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.AccessTableIterStepSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.AccessTableOperatoreSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.AccessTableSoggettoSessionBeanRemote;
 import it.webred.cs.csa.ejb.dto.BaseDTO;
-import it.webred.cs.csa.ejb.dto.EventoDTO;
 import it.webred.cs.csa.ejb.dto.IterDTO;
+import it.webred.cs.csa.ejb.dto.KeyValueDTO;
 import it.webred.cs.csa.ejb.dto.OperatoreDTO;
-import it.webred.cs.csa.ejb.dto.StatoCartellaDTO;
-import it.webred.cs.csa.ejb.dto.retvalue.CsIterStepByCasoDTO;
-import it.webred.cs.data.model.CsACaso;
-import it.webred.cs.data.model.CsASoggettoCategoriaSocLAZY;
+import it.webred.cs.data.model.CsASoggettoCategoriaSoc;
 import it.webred.cs.data.model.CsASoggettoLAZY;
-import it.webred.cs.data.model.CsCfgItStato;
 import it.webred.cs.data.model.CsItStep;
 import it.webred.cs.data.model.CsOOperatore;
 import it.webred.cs.data.model.CsOOperatoreSettore;
@@ -29,7 +18,11 @@ import it.webred.cs.data.model.CsOSettore;
 import it.webred.cs.data.model.CsOSettoreBASIC;
 import it.webred.cs.jsf.manbean.superc.CsUiCompBaseBean;
 import it.webred.ct.support.datarouter.CeTBaseObject;
-import it.webred.ss.ejb.client.SsSchedaSessionBeanRemote;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.faces.model.SelectItem;
 
 public abstract class BaseIterCartellaSociale extends CsUiCompBaseBean {
 	protected AccessTableIterStepSessionBeanRemote iterService =
@@ -47,7 +40,7 @@ public abstract class BaseIterCartellaSociale extends CsUiCompBaseBean {
  	public AccessTableConfigurazioneSessionBeanRemote getConfigurazioneService() {
 		return configurazioneService;
 	}
- 	 public List<CsASoggettoCategoriaSocLAZY> getSoggettoCategorieAttuali(BaseDTO bDto){
+ 	 public List<CsASoggettoCategoriaSoc> getSoggettoCategorieAttuali(BaseDTO bDto){
  		 return soggettoService.getSoggettoCategorieAttualiBySoggetto(bDto);
  	 }
  	
@@ -57,8 +50,8 @@ public abstract class BaseIterCartellaSociale extends CsUiCompBaseBean {
 		this.configurazioneService = configurazioneService;
 	}
 
-	public List<CsCfgItStato> getListaIterStati(CeTBaseObject cet) {
-		return this.iterService.getListaIterStati(cet);
+	public List<SelectItem> getListaIterStati(CeTBaseObject cet) {
+		return convertiLista(iterService.getListaIterStati(cet));
 	}
 	public boolean addIterStep(IterDTO dto) throws Exception{
 		return this.iterService.addIterStep(dto);
@@ -71,13 +64,24 @@ public abstract class BaseIterCartellaSociale extends CsUiCompBaseBean {
 		}
 	}
 	
-	public List<CsOOperatoreSettore> getOperatoreSettore(OperatoreDTO dto) {
+	public List<SelectItem> findOperatoriSettore(OperatoreDTO dto) {
+		List<SelectItem> operatores = new ArrayList<SelectItem>();
 		try{
-			return this.operatoreService.findOperatoreSettoreBySettore(dto);	
+			List<KeyValueDTO> result = operatoreService.findListaOperatoreSettoreBySettore(dto);
+			for (KeyValueDTO it : result)
+				operatores.add(new SelectItem( it.getCodice(), it.getDescrizione()));	
 		}catch(Exception ex){
-			return new ArrayList<CsOOperatoreSettore>();
+			logger.error(ex.getMessage());
+		}	
+		return operatores;
+	}
+	
+	public CsOOperatoreSettore getOperatoreSettore(OperatoreDTO dto) {
+		try {
+			return operatoreService.findOperatoreSettoreById(dto);
+		} catch (Exception e) {
+			return null;
 		}
-		
 	}
 	public CsASoggettoLAZY getSoggettoByCF(BaseDTO dto){
 		 

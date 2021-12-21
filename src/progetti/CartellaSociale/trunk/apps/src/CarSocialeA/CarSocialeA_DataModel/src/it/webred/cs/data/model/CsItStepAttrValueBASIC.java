@@ -31,13 +31,6 @@ public class CsItStepAttrValueBASIC implements Serializable {
 	private Long csItStepId;
 
 	
-	/*
-	//bi-directional many-to-one association to CsItStep
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name="IT_STEP_ID")
-	private CsItStepLAZY csItStep;
-*/
-	
 	public CsItStepAttrValueBASIC() {
 	}
 
@@ -64,7 +57,5 @@ public class CsItStepAttrValueBASIC implements Serializable {
 	public void setCsCfgAttr(CsCfgAttrLAZY csCfgAttr) {
 		this.csCfgAttr = csCfgAttr;
 	}
-
-
 
 }

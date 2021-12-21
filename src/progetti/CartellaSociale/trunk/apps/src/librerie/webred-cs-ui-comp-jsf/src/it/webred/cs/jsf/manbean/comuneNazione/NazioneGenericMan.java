@@ -15,8 +15,12 @@ public class NazioneGenericMan extends NazioneMan implements  IManBeanForCompone
 	private static final long serialVersionUID = 1L;
 	private String tipoNazione;
 	
-	public NazioneGenericMan(String tipoNazione){
+	public NazioneGenericMan(){
 		super();
+	}
+	
+	public NazioneGenericMan(String tipoNazione){
+		this();
 		this.tipoNazione = tipoNazione;
 	}
 	

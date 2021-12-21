@@ -39,7 +39,7 @@
 				<p:column>
 					<f:facet name="header">Tipo</f:facet>
 					<h:outputText value="#{int.descTipoIntervento}" />
-					<h:outputText value=" (#{int.descTipoInterventoCustom})" rendered="#{int.descTipoInterventoCustom ne null}" />
+					<h:outputText value=" - #{int.descTipoInterventoCustom}" rendered="#{int.descTipoInterventoCustom ne null}" />
 				</p:column>
 				<p:column>
 					<f:facet name="header">Categoria</f:facet>
@@ -86,36 +86,38 @@
 						<p:graphicImage id="imgTantumSi" rendered="#{int.flagUnatantum}" title="Si" value="#{resource['webredcs/img/check.png']}" />
 					</h:panelGroup>
 				</p:column>
-				<p:column headerText="Settore Richiedente">
+				<p:column headerText="Settore Richiedente" style="text-align:center;">
 					<h:outputText value="#{int.relSettCsocTipoInter.csRelSettoreCatsoc.csOSettore.nome}" />
 				</p:column>
 				
-				<p:column headerText="Storico stati erogazione">
-					<ui:repeat var="dett" value="#{int.listaErogazioni}" >
-					   <h:panelGrid  columns="2" styleClass="interventi-pai" cellpadding="0" border="0">
+				<p:column headerText="Storico stati erogazione" style="text-align:center;">
+				 	<ui:repeat var="dett" value="#{int.listaSintesiErogazioni}" >
+					  <h:panelGrid  columns="3" styleClass="interventi-pai" cellpadding="0" border="0" width="100%">
+				
 					    <h:outputText value="#{dett.dataEsecuzione}">
 							<f:convertDateTime type="date" pattern="dd/MM/yyyy" />
 						</h:outputText>
-						<h:outputText value="#{dett.stato.nome} " />
-						</h:panelGrid>
+						<p:spacer width="10px"/>
+						<h:outputText value="#{dett.stato} " />
+					  </h:panelGrid>
 					</ui:repeat>
 				</p:column>
 				
 				<!-- INIZIO residuo-evoluzione-pai -->
 				<p:column headerText="Pai">
 					<h:panelGrid columns="1" cellpadding="0" cellspacing="0" border="0"
-						rendered="#{int.csDPai !=null}" styleClass="interventi-pai">
-						<h:outputText value="Tipo [#{int.csDPai.csTbTipoPai.descrizione}]" />
+						rendered="#{int.pai !=null}" styleClass="interventi-pai">
+						<h:outputText value="Tipo [#{int.pai.tipo}]" />
 						<h:panelGroup>
 							<h:outputText value="Dt.att. [" />
-							<h:outputText value="#{int.csDPai.csDDiario.dtAttivazioneDa}">
+							<h:outputText value="#{int.pai.dtAttivazione}">
 								<f:convertDateTime type="date" pattern="dd/MM/yyyy" />
 							</h:outputText>
 							<h:outputText value="]" />
 						</h:panelGroup>
 						<h:panelGroup>
 							<h:outputText value="Dt.chiusura [" />
-							<h:outputText value="#{int.csDPai.csDDiario.dtChiusuraDa}">
+							<h:outputText value="#{int.pai.dtChiusura}">
 								<f:convertDateTime type="date" pattern="dd/MM/yyyy" />
 							</h:outputText>
 							<h:outputText value="]" />
@@ -198,9 +200,9 @@
 							</p:outputPanel>
 						</p:column>
 						<p:column headerText="Respinto" style="text-align:center;" width="10px;">
-							<p:graphicImage id="imgRespSi" rendered="#{fog.flagRespinto eq 1}" value="#{resource['webredcs/img/check.png']}" />
+							<p:graphicImage id="imgRespSi" rendered="#{fog.flagRespinto}" value="#{resource['webredcs/img/check.png']}" />
 							<p:tooltip id="toolTipRifiuto" for="imgRespSi">
-								<h:outputText value="#{fog.motivoRespinto}" rendered="#{fog.flagRespinto eq 1}" />
+								<h:outputText value="#{fog.motivoRespinto}" rendered="#{fog.flagRespinto}" />
 							</p:tooltip>
 						</p:column>
 						<p:column headerText="Ultima Modifica" style="text-align:center;">

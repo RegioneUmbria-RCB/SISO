@@ -224,7 +224,8 @@ public class RicercaAnagraficaClient {
 		}
     	 return listaPersoneResult;
     }
-private ArrayList<PersonaResult> eseguiRicercaPerDatiAnagrafici(String nome, String cognome, String annoNascita, String sesso) throws IOException, Exception {
+    
+    private ArrayList<PersonaResult> eseguiRicercaPerDatiAnagrafici(String nome, String cognome, String annoNascita, String sesso) throws IOException, Exception {
     	
 		XmlString message =  this.componiRicercaPerDatiAnag(nome, cognome, annoNascita, sesso);
 		XmlString result = ricercaAnagrafica(message);
@@ -242,81 +243,81 @@ private ArrayList<PersonaResult> eseguiRicercaPerDatiAnagrafici(String nome, Str
 		return null;
     }
 
-private List<PersonaResult> eseguiRicercaPerIdentificativo(String identificativo) throws IOException, Exception {
-	XmlString messageAssID =  this.componiRicercaPerAssistitoId(identificativo);
-	XmlString resultAssID = ricercaAnagrafica(messageAssID);
-	List<PersonaResult> res = null;
+	private List<PersonaResult> eseguiRicercaPerIdentificativo(String identificativo) throws IOException, Exception {
+		XmlString messageAssID =  this.componiRicercaPerAssistitoId(identificativo);
+		XmlString resultAssID = ricercaAnagrafica(messageAssID);
+		List<PersonaResult> res = null;
+		
+		if(resultAssID != null){
+			XmlAssistitiTransform xmlTransform = new XmlAssistitiTransform();
+			PersonaResult personaResult =	xmlTransform.elaboraXML(resultAssID);
+			this.codice = xmlTransform.getCodice();
+			this.msg = xmlTransform.getMessaggio();
+			res = new ArrayList<PersonaResult>();
+			res.add(personaResult);
+		}
+		return res;
+	}
+
+	private ArrayList<PersonaResult> eseguiRicercaPerDatiAnagrafici(String filtro) throws IOException, Exception {
+		
+		XmlString message =  this.componiRicercaPerFiltro(filtro);
+		XmlString result = ricercaAnagrafica(message);
 	
-	if(resultAssID != null){
+		//DEBUG
+		//XmlString result = XmlString.Factory.parse(new File("C:\\progetti\\SISO\\ANAGRAFE_MARCHE_SISO-927\\ANAGRAFE_RispostaEsitoPositivoCognomeNome.xml"));
 		XmlAssistitiTransform xmlTransform = new XmlAssistitiTransform();
-		PersonaResult personaResult =	xmlTransform.elaboraXML(resultAssID);
+		List<String> listaAssistitiID =	xmlTransform.elaboraXMLElenco(result);
 		this.codice = xmlTransform.getCodice();
 		this.msg = xmlTransform.getMessaggio();
-		res = new ArrayList<PersonaResult>();
-		res.add(personaResult);
-	}
-	return res;
-}
-
-private ArrayList<PersonaResult> eseguiRicercaPerDatiAnagrafici(String filtro) throws IOException, Exception {
-	
-	XmlString message =  this.componiRicercaPerFiltro(filtro);
-	XmlString result = ricercaAnagrafica(message);
-
-	//DEBUG
-	//XmlString result = XmlString.Factory.parse(new File("C:\\progetti\\SISO\\ANAGRAFE_MARCHE_SISO-927\\ANAGRAFE_RispostaEsitoPositivoCognomeNome.xml"));
-	XmlAssistitiTransform xmlTransform = new XmlAssistitiTransform();
-	List<String> listaAssistitiID =	xmlTransform.elaboraXMLElenco(result);
-	this.codice = xmlTransform.getCodice();
-	this.msg = xmlTransform.getMessaggio();
-	if(codice == 0){
-		return iterRicercaPersona(listaAssistitiID);
-	}
-	
-	return null;
-}
-
-public RicercaPersonaResult ricercaPerDatiAnagrafici(RicercaAnagraficaDTO ricercaDTO){
-		 
-		 System.out.println("ricercaPerDatiAnagrafici:"+ricercaDTO.stampaParametri()); 
-		 RicercaPersonaResult personaResult = new RicercaPersonaResult();
+		if(codice == 0){
+			return iterRicercaPersona(listaAssistitiID);
+		}
 		
-		 if(ricercaDTO == null){
-			 msg = "Oggetto ricercaDTO Assente.";
-			 codice = -10;
-		 }
-		
-		 boolean noDatiAnagrafici = (ricercaDTO.getCognome() == null || ricercaDTO.getCognome().equals(""))
-				 && (ricercaDTO.getNome()  == null || ricercaDTO.getNome().equals(""))
-				 	&& (ricercaDTO.getCf() == null || ricercaDTO.getCf().equals(""));
-		 
-		 boolean noIdentificativo = ricercaDTO.getIdAssistito()==null || ricercaDTO.getIdAssistito().trim().isEmpty();
-		 
-		 if(noIdentificativo && noDatiAnagrafici){
-			 msg = "Parametri di ricerca assenti.";
-			 codice = -11;
-		 }
-		 try{
-			 if(ricercaDTO.getCf() != null && !ricercaDTO.getCf().equals("")){
-				 personaResult.addAssistito(eseguiRicercaPerCF(ricercaDTO.getCf()));
-				 
+		return null;
+	}
+
+	public RicercaPersonaResult ricercaPerDatiAnagrafici(RicercaAnagraficaDTO ricercaDTO){
+			 
+			 System.out.println("ricercaPerDatiAnagrafici:"+ricercaDTO.stampaParametri()); 
+			 RicercaPersonaResult personaResult = new RicercaPersonaResult();
+			
+			 if(ricercaDTO == null){
+				 msg = "Oggetto ricercaDTO Assente.";
+				 codice = -10;
 			 }
-			 else if(ricercaDTO.getFiltro() != null){
-				 personaResult.setElencoAssisiti((this.eseguiRicercaPerDatiAnagrafici(ricercaDTO.getFiltro())));
-			 }else if(ricercaDTO.getIdAssistito() != null){
-				 personaResult.setElencoAssisiti(this.eseguiRicercaPerIdentificativo(ricercaDTO.getIdAssistito()));
-			 }else if(ricercaDTO.getCognome() != null){
-				 personaResult.setElencoAssisiti((this.eseguiRicercaPerDatiAnagrafici(ricercaDTO.getNome(), ricercaDTO.getCognome(), ricercaDTO.getAnnoNascita(), ricercaDTO.getSesso())));
+			
+			 boolean noDatiAnagrafici = (ricercaDTO.getCognome() == null || ricercaDTO.getCognome().equals(""))
+					 && (ricercaDTO.getNome()  == null || ricercaDTO.getNome().equals(""))
+					 	&& (ricercaDTO.getCf() == null || ricercaDTO.getCf().equals(""));
+			 
+			 boolean noIdentificativo = ricercaDTO.getIdAssistito()==null || ricercaDTO.getIdAssistito().trim().isEmpty();
+			 
+			 if(noIdentificativo && noDatiAnagrafici){
+				 msg = "Parametri di ricerca assenti.";
+				 codice = -11;
 			 }
-		 }catch(Exception e){
-			this.codice = -12;
-			this.msg = "attenzione si è verificato un errore durante la ricerca";
-			this.eccezione = e;
+			 try{
+				 if(ricercaDTO.getCf() != null && !ricercaDTO.getCf().equals("")){
+					 personaResult.addAssistito(eseguiRicercaPerCF(ricercaDTO.getCf()));
+					 
+				 }
+				 else if(ricercaDTO.getFiltro() != null){
+					 personaResult.setElencoAssisiti((this.eseguiRicercaPerDatiAnagrafici(ricercaDTO.getFiltro())));
+				 }else if(ricercaDTO.getIdAssistito() != null){
+					 personaResult.setElencoAssisiti(this.eseguiRicercaPerIdentificativo(ricercaDTO.getIdAssistito()));
+				 }else if(ricercaDTO.getCognome() != null){
+					 personaResult.setElencoAssisiti((this.eseguiRicercaPerDatiAnagrafici(ricercaDTO.getNome(), ricercaDTO.getCognome(), ricercaDTO.getAnnoNascita(), ricercaDTO.getSesso())));
+				 }
+			 }catch(Exception e){
+				this.codice = -12;
+				this.msg = "attenzione si è verificato un errore durante la ricerca";
+				this.eccezione = e;
+			 }
+			 personaResult.setCodice(codice);
+			 personaResult.setMessaggio(msg);
+			 personaResult.setEccezione(eccezione);
+			 return personaResult;
 		 }
-		 personaResult.setCodice(codice);
-		 personaResult.setMessaggio(msg);
-		 personaResult.setEccezione(eccezione);
-		 return personaResult;
-	 }
  
 }

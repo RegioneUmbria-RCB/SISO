@@ -13,7 +13,7 @@
 	   <h:panelGrid columns="4" style="width:100%;">
 				<p:selectBooleanCheckbox itemLabel="Progetto prestazionale senza monitoraggio obiettivi" partialsubmit="true" 
 				value="#{cc.attrs.iPai.selectedPai.monitoraggioObiettivi}">
-			    <p:ajax event="change" process="@this" update="pnlObiettivi" />
+			    <p:ajax event="change" process="@this" update="pnlObiettivi" listener="#{cc.attrs.iPai.gestisciCampiMonitoraggio}"/>
 		     </p:selectBooleanCheckbox>
 		</h:panelGrid>	
      <p:spacer height="15px;" />
@@ -23,7 +23,7 @@
 					<h:panelGrid >
 						<p:inputTextarea id="motivazioniProgetto" rows="4" cols="50"
 							value="#{cc.attrs.iPai.selectedPai.motivazioniProgetto}"
-							disabled="#{cc.attrs.iPai.closed}" />
+							disabled="#{cc.attrs.iPai.closed or (not empty cc.attrs.iPai.paiPTIBean.pti and !cc.attrs.iPai.paiPTIBean.abilitaModificaPti)}" />
 					</h:panelGrid>
 			
 					<p:spacer width="10px"/>
@@ -32,36 +32,36 @@
 					<h:outputLabel for="obiettiviBreve" value="Obiettivi di breve termine**" />
 					<p:inputTextarea id="obiettiviBreve" rows="4" cols="50"
 						value="#{cc.attrs.iPai.selectedPai.obiettiviBreve}"
-						disabled="#{cc.attrs.iPai.closed}" />
+						disabled="#{cc.attrs.iPai.closed  or (not empty cc.attrs.iPai.paiPTIBean.pti and !cc.attrs.iPai.paiPTIBean.abilitaModificaPti)}" />
 			
 					<h:outputLabel for="raggiuntiBreve" value="Raggiunti" />
 					<p:selectOneRadio id="raggiuntiBreve"
 						value="#{cc.attrs.iPai.selectedPai.raggiuntiBreve}"
-						disabled="#{cc.attrs.iPai.closed}">
+						disabled="#{cc.attrs.iPai.closed  or (not empty cc.attrs.iPai.paiPTIBean.pti and !cc.attrs.iPai.paiPTIBean.abilitaModificaPti)}">
 					<f:selectItems value="#{cc.attrs.iPai.lstRadioOptions}"/>
 					</p:selectOneRadio>
 				
 					<h:outputLabel for="obiettiviMedio" value="Obiettivi di medio termine**" />
 					<p:inputTextarea id="obiettiviMedio" rows="4" cols="50"
 						value="#{cc.attrs.iPai.selectedPai.obiettiviMedio}"
-						disabled="#{cc.attrs.iPai.closed}" />
+						disabled="#{cc.attrs.iPai.closed  or (not empty cc.attrs.iPai.paiPTIBean.pti and !cc.attrs.iPai.paiPTIBean.abilitaModificaPti)}" />
 			
 					<h:outputLabel for="raggiuntiMedio" value="Raggiunti" />
 					<p:selectOneRadio id="raggiuntiMedio"
 						value="#{cc.attrs.iPai.selectedPai.raggiuntiMedio}"
-						disabled="#{cc.attrs.iPai.closed}">
+						disabled="#{cc.attrs.iPai.closed  or (not empty cc.attrs.iPai.paiPTIBean.pti and !cc.attrs.iPai.paiPTIBean.abilitaModificaPti)}">
 						<f:selectItems value="#{cc.attrs.iPai.lstRadioOptions}"/>
 					</p:selectOneRadio>
 				
 					<h:outputLabel for="obiettiviLungo" value="Obiettivi di lungo termine**" />
 					<p:inputTextarea id="obiettiviLungo" rows="4" cols="50"
 						value="#{cc.attrs.iPai.selectedPai.obiettiviLungo}"
-						disabled="#{cc.attrs.iPai.closed}" />  
+						disabled="#{cc.attrs.iPai.closed  or (not empty cc.attrs.iPai.paiPTIBean.pti and !cc.attrs.iPai.paiPTIBean.abilitaModificaPti)}" />  
 				
 					<h:outputLabel for="raggiuntiLungo" value="Raggiunti" />
 					<p:selectOneRadio id="raggiuntiLungo"
 						value="#{cc.attrs.iPai.selectedPai.raggiuntiLungo}"
-						disabled="#{cc.attrs.iPai.closed}">
+						disabled="#{cc.attrs.iPai.closed  or (not empty cc.attrs.iPai.paiPTIBean.pti and !cc.attrs.iPai.paiPTIBean.abilitaModificaPti)}">
 						<f:selectItems value="#{cc.attrs.iPai.lstRadioOptions}"/>
 					</p:selectOneRadio>
 					
@@ -71,7 +71,7 @@
 							min="0" size="5" disabled="#{cc.attrs.iPai.closed or cc.attrs.iPai.onClosing}" />
 						<p:selectOneMenu style="vertical-align: middle;"
 							value="#{cc.attrs.iPai.selectedPai.verificaUnitaMisura}"
-							disabled="#{cc.attrs.iPai.closed or cc.attrs.iPai.onClosing}">
+							disabled="#{cc.attrs.iPai.closed or cc.attrs.iPai.onClosing or (not empty cc.attrs.iPai.paiPTIBean.pti and !cc.attrs.iPai.paiPTIBean.abilitaModificaPti)}">
 							<f:selectItem noSelectionOption="true" itemLabel="- seleziona -" />
 				 			<f:selectItems value="#{cc.attrs.iPai.listaPeriodi}" var="item" itemLabel="#{item.descrizione}" itemValue="#{item.codice}" />              
 						</p:selectOneMenu>
@@ -93,7 +93,7 @@
 						dataValMes="Data ultimo monitoraggio non valida"
 						dataConMes="Data ultimo monitoraggio non valida"
 						dataPatternLabel="gg/mm/aaaa" yearRange="c-1:c+5"
-						disabled="#{cc.attrs.iPai.closed or cc.attrs.iPai.onClosing}" />
+						disabled="#{cc.attrs.iPai.closed or cc.attrs.iPai.onClosing or (not empty cc.attrs.iPai.paiPTIBean.pti and !cc.attrs.iPai.paiPTIBean.abilitaModificaPti)}" />
 		</h:panelGrid>
 
         <p:panelGrid style="width:100%; border: solid red;" rendered="#{cc.attrs.iPai.closed or cc.attrs.iPai.onClosing}">
@@ -104,13 +104,14 @@
 				<p:column>
 					<h:panelGrid columns="2">
 					<p:selectOneMenu
-						value="#{cc.attrs.iPai.selectedPai.motivoChiusura}"
+						value="#{cc.attrs.iPai.selectedPai.csTbMotivoChiusuraPai.id}"  
 						rendered="#{cc.attrs.iPai.closed or cc.attrs.iPai.onClosing}"
 						disabled="#{cc.attrs.iPai.closed}" required="true"
 						requiredMessage="E' necessario indicare il motivo di chiusura">					
 						<f:selectItem itemLabel=" - seleziona -" noSelectionOption="true" />
-  					    <f:selectItems  value="#{cc.attrs.iPai.lstMotivoChiusuraByTipoPai}" var="item" itemLabel="#{item.descrizione}" itemValue="#{item.descrizione}" /> 
-					</p:selectOneMenu>
+  					    <f:selectItems  value="#{cc.attrs.iPai.lstMotivoChiusuraByTipoPai}" var="item" itemLabel="#{item.descrizione}" itemValue="#{item.id}" />
+  					       <p:ajax event="change" immediate="true" partialSubmit="true" global="false" process="@this"/>
+  				    </p:selectOneMenu>
 					<p:inputTextarea rows="1" style ="witdh:60%"
 						value="#{cc.attrs.iPai.selectedPai.motivoChiusuraSpec}"
 						disabled="#{cc.attrs.iPai.closed}" />

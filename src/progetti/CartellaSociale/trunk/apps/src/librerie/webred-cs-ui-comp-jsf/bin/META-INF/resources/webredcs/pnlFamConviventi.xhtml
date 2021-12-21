@@ -14,6 +14,8 @@
 		<composite:interface componentType="pnlFamConviventi">
 			<composite:attribute name="iFamConviventi" type="it.webred.cs.json.familiariConviventi.IFamConviventi" required="true"/>
 			<composite:attribute name="soloLettura" default="false"/>
+			<composite:attribute name="onChangeGrVulnerabile" method-signature="void listener()" />
+			<composite:attribute name="grVulChangeUpdate" required="false"/>
 		</composite:interface>
 		<composite:implementation 
 			xmlns:webred="http://java.sun.com/jsf/composite/webred"
@@ -40,21 +42,25 @@
 					<p:spinner value="#{cc.attrs.iFamConviventi.jsonCurrent.conMinoriNum}" min="0"  size="2" disabled="#{cc.attrs.soloLettura}"/>
             		
 					<p:outputLabel value="Gruppo vulnerabile principale *"/>
-					<p:selectOneMenu value="#{cc.attrs.iFamConviventi.jsonCurrent.gruppoVulnerabile}"  style="width:300px;" 
-					disabled="#{cc.attrs.soloLettura}" filter="true" filterMatchMode="contains">  
+					<p:selectOneMenu id="somGruppoVulnerabile1" value="#{cc.attrs.iFamConviventi.jsonCurrent.gruppoVulnerabile}" style="width:300px;" 
+									 disabled="#{cc.attrs.soloLettura}" filter="true" filterMatchMode="contains">  
+	            		<f:selectItem noSelectionOption="true" itemLabel="- seleziona -"/>
             			<f:selectItems value="#{cc.attrs.iFamConviventi.listaGruppoVulnerabile}"/> 
+            			<p:ajax event="change"  listener="#{cc.attrs.onChangeGrVulnerabile}" update="#{ not empty cc.attrs.grVulChangeUpdate ? cc.attrs.grVulChangeUpdate : '@none'}"/>    			
             		</p:selectOneMenu>
             		<!-- SISO-792 -->
             		
             		<p:outputLabel value="Gruppo vulnerabile 2"/>
 					<p:selectOneMenu value="#{cc.attrs.iFamConviventi.jsonCurrent.gruppoVulnerabile2}"  style="width:300px;" 
-					disabled="#{cc.attrs.soloLettura}" filter="true" filterMatchMode="contains">  
+					disabled="#{cc.attrs.soloLettura}" filter="true" filterMatchMode="contains">
+	            		<f:selectItem noSelectionOption="true" itemLabel="- seleziona -"/>  
             			<f:selectItems value="#{cc.attrs.iFamConviventi.listaGruppoVulnerabile}"/> 
             		</p:selectOneMenu>
             		
             		<p:outputLabel value="Gruppo vulnerabile 3"/>
 					<p:selectOneMenu value="#{cc.attrs.iFamConviventi.jsonCurrent.gruppoVulnerabile3}"  style="width:300px;" 
 					disabled="#{cc.attrs.soloLettura}" filter="true" filterMatchMode="contains">  
+	            		<f:selectItem noSelectionOption="true" itemLabel="- seleziona -"/>
             			<f:selectItems value="#{cc.attrs.iFamConviventi.listaGruppoVulnerabile}"/> 
             		</p:selectOneMenu>
             		<!-- SISO-794 -->
@@ -148,18 +154,22 @@
 					</h:panelGrid>
 					<p:outputLabel value="Gruppo Vulnerabile principale *"/>
 					<p:selectOneMenu value="#{cc.attrs.iFamConviventi.jsonCurrent.gruppoVulnerabile}" style="width:300px;" disabled="#{cc.attrs.soloLettura}">
+	            		<f:selectItem noSelectionOption="true" itemLabel="- seleziona -"/>
             			<f:selectItems value="#{cc.attrs.iFamConviventi.listaGruppoVulnerabile}"/>
+            			<p:ajax event="change"  listener="#{cc.attrs.onChangeGrVulnerabile}" update="#{ not empty cc.attrs.grVulChangeUpdate ? cc.attrs.grVulChangeUpdate : '@none'}"/>   
             		</p:selectOneMenu>
             		<p:outputLabel value="Gruppo vulnerabile 2"/>
 					<p:selectOneMenu value="#{cc.attrs.iFamConviventi.jsonCurrent.gruppoVulnerabile2}"  style="width:300px;" 
 					disabled="#{cc.attrs.soloLettura}" filter="true" filterMatchMode="contains">  
+	          			<f:selectItem noSelectionOption="true" itemLabel="- seleziona -"/>
             			<f:selectItems value="#{cc.attrs.iFamConviventi.listaGruppoVulnerabile}"/> 
             		</p:selectOneMenu>
             		
             		<p:outputLabel value="Gruppo vulnerabile 3"/>
 					<p:selectOneMenu value="#{cc.attrs.iFamConviventi.jsonCurrent.gruppoVulnerabile3}"  style="width:300px;" 
 					disabled="#{cc.attrs.soloLettura}" filter="true" filterMatchMode="contains">  
-            			<f:selectItems value="#{cc.attrs.iFamConviventi.listaGruppoVulnerabile}"/> 
+	            		<f:selectItem noSelectionOption="true" itemLabel="- seleziona -"/>
+	            		<f:selectItems value="#{cc.attrs.iFamConviventi.listaGruppoVulnerabile}"/> 
             		</p:selectOneMenu>
             		<!-- SISO-794 -->
             		

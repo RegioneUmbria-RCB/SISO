@@ -18,7 +18,7 @@ public class CsTbStatoCivile implements Serializable {
 	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="CS_TB_STATO_CIVILE_COD_GENERATOR")
 	private String cod;
 
-	private String abilitato;
+	private Boolean abilitato;
 
 	private String descrizione;
 
@@ -38,11 +38,11 @@ public class CsTbStatoCivile implements Serializable {
 		this.cod = cod;
 	}
 
-	public String getAbilitato() {
-		return this.abilitato;
+	public Boolean getAbilitato() {
+		return abilitato;
 	}
 
-	public void setAbilitato(String abilitato) {
+	public void setAbilitato(Boolean abilitato) {
 		this.abilitato = abilitato;
 	}
 

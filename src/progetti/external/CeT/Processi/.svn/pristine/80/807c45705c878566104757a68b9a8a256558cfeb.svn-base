@@ -1,0 +1,415 @@
+#--------------------------------------------------------------
+# File di configurazione in cui sono indicato i valori dei soli
+# parametri di contesto della catena jelly da passare alla 
+# regola 
+#------------------------------------------------------------
+# Numero di parametri previsti in input
+rengine.jchain.in.nof=4
+#------------------------------------------------------------
+# Le coppie chiavi/valore hanno come key lo stesso nome 
+# indicato nello script jelly xml
+#------------------------------------------------------------
+
+# N.B. per eventuali modifiche in Eclipse, usare text editor e non properties file editor, perché altrimenti potrebbe togliere i ritorni a capo con \
+
+# N.B. aggiunto WHERE 1 = 0 per RE_FLAG_ELABORATO al primo giro perché si fa nell'ultimo passaggio
+
+rengine.jchain.in.1.key=QUERYSQL_1
+rengine.jchain.in.1.value=SELECT decode(lpad(matricola_coniuge,10,'0'),'0000000000',null,lpad(matricola_coniuge,10,'0')) AS matricola_coniuge, \
+							matricola, \
+							re_data_inizio_val AS dt_exp_dato, \
+							nazionalita, \
+							SUBSTR (comune_nascita_cod, 1, 3) AS cod_provincia1, \
+							SUBSTR (comune_emigrazione_cod, 1, 3) AS cod_provincia2, \
+							SUBSTR (comune_immigrazione_cod, 1, 3) AS cod_provincia3, \
+							provincia_nascita AS sigla1, \
+							provincia_emigrazione AS sigla2, \
+							provincia_immigrazione AS sigla3, \
+							comune_nascita_cod AS cod_comune1, \
+							comune_emigrazione_cod AS cod_comune2, \
+							comune_immigrazione_cod AS cod_comune3, \
+							comune_nascita_des AS des_comune1, \
+							comune_emigrazione_des AS des_comune2, \
+							comune_immigrazione_des AS des_comune3, \
+							TO_CHAR (TO_NUMBER (codice_via)) AS codice_via, \
+							numero_civico, \
+							barrato, \
+							NULL AS subbarrato, \
+							LTRIM (SUBSTR (cognome_nome, 0, INSTR (p.cognome_nome, '/') - 1) ) AS cognome, \
+							LTRIM (SUBSTR (cognome_nome, INSTR (p.cognome_nome, '/') + 1)) AS nome, \
+							p.sesso AS sesso, \
+							p.codice_fiscale AS codfisc, \
+							flag_stato AS posiz_ana, \
+							cognome_nome AS des_persona, \
+							util.fchar_to_date (p.data_inizio_residenza, 'YYYYMMDD HH24MISS' ) AS data_inizio_residenza, \
+							util.fchar_to_date (p.data_immigrazione, 'YYYYMMDD HH24MISS' ) AS data_imm, \
+							util.fchar_to_date (p.data_emigrazione, 'YYYYMMDD HH24MISS') AS data_emi, \
+							NULL AS id_orig_provincia_mor, \
+							NULL AS id_orig_comune_mor, \
+							util.fchar_to_date (p.data_decesso, 'YYYYMMDD HH24MISS') AS data_mor, \
+							util.fchar_to_date (p.data_nascita, 'YYYYMMDD HH24MISS') AS data_nascita, \
+							NULL AS id_orig_d_persona_madre, \
+							NULL AS id_orig_d_persona_padre, \
+							p.numero_famiglia AS id_orig_d_famiglia, \
+							util.fchar_to_date (p.data_inizio_rap_par, 'YYYYMMDD' ) AS dt_ini_val_dato_d_famiglia, \
+							'1' AS tipo_famiglia, \
+							NULL AS denominazione_famiglia, \
+							p.rapporto_parentela AS relaz_par, \
+							TO_CHAR (TO_NUMBER (codice_via)) || '\#' || numero_civico || '\#' || barrato AS civico, \
+							'UPDATE RE_POPOLAZIONE_COORD_CAT_1_1 SET RE_FLAG_ELABORATO \= 1 WHERE 1 \= 0 AND MATRICOLA \= ''' || matricola || '''' || ' AND TO_CHAR(RE_DATA_INIZIO_VAL,''YYYYMMDDHH24MISS'') \= ''' || TO_CHAR (re_data_inizio_val, 'YYYYMMDDHH24MISS') || '''' AS sql_flag_elaborato, \
+							util.fchar_to_date (p.data_inizio_residenza_via, 'YYYYMMDD HH24MISS' ) AS dt_ini_val_dato_indirizzo, \
+							util.fchar_to_date (p.data_fine_residenza_via, 'YYYYMMDD HH24MISS' ) AS dt_fine_val_dato_indirizzo, \
+							s.prefisso AS sedime, \
+							s.nome AS nome_via, \
+							flag_codice_fiscale, \
+							p.DESCRIZIONE_VIA, \
+							p.TIPO_CIVICO, \
+							p.LOTTO, \
+							p.ISOLATO, \
+							p.SCALA, \
+							p.NUM_INT, \
+							p.PIANO, \
+							p.CAP, \
+							p.INDIRIZZO_EMIGRAZIONE, \
+							util.fchar_to_date (p.DATA_REGISTRAZIONE, 'YYYYMMDD') AS DATA_REGISTRAZIONE, \
+							p.CITTADINANZA, \
+							util.fchar_to_date (p.DATA_FINE_RAP_PAR, 'YYYYMMDD' ) AS dt_fin_val_dato_d_famiglia, \
+							p.TITOLO_STUDIO, \
+							p.STATO_CIVILE, \
+							p.FLG_INTESTATARIO_SCHEDA, \
+							p.COD_EVENTO_VARIAZIONE, \
+							p.FOGLIO, \
+							p.MAPPALE, \
+							p.SUBALTERNO, \
+							p.NOME_FILE \
+							FROM RE_POPOLAZIONE_COORD_CAT_1_1 p \
+							LEFT JOIN sitidstr s \
+							ON LPAD (s.numero, 4, '0') \= LPAD (p.codice_via, 4, '0') \
+							WHERE re_flag_elaborato \= 0 \
+							AND NOT EXISTS (SELECT 1 \
+							FROM RE_POPOLAZIONEMILANO_1_1 POLD, R_TRACCIA_FORNITURE F \
+							WHERE F.NOME_FILE \= p.NOME_FILE \
+							AND POLD.PROCESSID \= F.PROCESSID) \
+							ORDER BY re_data_inizio_val
+rengine.jchain.in.2.key=RSITRSCRIPT_1
+rengine.jchain.in.2.value=<RsIterator> \
+							<key table\="RE_POPOLAZIONE_COORD_CAT_1_1"> \
+								<column name\="MATRICOLA"/> \
+								<column name\="DT_EXP_DATO"/> \
+							</key> \
+							<commands> \
+								<command name\="SIT_STATO"> \
+									<param id\="field" value\="NAZIONALITA" dest\="ID_ORIG" type\="java.lang.String"/> \
+									<param id\="const" value\="1" dest\="FK_ENTE_SORGENTE" type\="java.lang.Integer"/> \
+									<param id\="field" value\="NAZIONALITA" dest\="DESCRIZIONE" type\="java.lang.String"/> \
+									<param id\="field" value\="DT_EXP_DATO" dest\="DT_EXP_DATO" type\="java.sql.Timestamp"/> \
+									<param id\="const" value\="" dest\="DT_INI_VAL_DATO" type\="java.sql.Timestamp"/> \
+									<param id\="const" value\="" dest\="DT_FINE_VAL_DATO" type\="java.sql.Timestamp"/> \
+									<param id\="const" value\="0" dest\="FLAG_DT_VAL_DATO" type\="java.lang.Integer"/> \
+								</command> \
+								<command name\="SIT_PROVIN"> \
+									<param id\="field" value\="cod_provincia1" dest\="ID_ORIG" type\="java.lang.String"/> \
+									<param id\="const" value\="1" dest\="FK_ENTE_SORGENTE" type\="java.lang.Integer"/> \
+									<param id\="const" value\="" dest\="DESCRIZIONE" type\="java.lang.String"/> \
+									<param id\="field" value\="sigla1" dest\="SIGLA" type\="java.lang.String"/> \
+									<param id\="field" value\="DT_EXP_DATO" dest\="DT_EXP_DATO" type\="java.sql.Timestamp"/> \
+									<param id\="const" value\="" dest\="DT_INI_VAL_DATO" type\="java.sql.Timestamp"/> \
+									<param id\="const" value\="" dest\="DT_FINE_VAL_DATO" type\="java.sql.Timestamp"/> \
+									<param id\="const" value\="0" dest\="FLAG_DT_VAL_DATO" type\="java.lang.Integer"/> \
+								</command> \
+								<command name\="SIT_PROVIN"> \
+									<param id\="field" value\="cod_provincia2" dest\="ID_ORIG" type\="java.lang.String"/> \
+									<param id\="const" value\="1" dest\="FK_ENTE_SORGENTE" type\="java.lang.Integer"/> \
+									<param id\="const" value\="" dest\="DESCRIZIONE" type\="java.lang.String"/> \
+									<param id\="field" value\="sigla2" dest\="SIGLA" type\="java.sql.Timestamp"/> \
+									<param id\="field" value\="DT_EXP_DATO" dest\="DT_EXP_DATO" type\="java.sql.Timestamp"/> \
+									<param id\="const" value\="" dest\="DT_INI_VAL_DATO" type\="java.sql.Timestamp"/> \
+									<param id\="const" value\="" dest\="DT_FINE_VAL_DATO" type\="java.sql.Timestamp"/> \
+									<param id\="const" value\="0" dest\="FLAG_DT_VAL_DATO" type\="java.lang.Integer"/> \
+								</command> \
+								<command name\="SIT_PROVIN"> \
+									<param id\="field" value\="cod_provincia3" dest\="ID_ORIG" type\="java.lang.String"/> \
+									<param id\="const" value\="1" dest\="FK_ENTE_SORGENTE" type\="java.lang.Integer"/> \
+									<param id\="const" value\="" dest\="DESCRIZIONE" type\="java.lang.String"/> \
+									<param id\="field" value\="sigla3" dest\="SIGLA" type\="java.sql.Timestamp"/> \
+									<param id\="field" value\="DT_EXP_DATO" dest\="DT_EXP_DATO" type\="java.sql.Timestamp"/> \
+									<param id\="const" value\="" dest\="DT_INI_VAL_DATO" type\="java.sql.Timestamp"/> \
+									<param id\="const" value\="" dest\="DT_FINE_VAL_DATO" type\="java.sql.Timestamp"/> \
+									<param id\="const" value\="0" dest\="FLAG_DT_VAL_DATO" type\="java.lang.Integer"/> \
+								</command> \
+								<command name\="SIT_COMUNE" livelloAnomalie\="1"> \
+									<param id\="field" value\="cod_comune1" dest\="ID_ORIG" type\="java.lang.String"/> \
+									<param id\="const" value\="1" dest\="FK_ENTE_SORGENTE" type\="java.lang.Integer"/> \
+									<param id\="const" value\="" dest\="BELFIORE" type\="java.lang.String"/> \
+									<param id\="field" value\="des_comune1" dest\="DESCRIZIONE" type\="java.lang.String"/> \
+									<param id\="field" value\="DT_EXP_DATO" dest\="DT_EXP_DATO" type\="java.sql.Timestamp"/> \
+									<param id\="const" value\="" dest\="DT_INI_VAL_DATO" type\="java.sql.Timestamp"/> \
+									<param id\="const" value\="" dest\="DT_FINE_VAL_DATO" type\="java.sql.Timestamp"/> \
+									<param id\="const" value\="0" dest\="FLAG_DT_VAL_DATO" type\="java.lang.Integer"/> \
+									<param id\="field" value\="cod_provincia1" dest\="ID_ORIG_PROVINCIA" type\="java.lang.String"/> \
+								</command> \
+								<command name\="SIT_COMUNE" livelloAnomalie\="1"> \
+									<param id\="field" value\="cod_comune2" dest\="ID_ORIG" type\="java.lang.String"/> \
+									<param id\="const" value\="1" dest\="FK_ENTE_SORGENTE" type\="java.lang.Integer"/> \
+									<param id\="const" value\="" dest\="BELFIORE" type\="java.lang.String"/> \
+									<param id\="field" value\="des_comune2" dest\="DESCRIZIONE" type\="java.lang.String"/> \
+									<param id\="field" value\="DT_EXP_DATO" dest\="DT_EXP_DATO" type\="java.sql.Timestamp"/> \
+									<param id\="const" value\="" dest\="DT_INI_VAL_DATO" type\="java.sql.Timestamp"/> \
+									<param id\="const" value\="" dest\="DT_FINE_VAL_DATO" type\="java.sql.Timestamp"/> \
+									<param id\="const" value\="0" dest\="FLAG_DT_VAL_DATO" type\="java.lang.Integer"/> \
+									<param id\="field" value\="cod_provincia2" dest\="ID_ORIG_PROVINCIA" type\="java.lang.String"/> \
+								</command> \
+								<command name\="SIT_COMUNE" livelloAnomalie\="1"> \
+									<param id\="field" value\="cod_comune3" dest\="ID_ORIG" type\="java.lang.String"/> \
+									<param id\="const" value\="1" dest\="FK_ENTE_SORGENTE" type\="java.lang.Integer"/> \
+									<param id\="field" value\="des_comune3" dest\="DESCRIZIONE" type\="java.lang.String"/> \
+									<param id\="const" value\="" dest\="BELFIORE" type\="java.lang.String"/> \
+									<param id\="field" value\="DT_EXP_DATO" dest\="DT_EXP_DATO" type\="java.sql.Timestamp"/> \
+									<param id\="const" value\="" dest\="DT_INI_VAL_DATO" type\="java.sql.Timestamp"/> \
+									<param id\="const" value\="" dest\="DT_FINE_VAL_DATO" type\="java.sql.Timestamp"/> \
+									<param id\="const" value\="0" dest\="FLAG_DT_VAL_DATO" type\="java.lang.Integer"/> \
+									<param id\="field" value\="cod_provincia3" dest\="ID_ORIG_PROVINCIA" type\="java.lang.String"/> \
+								</command> \
+								<command name\="SIT_D_VIA" livelloAnomalie\="1"> \
+									<param id\="field" value\="CODICE_VIA" dest\="ID_ORIG" type\="java.lang.String"/> \
+									<param id\="const" value\="1" dest\="FK_ENTE_SORGENTE" type\="java.lang.Integer"/> \
+									<param id\="field" value\="SEDIME" dest\="VIASEDIME" type\="java.lang.String"/> \
+									<param id\="field" value\="NOME_VIA" dest\="DESCRIZIONE" type\="java.lang.String"/> \
+									<param id\="field" value\="DT_EXP_DATO" dest\="DT_EXP_DATO" type\="java.sql.Timestamp"/> \
+									<param id\="const" value\="" dest\="DT_INI_VAL_DATO" type\="java.sql.Timestamp"/> \
+									<param id\="const" value\="" dest\="DT_FINE_VAL_DATO" type\="java.sql.Timestamp"/> \
+									<param id\="const" value\="0" dest\="FLAG_DT_VAL_DATO" type\="java.lang.Integer"/> \
+								</command> \
+								<command name\="SIT_D_CIVI" livelloAnomalie\="1"> \
+									<param id\="field" value\="CIVICO" dest\="ID_ORIG" type\="java.lang.String"/> \
+									<param id\="const" value\="1" dest\="FK_ENTE_SORGENTE" type\="java.lang.Integer"/> \
+									<param id\="const" value\="" dest\="ID_ORIG_D_SEZIONE_ELETTORALE" type\="java.lang.String"/> \
+									<param id\="const" value\="1" dest\="FK_ENTE_SORGENTE" type\="java.lang.Integer"/> \
+									<param id\="const" dest\="CIVICO_COMPOSTO" type\="it.webred.rulengine.type.ComplexParam"> \
+										<\![CDATA[ <complexParam> \
+											<param name\="numero"> [[NUMERO_CIVICO]] \
+											</param> \
+											<param name\="barrato"> [[BARRATO]] </param> \
+											<param name\="subbarrato"> [[SUBBARRATO]] </param> \
+										</complexParam> ]]> \
+									</param> \
+									<param id\="field" value\="CODICE_VIA" dest\="ID_ORIG_D_VIA" type\="java.lang.String"/> \
+									<param id\="const" value\="" dest\="ID_ORIG_D_FRAZIONE" type\="java.lang.String"/> \
+									<param id\="field" value\="DT_EXP_DATO" dest\="DT_EXP_DATO" type\="java.sql.Timestamp"/> \
+									<param id\="const" value\="" dest\="DT_INI_VAL_DATO" type\="java.sql.Timestamp"/> \
+									<param id\="const" value\="" dest\="DT_FINE_VAL_DATO" type\="java.sql.Timestamp"/> \
+									<param id\="const" value\="0" dest\="FLAG_DT_VAL_DATO" type\="java.lang.Integer"/> \
+								</command> \
+								<command name\="SIT_D_PERS" livelloAnomalie\="2"> \
+									<param id\="field" value\="MATRICOLA" dest\="ID_ORIG" type\="java.lang.String"/> \
+									<param id\="const" value\="1" dest\="FK_ENTE_SORGENTE" type\="java.lang.Integer"/> \
+									<param id\="field" value\="COGNOME" dest\="COGNOME" type\="java.lang.String"/> \
+									<param id\="field" value\="NOME" dest\="NOME" type\="java.lang.String"/> \
+									<param id\="field" value\="SESSO" dest\="SESSO" type\="java.lang.String"/> \
+									<param id\="field" value\="CODFISC" dest\="CODFISC" type\="java.lang.String"/> \
+									<param id\="field" value\="POSIZ_ANA" dest\="POSIZ_ANA" type\="java.lang.String"/> \
+									<param id\="field" value\="STATO_CIVILE" dest\="STATO_CIVILE" type\="java.lang.String"/> \
+									<param id\="field" value\="DES_PERSONA" dest\="DES_PERSONA" type\="java.lang.String"/> \
+									<param id\="field" value\="DATA_INIZIO_RESIDENZA" dest\="DATA_INIZIO_RESIDENZA" type\="java.sql.Timestamp"/> \
+									<param id\="field" value\="NAZIONALITA" dest\="ID_ORIG_STATO" type\="java.lang.String"/> \
+									<param id\="field" value\="cod_provincia3" dest\="ID_ORIG_PROVINCIA_IMM" type\="java.lang.String"/> \
+									<param id\="field" value\="cod_comune3" dest\="ID_ORIG_COMUNE_IMM" type\="java.lang.String"/> \
+									<param id\="field" value\="DATA_IMM" dest\="DATA_IMM" type\="java.sql.Timestamp"/> \
+									<param id\="field" value\="cod_provincia2" dest\="ID_ORIG_PROVINCIA_EMI" type\="java.lang.String"/> \
+									<param id\="field" value\="cod_comune2" dest\="ID_ORIG_COMUNE_EMI" type\="java.lang.String"/> \
+									<param id\="field" value\="DATA_EMI" dest\="DATA_EMI" type\="java.sql.Timestamp"/> \
+									<param id\="field" value\="ID_ORIG_PROVINCIA_MOR" dest\="ID_ORIG_PROVINCIA_MOR" type\="java.lang.String"/> \
+									<param id\="field" value\="ID_ORIG_COMUNE_MOR" dest\="ID_ORIG_COMUNE_MOR" type\="java.lang.String"/> \
+									<param id\="field" value\="DATA_MOR" dest\="DATA_MOR" type\="java.sql.Timestamp"/> \
+									<param id\="field" value\="cod_provincia1" dest\="ID_ORIG_PROVINCIA_NASCITA" type\="java.lang.String"/> \
+									<param id\="field" value\="cod_comune1" dest\="ID_ORIG_COMUNE_NASCITA" type\="java.lang.String"/> \
+									<param id\="field" value\="DATA_NASCITA" dest\="DATA_NASCITA" type\="java.sql.Timestamp"/> \
+									<param id\="field" value\="ID_ORIG_D_PERSONA_MADRE" dest\="ID_ORIG_D_PERSONA_MADRE" type\="java.lang.String"/> \
+									<param id\="field" value\="ID_ORIG_D_PERSONA_PADRE" dest\="ID_ORIG_D_PERSONA_PADRE" type\="java.lang.String"/> \
+									<param id\="field" value\="DT_EXP_DATO" dest\="DT_EXP_DATO" type\="java.sql.Timestamp"/> \
+									<param id\="const" value\="" dest\="DT_INI_VAL_DATO" type\="java.sql.Timestamp"/> \
+									<param id\="const" value\="" dest\="DT_FINE_VAL_DATO" type\="java.sql.Timestamp"/> \
+									<param id\="const" value\="0" dest\="FLAG_DT_VAL_DATO" type\="java.lang.Integer"/> \
+									<param id\="field" value\="FLAG_CODICE_FISCALE" dest\="FLAG_CODICE_FISCALE" type\="java.lang.String"/> \
+								</command> \
+								<command name\="SIT_D_PC" livelloAnomalie\="1"> \
+									<param id\="field" value\="MATRICOLA" dest\="ID_ORIG" type\="java.lang.String"/> \
+									<param id\="const" value\="1" dest\="FK_ENTE_SORGENTE" type\="java.lang.Integer"/> \
+									<param id\="field" value\="MATRICOLA" dest\="ID_ORIG_D_PERSONA" type\="java.lang.String"/> \
+									<param id\="field" value\="CIVICO" dest\="ID_ORIG_D_CIVICO" type\="java.lang.String"/> \
+									<param id\="field" value\="DT_EXP_DATO" dest\="DT_EXP_DATO" type\="java.sql.Timestamp"/> \
+									<param id\="field" value\="DT_INI_VAL_DATO_INDIRIZZO" dest\="DT_INI_VAL_DATO" type\="java.sql.Timestamp"/> \
+									<param id\="field" value\="DT_FINE_VAL_DATO_INDIRIZZO" dest\="DT_FINE_VAL_DATO" type\="java.sql.Timestamp"/> \
+									<param id\="const" value\="0" dest\="FLAG_DT_VAL_DATO" type\="java.lang.Integer"/> \
+								</command> \
+								<command name\="SIT_D_FAMI" livelloAnomalie\="1"> \
+									<param id\="field" value\="ID_ORIG_D_FAMIGLIA" dest\="ID_ORIG" type\="java.lang.String"/> \
+									<param id\="const" value\="1" dest\="FK_ENTE_SORGENTE" type\="java.lang.Integer"/> \
+									<param id\="field" value\="TIPO_FAMIGLIA" dest\="TIPOFAMI" type\="java.lang.String"/> \
+									<param id\="field" value\="DENOMINAZIONE_FAMIGLIA" dest\="DENOMINAZIONE" type\="java.lang.String"/> \
+									<param id\="field" value\="CIVICO" dest\="ID_ORIG_D_CIVICO" type\="java.lang.String"/> \
+									<param id\="field" value\="DT_EXP_DATO" dest\="DT_EXP_DATO" type\="java.sql.Timestamp"/> \
+									<param id\="const" value\="" dest\="DT_INI_VAL_DATO" type\="java.sql.Timestamp"/> \
+									<param id\="const" value\="" dest\="DT_FINE_VAL_DATO" type\="java.sql.Timestamp"/> \
+									<param id\="const" value\="0" dest\="FLAG_DT_VAL_DATO" type\="java.lang.Integer"/> \
+								</command> \
+								<command name\="SIT_D_UNIO"> \
+									<param id\="field" value\="MATRICOLA" dest\="ID_ORIG" type\="java.lang.String"/> \
+									<param id\="const" value\="1" dest\="FK_ENTE_SORGENTE" type\="java.lang.Integer"/> \
+									<param id\="const" value\="" dest\="GENER_UNIONE" type\="java.lang.String"/> \
+									<param id\="const" value\="" dest\="DATA_UNIONE" type\="java.lang.String"/> \
+									<param id\="const" dest\="ID_ORIG_D_COMUNE" type\="java.lang.String"/> \
+									<param id\="const" dest\="ID_ORIG_D_PROVINCIA" type\="java.lang.String"/> \
+									<param id\="field" value\="MATRICOLA" dest\="ID_ORIG_D_PERSONA1" type\="java.lang.String"/> \
+									<param id\="field" value\="MATRICOLA_CONIUGE" dest\="ID_ORIG_D_PERSONA2" type\="java.lang.String"/> \
+									<param id\="field" value\="DT_EXP_DATO" dest\="DT_EXP_DATO" type\="java.sql.Timestamp"/> \
+									<param id\="const" value\="" dest\="DT_INI_VAL_DATO" type\="java.sql.Timestamp"/> \
+									<param id\="const" value\="" dest\="DT_FINE_VAL_DATO" type\="java.sql.Timestamp"/> \
+									<param id\="const" value\="0" dest\="FLAG_DT_VAL_DATO" type\="java.lang.Integer"/> \
+								</command> \
+								<command name\="PERS_FAM" livelloAnomalie\="1"> \
+									<param id\="field" value\="MATRICOLA" dest\="ID_ORIG" type\="java.lang.String"/> \
+									<param id\="const" value\="1" dest\="FK_ENTE_SORGENTE" type\="java.lang.Integer"/> \
+									<param id\="field" value\="MATRICOLA" dest\="ID_ORIG_D_PERSONA" type\="java.lang.String"/> \
+									<param id\="field" value\="ID_ORIG_D_FAMIGLIA" dest\="ID_ORIG_D_FAMIGLIA" type\="java.lang.String"/> \
+									<param id\="field" value\="RELAZ_PAR" dest\="RELAZ_PAR" type\="java.lang.String"/> \
+									<param id\="field" value\="DT_EXP_DATO" dest\="DT_EXP_DATO" type\="java.sql.Timestamp"/> \
+									<param id\="field" value\="DT_INI_VAL_DATO_D_FAMIGLIA" dest\="DT_INI_VAL_DATO" type\="java.sql.Timestamp"/> \
+									<param id\="const" value\="" dest\="DT_FINE_VAL_DATO" type\="java.sql.Timestamp"/> \
+									<param id\="const" value\="0" dest\="FLAG_DT_VAL_DATO" type\="java.lang.Integer"/> \
+								</command> \
+								<command name\="COMANDOSQL"> \
+									<param id\="const" dest\="SQL" type\="it.webred.rulengine.type.ComplexParam"> \
+										<\![CDATA[<complexParam> \
+											<param type\="java.lang.String" name\="paramsql1">update RE_POPOLAZIONE_COORD_CAT_1_1 SET RE_FLAG_ELABORATO \= 1 WHERE 1 \= 0 AND MATRICOLA\=? AND RE_DATA_INIZIO_VAL\=?</param> \
+										</complexParam> ]]> \
+									</param> \
+									<param id\="const" dest\="PARAMETRI" type\="it.webred.rulengine.type.ComplexParam"> \
+										<\![CDATA[ <complexParam> \
+											<param name\="param1"> [[MATRICOLA]] </param> \
+											<param name\="param2"> [[DT_EXP_DATO]] </param> \
+										</complexParam> ]]> \
+									</param> \
+								</command> \
+							</commands> \
+						</RsIterator>
+rengine.jchain.in.3.key=QUERYSQL_2
+rengine.jchain.in.3.value=SELECT decode(lpad(matricola_coniuge,10,'0'),'0000000000',null,lpad(matricola_coniuge,10,'0')) AS matricola_coniuge, \
+							matricola, \
+							re_data_inizio_val AS dt_exp_dato, \
+							nazionalita, \
+							SUBSTR (comune_nascita_cod, 1, 3) AS cod_provincia1, \
+							SUBSTR (comune_emigrazione_cod, 1, 3) AS cod_provincia2, \
+							SUBSTR (comune_immigrazione_cod, 1, 3) AS cod_provincia3, \
+							provincia_nascita AS sigla1, \
+							provincia_emigrazione AS sigla2, \
+							provincia_immigrazione AS sigla3, \
+							comune_nascita_cod AS cod_comune1, \
+							comune_emigrazione_cod AS cod_comune2, \
+							comune_immigrazione_cod AS cod_comune3, \
+							comune_nascita_des AS des_comune1, \
+							comune_emigrazione_des AS des_comune2, \
+							comune_immigrazione_des AS des_comune3, \
+							TO_CHAR (TO_NUMBER (codice_via)) AS codice_via, \
+							numero_civico, \
+							barrato, \
+							NULL AS subbarrato, \
+							LTRIM (SUBSTR (cognome_nome, 0, INSTR (p.cognome_nome, '/') - 1) ) AS cognome, \
+							LTRIM (SUBSTR (cognome_nome, INSTR (p.cognome_nome, '/') + 1)) AS nome, \
+							p.sesso AS sesso, \
+							p.codice_fiscale AS codfisc, \
+							flag_stato AS posiz_ana, \
+							cognome_nome AS des_persona, \
+							util.fchar_to_date (p.data_inizio_residenza, 'YYYYMMDD HH24MISS' ) AS data_inizio_residenza, \
+							util.fchar_to_date (p.data_immigrazione, 'YYYYMMDD HH24MISS' ) AS data_imm, \
+							util.fchar_to_date (p.data_emigrazione, 'YYYYMMDD HH24MISS') AS data_emi, \
+							NULL AS id_orig_provincia_mor, \
+							NULL AS id_orig_comune_mor, \
+							util.fchar_to_date (p.data_decesso, 'YYYYMMDD HH24MISS') AS data_mor, \
+							util.fchar_to_date (p.data_nascita, 'YYYYMMDD HH24MISS') AS data_nascita, \
+							NULL AS id_orig_d_persona_madre, \
+							NULL AS id_orig_d_persona_padre, \
+							p.numero_famiglia AS id_orig_d_famiglia, \
+							util.fchar_to_date (p.data_inizio_rap_par, 'YYYYMMDD' ) AS dt_ini_val_dato_d_famiglia, \
+							'1' AS tipo_famiglia, \
+							NULL AS denominazione_famiglia, \
+							p.rapporto_parentela AS relaz_par, \
+							TO_CHAR (TO_NUMBER (codice_via)) || '\#' || numero_civico || '\#' || barrato AS civico, \
+							'UPDATE RE_POPOLAZIONE_COORD_CAT_1_1 SET RE_FLAG_ELABORATO \= 1 WHERE MATRICOLA \= ''' || matricola || '''' || ' AND TO_CHAR(RE_DATA_INIZIO_VAL,''YYYYMMDDHH24MISS'') \= ''' || TO_CHAR (re_data_inizio_val, 'YYYYMMDDHH24MISS') || '''' AS sql_flag_elaborato, \
+							util.fchar_to_date (p.data_inizio_residenza_via, 'YYYYMMDD HH24MISS' ) AS dt_ini_val_dato_indirizzo, \
+							util.fchar_to_date (p.data_fine_residenza_via, 'YYYYMMDD HH24MISS' ) AS dt_fine_val_dato_indirizzo, \
+							s.prefisso AS sedime, \
+							s.nome AS nome_via, \
+							flag_codice_fiscale, \
+							p.DESCRIZIONE_VIA, \
+							p.TIPO_CIVICO, \
+							p.LOTTO, \
+							p.ISOLATO, \
+							p.SCALA, \
+							p.NUM_INT, \
+							p.PIANO, \
+							p.CAP, \
+							p.INDIRIZZO_EMIGRAZIONE, \
+							util.fchar_to_date (p.DATA_REGISTRAZIONE, 'YYYYMMDD') AS DATA_REGISTRAZIONE, \
+							p.CITTADINANZA, \
+							util.fchar_to_date (p.DATA_FINE_RAP_PAR, 'YYYYMMDD' ) AS dt_fin_val_dato_d_famiglia, \
+							p.TITOLO_STUDIO, \
+							p.STATO_CIVILE, \
+							p.FLG_INTESTATARIO_SCHEDA, \
+							p.COD_EVENTO_VARIAZIONE, \
+							p.FOGLIO, \
+							p.MAPPALE, \
+							p.SUBALTERNO, \
+							p.NOME_FILE \
+							FROM RE_POPOLAZIONE_COORD_CAT_1_1 p \
+							LEFT JOIN sitidstr s \
+							ON LPAD (s.numero, 4, '0') \= LPAD (p.codice_via, 4, '0') \
+							WHERE re_flag_elaborato \= 0 \
+							ORDER BY re_data_inizio_val							
+rengine.jchain.in.4.key=RSITRSCRIPT_2
+rengine.jchain.in.4.value=<RsIterator> \
+							<key table\="RE_POPOLAZIONE_COORD_CAT_1_1"> \
+								<column name\="MATRICOLA"/> \
+								<column name\="DT_EXP_DATO"/> \
+							</key> \
+							<commands> \
+								<command name\="PERS_CC" livelloAnomalie\="1"> \
+									<param id\="field" value\="MATRICOLA" dest\="ID_ORIG" type\="java.lang.String"/> \
+									<param id\="const" value\="1" dest\="FK_ENTE_SORGENTE" type\="java.lang.Integer"/> \
+									<param id\="field" value\="DESCRIZIONE_VIA" dest\="DESCRIZIONE_VIA" type\="java.lang.String"/> \
+									<param id\="field" value\="TIPO_CIVICO" dest\="TIPO_CIVICO" type\="java.lang.String"/> \
+									<param id\="field" value\="LOTTO" dest\="LOTTO" type\="java.lang.String"/> \
+									<param id\="field" value\="ISOLATO" dest\="ISOLATO" type\="java.lang.String"/> \
+									<param id\="field" value\="SCALA" dest\="SCALA" type\="java.lang.String"/> \
+									<param id\="field" value\="NUM_INT" dest\="NUM_INT" type\="java.lang.String"/> \
+									<param id\="field" value\="PIANO" dest\="PIANO" type\="java.lang.String"/> \
+									<param id\="field" value\="CAP" dest\="CAP" type\="java.lang.String"/> \
+									<param id\="field" value\="CITTADINANZA" dest\="CITTADINANZA" type\="java.lang.String"/> \
+									<param id\="field" value\="TITOLO_STUDIO" dest\="TITOLO_STUDIO" type\="java.lang.String"/> \
+									<param id\="field" value\="STATO_CIVILE" dest\="STATO_CIVILE" type\="java.lang.String"/> \
+									<param id\="field" value\="FLG_INTESTATARIO_SCHEDA" dest\="FLG_INTESTATARIO_SCHEDA" type\="java.lang.String"/> \
+									<param id\="field" value\="COD_EVENTO_VARIAZIONE" dest\="COD_EVENTO_VARIAZIONE" type\="java.lang.String"/> \
+									<param id\="field" value\="FOGLIO" dest\="FOGLIO" type\="java.lang.String"/> \
+									<param id\="field" value\="MAPPALE" dest\="MAPPALE" type\="java.lang.String"/> \
+									<param id\="field" value\="SUBALTERNO" dest\="SUBALTERNO" type\="java.lang.String"/> \
+									<param id\="field" value\="NOME_FILE" dest\="NOME_FILE" type\="java.lang.String"/> \
+									<param id\="field" value\="DT_EXP_DATO" dest\="DT_EXP_DATO" type\="java.sql.Timestamp"/> \
+									<param id\="const" value\="" dest\="DT_INIZIO_DATO" type\="java.sql.Timestamp"/> \
+									<param id\="const" value\="" dest\="DT_FINE_DATO" type\="java.sql.Timestamp"/> \
+									<param id\="const" value\="0" dest\="FLAG_DT_VAL_DATO" type\="java.lang.Integer"/> \
+								</command> \
+								<command name\="COMANDOSQL"> \
+									<param id\="const" dest\="SQL" type\="it.webred.rulengine.type.ComplexParam"> \
+										<\![CDATA[<complexParam> \
+											<param type\="java.lang.String" name\="paramsql1">update RE_POPOLAZIONE_COORD_CAT_1_1 SET RE_FLAG_ELABORATO \= 1 WHERE MATRICOLA\=? AND RE_DATA_INIZIO_VAL\=?</param> \
+										</complexParam> ]]> \
+									</param> \
+									<param id\="const" dest\="PARAMETRI" type\="it.webred.rulengine.type.ComplexParam"> \
+										<\![CDATA[ <complexParam> \
+											<param name\="param1"> [[MATRICOLA]] </param> \
+											<param name\="param2"> [[DT_EXP_DATO]] </param> \
+										</complexParam> ]]> \
+									</param> \
+								</command> \
+							</commands> \
+						</RsIterator>

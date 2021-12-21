@@ -1,7 +1,7 @@
 package it.webred.cs.jsf.interfaces;
 
+import it.webred.cs.csa.ejb.dto.prospettoSintesi.CasiOperatoreBean;
 import it.webred.cs.jsf.bean.CasiCatSocialeBean;
-import it.webred.cs.jsf.bean.CasiOperatoreBean;
 
 import java.util.List;
 

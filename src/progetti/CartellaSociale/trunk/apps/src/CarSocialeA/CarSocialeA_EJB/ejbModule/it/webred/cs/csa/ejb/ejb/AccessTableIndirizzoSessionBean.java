@@ -9,6 +9,7 @@ import it.webred.cs.data.DataModelCostanti;
 import it.webred.cs.data.model.CsAAnaIndirizzo;
 import it.webred.cs.data.model.CsAIndirizzo;
 import it.webred.cs.data.model.CsASoggettoLAZY;
+import it.webred.ct.support.datarouter.CeTBaseObject;
 import it.webred.ct.support.validation.annotation.AuditConsentiAccessoAnonimo;
 import it.webred.ct.support.validation.annotation.AuditSaltaValidazioneSessionID;
 
@@ -90,8 +91,13 @@ public class AccessTableIndirizzoSessionBean extends CarSocialeBaseSessionBean i
 	}
 
 	@Override
-	public List<KeyValueDTO> getListaComuniResidenza() {
+	public List<KeyValueDTO> getListaComuniResidenza(CeTBaseObject cet) {
 		return indirizzoDAO.getListaComuni(DataModelCostanti.TipiIndirizzi.RESIDENZA_ID);
+	}
+	
+	@Override
+	public List<KeyValueDTO> getListaNazioniResidenza(CeTBaseObject cet) {
+		return indirizzoDAO.getListaNazioni(DataModelCostanti.TipiIndirizzi.RESIDENZA_ID);
 	}
 
 }

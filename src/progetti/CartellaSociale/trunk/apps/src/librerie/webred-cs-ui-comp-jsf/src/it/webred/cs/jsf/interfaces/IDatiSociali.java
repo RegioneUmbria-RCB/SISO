@@ -68,5 +68,11 @@ public interface IDatiSociali {
 	public ComponenteAltroMan getTutela();
 
 	boolean isAffServSociali();
+	
+	public void onChangeTitoloStudio();
+	
+	public void onChangeCondLavoro();
+	
+	public void onChangeGruppoVulnerabile();
 
 }

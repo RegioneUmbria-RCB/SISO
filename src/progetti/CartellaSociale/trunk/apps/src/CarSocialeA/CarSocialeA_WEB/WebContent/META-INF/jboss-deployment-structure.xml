@@ -18,7 +18,6 @@
     <dependencies> 
       <module name="deployment.CT_Service_Client.ear" export="true"/>
       <module name="deployment.AmProfiler.ear" export="true"/>
-      <module name="deployment.Argo.ear" export="true"/>
       <module name="deployment.CarSocialeA.ear" export="true"/>
       <module name="deployment.CarSocialeA.ear.CarSocialeA_EJB.jar"/>
       <module name="deployment.AnagrafeRomaBridgeClient.war" export="true"/>

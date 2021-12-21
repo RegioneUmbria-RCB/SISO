@@ -4,25 +4,27 @@ import it.webred.cs.csa.ejb.CarSocialeBaseDAO;
 import it.webred.cs.csa.ejb.client.CarSocialeServiceException;
 import it.webred.cs.csa.ejb.dto.CasoSearchCriteria;
 import it.webred.cs.csa.ejb.dto.ContatoreCasiDTO;
+import it.webred.cs.csa.ejb.dto.KeyValueDTO;
 import it.webred.cs.csa.ejb.dto.SearchRdCDTO;
 import it.webred.cs.csa.ejb.dto.retvalue.DatiCasoListaDTO;
+import it.webred.cs.csa.ejb.queryBuilder.SoggettoQueryBuilder;
+import it.webred.cs.data.DataModelCostanti;
 import it.webred.cs.data.model.CsAAnagrafica;
 import it.webred.cs.data.model.CsAAnagraficaLog;
 import it.webred.cs.data.model.CsACaso;
 import it.webred.cs.data.model.CsAComponenteAnagCasoGit;
 import it.webred.cs.data.model.CsASoggettoCategoriaSoc;
-import it.webred.cs.data.model.CsASoggettoCategoriaSocLAZY;
 import it.webred.cs.data.model.CsASoggettoLAZY;
 import it.webred.cs.data.model.CsASoggettoMedico;
 import it.webred.cs.data.model.CsASoggettoStatoCivile;
 import it.webred.cs.data.model.CsASoggettoStatus;
+import it.webred.cs.data.model.CsCCategoriaSociale;
 import it.webred.cs.data.model.view.CsRdcAnagraficaGepi;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 
 import javax.inject.Named;
@@ -75,7 +77,7 @@ public class SoggettoDAO extends CarSocialeBaseDAO implements Serializable {
 		}
 		
 		@SuppressWarnings("unchecked")
-		public CsAComponenteAnagCasoGit getAnagraficaCasoGitAggiornatoBySoggettoId(Long idAnagraficaSoggetto, java.util.Date dataUltMod) {
+		public CsAComponenteAnagCasoGit getAnagraficaCasoGitAggiornatoBySoggettoId(Long idAnagraficaSoggetto, Date dataUltMod) {
 			List<CsAComponenteAnagCasoGit> s = new ArrayList<CsAComponenteAnagCasoGit>();
 			Query q;
 			try{
@@ -162,9 +164,13 @@ public class SoggettoDAO extends CarSocialeBaseDAO implements Serializable {
 	
 	@SuppressWarnings("unchecked")
 	public List<CsASoggettoLAZY> getSoggettiByCF(String cf) {
-		Query q = em.createNamedQuery("CsASoggetto.findByCF").setParameter("cf", cf);
-		return q.getResultList();
-	
+		List<CsASoggettoLAZY> lista = new ArrayList<CsASoggettoLAZY>();
+		if(!StringUtils.isBlank(cf)){
+			Query q = em.createNamedQuery("CsASoggetto.findByCF");
+			q.setParameter("cf", cf);
+			lista =  q.getResultList();
+		}
+		return lista;
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -200,15 +206,13 @@ public class SoggettoDAO extends CarSocialeBaseDAO implements Serializable {
 
 	
 	@SuppressWarnings("unchecked")
-	public List<CsASoggettoCategoriaSocLAZY> getSoggCategorieAttualiLAZYBySoggetto(long idSoggetto) {
-
-		Query q = em.createNamedQuery("CsASoggettoCategoriaSoc.findAttualiLAZYBySoggetto");
+	public List<CsASoggettoCategoriaSoc> getSoggCategorieAttualiBySoggetto(long idSoggetto) {
+		Query q = em.createNamedQuery("CsASoggettoCategoriaSoc.findAttualiBySoggetto");
 		q.setParameter("idSoggetto", idSoggetto);
 		q.setParameter("dtRif", new Date());
-		return q.getResultList();
-
+		List<CsASoggettoCategoriaSoc> lst = q.getResultList();
+		return lst;
 	}
-	
 	
 	public void saveSoggettoCategoria(CsASoggettoCategoriaSoc cs) {
 
@@ -230,46 +234,47 @@ public class SoggettoDAO extends CarSocialeBaseDAO implements Serializable {
 		List<DatiCasoListaDTO> lstCasi = new ArrayList<DatiCasoListaDTO>();
 		
 		try{
-		String sql = "";	
+		String sql = "";
+		SoggettoQueryBuilder qb = new SoggettoQueryBuilder(criteria);
 		if(criteria.getPermessiScheda())
-			sql = new SoggettoQueryBuilder(criteria).createQueryListaCasiAssegnati(false);
+			sql = qb.createQueryListaCasiAssegnati(false);
 		else
-			sql = new SoggettoQueryBuilder(criteria).createQueryListaCasi(false);
+			sql = qb.createQueryListaCasi(false);
 		
 		logger.info("getCasiSoggetto SQL LISTA CASI[" + sql+"]");
 		
 		Query q = em.createNativeQuery(sql);
+		String params = qb.setParameters(q);
+		logger.info("getCasiSoggetto PARAMS LISTA CASI " + params );
+		
 		if(first != null)
 			q.setFirstResult(first);
 		if(pagesize != null)
 			q.setMaxResults(pagesize);
 
 		List<Object[]> lista = q.getResultList();
-		List<Long> idAnagrafici = new ArrayList<Long>();
-		HashMap<Long,Date> mappaDate = new HashMap<Long,Date>();
-		HashMap<Long,String> mappaRes = new HashMap<Long,String>();
 		for(Object[] objArr: lista) {
-			Long idAnagrafica = ((BigDecimal) objArr[0]).longValue();
-			idAnagrafici.add(idAnagrafica);
-			mappaDate.put(idAnagrafica, (Date)objArr[4]);
+			int index = 0;
+			Long idAnagrafica = ((BigDecimal) objArr[index++]).longValue();
+			Long idCaso = ((BigDecimal) objArr[index++]).longValue();
+			Long identificativoCaso = ((BigDecimal) objArr[index++]).longValue();
+			String denominazione = (String)objArr[index++];
+			Date dataNascita = (Date)objArr[index++];
+			String cf = (String)objArr[index++];
+			Date dataApertura = (Date)objArr[index++];
 			
-			String residenza = null;
-			if(!StringUtils.isBlank((String)objArr[6])) residenza = (String)objArr[6];
-			if(!StringUtils.isBlank((String)objArr[7])) residenza+= " (" + (String)objArr[7] + ")";
-			mappaRes.put(idAnagrafica, residenza);
-		}
-		
-		if (idAnagrafici!=null && idAnagrafici.size()>0) {
-			Query qList = em.createQuery("select s from CsASoggettoLAZY s inner join fetch s.csACaso c inner join fetch s.csAAnagrafica a where s.anagraficaId in (:idAnagrafici) order by s.csAAnagrafica.cognome, s.csAAnagrafica.nome");
-			qList.setParameter("idAnagrafici", idAnagrafici ); 
-			List<CsASoggettoLAZY> listaSogg = qList.getResultList();
-			for(CsASoggettoLAZY s : listaSogg){
-				DatiCasoListaDTO dc = new DatiCasoListaDTO();
-				dc.setSoggetto(s);
-				dc.setDataApertura(mappaDate.get(s.getAnagraficaId()));
-				dc.setResidenza(mappaRes.get(s.getAnagraficaId()));
-				lstCasi.add(dc);
-			}
+			String residenza = (String)objArr[index++];
+			
+			DatiCasoListaDTO dc = new DatiCasoListaDTO();
+			dc.setAnagraficaId(idAnagrafica);
+			dc.setCasoId(idCaso);
+			dc.setIdentificativo(identificativoCaso);
+			dc.setDenominazione(denominazione);
+			dc.setCf(cf);
+			dc.setDataNascita(dataNascita);
+			dc.setDataApertura(dataApertura);
+			dc.setResidenza(residenza);
+			lstCasi.add(dc);
 		}
 		
 		logger.info("restituisco getCasiSoggetto "+ lista.size());
@@ -311,21 +316,24 @@ public class SoggettoDAO extends CarSocialeBaseDAO implements Serializable {
 	}
 	public Integer getCasiSoggettoCount(CasoSearchCriteria criteria) {
 		String sql = "";	
+		SoggettoQueryBuilder qb = new SoggettoQueryBuilder(criteria);
 		if(criteria.getPermessiScheda())
-			sql = new SoggettoQueryBuilder(criteria).createQueryListaCasiAssegnati(true);
+			sql = qb.createQueryListaCasiAssegnati(true);
 		else
-			sql = new SoggettoQueryBuilder(criteria).createQueryListaCasi(true);
+			sql = qb.createQueryListaCasi(true);
+		logger.info("getCasiSoggettoCount SQL LISTA CASI[" + sql+"]");
 		Query q = em.createNativeQuery(sql);
+		String params = qb.setParameters(q);
+		logger.info("getCasiSoggettoCount PARAMS LISTA CASI " + params );
 		BigDecimal o = (BigDecimal) q.getSingleResult();
 		return new Integer(o.intValue());
 	}
 	
 	public ContatoreCasiDTO getCasiPerCategoriaCount(CasoSearchCriteria criteria) {
 		ContatoreCasiDTO counter = new ContatoreCasiDTO();
-		String sql = new SoggettoQueryBuilder(criteria).createQueryCasiPerCategoria(true);
-		logger.debug("getCasiPerCategoriaCount SQL["+sql+"]");
-		Query q = em.createNativeQuery(sql);
-		List<Object[]> results = q.getResultList();
+		 SoggettoQueryBuilder qb = new SoggettoQueryBuilder(criteria);
+		 Query q = qb.createQueryCasiPerCategoria(em, true);
+		 List<Object[]> results = q.getResultList();
 		int countOrganizzazione = 0;
 		int countZonaSociale=0;
 		for(Object[] o : results){
@@ -461,13 +469,6 @@ public class SoggettoDAO extends CarSocialeBaseDAO implements Serializable {
 		
 	}
 
-	@SuppressWarnings("unchecked")
-	public List<CsAAnagrafica> findAnagraficaFamigliaByIdSoggetto(Long soggettoId) {
-		Query q = em.createNamedQuery("CsASoggettoStatus.findAnagraficaFamigliaByIdSoggetto")
-				.setParameter("soggettoId", soggettoId);
-		return q.getResultList();
-	}
-
 	private String getQueryRdC(boolean count, SearchRdCDTO criteria) {
 		
 		String sql = "";
@@ -501,19 +502,17 @@ public class SoggettoDAO extends CarSocialeBaseDAO implements Serializable {
 		return trovato;
 	}
 	
-	public Boolean existsBeneficiarioRdC(List<String> listaCf) {
+	public Boolean hasNucleoBeneficiarioRdC(Long idAnagrafica,String cf, Date dtRif) {
 		boolean trovato = false;
-		if(listaCf!=null && !listaCf.isEmpty()) {
-			List<String> uppers = new ArrayList<String>();
-			for(String cf : listaCf)
-				uppers.add(cf.toUpperCase());
-				
-			Query q = em.createNamedQuery("CsRdcAnagraficaGepi.findByCf");
-			q.setParameter("lista", uppers);
+		Date dtVal = dtRif!=null ? dtRif : DataModelCostanti.END_DATE;
+		Query q = em.createNamedQuery("CsRdcAnagraficaGepi.findInNucleo");
+		q.setParameter("idSoggetto", idAnagrafica);
+		q.setParameter("cfSoggetto", cf.toUpperCase());
+		q.setParameter("dtVal", dtVal);
+		
+		List<CsRdcAnagraficaGepi> lista = (List<CsRdcAnagraficaGepi>) q.getResultList();
+		trovato = !lista.isEmpty();
 			
-			List<CsRdcAnagraficaGepi> lista = (List<CsRdcAnagraficaGepi>) q.getResultList();
-			trovato = !lista.isEmpty();
-		}
 		return trovato;
 	}
 

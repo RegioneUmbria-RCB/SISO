@@ -26,9 +26,10 @@ public class CsAmAnagraficaOperatore implements Serializable {
 	
 	private String enti;
 	
-	@OneToOne
-	@JoinColumn (name="ID_CS_OPERATORE")
-	private CsOOperatore operatore;
+	@Column (name="ID_CS_OPERATORE")
+	private Long operatoreId;
+	
+	private Boolean abilitato;
 	
 	public CsAmAnagraficaOperatore() {
 	}
@@ -80,13 +81,21 @@ public class CsAmAnagraficaOperatore implements Serializable {
 	public void setEnti(String enti) {
 		this.enti = enti;
 	}
-
-	public CsOOperatore getOperatore() {
-		return operatore;
+	
+	public Long getOperatoreId() {
+		return operatoreId;
 	}
 
-	public void setOperatore(CsOOperatore operatore) {
-		this.operatore = operatore;
+	public void setOperatoreId(Long operatoreId) {
+		this.operatoreId = operatoreId;
+	}
+
+	public Boolean getAbilitato() {
+		return abilitato;
+	}
+
+	public void setAbilitato(Boolean abilitato) {
+		this.abilitato = abilitato;
 	}
 
 }

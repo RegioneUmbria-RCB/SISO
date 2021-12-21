@@ -1,6 +1,7 @@
 package it.webred.cs.csa.ejb;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -15,5 +16,7 @@ public class CarSocialeBaseDAO implements Serializable {
 	protected EntityManager em;
 	
 	protected static Logger logger = Logger.getLogger("carsociale.log");
+	
+	protected SimpleDateFormat ddMMyyyy = new SimpleDateFormat("dd/MM/yyyy");
 
 }

@@ -17,6 +17,7 @@ import it.webred.cs.csa.web.manbean.scheda.parenti.ParentiBean;
 import it.webred.cs.csa.web.manbean.scheda.sociali.DatiSocialiBean;
 import it.webred.cs.csa.web.manbean.scheda.sociali.DatiSocialiComp;
 import it.webred.cs.csa.web.manbean.scheda.tribunale.DatiTribunaleBean;
+import it.webred.cs.csa.web.manbean.schedaSegr.SchedaSegr;
 import it.webred.cs.data.DataModelCostanti;
 import it.webred.cs.data.DataModelCostanti.PermessiCartella;
 import it.webred.cs.data.DataModelCostanti.TipoRicercaSoggetto;
@@ -27,13 +28,9 @@ import it.webred.cs.jsf.bean.DatiCasoBean;
 import it.webred.cs.jsf.bean.DatiUserSearchBean;
 import it.webred.cs.jsf.bean.ValiditaCompBaseBean;
 import it.webred.cs.jsf.manbean.ConsensoPrivacyMan;
-import it.webred.cs.jsf.manbean.exception.CsUiCompException;
 import it.webred.cs.jsf.manbean.superc.CsUiCompBaseBean;
 import it.webred.ct.config.model.AmTabComuni;
 import it.webred.ct.config.model.AmTabNazioni;
-import it.webred.ct.data.access.basic.anagrafe.dto.ComponenteFamigliaDTO;
-import it.webred.ct.data.access.basic.anagrafe.dto.RicercaSoggettoAnagrafeDTO;
-import it.webred.ct.data.model.anagrafe.SitDPersona;
 import it.webred.ejb.utility.ClientUtility;
 import it.webred.jsf.bean.ComuneBean;
 import it.webred.jsf.bean.SessoBean;
@@ -61,7 +58,6 @@ import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import javax.faces.model.SelectItemGroup;
-import javax.naming.NamingException;
 
 import org.apache.commons.lang3.StringUtils;
 import org.primefaces.component.tabview.TabView;
@@ -122,6 +118,9 @@ public class SchedaBean extends CsUiCompBaseBean {
 	private boolean renderTabOperatori;
 	private boolean renderTabNote;
 	
+	//SISO-1526
+	private boolean checkDatiEsterni = false;
+	
 	// 2018-02-01 Smartpeg - Maintenance
 	private boolean renderedCasoEsportatoInterscambio;
 	private boolean renderedCasoImportatoInterscambio;
@@ -151,7 +150,6 @@ public class SchedaBean extends CsUiCompBaseBean {
 		    Map<String,String> params = context.getExternalContext().getRequestParameterMap();
 		    TabView tabView = (TabView) tce.getComponent();
 		    String activeIndexValue = params.get(tabView.getClientId(context) + "_tabindex");
-		
 		    this.tabViewIndex = Integer.parseInt(activeIndexValue);
 		}catch(Exception ex){
 			this.tabViewIndex = 0;
@@ -204,6 +202,15 @@ public class SchedaBean extends CsUiCompBaseBean {
 		return renderedCasoImportatoInterscambio;
 	}
 
+	
+	public boolean isCheckDatiEsterni() {
+		return checkDatiEsterni;
+	}
+
+	public void setCheckDatiEsterni(boolean checkDatiEsterni) {
+		this.checkDatiEsterni = checkDatiEsterni;
+	}
+
 	/**
 	 * Gestione visualizzazione icona di notifica per Caso Esportato
 	 * 
@@ -227,13 +234,14 @@ public class SchedaBean extends CsUiCompBaseBean {
 		
 		if(soggetto!=null){
 			// Operatore_Settore_ID
-			long currentOrg = getCurrentOpSettore().getCsOSettore().getCsOOrganizzazione().getId();
 			// Codice Fiscale del Caso
-			String codiceFiscale = soggetto.getCsAAnagrafica().getCf();
-	
+			BaseDTO dto = new BaseDTO();
+			fillEnte(dto);
+			dto.setObj(soggetto.getCsAAnagrafica().getCf());
+			dto.setObj2(getCurrentOpSettore().getCsOSettore().getCsOOrganizzazione().getId());
+			dto.setObj3(tipo);
 			// Ottengo la lista di eventi legata al caso selezionato
-			List<EventoDTO> eventiCaso = this.ics.getEventoService()
-					.findEventsByOpSettIdAndCF(codiceFiscale, currentOrg, tipo);
+			List<EventoDTO> eventiCaso = this.ics.getEventoService().findEventsByOpSettIdAndCF(dto);
 	
 			if (!eventiCaso.isEmpty()) esiste = true;
 		}
@@ -245,8 +253,7 @@ public class SchedaBean extends CsUiCompBaseBean {
 		initialize(null);
 		modifica();
 		try {
-			FacesContext.getCurrentInstance().getExternalContext()
-					.redirect("scheda.faces");
+			FacesContext.getCurrentInstance().getExternalContext().redirect("scheda.faces");
 		} catch (IOException e) {
 			addError("Errore",
 					"Errore durante il reindirizzamento alla scheda Caso");
@@ -268,10 +275,12 @@ public class SchedaBean extends CsUiCompBaseBean {
     		String codFiscale = !StringUtils.isBlank(idSearch) &&  idSearch.startsWith("@") ? idSearch.replace("@","") : null;
     		
     		PersonaDettaglio p = pIn;
-			if(!StringUtils.isBlank(id)) 
-				p = getPersonaDaAnagEsterna(tipoRicerca, id);
-			else if(!DataModelCostanti.TipoRicercaSoggetto.ANAG_SANITARIA_MARCHE.equals(tipoRicerca))
-				p = CsUiCompBaseBean.getPersonaDaAnagEsterna(tipoRicerca, null, null, codFiscale);
+    		if(!DataModelCostanti.TipoRicercaSoggetto.DEFAULT.equals(tipoRicerca)){
+				if(!StringUtils.isBlank(id)) 
+					p = getPersonaDaAnagEsterna(tipoRicerca, id);
+				else if(!DataModelCostanti.TipoRicercaSoggetto.ANAG_SANITARIA_MARCHE.equals(tipoRicerca))
+					p = CsUiCompBaseBean.getPersonaDaAnagEsterna(tipoRicerca, null, null, codFiscale);
+    		}
 
 			if (p != null) {
 
@@ -315,7 +324,7 @@ public class SchedaBean extends CsUiCompBaseBean {
 				List<CsAIndirizzo> listaIndirizzi = new ArrayList<CsAIndirizzo>();
 				
 				// indirizzo residenza
-				if(p.getIndirizzoResidenza()!=null && !p.getIndirizzoResidenza().isEmpty()){
+				if(!StringUtils.isBlank(p.getIndirizzoResidenza())){
 					CsAIndirizzo indirizzoRes = new CsAIndirizzo();
 					CsAAnaIndirizzo indirizzoAna = new CsAAnaIndirizzo();
 					indirizzoAna.setIndirizzo(p.getIndirizzoResidenza());
@@ -335,9 +344,9 @@ public class SchedaBean extends CsUiCompBaseBean {
 					indirizzoRes.setCsTbTipoIndirizzo(anagraficaBean.getResidenzaCsaMan().getTipoIndirizzoResidenza());
 					listaIndirizzi.add(indirizzoRes);
 				}
-			
+				
 				// indirizzo domicilio
-				if(p.getIndirizzoDomicilio()!=null && !p.getIndirizzoDomicilio().isEmpty()){
+				if(!StringUtils.isBlank(p.getIndirizzoDomicilio())){
 					CsAIndirizzo indirizzoDom = new CsAIndirizzo();
 					CsAAnaIndirizzo indirizzoAnaDom = new CsAAnaIndirizzo();
 					indirizzoAnaDom.setIndirizzo(p.getIndirizzoResidenza());
@@ -364,11 +373,28 @@ public class SchedaBean extends CsUiCompBaseBean {
 				// stato civile
 				this.impostaStatoCivile(p.getStatoCivile());
 			
+				//medico
 				if(TipoRicercaSoggetto.ANAG_SANITARIA_MARCHE.equalsIgnoreCase(tipoRicerca))
 					anagraficaBean.impostaMedicoPersonaMarche(p);
 				if(TipoRicercaSoggetto.ANAG_SANITARIA_UMBRIA.equalsIgnoreCase(tipoRicerca))
 					anagraficaBean.impostaMedicoPersonaUmbria(p.getMedicoCodRegionale(), p.getMedicoDataScelta(), p.getMedicoDataRevoca());
-
+				if(TipoRicercaSoggetto.DEFAULT.equalsIgnoreCase(tipoRicerca)){
+					try {
+						// Cerca medico del soggetto in anagrafe regionale
+						PersonaDettaglio pMedicoUmbria = getPersonaDaAnagEsterna(TipoRicercaSoggetto.ANAG_SANITARIA_UMBRIA, p.getCognome(), p.getNome(), p.getCodfisc());
+						if (pMedicoUmbria != null) 
+							anagraficaBean.impostaMedicoPersonaUmbria(pMedicoUmbria.getMedicoCodRegionale(), pMedicoUmbria.getMedicoDataScelta(), pMedicoUmbria.getMedicoDataRevoca());
+						
+						PersonaDettaglio pMedicoMarche = getPersonaDaAnagEsterna(TipoRicercaSoggetto.ANAG_SANITARIA_MARCHE, p.getCognome(), p.getNome(), p.getCodfisc());
+						if(pMedicoMarche!=null)
+							anagraficaBean.impostaMedicoPersonaMarche(pMedicoMarche);
+						
+					} catch (Exception e) {
+						addError("Errore","Errore recupero medico da anagrafe regionale");
+						logger.error("Errore recupero medico da anagrafe regionale" + e.getMessage(), e);
+					}
+				
+				}
 			}
 
 			FacesContext.getCurrentInstance().getExternalContext().redirect("scheda.faces");
@@ -389,126 +415,12 @@ public class SchedaBean extends CsUiCompBaseBean {
 			else if(id.trim().startsWith(DataModelCostanti.TipoRicercaSoggetto.SIGESS))
 				nuovaDaAnagrafeEsterna(DataModelCostanti.TipoRicercaSoggetto.SIGESS, id.replace(DataModelCostanti.TipoRicercaSoggetto.SIGESS, ""), (PersonaDettaglio)sel.getSoggetto());
 			else
-				nuovaDaAnagrafe(id);
+				nuovaDaAnagrafeEsterna(DataModelCostanti.TipoRicercaSoggetto.DEFAULT, id.replace(DataModelCostanti.TipoRicercaSoggetto.DEFAULT, ""), (PersonaDettaglio)sel.getSoggetto());
 		} else {
 			this.addWarning("Attenzione","Selezionare un soggetto per poter creare una nuova cartella");
 		}
 	}
-
-	public void nuovaDaAnagrafe(String id) {
-
-		if (id == null || "".equals(id)) {
-			addWarning("Scegliere un soggetto o creare una cartella vuota", "");
-			return;
-		}
-
-		initialize(null);
-		modifica();
-
-		try {
-			// precarico anagrafica
-			RicercaSoggettoAnagrafeDTO ricercaDto = new RicercaSoggettoAnagrafeDTO();
-			fillEnte(ricercaDto);
-			ricercaDto.setIdVarSogg(id);
-			SitDPersona p = anagrafeService.getPersonaById(ricercaDto);
-
-			if (p != null) {
-
-				if (this.isCodFiscaleInCs(p.getCodfisc())){
-					disableHead = false;
-					return;
-				}
-
-				if (p.getDataMor() != null && p.getDataMor().before(new Date())) {
-					addWarning(
-							"Non è possibile creare una nuova cartella",
-							"Il soggetto selezionato è deceduto il "
-									+ ddMMyyyy.format(p.getDataMor()));
-					disableHead = false;
-					return;
-				}
-
-				ComponenteFamigliaDTO compDto = new ComponenteFamigliaDTO();
-				compDto.setPersona(p);
-				fillEnte(compDto);
-				compDto = anagrafeService.fillInfoAggiuntiveComponente(compDto);
-
-				// anagrafica
-				DatiAnaBean anaBean = new DatiAnaBean();
-				anaBean.setIdOrigWs(DataModelCostanti.TipoRicercaSoggetto.DEFAULT+"@"+(p.getIdExt()!=null ? p.getIdExt() : ""));
-				anaBean.setCodiceFiscale(p.getCodfisc());
-				anaBean.setCognome(p.getCognome());
-				anaBean.setNome(p.getNome());
-				anaBean.setDataNascita(p.getDataNascita());
-				SessoBean sb = new SessoBean(p.getSesso());
-				anaBean.setDatiSesso(sb);
-
-				// Cittadinanza
-				anaBean.setCittadinanza(compDto.getCittadinanza());
-
-				anagraficaBean.setDatiAnaBean(anaBean);
-
-				// nascita
-				if ("ITALIA".equals(compDto.getDesStatoNas())) {
-					ComuneBean comuneBean = new ComuneBean(compDto.getCodComNas(), compDto.getDesComNas(),compDto.getSiglaProvNas());
-					anagraficaBean.getComuneNazioneNascitaMan().getComuneNascitaMan().setComune(comuneBean);
-				} else {
-					AmTabNazioni amTabNazioni = CsUiCompBaseBean.getNazioneByIstat(compDto.getIstatStatoNas(),compDto.getDesStatoNas());
-					anagraficaBean.getComuneNazioneNascitaMan().setNazioneValue();
-					anagraficaBean.getComuneNazioneNascitaMan().getNazioneMan().setNazione(amTabNazioni);
-				}
-
-				// indirizzo res
-				impostaIndirizzoDaAnagrafe(p.getCodfisc());
-
-				// stato civile
-				impostaStatoCivile(p.getStatoCivile());
-			
-				
-				try {
-					// Cerca medico del soggetto in anagrafe regionale
-					PersonaDettaglio pMedicoUmbria = getPersonaDaAnagEsterna(TipoRicercaSoggetto.ANAG_SANITARIA_UMBRIA, p.getCognome(), p.getNome(), p.getCodfisc());
-					if (pMedicoUmbria != null) 
-						anagraficaBean.impostaMedicoPersonaUmbria(pMedicoUmbria.getMedicoCodRegionale(), pMedicoUmbria.getMedicoDataScelta(), pMedicoUmbria.getMedicoDataRevoca());
-					
-					PersonaDettaglio pMedicoMarche = getPersonaDaAnagEsterna(TipoRicercaSoggetto.ANAG_SANITARIA_MARCHE, p.getCognome(), p.getNome(), p.getCodfisc());
-					if(pMedicoMarche!=null)
-						anagraficaBean.impostaMedicoPersonaMarche(pMedicoMarche);
-					
-				} catch (Exception e) {
-					addError("Errore","Errore recupero medico da anagrafe regionale");
-					logger.error("Errore recupero medico da anagrafe regionale"
-							+ e.getMessage(), e);
-				}
-			}
-
-			FacesContext.getCurrentInstance().getExternalContext().redirect("scheda.faces");
-
-		} catch (Exception e) {
-			addError("Errore", "Errore durante il caricamento dell'anagrafica");
-			logger.error("", e);
-		}
-	}
 	
-	private void impostaIndirizzoDaAnagrafe(String cf) throws NamingException{
-		if(cf!=null){
-			AccessTablePersonaCiviciSessionBeanRemote personaCiviciService = (AccessTablePersonaCiviciSessionBeanRemote) ClientUtility
-					.getEjbInterface("CarSocialeA", "CarSocialeA_EJB","AccessTablePersonaCiviciSessionBean");
-			BaseDTO dto = new BaseDTO();
-			fillEnte(dto);
-			dto.setObj(cf);
-			CsAIndirizzo indResidenza = personaCiviciService.getIndirizzoResidenzaByCodFisc(dto);
-			if (indResidenza != null) {
-				indResidenza.setCsTbTipoIndirizzo(anagraficaBean.getResidenzaCsaMan().getTipoIndirizzoResidenza());
-				List<CsAIndirizzo> listaIndirizzi = new ArrayList<CsAIndirizzo>();
-				listaIndirizzi.add(indResidenza);
-				anagraficaBean.getResidenzaCsaMan().setLstIndirizzi(listaIndirizzi);
-				anagraficaBean.getResidenzaCsaMan().setLstIndirizziOld(listaIndirizzi);
-				anagraficaBean.getResidenzaCsaMan().setWarningMessage(MSG_DATE);
-			}
-		}
-	}
-		
 	private void impostaStatoCivile(String sc){
 		if (sc != null && !sc.trim().isEmpty()) {
 			
@@ -607,7 +519,19 @@ public class SchedaBean extends CsUiCompBaseBean {
 		}	
 	}
 
-	public void nuovaDaSegretariatoSoc(Long id) {
+	// SISO-938 la creazione da "Schede Ufficio della Cittadinanza" viene smistata a seconda del tipoScheda
+	public void nuovaDaSchedeUDC(SchedaSegr schedaSegr) {
+		if (schedaSegr.isProvenienzaUDC()) {
+			nuovaDaSegretariatoSoc(schedaSegr.getId());
+		}
+		else {
+			// SISO-938 2019-02-21 per ora l'unico caso di ALTRI è Serena e ricade tutto lì in automatico
+			nuovaDaAltriSerena(schedaSegr);
+		}
+	}
+	
+	// SISO-938 reso private, in quanto il punto di ingresso della view è diventato nuovaDaSchedeUDC(SchedaSegr)
+	private void nuovaDaSegretariatoSoc(Long id) {
 
 		if (id == null) {
 			addWarning("Scegliere una scheda", "");
@@ -681,8 +605,7 @@ public class SchedaBean extends CsUiCompBaseBean {
 					String comuneNascita = ana.getLuogoDiNascita();
 					if (comuneNascita != null) {
 						AccessTableComuniSessionBeanRemote comuniService = (AccessTableComuniSessionBeanRemote) getEjb(
-								"CarSocialeA", "CarSocialeA_EJB",
-								"AccessTableComuniSessionBean");
+								"CarSocialeA", "CarSocialeA_EJB","AccessTableComuniSessionBean");
 						List<AmTabComuni> lstComuni = comuniService.getComuniByDenomContains(comuneNascita, false);
 						if (lstComuni != null && !lstComuni.isEmpty() && lstComuni.size() == 1) {
 							AmTabComuni comune = lstComuni.get(0);
@@ -690,8 +613,7 @@ public class SchedaBean extends CsUiCompBaseBean {
 							anagraficaBean.getComuneNazioneNascitaMan().getComuneNascitaMan().setComune(comuneBean);
 						} else {
 							AccessTableNazioniSessionBeanRemote nazioniService = (AccessTableNazioniSessionBeanRemote) getEjb(
-									"CarSocialeA", "CarSocialeA_EJB",
-									"AccessTableNazioniSessionBean");
+									"CarSocialeA", "CarSocialeA_EJB","AccessTableNazioniSessionBean");
 							List<AmTabNazioni> lstNazioni = nazioniService.getNazioniByDenomContains(comuneNascita);
 							if (lstComuni != null && !lstNazioni.isEmpty() && lstNazioni.size() == 1) {
 								AmTabNazioni amTabNazioni = lstNazioni.get(0);
@@ -744,14 +666,15 @@ public class SchedaBean extends CsUiCompBaseBean {
 							indirizzoAna.setIndirizzo(viaResSegnalato);
 							if (civicoResSegnalato != null)
 								indirizzoAna.setCivicoNumero(civicoResSegnalato.toString());
-
-							indirizzoAna.setProv(residenzaSegnalato.getProvCod());
-							indirizzoAna.setComCod(residenzaSegnalato.getComuneCod());
-							indirizzoAna.setComDes(residenzaSegnalato.getComuneDes());
-
-							indirizzoAna.setStatoCod(residenzaSegnalato.getStatoCod());
-							indirizzoAna.setStatoDes(residenzaSegnalato.getStatoDes());
-
+							
+							if(!StringUtils.isBlank(residenzaSegnalato.getComuneCod())){
+								indirizzoAna.setProv(residenzaSegnalato.getProvCod());
+								indirizzoAna.setComCod(residenzaSegnalato.getComuneCod());
+								indirizzoAna.setComDes(residenzaSegnalato.getComuneDes());
+							}else{
+								indirizzoAna.setStatoCod(residenzaSegnalato.getStatoCod());
+								indirizzoAna.setStatoDes(residenzaSegnalato.getStatoDes());
+							}
 							indirizzoRes.setDataInizioApp(new Date());
 							indirizzoRes.setCsAAnaIndirizzo(indirizzoAna);
 						}
@@ -825,6 +748,47 @@ public class SchedaBean extends CsUiCompBaseBean {
 		}
 	}
 
+	private void nuovaDaAltriSerena(SchedaSegr schedaSegr) {
+		Long id = schedaSegr.getId();
+		String tipoScheda = schedaSegr.getProvenienza();
+		
+		if (id == null || "".equals(id)) {
+			addWarning("Scegliere un soggetto o creare una cartella vuota", "");
+			return;
+		}
+
+		initialize(null);
+		modifica();
+		
+		try {
+			AccessTableSchedaSegrSessionBeanRemote schedaSegrService = (AccessTableSchedaSegrSessionBeanRemote) getEjb("CarSocialeA", "CarSocialeA_EJB", "AccessTableSchedaSegrSessionBean");
+
+			BaseDTO csDto = new BaseDTO();
+			fillEnte(csDto);
+
+			csDto.setObj(id);
+			csDto.setObj2(tipoScheda);
+			
+			CsSchedeAltraProvenienza vistaCasiAltri = schedaSegrService.findVistaCasiAltriBySchedaIdProvenienza(csDto);
+			schedaSegrBean.setVistaCasiAltri(vistaCasiAltri);
+
+			// anagrafica
+			DatiAnaBean anaBean = new DatiAnaBean();
+			anaBean.setCodiceFiscale(vistaCasiAltri.getSegnalatoCodiceFiscale());
+			anaBean.setCognome(vistaCasiAltri.getSegnalatoCognome());
+			anaBean.setNome(vistaCasiAltri.getSegnalatoNome());
+
+			anagraficaBean.setDatiAnaBean(anaBean);
+			
+			
+			FacesContext.getCurrentInstance().getExternalContext().redirect("scheda.faces");
+		}
+		catch (Exception e) {
+			addError("Errore", "Errore durante il caricamento dell'anagrafica");
+			logger.error("", e);
+		}
+	}
+	
 	public void carica(DatiCasoBean selectedCaso) {
 		initializePresaInCarico(selectedCaso);
 
@@ -834,11 +798,9 @@ public class SchedaBean extends CsUiCompBaseBean {
 
 		BaseDTO b = new BaseDTO();
 		fillEnte(b);
-		b.setObj(selectedCaso.getSoggetto().getAnagraficaId());
+		b.setObj(selectedCaso.getAnagraficaId());
 
 		CsASoggettoLAZY soggetto = soggettoService.getSoggettoById(b);
-
-		// CsASoggetto soggetto = selectedCaso.getSoggetto();
 
 		if (soggetto != null) {
 			initialize(soggetto);
@@ -858,20 +820,24 @@ public class SchedaBean extends CsUiCompBaseBean {
 	public void carica(CsASoggettoLAZY soggetto) {
 		if (soggetto != null) {
 			initialize(soggetto);
-			initializePresaInCarico(soggetto);
 			try {
 				FacesContext.getCurrentInstance().getExternalContext().redirect("scheda.faces");
 			} catch (IOException e) {
-				addError("Errore",
-						"Errore durante il reindirizzamento alla scheda Caso");
+				addError("Errore","Errore durante il reindirizzamento alla scheda Caso");
 			}
 		} else
 			addWarningFromProperties("seleziona.warning");
 	}
+	
+	public void carica(Long soggettoId) {
+		if (soggettoId != null) {
+			CsASoggettoLAZY soggetto = this.getSoggettoById(soggettoId);
+			this.carica(soggetto);
+		}
+	}
 
 	public void initializePresaInCarico(DatiCasoBean selectedCaso) {
-		logger.info("Inizializza PresaInCarico per il caso:"
-				+ selectedCaso.getSoggetto().getAnagraficaId());
+		logger.info("Inizializza PresaInCarico per il caso:"+ selectedCaso.getAnagraficaId());
 		presaInCaricoBean = new PresaInCaricoBean();
 		presaInCaricoBean.initialize(selectedCaso);
 		presaInCaricoBean.setReadOnly(isDisableModificaCartella());
@@ -890,18 +856,25 @@ public class SchedaBean extends CsUiCompBaseBean {
 		}
 	}
 
+	
+	
 	public void initialize(CsASoggettoLAZY soggetto) {
 		logger.debug("*** INIZIO SchedaBean.initialize ....");
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-		
+	
 		if (soggetto != null && soggetto.getAnagraficaId() != null && soggetto.getAnagraficaId() != 0) {
-
+			//SISO-1526 Caricare l'elenco di eventuali dati esterni per tab0
+			String etichetta = schedaDatiEsterniSoggettoBean.getDatiEsterniFilterString(String.valueOf(this.tabViewIndex));
+			if(etichetta != null)
+				this.checkDatiEsterni = schedaDatiEsterniSoggettoBean.controllaPresenzaDatiEsterniSoggetto(etichetta);
+			
 			Long soggettoId = soggetto.getAnagraficaId();
 			getSession().setAttribute("soggettoId", soggettoId);
 			getSession().setAttribute("soggetto", soggetto);
 
 			Long casoId = soggetto.getCsACaso().getId();
-
+			
+			initializePresaInCarico(soggetto);
 			initializeProperties(soggettoId, casoId);
 			noteBean.initialize(soggetto);
 			
@@ -923,10 +896,11 @@ public class SchedaBean extends CsUiCompBaseBean {
 
 			getSession().setAttribute("soggettoId", null);
 			getSession().setAttribute("soggetto", null);
-
+			
+			initializePresaInCarico((CsASoggettoLAZY) null);
 			initializeProperties(null, null);
 			noteBean.initialize(null);
-			initializePresaInCarico((CsASoggettoLAZY) null);
+		
 			consensoPrivacyMan = null;
 		}
 
@@ -971,19 +945,14 @@ public class SchedaBean extends CsUiCompBaseBean {
 			BaseDTO dto = new BaseDTO();
 			fillEnte(dto);
 			dto.setObj(soggetto.getCsACaso().getId());
-			List<CsACasoOpeTipoOpe> listaCasoOpeTipoOpe = casoService
-					.getListaOperatoreTipoOpByCasoId(dto);
+			List<CsACasoOpeTipoOpe> listaCasoOpeTipoOpe = casoService.getListaOperatoreTipoOpByCasoId(dto);
 			boolean isCasoOperatore = false;
 			boolean respExist = false;
 			for (CsACasoOpeTipoOpe casoOpeTipoOpe : listaCasoOpeTipoOpe) {
 				if (casoOpeTipoOpe.getDataFineApp().after(new Date())) {
-					if (casoOpeTipoOpe.getFlagResponsabile() != null
-							&& casoOpeTipoOpe.getFlagResponsabile()
-									.booleanValue())
+					if (casoOpeTipoOpe.getFlagResponsabile() != null && casoOpeTipoOpe.getFlagResponsabile().booleanValue())
 						respExist = true;
-					if (casoOpeTipoOpe.getCsOOperatoreTipoOperatore()
-							.getCsOOperatoreSettore().getId() == opSettore
-							.getId())
+					if (casoOpeTipoOpe.getCsOOperatoreTipoOperatore().getCsOOperatoreSettore().getId() == opSettore.getId())
 						isCasoOperatore = true;
 				}
 			}
@@ -994,14 +963,8 @@ public class SchedaBean extends CsUiCompBaseBean {
 			 * creatore del caso se sono presente nella lista degli operatori
 			 * per quel caso
 			 */
-			if (checkPermesso(DataModelCostanti.PermessiCartella.ITEM,
-					DataModelCostanti.PermessiCartella.MODIFICA_CASI_SETTORE)
-					|| (!respExist
-							&& soggetto
-									.getCsACaso()
-									.getUserIns()
-									.equals(opSettore.getCsOOperatore()
-											.getUsername()) || isCasoOperatore))
+			if (checkPermesso(DataModelCostanti.PermessiCartella.ITEM, DataModelCostanti.PermessiCartella.MODIFICA_CASI_SETTORE)
+					|| (!respExist && soggetto.getCsACaso().getUserIns().equals(opSettore.getCsOOperatore().getUsername()) || isCasoOperatore))
 				setDisableModificaCartella(false);
 		}
 
@@ -1058,12 +1021,14 @@ public class SchedaBean extends CsUiCompBaseBean {
 	private void loadMessaggioRdC(CsASoggettoLAZY soggetto) {
 		msgBeneficiarioRdC = null;
 		if(soggetto!=null) {
-			if(verificaBeneficiarioRdC(soggetto.getCsAAnagrafica().getCf())) {
+			String cf = soggetto.getCsAAnagrafica().getCf();
+			if(verificaBeneficiarioRdC(cf)) {
 				msgBeneficiarioRdC = "Beneficiario di Reddito di Cittadinanza (Patto per il sociale)";
 			}else {
 				BaseDTO dto = new BaseDTO();
 				fillEnte(dto);
 				dto.setObj(soggetto.getAnagraficaId());
+				dto.setObj2(cf);
 				if(soggettoService.hasNucleoBeneficiarioRdC(dto))
 					msgBeneficiarioRdC = "Nucleo familiare beneficiario di Reddito di Cittadinanza (Patto per il sociale)";
 			}
@@ -1137,7 +1102,6 @@ public class SchedaBean extends CsUiCompBaseBean {
 			// riinizializzo la scheda
 			CsASoggettoLAZY sogg = anagraficaBean.getSoggetto();
 			this.initialize(sogg);
-			this.initializePresaInCarico(sogg);
 			this.identificativoScheda = sogg.getCsACaso().getIdentificativo();
 
 			if(nuovoInserimento && this.schedaSegrBean.getSsScheda()!=null)
@@ -1165,7 +1129,6 @@ public class SchedaBean extends CsUiCompBaseBean {
 		if (soggetto != null) {
 			initialize(soggetto);
 	
-			this.initializePresaInCarico(soggetto);
 			// refresh dei tab per farli renderizzare
 			RequestContext.getCurrentInstance().update("schedaContent");
 	
@@ -1449,5 +1412,4 @@ public class SchedaBean extends CsUiCompBaseBean {
 	public void setConsensoPrivacyMan(ConsensoPrivacyMan consensoPrivacyMan) {
 		this.consensoPrivacyMan = consensoPrivacyMan;
 	}
-	
 }

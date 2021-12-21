@@ -16,21 +16,17 @@ public class CsTbScuola implements Serializable {
 	@Id
 	@SequenceGenerator(name="CS_TB_SCUOLA_ID_GENERATOR", sequenceName="SQ_ID",allocationSize=1)
 	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="CS_TB_SCUOLA_ID_GENERATOR")
-	private Long id;
+	private String codscuola;
 
-	private String abilitato;
+	private Boolean abilitato;
 
 	private String descrizione;
 
 	private String tooltip;
 	
-	@Column(name="ANNO_SCOLASTICO")
-	private String annoScolastico;
-	
 	@Column(name="TIPO_SCUOLA_ID")
 	private Long tipoScuolaId;
 	
-	private String codscuola;
 	private String indirizzo;
 	private String comune;
 	private String cap;
@@ -41,22 +37,13 @@ public class CsTbScuola implements Serializable {
 	private String sitoweb;
 	private String codistituto;
 
-	
 	public CsTbScuola() {}
 
-	public Long getId() {
-		return id;
+	public Boolean getAbilitato() {
+		return abilitato;
 	}
 
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public String getAbilitato() {
-		return this.abilitato;
-	}
-
-	public void setAbilitato(String abilitato) {
+	public void setAbilitato(Boolean abilitato) {
 		this.abilitato = abilitato;
 	}
 
@@ -74,14 +61,6 @@ public class CsTbScuola implements Serializable {
 
 	public void setTooltip(String tooltip) {
 		this.tooltip = tooltip;
-	}
-
-	public String getAnnoScolastico() {
-		return annoScolastico;
-	}
-
-	public void setAnnoScolastico(String annoScolastico) {
-		this.annoScolastico = annoScolastico;
 	}
 
 	public Long getTipoScuolaId() {
@@ -171,5 +150,5 @@ public class CsTbScuola implements Serializable {
 	public void setCodistituto(String codistituto) {
 		this.codistituto = codistituto;
 	}
-	
+
 }

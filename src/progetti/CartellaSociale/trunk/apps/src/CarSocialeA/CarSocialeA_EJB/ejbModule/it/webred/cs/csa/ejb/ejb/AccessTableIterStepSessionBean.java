@@ -16,8 +16,11 @@ import it.webred.cs.csa.ejb.dao.DiarioDAO;
 import it.webred.cs.csa.ejb.dao.IterDAO;
 import it.webred.cs.csa.ejb.dto.AlertDTO;
 import it.webred.cs.csa.ejb.dto.BaseDTO;
+import it.webred.cs.csa.ejb.dto.DatiOperatoreDTO;
 import it.webred.cs.csa.ejb.dto.IterDTO;
+import it.webred.cs.csa.ejb.dto.KeyValueDTO;
 import it.webred.cs.csa.ejb.dto.OperatoreDTO;
+import it.webred.cs.csa.ejb.dto.PresaInCaricoDTO;
 import it.webred.cs.csa.ejb.dto.StatoCartellaDTO;
 import it.webred.cs.csa.ejb.dto.retvalue.CsIterStepByCasoDTO;
 import it.webred.cs.data.DataModelCostanti;
@@ -25,7 +28,7 @@ import it.webred.cs.data.DataModelCostanti.Segnalibri;
 import it.webred.cs.data.DataModelCostanti.TipiAlertCod;
 import it.webred.cs.data.DataModelCostanti.TipoAttributo;
 import it.webred.cs.data.model.CsACaso;
-import it.webred.cs.data.model.CsASoggettoCategoriaSocLAZY;
+import it.webred.cs.data.model.CsASoggettoCategoriaSoc;
 import it.webred.cs.data.model.CsASoggettoLAZY;
 import it.webred.cs.data.model.CsCfgAttr;
 import it.webred.cs.data.model.CsCfgAttrOption;
@@ -139,7 +142,7 @@ public class AccessTableIterStepSessionBean extends CarSocialeBaseSessionBean im
 		CsIterStepByCasoDTO isByCaso =  new CsIterStepByCasoDTO(csItStep );
 
 		if (operatoreResponsabile!=null)
-			isByCaso.setResponsabileUsername(operatoreResponsabile.getUsername());
+			isByCaso.setResposabileDenominazione(operatoreResponsabile.getDenominazione());
 		
 		// carico le liste
 		if(csItStep!=null){
@@ -151,9 +154,12 @@ public class AccessTableIterStepSessionBean extends CarSocialeBaseSessionBean im
 				}
 			}
 		
-			Long diarioId = isByCaso.getCsItStep().getCsDDiarioId();
-			CsDDiarioBASIC diario = diarioDao.findDiarioBASICById(diarioId);
-	
+			CsDDiarioBASIC diario = isByCaso.getCsItStep().getCsDDiario();
+			if(diario==null){
+				Long diarioId = isByCaso.getCsItStep().getCsDDiarioId();
+				diario = diarioDao.findDiarioBASICById(diarioId);
+			}
+			
 			Date dataAmministrativa = diario.getDtAmministrativa();
 			isByCaso.setDataAmministrativa(dataAmministrativa);
 			
@@ -164,22 +170,15 @@ public class AccessTableIterStepSessionBean extends CarSocialeBaseSessionBean im
 		
 	}
 
-
-	private HashMap<Long, CsOOperatoreBASIC > cacheOperatori = new HashMap<Long, CsOOperatoreBASIC>();
-	private HashMap<Long, CsOOperatoreBASIC > cacheOperatori2 = new HashMap<Long, CsOOperatoreBASIC>();
-
-
-	
-	 
 	@Override
  	public  CsIterStepByCasoDTO getLastIterStepByCasoDTO(BaseDTO dto) throws Exception {
 		
 		Long idCaso = (Long)dto.getObj();
-		
+		logger.debug("INIT getLastIterStepByCasoDTO casoId["+idCaso+"]");
 		CsOOperatoreBASIC operatoreResponsabile = casoDao.findResponsabileBASIC(idCaso);
 		CsItStepLAZY csItStep = iterDao.getLastIterStepLAZYByCaso(idCaso);
-		CsIterStepByCasoDTO lastIsByCaso =  populateCsIterStepByCasoDTO(csItStep,operatoreResponsabile  );
-				
+		CsIterStepByCasoDTO lastIsByCaso =  populateCsIterStepByCasoDTO(csItStep,operatoreResponsabile);
+		logger.debug("END getLastIterStepByCasoDTO casoId["+idCaso+"]");	
 		return lastIsByCaso;
 	}
 	
@@ -488,20 +487,59 @@ public class AccessTableIterStepSessionBean extends CarSocialeBaseSessionBean im
 	}
 
 	@Override
-	public List<CsCfgItStato> getListaIterStati(CeTBaseObject cet){
+	public List<KeyValueDTO> getListaIterStati(CeTBaseObject cet){
 		return iterDao.getListaIterStati();
 	}
-
+	
+	@Override
+	public PresaInCaricoDTO getLastPICByCaso(BaseDTO dto){
+		PresaInCaricoDTO pic = new PresaInCaricoDTO();
+		
+		Long idCaso = (Long)dto.getObj();
+		logger.debug("INIT getLastPICByCaso casoId["+idCaso+"]");
+		CsOOperatoreBASIC op = casoDao.findResponsabileBASIC(idCaso);
+		CsItStepLAZY csItStep = iterDao.getLastIterStepLAZYByTipoCaso(idCaso, DataModelCostanti.IterStatoInfo.PRESO_IN_CARICO, false);
+		
+		if (op!=null){
+			DatiOperatoreDTO responsabile = new DatiOperatoreDTO();
+			responsabile.setId(op.getId());
+			responsabile.setDenominazione(op.getDenominazione());
+			responsabile.setUsername(op.getUsername());
+			pic.setResponsabile(responsabile);
+		}
+			
+		if(csItStep!=null){
+			CsDDiarioBASIC diario = csItStep.getCsDDiario();
+			if(diario==null){
+				Long diarioId = csItStep.getCsDDiarioId();
+				diario = diarioDao.findDiarioBASICById(diarioId);
+			}
+			Date dataAmministrativa = diario.getDtAmministrativa();
+			pic.setDataAmministrativa(dataAmministrativa);
+			
+			CsOSettore settore = diario.getCsOOperatoreSettore().getCsOSettore();
+			KeyValueDTO settoreR = new KeyValueDTO(settore.getId(), settore.getDescrizione());
+			pic.setSettore(settoreR);
+			
+			CsOOrganizzazione organizzazione = settore.getCsOOrganizzazione();
+			KeyValueDTO organizzazioneR = new KeyValueDTO(organizzazione.getId(), organizzazione.getNome());
+			
+			pic.setOrganizzazione(organizzazioneR);
+		}
+		return pic;
+	}
+	
 	@Override
 	public List<StatoCartellaDTO> getStatoCasoBySoggetto(BaseDTO dto1) throws Exception {
 		List<StatoCartellaDTO> lst = new ArrayList<StatoCartellaDTO>();
-		
+		String cf = (String) dto1.getObj();
+		logger.debug("INIT getStatoCasoBySoggetto cf["+cf+"]");
 		List<CsASoggettoLAZY> soggetti = soggettiService.getSoggettiByCF(dto1);
 	       if(soggetti!=null && soggetti.size()>0){
 	    	   for(CsASoggettoLAZY soggetto : soggetti){
 	    		   
 	    		   StatoCartellaDTO  statoCartella = new StatoCartellaDTO();
-	    		   statoCartella.setDenominazione(soggetto.getCsAAnagrafica().getCognome()+" "+soggetto.getCsAAnagrafica().getNome());
+	    		   statoCartella.setDenominazione(soggetto.getCsAAnagrafica().getDenominazione());
 	    		   
 	    		   BaseDTO itr = new BaseDTO();
 	    		   copiaCsTBaseObject(dto1, itr);
@@ -518,36 +556,19 @@ public class AccessTableIterStepSessionBean extends CarSocialeBaseSessionBean im
 	   				  statoCartella.setOrganizzazione(organizzazione);
 	   				  
 	   				  statoCartella.setSettore(stato.getCsItStep().getCsOSettore1().getNome());
-	   				  
-	   				   Long idResponsabile = stato.getCsItStep().getCsDDiario().getResponsabileCaso();
-	   				   if(idResponsabile!=null){
-		   					OperatoreDTO odto = new OperatoreDTO();
-		   					odto.setEnteId(dto1.getEnteId());
-		   					odto.setSessionId(dto1.getSessionId());
-		   					odto.setIdOperatore(idResponsabile);
-		   					try {
-		   						CsOOperatore asResponsabile = operatoreSessionBean.findOperatoreById(odto);
-		   						
-		   						if(asResponsabile != null){
-		   							AmAnagrafica responsabile = anagraficaService.findAnagraficaByUserName(asResponsabile.getUsername());
-		   							statoCartella.setuNameResponsabile(responsabile.getCognome()+" "+responsabile.getNome());
-		   						}
-		   					} catch (Exception e) {
-		   						logger.error(e);
-		   					}
-	   				   }
+	   				  statoCartella.setuNameResponsabile(stato.getResposabileDenominazione());
 	   				   
 	   				   dto1.setObj(soggetto.getAnagraficaId());
-	 				   List<CsASoggettoCategoriaSocLAZY> lstCatSoc = soggettiService.getSoggettoCategorieAttualiBySoggetto(dto1);
-	 				   String catSocs = "";
+	 				   List<CsASoggettoCategoriaSoc> lstCatSoc = soggettiService.getSoggettoCategorieAttualiBySoggetto(dto1);
 	 				   if(lstCatSoc!=null){
-	 					   for(CsASoggettoCategoriaSocLAZY cs : lstCatSoc)
+	 					   for(CsASoggettoCategoriaSoc cs : lstCatSoc)
 	 							   statoCartella.addAreaTarget(cs.getCsCCategoriaSociale().getDescrizione()+ (cs.getPrevalente()==1 ? "*" : ""));
 	 				   }
 	   			   }
 	   			   lst.add(statoCartella);
 	       }
 	       }
+	       logger.debug("END getStatoCasoBySoggetto cf["+cf+"]["+lst.size()+"]");
 	       return lst;
 	 }
 }

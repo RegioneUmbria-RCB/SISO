@@ -1,20 +1,14 @@
 package it.webred.cs.csa.web.manbean.listacasi;
 
-import it.webred.cs.csa.ejb.client.AccessTableConfigurazioneSessionBeanRemote;
-import it.webred.cs.csa.ejb.client.AccessTableIndirizzoSessionBeanRemote;
-import it.webred.cs.csa.ejb.client.AccessTableIterStepSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.AccessTableOperatoreSessionBeanRemote;
 import it.webred.cs.csa.ejb.dto.KeyValueDTO;
 import it.webred.cs.csa.ejb.dto.OperatoreDTO;
 import it.webred.cs.csa.ejb.dto.erogazioni.ErogazioneBaseDTO;
 import it.webred.cs.data.DataModelCostanti;
 import it.webred.cs.data.DataModelCostanti.FiltroCasi;
-import it.webred.cs.data.model.CsCfgItStato;
 import it.webred.cs.data.model.CsOOperatore;
-import it.webred.cs.data.model.CsOOperatoreSettore;
 import it.webred.cs.data.model.CsTbCondLavoro;
 import it.webred.cs.data.model.CsTbTitoloStudio;
-import it.webred.cs.data.model.CsTbTribStruttura;
 import it.webred.cs.jsf.bean.DatiCasoBean;
 import it.webred.cs.jsf.interfaces.IListaCasi;
 import it.webred.cs.jsf.manbean.IterDialogMan;
@@ -44,6 +38,7 @@ import javax.faces.model.SelectItem;
 import javax.faces.model.SelectItemGroup;
 import javax.naming.NamingException;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -65,7 +60,9 @@ public class ListaCasiBean extends CsUiCompBaseBean implements IListaCasi{
 	private List<SelectItem> listaTitStudio;
 	private List<SelectItem> listaTribStrutture;
 	private List<SelectItem> listaComuniResidenza;
+	private List<SelectItem> listaNazioniResidenza;
 	private boolean renderTipoOperatore=false;
+	private boolean renderStatoOperatore=false;
 	private boolean renderedTableListaCasi=true; //SISO-812
 	private  List<DatiCasoBean> listaCasiAssegnati; 
 	private boolean renderedListaCasiAssegnati= false; //variabile che tiene traccia del fatto che sono nella pagina listaCasiAssegnati
@@ -122,6 +119,7 @@ public class ListaCasiBean extends CsUiCompBaseBean implements IListaCasi{
 		doLoadListaCondLavoro();
 		doLoadListaTribStrutture();
 		doLoadListaComuniResidenza();
+		doLoadListaNazioniResidenza();
 		String sIdCaso = getRequest().getParameter("IDCASO");
 		if( CommonUtils.isNotEmptyString(sIdCaso) )
 			iterDialogMan.openDialog(Long.parseLong(sIdCaso));
@@ -152,15 +150,9 @@ public class ListaCasiBean extends CsUiCompBaseBean implements IListaCasi{
 	private void doLoadListaStati(){
 		listaStati = new ArrayList<SelectItem>();
 		try{
-			AccessTableIterStepSessionBeanRemote service = 
-					(AccessTableIterStepSessionBeanRemote)ClientUtility.getEjbInterface("CarSocialeA", "CarSocialeA_EJB", "AccessTableIterStepSessionBean");
 			CeTBaseObject cet = new CeTBaseObject();
 			fillEnte(cet);
-			List<CsCfgItStato> lst = service.getListaIterStati(cet);
-			for(CsCfgItStato cfg : lst){
-				SelectItem si = new SelectItem(cfg.getId(),cfg.getNome());
-		        listaStati.add(si);
-			}
+			listaStati = convertiLista(iterService.getListaIterStati(cet));
 		}catch(Exception e){
 			logger.error("Errore caricamento lista stati ITER",e);
 		}
@@ -169,31 +161,32 @@ public class ListaCasiBean extends CsUiCompBaseBean implements IListaCasi{
 	private void doLoadListaComuniResidenza(){
 		listaComuniResidenza = new ArrayList<SelectItem>();
 		try{
-			AccessTableIndirizzoSessionBeanRemote service = 
-					(AccessTableIndirizzoSessionBeanRemote)ClientUtility.getEjbInterface("CarSocialeA", "CarSocialeA_EJB", "AccessTableIndirizzoSessionBean");
 			CeTBaseObject cet = new CeTBaseObject();
 			fillEnte(cet);
-			List<KeyValueDTO> lst = service.getListaComuniResidenza();
-			for(KeyValueDTO cfg : lst){
-				SelectItem si = new SelectItem(cfg.getCodice(),cfg.getDescrizione());
-				listaComuniResidenza.add(si);
-			}
+			listaComuniResidenza = convertiLista(indirizzoService.getListaComuniResidenza(cet));
 		}catch(Exception e){
 			logger.error("Errore caricamento lista COMUNI RESIDENZA",e);
+		}
+	}
+	
+	private void doLoadListaNazioniResidenza(){
+		listaNazioniResidenza = new ArrayList<SelectItem>();
+		try{
+			CeTBaseObject cet = new CeTBaseObject();
+			fillEnte(cet);
+			listaNazioniResidenza = convertiLista(indirizzoService.getListaNazioniResidenza(cet));
+		}catch(Exception e){
+			logger.error("Errore caricamento lista NAZIONI RESIDENZA",e);
 		}
 	}
 	
 	private void doLoadListaTitoliStudio(){
 		listaTitStudio = new ArrayList<SelectItem>();
 		try{
-			AccessTableConfigurazioneSessionBeanRemote confService = 
-					(AccessTableConfigurazioneSessionBeanRemote) getCarSocialeEjb("AccessTableConfigurazioneSessionBean");
 			CeTBaseObject cet = new CeTBaseObject();
 			fillEnte(cet);
-			List<CsTbTitoloStudio> lst = confService.getTitoliStudio(cet);
-			for (CsTbTitoloStudio obj : lst) 
-				listaTitStudio.add(new SelectItem(obj.getId(), obj.getDescrizione()));
-				
+			List<KeyValueDTO> lst = confService.getTitoliStudio(cet);
+			listaTitStudio = convertiLista(lst);
 		}catch(Exception e){
 			logger.error("Errore caricamento lista TITOLI STUDIO",e);
 		}
@@ -202,24 +195,20 @@ public class ListaCasiBean extends CsUiCompBaseBean implements IListaCasi{
 	private void doLoadListaTribStrutture(){
 		listaTribStrutture = new ArrayList<SelectItem>();
 		try{
-			AccessTableConfigurazioneSessionBeanRemote confService = 
-					(AccessTableConfigurazioneSessionBeanRemote) getCarSocialeEjb("AccessTableConfigurazioneSessionBean");
 			CeTBaseObject cet = new CeTBaseObject();
 			fillEnte(cet);
-			List<CsTbTribStruttura> lst = confService.getStruttureTribunale(cet);
-			for (CsTbTribStruttura obj : lst) 
-				listaTribStrutture.add(new SelectItem(obj.getId(), obj.getDescrizione()));
+			List<KeyValueDTO> lst = confService.getStruttureTribunale(cet);
+			for (KeyValueDTO obj : lst) 
+				listaTribStrutture.add(new SelectItem(obj.getCodice(), obj.getDescrizione()));
 				
 		}catch(Exception e){
-			logger.error("Errore caricamento lista TITOLI STUDIO",e);
+			logger.error("Errore caricamento lista STRUTTURE TRIBUNALE",e);
 		}
 	}
 	
 	private void doLoadListaCondLavoro(){
 		listaCondLavoro = new ArrayList<SelectItem>();
 		try{
-			AccessTableConfigurazioneSessionBeanRemote confService = 
-					(AccessTableConfigurazioneSessionBeanRemote) getEjb("CarSocialeA", "CarSocialeA_EJB", "AccessTableConfigurazioneSessionBean");
 			CeTBaseObject cet = new CeTBaseObject();
 			fillEnte(cet);
 			TreeMap<String, List<CsTbCondLavoro>> tree = confService.getMappaCondLavoro(cet);
@@ -252,19 +241,19 @@ public class ListaCasiBean extends CsUiCompBaseBean implements IListaCasi{
 		CsOOperatore operatore = getCurrentOpSettore().getCsOOperatore();
 		Long settoreId = getCurrentOpSettore().getCsOSettore().getId();
 		if(!CsUiCompBaseBean.checkPermesso(DataModelCostanti.PermessiCartella.ITEM,DataModelCostanti.PermessiCartella.VISUALIZZAZIONE_CASI_SETTORE)){
-			listaOperatori.add(new SelectItem(operatore.getId(),this.getDenominazioneOperatore(operatore)));
+			listaOperatori.add(new SelectItem(operatore.getId(),operatore.getDenominazione()));
 		}else{
 			try{
 				if (settoreId != 0L) {
-					AccessTableOperatoreSessionBeanRemote operatoreSessionBean = (AccessTableOperatoreSessionBeanRemote) 
+					AccessTableOperatoreSessionBeanRemote operatoriService = (AccessTableOperatoreSessionBeanRemote) 
 							ClientUtility.getEjbInterface("CarSocialeA", "CarSocialeA_EJB", "AccessTableOperatoreSessionBean");
 			
 					OperatoreDTO opDto = new OperatoreDTO();
 					fillEnte(opDto);
 					opDto.setIdSettore(settoreId);
-					for (CsOOperatoreSettore it : operatoreSessionBean.findOperatoreSettoreBySettore(opDto) ) {
-					    CsOOperatore op = it.getCsOOperatore();
-					    SelectItem si = new SelectItem(op.getId(), this.getDenominazioneOperatore(op));
+					List<KeyValueDTO> result = operatoriService.findListaOperatoreBySettore(opDto);
+					for (KeyValueDTO it :  result) {
+					    SelectItem si = new SelectItem(it.getCodice(), it.getDescrizione());
 						listaOperatori.add(si);
 					}
 				}
@@ -276,37 +265,21 @@ public class ListaCasiBean extends CsUiCompBaseBean implements IListaCasi{
 	
 	@Override
 	public List<SelectItem> getListaStati() {
-		// 2018-02-01 Smartpeg - già presente in PostConstruct; rimosso per Maintenance
-//		if(listaStati.isEmpty())
-//			doLoadListaStati();
-		
 		return listaStati;
 	}
 	
 	@Override
 	public List<SelectItem> getListaOperatori(){
-		// 2018-02-01 Smartpeg - già presente in PostConstruct; rimosso per Maintenance
-//		if(listaOperatori.isEmpty())
-//			doLoadListaOperatori();
-		
 		return listaOperatori;	
 	}
 	
 	@Override
 	public List<SelectItem> getListaTitStudio(){
-		// 2018-02-01 Smartpeg - già presente in PostConstruct; rimosso per Maintenance
-//		if(listaTitStudio.isEmpty())
-//			doLoadListaTitoliStudio();
-		
 		return listaTitStudio;	
 	}
 	
 	@Override
 	public List<SelectItem> getListaCondLavoro(){
-		// 2018-02-01 Smartpeg - già presente in PostConstruct; rimosso per Maintenance
-//		if(listaCondLavoro.isEmpty())
-//			doLoadListaCondLavoro();
-		
 		return listaCondLavoro;	
 	}
 	
@@ -316,6 +289,14 @@ public class ListaCasiBean extends CsUiCompBaseBean implements IListaCasi{
 
 	public void setListaComuniResidenza(List<SelectItem> listaComuniResidenza) {
 		this.listaComuniResidenza = listaComuniResidenza;
+	}
+
+	public List<SelectItem> getListaNazioniResidenza() {
+		return listaNazioniResidenza;
+	}
+
+	public void setListaNazioniResidenza(List<SelectItem> listaNazioniResidenza) {
+		this.listaNazioniResidenza = listaNazioniResidenza;
 	}
 
 	public String getSelTipoOperatore(){
@@ -332,14 +313,48 @@ public class ListaCasiBean extends CsUiCompBaseBean implements IListaCasi{
 
 	public void setSelStato(String selStato) {
 		getSession().setAttribute(FiltroCasi.STATO, selStato);
+		Long valStato = !StringUtils.isBlank(selStato) ? Long.valueOf(selStato) : null;
+		if(valStato!=null && DataModelCostanti.IterStatoInfo.SEGNALATO_OP.equals(valStato))
+			this.renderStatoOperatore=true;
+		else{
+			this.renderStatoOperatore=false;
+			this.setSelStatoOperatore(null);
+		}
 	}
 	
-	public String getSelResidenza() {
-		return (String)getSession().getAttribute(FiltroCasi.RESIDENZA);
+	public void onChangeTipoResidenza(){
+		if("COMUNE".equalsIgnoreCase(this.getSelTipoResidenza()))
+			this.setSelComuneResidenza(null);
+		if("NAZIONE".equalsIgnoreCase(this.getSelTipoResidenza()))
+			this.setSelNazioneResidenza(null);
+		if("SDF".equalsIgnoreCase(this.getSelTipoResidenza())){
+			this.setSelComuneResidenza(null);
+			this.setSelNazioneResidenza(null);
+		}
+	}
+	
+	public String getSelComuneResidenza() {
+		return (String)getSession().getAttribute(FiltroCasi.RESIDENZA_COMUNE);
 	}
 
-	public void setSelResidenza(String selResidenza) {
-		getSession().setAttribute(FiltroCasi.RESIDENZA, selResidenza);
+	public void setSelComuneResidenza(String selResidenza) {
+		getSession().setAttribute(FiltroCasi.RESIDENZA_COMUNE, selResidenza);
+	}
+	
+	public String getSelNazioneResidenza() {
+		return (String)getSession().getAttribute(FiltroCasi.RESIDENZA_NAZIONE);
+	}
+
+	public void setSelNazioneResidenza(String selResidenza) {
+		getSession().setAttribute(FiltroCasi.RESIDENZA_NAZIONE, selResidenza);
+	}
+	
+	public String getSelTipoResidenza() {
+		return (String)getSession().getAttribute(FiltroCasi.RESIDENZA_TIPO);
+	}
+
+	public void setSelTipoResidenza(String selResidenza) {
+		getSession().setAttribute(FiltroCasi.RESIDENZA_TIPO, selResidenza);
 	}
 	
 	public Long getSelTitStudio() {
@@ -380,6 +395,14 @@ public class ListaCasiBean extends CsUiCompBaseBean implements IListaCasi{
 		}
 	}
 	
+	public String getSelStatoOperatore() {
+		return (String)getSession().getAttribute(FiltroCasi.STATO_OPERATORE);
+	}
+
+	public void setSelStatoOperatore(String selOperatore) {
+		getSession().setAttribute(FiltroCasi.STATO_OPERATORE, selOperatore);
+	}
+	
 	public void setSelDatiTribunale(String[] dati){
 		getSession().setAttribute(FiltroCasi.TRIBUNALE, dati);
 	}
@@ -391,16 +414,23 @@ public class ListaCasiBean extends CsUiCompBaseBean implements IListaCasi{
 	public void clearFilters(){
 		this.setSelOperatore(null);
 		this.setSelStato(null);
+		this.setSelStatoOperatore(null);
 		this.setSelCondLavoro(null);
 		this.setSelTitStudio(null);
 		this.setSelTutela(null);
 		this.setSelDatiTribunale(null);
-		this.setSelResidenza(null);
+		this.setSelComuneResidenza(null);
+		this.setSelNazioneResidenza(null);
 	}
 
 	@Override
 	public boolean isRenderTipoOperatore() {
 		return renderTipoOperatore;
+	}
+	
+	@Override
+	public boolean isRenderStatoOperatore(){
+		return renderStatoOperatore;
 	}
 	
 	/* #SISO-641
@@ -481,37 +511,17 @@ public class ListaCasiBean extends CsUiCompBaseBean implements IListaCasi{
 			    row.setHeightInPoints(30);
 				
 				// popolo le colonne (replicando di fatto la logica della view)
-				createAndPopulateCell(row, EXCEL_COLUMN_INDEX_ID,
-						rowListaCasi.getSoggetto().getCsACaso().getIdentificativo().toString());
-				
-				createAndPopulateCell(row, EXCEL_COLUMN_INDEX_COGNOME_NOME,
-						rowListaCasi.getSoggetto().getCsAAnagrafica().getCognome()+ " "+rowListaCasi.getSoggetto().getCsAAnagrafica().getNome());
-				
-				createAndPopulateCell(row, EXCEL_COLUMN_DATA_NASCITA,
-						dataNascitaCasoValueExtraction(rowListaCasi.getSoggetto().getCsAAnagrafica().getDataNascita()));
-				
-				createAndPopulateCell(row, EXCEL_COLUMN_INDEX_CODICE_FISCALE,
-						rowListaCasi.getSoggetto().getCsAAnagrafica().getCf());
-				
+				createAndPopulateCell(row, EXCEL_COLUMN_INDEX_ID,rowListaCasi.getIdentificativo().toString());
+				createAndPopulateCell(row, EXCEL_COLUMN_INDEX_COGNOME_NOME,rowListaCasi.getDenominazione());
+				createAndPopulateCell(row, EXCEL_COLUMN_DATA_NASCITA,dataNascitaCasoValueExtraction(rowListaCasi.getDataNascita()));
+				createAndPopulateCell(row, EXCEL_COLUMN_INDEX_CODICE_FISCALE,rowListaCasi.getCf());
 				createAndPopulateCell(row, EXCEL_COLUMN_INDEX_RESIDENZA, rowListaCasi.getResidenza());
-			
-				createAndPopulateCell(row, EXCEL_COLUMN_INDEX_OPERATORI,
-						DescrOperatoreValueExtraction(rowListaCasi));
-				
-				createAndPopulateCell(row, EXCEL_COLUMN_INDEX_CAT_SOCIALE,
-						rowListaCasi.getCategoriaPrevalente());
-				
-				createAndPopulateCell(row, EXCEL_COLUMN_INDEX_INT,
-						rowListaCasi.getnInterventi());
-				
-				createAndPopulateCell(row, EXCEL_COLUMN_INDEX_EROG,
-						ErogPresenzaValueExtraction(rowListaCasi.getListaErogazioni()));
-				
-				createAndPopulateCell(row, EXCEL_COLUMN_INDEX_DATA_APERTURA,
-						dataAperturaCasoValueExtraction(rowListaCasi.getDataApertura()));
-				
-				createAndPopulateCell(row, EXCEL_COLUMN_INDEX_STATO,
-						lastIterStepInfoValueExtraction(rowListaCasi));
+				createAndPopulateCell(row, EXCEL_COLUMN_INDEX_OPERATORI,DescrOperatoreValueExtraction(rowListaCasi));
+				createAndPopulateCell(row, EXCEL_COLUMN_INDEX_CAT_SOCIALE,rowListaCasi.getCategoriaPrevalente());
+				createAndPopulateCell(row, EXCEL_COLUMN_INDEX_INT,rowListaCasi.getnInterventi());
+				createAndPopulateCell(row, EXCEL_COLUMN_INDEX_EROG,ErogPresenzaValueExtraction(rowListaCasi.getListaErogazioni()));
+				createAndPopulateCell(row, EXCEL_COLUMN_INDEX_DATA_APERTURA,dataAperturaCasoValueExtraction(rowListaCasi.getDataApertura()));
+				createAndPopulateCell(row, EXCEL_COLUMN_INDEX_STATO,lastIterStepInfoValueExtraction(rowListaCasi));
 				
 			}
 			casoRows += lazyListaCasiModel.getPageSize();
@@ -536,13 +546,11 @@ public class ListaCasiBean extends CsUiCompBaseBean implements IListaCasi{
 		ec.setResponseContentType(contentType);
 		ec.setResponseHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
 		
-		OutputStream responseOutputStream = ec.getResponseOutputStream();
-		workbook.write(responseOutputStream);	// scrivo il file direttamente sull'outputStream senza salvarlo
+		OutputStream os = null;
+		os = ec.getResponseOutputStream();
+		workbook.write(os);	// scrivo il file direttamente sull'outputStream senza salvarlo
 		
 		fc.responseComplete();
-				
-				
-		
 	}
 	
 	private String dataAperturaCasoValueExtraction(Date dataAperturaCaso) {

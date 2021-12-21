@@ -136,9 +136,9 @@ _-->
 								 <p:outputLabel for="selectITSTEP" value="Nuovo stato iter:" />
 							</p:column>
 							<p:column>
-							 <p:selectOneMenu id="selectITSTEP" value="#{iterBean.iterStato}"  lazy="true" style="width:250px">
-						            <f:selectItem itemLabel="Scegli il nuovo stato" itemValue="" />
-						            <f:selectItems value="#{iterBean.listaStato}" var="c" itemValue="#{c.id}" itemLabel="#{c.nome}" />
+							    <p:selectOneMenu id="selectITSTEP" value="#{iterBean.iterStato}"  lazy="true" style="width:250px">
+						            <f:selectItem noSelectionOption="true" itemLabel="- seleziona -"/>
+						            <f:selectItems value="#{iterBean.listaStato}"/>
 						        </p:selectOneMenu>
 							</p:column>
 						 
@@ -150,7 +150,7 @@ _-->
 								 <p:selectOneMenu id="selectOORGANIZZAZIONE" value="#{iterBean.organizzazione}"  lazy="true" style="width:250px">
 					             <p:ajax process="@this" listener="#{iterBean.onOrganizzazioneChange}" event="change" update="selectOSETTORE selectOOPERATORE" />
 					          
-					            <f:selectItem itemLabel="Scegli l'organizzazione" itemValue="" />
+					            <f:selectItem noSelectionOption="true" itemLabel="- seleziona -"/>
 					            <f:selectItems value="#{iterBean.listaOrganizzazione}" var="c" itemValue="#{c.id}" itemLabel="#{c.nome}" />
 					        </p:selectOneMenu>
 							</p:column>
@@ -163,7 +163,7 @@ _-->
 					              
 					              <p:ajax process="@this" listener="#{iterBean.onSettoreChange}" event="change" update="selectOOPERATORE" />
 					          
-						            <f:selectItem itemLabel="Scegli il settore" itemValue="" />
+						            <f:selectItem noSelectionOption="true" itemLabel="- seleziona -"/>
 						            <f:selectItems value="#{iterBean.listaSettori}" var="c" itemValue="#{c.id}" itemLabel="#{c.nome}" />
 					        </p:selectOneMenu>
 							</p:column>
@@ -175,15 +175,14 @@ _-->
 							<p:column>
 								  <p:selectOneMenu id="selectOOPERATORE" value="#{iterBean.operatore}"  lazy="true" style="width:250px">
 						           <p:ajax process="@this" listener="#{iterBean.onOperatoreChange}" event="change" update="selectOOPERATORE" />
-					              <f:selectItem itemLabel="Scegli l'operatore" itemValue="" />
-						            <!-- <f:selectItems value="#{iterBean.listaOperatoreSettore}" var="c" itemValue="#{c.csOOperatore.csOOperatoreAnagrafica.id}" itemLabel="#{(empty c.csOOperatore.csOOperatoreAnagrafica.cognome ? '' :c.csOOperatore.csOOperatoreAnagrafica.cognome.concat(' ')).concat( empty c.csOOperatore.csOOperatoreAnagrafica.nome ? '' : c.csOOperatore.csOOperatoreAnagrafica.nome.concat(' ')).concat( empty c.csOOperatore.csOOperatoreAnagrafica.codiceFiscale ? c.csOOperatore.csOOperatoreAnagrafica.username :  ' CF: '.concat(c.csOOperatore.csOOperatoreAnagrafica.codiceFiscale))}" /> -->
-						        	    <f:selectItems value="#{iterBean.listaOperatoreSettore}" var="c" itemValue="#{c.id}" itemLabel="#{(empty c.csOOperatore.csOOperatoreAnagrafica.cognome ? '' :c.csOOperatore.csOOperatoreAnagrafica.cognome.concat(' ')).concat( empty c.csOOperatore.csOOperatoreAnagrafica.nome ? '' : c.csOOperatore.csOOperatoreAnagrafica.nome.concat(' ')).concat( empty c.csOOperatore.csOOperatoreAnagrafica.codiceFiscale ? c.csOOperatore.csOOperatoreAnagrafica.username :  ' CF: '.concat(c.csOOperatore.csOOperatoreAnagrafica.codiceFiscale))}" />
+					              	<f:selectItem noSelectionOption="true" itemLabel="- seleziona -"/>
+						            <f:selectItems value="#{iterBean.listaOperatoreSettore}" var="c" itemValue="#{c.id}" itemLabel="#{(empty c.csOOperatore.csOOperatoreAnagrafica.cognome ? '' :c.csOOperatore.csOOperatoreAnagrafica.cognome.concat(' ')).concat( empty c.csOOperatore.csOOperatoreAnagrafica.nome ? '' : c.csOOperatore.csOOperatoreAnagrafica.nome.concat(' ')).concat( empty c.csOOperatore.csOOperatoreAnagrafica.codiceFiscale ? c.csOOperatore.csOOperatoreAnagrafica.username :  ' CF: '.concat(c.csOOperatore.csOOperatoreAnagrafica.codiceFiscale))}" />
 						        </p:selectOneMenu>
 							</p:column>
 						
 							<!-- PULSANTE DI RICERCA -->
 							<p:column  colspan="4" style="text-align:center;width:100%;float:right;">
-								<p:commandButton value="cambia" actionListener="#{iterBean.onClickCambiaStatoIter}" 
+								<p:commandButton value="Cambia" actionListener="#{iterBean.onClickCambiaStatoIter}" 
 									 update="@form, @(.updateListaUtenti)" ></p:commandButton>
 							</p:column>
 					

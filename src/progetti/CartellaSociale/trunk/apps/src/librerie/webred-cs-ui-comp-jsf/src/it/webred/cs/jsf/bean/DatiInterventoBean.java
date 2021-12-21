@@ -4,12 +4,13 @@ import it.webred.cs.csa.ejb.client.AccessTableComuniSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.AccessTableConfigurazioneSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.AccessTableInterventoSessionBeanRemote;
 import it.webred.cs.csa.ejb.dto.BaseDTO;
+import it.webred.cs.csa.ejb.dto.erogazioni.ErogazioneDettaglioSintesiDTO;
+import it.webred.cs.csa.ejb.dto.pai.PaiSintesiDTO;
 import it.webred.cs.data.DataModelCostanti;
 import it.webred.cs.data.DataModelCostanti.FoglioAmministrativo;
 import it.webred.cs.data.model.CsAComponente;
 import it.webred.cs.data.model.CsCTipoIntervento;
 import it.webred.cs.data.model.CsCTipoInterventoCustom;
-import it.webred.cs.data.model.CsDPai;
 import it.webred.cs.data.model.CsFlgIntervento;
 import it.webred.cs.data.model.CsIAdmAdh;
 import it.webred.cs.data.model.CsIAffidoFam;
@@ -17,7 +18,6 @@ import it.webred.cs.data.model.CsIBuonoSoc;
 import it.webred.cs.data.model.CsICentrod;
 import it.webred.cs.data.model.CsIContrEco;
 import it.webred.cs.data.model.CsIIntervento;
-import it.webred.cs.data.model.CsIInterventoEseg;
 import it.webred.cs.data.model.CsIPasti;
 import it.webred.cs.data.model.CsIResiAdulti;
 import it.webred.cs.data.model.CsIResiMinore;
@@ -47,7 +47,6 @@ import java.util.List;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.NoneScoped;
-import javax.faces.model.SelectItem;
 import javax.naming.NamingException;
 
 @ManagedBean
@@ -162,12 +161,15 @@ public class DatiInterventoBean extends CsUiCompBaseBean implements Serializable
 	private Boolean interventoAperto;
 	private Boolean interventoRespinto;
 	
-	private CsDPai csDPai;//residuo-evoluzione-pai
+	private PaiSintesiDTO pai;//residuo-evoluzione-pai
 	
-	private List<CsIInterventoEseg> listaErogazioni;
+	private Long idMasterErogazione;
+	private List<ErogazioneDettaglioSintesiDTO> listaSintesiErogazioni;
 	
 	//SISO-745
-	List<CsAComponente> listaParenti = null;
+	private List<CsAComponente> listaParenti = null;
+	
+	public DatiInterventoBean(){}
 	
 	private void initCsISemiResiMin(){
 		srm = new CsISemiResiMin();
@@ -229,7 +231,6 @@ public class DatiInterventoBean extends CsUiCompBaseBean implements Serializable
 		centrod = new CsICentrod();
 
 		initCsIBuonoSoc();
-		
 		initCsIContrEco();
 		initCsIResiMinore();
 		initCsIAdmAdh();
@@ -239,11 +240,11 @@ public class DatiInterventoBean extends CsUiCompBaseBean implements Serializable
 		initCsISchedaLavoro();
 	}
 	
-	public DatiInterventoBean(Long settoreId, Long idSoggetto){
+	public DatiInterventoBean(Long settoreId, Long idSoggetto, List<CsAComponente> listaParenti){
 		this.idSoggetto=idSoggetto;
 		this.settore = settoreId;
 		
-		listaParenti = CsUiCompBaseBean.caricaParenti(idSoggetto, null);
+		this.listaParenti = listaParenti; // = CsUiCompBaseBean.caricaParenti(idSoggetto, null);
 	
 		initDettagliIntervento();
 		
@@ -267,10 +268,15 @@ public class DatiInterventoBean extends CsUiCompBaseBean implements Serializable
 		note=null;
 	}
 	
-	public DatiInterventoBean(CsIIntervento ci, Long idSoggetto){
+	public DatiInterventoBean(CsIIntervento ci, Long idSoggetto, List<CsAComponente> listaParenti){
 		this.nuovoIntervento = false;
 		
-		listaParenti = CsUiCompBaseBean.caricaParenti(idSoggetto, null);
+		BaseDTO dto = new BaseDTO();
+		fillEnte(dto);
+		dto.setObj(ci.getId());
+		idMasterErogazione = interventoService.getCsIInterventoEsegMastIdByInterventoId(dto);
+		
+		this.listaParenti = listaParenti;// = CsUiCompBaseBean.caricaParenti(idSoggetto, null);
 		
 		if(this.idSoggetto==null)
 			this.idSoggetto=idSoggetto;
@@ -313,11 +319,11 @@ public class DatiInterventoBean extends CsUiCompBaseBean implements Serializable
 			String prov = ci.getCompCitta().substring(index+1);
 			this.getComponente().setComuneResidenzaMan(citta, prov);
 		}
-		this.getComponente().setIdComponente(ci.getCsAComponente()!=null ? ci.getCsAComponente().getId() : null);
+		this.getComponente().setIdComponente(ci.getComponenteId());
 			
 		if( ci.getCsIInterventoCustom() != null )
 		{
-			this.setIdTipoIntrCustom(ci.getCsIInterventoCustom().getId());
+			this.idTipoIntrCustom = ci.getCsIInterventoCustom().getId();
 			this.descTipoInterventoCustom = ci.getCsIInterventoCustom().getDescrizione();
 		}
 		
@@ -329,9 +335,6 @@ public class DatiInterventoBean extends CsUiCompBaseBean implements Serializable
 		if (ci.getCsIInterventoCustom()!=null) {
 			
 			int tipoCustom = ci.getCsIInterventoCustom().getId().intValue();
-
-			BaseDTO dto = new BaseDTO();
-			fillEnte(dto);
 			dto.setObj(ci.getId());
 			
 			//Valorizzo tipologie intervento custom
@@ -394,16 +397,12 @@ public class DatiInterventoBean extends CsUiCompBaseBean implements Serializable
 		}
 		//fine modifica evoluzione-pai
 
-		//INIZIO residuo-evoluzione-pai
-		this.csDPai = ci.getCsDPai();
-		//FINE residuo-evoluzione-pai
-//		if (ci.getCsDPai()!=null) { 
-//			logger.debug(  ci.getCsDPai().getCsTbTipoPai().getDescrizione() );
-//			logger.debug(  ci.getCsDPai().getCsDDiario().getDtAttivazioneDa()  );
-//			logger.debug(  ci.getCsDPai().getCsDDiario().getDtAttivazioneA()  );
-//		}
-		
-		
+		if(ci.getDiarioPaiId()!=null){
+			BaseDTO pdto = new BaseDTO();
+			fillEnte(pdto);
+			pdto.setObj(ci.getDiarioPaiId());
+			this.pai = diarioService.findSintesiPaiById(pdto);
+		}
 		
 		this.interventoAperto=false;
 		this.interventoRespinto=false;
@@ -411,18 +410,12 @@ public class DatiInterventoBean extends CsUiCompBaseBean implements Serializable
 		for(CsFlgIntervento f : this.listaFogli){
 			if(FoglioAmministrativo.STATO.CHIUSURA.getCodice().equalsIgnoreCase(f.getFlagAttSospC()))
 				this.interventoChiuso=true;
-			//TODO frida esiste foglio amministrativo di attivazione??
-			//if("A".equalsIgnoreCase(f.getFlagAttSospC()))
 			if(FoglioAmministrativo.STATO.ATTIVAZIONE.getCodice().equalsIgnoreCase(f.getFlagAttSospC()))
 				this.interventoAperto=true;
 			//TODO frida esiste un foglio amministrativo con respinto ==true??
-			if(f.getFlagRespinto().compareTo(new BigDecimal(0))!=0)
+			if(f.getFlagRespinto()!=null && f.getFlagRespinto().booleanValue())
 				this.interventoRespinto=true;
 		}
-		
-		
-
-		
 	}
 	
 	//INIZIO SISO-391
@@ -680,7 +673,7 @@ public class DatiInterventoBean extends CsUiCompBaseBean implements Serializable
 			fillEnte(dto);
 			
 			if(sl.getCsOOperatore() != null && sl.getCsOOperatore().getUsername() != null)
-				slEducatoreLabel = this.getDenominazioneOperatore(sl.getCsOOperatore());	
+				slEducatoreLabel = sl.getCsOOperatore().getDenominazione();	
 			else sl.setCsOOperatore(new CsOOperatore());
 			
 			if(sl.getInterventiUOLId() != null) {
@@ -919,7 +912,7 @@ public class DatiInterventoBean extends CsUiCompBaseBean implements Serializable
 		intervento.setCompCitta(this.getComponente().getCompCitta());
 		intervento.setCompTel(this.getComponente().getCompTelefono());	
 		intervento.setCompIndirizzo(this.getComponente().getCompIndirizzo());
-		intervento.setCsAComponente(this.getComponente().getComponenteSel());
+		intervento.setComponenteId(this.getComponente().getIdComponente());
 		intervento.setNote(this.getNote());
 		
 
@@ -1310,16 +1303,6 @@ public class DatiInterventoBean extends CsUiCompBaseBean implements Serializable
 		this.srmComunita = srmComunita;
 	}
 
-	//INIZIO residuo-evoluzione-pai
-	public CsDPai getCsDPai() {
-		return csDPai;
-	}
-
-	public void setCsDPai(CsDPai csDPai) {
-		this.csDPai = csDPai;
-	}
-	//FINE residuo-evoluzione-pai
-
 	public Long getRaTipoRetta() {
 		return raTipoRetta;
 	}
@@ -1511,14 +1494,15 @@ public class DatiInterventoBean extends CsUiCompBaseBean implements Serializable
 		this.note = note;
 	}
 
-	public List<CsIInterventoEseg> getListaErogazioni() {
-		return listaErogazioni;
+	public List<ErogazioneDettaglioSintesiDTO> getListaSintesiErogazioni() {
+		return listaSintesiErogazioni;
 	}
 
-	public void setListaErogazioni(List<CsIInterventoEseg> listaErogazioni) {
-		this.listaErogazioni = listaErogazioni;
+	public void setListaSintesiErogazioni(
+			List<ErogazioneDettaglioSintesiDTO> listaSintesiErogazioni) {
+		this.listaSintesiErogazioni = listaSintesiErogazioni;
 	}
-	
+
 	public void onChangeTipoRiscossione(){
 		if(!"Delegato".equalsIgnoreCase(contrEco.getTipoRiscossione())){
 			contrEcoComponente.reset();
@@ -1528,5 +1512,19 @@ public class DatiInterventoBean extends CsUiCompBaseBean implements Serializable
 		}
 	}
 
-	
+	public Long getIdMasterErogazione() {
+		return idMasterErogazione;
+	}
+
+	public void setIdMasterErogazione(Long idMasterErogazione) {
+		this.idMasterErogazione = idMasterErogazione;
+	}
+
+	public PaiSintesiDTO getPai() {
+		return pai;
+	}
+
+	public void setPai(PaiSintesiDTO pai) {
+		this.pai = pai;
+	}
 }

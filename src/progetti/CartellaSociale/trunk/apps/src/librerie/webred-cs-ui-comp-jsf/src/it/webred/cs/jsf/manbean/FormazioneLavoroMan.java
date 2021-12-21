@@ -1,6 +1,7 @@
 package it.webred.cs.jsf.manbean;
 
 import it.webred.cs.csa.ejb.client.AccessTableConfigurazioneSessionBeanRemote;
+import it.webred.cs.csa.ejb.dto.KeyValueDTO;
 import it.webred.cs.data.model.CsTbCondLavoro;
 import it.webred.cs.data.model.CsTbProfessione;
 import it.webred.cs.data.model.CsTbSettoreImpiego;
@@ -20,6 +21,8 @@ import javax.faces.bean.NoneScoped;
 import javax.faces.model.SelectItem;
 import javax.faces.model.SelectItemGroup;
 
+import org.apache.commons.lang3.StringUtils;
+
 @ManagedBean
 @NoneScoped
 public class FormazioneLavoroMan extends CsUiCompBaseBean implements IFormazioneLavoro {
@@ -36,7 +39,7 @@ public class FormazioneLavoroMan extends CsUiCompBaseBean implements IFormazione
 	private String professione;
 	private String lavoro;
 	private String settImpiego;
-	private String titoloStudio;
+	private CsTbTitoloStudio tbTitoloStudio;
 	
 	private List<SelectItem> lstTitoliStudio;
 	private List<SelectItem> lstProfessioni;
@@ -61,20 +64,13 @@ public class FormazioneLavoroMan extends CsUiCompBaseBean implements IFormazione
 	
 	@Override
 	public List<SelectItem> getLstTitoliStudio() {
-		
 		if(lstTitoliStudio == null){
 			lstTitoliStudio = new ArrayList<SelectItem>();
-			lstTitoliStudio.add(new SelectItem(null, "- seleziona -"));
 			CeTBaseObject bo = new CeTBaseObject();
 			fillEnte(bo);
-			List<CsTbTitoloStudio> lst = confService.getTitoliStudio(bo);
-			if (lst != null) {
-				for (CsTbTitoloStudio obj : lst) {
-					lstTitoliStudio.add(new SelectItem(obj.getId(), obj.getDescrizione()));
-				}
-			}		
+			List<KeyValueDTO> lst = confService.getTitoliStudio(bo);
+			lstTitoliStudio = convertiLista(lst);
 		}
-		
 		return lstTitoliStudio;
 	}
 
@@ -134,7 +130,6 @@ public class FormazioneLavoroMan extends CsUiCompBaseBean implements IFormazione
 	public List<SelectItem> getLstConLavorativa() {
 		if(lstConLavorativa == null){
 			lstConLavorativa = new ArrayList<SelectItem>();
-			lstConLavorativa.add(new SelectItem(null, "- seleziona -"));
 			CeTBaseObject  xo = new CeTBaseObject();
 			fillEnte(xo);
 			TreeMap<String, List<CsTbCondLavoro>> tree = confService.getMappaCondLavoro(xo);
@@ -147,14 +142,15 @@ public class FormazioneLavoroMan extends CsUiCompBaseBean implements IFormazione
 					for (CsTbCondLavoro obj : lst) {
 						SelectItem si = new SelectItem(obj.getId(), obj.getDescrizione());
 						boolean valorePresetted = idCondLavorativa!=null && obj.getId()==idCondLavorativa.longValue();
-						if("0".equals(obj.getAbilitato()) && !valorePresetted)
+						boolean abilitato = obj.getAbilitato()!=null ? obj.getAbilitato().booleanValue() : Boolean.FALSE;
+						if(!abilitato && !valorePresetted)
 							si.setDisabled(true);
 						if(labelGroup==null || labelGroup.trim().isEmpty())
-							siList.add(si);
+							lstConLavorativa.add(si);
 						else
-						    lstConLavorativa.add(si);
+							siList.add(si);
 					}
-					if(labelGroup==null || labelGroup.trim().isEmpty()){
+					if(labelGroup!=null && !labelGroup.trim().isEmpty()){
 						gr.setSelectItems(siList.toArray(new SelectItem[siList.size()]));
 						lstConLavorativa.add(gr);
 					}
@@ -163,7 +159,7 @@ public class FormazioneLavoroMan extends CsUiCompBaseBean implements IFormazione
 		}
 		return lstConLavorativa;
 	}
-
+	
 	public void setLstConLavorativa(List<SelectItem> lstConLavorativa) {
 		this.lstConLavorativa = lstConLavorativa;
 	}
@@ -235,9 +231,17 @@ public class FormazioneLavoroMan extends CsUiCompBaseBean implements IFormazione
 		return settImpiego;
 	}
 
-
+	@Override
+	public String getTitoloStudioIstat(){
+		String istat = tbTitoloStudio!=null ? format(tbTitoloStudio.getCodIstat()) : "";
+		String desc = tbTitoloStudio!=null ? format(tbTitoloStudio.getDescrizione()): "";
+		String tooltip = tbTitoloStudio!=null ? format(tbTitoloStudio.getTooltip()) : "";
+		return (istat+" "+desc+" "+tooltip).trim();
+	}
+	
+	@Override
 	public String getTitoloStudio() {
-		return titoloStudio;
+		return tbTitoloStudio!=null ? format(tbTitoloStudio.getDescrizione()) : "";
 	}
 
 
@@ -270,15 +274,13 @@ public class FormazioneLavoroMan extends CsUiCompBaseBean implements IFormazione
     }
 	
 	private void valorizzaTitoloStudio(){
-		titoloStudio = null;
+		tbTitoloStudio = null;
 		it.webred.cs.csa.ejb.dto.BaseDTO d = new it.webred.cs.csa.ejb.dto.BaseDTO();
 		fillEnte(d);
     	if(idTitoloStudio!=null){
     		d.setObj(idTitoloStudio.longValue());
-    		CsTbTitoloStudio cl = confService.getTitoloStudioById(d);
-    		titoloStudio=cl!=null ? cl.getDescrizione(): null;
+    		tbTitoloStudio = confService.getTitoloStudioById(d);
     	}
-    	titoloStudio = format(titoloStudio);
     }
     
 	private void valorizzaProfessione(){

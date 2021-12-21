@@ -202,6 +202,11 @@ public class CsADatiSociali implements Serializable {
 	/*AFFIDAMENTO SERV.SOCIALE*/
 	private Boolean affidamento;
 	
+	//<!-- SISO-1305 -->
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, optional = true)
+	@JoinColumn(name="DATI_LAVORO_ID")
+	private CsExtraFseDatiLavoro datiFse;
+	
 	public CsADatiSociali() {
 	}
 
@@ -558,4 +563,11 @@ public class CsADatiSociali implements Serializable {
 		this.curatelaComponente = curatelaComponente;
 	}
 
+	public CsExtraFseDatiLavoro getDatiFse() {
+		return datiFse;
+	}
+
+	public void setDatiFse(CsExtraFseDatiLavoro datiFse) {
+		this.datiFse = datiFse;
+	}
 }

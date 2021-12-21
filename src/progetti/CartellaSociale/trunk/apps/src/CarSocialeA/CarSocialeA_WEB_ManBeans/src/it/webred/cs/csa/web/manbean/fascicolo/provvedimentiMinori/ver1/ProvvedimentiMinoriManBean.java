@@ -2,7 +2,6 @@ package it.webred.cs.csa.web.manbean.fascicolo.provvedimentiMinori.ver1;
 
 import it.webred.cs.csa.ejb.client.AccessTableSchedaSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.CarSocialeServiceException;
-import it.webred.cs.csa.ejb.dto.BaseDTO;
 import it.webred.cs.csa.web.manbean.fascicolo.provvedimentiMinori.ProvvedimentiMinoriManBaseBean;
 import it.webred.cs.csa.web.manbean.fascicolo.provvedimentiMinori.ProvvedimentiMinoriRowBean;
 import it.webred.cs.csa.web.manbean.fascicolo.provvedimentiMinori.ver1.tabs.DatiProvvedimentoMan;
@@ -11,7 +10,6 @@ import it.webred.cs.csa.web.manbean.fascicolo.provvedimentiMinori.ver1.tabs.Inte
 import it.webred.cs.csa.web.manbean.fascicolo.provvedimentiMinori.ver1.tabs.PrescrizioniSocioEducativeMan;
 import it.webred.cs.csa.web.manbean.fascicolo.provvedimentiMinori.ver1.tabs.PrescrizioniSpecialisticheMan;
 import it.webred.cs.data.model.CsAComponente;
-import it.webred.cs.data.model.CsAFamigliaGruppo;
 import it.webred.cs.data.model.CsASoggettoLAZY;
 import it.webred.cs.data.model.CsDDiario;
 import it.webred.cs.data.model.CsDValutazione;

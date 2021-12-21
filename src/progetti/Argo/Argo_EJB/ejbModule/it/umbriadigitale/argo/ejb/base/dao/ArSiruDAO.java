@@ -18,34 +18,20 @@ public class ArSiruDAO extends ArgoBaseDAO implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 
-	public void save(ImportSiruProgettiAttivita progetto) {
-		progetto.setDtIns(new Date());
-		em.merge(progetto);
+	public void save(ImportSiruProgettiAttivita progetto) throws ArgoServiceException {
+		try{
+			progetto.setDtIns(new Date());
+			em.persist(progetto);
+		}catch(Throwable e){
+			logger.error(e.getMessage(), e);
+			throw new ArgoServiceException(e);
+		}
 	}	
 	
 	public ImportSiruProgettiAttivita findSiruProgettiAttivita(ImportSiruProgettiAttivitaPK id){
 		return em.find(ImportSiruProgettiAttivita.class, id);
 	}
-	
-
-	public int save(List<ImportSiruProgettiAttivita> lst) throws ArgoServiceException{
-		int numInsert = 0;
-		try{
-			
-	        for(ImportSiruProgettiAttivita jpa : lst){
-	        	this.save(jpa);
-	        	numInsert++;
-	        }
-	
-		}catch(Throwable e){
-			logger.error(e.getMessage(), e);
-			throw new ArgoServiceException(e);
-		}
 		
-		return numInsert;
-	}
-	
-	
 	public String getBelfioreCapofilaByDenomSiru(String descrizione){
 		String belfiore = null;
 		Query q = em.createNamedQuery("ArOOrganizzazioneFse.findByDenominazioneCapofila");

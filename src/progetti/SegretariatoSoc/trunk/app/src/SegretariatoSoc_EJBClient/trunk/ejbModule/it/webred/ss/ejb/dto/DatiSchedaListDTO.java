@@ -26,6 +26,7 @@ public class DatiSchedaListDTO extends CeTBaseObject {
 	private Date dataInvio;
 	private Date dataRicezione;
 	private String statoCS;
+	private String enteSegnalazionePIC;
 	
 	
 	
@@ -168,5 +169,10 @@ public class DatiSchedaListDTO extends CeTBaseObject {
 	public void setAlias(String alias) {
 		this.alias = alias;
 	}
-	
+	public String getEnteSegnalazionePIC() {
+		return enteSegnalazionePIC;
+	}
+	public void setEnteSegnalazionePIC(String enteSegnalazionePIC) {
+		this.enteSegnalazionePIC = enteSegnalazionePIC;
+	}
 }

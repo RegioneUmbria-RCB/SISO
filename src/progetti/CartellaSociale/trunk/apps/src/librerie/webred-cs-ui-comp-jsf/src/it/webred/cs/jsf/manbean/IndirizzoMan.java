@@ -5,7 +5,6 @@ import it.webred.ct.data.access.basic.anagrafe.AnagrafeService;
 import it.webred.ct.data.access.basic.anagrafe.dto.RicercaIndirizzoAnagrafeDTO;
 import it.webred.ct.data.model.anagrafe.SitDCivicoV;
 import it.webred.ct.data.model.anagrafe.SitDVia;
-import it.webred.ejb.utility.ClientUtility;
 import it.webred.jsf.interfaces.IIndirizzo;
 
 import java.util.ArrayList;
@@ -14,7 +13,6 @@ import java.util.List;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.NoneScoped;
 import javax.faces.event.AjaxBehaviorEvent;
-import javax.naming.NamingException;
 
 @ManagedBean
 @NoneScoped
@@ -26,6 +24,8 @@ public class IndirizzoMan extends CsUiCompBaseBean implements IIndirizzo{
 	private String selectedIdVia;
 	private List<SitDCivicoV> lstCivici = new ArrayList<SitDCivicoV>();
 	
+	private AnagrafeService anagrafeService = (AnagrafeService) getEjb("CT_Service", "CT_Service_Data_Access", "AnagrafeServiceBean");
+	
 	@Override
 	public List<String> getLstIndirizzi(String query) {
 		
@@ -34,14 +34,12 @@ public class IndirizzoMan extends CsUiCompBaseBean implements IIndirizzo{
 		ri.setSitDCivicoViaDescrizione(query);
 		List<String> result = new ArrayList<String>();
 		try {
-			AnagrafeService anagrafeService = (AnagrafeService) ClientUtility.getEjbInterface(
-					"CT_Service", "CT_Service_Data_Access", "AnagrafeServiceBean");
 			List<SitDVia> lista = anagrafeService.getIndirizziLike(ri);
 			for(SitDVia via: lista){
 				result.add(via.getDescrizione());
 			}
 
-		} catch (NamingException e) {
+		} catch (Exception e) {
 			logger.error(e);
 		}
 
@@ -55,9 +53,6 @@ public class IndirizzoMan extends CsUiCompBaseBean implements IIndirizzo{
 		fillEnte(ri);
 		ri.setSitDCivicoViaDescrizione(selectedIndirizzo);
 		try {
-			
-			AnagrafeService anagrafeService = (AnagrafeService) ClientUtility.getEjbInterface(
-					"CT_Service", "CT_Service_Data_Access", "AnagrafeServiceBean");
 			List<SitDVia> listaVie = anagrafeService.getIndirizziLike(ri);
 			if(listaVie != null && listaVie.size() > 0){
 				
@@ -66,7 +61,7 @@ public class IndirizzoMan extends CsUiCompBaseBean implements IIndirizzo{
 				lstCivici = anagrafeService.getCivicoByIdExtDVia(ri);
 			}
 
-		} catch (NamingException e) {
+		} catch (Exception e) {
 			logger.error(e);
 		}
 		

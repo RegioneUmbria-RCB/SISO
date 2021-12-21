@@ -159,17 +159,6 @@ public class EnteTimerTask extends TimerTask {
 		
 	}
 	
-	private CsOOrganizzazione findOrganizzazioneDefault(String tipo) throws Exception{
-		
-		BaseDTO bDto = new BaseDTO();
-		bDto.setEnteId(enteId);
-		bDto.setObj(tipo);
-		CsAlertConfig aConfig = alertService.getAlertConfigByTipo(bDto);
-		if(aConfig != null && aConfig.getCsOOrganizzazioneDefault() != null)
-			return aConfig.getCsOOrganizzazioneDefault();
-		else return null;
-	}
-	
 	private CsOOperatore findOperatoreTo(CsACasoOpeTipoOpe tipoOpe, String userIns) throws Exception{
 		
     	BaseDTO bDto = new BaseDTO();

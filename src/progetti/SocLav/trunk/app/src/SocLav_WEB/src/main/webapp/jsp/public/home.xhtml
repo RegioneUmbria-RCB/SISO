@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://java.sun.com/jsf/html"
+				xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="#{layoutMB.template}">
+
+    <ui:define name="head-end">
+        <ui:param name="renderBreadCrumb" value="true"/>
+        
+        
+    </ui:define>
+
+    <ui:define name="title">
+        <h2 class="align-center">
+            SocLav
+        </h2>
+        <p:commandButton id="go2PattoLavoro" value="Patto per il Lavoro" 
+					    rendered="#{navigationBean.operatoreCPI}" 
+						action="#{navigationBean.goListaPattoLavoro}" icon="ui-icon-suitcase" />
+						
+    </ui:define>
+	<ui:define name="body">
+	
+	<h:panelGroup layout="block" id="cc">
+		<ui:insert name="content" />
+	</h:panelGroup>
+	
+    </ui:define>
+</ui:composition>

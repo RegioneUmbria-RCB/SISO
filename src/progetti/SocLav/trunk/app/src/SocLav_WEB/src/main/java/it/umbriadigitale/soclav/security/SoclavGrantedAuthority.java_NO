@@ -1,0 +1,24 @@
+package it.umbriadigitale.soclav.security;
+
+import org.springframework.security.core.GrantedAuthority;
+
+public class SoclavGrantedAuthority implements GrantedAuthority{
+
+	private static final long serialVersionUID = -5169735771144480562L;
+	
+	 
+	
+	public SoclavGrantedAuthority( ){
+		 
+	}
+	
+	@Override
+	public String getAuthority() {
+		return "ADMIN";
+	}
+	
+	public Long getRoleID(){
+		return Long.parseLong("1");
+	}
+
+}

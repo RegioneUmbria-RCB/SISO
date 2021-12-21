@@ -4,6 +4,7 @@ import it.webred.cs.csa.ejb.CarSocialeBaseSessionBean;
 import it.webred.cs.csa.ejb.client.AccessTableMediciSessionBeanRemote;
 import it.webred.cs.csa.ejb.dao.MedicoDAO;
 import it.webred.cs.csa.ejb.dto.BaseDTO;
+import it.webred.cs.csa.ejb.dto.KeyValueDTO;
 import it.webred.cs.data.DataModelCostanti;
 import it.webred.cs.data.model.CsCMedico;
 import it.webred.cs.data.model.CsVMedico;
@@ -12,6 +13,7 @@ import it.webred.siso.esb.Medico;
 import it.webred.siso.esb.client.MedicoClient;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -35,16 +37,16 @@ public class AccessTableMediciSessionBean extends CarSocialeBaseSessionBean impl
 		String urlString = getGlobalParameter(DataModelCostanti.AmParameterKey.WS_MEDICI_URL);
 		return stringToUrl(urlString);
 	}
-	/**
-     * Default constructor. 
-     */
-    public AccessTableMediciSessionBean() {
-        // TODO Auto-generated constructor stub
-    }
-    
+	
     @Override
-    public List<CsCMedico> getMedici(CeTBaseObject cet) {
-    	return medicoDAO.getMedici();
+    public List<KeyValueDTO> getMedici(CeTBaseObject cet) {
+    	List<KeyValueDTO> lstItems = new ArrayList<KeyValueDTO>();
+    	List<CsCMedico> beanLstMedici = medicoDAO.getMedici();
+    	if (beanLstMedici != null) {
+			for (CsCMedico medico : beanLstMedici)
+				lstItems.add(new KeyValueDTO(medico.getId(), medico.getDenominazione()));
+		}
+    	return lstItems;
     }
     
     @Override

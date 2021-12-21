@@ -14,6 +14,7 @@
 			<composite:attribute name="value" type="it.webred.jsf.bean.SessoBean"/>
 			<composite:attribute name="disabled" required="false" default="false" />
 			<composite:attribute name="required" required="false" default="false" />
+			<composite:attribute name="onUpdAction"  required="false" default="false" />
 		</composite:interface>
 		<composite:implementation>
 			<span id="#{cc.clientId}">
@@ -21,6 +22,7 @@
 								  required="#{cc.attrs.required}" requiredMessage="Sesso è un campo obbligatorio">
 	            	<f:selectItem itemLabel="Maschio" itemValue="M"/>
 	            	<f:selectItem itemLabel="Femmina" itemValue="F"/>
+	            	<p:ajax event="change" rendered="#{cc.getValueExpression('onUpdAction')}"/>
 	            </p:selectOneButton>
 	            <p:spacer width="5px"/>
 	        	<p:selectBooleanCheckbox itemLabel="transessuale" value="#{cc.attrs.value.transessuale}" rendered="false"/>			

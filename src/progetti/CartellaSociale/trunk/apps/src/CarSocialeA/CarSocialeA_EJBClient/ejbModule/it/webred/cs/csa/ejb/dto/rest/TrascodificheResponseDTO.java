@@ -28,10 +28,20 @@ public class TrascodificheResponseDTO implements Serializable {
 	private List<TabellaDecodificaDTO> gruppoVulnerabile;
 	private List<TabellaDecodificaExtDTO> statoCivile;
 	private List<TabellaDecodificaBaseDTO> condLavoro;
+	private List<TabellaDecodificaBaseDTO> tiCodIstat;
+	private List<TabellaDecodificaBaseDTO> fseCondIngMercatoLavoro;
+	private List<TabellaDecodificaBaseDTO> fseGruppoVulnerabile;
+	private List<TabellaDecodificaBaseDTO> fseTitoloStudio;
+	private List<TabellaDecodificaBaseDTO> fseDurataRicercaLavoro;
+	private List<TabellaDecodificaBaseDTO> fseTipologiaLavoro;
+	private List<TabellaDecodificaBaseDTO> fseOrarioLavoro;
+	private List<TabellaDecodificaBaseDTO> fseAzDimensione;
 	
-	
-	
-	
+	/* Per estrarre queste informazioni serve l'ente TITOLARE, non è sufficiente il capofila*/
+	/*private List<TabellaDecodificaBaseDTO> fonteFinanziamento;
+	private List<TabellaDecodificaBaseDTO> progetto;
+	private List<TabellaDecodificaBaseDTO> sottocorsoAttivita;*/
+
 	public List<TabellaDecodificaBaseDTO> getCondLavoro() {
 		return condLavoro;
 	}
@@ -74,7 +84,57 @@ public class TrascodificheResponseDTO implements Serializable {
 	public void setIntervento(List<String> intervento) {
 		this.intervento = intervento;
 	}
- 
-	
-			
+	public List<TabellaDecodificaBaseDTO> getTiCodIstat() {
+		return tiCodIstat;
+	}
+	public void setTiCodIstat(List<TabellaDecodificaBaseDTO> tiCodIstat) {
+		this.tiCodIstat = tiCodIstat;
+	}
+	public List<TabellaDecodificaBaseDTO> getFseGruppoVulnerabile() {
+		return fseGruppoVulnerabile;
+	}
+	public void setFseGruppoVulnerabile(
+			List<TabellaDecodificaBaseDTO> fseGruppoVulnerabile) {
+		this.fseGruppoVulnerabile = fseGruppoVulnerabile;
+	}
+	public List<TabellaDecodificaBaseDTO> getFseTitoloStudio() {
+		return fseTitoloStudio;
+	}
+	public void setFseTitoloStudio(List<TabellaDecodificaBaseDTO> fseTitoloStudio) {
+		this.fseTitoloStudio = fseTitoloStudio;
+	}
+	public List<TabellaDecodificaBaseDTO> getFseDurataRicercaLavoro() {
+		return fseDurataRicercaLavoro;
+	}
+	public void setFseDurataRicercaLavoro(
+			List<TabellaDecodificaBaseDTO> fseDurataRicercaLavoro) {
+		this.fseDurataRicercaLavoro = fseDurataRicercaLavoro;
+	}
+	public List<TabellaDecodificaBaseDTO> getFseTipologiaLavoro() {
+		return fseTipologiaLavoro;
+	}
+	public void setFseTipologiaLavoro(
+			List<TabellaDecodificaBaseDTO> fseTipologiaLavoro) {
+		this.fseTipologiaLavoro = fseTipologiaLavoro;
+	}
+	public List<TabellaDecodificaBaseDTO> getFseOrarioLavoro() {
+		return fseOrarioLavoro;
+	}
+	public void setFseOrarioLavoro(List<TabellaDecodificaBaseDTO> fseOrarioLavoro) {
+		this.fseOrarioLavoro = fseOrarioLavoro;
+	}
+	public List<TabellaDecodificaBaseDTO> getFseAzDimensione() {
+		return fseAzDimensione;
+	}
+	public void setFseAzDimensione(List<TabellaDecodificaBaseDTO> fseAzDimensione) {
+		this.fseAzDimensione = fseAzDimensione;
+	}
+	public List<TabellaDecodificaBaseDTO> getFseCondIngMercatoLavoro() {
+		return fseCondIngMercatoLavoro;
+	}
+	public void setFseCondIngMercatoLavoro(
+			List<TabellaDecodificaBaseDTO> fseCondIngMercatoLavoro) {
+		this.fseCondIngMercatoLavoro = fseCondIngMercatoLavoro;
+	}
+		
 }

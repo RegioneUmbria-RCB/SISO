@@ -1,16 +1,35 @@
 package it.webred.ss.web.bean.importazione;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ViewScoped;
+import javax.naming.NamingException;
+
+import org.apache.commons.lang3.StringUtils;
+
 import it.webred.cs.csa.ejb.client.AccessTableSchedaSegrSessionBeanRemote;
 import it.webred.cs.csa.ejb.dto.SchedaSegrDTO;
-import it.webred.ct.config.luoghi.LuoghiService;
-import it.webred.ct.config.model.AmTabNazioni;
+import it.webred.cs.data.DataModelCostanti;
+import it.webred.cs.data.DataModelCostanti.TipiCategoriaSociale;
+import it.webred.cs.jsf.manbean.superc.CsUiCompBaseBean;
+import it.webred.cs.sociosan.ejb.exception.SocioSanitarioException;
 import it.webred.ct.data.access.basic.anagrafe.AnagrafeService;
-import it.webred.ct.data.access.basic.anagrafe.dto.ComponenteFamigliaDTO;
 import it.webred.ct.data.access.basic.anagrafe.dto.IndirizzoAnagDTO;
-import it.webred.ct.data.access.basic.anagrafe.dto.IndirizzoAnagrafeDTO;
 import it.webred.ct.data.access.basic.anagrafe.dto.RicercaSoggettoAnagrafeDTO;
-import it.webred.ct.data.model.anagrafe.SitDPersona;
 import it.webred.ejb.utility.ClientUtility;
+import it.webred.siso.ws.ricerca.dto.PersonaDettaglio;
+import it.webred.siso.ws.ricerca.dto.RicercaAnagraficaParams;
+import it.webred.siso.ws.ricerca.dto.RicercaAnagraficaResult;
 import it.webred.ss.data.model.SsAnagrafica;
 import it.webred.ss.data.model.SsDiario;
 import it.webred.ss.data.model.SsIndirizzo;
@@ -22,23 +41,10 @@ import it.webred.ss.data.model.SsScheda;
 import it.webred.ss.data.model.SsSchedaAccesso;
 import it.webred.ss.data.model.SsSchedaMotivazione;
 import it.webred.ss.data.model.SsSchedaSegnalato;
-import it.webred.ss.ejb.client.SsSchedaSessionBeanRemote;
+import it.webred.ss.data.model.SsTipoScheda;
 import it.webred.ss.ejb.dto.BaseDTO;
 import it.webred.ss.web.bean.SegretariatoSocBaseBean;
-
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
-import javax.naming.NamingException;
+import it.webred.ss.web.bean.util.Soggetto;
 
 @ManagedBean
 @ViewScoped
@@ -48,23 +54,8 @@ public class ImportBean extends SegretariatoSocBaseBean {
 	HashMap<Long, Long> idToId = new HashMap<Long, Long>(); //segnalato  idCSV to idDB
 	HashMap<Long,String> idToName = new HashMap<Long, String>(); //assistenti idASCSV to String
 	HashMap<Long,Long> idAnaToInd = new HashMap<Long, Long>(); //residenza
-
-	private SsSchedaSessionBeanRemote schedaService;
-
-	private AnagrafeService anagrafeService;
 	
-	public ImportBean() {
-		try {
-			schedaService = (SsSchedaSessionBeanRemote) ClientUtility.getEjbInterface(
-					"SegretariatoSoc", "SegretariatoSoc_EJB", "SsSchedaSessionBean");
-			
-			anagrafeService = (AnagrafeService) ClientUtility.getEjbInterface(
-					"CT_Service", "CT_Service_Data_Access", "AnagrafeServiceBean");
-		} catch (NamingException e) {
-			logger.error(e);
-		}
-	}
-	
+	protected AnagrafeService anagrafeService = (AnagrafeService) getEjb("CT_Service", "CT_Service_Data_Access", "AnagrafeServiceBean");
 	
 	public void startImport() {
 		logger.info("dentro a Import Globale");
@@ -392,22 +383,28 @@ public class ImportBean extends SegretariatoSocBaseBean {
 			scheda=schedaService.saveScheda(dto);
 			
 			// segnalazione a cartella sociale se di tipo presa in carico
-			if(scheda.getTipo()!=null && scheda.getTipo().equals(3L)) {
-				try {
-					AccessTableSchedaSegrSessionBeanRemote schedaSegrService =
-						(AccessTableSchedaSegrSessionBeanRemote) ClientUtility.getEjbInterface("CarSocialeA", "CarSocialeA_EJB", "AccessTableSchedaSegrSessionBean");
-		
-					SchedaSegrDTO cartellaDto = new SchedaSegrDTO();
-					fillUserData(cartellaDto);
-					cartellaDto.setId(scheda.getId());
-					String flag = "I";
-					cartellaDto.setFlgStato(flag);
-					cartellaDto.setIdCatSociale(3L); // categoria adulti
-					schedaSegrService.saveSchedaSegr(cartellaDto);
-					
-					} catch (NamingException e) {
-						logger.error(e);
-					}
+			try {
+				AccessTableSchedaSegrSessionBeanRemote schedaSegrService =
+					(AccessTableSchedaSegrSessionBeanRemote) ClientUtility.getEjbInterface("CarSocialeA", "CarSocialeA_EJB", "AccessTableSchedaSegrSessionBean");
+	
+				SchedaSegrDTO cartellaDto = new SchedaSegrDTO();
+				fillUserData(cartellaDto);
+				cartellaDto.setId(scheda.getId()); 
+				cartellaDto.setProvenienza(DataModelCostanti.SchedaSegr.PROVENIENZA_SS);	// SISO-938 default a "SS"
+				
+				cartellaDto.setNuovoInserimento(Boolean.TRUE);
+				cartellaDto.setEnteDestinatario(cartellaDto.getEnteId());
+				cartellaDto.setIdCatSociale(TipiCategoriaSociale.ADULTI_ID); // categoria adulti 
+				
+				SsTipoScheda tipos = readTipoSchedaFromIdTipoScheda(scheda.getTipo());
+				boolean pic =  tipos != null ? tipos.getPresa_in_carico() : false;
+				cartellaDto.setTipoSchedaPropostaPic(pic);
+				cartellaDto.setCf(segnalato.getAnagrafica().getCf().toUpperCase());
+				cartellaDto.setEnteSchedaAccessoId(schedaAccesso.getSsRelUffPcontOrg().getSsOOrganizzazione().getId());
+				schedaSegrService.salvaSchedaSegr(cartellaDto);
+				
+			} catch (Exception e) {
+				logger.error(e);
 			}
 			
 			// DIARIO
@@ -432,19 +429,23 @@ public class ImportBean extends SegretariatoSocBaseBean {
 		}
 	}
 	
-	public void testLetturaResidenzeByCF() {
-		
-			IndirizzoAnagDTO ind = getResidenzaFromAnagrafe("CPRLNZ71P43L872C");
+	protected IndirizzoAnagDTO getResidenzaFromAnagrafe(String codFisc) {
+		IndirizzoAnagDTO indirizzo = null;
+		try {
 			
-			String indirizzo = ind.getIndirizzo();
-			String codComune = "018177";
+			RicercaSoggettoAnagrafeDTO dto = new RicercaSoggettoAnagrafeDTO();
+			fillUserData(dto);
+			dto.setCodFis(codFisc);
+			List<IndirizzoAnagDTO> lst = anagrafeService.getIndirizzoResidenzaByCodFisc(dto);
+			if(lst!=null && !lst.isEmpty())
+				indirizzo = lst.get(0);
 			
-//			SsIndirizzo residenza = new SsIndirizzo();
-//			residenza.setComune(codComune);
-//			residenza.setVia(indirizzo);
-			
-			//logger.info("RESIDENZA: " + indirizzo + " COD: " + codComune);
-		
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+    		addError("caricamento.soggetto.error");
+		}
+
+		return indirizzo;
 	}
 	
 	public void importAnagrafiche(BufferedReader br){
@@ -462,141 +463,77 @@ public class ImportBean extends SegretariatoSocBaseBean {
 				// prendere anagrafica da git con CF
 				if(cfToId.containsKey(CF)) {
 					idToId.put(new Long(fields[1]), cfToId.get(CF));
-				}
-				else  {
+				}else{
 					logger.info("CF che stiamo cercando = ["+CF+"]");
-					SitDPersona persona = readSoggettoFromAnagrafeByCf(CF);
-					if(persona!=null) {
-						SsAnagrafica ana = new SsAnagrafica();
-						ana.setCf(persona.getCodfisc()!=null ? persona.getCodfisc().toUpperCase() : null);
-						ana.setCognome(persona.getCognome());
-						ana.setNome(persona.getNome());
-						//ana.setComune_nascita(getComuneFromIdExt(persona.getIdExtComuneNascita()));
+					List <PersonaDettaglio> listAnagReg=new ArrayList <PersonaDettaglio>();
+					
+					RicercaAnagraficaParams rab= new RicercaAnagraficaParams(DataModelCostanti.TipoRicercaSoggetto.DEFAULT,true);
+					fillEnte(rab);
+					rab.setCf(CF);
+					try {
+						RicercaAnagraficaResult result = CsUiCompBaseBean.ricercaPerDatiAnagrafici(rab);
 						
-				  		ComponenteFamigliaDTO compDto = new ComponenteFamigliaDTO();
-						compDto.setPersona(persona);
-						fillUserData(compDto);
-			    		try {
-			    			
-			    		AnagrafeService anagrafeService = (AnagrafeService) ClientUtility.getEjbInterface(
-			    				"CT_Service", "CT_Service_Data_Access", "AnagrafeServiceBean");
-			    		
-						compDto = anagrafeService.fillInfoAggiuntiveComponente(compDto);
-			    		
-			    		} catch(NamingException e) {
-			    		}
+						List<PersonaDettaglio> elenco = result.getElencoAssistiti();
+						if(StringUtils.isBlank(result.getMessaggio()) && elenco!=null)
+							listAnagReg.addAll(elenco);
 						
-						if("ITALIA".equals(compDto.getDesStatoNas())) {
-							ana.setComuneNascitaCod(compDto.getCodComNas());
-							ana.setComuneNascitaDes(compDto.getDesComNas());
-							ana.setProvNascitaCod(compDto.getDesProvNas());
-						} else {
-							ana.setStatoNascitaCod(compDto.getIstatStatoNas());
-							ana.setStatoNascitaDes(compDto.getDesStatoNas());
-						}
+						if(!StringUtils.isBlank(result.getMessaggio()))
+							logger.error(result.getMessaggio(), result.getEccezione());
 						
-						ana.setData_nascita(persona.getDataNascita());
-						ana.setSesso(persona.getSesso());
-						
-						ana.setCittadinanza(getCittadinanza(cittadinanza));
-						
-						if(ana.getCittadinanza().isEmpty()){
-						
-							// sarebbe da prendere da tabella o forzare corrispondenza
-							if(cittadinanza.equals("ITALIA"))
-								ana.setCittadinanza("ITALIANA");
-							else if(cittadinanza.equals("ROMANIA"))
-								ana.setCittadinanza("RUMENA");
-							else if(cittadinanza.equals("COSTA D'AVORIO"))
-								ana.setCittadinanza("IVORIANA");
-							else if(cittadinanza.equals("EGITTO"))
-								ana.setCittadinanza("EGIZIANA");
-							else if(cittadinanza.equals("MAROCCO"))
-								ana.setCittadinanza("MAROCCHINA");
-							else if(cittadinanza.equals("TURCHIA"))
-								ana.setCittadinanza("TURCA");
-							else if(cittadinanza.equals("NIGERIA"))
-								ana.setCittadinanza("NIGERIANA");
-							else if(cittadinanza.equals("SIRIA"))
-								ana.setCittadinanza("SIRIANA");
-							else if(cittadinanza.equals("PERU'"))
-								ana.setCittadinanza("PERUVIANA");
-							else if(cittadinanza.equals("BOLIVIA"))
-								ana.setCittadinanza("BOLIVIANA");
-							else if(cittadinanza.equals("TUNISIA"))
-								ana.setCittadinanza("TUNISINA");
-							else if(cittadinanza.equals("MOLDAVIA"))
-								ana.setCittadinanza("MOLDAVA");
-							else if(cittadinanza.equals("REGNO UNITO"))
-								ana.setCittadinanza("BRITANNICA");
-							else if(cittadinanza.equals("SRI LANKA"))
-								ana.setCittadinanza("SRI LANKA");
-							else if(cittadinanza.equals("EL SALVADOR"))
-								ana.setCittadinanza("SALVADOREGNA");
-							else if(cittadinanza.equals("ECUADOR"))
-								ana.setCittadinanza("ECUADOREGNA");
-							else if(cittadinanza.equals("ALBANIA"))
-								ana.setCittadinanza("ALBANESE");
-							else if(cittadinanza.equals("POLONIA"))
-								ana.setCittadinanza("POLACCA");
-							else if(cittadinanza.equals("BRASILE"))
-								ana.setCittadinanza("BRASILIANA");
-							else if(cittadinanza.equals("BANGLADESH"))
-								ana.setCittadinanza("BANGLADESH");
-							else if(cittadinanza.equals("FEDERAZIONE RUSSA"))
-								ana.setCittadinanza("RUSSA");
-							else if(cittadinanza.equals("BENIN"))
-								ana.setCittadinanza("BENINENSE");
-							else if(cittadinanza.equals("FILIPPINE"))
-								ana.setCittadinanza("FILIPPINA");
-							else if(cittadinanza.equals("NICARAGUA"))
-								ana.setCittadinanza("NICARAGUENSE");
-							else if(cittadinanza.equals("BURKINA FASO"))
-								ana.setCittadinanza("BURKINA FASO");
-							else if(cittadinanza.equals("REPUBBLICA DI MACEDONIA"))
-								ana.setCittadinanza("MACEDONE");
-							else if(cittadinanza.equals("BULGARIA"))
-								ana.setCittadinanza("BULGARA");
-							else if(cittadinanza.equals("MALI"))
-								ana.setCittadinanza("MALI");
-							else if(cittadinanza.equals("CAMERUN"))
-								ana.setCittadinanza("CAMERUNENSE");
-							else if(cittadinanza.equals("ALGERIA"))
-								ana.setCittadinanza("ALGERINA");
-							else if(cittadinanza.equals("INDIA"))
-								ana.setCittadinanza("INDIANA");
-							else if(cittadinanza.equals("SPAGNA"))
-								ana.setCittadinanza("SPAGNOLA");
-							else if(cittadinanza.equals("UCRAINA"))
-								ana.setCittadinanza("UCRAINA");
-							else if(cittadinanza.equals("KENYA"))
-								ana.setCittadinanza("KENIOTA");
-							else if(cittadinanza.equals("URUGUAY"))
-								ana.setCittadinanza("URUGUAYANA");
-							else if(cittadinanza.equals("GIAPPONE"))
-								ana.setCittadinanza("GIAPPONESE");
-							else if(cittadinanza.equals("SENEGAL"))
-								ana.setCittadinanza("SENEGALESE");
-							else if(cittadinanza.equals("ANGOLA"))
-								ana.setCittadinanza("ANGOLANA");
-							else if(cittadinanza.equals("CINA REPUBBLICA POPOLARE"))
-								ana.setCittadinanza("CINESE");
-							else {
-								ana.setCittadinanza(cittadinanza);
-								logger.warn("Cittadinanza sconosciuta: " + cittadinanza);
+						//Recupero il primo
+						if(listAnagReg.size()>0){
+							PersonaDettaglio s = listAnagReg.get(0);
+							
+							Soggetto sogg = new Soggetto(s.getProvenienzaRicerca(), s.getIdentificativo(), null, s.getCognome(), s.getNome(), s.getCodfisc(), s.getDataNascita(), s.getDataMorte(), s.getSesso());
+							
+							SsAnagrafica ana = new SsAnagrafica();
+							ana.setCf(s.getCodfisc()!=null ? s.getCodfisc().toUpperCase() : null);
+							ana.setCognome(s.getCognome());
+							ana.setNome(s.getNome());
+							ana.setIdOrigWs(DataModelCostanti.TipoRicercaSoggetto.DEFAULT+"@"+(s.getIdentificativo()!=null ? s.getIdentificativo() : ""));
+							ana.setData_nascita(s.getDataNascita());
+							ana.setSesso(s.getSesso());
+							ana.setStato_civile(null);
+							
+							if(s.getComuneNascita()!=null) {
+								ana.setComuneNascitaCod(s.getComuneNascita().getCodIstatComune());
+								ana.setComuneNascitaDes(s.getComuneNascita().getDenominazione());
+								ana.setProvNascitaCod(s.getComuneNascita().getSiglaProv());
+							} else if(s.getNazioneNascita()!=null) {
+								ana.setStatoNascitaCod(s.getNazioneNascita().getCodIstatNazione());
+								ana.setStatoNascitaDes(s.getComuneNascita().getDenominazione());
 							}
+							
+							if(s.getIndirizzoResidenza()!=null){
+								IndirizzoAnagDTO ind = new IndirizzoAnagDTO();
+								ind.setIndirizzo(s.getIndirizzoResidenza());
+								ind.setCivicoNumero(s.getCivicoResidenza());
+								if(s.getComuneResidenza()!=null){
+									ind.setComCod(s.getComuneResidenza().getCodIstatComune());
+									ind.setComDes(s.getComuneResidenza().getDenominazione());
+									ind.setProv(s.getComuneResidenza().getSiglaProv());
+								}
+								if(s.getNazioneResidenza()!=null){
+									ind.setStatoCod(s.getNazioneResidenza().getCodIstatNazione());
+									ind.setStatoDes(s.getNazioneResidenza().getNazione());
+								}
+								sogg.setIndirizzo(ind);
+							}
+							
+							ana.setCittadinanza(s.getCittadinanza());
+	
+							BaseDTO dto = new BaseDTO();
+							fillUserData(dto);
+							dto.setObj(ana);
+							Long id = schedaService.saveAnagrafica(dto);
+							idToId.put(new Long(fields[1]), id);
+							cfToId.put(CF, id);
+							
 						}
-						ana.setStato_civile(null);
-
-						BaseDTO dto = new BaseDTO();
-						fillUserData(dto);
-						dto.setObj(ana);
-						Long id = schedaService.saveAnagrafica(dto);
-						idToId.put(new Long(fields[1]), id);
-						cfToId.put(CF, id);
-						
+					} catch (SocioSanitarioException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
 					}
-
 				}
 
 			}
@@ -616,30 +553,4 @@ public class ImportBean extends SegretariatoSocBaseBean {
 		}
 		
 	}
-	
-	private SitDPersona readSoggettoFromAnagrafeByCf(String cf){
-		RicercaSoggettoAnagrafeDTO dto = new RicercaSoggettoAnagrafeDTO();
-    	fillUserData(dto);
-    	dto.setCodFis(cf);
-    	
-    	List<SitDPersona> results = anagrafeService.getListaPersoneByCF(dto);
-    	if(results != null && !results.isEmpty())
-    		return results.get(0);
-    		
-    	return null;
-	}
-	
-	
-    private String getCittadinanza(String stato){
-    	try{
-			LuoghiService luoghiService = (LuoghiService)  ClientUtility.getEjbInterface("CT_Service", "CT_Config_Manager", "LuoghiServiceBean");
-			AmTabNazioni naz = luoghiService.getNazioneByDenominazione(stato);
-			return naz.getNazionalita();
-		}catch(Exception e){
-			logger.error("Errore recupero cittadinanza da nome stato: "+stato);
-		}
-    	return null;
-  
-	}
-
 }

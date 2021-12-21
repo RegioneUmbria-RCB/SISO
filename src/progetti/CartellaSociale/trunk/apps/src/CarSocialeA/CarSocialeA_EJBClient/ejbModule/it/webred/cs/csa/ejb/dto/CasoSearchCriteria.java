@@ -23,11 +23,14 @@ public class CasoSearchCriteria implements Serializable{
 	
 	private Long idOperatoreAltro; //Altro operatore da ricercare, nel caso di permessi su settore
 	private Boolean opResponsabile;
+	private Long idOperatoreIter;
 	
 	private String dataApertura;
 	
 	private String lstStati;
-	private String residenza;
+	private String residenzaComune;
+	private String residenzaNazione;
+	private boolean senzaFissaDimora;
 	
 	/*Filtro Dati Sociali*/
 	private Long titStudioId;
@@ -214,12 +217,36 @@ public class CasoSearchCriteria implements Serializable{
 		this.permessiScheda = permessiScheda;
 	}
 
-	public String getResidenza() {
-		return residenza;
+	public String getResidenzaComune() {
+		return residenzaComune;
 	}
 
-	public void setResidenza(String residenza) {
-		this.residenza = residenza;
+	public void setResidenzaComune(String residenzaComune) {
+		this.residenzaComune = residenzaComune;
 	}
-	
+
+	public String getResidenzaNazione() {
+		return residenzaNazione;
+	}
+
+	public void setResidenzaNazione(String residenzaNazione) {
+		this.residenzaNazione = residenzaNazione;
+	}
+
+	public boolean isSenzaFissaDimora() {
+		return senzaFissaDimora;
+	}
+
+	public void setSenzaFissaDimora(boolean senzaFissaDimora) {
+		this.senzaFissaDimora = senzaFissaDimora;
+	}
+
+	public Long getIdOperatoreIter() {
+		return idOperatoreIter;
+	}
+
+	public void setIdOperatoreIter(Long idOperatoreIter) {
+		this.idOperatoreIter = idOperatoreIter;
+	}
+
 }

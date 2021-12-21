@@ -57,11 +57,6 @@ public class CsASoggettoCategoriaSoc implements Serializable {
 	@JoinColumn(name="CATEGORIA_SOCIALE_ID", insertable=false, updatable=false)
 	private CsCCategoriaSociale csCCategoriaSociale;
 
-	//bi-directional many-to-one association to CsASoggetto
-	@ManyToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name="SOGGETTO_ANAGRAFICA_ID")
-	private CsASoggettoLAZY csASoggetto;
-
 	public CsASoggettoCategoriaSoc() {
 	}
 
@@ -151,14 +146,6 @@ public class CsASoggettoCategoriaSoc implements Serializable {
 
 	public void setCsCCategoriaSociale(CsCCategoriaSociale csCCategoriaSociale) {
 		this.csCCategoriaSociale = csCCategoriaSociale;
-	}
-
-	public CsASoggettoLAZY getCsASoggetto() {
-		return this.csASoggetto;
-	}
-
-	public void setCsASoggetto(CsASoggettoLAZY csASoggetto) {
-		this.csASoggetto = csASoggetto;
 	}
 
 	public Integer getPrevalente() {

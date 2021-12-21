@@ -42,17 +42,20 @@ public class ComponenteAltroMan extends CsUiCompBaseBean implements IDatiCompone
 	
 	private AccessTableSchedaSessionBeanRemote schedaService = (AccessTableSchedaSessionBeanRemote) getCarSocialeEjb("AccessTableSchedaSessionBean");
 	
+	public ComponenteAltroMan(){
+		comuneResidenzaMan = new ComuneResidenzaMan();
+	}
 
 	public ComponenteAltroMan(Long soggettoId){
+		this();
 		this.soggettoId = soggettoId;
 		this.initiListaParenti();
-		comuneResidenzaMan = new ComuneResidenzaMan();
 	}
 	
 	public ComponenteAltroMan(Long soggettoId, List<CsAComponente> listaComponenti){
+		this();
 		this.soggettoId = soggettoId;
 		this.initListaParenti(listaComponenti);
-		comuneResidenzaMan = new ComuneResidenzaMan();
 	}
 	
 	public Long getSoggettoId() {
@@ -76,7 +79,7 @@ public class ComponenteAltroMan extends CsUiCompBaseBean implements IDatiCompone
 			
 			for(CsAComponente c : listaComponenti){
 				CsAAnagrafica ana = c.getCsAAnagrafica();
-				String descrizione = ana.getCognome()+" "+ana.getNome()+" ("+c.getCsTbTipoRapportoCon().getDescrizione()+")";
+				String descrizione = ana.getDenominazione()+" ("+c.getCsTbTipoRapportoCon().getDescrizione()+")";
 				listaParenti.add(new SelectItem(c.getId(),descrizione));
 			}
 
@@ -115,6 +118,7 @@ public class ComponenteAltroMan extends CsUiCompBaseBean implements IDatiCompone
 	}
 
 	public Long getIdComponente() {
+		idComponente = idComponente!=null && idComponente> 0 ? idComponente : null;
 		return idComponente;
 	}
 

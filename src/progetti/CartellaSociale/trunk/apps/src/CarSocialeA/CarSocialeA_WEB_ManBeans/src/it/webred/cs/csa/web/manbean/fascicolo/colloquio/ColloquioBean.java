@@ -97,9 +97,7 @@ public class ColloquioBean extends FascicoloCompSecondoLivello implements ICollo
 			for(CsDColloquioBASIC coll: listaColl) {
 				ColloquioRowBean bean = new ColloquioRowBean();
 				String usernameMod = coll.getCsDDiario().getUsrMod();
-				String usernameOp = usernameMod!=null? usernameMod : coll.getCsDDiario().getUserIns();
-				if( StringUtils.isEmpty(usernameOp) )
-					usernameOp = coll.getCsDDiario().getUserIns();
+				String usernameOp = !StringUtils.isBlank(usernameMod) ? usernameMod : coll.getCsDDiario().getUserIns();
 				bean.Initialize(coll, usernameOp );
 				listaColloquios.add(bean);
 			}
@@ -211,7 +209,7 @@ public class ColloquioBean extends FascicoloCompSecondoLivello implements ICollo
 			
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
-			addError("Error", "Errore nel salvataggio del Diario (Colloquio)!");
+			addError("Errore", "Errore nel salvataggio del Diario");
 		}
 	}
 

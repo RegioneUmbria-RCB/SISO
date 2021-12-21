@@ -1,0 +1,164 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:webred="http://java.sun.com/jsf/composite/webred"
+	xmlns:webredcs="http://java.sun.com/jsf/composite/webredcs">
+<ui:composition template="/index.xhtml">
+
+  <ui:define name="metadata">
+        <ui:param name="title" value="Configurazione"/> <!-- Automatic create breadCrumb and page title when param 'title' is provided. --> 
+        
+    </ui:define>
+
+	<ui:define name="content">
+	<h:form id="frmConfigurazione">
+		<p:dataTable id="dataTableConfigurazione"  styleClass="onCloseDialog"
+			var="u" value="#{configurazioneBean.lazyListaUtentiModel}"  
+			rowIndexVar="rowIndex"  
+			selection="#{configurazioneBean.selected}" selectionMode="single"
+			emptyMessage="Nessun elemento trovato" widgetVar="#{configurazioneBean.widgetVar}"
+			paginator="true" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} "
+            currentPageReportTemplate="Risultati {startRecord} - {endRecord} di {totalRecords} " paginatorPosition="bottom"
+            rows="10" rowsPerPageTemplate="10,20,40" lazy="true" filterEvent="enter" >
+            
+            <f:facet name="header">Utenti configurati in AMProfiler</f:facet>
+            <p:column headerText="Username">
+            	<p:outputLabel value="#{u.username}"/>
+            </p:column>
+            <p:column headerText="Cognome">
+            	<p:outputLabel value="#{u.cognome}"/>
+            </p:column>
+            <p:column headerText="Nome">
+            	<p:outputLabel value="#{u.nome}"/>
+            </p:column>
+            <p:column headerText="e-mail">
+            	<p:outputLabel value="#{u.email}"/>
+            </p:column>
+            <p:column headerText="Enti abilitati">
+            	<ui:repeat var="ente" value="#{u.rdcEnti}">
+            		<p:outputLabel value="#{ente.descrizione}"/><br/>
+            	</ui:repeat>
+            </p:column>
+            <p:column headerText="Centri per l'impiego abilitati">
+            	<p:outputPanel rendered="#{configurazioneBean.isOperatoreCPI(u)}">
+            	<ui:repeat var="c" value="#{u.rdcCpi}">
+            		<p:outputLabel value="#{c.cpi.denominazione}" rendered="#{c.abilitato}"/><br/>
+            	</ui:repeat>
+            	<p:commandButton value="Modifica" styleClass="fa fa-pencil"
+            				action="#{configurazioneBean.inizializzaDialog(u)}" 
+           					oncomplete="PF('dialogCPI').show()"
+           					update="@(.onOpenDialogCPI)"/>  
+            	</p:outputPanel>
+            </p:column>
+            <p:column headerText="Percorso autenticazione">
+            	<p:outputLabel value="#{u.pathRoot}"/>
+            </p:column>
+            	
+            </p:dataTable>
+        
+        
+              <p:dialog id="dialogCPI" dynamic="true" modal="true" styleClass="onOpenDialogCPI"
+				widgetVar="dialogCPI" width="80%" height="90%">
+				<p:ajax event="close" update="@(.onCloseDialog)" />
+				
+				<p:panel id="pnlUserCPI" header="Centri per l'impiego abilitati per l'operatore #{configurazioneBean.selected.cognome} #{configurazioneBean.selected.nome}" 
+						  styleClass="onChangeUserCPI onChangeCPI" toggleable="true">
+					<p:dataTable id="tblUserCPI"  widgetVar="tblUserCPI"  lazy="true" var="c" value="#{configurazioneBean.cpiUserDataModel}"
+		             			  rowIndexVar="rowKeyInd" rowKey="#{c.cpi.codice}" 
+						          selection="#{configurazioneBean.selectedCPIUtente}" 
+						           rows="10" filterEvent="enter"  emptyMessage="Nessun centro abilitato">
+	           			<p:column selectionMode="multiple" style="text-align:center" width="20px"/>
+						<p:column headerText="Codice">
+							<p:outputLabel value="#{c.cpi.codice}"/>
+						</p:column>
+						<p:column headerText="Nome">
+							<p:outputLabel value="#{c.cpi.denominazione}"/>
+						</p:column>
+						<p:column headerText="Indirizzo">
+							<p:outputLabel value="#{c.cpi.indirizzo}"/>
+						</p:column>
+						<p:column headerText="Telefono">
+							<p:outputLabel value="#{c.cpi.telefono}"/>
+						</p:column>
+						<p:column headerText="Attivo" style="text-align:center" width="40px">
+							<p:graphicImage value="/images/check.png" height="20" rendered="#{c.abilitato}"/>
+		            		<p:graphicImage value="/images/rejected.png" height="20" rendered="#{!c.abilitato}"/>
+						</p:column>
+						<f:facet name="footer">
+	           				<p:commandButton value="Abilita" icon="fa fa-check"
+	            				partialSubmit="true" action="#{configurazioneBean.abilitaUserCPI()}" 
+	           					process="tblUserCPI" update="@(.onChangeUserCPI)"/>  
+	           				<p:commandButton value="Disabilita" styleClass="fa fa-remove"
+	            				partialSubmit="true" action="#{configurazioneBean.disabilitaUserCPI()}"
+	           					process="tblUserCPI" update="@(.onChangeUserCPI)"/>  
+	           				<p:commandButton value="Elimina" styleClass="fa fa-trash-o"
+	            				partialSubmit="true" action="#{configurazioneBean.eliminaUserCPI()}" 
+	           					process="tblUserCPI" update="@(.onChangeUserCPI)"/>  
+						</f:facet>
+					</p:dataTable>
+				</p:panel>
+				
+				<p:panel id="pnlNewUserCPI" header="Ricerca centri per l'impiego da associare all'utente" toggleable="true" styleClass="onRefresh">
+					<h:panelGrid columns="9" >
+						<p:outputLabel value="Regione"/>
+						<p:spacer width="10px"/>
+						<p:selectOneMenu id = "somRegione" value="#{configurazioneBean.cpiDataModel.selRegione}">
+							<f:selectItem noSelectionOption="true" itemLabel="- seleziona -"/>
+							<f:selectItems value="#{configurazioneBean.cpiDataModel.listaRegioni}"/>
+							<p:ajax event="change" partialSubmit="true" process="@this" 
+									listener="#{configurazioneBean.cpiDataModel.onChangeRegione}" update="@(.onChangeRegione)"/>
+						</p:selectOneMenu>
+						<p:spacer width="20px"/>
+						<p:outputLabel value="Provincia"/>
+						<p:spacer width="10px"/>
+						<p:selectOneMenu id = "somProv" value="#{configurazioneBean.cpiDataModel.selProvincia}" styleClass="onChangeRegione">
+							<f:selectItem noSelectionOption="true" itemLabel="- seleziona -"/>
+							<f:selectItems value="#{configurazioneBean.cpiDataModel.listaProvince}"/>
+							<p:ajax event="change" partialSubmit="true" process="@this" update="@(.onChangeProvincia)"/>
+						</p:selectOneMenu>
+						<p:spacer width="20px"/>
+						<p:commandButton id="btnRefresh" value="" title="Pulisci campi" partialSubmit="true" update="@(.onRefresh)" 
+										 action="#{configurazioneBean.cpiDataModel.refresh}" styleClass="fa fa-refresh"/>
+					
+					</h:panelGrid>
+					<p:outputPanel styleClass="onChangeRegione onChangeProvincia onChangeCPI" >
+						<p:dataTable id="checkboxDT" var="cpi" lazy="true" widgetVar="checkboxDT" 
+									 value="#{configurazioneBean.cpiDataModel}" rowIndexVar="rowKeyInd" rowKey="#{cpi.codice}"
+						             selection="#{configurazioneBean.selectedCPI}" rendered="#{not empty configurazioneBean.cpiDataModel.selRegione}"
+						             emptyMessage="Nessun elemento trovato" scrollable="true" scrollHeight="200" paginator="true" 
+						             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} "
+            						 currentPageReportTemplate="Risultati {startRecord} - {endRecord} di {totalRecords} " paginatorPosition="bottom"
+            						 rows="10" rowsPerPageTemplate="5,10,20" >         
+							<p:column selectionMode="multiple" style="text-align:center" width="20px"/>
+							<p:column headerText="Codice" >
+								<p:outputLabel value="#{cpi.codice}"/>
+							</p:column>
+							<p:column headerText="Denominazione">
+								<p:outputLabel value="#{cpi.denominazione}"/>
+							</p:column>
+							<p:column headerText="Indirizzo">
+								<p:outputLabel value="#{cpi.indirizzo}"/>
+							</p:column>
+							<p:column headerText="Telefono">
+								<p:outputLabel value="#{cpi.telefono}"/>
+							</p:column>
+							<p:column headerText="e-mail">
+								<p:outputLabel value="Sede: #{cpi.emailSede}" rendered="#{not empty cpi.emailSede}"/>
+								<p:outputLabel value="Responsabile: #{cpi.emailResponsabile}" rendered="#{not empty cpi.emailResponsabile}"/>
+							</p:column>
+							<f:facet name="footer">
+		            			<p:commandButton process="checkboxDT" update="@(.onChangeCPI)" partialSubmit="true" styleClass="fa fa-plus-circle"
+		            							 value="Aggiungi" action="#{configurazioneBean.assegnaCPI()}" />
+		       				</f:facet>
+						</p:dataTable>
+					</p:outputPanel>
+				</p:panel>
+		</p:dialog>
+	</h:form>
+		
+	</ui:define>
+</ui:composition>
+</html>

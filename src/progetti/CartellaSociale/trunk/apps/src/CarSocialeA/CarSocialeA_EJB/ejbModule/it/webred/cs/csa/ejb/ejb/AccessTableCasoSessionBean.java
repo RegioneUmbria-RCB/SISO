@@ -5,9 +5,13 @@ import it.webred.cs.csa.ejb.client.AccessTableCasoSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.AccessTableOperatoreSessionBeanRemote;
 import it.webred.cs.csa.ejb.dao.CasoDAO;
 import it.webred.cs.csa.ejb.dao.IterDAO;
+import it.webred.cs.csa.ejb.dao.OperatoreDAO;
 import it.webred.cs.csa.ejb.dao.SoggettoDAO;
 import it.webred.cs.csa.ejb.dto.BaseDTO;
-import it.webred.cs.csa.ejb.dto.IterDTO;
+import it.webred.cs.csa.ejb.dto.DatiOperatoreDTO;
+import it.webred.cs.csa.ejb.dto.KeyValueDTO;
+import it.webred.cs.csa.ejb.dto.OperatoreDTO;
+import it.webred.cs.csa.ejb.dto.prospettoSintesi.CasiOperatoreBean;
 import it.webred.cs.data.DataModelCostanti;
 import it.webred.cs.data.model.CsACaso;
 import it.webred.cs.data.model.CsACasoAccessoFascicolo;
@@ -15,6 +19,7 @@ import it.webred.cs.data.model.CsACasoOpeTipoOpe;
 import it.webred.cs.data.model.CsACasoOpeTipoOpe2;
 import it.webred.cs.data.model.CsASoggettoLAZY;
 import it.webred.cs.data.model.CsItStep;
+import it.webred.cs.data.model.CsOOperatore;
 import it.webred.cs.data.model.CsOOperatoreBASIC;
 import it.webred.cs.data.model.CsOOperatoreSettore;
 import it.webred.cs.data.model.CsOOperatoreTipoOperatore;
@@ -23,7 +28,9 @@ import it.webred.ct.support.datarouter.CeTBaseObject;
 import it.webred.ct.support.validation.annotation.AuditConsentiAccessoAnonimo;
 import it.webred.ct.support.validation.annotation.AuditSaltaValidazioneSessionID;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.ejb.EJB;
@@ -45,6 +52,9 @@ public class AccessTableCasoSessionBean extends CarSocialeBaseSessionBean implem
 	
 	@Autowired 
 	private IterDAO iterDao;
+	
+	@Autowired
+	private OperatoreDAO operatoreDao;
 	
 	@EJB
 	public AccessTableOperatoreSessionBeanRemote operatoreSessionBean;
@@ -183,29 +193,41 @@ public class AccessTableCasoSessionBean extends CarSocialeBaseSessionBean implem
 	public List<CsACasoAccessoFascicolo> findAccessoFascicoloByIdOrganizzazioneAndIdSettore(BaseDTO dto) {
 		return casoDao.findAccessoFascicoloAttuali((Long)dto.getObj(), (Long)dto.getObj2());
 	}
-
+	
 	@Override
 	@AuditConsentiAccessoAnonimo
 	@AuditSaltaValidazioneSessionID
-	public CsACasoOpeTipoOpe findCasoOpeResponsabile(BaseDTO dto) {
-		return casoDao.findCasoOpeResponsabile((Long) dto.getObj());
+	public CsOOperatoreSettore findDestinatarioAlertCaso(BaseDTO dto){
+		Long casoId = (Long) dto.getObj();
+		CsOOperatoreSettore opeTo = casoDao.findOpSettoreResponsabileCaso(casoId);
+				
+		//Responsabile altrimenti --> creatore
+		if(opeTo == null) {		
+			CsItStep itStep = iterDao.getFirstIterStepByCaso(casoId);
+			if(itStep!=null)
+				opeTo = itStep.getCsDDiario().getCsOOperatoreSettore();
+		}
+		
+		return opeTo;
 	}
-	
-/*	@Override
-	public CsOOperatore findResponsabile(BaseDTO dto) {
-		return casoDao.findResponsabile((Long) dto.getObj());
-	}
-	*/
 	
 	@Override
-	public CsOOperatoreBASIC findResponsabileBASIC(BaseDTO dto) {
-		return casoDao.findResponsabileBASIC((Long) dto.getObj());
+	public DatiOperatoreDTO findResponsabileCaso(BaseDTO dto) {
+		DatiOperatoreDTO kv = null;
+		CsOOperatoreBASIC o = casoDao.findResponsabileBASIC((Long) dto.getObj());
+		if(o!=null){
+			kv = new DatiOperatoreDTO();
+			kv.setUsername(o.getUsername());
+			kv.setId(o.getId());
+			kv.setDenominazione(o.getDenominazione());
+		}
+		return kv;
 	}
 	
-	
 	@Override
-	public CsOOperatoreTipoOperatore findOperatoreTipoOperatoreByOpSettore(BaseDTO dto) {
-		return casoDao.findOperatoreTipoOperatoreByOpSettore((Long) dto.getObj(), (Long) dto.getObj2());
+	public Boolean existsTipoOperatore(BaseDTO dto) {
+		CsOOperatoreTipoOperatore op = casoDao.findOperatoreTipoOperatoreByOpSettore((Long) dto.getObj(), (Long) dto.getObj2());
+		return op!=null;
 	}
 	
 	@Override
@@ -218,9 +240,65 @@ public class AccessTableCasoSessionBean extends CarSocialeBaseSessionBean implem
 	}
 	
 	@Override
-	public Integer countCasiByResponsabileCatSociale(BaseDTO dto) {
-		return casoDao.countCasiByResponsabileCatSociale((Long) dto.getObj(), (Long) dto.getObj2(), (Boolean)dto.getObj3(), dto.getEnteId());
-	}
+	public List<CasiOperatoreBean> loadCaricoLavoroByCatSocOrg(BaseDTO dto) throws Exception {
+		List<CasiOperatoreBean> lstCasiOperatore = new ArrayList<CasiOperatoreBean>();
+		Long idCatSoc = (Long) dto.getObj();
+		List<CsOOperatore> listaOperatori = operatoreDao.getOperatoriByCatSocialeOrg(idCatSoc, dto.getEnteId());
+	
+		for (CsOOperatore op : listaOperatori) {
+			boolean operatorCanBeAdded = false; // SISO-640
+			
+			Iterator<CsOOperatoreSettore> itSett = op.getCsOOperatoreSettores().iterator();
+			List<String> orgs = new ArrayList<String>();
+			List<Long> opSetIds = new ArrayList<Long>();
+			while (itSett.hasNext()) {
+				CsOOperatoreSettore s = (CsOOperatoreSettore) itSett.next();
+				String org = s.getCsOSettore().getCsOOrganizzazione().getNome();
+				
+				opSetIds.add(s.getId());
+				if (!orgs.contains(org))
+					orgs.add(org);
+			}
+			
+			// SISO-640					
+			List<String> tipiOperatore = operatoreDao.findTipiOperatore(opSetIds);
+			for(String descrizioneTipoOperatore : tipiOperatore) {
+				operatorCanBeAdded |=    descrizioneTipoOperatore.equals("Assistente sociale") 
+						                || descrizioneTipoOperatore.equals("COP")
+						                || descrizioneTipoOperatore.equals("Educatore Professionale");
+			}
+			// -----------------------------------------------------------------------~ SISO-640
+			
+			String os = "";
+			for (String s : orgs)
+				os += s + ", ";
+			os = os.substring(0, os.length() - 2);
+
+			CasiOperatoreBean oComp = new CasiOperatoreBean();
+			oComp.setOperatore(op.getDenominazione()); 
+			oComp.setOrganizzazioni(os);
+			if(operatorCanBeAdded){
+			
+				Integer numeroCasiEnte  = casoDao.countCasiByResponsabileCatSociale(op.getId(), idCatSoc, true, dto.getEnteId());
+
+				if (numeroCasiEnte > 0) {
+					oComp.setNumCasiEnte(numeroCasiEnte);
+	
+					Integer numeroCasiAltro = casoDao.countCasiByResponsabileCatSociale(op.getId(), idCatSoc, false, dto.getEnteId());
+					oComp.setNumCasiAltro(numeroCasiAltro);
+					lstCasiOperatore.add(oComp);
+				}else {
+					logger.info(String.format("operatore %d <%s> saltato: non ha casi in carico", op.getId(), op.getDenominazione()));
+				}
+			}else{
+				logger.info(String.format("operatore %d <%s> saltato: non appartenente alla tipologia ['Assistente sociale','COP','Educatore Professionale']", op.getId(), op.getDenominazione()));
+			}
+		// -----------------------------------------------------------------------~ SISO-640
+		}
+		
+		return lstCasiOperatore;
+    }
+	
 
 	@Override
 	public Long aggiornaResponsabileCaso(BaseDTO dto) {
@@ -231,8 +309,7 @@ public class AccessTableCasoSessionBean extends CarSocialeBaseSessionBean implem
 		CsItStep iterStep = (CsItStep) dto.getObj();
 		Date dataInserimento = (Date) dto.getObj2();
 		
-		bDto.setObj(iterStep.getCsACaso().getId());
-		CsACasoOpeTipoOpe responsabileCorrente = this.findCasoOpeResponsabile(bDto);
+		CsACasoOpeTipoOpe responsabileCorrente = casoDao.findCasoOpeResponsabile(iterStep.getCsACaso().getId());
 		
 		if(responsabileCorrente!=null)
 			idResponsabile = responsabileCorrente.getCsOOperatoreTipoOperatore().getCsOOperatoreSettore().getCsOOperatore().getId();
@@ -283,9 +360,9 @@ public class AccessTableCasoSessionBean extends CarSocialeBaseSessionBean implem
 				
 				if(!exist) {
 					//creo nuovo responsabile
-					bDto.setObj(iterStep.getCsOOperatore1().getId());
-					bDto.setObj2(iterStep.getCsOSettore1().getId());
-					CsOOperatoreTipoOperatore opTipoOp = this.findOperatoreTipoOperatoreByOpSettore(bDto);
+					Long operatoreId = iterStep.getCsOOperatore1().getId();
+					Long settoreId = iterStep.getCsOSettore1().getId();
+					CsOOperatoreTipoOperatore opTipoOp = casoDao.findOperatoreTipoOperatoreByOpSettore(operatoreId , settoreId );
 					if(opTipoOp != null) {
 						
 						CsACasoOpeTipoOpe newResponsabile = new CsACasoOpeTipoOpe();
@@ -307,20 +384,6 @@ public class AccessTableCasoSessionBean extends CarSocialeBaseSessionBean implem
 		return idResponsabile;
 		
 	}
-
-
-	@Override
-	@AuditConsentiAccessoAnonimo
-	@AuditSaltaValidazioneSessionID
-	public CsOOperatoreSettore findCreatoreCaso(BaseDTO dto) {
-		Long casoId = (Long)dto.getObj();
-		
-		CsItStep itStep = iterDao.getFirstIterStepByCaso(casoId);
-		if(itStep!=null)
-			return itStep.getCsDDiario().getCsOOperatoreSettore();
-		return null;
-	}
-
 
 	@Override
 	public List<CsACaso> findCasoByCognomeAndNome(BaseDTO dto) {

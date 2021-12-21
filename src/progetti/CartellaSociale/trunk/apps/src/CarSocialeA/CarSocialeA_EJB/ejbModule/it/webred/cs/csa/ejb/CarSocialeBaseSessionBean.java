@@ -1,6 +1,7 @@
 package it.webred.cs.csa.ejb;
 
 import it.webred.cs.csa.ejb.client.AccessTableAlertSessionBeanRemote;
+import it.webred.cs.csa.ejb.client.domini.AccessTableDominiAmKeySessionBeanRemote;
 import it.webred.ct.config.luoghi.LuoghiService;
 import it.webred.ct.config.model.AmKeyValueExt;
 import it.webred.ct.config.model.AmTabNazioni;
@@ -18,12 +19,14 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jboss.logging.Logger;
 
 public class CarSocialeBaseSessionBean implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 	protected static Logger logger = Logger.getLogger("carsociale.log");
+	protected static Logger loggerTimertask = Logger.getLogger("carsociale_timertask.log");
 	
 	protected ParameterService paramService = (ParameterService) getEjb("CT_Service", "CT_Config_Manager", "ParameterBaseService");
 	//SISo-1127
@@ -31,6 +34,9 @@ public class CarSocialeBaseSessionBean implements Serializable{
 	
 	@EJB
 	protected AccessTableAlertSessionBeanRemote alertSessionBean;
+	
+	@EJB
+	protected AccessTableDominiAmKeySessionBeanRemote amKeyDomini;
 	
 	protected SimpleDateFormat ddMMyyyy = new SimpleDateFormat("dd/MM/yyyy");
 	
@@ -46,6 +52,9 @@ public class CarSocialeBaseSessionBean implements Serializable{
 	}
 	
 	protected String getGlobalParameter(String paramName) {
+		String valore = amKeyDomini.findByKey(paramName);
+		if(!StringUtils.isBlank(valore)) return valore;
+		
 		ParameterSearchCriteria criteria = new ParameterSearchCriteria();
 		criteria.setKey(paramName);
 		criteria.setComune(null);

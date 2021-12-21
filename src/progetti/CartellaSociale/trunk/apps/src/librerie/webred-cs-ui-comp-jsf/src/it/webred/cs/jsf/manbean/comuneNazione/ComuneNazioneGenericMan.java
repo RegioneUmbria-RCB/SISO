@@ -20,6 +20,10 @@ public class ComuneNazioneGenericMan extends ComuneNazioneMan implements
 	private NazioneGenericMan nazioneGenericMan;
 	
 	private String tipo;
+	
+	public ComuneNazioneGenericMan(){
+		super();
+	}
 
 	public ComuneNazioneGenericMan(String tipo) {
 		this.tipo = tipo;

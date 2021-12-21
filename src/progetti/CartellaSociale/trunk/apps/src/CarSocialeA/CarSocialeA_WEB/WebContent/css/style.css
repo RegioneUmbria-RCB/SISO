@@ -91,7 +91,7 @@ body {
 
 /* Start Tooltip*/
 .tooltip{
-	width: 20rem;
+	width: 30rem;
 	font-size: 0.6em;
 }
 
@@ -101,8 +101,9 @@ body {
 }
 
 .datalist-noborder .ui-widget-content {
-	border: none !important;
-	background: none !important;
+	border: none;
+	background: transparent;
+	background-image: none;
 }
 
 .tooltip .datalist-noborder .ui-widget-content {
@@ -201,6 +202,12 @@ body {
 	text-align: left;
 	/*float: left;*/
 }
+
+.leftAlignGrid
+	  {
+	  	    text-align: left;
+     			float: left;
+	  }
 
 .rightAlign {
 	text-align: right;
@@ -816,7 +823,36 @@ div[id="fCU:fascicoloTab:colloquio"]{
 	background-color:red !important;
 }
 
+/*SISO-1257*/
 
+.fase1 > div:first-child{
+	background: #77E1E8; /*azzurro*/
+	border: 1px #77E1E8 solid;
+}
+.fase2 > div:first-child{
+	background: #1CAC78; /*verde*/
+	border: 1px #1CAC78 solid;
+}
+
+.fase3 > div:first-child{
+	background: #FED966; /*giallo*/
+	border: 1px #FED966 solid;
+}
+
+.fase4 > div:first-child{
+	background: #C8580E; /*marrone*/
+    border: 1px #C8580E solid;
+}
+
+.fase5 > div:first-child{
+	background: #5371A3; /*indaco*/
+	border: 1px #5371A3 solid;
+}
+
+/*SISO-1342*/
+ .ui-selectonelistbox, .ui-selectmanymenu,.ui-multiselectlistbox-listcontainer{
+    width:300px;
+}
 	
 
 

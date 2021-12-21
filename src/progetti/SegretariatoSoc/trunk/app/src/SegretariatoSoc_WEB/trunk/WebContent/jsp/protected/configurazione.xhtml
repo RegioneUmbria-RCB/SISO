@@ -1,0 +1,416 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:webred="http://java.sun.com/jsf/composite/webred"
+	xmlns:webredcs="http://java.sun.com/jsf/composite/webredcs">
+<ui:composition template="/jsp/protected/layout/layout.xhtml">
+
+	<ui:define name="content">
+		<p:tabView id="tabConfig" 
+			rendered="#{navigationBean.autorizzatoConfigurazione}"
+			widgetVar="tabConfig">
+
+			<!-- Tab Gestione Uffici -->
+
+			<p:tab id="tabUffici" title="Uffici" widgetVar="tabUffici">
+				<h:form id="frmUffici" widgetVar="frmUffici">
+					<p:outputPanel id="pnlGestUffici" widgetVar="pnlGestUffici" styleClass="onChangeUfficio">
+
+						<p:commandButton value="Nuovo" icon="ui-icon-plus"
+							process="@this" update=":#{p:component('dlgAggiungiUffici')}"
+							action="#{configurazioneBean.aggiungiNuovoUfficio}"
+							oncomplete="PF('dlgAggiungiUffici').show()" />
+						
+						<p:dataTable id="dtUffici" var="u" widgetVar="dtUffici"
+							value="#{configurazioneBean.lstUffici}" rowIndexVar="rowKeyInd"
+							emptyMessage="Nessun elemento trovato"
+							selection="#{configurazioneBean.selectedUffici}" rowKey="#{u.id}"
+							rows="20" paginator="true" paginatorPosition="bottom"
+							paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+							rowsPerPageTemplate="20,50,100" filterEvent="enter"
+							rowSelectListener="#{configurazioneBean.onRowSelectUfficio}">
+
+							<p:ajax event="rowSelectCheckbox"   partialSubmit="true"/>
+							<p:ajax event="rowUnselectCheckbox" partialSubmit="true"/>
+
+							<f:facet name="header">Uffici</f:facet>
+							<p:column selectionMode="multiple"
+								style="width:16px;text-align:center" />
+
+							<p:column headerText="Nome" sortBy="#{u.nome}"
+								filterBy="#{u.nome}" filterMatchMode="contains">
+								<p:outputLabel value="#{u.nome}" />
+							</p:column>
+							<p:column headerText="Telefono" >
+								<h:outputText value="#{u.tel}" />
+							</p:column>
+							<p:column headerText="e-mail" >
+								<p:outputLabel value="#{u.email}" />
+							</p:column>
+
+
+							<p:column headerText="Opzioni">
+								<h:panelGrid columns="1">
+									<p:outputLabel value="Ricerca soggetto: visualizza colonna Cartella Sociale" rendered="#{u.visColCsoc}" />
+									<p:outputLabel value="Ricerca soggetto: visualizza colonna Interventi" rendered="#{u.visColInterventi}" />
+									<p:outputLabel value="Richiede inserimento obbligatorio informazioni stranieri" rendered="#{u.reqStranieri}" />
+									<p:outputLabel value="Richiede inserimento obbligatorio bisogni" rendered="#{u.reqBisogni}" />
+									<p:outputLabel value="Richiede inserimento obbligatorio servizi" rendered="#{u.reqServizi}" />
+									<p:outputLabel value="Abilitato alla visualizzazione degli interventi di Cartella Sociale " rendered="#{u.visInterventi}" />
+									<p:outputLabel value="Abilitato alla visualizzazione delle schede inviate all'ente" rendered="#{u.visInviiEnte}" />
+								</h:panelGrid>
+							</p:column>
+
+							<p:column headerText="Attivo" style="text-align:center"
+								width="50">
+								<webred:pnlImgBoolean value="#{u.abilitato}" />
+							</p:column>
+							<f:facet name="footer">
+							 <p:outputPanel id="pnlUfficioComandi">
+								<p:commandButton id="btnAttivaUfficio" value="Attiva" process="dtUffici"
+									update="@(.onChangeUfficio)" icon="ui-icon-check"
+									action="#{configurazioneBean.attivaUffici}">
+									<p:confirm header="Conferma"
+										message="Procedere con l\'attivazione?" icon="ui-icon-alert" />
+								</p:commandButton>
+								<p:commandButton id="btnDisattivaUfficio" value="Disattiva" process="dtUffici"
+									update="@(.onChangeUfficio)" icon="ui-icon-closethick"
+									action="#{configurazioneBean.disattivaUffici}">
+									<p:confirm header="Conferma"
+										message="Procedere con la disattivazione?"
+										icon="ui-icon-alert" />
+								</p:commandButton>
+								<p:commandButton id="modificaButton" value="Modifica"
+									ajax="true" icon="ui-icon-pencil"
+									action="#{configurazioneBean.modificaUfficioSel}"
+									process="@this" oncomplete="if (args &amp;&amp; args.loadUfficioDialog){updateUfficiDialog; PF('dlgAggiungiUffici').show();} else { alert('no');}">
+								</p:commandButton>
+								<p:remoteCommand name="updateUfficiDialog" process="@this" update=":#{p:component('dlgAggiungiUffici')}" />  
+								
+								<p:commandButton id="btnEliminaUfficio" value="Elimina" 
+									update="@(.onChangeUfficio)"
+									icon="ui-icon-trash"
+									action="#{configurazioneBean.eliminaUffici}">
+									<p:confirm header="Conferma" message="Procedere con l\'eliminazione?" icon="ui-icon-alert" />
+								</p:commandButton>
+								<p:confirmDialog global="true" showEffect="fade"
+									hideEffect="fade">
+									<h:panelGrid columns="2" styleClass="centerAlign">
+										<p:commandButton value="Si" type="button"
+											styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+										<p:commandButton value="No" type="button"
+											styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+									</h:panelGrid>
+								</p:confirmDialog>
+							  </p:outputPanel>
+							</f:facet>
+						</p:dataTable>
+					</p:outputPanel>
+				</h:form>
+			</p:tab>
+
+
+			<!-- Tab Punti Contatto -->
+
+			<p:tab id="tabPuntiContatto" title="Punti di Contatto" 
+				widgetVar="tabPuntiContatto">
+				<h:form id="frmPuntiContatto">
+					<p:outputPanel id="pnlGestPuntiContatto">
+
+						<p:commandButton value="Nuovo" icon="ui-icon-plus"
+							process="@this" update=":#{p:component('dlgAggFormPc')}"
+							action="#{configurazioneBean.aggiungiNuovoPuntoContatto}"
+							oncomplete="PF('dlgAggiungiPContatto').show()" />
+
+						<p:dataTable id="dtpc" var="u" widgetVar="dtpc" styleClass="onChangePContatto"
+							value="#{configurazioneBean.lstPuntiContatto}"
+							rowIndexVar="rowKeyInd" rowKey="#{u.id}"
+							emptyMessage="Nessun elemento trovato"
+							selection="#{configurazioneBean.selectedPuntiContatto}" rows="20"
+							paginator="true" paginatorPosition="bottom"
+							paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+							rowsPerPageTemplate="20,50,100" filterEvent="enter"
+							rowSelectListener="#{configurazioneBean.onRowSelectPuntoContatto}">
+
+							<p:ajax event="rowSelectCheckbox" update="modificaButtonPC" />
+							<p:ajax event="rowUnselectCheckbox" update="modificaButtonPC" />
+
+							<f:facet name="header">Punti di Contatto</f:facet>
+							<p:column selectionMode="multiple"
+								style="width:16px;text-align:center" />
+							<p:column headerText="Nome" sortBy="#{u.nome}"
+								filterBy="#{u.nome}" filterMatchMode="contains">
+								<p:outputLabel value="#{u.nome}" />
+							</p:column>
+							<p:column headerText="Indirizzo"
+								sortBy="#{u.indirLocalizzazione}"
+								filterBy="#{u.indirLocalizzazione}" filterMatchMode="contains">
+								<p:outputLabel value="#{u.indirLocalizzazione}" />
+							</p:column>
+							<p:column headerText="Telefono">
+								<p:outputLabel value="#{u.tel}" />
+							</p:column>
+							<p:column headerText="e-mail">
+								<p:outputLabel value="#{u.mail}" />
+							</p:column>
+							<p:column headerText="Sito web">
+								<p:outputLabel value="#{u.sitoWeb}" />
+							</p:column>
+							<p:column headerText="Orario">
+								<p:outputLabel value="#{u.orario}" />
+							</p:column>
+							<p:column headerText="Attivo" style="text-align:center"
+								width="50">
+								<webred:pnlImgBoolean value="#{u.abilitato}" />
+							</p:column>
+							<f:facet name="footer">
+								<p:commandButton value="Attiva"
+									update="@(.onChangePContatto)"
+									icon="ui-icon-check"
+									action="#{configurazioneBean.attivaPuntiContatto}">
+									<p:confirm header="Conferma"
+										message="Procedere con l\'attivazione?" icon="ui-icon-alert" />
+								</p:commandButton>
+								<p:commandButton value="Disattiva" 
+									update="@(.onChangePContatto)"
+									icon="ui-icon-closethick"
+									action="#{configurazioneBean.disattivaPuntiContatto}">
+									<p:confirm header="Conferma" message="Procedere con la disattivazione?" icon="ui-icon-alert" />
+								</p:commandButton>
+								<p:commandButton id="modificaButtonPC" value="Modifica"
+									ajax="true" icon="ui-icon-pencil"
+									action="#{configurazioneBean.modificaPuntoContattoSel}"
+									process="@this"
+									oncomplete="if (args &amp;&amp; !args.validationFailed &amp;&amp; args.loaded){updateDialogPContatto(); PF('dlgAggiungiPContatto').show();} else {}">
+								</p:commandButton>
+								<p:remoteCommand name="updateDialogPContatto" process="@this" update=":#{p:component('dlgAggiungiPContatto')}"/>
+								<p:commandButton value="Elimina" 
+									update="@(.onChangePContatto)"
+									icon="ui-icon-trash"
+									action="#{configurazioneBean.eliminaPuntiContatto}">
+									<p:confirm header="Conferma" message="Procedere con l\'eliminazione?" icon="ui-icon-alert" />
+								</p:commandButton>
+								<p:confirmDialog global="true" showEffect="fade"
+									hideEffect="fade">
+									<h:panelGrid columns="2" styleClass="centerAlign">
+										<p:commandButton value="Si" type="button"
+											styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+										<p:commandButton value="No" type="button"
+											styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+									</h:panelGrid>
+								</p:confirmDialog>
+							</f:facet>
+						</p:dataTable>
+					</p:outputPanel>
+				</h:form>
+			</p:tab>
+
+			<!-- Tab Gestione Relazioni -->
+
+			<p:tab id="tabRelazioni"
+				title="Relazioni: Organizzazione - Ufficio - Punto di contatto"
+				widgetVar="tabRelazioni">
+				<h:form id="frmRelazioni">
+					<p:outputPanel id="pnlGestRelazioni">
+						<h:panelGrid columns="10" columnClasses="span-2">
+							<h:outputLabel value="Organizzazione" />
+							<p:selectOneMenu value="#{configurazioneBean.idOrganizzazione}"
+								filter="true" filterMatchMode="contains">
+								<f:selectItem noSelectionOption="true" itemLabel="- seleziona -" />
+								<f:selectItems value="#{configurazioneBean.organizzazioni}" />
+							</p:selectOneMenu>
+							<p:spacer width="10" />
+							<h:outputLabel value="Ufficio" />
+							<p:selectOneMenu id="somUfficio" value="#{configurazioneBean.idUfficio}" styleClass="onChangeUfficio"
+								filter="true" filterMatchMode="contains">
+								<f:selectItem noSelectionOption="true" itemLabel="- seleziona -" />
+								<f:selectItems value="#{configurazioneBean.uffici}" />
+							</p:selectOneMenu>
+							<p:spacer width="10" />
+							<h:outputLabel value="Punto di contatto" />
+							<p:selectOneMenu id="somPContatto" value="#{configurazioneBean.idPuntoContatto}" styleClass="onChangePContatto"
+								filter="true" filterMatchMode="contains">
+								<f:selectItem noSelectionOption="true" itemLabel="- seleziona -" />
+								<f:selectItems value="#{configurazioneBean.puntiContatto}" />
+							</p:selectOneMenu>
+
+							<p:commandButton value="Aggiungi" icon="ui-icon-plus"
+								process="@form" update="@form"
+								action="#{configurazioneBean.aggiungiRelazione}" />
+
+						</h:panelGrid>
+
+						<p:separator />
+
+						<p:dataTable id="dtpc1" var="u" widgetVar="dtpc1" styleClass="onChangeUfficio, onChangePContatto"
+							value="#{configurazioneBean.lstRelazioni}"
+							rowIndexVar="rowKeyInd" rowKey="#{u.id}"
+							emptyMessage="Nessun elemento trovato"
+							selection="#{configurazioneBean.selectedRelazioni}" rows="20"
+							paginator="true" paginatorPosition="bottom"
+							paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+							rowsPerPageTemplate="20,50,100" filterEvent="enter">
+
+							<f:facet name="header">Punti di Contatto</f:facet>
+							<p:column selectionMode="multiple"
+								style="width:16px;text-align:center" />
+							<p:column headerText="Organizzazione"
+								sortBy="#{u.ssOOrganizzazione.nome}"
+								filterBy="#{u.ssOOrganizzazione.nome}"
+								filterMatchMode="contains">
+								<p:outputLabel value="#{u.ssOOrganizzazione.nome}" />
+							</p:column>
+							<p:column headerText="Ufficio" sortBy="#{u.ssUfficio.nome}"
+								filterBy="#{u.ssUfficio.nome}" filterMatchMode="contains">
+								<p:outputLabel value="#{u.ssUfficio.nome}" />
+							</p:column>
+							<p:column headerText="Punto di contatto"
+								sortBy="#{u.ssPuntoContatto.nome}"
+								filterBy="#{u.ssPuntoContatto.nome}" filterMatchMode="contains">
+								<p:outputLabel value="#{u.ssPuntoContatto.nome}" />
+							</p:column>
+							<p:column headerText="Attivo" style="text-align:center"
+								width="50">
+								<webred:pnlImgBoolean value="#{u.abilitato}" />
+							</p:column>
+							<f:facet name="footer">
+								<p:commandButton value="Attiva" update="@form"
+									icon="ui-icon-check"
+									action="#{configurazioneBean.attivaRelazione}">
+									<p:confirm header="Conferma"
+										message="Procedere con l\'attivazione?" icon="ui-icon-alert" />
+								</p:commandButton>
+								<p:commandButton value="Disattiva" update="@form"
+									icon="ui-icon-closethick"
+									action="#{configurazioneBean.disattivaRelazione}">
+									<p:confirm header="Conferma"
+										message="Procedere con la disattivazione?"
+										icon="ui-icon-alert" />
+								</p:commandButton>
+								<p:commandButton value="Elimina" update="@form"
+									icon="ui-icon-trash"
+									action="#{configurazioneBean.eliminaRelazione}">
+									<p:confirm header="Conferma"
+										message="Procedere con l\'eliminazione?" icon="ui-icon-alert" />
+								</p:commandButton>
+							</f:facet>
+						</p:dataTable>
+					</p:outputPanel>
+				</h:form>
+			</p:tab>
+		</p:tabView>
+
+
+		<!-- Dialog aggiungi/modifica Ufficio -->
+
+		<p:dialog id="dlgAggiungiUffici" widgetVar="dlgAggiungiUffici" styleClass="onChangeUfficio"
+			modal="true" closable="true" width="1000" height="600" dynamic="true"
+			header="Dati Ufficio">
+			<h:form id="dlgAggForm">
+				<h:panelGrid id="panelAggiungiUffici" columns="1" width="100%">
+					<h:panelGrid columns="12" columnClasses="span-2">
+						<h:outputLabel value="Nome" />
+						<p:inputText value="#{configurazioneBean.nuovoUfficio.nome}" />
+						<p:spacer width="10" />
+						<h:outputLabel value="Telefono" />
+						<p:inputText value="#{configurazioneBean.nuovoUfficio.tel}" />
+						<p:spacer width="10" />
+						<h:outputLabel value="Email" />
+						<p:inputText value="#{configurazioneBean.nuovoUfficio.email}" />
+						<p:spacer width="10" />
+						<h:outputLabel value="Ordinamento" />
+						<p:spinner value="#{configurazioneBean.nuovoUfficio.nOrd}" />
+					</h:panelGrid>
+
+					<p:outputLabel
+						value="Template mail per invio ad altri enti/uffici (non modificare le parole chiave in maiuscolo)" />
+					<p:inputTextarea
+						value="#{configurazioneBean.nuovoUfficio.templateMailInvio}"
+						cols="100" rows="20" />
+
+					<p:selectBooleanCheckbox
+						itemLabel="Ricerca soggetto: visualizza colonna Cartella Sociale"
+						value="#{configurazioneBean.nuovoUfficio.visColCsoc}" />
+					<p:selectBooleanCheckbox
+						itemLabel="Ricerca soggetto: visualizza colonna Interventi"
+						value="#{configurazioneBean.nuovoUfficio.visColInterventi}" />
+
+					<p:selectBooleanCheckbox
+						itemLabel="Richiede inserimento obbligatorio informazioni stranieri"
+						value="#{configurazioneBean.nuovoUfficio.reqStranieri}" />
+					<p:selectBooleanCheckbox
+						itemLabel="Richiede inserimento obbligatorio bisogni"
+						value="#{configurazioneBean.nuovoUfficio.reqBisogni}" />
+					<p:selectBooleanCheckbox
+						itemLabel="Richiede inserimento obbligatorio servizi"
+						value="#{configurazioneBean.nuovoUfficio.reqServizi}" />
+					<p:selectBooleanCheckbox
+						itemLabel="Abilitato alla visualizzazione degli interventi di Cartella Sociale "
+						value="#{configurazioneBean.nuovoUfficio.visInterventi}" />
+					<p:selectBooleanCheckbox
+						itemLabel="Abilitato alla visualizzazione delle schede inviate all'ente"
+						value="#{configurazioneBean.nuovoUfficio.visInviiEnte}" />
+					<p:separator />
+					<p:commandButton id="btnSalvaUfficio" 
+						value="Salva" action="#{configurazioneBean.salvaUfficio}" process="@form" 
+						oncomplete="if (args &amp;&amp; !args.validationFailed &amp;&amp; args.saved){rmtOnChangeUfficio(); PF('dlgAggiungiUffici').hide(); } else {}"/>
+					<p:remoteCommand name="rmtOnChangeUfficio" update="@(.onChangeUfficio)" action="#{configurazioneBean.aggiornaUffici}"/>
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+
+
+		<!-- Dialog aggiungi/modifica Punti Contatto -->
+
+		<p:dialog id="dlgAggiungiPContatto" widgetVar="dlgAggiungiPContatto"
+			modal="true" closable="true" width="auto" height="auto" styleClass="onChangePContatto"
+			dynamic="true" header="Dati Punto Contatto">
+			<h:form id="dlgAggFormPc">
+
+
+				<h:panelGrid id="panelAggFormPc" columns="1">
+					<h:panelGrid columns="4" columnClasses="span-12"
+						class="ui-fluid p-formgrid p-grid">
+
+						<h:outputLabel value="Nome" />
+						<p:inputText value="#{configurazioneBean.nuovoPContatto.nome}" />
+
+
+						<h:outputLabel value="Indirizzo" />
+						<p:inputText
+							value="#{configurazioneBean.nuovoPContatto.indirLocalizzazione}" />
+
+
+						<h:outputLabel value="Telefono" />
+						<p:inputText value="#{configurazioneBean.nuovoPContatto.tel}" />
+
+
+						<h:outputLabel value="e-mail" style="width:auto" />
+
+						<p:inputText value="#{configurazioneBean.nuovoPContatto.mail}" />
+
+
+						<h:outputLabel value="Sito web" style="width:auto" />
+
+						<p:inputText value="#{configurazioneBean.nuovoPContatto.sitoWeb}" />
+
+
+						<h:outputLabel value="Orario" />
+						<p:inputText value="#{configurazioneBean.nuovoPContatto.orario}" />
+
+					</h:panelGrid>
+
+					<p:separator/>
+					<p:commandButton id="btnSalvaPContatto" value="Salva" process="@form" action="#{configurazioneBean.salvaPuntoContatto}"
+						oncomplete="if (args &amp;&amp; !args.validationFailed &amp;&amp; args.saved){PF('dlgAggiungiPContatto').hide(); rmtOnChangePContatto();} else {}"/>
+					 <p:remoteCommand name="rmtOnChangePContatto" action="#{configurazioneBean.aggiornaPuntiContatto}" update="@(.onChangePContatto)"/>
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+
+	</ui:define>
+</ui:composition>
+</html>

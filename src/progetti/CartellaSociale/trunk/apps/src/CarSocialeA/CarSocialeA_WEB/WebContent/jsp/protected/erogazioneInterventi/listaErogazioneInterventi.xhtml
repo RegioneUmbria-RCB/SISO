@@ -64,6 +64,18 @@
 				 	<br/>
 				</ui:repeat>
 			</p:column>
+			<!-- Beneficiari (cf) -->
+			<p:column filterBy="cf">
+				<f:facet name="header">
+					<h:outputText value="Cod.fiscale" />
+				</f:facet>
+				
+				 <ui:repeat value="#{rowBean.beneficiari}" var="beneficiario">
+				 	<h:outputText value="#{beneficiario.codiceFiscale}"  rendered="#{beneficiario.riferimento}" title="Beneficiario di riferimento" />
+				 	<h:outputText value="#{beneficiario.codiceFiscale}"  rendered="#{!beneficiario.riferimento}" style="color:grey; font-size:0.8em;" />
+				 	<br/>
+				</ui:repeat>
+			</p:column>
 
 			<!-- Richiesta -->
 			<p:column headerText="Programmato" style="text-align:center;" >
@@ -116,6 +128,7 @@
 				<h:outputText value="#{rowBean.master.prestazioneInps}" />
 			</p:column>
 			<!-- Note -->
+			<!--
 			<p:column style="text-align:center;" exportFunction="">
 				<f:facet name="header">
 					<h:outputText value="Note" />
@@ -123,7 +136,7 @@
 				
 			    <webredcs:tooltipInfo stringDescr="#{rowBean.master.descrIntervento}"  rendered="#{!empty rowBean.master.descrIntervento}" icona="#{resource['webredcs/img/note.png']}"/>
 			</p:column>
-
+			-->
 			<!-- SISO-664 SM -->
 			<!-- Linea Finanziamento -->
 			<!-- 
@@ -183,8 +196,7 @@
 			<p:column style="text-align:center;">
 				<f:facet name="header">
 					<h:outputText value="Data ultima operazione" />
-
-					<p:calendar id="dataErog" value="#{dataBean.lazyListaErogazioniModel.dataUltimaErogazione}" pattern="dd/MM/yyyy" size="10"
+					<p:calendar id="dataErog"  value="#{dataBean.lazyListaErogazioniModel.dataUltimaErogazione}" pattern="dd/MM/yyyy" size="10"
 						onchange="PF('listaErogazioneInterventiWidget').filter(); updateTabella();">
 						<p:ajax event="dateSelect" process="@this" update="listaErogazioneInterventi" />
 					</p:calendar>

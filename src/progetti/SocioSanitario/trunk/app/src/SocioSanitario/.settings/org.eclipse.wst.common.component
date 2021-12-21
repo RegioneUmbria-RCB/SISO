@@ -266,7 +266,7 @@
         <dependent-module archiveName="SegretariatoSoc_EJBClient.jar" deploy-path="/lib" handle="module:/resource/SegretariatoSoc_EJBClient/SegretariatoSoc_EJBClient">
             <dependency-type>uses</dependency-type>
         </dependent-module>
-        <dependent-module archiveName="SegretariatoSoc_DataModel.jar" deploy-path="/lib" handle="module:/resource/SegretariatoSoc_DataModel/SegretariatoSoc_DataModel">
+        <dependent-module archiveName="ISEERegioneMarcheClient.jar" deploy-path="/lib" handle="module:/resource/ISEERegioneMarcheClient/ISEERegioneMarcheClient">
             <dependency-type>uses</dependency-type>
         </dependent-module>
     </wb-module>

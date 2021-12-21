@@ -238,55 +238,15 @@ public class SinaMan extends CsUiCompBaseBean implements Serializable, ISina {
 			sinaDTO = sinaService.saveNewSina(sinaDTO);
 
 		sinaService.saveSina(sinaDTO);
-
+		
 		// SISO-1278 // devo confrontare i dati di invalidita presenti in cartella
 		// sociale con quelli salvati nell'ultima valutazione multidimensionale
 		if (sinaDTO.getCsDSina() != null) {
-			List<Long> lstCsInvalidita = new ArrayList<Long>();
-			List<CsADatiInvalidita> csDatiInvalidita = new ArrayList<CsADatiInvalidita>();
-
 			BaseDTO dto = new BaseDTO();
 			fillEnte(dto);
-			dto.setObj(sinaDTO.getCsDSina().getCsDDiario().getCsACaso().getCsASoggetto().getAnagraficaId());
-			csDatiInvalidita = schedaService.findDatiInvaliditaBySoggettoId(dto);
-
-			if (csDatiInvalidita != null) {
-
-				for (CsADatiInvalidita datiCs : csDatiInvalidita) {
-					if (sinaDTO.getCsDSina().getCsDDiario().getDtAmministrativa().before(datiCs.getDataFineApp())
-							&& sinaDTO.getCsDSina().getCsDDiario().getDtAmministrativa()
-									.after(datiCs.getDataInizioApp())) {
-
-						if (datiCs.getCsAInvCivs() != null && datiCs.getCsAInvCivs().size() > 0) {
-							for (CsAInvCiv invCivs : datiCs.getCsAInvCivs()) {
-
-								lstCsInvalidita.add(invCivs.getSinaRispostaId());
-							}
-							break;
-
-						}
-					}
-				}
-				if (sinaDTO.getLstSinaParamInvalidita() != null ) {
-					
-				
-					Collections.sort(sinaDTO.getLstSinaParamInvalidita());
-					Collections.sort(lstCsInvalidita);
-					if (!sinaDTO.getLstSinaParamInvalidita().equals(lstCsInvalidita)) {
-
-						dto = new BaseDTO();
-						fillEnte(dto);
-						dto.setObj(sinaDTO.getCsDSina().getCsDDiario().getCsACaso().getCsASoggetto());
-						dto.setObj2(sinaDTO.getCsDSina().getCsDDiario().getCsOOperatoreSettore());
-						dto.setObj3(DataModelCostanti.TipiAlertCod.MULTIDIM);
-						dto.setObj4("una nuova valutazione multidimensionale con dati invalidita differenti da quelli salvati in cartella sociale");
-						dto.setObj5(Boolean.TRUE);
-						alertService.addAlertNuovoInserimentoToResponsabileCaso(dto);
-					}
-				 
-				}
-
-			}
+			dto.setObj(sinaDTO.getCsDSina().getCsDDiario());
+			dto.setObj2(sinaDTO.getLstSinaParamInvalidita());
+			schedaService.verificaAllineamentoDatiInvalidita(dto);
 		}
 	}
 
@@ -444,7 +404,7 @@ public class SinaMan extends CsUiCompBaseBean implements Serializable, ISina {
 	// SISO-783
 	public Boolean possoCollegare() {
 		String nav = (String) getSession().getAttribute("navigationHistory");
-		if (nav.equalsIgnoreCase("erogazioniInterventi")) {
+		if (nav!=null && nav.equalsIgnoreCase("erogazioniInterventi")) {
 			return checkPermesso(PermessiFascicolo.ITEM, PermessiFascicolo.ACCESSO_ESTERNO_DATI_FASCICOLO);
 		}
 		return true;

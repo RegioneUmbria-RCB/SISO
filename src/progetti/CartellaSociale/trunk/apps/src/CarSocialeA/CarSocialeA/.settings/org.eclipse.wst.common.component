@@ -152,6 +152,15 @@
         <dependent-module archiveName="GedRomaClient.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/SISO/GedRomaClient.jar">
             <dependency-type>uses</dependency-type>
         </dependent-module>
+        <dependent-module archiveName="jackson-databind-2.2.3.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/json/jackson-databind-2.2.3.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="jackson-core-2.2.3.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/json/jackson-core-2.2.3.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="jackson-annotations-2.2.3.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/json/jackson-annotations-2.2.3.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
       
     </wb-module>
 </project-modules>

@@ -3,10 +3,15 @@ package it.webred.cs.csa.ejb.dao;
 import it.webred.cs.csa.ejb.CarSocialeBaseDAO;
 import it.webred.cs.csa.ejb.client.CarSocialeServiceException;
 import it.webred.cs.csa.ejb.dto.ConfrontoSsCsDTO;
+import it.webred.cs.csa.ejb.dto.KeyValueDTO;
 import it.webred.cs.csa.ejb.dto.PaiDTOExt;
-import it.webred.cs.data.DataModelCostanti;
+import it.webred.cs.csa.ejb.dto.fascicolo.scuola.ListaDatiScuolaDTO;
+import it.webred.cs.csa.ejb.dto.fascicolo.scuola.ScuolaDTO;
+import it.webred.cs.csa.ejb.dto.pai.PaiSearchCriteria;
+import it.webred.cs.csa.ejb.dto.pai.PaiSintesiDTO;
+import it.webred.cs.csa.ejb.dto.relazione.RelazioneSintesiDTO;
+import it.webred.cs.csa.ejb.queryBuilder.PaiQueryBuilder;
 import it.webred.cs.data.DataModelCostanti.TipoDiario;
-import it.webred.cs.data.model.CsACaso;
 import it.webred.cs.data.model.CsCDiarioConchi;
 import it.webred.cs.data.model.CsDClob;
 import it.webred.cs.data.model.CsDColloquio;
@@ -18,31 +23,42 @@ import it.webred.cs.data.model.CsDDiarioDoc;
 import it.webred.cs.data.model.CsDDocIndividuale;
 import it.webred.cs.data.model.CsDIsee;
 import it.webred.cs.data.model.CsDPai;
+import it.webred.cs.data.model.CsDRelSal;
 import it.webred.cs.data.model.CsDRelazione;
 import it.webred.cs.data.model.CsDScuola;
 import it.webred.cs.data.model.CsDTriage;
 import it.webred.cs.data.model.CsDValutazione;
 import it.webred.cs.data.model.CsFlgIntervento;
+import it.webred.cs.data.model.CsIIntervento;
 import it.webred.cs.data.model.CsLoadDocumento;
+import it.webred.cs.data.model.CsPaiMastSogg;
 import it.webred.cs.data.model.CsRelDiarioDiariorif;
 import it.webred.cs.data.model.CsRelDiarioDiariorifPK;
 import it.webred.cs.data.model.CsRelRelazioneProbl;
 import it.webred.cs.data.model.CsRelRelazioneTipoint;
 import it.webred.cs.data.model.CsRelSettCatsocEsclusiva;
+import it.webred.cs.data.model.CsTbMacroAttivita;
+import it.webred.cs.data.model.CsTbMicroAttivita;
+import it.webred.cs.data.model.CsTbScuola;
 import it.webred.cs.data.model.CsTbTipoDiario;
-import it.webred.cs.data.model.CsTbTipoPai;
+import it.webred.cs.data.model.view.CsVistaPai;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
 import javax.inject.Named;
+import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
+
+import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.lang.StringUtils;
 
 @Named
 public class DiarioDAO extends CarSocialeBaseDAO implements Serializable {
@@ -137,6 +153,32 @@ public class DiarioDAO extends CarSocialeBaseDAO implements Serializable {
 		Query q = em.createNamedQuery("CsDRelazione.findRelazioniByCaso");
 		q.setParameter("idCaso", idCaso);
 		return q.getResultList();
+	}
+	
+	public List<RelazioneSintesiDTO> findRelazioniSintesiByCaso(Long idCaso) {
+		List<RelazioneSintesiDTO> lstOut = new ArrayList<RelazioneSintesiDTO>();
+		logger.debug("findRelazioniSintesiByCaso CASO_ID["+idCaso+"]");
+		Query q = em.createNamedQuery("CsDRelazione.findRelazioniSintesiByCaso");
+		q.setParameter("idCaso", idCaso);
+		List<Object[]> lst = (List<Object[]>) q.getResultList();
+		logger.debug("findRelazioniSintesiByCaso RES["+lst.size()+"]");
+		for(Object[] o : lst){
+			RelazioneSintesiDTO out = new RelazioneSintesiDTO();
+			out.setDiarioId(((Long)o[0]));
+			out.setDtAmministrativa((Date)o[1]);
+	    	out.setSituazioneAmbientale((String)o[2]);
+	    	out.setSituazioneParentale((String)o[3]);
+	    	out.setSituazioneSanitaria((String)o[4]);
+	    	out.setProposta((String)o[5]);
+	    	out.setDescMacroAttivita((String)o[6]);
+	    	out.setDescMicroAttivita((String)o[7]);
+	    	out.setTipoFormMicroAttivita((String)o[8]);
+	    	
+	    	List<Long> paisId = findPadriCollegatiByFiglio(TipoDiario.PAI_ID, TipoDiario.RELAZIONE_ID, out.getDiarioId());
+	    	out.setPaiCollegati(paisId);
+	    	lstOut.add(out);
+		}
+		return lstOut;
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -250,6 +292,12 @@ public class DiarioDAO extends CarSocialeBaseDAO implements Serializable {
         em.merge(triage);
 	}
 
+	public void updateSal(CsDRelazione relazione,CsDRelSal sal) {
+		this.updateDiarioNR(relazione.getCsDDiario());
+		em.merge(relazione);
+        em.merge(sal);
+	}
+	
 	public void saveRelazione(CsDRelazione relazione) {
 		em.persist(relazione);
 	}
@@ -286,15 +334,26 @@ public class DiarioDAO extends CarSocialeBaseDAO implements Serializable {
 	}
 
 	public void deleteRelDiarioDiarioRif(Long idDiario) {
-		Query q = em.createNativeQuery("delete from CS_REL_DIARIO_DIARIORIF where diario_id=?");
-		q.setParameter(1, idDiario);
+		Query q = em.createNativeQuery("delete from CS_REL_DIARIO_DIARIORIF where diario_id= :diarioId");
+		q.setParameter("diarioId", idDiario);
 		q.executeUpdate();
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<CsDDocIndividuale> findDocIndividualiByCaso(Long idCaso) {
-		Query q = em.createNamedQuery("CsDDocIndividuale.findDocIndividualeByCaso");
+	public List<CsDDocIndividuale> findDocIndividualiByCaso(Long idCaso, Boolean visibilita) {
+		String sql = "select i from CsDDocIndividuale i "+
+					 "inner join fetch i.csDDiario d "+
+					 "left join fetch i.csTbSottocartellaDoc s "+
+					 "where d.csACaso.id=:idCaso ";
+		if(visibilita!=null)
+			sql+= "and nvl(i.privato,0) = :visibilita ";
+		sql+="order by d.dtAmministrativa desc";
+		logger.debug("findDocIndividualiByCaso SQL["+sql+"]");
+		logger.debug("findDocIndividualiByCaso ID_CASO["+idCaso+"] VISIBILITA["+visibilita+"]");
+		Query q = em.createQuery(sql);
 		q.setParameter("idCaso", idCaso);
+		if(visibilita!=null)
+			q.setParameter("visibilita", visibilita);
 		return q.getResultList();
 	}
 
@@ -341,7 +400,7 @@ public class DiarioDAO extends CarSocialeBaseDAO implements Serializable {
 		}
 		return null;
 	}
-
+	
 	public CsDClob findClobById(Long idClob) {
 		Query q = em.createNamedQuery("CsDValutazione.findClobById").setParameter("idClob", idClob);
 
@@ -405,10 +464,41 @@ public class DiarioDAO extends CarSocialeBaseDAO implements Serializable {
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<CsDScuola> findScuoleByCaso(Long idCaso) {
+	public List<ListaDatiScuolaDTO> findScuoleByCaso(Long idCaso){
+		
+		List<ListaDatiScuolaDTO> scuole = new ArrayList<ListaDatiScuolaDTO>();
+		try{
 		Query q = em.createNamedQuery("CsDScuola.findScuolaByCaso");
 		q.setParameter("idCaso", idCaso);
-		return q.getResultList();
+		List<Object[]> lst =  q.getResultList();
+		for(Object[] o : lst){
+			ListaDatiScuolaDTO s = new ListaDatiScuolaDTO();
+			
+			s.setDiarioId((Long)o[0]);
+			s.setGrado((String)o[1]);
+			s.setNote((String)o[2]);
+			s.setNome((String)o[3]);
+			s.setAnnoScolastico((String)o[4]);
+			s.setTipoScuola((String)o[5]);
+			s.setDataUltimaModifica((Date)o[6]);
+			s.setOpModifica((String)o[7]);
+			
+			CsTbScuola tbScuola = o[8]!=null ? (CsTbScuola)o[8] : null;
+			if(tbScuola!=null){
+				ScuolaDTO scuola = new ScuolaDTO();
+				BeanUtils.copyProperties(scuola, tbScuola);
+				s.setScuola(scuola);
+			}
+			
+			s.setSettSecondoLivello((Long)o[9]);
+			s.setIdSettoreDiario((Long)o[10]);
+			
+			scuole.add(s);
+		}
+		}catch(Exception e){
+			logger.error(e.getMessage(), e);
+		}
+		return scuole;
 	}
 
 	public void updateScuola(CsDScuola scuola) {
@@ -647,11 +737,15 @@ public class DiarioDAO extends CarSocialeBaseDAO implements Serializable {
 		query.executeUpdate();
 	}
 	
-	public List<CsACaso> findDiarioAnaCasoIdsByAnagraficaId(Long anagraficaId, Long tipoDiario) throws Exception {
-		Query query = em.createQuery("SELECT d.csACaso FROM CsDDiario d WHERE d.id in (SELECT da.diarioId FROM CsDDiarioAna da WHERE da.anagraficaId = :anagraficaId AND d.csTbTipoDiario.id = :tipoDiario)");
+	public List<Long> findDiarioAnaCasoIdsByAnagraficaId(Long anagraficaId, int tipoDiario) throws Exception {
+		String sql = "SELECT d.csACaso.id FROM CsDDiario d "
+				+ "WHERE d.id in "
+				+ "(SELECT da.diarioId FROM CsDDiarioAna da "
+				+ "	 WHERE da.anagraficaId = :anagraficaId AND d.csTbTipoDiario.id = :tipoDiario)";
+		Query query = em.createQuery(sql);
 		query.setParameter("anagraficaId", anagraficaId);
-		query.setParameter("tipoDiario", tipoDiario);
-		return (List<CsACaso>) query.getResultList();
+		query.setParameter("tipoDiario", new Long(tipoDiario));
+		return (List<Long>) query.getResultList();
 	}
 	
 	public ConfrontoSsCsDTO estraiDatiSchedaSS(BigDecimal scheda){
@@ -673,8 +767,9 @@ public class DiarioDAO extends CarSocialeBaseDAO implements Serializable {
 				+ "s.lavoro as LAVORO, "
 				+ "s.professione as PROFESSIONE"
 				+ " FROM SS_ANAGRAFICA a, SS_SCHEDA_SEGNALATO s LEFT JOIN SS_INDIRIZZO s1 ON s.RESIDENZA = s1.ID, SS_SCHEDA s2 "
-				+ " WHERE s.ANAGRAFICA = a.id AND s2.SEGNALATO = s.ID AND s2.ELIMINATA = 0  AND s2.id ="+scheda.longValue();
+				+ " WHERE s.ANAGRAFICA = a.id AND s2.SEGNALATO = s.ID AND s2.ELIMINATA = 0  AND s2.id = :schedaId";
 		Query q1 = em.createNativeQuery(qq1);
+		q1.setParameter("schedaId", scheda.longValue());
 		q1.setMaxResults(1);
 		List<Object[]> ret = q1.getResultList();
 		
@@ -769,6 +864,30 @@ public class DiarioDAO extends CarSocialeBaseDAO implements Serializable {
 		return dto;
 	}*/
 
+	public List<KeyValueDTO> findSintesiIseeByCaso(Long obj) {
+		List<KeyValueDTO> lstIsee = new ArrayList<KeyValueDTO>();	
+		try{
+			Query q = em.createNamedQuery("CsDIsee.findSintesiByCaso");
+			q.setParameter("idCaso", obj);
+			List<Object[]> lst = q.getResultList();
+			for(Object[] o : lst){
+				Long diarioId = (Long)o[0];
+				String annoRif = (String)o[1];
+				String tipoIsee = (String)o[2];
+				String label = annoRif + " - " + tipoIsee;
+				lstIsee.add(new KeyValueDTO(diarioId, label));
+			}
+		}catch(Throwable e){
+			logger.error("findSintesiIseeByCaso "+ e.getMessage(), e);
+		}
+		return lstIsee;
+	
+	}
+
+	public CsDScuola getScuolaById(Long diarioId) {
+		return em.find(CsDScuola.class, diarioId);
+	}
+	
 	public List<CsDPai> findPaiAperti() {
 		List<CsDPai> lst = new ArrayList<CsDPai>();
 		try{
@@ -779,5 +898,208 @@ public class DiarioDAO extends CarSocialeBaseDAO implements Serializable {
 		}
 		return lst;
 	}
+		
+	public List<CsVistaPai> findListaPaiEsterni(PaiSearchCriteria dto){
+		List<CsVistaPai> lst = new ArrayList<CsVistaPai>();
+		PaiQueryBuilder qb = new PaiQueryBuilder();
+		String sql = qb.getSqlExternalPai(dto, Boolean.FALSE);
+		logger.debug("findListaPaiEsterni SQL["+sql+"]");
+		try {
+			Query q = em.createNativeQuery(sql, CsVistaPai.class);
+			q.setFirstResult(dto.getFirst());
+			q.setMaxResults(dto.getPageSize());
+			q.setParameter("settoreId", dto.getSettoreId());
+			qb.setFilterParameters(q, dto);
+			lst = q.getResultList();
+		} catch (Exception e) {
+			logger.error("findListaPaiEsterni " + e.getMessage(), e);
+		}
+		return lst;
+	}
+	
+	public BigDecimal countListaPaiEsterni(PaiSearchCriteria dto){
+		BigDecimal count = BigDecimal.ZERO;
+		PaiQueryBuilder qb = new PaiQueryBuilder();
+		String sql = qb.getSqlExternalPai(dto, Boolean.TRUE);
+		logger.debug("countListaPaiEsterni SQL["+sql+"]");
+		try {
+			Query q = em.createNativeQuery(sql);
+			q.setParameter("settoreId", dto.getSettoreId());
+			qb.setFilterParameters(q, dto);
+			count = (BigDecimal)q.getSingleResult();
+		} catch (Exception e) {
+			logger.error("countListaPaiEsterni " + e.getMessage(), e);
+		}
+		return count;
+	}
+	
+	public List<CsVistaPai> findListaPaiFascicolo(PaiSearchCriteria dto){
+		Long casoId = dto.getCasoId();
+		String cf  = dto.getCodiceFiscale();
+		PaiQueryBuilder qb = new PaiQueryBuilder();
+		String sql = qb.getSqFascicoloPai(dto, Boolean.FALSE);
+		logger.debug("findListaPaiFascicolo SQL[" + sql + "]");
+		Query q = em.createNativeQuery(sql, CsVistaPai.class);
+		q.setFirstResult(dto.getFirst());
+		q.setMaxResults(dto.getPageSize());
+		q.setParameter(PaiQueryBuilder.CASO_ID, casoId);
+		q.setParameter(PaiQueryBuilder.COD_FISCALE, cf.toUpperCase());
+		String params = qb.setFilterParameters(q, dto);
+		logger.debug("findListaPaiFascicolo CF[" + cf + "] CASO_ID[" + casoId + "]"+params);
+		return (List<CsVistaPai>) q.getResultList();
+	}
+	
+	public BigDecimal countListaPaiFascicolo(PaiSearchCriteria dto){
+		BigDecimal count = BigDecimal.ZERO;
+		Long casoId = dto.getCasoId();
+		String cf  = dto.getCodiceFiscale();
+		PaiQueryBuilder qb = new PaiQueryBuilder();
+		String sql = qb.getSqFascicoloPai(dto, Boolean.TRUE);
+		logger.debug("countListaPaiFascicolo SQL[" + sql + "]");
+		Query q = em.createNativeQuery(sql);
+		q.setParameter(PaiQueryBuilder.CASO_ID, casoId);
+		q.setParameter(PaiQueryBuilder.COD_FISCALE, cf.toUpperCase());
+		String params = qb.setFilterParameters(q, dto);
+		logger.debug("countListaPaiFascicolo CF[" + cf + "] CASO_ID[" + casoId + "]"+params);
+		count = (BigDecimal)q.getSingleResult();
+		return count;
+	}
+	
+	public List<CsDRelazione> findRelazioniByIds(List<Long> ids){
+		if(ids!=null && !ids.isEmpty()){
+			Query q = em.createNamedQuery("CsDRelazione.findByIds");
+			q.setParameter("listaId", ids);
+			return (List<CsDRelazione>) q.getResultList();
+		} return new ArrayList<CsDRelazione>();
+	}
+	
+	public List<CsDRelazione> findRelazioniPaiEsterniByCF(String cf){
+		List<CsDRelazione> lista = new ArrayList<CsDRelazione>();
+		String sql = PaiQueryBuilder.SQL_RELAZIONI_PAI_ESTERNI_FROM_CF;
+		logger.debug("findRelazioniPaiEsterniByCF SQL[" + sql + "]");
+		logger.debug("findRelazioniPaiEsterniByCF CF[" + cf +"]");
+		Query q = em.createNativeQuery(sql, CsDRelazione.class);
+		q.setParameter("codiceFiscale", cf);
+		lista = (List<CsDRelazione>) q.getResultList();
+		logger.debug("findRelazioniPaiEsterniByCF RES[" + lista.size() +"]");
+		return lista;
+	}
+	
+	public void saveBeneficiariPai(List<CsPaiMastSogg> lstBeneficiari) {
+		for (CsPaiMastSogg soggBeneficiario : lstBeneficiari) {
+			if (soggBeneficiario.getId() != null) {
+				em.merge(soggBeneficiario);
+			} else {
+				em.persist(soggBeneficiario);
+			}
+		}
+	}
+	
+	public List<CsIIntervento> findInterventiPaiEsterniByCF(String cf){
+		String sql = PaiQueryBuilder.SQL_INTERVENTI_PAI_ESTERNI_FROM_CF;
+		logger.debug("LISTA INTERVENTI PAI ESTERNI PER CF[" + cf + "] SQL[" + sql + "]");
+		Query q = em.createNativeQuery(sql, CsIIntervento.class);
+		q.setParameter("cf", cf);
+		return (List<CsIIntervento>) q.getResultList();
+	}
+	
+	public List<CsPaiMastSogg> findSoggettiPaiSenzaCaso() {
+		List<CsPaiMastSogg> lst = new ArrayList<CsPaiMastSogg>();
+		try {
+			Query q = em.createNamedQuery("CsPaiMastSogg.findSoggettiPaiSenzCaso");
+			lst = (List<CsPaiMastSogg>) q.getResultList();
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			throw new CarSocialeServiceException(e);
+		}
+		return lst;
+	}
+	
+	public void updateSoggettoPai(CsPaiMastSogg csPaiMastSogg) {
+		em.merge(csPaiMastSogg);
+	}
 
+	public PaiSintesiDTO findSintesiPaiById(Long diarioId) {
+		PaiSintesiDTO s = null;
+		try {
+			if(diarioId!=null && diarioId>0){
+				Query q = em.createNamedQuery("CsDPai.findSintesiById");
+				q.setParameter("diarioId", diarioId);
+				Object[] res = (Object[])q.getSingleResult();
+				if(res!=null){
+					s = new PaiSintesiDTO();
+					s.setTipo((String)res[0]);
+					s.setDtAttivazione((Date)res[1]);
+					s.setDtChiusura((Date)res[2]);
+				}
+			}
+		}catch (NoResultException e) {
+		}catch (Exception e) {
+			logger.error("findSintesiPaiById " + e.getMessage(), e);
+		}
+		return s;
+	}
+
+	public CsPaiMastSogg findSoggettoPaiByDiarioId(Long diarioId) {
+		CsPaiMastSogg  sogg = null;
+		
+		try {
+
+			Query q = em.createNamedQuery("CsPaiMastSogg.findSoggByDiarioId");
+			q.setParameter("diarioId", diarioId);
+			sogg = (CsPaiMastSogg) q.getSingleResult();
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			throw new CarSocialeServiceException(e);
+		}
+		return sogg;
+	}
+
+	public List<PaiSintesiDTO> findDatePai(PaiSearchCriteria psc) {
+		List<PaiSintesiDTO> lst = new ArrayList<PaiSintesiDTO>();
+		Long diarioId = psc.getDiarioId()!=null ? psc.getDiarioId() : 0L;
+		String sql = PaiQueryBuilder.SQL_INTERVALLO_PAI;
+		Query q = em.createNativeQuery(sql);
+		logger.debug("findDatePai SQL["+sql+"]");
+		logger.debug("findDatePai DIARIO_ID["+diarioId+"] COD_FISCALE["+ psc.getCodiceFiscale()+"] TIPO_PAI_ID["+psc.getTipoPaiId()+"]");
+		q.setParameter("diarioId", diarioId);
+		q.setParameter("codFiscale", psc.getCodiceFiscale());
+		q.setParameter("tipoPaiId", psc.getTipoPaiId());
+		
+		List<Object[]> result = (List<Object[]>) q.getResultList();
+		logger.debug("findDatePai RESULT["+result.size()+"]");
+		for(Object[] o: result){
+			PaiSintesiDTO i = new PaiSintesiDTO();
+			i.setDiarioId(((BigDecimal)o[0]).longValue());
+			i.setDtAttivazione((Date)o[1]);
+			i.setDtChiusura((Date)o[2]);
+			lst.add(i);
+		}
+		return lst;
+	}
+	
+	public List<Long> findPadriCollegatiByFiglio(int tipoPadre, int tipoFiglio, Long figlioId){
+		List<Long> lista = new ArrayList<Long>();
+	/*	String sql = "select distinct pai.id from cs_d_diario rel left join CS_REL_DIARIO_DIARIORIF reld  on rel.id = RELD.DIARIO_ID_RIF "+
+					 " left join cs_d_diario pai on pai.ID = RELD.DIARIO_ID AND pai.TIPO_DIARIO_ID = "+DataModelCostanti.TipoDiario.RELAZIONE_ID +
+					 " where REL.TIPO_DIARIO_ID ="+DataModelCostanti.TipoDiario.PAI_ID +
+					 " AND rel.id = :diarioId";*/
+		String sql = "select distinct padre.id from cs_d_diario padre  "+
+				" left join CS_REL_DIARIO_DIARIORIF rel on padre.id = rel.DIARIO_ID "+
+				" left join cs_d_diario figlio on figlio.ID = REL.DIARIO_ID_RIF "+
+				" where padre.TIPO_DIARIO_ID = :idTipoDiarioPadre "+
+				" AND figlio.TIPO_DIARIO_ID = :idTipoDiarioFiglio "+
+				" AND figlio.id = :diarioFiglioId";
+		
+		//logger.debug("findPaiCollegatiByRelazione SQL["+sql+"]");
+		//logger.debug("findPaiCollegatiByRelazione RELAZIONE_DI["+relazioneId+"]");
+		Query q = em.createNativeQuery(sql);
+		q.setParameter("diarioFiglioId", figlioId);
+		q.setParameter("idTipoDiarioPadre", tipoPadre);
+		q.setParameter("idTipoDiarioFiglio", tipoFiglio);
+		
+		for(BigDecimal d : (List<BigDecimal>)q.getResultList())
+			lista.add(d.longValue());
+		return lista;
+	}
 }

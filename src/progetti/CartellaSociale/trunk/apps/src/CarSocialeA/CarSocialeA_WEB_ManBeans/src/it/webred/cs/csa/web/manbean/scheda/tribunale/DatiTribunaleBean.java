@@ -1,15 +1,13 @@
 package it.webred.cs.csa.web.manbean.scheda.tribunale;
 
 import it.webred.cs.csa.ejb.dto.BaseDTO;
+import it.webred.cs.csa.ejb.dto.KeyValueDTO;
 import it.webred.cs.csa.web.manbean.scheda.SchedaValiditaBaseBean;
 import it.webred.cs.data.DataModelCostanti;
 import it.webred.cs.data.DataModelCostanti.StrutturaTribunale;
 import it.webred.cs.data.model.CsASoggettoLAZY;
 import it.webred.cs.data.model.CsATribunale;
-import it.webred.cs.data.model.CsTbMacroSegnal;
 import it.webred.cs.data.model.CsTbMicroSegnal;
-import it.webred.cs.data.model.CsTbMotivoSegnal;
-import it.webred.cs.data.model.CsTbTribStruttura;
 import it.webred.cs.jsf.bean.ValiditaCompBaseBean;
 import it.webred.cs.jsf.interfaces.IDatiValiditaList;
 import it.webred.ct.support.datarouter.CeTBaseObject;
@@ -113,8 +111,7 @@ public class DatiTribunaleBean extends SchedaValiditaBaseBean implements IDatiVa
 	
 	@Override
 	public DatiTribunaleComp getComponenteFromCs(Object obj) {
-		logger.debug("*** INIZIO DatiTribunaleBean.getComponenteFromCs ....");
-
+		
 		BaseDTO dto = new BaseDTO();
 		fillEnte(dto);		
 		CsATribunale cs = (CsATribunale) obj;
@@ -157,8 +154,6 @@ public class DatiTribunaleBean extends SchedaValiditaBaseBean implements IDatiVa
 		comp.setUsrInserimento(super.getCognomeNomeUtente(cs.getUserIns())); //
 		comp.setUsrModifica(super.getCognomeNomeUtente(cs.getUsrMod()));
 
-		
-		logger.debug("*** FINE DatiTribunaleBean.getComponenteFromCs ....");
 		return comp;
 
 		
@@ -219,30 +214,20 @@ public class DatiTribunaleBean extends SchedaValiditaBaseBean implements IDatiVa
 	
 	private void loadLstMacroSegnalazioni() {
 		lstMacroSegnalazioni = new ArrayList<SelectItem>();
-		lstMacroSegnalazioni.add(new SelectItem(null, "- seleziona -"));
 		CeTBaseObject bo = new CeTBaseObject();
 		fillEnte(bo);
-		List<CsTbMacroSegnal> lst = confService.getMacroSegnalazioni(bo);
-		if (lst != null) {
-			for (CsTbMacroSegnal obj : lst) {
-				lstMacroSegnalazioni.add(new SelectItem(obj.getId(), obj.getDescrizione()));
-			}
-		}		
+		List<KeyValueDTO> lst = confService.getMacroSegnalazioni(bo);
+		lstMacroSegnalazioni = convertiLista(lst);
+		lstMacroSegnalazioni.add(0, new SelectItem(null, "- seleziona -"));	
 	}
 
 	private void loadLstMotiviSegnalazioni() {
 		lstMotiviSegnalazioni = new ArrayList<SelectItem>();
-		lstMotiviSegnalazioni.add(new SelectItem(null, "- seleziona -"));
 		CeTBaseObject bo = new CeTBaseObject();
 		fillEnte(bo);
-		List<CsTbMotivoSegnal> lst = confService.getMotivoSegnalazioni(bo);
-		if (lst != null) {
-			for (CsTbMotivoSegnal obj : lst) {
-				SelectItem si = new SelectItem(obj.getId(), obj.getDescrizione());
-				si.setDisabled(si.isDisabled());
-				lstMotiviSegnalazioni.add(si);
-			}
-		}		
+		List<KeyValueDTO> lst = confService.getMotivoSegnalazioni(bo);
+		lstMotiviSegnalazioni = convertiLista(lst);
+		lstMotiviSegnalazioni.add(0, new SelectItem(null, "- seleziona -"));
 	}
 	
 	
@@ -250,14 +235,7 @@ public class DatiTribunaleBean extends SchedaValiditaBaseBean implements IDatiVa
 		lstStrutture = new ArrayList<SelectItem>();
 		CeTBaseObject bo = new CeTBaseObject();
 		fillEnte(bo);
-		List<CsTbTribStruttura> lst = confService.getStruttureTribunale(bo);
-		if (lst != null) {
-			for (CsTbTribStruttura obj : lst) {
-				SelectItem si = new SelectItem(obj.getId(), obj.getDescrizione());
-				si.setDisabled(si.isDisabled());
-				lstStrutture.add(si);
-			}
-		}		
+		lstStrutture = this.convertiLista(confService.getStruttureTribunale(bo));
 	}
 
 }

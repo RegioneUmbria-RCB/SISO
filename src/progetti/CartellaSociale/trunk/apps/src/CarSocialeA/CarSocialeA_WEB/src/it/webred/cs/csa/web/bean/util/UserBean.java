@@ -7,12 +7,12 @@ import it.webred.cs.csa.ejb.client.AccessTableCatSocialeSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.AccessTableConfigurazioneSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.AccessTableOperatoreSessionBeanRemote;
 import it.webred.cs.csa.ejb.dto.BaseDTO;
+import it.webred.cs.csa.ejb.dto.KeyValueDTO;
 import it.webred.cs.csa.ejb.dto.OperatoreDTO;
 import it.webred.cs.data.model.CsOOperatore;
 import it.webred.cs.data.model.CsOOperatoreSettore;
 import it.webred.cs.data.model.CsOOrganizzazione;
 import it.webred.cs.data.model.CsOSettore;
-import it.webred.cs.data.model.CsRelSettoreCatsoc;
 import it.webred.cs.jsf.manbean.IterInfoStatoMan;
 import it.webred.cs.jsf.manbean.superc.CsUiCompBaseBean;
 import it.webred.ct.config.model.AmComune;
@@ -28,7 +28,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
 
 import javax.annotation.PostConstruct;
@@ -64,10 +63,6 @@ public class UserBean extends CsUiCompBaseBean {
 	private AccessTableOperatoreSessionBeanRemote opService = (AccessTableOperatoreSessionBeanRemote) getCarSocialeEjb("AccessTableOperatoreSessionBean");
 
 	private AccessTableCatSocialeSessionBeanRemote catSocialeService = (AccessTableCatSocialeSessionBeanRemote) getCarSocialeEjb("AccessTableCatSocialeSessionBean");
-	
-	private LoginBeanService loginService = (LoginBeanService) getEjb("AmProfiler", "AmProfilerEjb", "LoginBean");
-	
-	private ComuneService comuneService = (ComuneService) getEjb("CT_Service", "CT_Config_Manager", "ComuneServiceBean");
 	
 	@PostConstruct
 	public void init() {
@@ -364,7 +359,7 @@ public class UserBean extends CsUiCompBaseBean {
 			BaseDTO bDto = new BaseDTO();
 			fillEnte(bDto);
 			bDto.setObj(opsettore.getCsOSettore().getId());
-			List<CsRelSettoreCatsoc> listaCatSociali = catSocialeService.findRelSettoreCatsocBySettore(bDto);
+			List<KeyValueDTO> listaCatSociali = catSocialeService.getCategorieSocialiBySettore(bDto);
 
 			
 			//listaInfoSettore descrive i permessi e categorie soc derivanti dal settore scelto
@@ -376,8 +371,8 @@ public class UserBean extends CsUiCompBaseBean {
 			if(listaCatSociali != null && !listaCatSociali.isEmpty()) {
 				TreeNode nodeCatSoc = new DefaultTreeNode("CATEGORIE SOCIALI", listaInfoSettore);
 				nodeCatSoc.setExpanded(true);
-				for(CsRelSettoreCatsoc settCatsoc: listaCatSociali) {
-					nodeCatSoc.getChildren().add(new DefaultTreeNode(settCatsoc.getCsCCategoriaSociale().getTooltip()));
+				for(KeyValueDTO csoc: listaCatSociali) {
+					nodeCatSoc.getChildren().add(new DefaultTreeNode(csoc.getDescrizione()));
 				}
 			}
 			

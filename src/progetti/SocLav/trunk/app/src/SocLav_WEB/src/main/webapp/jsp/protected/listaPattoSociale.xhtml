@@ -1,0 +1,192 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:webred="http://java.sun.com/jsf/composite/webred"
+	xmlns:webredcs="http://java.sun.com/jsf/composite/webredcs">
+<ui:composition template="/index.xhtml">
+
+  <ui:define name="metadata">
+        <ui:param name="title" value="Patto per il sociale"/> <!-- Automatic create breadCrumb and page title when param 'title' is provided. --> 
+        
+    </ui:define>
+
+	<ui:define name="content">
+	<h:form id="frmPattoSociale">
+		<p:dataTable id="dataTableSocialeId"   styleClass="updateOnSalvaConsenso"
+			var="caso" value="#{listaRdCSocialeBean.lazyListaSocialeModel}"  
+			rowIndexVar="rowIndex"  
+			selection="#{listaRdCSocialeBean.selected}" selectionMode="single"
+			emptyMessage="Nessun elemento trovato" widgetVar="dataTableCasi"
+			paginator="true" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} "
+            currentPageReportTemplate="Risultati {startRecord} - {endRecord} di {totalRecords} " paginatorPosition="bottom"
+            rows="10" rowsPerPageTemplate="10,20,40" lazy="true" filterEvent="enter" >
+            
+            <f:facet name="header">Beneficiari Patto per il Sociale (fonte GePI)</f:facet>
+            <p:column width="40">
+           	 	<p:rowToggler />
+        	</p:column>
+            <p:column headerText="Protocollo INPS">
+            	<p:outputLabel value="#{caso.protocolloINPS}"/>
+            </p:column>
+            <p:column headerText="Data domanda" filterBy="dataDomanda" style="text-align:center;">
+	            <p:outputLabel value="#{caso.dataDomanda}">
+	            	<f:convertDateTime pattern="dd/MM/yyyy" />
+	            </p:outputLabel>
+            </p:column>
+            <p:column headerText="Richiedente">
+            	<p:outputLabel value="#{caso.nomeCompletoRichiedente}"/>
+            </p:column>
+            <p:column headerText="CF Richiedente">
+            	<p:outputLabel value="#{caso.cfRichiedente}"/>
+            </p:column>
+            <p:column headerText="Ambito">
+            	<p:outputLabel value="#{caso.ambito}"/>
+            </p:column>
+            <p:column headerText="Residenza">
+            	<p:outputLabel value="#{caso.residenza.indirizzoCompleto}"/>
+            </p:column>
+            <p:column headerText="Dati assegnazione">
+            	<p:outputLabel value="TODO"/>
+            </p:column>
+           
+            <p:rowExpansion rendered="#{not empty caso.familiari}">
+            	<p:dataTable value="#{caso.familiari}" var="fam">
+            		<p:column headerText="" style="text-align:center;" width="40" >
+		            	<p:graphicImage value="/images/person.png" height="20" rendered="#{fam.richiedente}" title="Richiedente"/>
+		            	<p:graphicImage value="/images/famiglia.jpg" height="20" rendered="#{!fam.richiedente}" title="Componente del nucleo familiare"/>
+		            </p:column>
+            		<p:column headerText="Cognome e nome">
+            			<p:outputLabel value="#{fam.datipersonali.cognome} #{fam.datipersonali.nome}"/>
+            		</p:column>
+            		<p:column headerText="Cod.fiscale">
+            			<p:outputLabel value="#{fam.datipersonali.codicefiscale}"/>
+            		</p:column>
+            		<p:column headerText="Data nascita" style="text-align:center;">
+			            <p:outputLabel value="#{fam.datipersonali.datanascita}">
+			            	<f:convertDateTime pattern="dd/MM/yyyy" />
+			            </p:outputLabel>
+		            </p:column>
+		            <p:column headerText="Luogo nascita">
+            			<p:outputLabel value="#{fam.datipersonali.desLuogoNascita}"/>
+            		</p:column>
+            		<p:column headerText="Sesso" style="text-align:center;">
+            			<p:graphicImage rendered="#{fam.datipersonali.sesso eq 'F'}" title="Donna" value="/images/female.png" height="20" />
+						<p:graphicImage rendered="#{fam.datipersonali.sesso eq 'M'}" title="Uomo" value="/images/male.png" height="20" />
+            		</p:column>
+            		<p:column headerText="Cittadinanza">
+            			<p:outputLabel value="#{fam.datipersonali.desCittadinanza}"/>
+            		</p:column>
+            		<p:column headerText="Residenza">
+            			<p:outputLabel value="#{fam.residenza.indirizzoCompleto}"/>
+            		</p:column>
+            		<p:column headerText="Recapiti">
+            			<p:outputLabel value="e-mail: #{fam.recapiti.email}"/>
+            			<p:outputLabel value="telefono: #{fam.recapiti.telefono}"/>
+            			<p:outputLabel value="cellulare: #{fam.recapiti.cellulare}"/>
+            		</p:column>
+            		<p:column headerText="Cartella Sociale" style="text-align:center;" rendered="#{listaRdCSocialeBean.gestisciConsensi}">
+            			<p:graphicImage value="/images/signature-ok.png"  width="20px" rendered="#{fam.consensoRilasciato!=null and fam.consensoRilasciato}" 
+            							title="L'utente autorizza il comune di #{fam.residenza.descomune} alla condivisione dei propri dati, contenuti in Cartella Sociale, con i Centri per l'impiego"  /> 
+            			<p:graphicImage value="/images/signature-no.png"  width="20px" rendered="#{fam.consensoRilasciato!=null and !fam.consensoRilasciato}" 
+            							title="L'utente NON autorizza il comune di #{fam.residenza.descomune} alla condivisione dei propri dati, contenuti in Cartella Sociale, con i Centri per l'impiego"  /> 
+						<p:commandButton id="btnConsenso" value="Consenso" 
+            				rendered="#{fam.consensoRilasciato==null}"
+            				disabled="#{!fam.existsCartellaSociale}"
+            				styleClass="fa fa-wrench" title="Gestisci consenso alla condivisione dei dati cartella con i centri per l'impiego" 
+           					action="#{listaRdCSocialeBean.gestisciConsenso(fam)}" 
+           					oncomplete="PF('dialogConsenso').show()"
+           					update="@(.onOpenDialogConsenso)"/>
+           				<p:spacer width="10px"/>	
+           				<p:commandButton id="btnCSOC" value="Carica" 
+            				styleClass="fa fa-folder-open" title="Visualizza dati della cartella sociale" 
+            				rendered="#{fam.existsCartellaSociale}"
+            				action="#{carSocialeManBean.loadCartelleSociali(fam.datipersonali.codicefiscale, fam.residenza.codcomune, false)}" 
+           					oncomplete="PF('dialogCSOC').show()"
+           					update="@(.onOpenDialogCSOC)"/>	
+            		</p:column>
+            		<p:column style="text-align:center;">
+            		  <p:commandButton id="btnAltreInformazioni" value="Info" 
+            				styleClass="fa fa-info-circle" title="Visualizza dettaglio GePI" 
+           					action="#{listaRdCSocialeBean.load(fam)}" 
+           					oncomplete="PF('dialogInfoSociale').show()"
+           					update="@(.onOpenDialogInfoSociale)"/>	
+            		  
+           			   <p:commandButton id="btnSAP" value="SAP" 
+            				rendered="#{fam.codSAP!=null}" styleClass="fa fa-vcard-o"
+            				title="Visualizza scheda anagrafico - professionale" 
+           					action="#{listaRdCSocialeBean.loadGestioneAccessiSAP(fam)}" 
+           					oncomplete="PF('dialogSAP').show()"
+           					update="@(.onOpenDialogSAP)"/>
+            		</p:column>  
+            	</p:dataTable>
+            </p:rowExpansion>
+            
+         </p:dataTable>
+          <p:dialog id="dialogConsenso" dynamic="true" modal="true" styleClass="onOpenDialogConsenso"
+				widgetVar="dialogConsenso" width="900" header="Consenso alla condivisione dei dati cartella con i centri per l'impiego">
+			<p:outputPanel id="pnlConsenso" >
+			<h:panelGrid columns="3">
+				<p:outputLabel value="L'utente autorizza il comune di #{listaRdCSocialeBean.famSelected.residenza.descomune} alla condivisione dei propri dati, contenuti in Cartella Sociale, con i Centri per l'impiego"/>
+				<p:selectOneMenu id="somCPI" value="#{listaRdCSocialeBean.condividiCentriImpiego}">
+					<f:selectItem noSelectionOption="true" itemLabel="Non rilevato"/>
+					<f:selectItem itemLabel="SI" itemValue="SI"/>
+					<f:selectItem itemLabel="NO" itemValue="NO"/>
+				</p:selectOneMenu>
+				<p:spacer width="10px"/>
+				<p:commandButton id="btnPrivacySalva" value="Salva" title="Salva la sottoscrizione del modulo privacy" 
+				 			     styleClass="fa fa-floppy-o"
+								 action="#{listaRdCSocialeBean.salvaConsenso}" process="pnlConsenso" partialSubmit="true"
+								 oncomplete="PF('dialogConsenso').hide(); updatePrivacy();"/>
+				<p:remoteCommand name="updatePrivacy" process="@this" update="@(.updateOnSalvaConsenso)"  />  
+		    </h:panelGrid>	
+		    </p:outputPanel>
+		</p:dialog>
+         <p:dialog id="dialogInfoSociale" dynamic="true" modal="true" styleClass="onOpenDialogInfoSociale"
+				widgetVar="dialogInfoSociale" width="900" header="Dati delle valutazioni e progettazioni professionalizzate">
+				<p:accordionPanel >
+					<p:tab title="Dati lavoro">
+					</p:tab>
+				</p:accordionPanel>
+		</p:dialog>
+         
+        <p:dialog id="dialogCSOC" dynamic="true" modal="true" styleClass="onOpenDialogCSOC" 
+				   widgetVar="dialogCSOC" width="900" header="Riepilogo cartella sociale">
+		    <p:ajax event="close" listener="#{carSocialeManBean.handleDialogCsClose}" update="@(.onOpenDialogCSOC)" />
+			<ui:include src="cartellaSociale.xhtml"/>
+		</p:dialog>
+		
+		<p:dialog id="dialogSAP" dynamic="true" modal="true" styleClass="onOpenDialogSAP"
+				widgetVar="dialogSAP" width="1000">
+				 <p:ajax event="close" listener="#{sapManBean.handleDialogSAPClose}" update="@(.onOpenDialogSAP)" />
+				<p:outputPanel id="pnlDialogSAP">
+					<p:panel id="pnlLogTog" header="Accesso ai dati SAP del soggetto selezionato" 
+							toggleable="true" collapsed="true" closable="false" style="margin-bottom:20px">
+	 
+						<p:dataTable id="tblLog" value="#{listaRdCSocialeBean.lstAccessiLog}" 
+									 var="log" emptyMessage="Nessuna richiesta registrata">
+							<p:column headerText="Data" style="text-align:center;">
+								<p:outputLabel value="#{log.data}" >
+									<f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+								</p:outputLabel>
+							</p:column>
+							<p:column headerText="Operatore" style="text-align:center;">
+								<p:outputLabel value="#{log.user.cognome} #{log.user.nome}" />
+							</p:column>
+						</p:dataTable>
+					</p:panel>
+					<p:commandButton value="Visualizza dati SAP"
+									 action="#{sapManBean.load(listaRdCSocialeBean.famSelected.codSAP, listaRdCSocialeBean.famSelected.residenza.codcomune ,true)}" update="@parent"/>
+									 
+					<p:outputPanel rendered="#{sapManBean.render}" >
+						<ui:include src="sap.xhtml"/>
+					</p:outputPanel>
+				</p:outputPanel>
+		</p:dialog> 
+		</h:form>
+		
+	</ui:define>
+</ui:composition>
+</html>

@@ -19,7 +19,7 @@ import it.webred.ct.config.model.AmTabComuni;
  * Session Bean implementation class ComuniCacheHelper
  */
 @Stateless
-public class ComuniCacheHelper implements ComuniCacheHelperRemote, ComuniCacheHelperLocal {
+public class ComuniCacheHelper implements ComuniCacheHelperRemote,ComuniCacheHelperLocal {
 	 
     
     public static Logger logger = Logger.getLogger("rilevazionepresenze.log");
@@ -27,6 +27,7 @@ public class ComuniCacheHelper implements ComuniCacheHelperRemote, ComuniCacheHe
     @EJB private AmTabComuniAsyncWrapper amTabComuniAsyncWrapper;
     
     private Map<String,AmTabComuni> mappaComuni=null; 
+    private Map<String,AmTabComuni> mappaComuniBelfiore = null;
     private List<AmTabComuni> listaComuni = null;
     
     private Future<List<AmTabComuni>> futureListComuni;
@@ -49,8 +50,8 @@ public class ComuniCacheHelper implements ComuniCacheHelperRemote, ComuniCacheHe
 	
 	@PostConstruct
 	private void init() {
-		logger.info("avvio init @PostConstruct - caricamento async cache comuni e nazioni");
-		caricaComuniAsync();
+//		logger.info("avvio init @PostConstruct - caricamento async cache comuni e nazioni");
+//		caricaComuniAsync();
 	}
 		
 /**
@@ -101,9 +102,9 @@ public class ComuniCacheHelper implements ComuniCacheHelperRemote, ComuniCacheHe
 			try {
 				result = amTabComuniAsyncWrapper.trovaComuniPerDenominazione(query).get();
 			} catch (InterruptedException e) {
-				logger.warn("Caricamento asincono lista comuni interrotto",e);
+				logger.warn("Caricamento asincrono lista comuni interrotto",e);
 			} catch (ExecutionException e) {
-				logger.warn("Errore durante caricamento asincono lista comuni",e);
+				logger.warn("Errore durante caricamento asincrono lista comuni",e);
 			}
 		}
 		
@@ -124,9 +125,17 @@ public class ComuniCacheHelper implements ComuniCacheHelperRemote, ComuniCacheHe
 	private Map<String, AmTabComuni> getMappaComuni() {
 		if(mappaComuni==null && getListaComuni()!=null) {
 			logger.debug("mappaComuni NULL. Dati disponibili costruisco mappa.");
-			mappaComuni =  costruisciMappaComuni(getListaComuni());
+			costruisciMappaComuni(getListaComuni());
 		}
 		return mappaComuni;
+	};
+	
+	private Map<String, AmTabComuni> getMappaComuniBelfiore() {
+		if(mappaComuniBelfiore==null && getListaComuni()!=null) {
+			logger.debug("mappaComuni NULL. Dati disponibili costruisco mappa.");
+			costruisciMappaComuni(getListaComuni());
+		}
+		return mappaComuniBelfiore;
 	};
 	
 	/** Restituisce la lista dei comuni caricati in memoria. Restituisce NULL se
@@ -155,18 +164,46 @@ public class ComuniCacheHelper implements ComuniCacheHelperRemote, ComuniCacheHe
 	 * @param listaComuni 
 	 * @return mappa comuni indicizzata per "Codice Istat"
 	 */
-	private Map<String, AmTabComuni> costruisciMappaComuni(List<AmTabComuni> lista ){
+	private void costruisciMappaComuni(List<AmTabComuni> lista ){
 		if(lista==null) {
 			logger.warn("impossibile inizializzare mappa comuni da una lista vuota");
-			return null;
 		}
 		
 		logger.debug("inizializzo mappa comuni da lista contenente N record: "+lista.size());
-		Map<String, AmTabComuni> mappa = new HashMap<>();
+		
+		this.mappaComuni = new HashMap<String, AmTabComuni>();
+		this.mappaComuniBelfiore = new HashMap<String, AmTabComuni>();
 		for(AmTabComuni comune : lista) {
-			mappa.put(comune.getCodIstatComune(), comune);
+			this.mappaComuni.put(comune.getCodIstatComune(), comune);
+			this.mappaComuniBelfiore.put(comune.getCodNazionale(),comune);
+		}	
+	}
+	
+	@Override
+	public AmTabComuni getComuneByCodBelfiore(String codBelfiore) {
+		if(codBelfiore==null) {
+			logger.warn("getComuneByCodBelfiore(String codBelfiore) con codice NULL");
+			return null;
 		}
-		return mappa;		
+		
+		AmTabComuni res= null;
+		if(getMappaComuniBelfiore()!=null) {
+			res = getMappaComuniBelfiore().get(codBelfiore);
+		}else {
+			logger.info("mappa comuni non disponibile. Eseguo query su DB");
+			try {
+				res = amTabComuniAsyncWrapper.getByCodBelfiore(codBelfiore).get();
+			} catch (InterruptedException e) {
+				logger.warn("Caricamento asincono lista comuni interrotto",e);
+			} catch (ExecutionException e) {
+				logger.warn("Errore durante caricamento asincono lista comuni",e);
+			}
+		}
+		if(res==null) {
+			logger.warn("getComuneByCodBelfiore RETURN NULL per codiceBelfiore: "+codBelfiore);
+		}
+	
+		return res;
 	}
 
 }

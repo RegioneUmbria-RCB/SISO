@@ -283,7 +283,7 @@ public class PersonaDettaglio implements Serializable{
 	
 	public String getIndirizzoCivicoResidenza(){
 		String s = !StringUtils.isBlank(indirizzoResidenza) ? this.indirizzoResidenza : "";
-		s+= this.civicoResidenza!=null ? ", "+this.civicoResidenza : "";
+		s+= !StringUtils.isBlank(this.civicoResidenza) ? ", "+this.civicoResidenza : "";
 		return s.trim();
 	}
 	

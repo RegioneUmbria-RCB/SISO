@@ -11,6 +11,7 @@ import it.webred.amprofiler.model.AmUser;
 import it.webred.cet.permission.CeTUser;
 import it.webred.cs.csa.ejb.client.AccessTableCatSocialeSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.AccessTableConfigurazioneSessionBeanRemote;
+import it.webred.cs.csa.ejb.client.AccessTableDatiPorSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.AccessTableDiarioSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.AccessTableIndirizzoSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.AccessTableInterventoSessionBeanRemote;
@@ -19,16 +20,21 @@ import it.webred.cs.csa.ejb.client.AccessTableMediciSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.AccessTableOperatoreSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.AccessTableSchedaSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.AccessTableSoggettoSessionBeanRemote;
+import it.webred.cs.csa.ejb.client.domini.AccessTableDominiAmKeySessionBeanRemote;
 import it.webred.cs.csa.ejb.dto.BaseDTO;
+import it.webred.cs.csa.ejb.dto.KeyValueDTO;
 import it.webred.cs.csa.ejb.dto.StatoCartellaDTO;
 import it.webred.cs.data.DataModelCostanti;
+import it.webred.cs.data.DataModelCostanti.AmParameterKey;
 import it.webred.cs.data.DataModelCostanti.FiltroCasi;
+import it.webred.cs.data.DataModelCostanti.FiltroFse;
 import it.webred.cs.data.DataModelCostanti.PermessiCartella;
 import it.webred.cs.data.DataModelCostanti.PermessiCasellario;
 import it.webred.cs.data.DataModelCostanti.PermessiDatiSinba;
 import it.webred.cs.data.DataModelCostanti.PermessiErogazioneInterventi;
 import it.webred.cs.data.DataModelCostanti.PermessiInterscambio;
 import it.webred.cs.data.DataModelCostanti.PermessiIter;
+import it.webred.cs.data.DataModelCostanti.PermessiProgettiIndividuali;
 import it.webred.cs.data.DataModelCostanti.PermessiSchedeSegr;
 import it.webred.cs.data.DataModelCostanti.TabUDC;
 import it.webred.cs.data.DataModelCostanti.TipoDiario;
@@ -36,16 +42,15 @@ import it.webred.cs.data.DataModelCostanti.TipoStatoErogazione;
 import it.webred.cs.data.model.ArFfProgetto;
 import it.webred.cs.data.model.CsAAnaIndirizzo;
 import it.webred.cs.data.model.CsAComponente;
-import it.webred.cs.data.model.CsAFamigliaGruppo;
 import it.webred.cs.data.model.CsASoggettoLAZY;
 import it.webred.cs.data.model.CsCMedico;
 import it.webred.cs.data.model.CsCfgParametri;
 import it.webred.cs.data.model.CsDDiario;
 import it.webred.cs.data.model.CsDValutazione;
 import it.webred.cs.data.model.CsOOperatore;
+import it.webred.cs.data.model.CsOOperatoreBASIC;
 import it.webred.cs.data.model.CsOOperatoreSettore;
 import it.webred.cs.data.model.CsOZonaSoc;
-import it.webred.cs.data.model.CsRelSettoreCatsoc;
 import it.webred.cs.data.model.CsTbTipoRapportoCon;
 import it.webred.cs.jsf.Costanti.TipoPermessoErogazioneInterventi;
 import it.webred.cs.jsf.manbean.exception.CsUiCompException;
@@ -58,6 +63,7 @@ import it.webred.cs.json.serviziorichiestocustom.ServizioRichiestoCustomManBaseB
 import it.webred.cs.json.stranieri.IStranieri;
 import it.webred.cs.json.stranieri.StranieriManBaseBean;
 import it.webred.cs.sociosan.ejb.client.AtlanteSessionBeanRemote;
+import it.webred.cs.sociosan.ejb.client.RicercaIseeSessionBeanRemote;
 import it.webred.cs.sociosan.ejb.client.ricercaSoggetto.RicercaSoggettoSessionBeanRemote;
 import it.webred.cs.sociosan.ejb.dto.ServiziDTO;
 import it.webred.cs.sociosan.ejb.exception.SocioSanitarioException;
@@ -71,7 +77,6 @@ import it.webred.ct.config.parameters.ParameterService;
 import it.webred.ct.config.parameters.application.ApplicationService;
 import it.webred.ct.config.parameters.comune.ComuneService;
 import it.webred.ct.config.parameters.dto.ParameterSearchCriteria;
-import it.webred.ct.data.access.basic.BaseGenericDTO;
 import it.webred.ct.data.access.basic.anagrafe.AnagrafeService;
 import it.webred.ct.support.datarouter.CeTBaseObject;
 import it.webred.ejb.utility.ClientUtility;
@@ -137,8 +142,15 @@ public class CsUiCompBaseBean {
 	public boolean isIterCartellaSociale(){
 		return checkPermesso(PermessiIter.ITEM, PermessiIter.GESTIONE_ITER_BATCH);
 	}
-
-	protected void clearParametriFiltro(){
+	
+	protected void clearParametriFiltroFse(){
+		getSession().setAttribute(FiltroFse.DATA_DA, null);
+		getSession().setAttribute(FiltroFse.DATA_A, null);
+		getSession().setAttribute(FiltroFse.RESIDENZA_COMUNE, null);
+		getSession().setAttribute(FiltroFse.TIPO, null);
+	}
+	
+	protected void clearParametriFiltroCasi(){
 		getSession().setAttribute(FiltroCasi.STATO, null);
 		getSession().setAttribute(FiltroCasi.OPERATORE, null);
 		getSession().setAttribute(FiltroCasi.TIPO_OPERATORE, null);
@@ -146,7 +158,9 @@ public class CsUiCompBaseBean {
 		getSession().setAttribute(FiltroCasi.LAVORO, null);
 		getSession().setAttribute(FiltroCasi.TUTELA, null);
 		getSession().setAttribute(FiltroCasi.TRIBUNALE, null);
-		getSession().setAttribute(FiltroCasi.RESIDENZA, null);
+		getSession().setAttribute(FiltroCasi.RESIDENZA_TIPO, null);
+		getSession().setAttribute(FiltroCasi.RESIDENZA_NAZIONE, null);
+		getSession().setAttribute(FiltroCasi.RESIDENZA_COMUNE, null);
 	}
 	
 	private static ResourceBundle bundle;
@@ -159,8 +173,13 @@ public class CsUiCompBaseBean {
 	private HashMap<String, String> cf2StatoCartella = new HashMap<String, String>();
 	
 	protected static LoginBeanService loginService = (LoginBeanService) getEjb("AmProfiler", "AmProfilerEjb", "LoginBean");
-	protected AnagrafeService anagrafeService = (AnagrafeService) getEjb("CT_Service", "CT_Service_Data_Access", "AnagrafeServiceBean");
+	protected static UserService userService = (UserService) getEjb("AmProfiler", "AmProfilerEjb", "UserServiceBean");
+	protected static AnagraficaService anagraficaService = (AnagraficaService) getEjb("AmProfiler", "AmProfilerEjb", "AnagraficaServiceBean");
+	
 	protected ComuneService comuneService = (ComuneService) getEjb("CT_Service", "CT_Config_Manager", "ComuneServiceBean");
+	protected static ApplicationService appService = (ApplicationService) getEjb("CT_Service", "CT_Config_Manager", "ApplicationServiceBean");
+	protected static LuoghiService luoghiService = (LuoghiService) getEjb("CT_Service", "CT_Config_Manager", "LuoghiServiceBean");
+	protected static ParameterService paramService = (ParameterService) getEjb("CT_Service", "CT_Config_Manager", "ParameterBaseService");
 	
 	protected AccessTableInterventoSessionBeanRemote interventoService = 
 			(AccessTableInterventoSessionBeanRemote) getCarSocialeEjb( "AccessTableInterventoSessionBean");
@@ -173,20 +192,22 @@ public class CsUiCompBaseBean {
 	protected AccessTableIterStepSessionBeanRemote iterService = (AccessTableIterStepSessionBeanRemote) getCarSocialeEjb("AccessTableIterStepSessionBean");
 	protected static AccessTableSchedaSessionBeanRemote schedaService = (AccessTableSchedaSessionBeanRemote) getCarSocialeEjb ( "AccessTableSchedaSessionBean");
 	protected static AccessTableSoggettoSessionBeanRemote soggettoService = (AccessTableSoggettoSessionBeanRemote) getCarSocialeEjb ("AccessTableSoggettoSessionBean");
-
+	protected static AccessTableDominiAmKeySessionBeanRemote amKeyDomini = (AccessTableDominiAmKeySessionBeanRemote) getCarSocialeEjb ("AccessTableDominiAmKeySessionBean");
+	protected static AccessTableDatiPorSessionBeanRemote datiPorService = (AccessTableDatiPorSessionBeanRemote) CsUiCompBaseBean.getCarSocialeEjb("AccessTableDatiPorSessionBean");
 	
-	protected static AnagraficaService anagraficaService = (AnagraficaService) getEjb("AmProfiler", "AmProfilerEjb", "AnagraficaServiceBean");
-	protected static ApplicationService appService = (ApplicationService) getEjb("CT_Service", "CT_Config_Manager", "ApplicationServiceBean");
 
-	protected static LuoghiService luoghiService = (LuoghiService) getEjb("CT_Service", "CT_Config_Manager", "LuoghiServiceBean");
-	protected static ParameterService paramService = (ParameterService) getEjb("CT_Service", "CT_Config_Manager", "ParameterBaseService");
-	protected static UserService userService = (UserService) getEjb("AmProfiler", "AmProfilerEjb", "UserServiceBean");
-	
 	private static RicercaSoggettoSessionBeanRemote getRicercaSoggettoBean(){
 		RicercaSoggettoSessionBeanRemote ricercaSoggettoBean =
 				(RicercaSoggettoSessionBeanRemote) getEjb("SocioSanitario", "SocioSanitario_EJB", "RicercaSoggettoSessionBean");
 		return ricercaSoggettoBean;
 	}
+	
+	protected static RicercaIseeSessionBeanRemote getRicercaIseeBean(){
+		RicercaIseeSessionBeanRemote ricercaIseeBean = 
+				(RicercaIseeSessionBeanRemote) getEjb("SocioSanitario", "SocioSanitario_EJB", "RicercaIseeSessionBean");
+		return ricercaIseeBean;
+	}
+	
 	
 	public static Object getReferencedBean(String beanName){
 	    Object bean = null;
@@ -447,6 +468,17 @@ public class CsUiCompBaseBean {
 		}
 		return false;
 	}
+	
+	public static boolean checkPermessoSS(String permesso, String ente) {
+		String patternPermesso = getPatternPermessoSS(permesso);
+		CeTUser user = getUser();
+		if (user != null) {
+			String lvl = getListaPermessi(getCurrentUsername(), ente).get(patternPermesso);
+			if (lvl != null && !lvl.isEmpty())
+				return true;
+		}
+		return false;
+	}
 
 	private static HashMap<String, String> cacheNomeIstanza = new HashMap<String, String>();
 
@@ -502,61 +534,19 @@ public class CsUiCompBaseBean {
 	private static HashMap<String, String> cacheTipoApplicazione = new HashMap<String, String>();
 
 	protected String getGoogleDoc(){
-		String news = null;
-		BaseDTO baseDto = new BaseDTO();
-		fillEnte(baseDto);
-
-	
-		ParameterSearchCriteria criteria = new ParameterSearchCriteria();
-		criteria.setKey("smartwelfare.news.googledoc");
-		criteria.setSection("param.globali");
-		news = this.getParametro(criteria);
-		
-		return news;
+		return getGlobalParameter("smartwelfare.news.googledoc");
 	}
 	
 	protected String getMessaggioNews(){
-		String news = null;
-		BaseDTO baseDto = new BaseDTO();
-		fillEnte(baseDto);
-
-	
-		ParameterSearchCriteria criteria = new ParameterSearchCriteria();
-		criteria.setKey("smartwelfare.news.messaggio");
-		criteria.setSection("param.globali");
-		news = this.getParametro(criteria);
-		
-		if(news!=null && news.trim().isEmpty()) news = null;
-		
-		return news;
+		return getGlobalParameter("smartwelfare.news.messaggio");
 	}
 	
 	public static String getGestioneTipoFamiglia(){
-		String val = null;
-		BaseDTO baseDto = new BaseDTO();
-		fillEnte(baseDto);
-
-		ParameterSearchCriteria criteria = new ParameterSearchCriteria();
-		criteria.setKey("smartwelfare.gestione.tipo.famiglia");
-		criteria.setSection("param.globali");
-		val = getParametro(criteria);
-		
-		if(val!=null && val.trim().isEmpty()) val = null;
-		
-		return val;
+		return getGlobalParameter("smartwelfare.gestione.tipo.famiglia");
 	}
 	
 	protected static String getAppErogazioniLink(){
-		String link = null;
-		BaseDTO baseDto = new BaseDTO();
-		fillEnte(baseDto);
-
-		ParameterSearchCriteria criteria = new ParameterSearchCriteria();
-		criteria.setKey("smartwelfare.app.erogazioni");
-		criteria.setSection("param.globali");
-		link = getParametro(criteria);
-		
-		return link;
+		return getGlobalParameter("smartwelfare.app.erogazioni");
 	}
 	
 	protected String getTipoApplicazione() {
@@ -583,10 +573,7 @@ public class CsUiCompBaseBean {
 				logger.warn("Attenzione: smartwelfare.tipoApplicazione non impostata per il comune " + baseDto.getEnteId());
 		}
 		if (baseDto.getEnteId() == null || paramTipoApplicazione == null) {
-			ParameterSearchCriteria criteria = new ParameterSearchCriteria();
-			criteria.setKey("smartwelfare.tipoApplicazione.default");
-			criteria.setSection("param.globali");
-			paramTipoApplicazione = this.getParametro(criteria);
+			paramTipoApplicazione = getGlobalParameter("smartwelfare.tipoApplicazione.default");
 		}
 
 		if (paramTipoApplicazione == null) {
@@ -649,7 +636,7 @@ public class CsUiCompBaseBean {
 			if (amKey != null)
 				this.logoBasePath = amKey.getValueConf();
 			else
-				logger.error("Attenzione: Il path per il recupero logo del report non è impostato");
+				logger.error("Attenzione: Il path 'dir.files.datiDiogene' non è impostato");
 		}
 		return logoBasePath;
 	}
@@ -753,18 +740,10 @@ public class CsUiCompBaseBean {
 	}
 	
 	public  String getLabelOrganizzazione(){ //static
-		ParameterSearchCriteria criteria = new ParameterSearchCriteria();
-		criteria.setKey("smartwelfare.label.tipoOrganizzazione");
-		criteria.setSection("param.globali");
-		String label = this.getParametro(criteria);
-		return label;
+		return getGlobalParameter("smartwelfare.label.tipoOrganizzazione");
 	}
 	public  String getModuloPorRegionale(){ //static
-		ParameterSearchCriteria criteria = new ParameterSearchCriteria();
-		criteria.setKey("smartwelfare.stampa.por012019.nome");
-		criteria.setSection("param.globali");
-		String label = getParametro(criteria);
-		return label;
+		return getGlobalParameter(DataModelCostanti.AmParameterKey.POR_MODELLO_STAMPA);
 	}
 	
 	public boolean isModuloPorMarche(){
@@ -772,11 +751,18 @@ public class CsUiCompBaseBean {
 		return !StringUtils.isEmpty(valore) && valore.contains("Marche");
 	}
 	
+	public boolean isVisualizzaModuloPorCs() {
+		String val = getGlobalParameter(DataModelCostanti.AmParameterKey.POR_CS_ABILITA);
+		return val!=null && "1".equalsIgnoreCase(val) ? true : false;
+	}
+	
+	public boolean isVisualizzaModuloPorUdc() {
+		String val = getGlobalParameter(DataModelCostanti.AmParameterKey.POR_UDC_ABILITA);
+		return val!=null && "1".equalsIgnoreCase(val) ? true : false;
+	}
+	
 	public  Boolean isControlloResDomPOR(){ //static
-		ParameterSearchCriteria criteria = new ParameterSearchCriteria();
-		criteria.setKey("smartwelfare.resi.domi.por.regione");
-		criteria.setSection("param.globali");
-		String label = getParametro(criteria);
+		String label =  getGlobalParameter(DataModelCostanti.AmParameterKey.POR_RESIDENZA_DOMICILIO_REGIONE);
 		return "SI".equalsIgnoreCase(label);
 	}
 
@@ -801,12 +787,22 @@ public class CsUiCompBaseBean {
 		return TipoPermessoErogazioneInterventi.PERMESSO_EROGATIVO.equals(getPermessoErogazioneInterventi());
 	}
 	
+	// SISO-1280, inizio
+	public boolean isAbilitaProgettiIndividuali() {
+		return checkPermesso(PermessiProgettiIndividuali.ITEM, PermessiProgettiIndividuali.ABILITA);
+	}
+	// SISO-1280, fine
+	
 	public boolean isAbilitaErogazioneInterventi() {
 		return checkPermesso(PermessiErogazioneInterventi.ITEM, PermessiErogazioneInterventi.ABILITA);
 	}
 	
 	public boolean isRenderListaCasi() {
 		return checkPermesso(PermessiCartella.ITEM, PermessiCartella.VISUALIZZAZIONE_LISTA_CASI);
+	}
+	
+	public boolean isRenderListaFse() {
+		return this.isModuloPorMarche() && checkPermesso(PermessiCartella.ITEM, PermessiCartella.VISUALIZZAZIONE_LISTA_FSE);
 	}
 
 	public boolean isRichiediInterventi() {
@@ -829,8 +825,16 @@ public class CsUiCompBaseBean {
 		return checkPermesso(PermessiCartella.ITEM, PermessiCartella.ACCESSO_ESTERNO_DATI_CARTELLA);
 	}
 	
+	public boolean isRdCAbilitato(){
+		boolean render = false;
+		String val = getGlobalParameter(DataModelCostanti.AmParameterKey.RDC_ABILITA);
+		render = val != null && "1".equals(val) ? true : false;
+		return render;
+	}
+	
 	public boolean isAccessoDatiRdC(){
-		return checkPermesso(PermessiCartella.ITEM, PermessiCartella.VISUALIZZAZIONE_LISTA_RDC);
+		boolean permesso = checkPermesso(PermessiCartella.ITEM, PermessiCartella.VISUALIZZAZIONE_LISTA_RDC);
+		return isRdCAbilitato() && permesso;
 	}
 	
 	public boolean isFonteFinanziamentoObbligatorio(){
@@ -876,7 +880,7 @@ public class CsUiCompBaseBean {
 			try {
 	
 				if (amAna == null) {
-					logger.debug("getAnagraficaByUsername: " + username);
+					//logger.debug("getAnagraficaByUsername: " + username);
 					amAna = anagraficaService.findAnagraficaByUserName(username);
 					mappaOperatori.put(username, amAna);
 					if (!noSession)
@@ -921,6 +925,13 @@ public class CsUiCompBaseBean {
 	
 
 	public String getDenominazioneOperatore(CsOOperatore o) {
+		if(o!=null)
+			return o.getDenominazione();
+		else
+			return "";
+	}
+	
+	public String getDenominazioneOperatore(CsOOperatoreBASIC o) {
 		if(o!=null)
 			return o.getDenominazione();
 		else
@@ -1015,13 +1026,18 @@ public class CsUiCompBaseBean {
 	}
 	
 	private static String getAnagrafeSigessWSToken() {
-		String token = getGlobalParameter(DataModelCostanti.AmParameterKey.WS_RICERCA_URL_BRIDGE_TOKEN);
+		String token = getGlobalParameter(AmParameterKey.WS_RICERCA_URL_BRIDGE_TOKEN);
 		return token;
 	}
 	
 	public static String getLabelZonaSociale(){
 		String l = getGlobalParameter("smartwelfare.label.zonaSociale");
 		return l;
+	}
+	
+	protected boolean getDocIndividualiProtocolloVisibile(){
+		String val = getGlobalParameter(AmParameterKey.DOC_INDIVIDUALI_PROTOCOLLO_VIS);
+		return "1".equalsIgnoreCase(val);
 	}
 	
 	public String getZonaSociale() {
@@ -1078,8 +1094,12 @@ public class CsUiCompBaseBean {
 	protected CredenzialiWS getAtlanteLogin() {
 		return getCredenzialiWS(DataModelCostanti.AmParameterKey.WS_ATLANTE_USR, DataModelCostanti.AmParameterKey.WS_ATLANTE_PWD);
 	}
-
+	
 	private static String getGlobalParameter(String paramName) {
+		
+		String valore = amKeyDomini.findByKey(paramName);
+		if(!StringUtils.isBlank(valore)) return valore;
+		
 		ParameterSearchCriteria criteria = new ParameterSearchCriteria();
 		criteria.setKey(paramName);
 		criteria.setComune(null);
@@ -1101,8 +1121,9 @@ public class CsUiCompBaseBean {
 			rab.setIdentificativo(id);
 			
 			RicercaAnagraficaResult result = getDettaglioPersona(rab);
-			if(result.getMessaggio()==null && !result.getElencoAssisiti().isEmpty()){
-				p = result.getElencoAssisiti().get(0);
+			List<PersonaDettaglio> elenco = result.getElencoAssistiti();
+			if(result.getMessaggio()==null && !elenco.isEmpty()){
+				p = elenco.get(0);
 			}else
 				logger.error("Errore ricerca "+tipoRicerca+" CODICE["+result.getCodice()+"]"+ result.getMessaggio(), result.getEccezione());
 		}
@@ -1120,8 +1141,9 @@ public class CsUiCompBaseBean {
 			rab.setCf(codFiscale);
 			
 			RicercaAnagraficaResult result = getDettaglioPersona(rab);
-			if(result.getMessaggio()==null && !result.getElencoAssisiti().isEmpty()){
-				p = result.getElencoAssisiti().get(0);
+			List<PersonaDettaglio> elenco = result.getElencoAssistiti();
+			if(result.getMessaggio()==null && !elenco.isEmpty()){
+				p = elenco.get(0);
 			}else{
 				logger.error("Errore ricerca "+tipoRicerca+" CODICE["+result.getCodice()+"]"+ result.getMessaggio(), result.getEccezione());
 			}
@@ -1487,8 +1509,7 @@ public class CsUiCompBaseBean {
 
 		if (esiste) {
 			String statoCartella = loadStatoCartella(cf);
-			this.addWarningDialog(
-					"Esiste già una cartella associata al cod.fiscale "+ cf, statoCartella);
+			this.addWarningDialog("Esiste già una cartella associata al cod.fiscale "+ cf, statoCartella);
 		}
 		return esiste;
 
@@ -1496,11 +1517,10 @@ public class CsUiCompBaseBean {
 	
 	protected List<SelectItem> loadLstArFfProgetti(){
 		List<SelectItem> lstArFfProgetti = new ArrayList<SelectItem>();
-		
 		BaseDTO bdto = new BaseDTO();
 		fillEnte(bdto);
 		bdto.setObj(getCurrentOpSettore().getCsOSettore().getCsOOrganizzazione().getCodRouting());
-		List<ArFfProgetto> lst = interventoService.findProgettiByBelfioreOrganizzazione(bdto);
+		List<ArFfProgetto> lst = confService.findProgettiByBelfioreOrganizzazione(bdto);
 		for(ArFfProgetto p : lst)
 			lstArFfProgetti.add(new SelectItem(p.getId(),p.getDescrizione()));
 		
@@ -1527,12 +1547,11 @@ public class CsUiCompBaseBean {
 			bDto.setObj(opSettore.getCsOSettore().getId());
 	
 			AccessTableCatSocialeSessionBeanRemote catSocBean = (AccessTableCatSocialeSessionBeanRemote) getCarSocialeEjb("AccessTableCatSocialeSessionBean");
-			List<CsRelSettoreCatsoc> listaCatSociali = catSocBean.findRelSettoreCatsocBySettore(bDto);
-			Iterator<CsRelSettoreCatsoc> it = listaCatSociali.iterator();
+			List<KeyValueDTO> listaCatSociali = catSocBean.getCategorieSocialiBySettore(bDto);
+			Iterator<KeyValueDTO> it = listaCatSociali.iterator();
 			while(it.hasNext() && !matchCatSoc){
-				CsRelSettoreCatsoc rel = it.next();
-				if(rel.getAbilitato()!=null && rel.getAbilitato() && 
-						DataModelCostanti.TipiCategoriaSociale.FAMIGLIA_MINORI_ID.equals(rel.getCsCCategoriaSociale().getId()))
+				KeyValueDTO rel = it.next();
+				if(rel.isAbilitato() && DataModelCostanti.TipiCategoriaSociale.FAMIGLIA_MINORI_ID.equals(rel.getCodice()))
 					matchCatSoc=true;
 			}
 		}
@@ -1619,7 +1638,7 @@ public class CsUiCompBaseBean {
 			}
 		}else result.setMessaggio("Impossibile interrogare l'anagrafe comunale di Roma: "+"Dati per l'accesso non configurati!");
 		
-		result.setElencoAssisiti(lstOut);
+		result.setElencoAssistiti(lstOut);
 		return result;
 	}
 	
@@ -1648,7 +1667,7 @@ public class CsUiCompBaseBean {
 						 initFromAnaSigess(pd, p.getPersonaCompleta(), p.getDatiDiNascita(), p.getDatiAnagrafeRoma(), p.getDatiIndirizzo(), params.getIdentificativo());
 						 lstout.add(pd);
 					}
-					 result.setElencoAssisiti(lstout);		
+					 result.setElencoAssistiti(lstout);		
 				 }
 			} catch (RemoteException e){
 				logger.error(e);
@@ -1698,16 +1717,16 @@ public class CsUiCompBaseBean {
 			String municipio = !StringUtils.isBlank(obj.getMunicipio()) ? "Municipio "+obj.getMunicipio()+" - " : "";
 			String indirizzoRes = municipio + (!StringUtils.isBlank(obj.getToponimo()) ? trim(obj.getToponimo()) : "");
 			anaBean.setIndirizzoResidenza(indirizzoRes);
-			anaBean.setIndirizzoDomicilio(indirizzoRes);
+			//anaBean.setIndirizzoDomicilio(indirizzoRes);
 			String civico = !StringUtils.isBlank(obj.getNumero()) ? trim(obj.getNumero()) : "";
 			civico+= !StringUtils.isBlank(obj.getDescrizioneCivicoAltro()) ?  " "+trim(obj.getDescrizioneCivicoAltro()) : "";
 			anaBean.setCivicoResidenza(civico.trim());
-			anaBean.setCivicoDomicilio(civico.trim()); //Domicilio   (NON PRESENTI)
+			//anaBean.setCivicoDomicilio(civico.trim()); //Domicilio   (NON PRESENTI)
 			if(!StringUtils.isBlank(obj.getMunicipio())){
 				String codIstatRoma = "058091";
 				AmTabComuni comuneResidenza = luoghiService.getComuneItaByIstat(codIstatRoma);
 				anaBean.setComuneResidenza(comuneResidenza);
-				anaBean.setComuneDomicilio(comuneResidenza); //Domicilio   (NON PRESENTI)
+				//anaBean.setComuneDomicilio(comuneResidenza); //Domicilio   (NON PRESENTI)
 			}else{
 				logger.debug("SIGESS: Implementare recupero stato estero di residenza");
 				//TODO:Implementare recupero 
@@ -1766,7 +1785,7 @@ public class CsUiCompBaseBean {
 								trovato = true;
 								bo.setObj(componenteDto.getRapportoParentela());
 								CsTbTipoRapportoCon rapp = confService.mappaRelazioneParentale(bo);
-								logger.warn("SIGESS: relazione parentale non mappata["+componenteDto.getRapportoParentela()+"]");
+								logger.warn("SIGESS: relazione parentale non mappata["+componenteDto.getRapportoParentela()+"]["+dto.getEnteId()+"]");
 								if(rapp!=null && rapp.getId()==DataModelCostanti.INTESTATARIO_SCHEDA_REL_ID) parentelaValida = true;
 							}
 							i++;
@@ -1782,7 +1801,7 @@ public class CsUiCompBaseBean {
 							
 				    		bo.setObj(f.getRapportoParentela());
 				    		CsTbTipoRapportoCon parentela = confService.mappaRelazioneParentale(bo);
-				    		if(parentela==null) logger.warn("SIGESS: relazione parentale non mappata["+f.getRapportoParentela()+"]");
+				    		if(parentela==null) logger.warn("SIGESS: relazione parentale non mappata["+f.getRapportoParentela()+"]["+dto.getEnteId()+"]");
 				    		componenteGit.setParentela(parentela);
 							componenteGit.setParentelaValida(parentelaValida);
 					
@@ -1917,10 +1936,7 @@ public class CsUiCompBaseBean {
 			fillEnte(bo);
 			bo.setObj(soggettoId);
 			bo.setObj2(dtRif);
-			bo.setObj3(true);
-			CsAFamigliaGruppo famiglia = schedaService.findFamigliaAllaDataBySoggettoId(bo);
-			if(famiglia != null)
-				lstComponenti = famiglia.getCsAComponentes();
+			lstComponenti = schedaService.findComponentiFamigliaAllaDataBySoggettoId(bo);
 		}else
 			logger.error("Impossibile caricare la lista di familiari: soggettoId non valorizzato");
 		return lstComponenti;
@@ -1935,5 +1951,37 @@ public class CsUiCompBaseBean {
 			val = soggettoService.isBeneficiarioRdC(dto);
 		}
 		return val;
+	}
+	
+	public static List<SelectItem> convertiLista(List<KeyValueDTO> in){
+		List<SelectItem> out = new ArrayList<SelectItem>();
+		for(KeyValueDTO k : in){
+			SelectItem si = new SelectItem(k.getCodice(), k.getDescrizione());
+			si.setDisabled(!k.isAbilitato());
+			out.add(si);
+		}
+		return out;
+	}
+	
+	protected CsASoggettoLAZY getSoggettoById(Long anagraficaId){
+		BaseDTO dto = new BaseDTO();
+		fillEnte(dto);
+		dto.setObj(anagraficaId);
+		return soggettoService.getSoggettoById(dto);
+	}
+	
+	protected CsASoggettoLAZY getSchedaCSByCF(String cf) {
+		BaseDTO dto = new BaseDTO();
+    	fillEnte(dto);
+    	dto.setObj(cf);  
+    	try {
+    		AccessTableSoggettoSessionBeanRemote soggettiService = (AccessTableSoggettoSessionBeanRemote) ClientUtility.getEjbInterface(
+    				"CarSocialeA", "CarSocialeA_EJB", "AccessTableSoggettoSessionBean");
+    		return soggettiService.getSoggettoByCF(dto);
+    		
+    	} catch(NamingException e) {
+    		logger.error(e.getMessage(), e);
+    		return null;
+		}
 	}
 }

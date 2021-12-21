@@ -4,13 +4,12 @@ import it.webred.cs.csa.ejb.CarSocialeBaseSessionBean;
 import it.webred.cs.csa.ejb.dto.BaseDTO;
 import it.webred.cs.csa.ejb.dto.RelazioneDTO;
 import it.webred.cs.csa.ejb.dto.erogazioni.ErogazioneMasterDTO;
+import it.webred.cs.csa.ejb.dto.fascicolo.DatiInterceptorDTO;
 import it.webred.cs.data.model.CsDColloquioBASIC;
 import it.webred.cs.data.model.CsDDiario;
-import it.webred.cs.data.model.CsDDiarioBASIC;
 import it.webred.cs.data.model.CsDDocIndividuale;
 import it.webred.cs.data.model.CsDIsee;
 import it.webred.cs.data.model.CsDPai;
-import it.webred.cs.data.model.CsDScuola;
 import it.webred.cs.data.model.CsDValutazione;
 import it.webred.cs.data.model.CsIIntervento;
 
@@ -57,6 +56,11 @@ public class AccessoFascicoloInterceptor extends CarSocialeBaseSessionBean {
 					filtraErogazioni(le, idSettore);
 				}
 				
+				//DIARIOINTERCEPTOR (diario)
+				if(tipoObj instanceof DatiInterceptorDTO){
+					List<DatiInterceptorDTO> lcb = (List<DatiInterceptorDTO> ) result;
+					filtraLista(lcb, idSettore, nascondiInfo);
+				}
 				
 				//COLLOQUI (diario)
 				if(tipoObj instanceof CsDColloquioBASIC){
@@ -70,11 +74,11 @@ public class AccessoFascicoloInterceptor extends CarSocialeBaseSessionBean {
 					filtraRelazioni(lr, idSettore, nascondiInfo);
 				}
 				
-				//PAI
+	/*			//PAI
 				if(tipoObj instanceof CsDPai){
 					List<CsDPai> lp = (List<CsDPai> ) result;
 					filtraPai(lp, idSettore, nascondiInfo);
-				}
+				}*/
 				
 				//ISEE
 				if(tipoObj instanceof CsDIsee){
@@ -93,13 +97,6 @@ public class AccessoFascicoloInterceptor extends CarSocialeBaseSessionBean {
 					List<CsDValutazione> lv = (List<CsDValutazione> ) result;
 					filtraValutazioni(lv, idSettore, nascondiInfo);
 				}
-				
-				
-				//SCUOLA
-				if(tipoObj instanceof CsDScuola){
-					List<CsDScuola> ls = (List<CsDScuola> ) result;
-					filtraScuole(ls, idSettore, nascondiInfo);
-				}
 			}
 		} catch (Exception e) {
 			logger.error("Errore fascicolo interceptor: "+e.getMessage(), e);
@@ -108,25 +105,30 @@ public class AccessoFascicoloInterceptor extends CarSocialeBaseSessionBean {
 		return result;
 	}
 	
-	private boolean filtraSecondoLivelloBASIC(CsDDiarioBASIC diario, Long idSettore, Boolean nascondiInfo){
+	private boolean filtraSecondoLivello(Long idSett2Liv, Long idSettDiario, Long idSettore, Boolean nascondiInfo){
 		boolean rimuovi = false;
-		Boolean isSecondoLivelloInfo = diario.getVisSecondoLivello() == null ? false : true;
-		rimuovi = (nascondiInfo || isSecondoLivelloInfo) && !idSettore.equals(diario.getCsOOperatoreSettore().getCsOSettore().getId());
+		Boolean isSecondoLivelloInfo = idSett2Liv == null ? false : true;
+		rimuovi = (nascondiInfo || isSecondoLivelloInfo) && !idSettore.equals(idSettDiario);
 		return rimuovi;
 	}
 	
-	private boolean filtraSecondoLivello(CsDDiario diario, Long idSettore, Boolean nascondiInfo){
-		boolean rimuovi = false;
-		Boolean isSecondoLivelloInfo = diario.getVisSecondoLivello() == null ? false : true;
-		rimuovi = (nascondiInfo || isSecondoLivelloInfo) && !idSettore.equals(diario.getCsOOperatoreSettore().getCsOSettore().getId());
-		return rimuovi;
+	private void filtraLista(List<DatiInterceptorDTO> lcb, Long idSettore, Boolean nascondiInfo){
+		Iterator<DatiInterceptorDTO> it = lcb.iterator();
+		while(it.hasNext()){
+			DatiInterceptorDTO c = it.next();
+			if(filtraSecondoLivello(c.getSettSecondoLivello(), c.getIdSettoreDiario(),idSettore, nascondiInfo))
+			   it.remove();
+		}
+		
 	}
 	
 	private void filtraColloqui(List<CsDColloquioBASIC> lcb, Long idSettore, Boolean nascondiInfo){
 		Iterator<CsDColloquioBASIC> it = lcb.iterator();
 		while(it.hasNext()){
 			CsDColloquioBASIC c = it.next();
-			if(filtraSecondoLivelloBASIC(c.getCsDDiario(),idSettore, nascondiInfo))
+			Long idSett2Liv = c.getCsDDiario().getVisSecondoLivello();
+			Long idSettDiario = c.getCsDDiario().getCsOOperatoreSettore().getCsOSettore().getId();
+			if(filtraSecondoLivello(idSett2Liv,idSettDiario,idSettore, nascondiInfo))
 			   it.remove();
 		}
 		
@@ -136,8 +138,10 @@ public class AccessoFascicoloInterceptor extends CarSocialeBaseSessionBean {
 		Iterator<CsDDocIndividuale> it = ldi.iterator();
 		while(it.hasNext()){
 			CsDDocIndividuale c = it.next();
-			if(filtraSecondoLivello(c.getCsDDiario(),idSettore, nascondiInfo))
-				   it.remove();
+			Long idSett2Liv = c.getCsDDiario().getVisSecondoLivello();
+			Long idSettDiario = c.getCsDDiario().getCsOOperatoreSettore().getCsOSettore().getId();
+			if(filtraSecondoLivello(idSett2Liv,idSettDiario,idSettore, nascondiInfo))
+			   it.remove();
 		}	
 	}
 	
@@ -145,17 +149,10 @@ public class AccessoFascicoloInterceptor extends CarSocialeBaseSessionBean {
 		Iterator<CsDIsee> it = li.iterator();
 		while(it.hasNext()){
 			CsDIsee c = it.next();
-			if(filtraSecondoLivello(c.getCsDDiario(),idSettore, nascondiInfo))
-				   it.remove();
-		}	
-	}
-	
-	private void filtraScuole(List<CsDScuola> ls, Long idSettore, Boolean nascondiInfo){
-		Iterator<CsDScuola> it = ls.iterator();
-		while(it.hasNext()){
-			CsDScuola c = it.next();
-			if(filtraSecondoLivello(c.getCsDDiario(),idSettore, nascondiInfo))
-				   it.remove();
+			Long idSett2Liv = c.getCsDDiario().getVisSecondoLivello();
+			Long idSettDiario = c.getCsDDiario().getCsOOperatoreSettore().getCsOSettore().getId();
+			if(filtraSecondoLivello(idSett2Liv,idSettDiario,idSettore, nascondiInfo))
+			   it.remove();
 		}	
 	}
 	
@@ -163,8 +160,11 @@ public class AccessoFascicoloInterceptor extends CarSocialeBaseSessionBean {
 		Iterator<RelazioneDTO> it = lr.iterator();
 		while(it.hasNext()){
 			RelazioneDTO cs = it.next();
-			if(filtraSecondoLivello(cs.getRelazione().getCsDDiario(),idSettore, nascondiInfo))
-				   it.remove();	
+			CsDDiario c = cs.getRelazione().getCsDDiario();
+			Long idSett2Liv = c.getVisSecondoLivello();
+			Long idSettDiario = c.getCsOOperatoreSettore().getCsOSettore().getId();
+			if(filtraSecondoLivello(idSett2Liv,idSettDiario,idSettore, nascondiInfo))
+			   it.remove();
 		}	
 	}
 	
@@ -172,8 +172,10 @@ public class AccessoFascicoloInterceptor extends CarSocialeBaseSessionBean {
 		Iterator<CsDPai> it = lp.iterator();
 		while(it.hasNext()){
 			CsDPai c = it.next();
-			if(filtraSecondoLivello(c.getCsDDiario(),idSettore, nascondiInfo))
-				   it.remove();
+			Long idSett2Liv = c. getCsDDiario().getVisSecondoLivello();
+			Long idSettDiario = c.getCsDDiario().getCsOOperatoreSettore().getCsOSettore().getId();
+			if(filtraSecondoLivello(idSett2Liv,idSettDiario,idSettore, nascondiInfo))
+			   it.remove();
 		}	
 	}
 	
@@ -181,8 +183,10 @@ public class AccessoFascicoloInterceptor extends CarSocialeBaseSessionBean {
 		Iterator<CsDValutazione> it = lv.iterator();
 		while(it.hasNext()){
 			CsDValutazione c = it.next();
-			if(filtraSecondoLivello(c.getCsDDiario(),idSettore, nascondiInfo))
-				   it.remove();
+			Long idSett2Liv = c. getCsDDiario().getVisSecondoLivello();
+			Long idSettDiario = c.getCsDDiario().getCsOOperatoreSettore().getCsOSettore().getId();
+			if(filtraSecondoLivello(idSett2Liv,idSettDiario,idSettore, nascondiInfo))
+			   it.remove();
 		}	
 	}
 	
@@ -190,7 +194,10 @@ public class AccessoFascicoloInterceptor extends CarSocialeBaseSessionBean {
 		Iterator<CsIIntervento> it = lip.iterator();
 		while(it.hasNext()){
 			CsIIntervento cs = it.next();
-            if(filtraSecondoLivello(cs.getCsFlgInterventos().iterator().next().getCsDDiario(),idSettore, nascondiInfo))
+			CsDDiario c = cs.getCsFlgInterventos().iterator().next().getCsDDiario();
+			Long idSett2Liv = c.getVisSecondoLivello();
+			Long idSettDiario = c.getCsOOperatoreSettore().getCsOSettore().getId();
+			if(filtraSecondoLivello(idSett2Liv,idSettDiario,idSettore, nascondiInfo))
 			   it.remove();
 		}	
 	}

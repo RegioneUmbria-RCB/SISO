@@ -35,5 +35,7 @@
 	<classpathentry kind="lib" path="/CT-LIBS/htmlUnit/websocket-api-9.2.20.v20161216.jar"/>
 	<classpathentry kind="lib" path="/CT-LIBS/htmlUnit/websocket-client-9.2.20.v20161216.jar"/>
 	<classpathentry kind="lib" path="/CT-LIBS/htmlUnit/websocket-common-9.2.20.v20161216.jar"/>
+	<classpathentry kind="src" path="/CarSocialeA_DataModel"/>
+	<classpathentry kind="src" path="/SocioSanitario_EJB"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

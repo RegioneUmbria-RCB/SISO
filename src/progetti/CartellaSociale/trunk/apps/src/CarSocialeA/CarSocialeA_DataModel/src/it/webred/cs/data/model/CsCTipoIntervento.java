@@ -4,13 +4,6 @@ import java.io.Serializable;
 
 import javax.persistence.*;
 
-import java.util.List;
-
-
-/**
- * The persistent class for the CS_C_TIPO_INTERVENTO database table.
- * 
- */
 @Entity
 @Table(name="CS_C_TIPO_INTERVENTO")
 @NamedQuery(name="CsCTipoIntervento.findAll", query="SELECT c FROM CsCTipoIntervento c")
@@ -22,7 +15,7 @@ public class CsCTipoIntervento implements Serializable {
 	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="CS_C_TIPO_INTERVENTO_ID_GENERATOR")
 	private Long id;
 
-	private String abilitato;
+	private Boolean abilitato;
 
 	private String descrizione;
 
@@ -30,11 +23,9 @@ public class CsCTipoIntervento implements Serializable {
 	
 	private String tipo;
 	
-	//bi-directional many-to-one association to VArTClasse
-	@ManyToOne
-	@JoinColumn(name="CODICE_MEMO", referencedColumnName="CODICE_MEMO")
-	private ArTClasse ArTClasse;
-
+	@Column(name="CODICE_MEMO")
+	private String codiceMemo;
+	
 	public CsCTipoIntervento() {
 	}
 
@@ -46,11 +37,11 @@ public class CsCTipoIntervento implements Serializable {
 		this.id = id;
 	}
 
-	public String getAbilitato() {
-		return this.abilitato;
+	public Boolean getAbilitato() {
+		return abilitato;
 	}
 
-	public void setAbilitato(String abilitato) {
+	public void setAbilitato(Boolean abilitato) {
 		this.abilitato = abilitato;
 	}
 
@@ -70,58 +61,19 @@ public class CsCTipoIntervento implements Serializable {
 		this.tooltip = tooltip;
 	}
 
-/*	public List<CsRelCatsocTipoInter> getCsRelCatsocTipoInters() {
-		return this.csRelCatsocTipoInters;
-	}
-
-	public void setCsRelCatsocTipoInters(List<CsRelCatsocTipoInter> csRelCatsocTipoInters) {
-		this.csRelCatsocTipoInters = csRelCatsocTipoInters;
-	}
-
-	public CsRelCatsocTipoInter addCsRelCatsocTipoInter(CsRelCatsocTipoInter csRelCatsocTipoInter) {
-		getCsRelCatsocTipoInters().add(csRelCatsocTipoInter);
-		csRelCatsocTipoInter.setCsCTipoIntervento(this);
-
-		return csRelCatsocTipoInter;
-	}
-
-	public CsRelCatsocTipoInter removeCsRelCatsocTipoInter(CsRelCatsocTipoInter csRelCatsocTipoInter) {
-		getCsRelCatsocTipoInters().remove(csRelCatsocTipoInter);
-		csRelCatsocTipoInter.setCsCTipoIntervento(null);
-
-		return csRelCatsocTipoInter;
-	}
-
-	public List<CsDRelazione> getCsDRelaziones() {
-		return this.csDRelaziones;
-	}
-
-	public void setCsDRelaziones(List<CsDRelazione> csDRelaziones) {
-		this.csDRelaziones = csDRelaziones;
-	}
-*/
-	
-
-	public ArTClasse getVArTClasse() {
-		return this.ArTClasse;
-	}
-
-	public void setVArTClasse(ArTClasse ArTClasse) {
-		this.ArTClasse = ArTClasse;
-	}
-	//FINE MOD-RL
-
-	/**
-	 * @return the tipo
-	 */
 	public String getTipo() {
 		return tipo;
 	}
 
-	/**
-	 * @param tipo the tipo to set
-	 */
 	public void setTipo(String tipo) {
 		this.tipo = tipo;
+	}
+
+	public String getCodiceMemo() {
+		return codiceMemo;
+	}
+
+	public void setCodiceMemo(String codiceMemo) {
+		this.codiceMemo = codiceMemo;
 	}
 }

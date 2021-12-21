@@ -104,14 +104,14 @@ public class UploadMobileAttivitaProfessionaliDTO implements Serializable {
 	//private CsRelRelazioneProbl[] csRelRelazioneProblReverseRif; //
 		
 	
-	private Long id_riunioneCon; //CsOSettore by id
+//	private Long id_riunioneCon; //CsOSettore by id //SISO-1481
 	
 	
 	private List<String> lstConChiSel;
 	
-	
 	private String conChiAltro;
 	
+	private List<String> lstRiunioneConChi;
 	
 	private Long numOperatori;
 	
@@ -289,13 +289,14 @@ public class UploadMobileAttivitaProfessionaliDTO implements Serializable {
 //		this.csRelRelazioneProblReverseRif = csRelRelazioneProblReverseRif;
 //	}
 
-	public Long getId_riunioneCon() {
-		return id_riunioneCon;
-	}
-
-	public void setId_riunioneCon(Long id_riunioneCon) {
-		this.id_riunioneCon = id_riunioneCon;
-	}
+	//SISO-1481
+//	public Long getId_riunioneCon() {
+//		return id_riunioneCon;
+//	}
+//
+//	public void setId_riunioneCon(Long id_riunioneCon) {
+//		this.id_riunioneCon = id_riunioneCon;
+//	}
 
 	
 
@@ -408,9 +409,13 @@ public class UploadMobileAttivitaProfessionaliDTO implements Serializable {
 		this.csOSettore_id = csOSettore_id;
 	}
 
+	public List<String> getLstRiunioneConChi() {
+		return lstRiunioneConChi;
+	}
 
-	
-	
+	public void setLstRiunioneConChi(List<String> lstRiunioneConChi) {
+		this.lstRiunioneConChi = lstRiunioneConChi;
+	}
 	
 	
 }

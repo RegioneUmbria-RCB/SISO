@@ -145,7 +145,7 @@
   </wsdl:binding>
   <wsdl:service name="GestoreAllegatoService">
     <wsdl:port binding="impl:GestoreAllegatoSoapBinding" name="GestoreAllegato">
-      <wsdlsoap:address location="http://10.150.130.117:80/protocollowebsoap/services/GestoreAllegato"/>
+      <wsdlsoap:address location="http://gwwssoap-collaudo-trged-coll.ecaas.datacenter.comune.roma/protocollo-web-services/GestoreAllegato"/>
     </wsdl:port>
   </wsdl:service>
 </wsdl:definitions>

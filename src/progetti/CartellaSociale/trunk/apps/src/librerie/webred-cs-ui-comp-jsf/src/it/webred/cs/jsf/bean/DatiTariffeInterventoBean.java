@@ -3,7 +3,6 @@ package it.webred.cs.jsf.bean;
 import it.webred.cs.csa.ejb.client.AccessTableConfigurazioneSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.AccessTableInterventoSessionBeanRemote;
 import it.webred.cs.csa.ejb.dto.BaseDTO;
-import it.webred.cs.data.DataModelCostanti;
 import it.webred.cs.data.DataModelCostanti.TariffeErogazioni.*;
 import it.webred.cs.data.model.CsIQuota;
 import it.webred.cs.data.model.CsIQuotaRipartiz;
@@ -18,8 +17,6 @@ import it.webred.cs.jsf.manbean.superc.CsUiCompBaseBean;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -27,6 +24,7 @@ import java.util.Map;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.faces.model.SelectItem;
 
 import org.primefaces.event.SelectEvent;
 
@@ -40,8 +38,7 @@ public class DatiTariffeInterventoBean extends CsUiCompBaseBean implements Seria
 	private CsIQuota csIQuota;
 	private CsIRigaQuota csIRigaQuotaNew;
 	private Map<Long, CsTbUnitaMisura> mappaOrdinataUnitaMisura;
-	private List<CsTbUnitaMisura> lstCsTbUnitaMisuraAll; 			// in lettura devo far vedere tutte le unità di misura
-	private List<CsTbUnitaMisura> lstCsTbUnitaMisuraForInsert;  	// in inserimento devo far vedere solo le unità di misura abilitate
+	private List<SelectItem> lstCsTbUnitaMisuraForInsert;  	// in inserimento devo far vedere solo le unità di misura abilitate
 	
 	//SISO-469
 	private List<VArCTariffa> lstVArCTariffa = new ArrayList<VArCTariffa>(); 	
@@ -86,7 +83,8 @@ public class DatiTariffeInterventoBean extends CsUiCompBaseBean implements Seria
 		this.csIRigaQuotaNew.setCsIValQuota(new CsIValQuota());
 		this.csIRigaQuotaNew.setFlagAssegnazDiminuz(TIPO_QUOTA.ASSEGNAZIONE.getCodice());
 		this.solaLettura = solalettura;
-		loadMappaOrdinataUnitaMisura();
+		loadListeUnitaMisura();
+		loadListaTariffe();
 		//frequenzaDelServizioChange();
 		
 	}
@@ -167,77 +165,47 @@ public class DatiTariffeInterventoBean extends CsUiCompBaseBean implements Seria
 		result = getTotaleQuote().multiply(csIQuota.getTariffa()!=null ? csIQuota.getTariffa() : BigDecimal.ZERO);
 		return result;
 	}
-	
-	
-	public List<CsTbUnitaMisura> getLstCsTbUnitaMisuraAll() {
-		if (lstCsTbUnitaMisuraAll==null || lstCsTbUnitaMisuraAll.isEmpty())
-			this.loadMappaOrdinataUnitaMisura();
 		
-		return lstCsTbUnitaMisuraAll;
-	}
-	
-	public List<CsTbUnitaMisura> getLstCsTbUnitaMisuraForInsert() {
-		//SISO-1207
-		loadUnitaMisuraByTipiIntervento(idTipoInterventoIstat, idTipoInterventoCustom);
-		 
-		if (lstCsTbUnitaMisuraAll==null || lstCsTbUnitaMisuraAll.isEmpty()) {
-			getLstCsTbUnitaMisuraAll();
-     	}
-			
-		if (lstCsTbUnitaMisuraAll!=null && this.lstCsTbUnitaMisuraForInsert==null) {
-			lstCsTbUnitaMisuraForInsert = new ArrayList<CsTbUnitaMisura>();
-			for (CsTbUnitaMisura um : lstCsTbUnitaMisuraAll) {
-				if (um.getAbilitato().equals("1")) 
-					lstCsTbUnitaMisuraForInsert.add(um);
-			}
-		}
-		
+	public List<SelectItem> getLstCsTbUnitaMisuraForInsert() {
 		return lstCsTbUnitaMisuraForInsert;
 	}
 	//SISO 1207
 			 
-	 private void loadUnitaMisuraByTipiIntervento(Long idTipoInterventoIstat, Long idTipoInterventoCustom )  {
+	 private List<CsTbUnitaMisura> loadUnitaMisuraByTipiIntervento(Long idTipoInterventoIstat, Long idTipoInterventoCustom )  {
+		List<CsTbUnitaMisura> lstUmRestricted = new ArrayList<CsTbUnitaMisura>();
 		BaseDTO dto = new BaseDTO();
 		fillEnte(dto);
 		dto.setObj(idTipoInterventoIstat);
 		dto.setObj2(idTipoInterventoCustom);
 		try {
-				 
-			 	lstCsTbUnitaMisuraAll = confService.getCsTbUnitaMisuraByInterventoIstatCustom(dto);
-			 	
-			 if (lstCsTbUnitaMisuraAll==null || lstCsTbUnitaMisuraAll.isEmpty()) {	
-			 		mappaOrdinataUnitaMisura = new HashMap<Long,CsTbUnitaMisura>();
-			 		for (CsTbUnitaMisura um : lstCsTbUnitaMisuraAll) {
-					mappaOrdinataUnitaMisura.put(um.getId(), um);
-				}
-			 }
+			 	lstUmRestricted = confService.getCsTbUnitaMisuraByInterventoIstatCustom(dto);
 		} catch (Exception e) {
 			logger.error(e);
 		
 		}
-
+		return lstUmRestricted;
 	}
 		
 	//SISO-1131
 
    public List<VArCTariffa> getLstVArCTariffa() {
-		
-		if (lstVArCTariffa!=null || lstVArCTariffa.isEmpty()) {
-			BaseDTO bdto = new BaseDTO();
-			fillEnte(bdto);
-			bdto.setObj(getCurrentOpSettore().getCsOSettore().getCsOOrganizzazione().getCodRouting());
-			bdto.setObj2(selUnitaMisura);
-			lstVArCTariffa = interventoService.findTariffe(bdto);
-			}
 		return lstVArCTariffa;
 	}
 
 	public void setLstVArCTariffa(List<VArCTariffa> lstVArCTariffa) {
 		this.lstVArCTariffa = lstVArCTariffa;
 	}
+	
+	private void loadListaTariffe(){
+		BaseDTO bdto = new BaseDTO();
+		fillEnte(bdto);
+		bdto.setObj(getCurrentOpSettore().getCsOSettore().getCsOOrganizzazione().getCodRouting());
+		bdto.setObj2(selUnitaMisura);
+		lstVArCTariffa = interventoService.findTariffe(bdto);
+	}
 
-
-	private void loadMappaOrdinataUnitaMisura() {
+	private void loadListeUnitaMisura() {
+		List<CsTbUnitaMisura> lstCsTbUnitaMisuraAll; // in lettura devo far vedere tutte le unità di misura
 		BaseDTO dto = new BaseDTO();
 		fillEnte(dto);
 		lstCsTbUnitaMisuraAll = confService.getCsTbUnitaMisura(dto);
@@ -246,6 +214,21 @@ public class DatiTariffeInterventoBean extends CsUiCompBaseBean implements Seria
 		for (CsTbUnitaMisura um : lstCsTbUnitaMisuraAll) {
 			mappaOrdinataUnitaMisura.put(um.getId(), um);
 		}
+		
+		//SISO-1207
+		List<CsTbUnitaMisura> lstRestricted = loadUnitaMisuraByTipiIntervento(idTipoInterventoIstat, idTipoInterventoCustom);
+		if (lstRestricted.isEmpty()) 
+			lstRestricted.addAll(lstCsTbUnitaMisuraAll);
+		
+		lstCsTbUnitaMisuraForInsert = new ArrayList<SelectItem>();
+		for (CsTbUnitaMisura um : lstRestricted) {
+			SelectItem si = new SelectItem(um.getId(), um.getValore());
+			if (um.getAbilitato()!=null && um.getAbilitato().booleanValue()) 
+				lstCsTbUnitaMisuraForInsert.add(si);
+		}
+		
+		if(this.selUnitaMisura==null && this.lstCsTbUnitaMisuraForInsert.size()==1)
+			setSelUnitaMisura((Long)lstCsTbUnitaMisuraForInsert.get(0).getValue());
 	}
 	
 	public void selectedUnitaMisuraChange(ErogazioneInterventoBean erog) {
@@ -260,6 +243,8 @@ public class DatiTariffeInterventoBean extends CsUiCompBaseBean implements Seria
 				
 		if(erog!=null)
 			erog.onUpdateTariffa(csIQuota.getTariffa(), csIQuota.isOreMinuti());
+		
+		loadListaTariffe();
 		
 	}
 	
@@ -390,15 +375,8 @@ public class DatiTariffeInterventoBean extends CsUiCompBaseBean implements Seria
 	public boolean isDisableInputFrequenzaDelServizio() {
 		return !isRendicontoPeriodico();
 	}
-	
-	public void setLstCsTbUnitaMisuraAll(List<CsTbUnitaMisura> lstCsTbUnitaMisuraAll) {
-		this.lstCsTbUnitaMisuraAll = lstCsTbUnitaMisuraAll;
-	}
 
-
-	
-	public void setLstCsTbUnitaMisuraForInsert(
-			List<CsTbUnitaMisura> lstCsTbUnitaMisuraForInsert) {
+	public void setLstCsTbUnitaMisuraForInsert(List<SelectItem> lstCsTbUnitaMisuraForInsert) {
 		this.lstCsTbUnitaMisuraForInsert = lstCsTbUnitaMisuraForInsert;
 	}
 
@@ -412,9 +390,15 @@ public class DatiTariffeInterventoBean extends CsUiCompBaseBean implements Seria
 	}
 	//FINE SISO-469
 	
-	public boolean salva() {
+	public boolean salva(boolean unitaMisuraRequired) {
 		boolean bOk = true;	
-	
+	    
+		if(this.getCsIQuota().getCsTbUnitaMisura()==null && unitaMisuraRequired){
+			bOk = false;
+			this.addWarning("Tariffe", "Unità di misura è un campo obbligatorio");
+			return bOk;
+		}
+		
 		if(this.getCsIQuota().getCsTbUnitaMisura()!=null){
 			this.getCsIQuota().getCsIQuotaRipartiz().setCsIQuota(this.csIQuota);
 			
@@ -429,8 +413,7 @@ public class DatiTariffeInterventoBean extends CsUiCompBaseBean implements Seria
 				this.addError("Errore salvataggio dati tariffe", "");
 				bOk = false;
 			}
-		
-		}else bOk = false;
+		}
 		return bOk;
 		
 	}
@@ -574,7 +557,7 @@ public class DatiTariffeInterventoBean extends CsUiCompBaseBean implements Seria
 	//fine SISO-536 
 	
 	public boolean isRendicontoPeriodico(){
-		return csIQuota.getCsIQuotaRipartiz().getFlagRendiconto().equals(TIPO_RENDICONTO.PERIODICO.getCodice());
+		return TIPO_RENDICONTO.PERIODICO.getCodice().equals(csIQuota.getCsIQuotaRipartiz().getFlagRendiconto());
 	}
 
 	public boolean isValuta(){

@@ -37,7 +37,7 @@
 				<h:panelGrid columns="4">
 				 <h:outputText value="Alias *" for="alias_segnalato_mod" rendered="#{nuovaSchedaWizard.privacyAnonimo or tempCodFiscManager.isTemporaneo(nuovaSchedaWizard.segnalato.anagrafica.codiceFiscale)}" />	
 	                	<h:panelGrid rendered="#{nuovaSchedaWizard.privacyAnonimo or tempCodFiscManager.isTemporaneo(nuovaSchedaWizard.segnalato.anagrafica.codiceFiscale)}">		   
-						<p:inputText id="alias_segnalato_mod" disabled="#{!nuovaSchedaWizard.segnalato.anagrafica.disableAnagrafica and nuovaSchedaWizard.segnalato.anagrafica.alias!=null}" label="Alias"  style="text-transform: uppercase"
+						<p:inputText id="alias_segnalato_mod" disabled="#{!nuovaSchedaWizard.segnalato.anagrafica.disableAnagrafica and nuovaSchedaWizard.segnalato.anagrafica.alias!=null}" label="Alias" 
 							value="#{nuovaSchedaWizard.segnalato.anagrafica.alias}"	/>
 						</h:panelGrid>
 						<h:outputText value="Data di nascita *" for="data_nascita_segnalato_mod" />

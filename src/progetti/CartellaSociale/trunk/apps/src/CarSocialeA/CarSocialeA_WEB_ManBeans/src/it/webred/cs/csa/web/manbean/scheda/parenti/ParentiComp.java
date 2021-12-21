@@ -4,9 +4,9 @@ import it.webred.cs.csa.ejb.client.AccessTableConfigurazioneSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.AccessTableSchedaSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.AccessTableSoggettoSessionBeanRemote;
 import it.webred.cs.csa.ejb.dto.BaseDTO;
+import it.webred.cs.csa.ejb.dto.cartella.RisorsaCalcDTO;
 import it.webred.cs.data.model.CsAAnagrafica;
 import it.webred.cs.data.model.CsAComponente;
-import it.webred.cs.data.model.CsAFamigliaGruppo;
 import it.webred.cs.data.model.CsASoggettoLAZY;
 import it.webred.cs.data.model.CsTbContatto;
 import it.webred.cs.data.model.CsTbDisponibilita;
@@ -32,11 +32,8 @@ public class ParentiComp extends ValiditaCompBaseBean implements IParenti {
 
 	private List<CsAComponente> lstParenti = new ArrayList<CsAComponente>();
 	private List<CsAComponente> lstConoscenti = new ArrayList<CsAComponente>();
-	private HashMap<String,String> mappaSchedeCS = new HashMap<String,String>();
 
-	private List<CsAAnagrafica> lstComponentiCalc;
-	private List<SelectItem> lstComponentiCalcItems;
-	private boolean loadedComponentiCalc = false;
+	private List<SelectItem> lstComponentiCalc;
 	
 	protected AccessTableSchedaSessionBeanRemote schedaService = (AccessTableSchedaSessionBeanRemote) getCarSocialeEjb("AccessTableSchedaSessionBean");
 	protected AccessTableSoggettoSessionBeanRemote soggettoService = (AccessTableSoggettoSessionBeanRemote) getCarSocialeEjb("AccessTableSoggettoSessionBean");
@@ -49,45 +46,24 @@ public class ParentiComp extends ValiditaCompBaseBean implements IParenti {
 	private String parentiSconosciuti;
 	
 	private Integer disponibilitaDatiAnagraficiRisorse;
-	
-	// private String colorR;
-
-	public String getViveSolo() {
-		return viveSolo;
-	}
-
-	public void setViveSolo(String viveSolo) {
-		this.viveSolo = viveSolo;
-	}
-
-	public String getHaParenti() {
-		return haParenti;
-	}
-
-	public void setHaParenti(String haParenti) {
-		this.haParenti = haParenti;
-	}
-
-	public String getParentiSconosciuti() {
-		return parentiSconosciuti;
-	}
-
-	public void setParentiSconosciuti(String parentiSconosciuti) {
-		this.parentiSconosciuti = parentiSconosciuti;
-	}
 
 	private boolean showNewParente = false;
 	private boolean showNewConoscente = false;
 	private NuovoParenteBean nuovoParenteBean = new NuovoParenteBean();
 	private NuovoConoscenteBean nuovoConoscenteBean = new NuovoConoscenteBean();
-
-	private CsAAnagrafica anagraficaCompDaAltraScheda = new CsAAnagrafica();
+	
 	private Long anagraficaCompDaAltraScheda_id = null;
-//	// TODO solo in debug
-//	private Long ComponenteIdDaAltraScheda = new Long(0);
+
 	
 	// SISO-724 mappa CF - stato cartella
 	private HashMap<String, String> cf2StatoCartella = new HashMap<String, String>();
+	
+	public ParentiComp(Date dataInizio, Date dataFine){
+		super();
+		setDataInizio(dataInizio);
+		setDataFine(dataFine);
+		loadLstComponentiCalc(dataInizio, dataFine);
+	}
 	
 	@Override
 	public void salvaNuovoParente() {
@@ -143,8 +119,7 @@ public class ParentiComp extends ValiditaCompBaseBean implements IParenti {
 			BaseDTO b = new BaseDTO();
 			fillEnte(b);
 			b.setObj(idDisponibilita);
-			CsTbDisponibilita disponibilita = confService
-					.getDisponibilitaById(b);
+			CsTbDisponibilita disponibilita = confService.getDisponibilitaById(b);
 			comp.setCsTbDisponibilita(disponibilita);
 		}
 		compTipoRapporto = nuovoParenteBean.getRapportoModel();
@@ -169,6 +144,8 @@ public class ParentiComp extends ValiditaCompBaseBean implements IParenti {
 	
 		valorizzaLuogoResidenzaJPS(comp, nuovoParenteBean.getComuneNazioneResidenzaBean());
 		
+		comp.setDisabile(nuovoParenteBean.getDisabile());
+		
 		comp.setCsAAnagrafica(compAna);
 
 		if (nuovo && !esisteCF)
@@ -188,9 +165,7 @@ public class ParentiComp extends ValiditaCompBaseBean implements IParenti {
 			long age = dataToday.getTime() - dateN.getTime();
 			int days = (int) Math.round(age / 86400000.0);
 			int ageFinal = (days / 365);
-			eta = dataDecesso != null ? "Deceduto a "
-					+ Integer.toString(ageFinal) + " anni" : Integer
-					.toString(ageFinal);
+			eta = dataDecesso != null ? "Deceduto a " + Integer.toString(ageFinal) + " anni" : Integer.toString(ageFinal);
 		}
 		return eta;
 	}
@@ -351,7 +326,8 @@ public class ParentiComp extends ValiditaCompBaseBean implements IParenti {
 		nuovoParenteBean.setAffidatario(comp.getAffidatario());//SISO-906
 		nuovoParenteBean.setDataDecesso(comp.getCsAAnagrafica().getDataDecesso());
 		nuovoParenteBean.setDecesso(comp.getCsAAnagrafica().getDataDecesso() != null);
-
+		nuovoParenteBean.setDisabile(comp.getDisabile());
+		
 		if (comp.getCsTbContatto() != null)
 			nuovoParenteBean.setIdContatto(comp.getCsTbContatto().getId());
 		if (comp.getCsTbDisponibilita() != null)
@@ -380,15 +356,12 @@ public class ParentiComp extends ValiditaCompBaseBean implements IParenti {
 		lstConoscenti.remove(idxSelected);
 	}
 
-	public void setLstComponentiCalc(List<CsAAnagrafica> lstComponentiCalc) {
+	public void setLstComponentiCalc(List<SelectItem> lstComponentiCalc) {
 		this.lstComponentiCalc = lstComponentiCalc;
 	}
 
 	public List<SelectItem> getLstComponentiCalc() {
-		if (!loadedComponentiCalc) {
-			loadLstComponentiCalc();
-		}
-		return this.lstComponentiCalcItems;
+		return this.lstComponentiCalc;
 	}
 	
 	
@@ -409,49 +382,40 @@ public class ParentiComp extends ValiditaCompBaseBean implements IParenti {
 		
 	}
 	
-	private boolean famigliaGrupposContainsFamigliaById(List<CsAFamigliaGruppo> famiglie,Long famigliaCurrId)
-	{
-		boolean result=false;
-		for (CsAFamigliaGruppo csAFamigliaGruppo : famiglie) {
-			if(csAFamigliaGruppo.getId().equals(famigliaCurrId))
-			{
-				result=true;
-			}
-		}
-		
-		return result;
-	}
-	private void loadLstComponentiCalc() {
+	private void loadLstComponentiCalc(Date dataDa, Date dataA) {
 		
 		CsASoggettoLAZY soggetto = (CsASoggettoLAZY) getSession().getAttribute("soggetto");
-
-		this.lstComponentiCalc = new ArrayList<CsAAnagrafica>();
 		BaseDTO dto = new BaseDTO();
 		fillEnte(dto);
 		dto.setObj(soggetto.getCsAAnagrafica().getCf());
-		dto.setObj2(new Date());
-		lstComponentiCalc=schedaService.findComponentiGiaFamigliariBySoggettoCf(dto);
+		dto.setObj2(dataDa);
+		dto.setObj3(dataA);
+		List<RisorsaCalcDTO> lstComponenti = schedaService.findComponentiGiaFamigliariBySoggettoCf(dto);
 		
-		List<SelectItem> items=new ArrayList<SelectItem>();
-		HashMap<CsASoggettoLAZY,List<SelectItem>> Schede=new HashMap<CsASoggettoLAZY, List<SelectItem>>();
-		if(lstComponentiCalc!=null)
+		lstComponentiCalc = new ArrayList<SelectItem>();
+		HashMap<RisorsaCalcDTO,List<SelectItem>> Schede=new HashMap<RisorsaCalcDTO, List<SelectItem>>();
+		if(lstComponenti!=null)
 			{
-			for (CsAAnagrafica csAAnagraficaCurr : lstComponentiCalc) {
-				if(csAAnagraficaCurr.getCsASoggetto()!=null && csAAnagraficaCurr.getCsASoggetto().getCsACaso()!=null)
+			for (RisorsaCalcDTO rCurr : lstComponenti) {
+				if(rCurr.getSoggetto()!=null && rCurr.getSoggetto().getCsACaso()!=null)
 				{
-					Schede.put(csAAnagraficaCurr.getCsASoggetto(), new ArrayList<SelectItem>());
+					Schede.put(rCurr, new ArrayList<SelectItem>());
 				}
 			}
-			for (CsAAnagrafica csAAnagraficaCurr : lstComponentiCalc) {
+			for (RisorsaCalcDTO rCurr : lstComponenti) {
 				SelectItem sel=new SelectItem();
-				sel.setLabel(csAAnagraficaCurr.getCognome()+" - "+csAAnagraficaCurr.getNome());
-				sel.setValue(csAAnagraficaCurr.getId());
-				for (CsASoggettoLAZY soggettoCurr : Schede.keySet()) {
-					if(csAAnagraficaCurr.getCsAComponente()!=null && csAAnagraficaCurr.getCsAComponente().getCsAFamigliaGruppo()!=null && famigliaGrupposContainsFamigliaById(soggettoCurr.getCsAFamigliaGruppos(), csAAnagraficaCurr.getCsAComponente().getCsAFamigliaGruppo().getId()))
+				String denominazione = rCurr.getCognome()+" "+rCurr.getNome();
+				String intervallo = !StringUtils.isBlank(rCurr.getDateValidita()) ? " "+rCurr.getDateValidita() : "";
+				sel.setLabel(denominazione+intervallo);
+				sel.setValue(rCurr.getAnagraficaId());
+				for (RisorsaCalcDTO soggettoCurr : Schede.keySet()) {
+					CsAComponente componenteCurr = rCurr.getComponente();
+					Long idFamGruppoComponenteCurr = componenteCurr!=null && componenteCurr.getCsAFamigliaGruppo()!=null ? componenteCurr.getCsAFamigliaGruppo().getId() : null;
+					if(idFamGruppoComponenteCurr!=null && famigliaGrupposContainsFamigliaById(soggettoCurr.getFamiglieSoggettoIds(), idFamGruppoComponenteCurr))
 					{
 						Schede.get(soggettoCurr).add(sel);
 					}
-					else if(csAAnagraficaCurr.getCsASoggetto()!=null && csAAnagraficaCurr.getCsASoggetto()==soggettoCurr)
+					else if(rCurr.getSoggetto()!=null && rCurr.getSoggetto()==soggettoCurr.getSoggetto())
 					{
 						//è il soggetto titolare della scheda
 						Schede.get(soggettoCurr).add(sel);
@@ -459,30 +423,39 @@ public class ParentiComp extends ValiditaCompBaseBean implements IParenti {
 				}
 				
 			}
-				for (CsASoggettoLAZY soggettoGruppo : Schede.keySet()) {
-					SelectItemGroup gruppoNew=new SelectItemGroup("Cartella: "+soggettoGruppo.getCsACaso().getIdentificativo());
+				for (RisorsaCalcDTO soggettoGruppo : Schede.keySet()) {
+					Long identificativoCartella = soggettoGruppo.getSoggetto().getCsACaso().getIdentificativo();
+					SelectItemGroup gruppoNew=new SelectItemGroup("Identificativo cartella: "+identificativoCartella);
 					SelectItem[] itemsDelGruppo=new SelectItem[Schede.get(soggettoGruppo).size()];
 					int i=0;
 					for (SelectItem selectItem : Schede.get(soggettoGruppo)) {
 						if(selectItem.getValue().equals(soggettoGruppo.getAnagraficaId()))
 						{
-							selectItem.setLabel(selectItem.getLabel()+" (*tit.cartella)");
+							selectItem.setLabel(selectItem.getLabel()+" (titolare)");
 						}
 						itemsDelGruppo[i]=selectItem;
 						i++;
 					}
 					gruppoNew.setSelectItems(itemsDelGruppo);
-					items.add(gruppoNew);
+					lstComponentiCalc.add(gruppoNew);
 				}
 			}
-		this.lstComponentiCalcItems=items;
-		this.setLoadedComponentiCalc(true);
 	}
 
-	public void setLoadedComponentiCalc(boolean loadedComponentiCalc) {
-		this.loadedComponentiCalc = loadedComponentiCalc;
+	private boolean famigliaGrupposContainsFamigliaById(List<Long> famIds, Long famigliaCurrId)
+	{
+		boolean result=false;
+		if(famIds!=null){
+			for (Long id : famIds) {
+				if(id.equals(famigliaCurrId))
+				{
+					result=true;
+				}
+			}
+		}
+		
+		return result;
 	}
-
 	@Override
 	public List<CsAComponente> getLstParenti() {
 		return lstParenti;
@@ -556,32 +529,44 @@ public class ParentiComp extends ValiditaCompBaseBean implements IParenti {
 		return this.anagraficaCompDaAltraScheda_id;
 	}
 
-	public void setAnagraficaCompDaAltraScheda_id(Long anagraficaCompDaAltraScheda_id) {
-		
-		this.anagraficaCompDaAltraScheda_id=anagraficaCompDaAltraScheda_id;
-		CsAAnagrafica anagraficaCompDaAltraSchedaSel=null;
-		if(anagraficaCompDaAltraScheda_id!=null && anagraficaCompDaAltraScheda_id>0)
-			{
-					BaseDTO dto=new BaseDTO();
-					fillEnte(dto);
-					dto.setObj(anagraficaCompDaAltraScheda_id);
-					anagraficaCompDaAltraSchedaSel= soggettoService.getAnagraficaById(dto);
-			}
-		if (anagraficaCompDaAltraSchedaSel != null
-				&& anagraficaCompDaAltraSchedaSel.getId() > 0) {
-			this.anagraficaCompDaAltraScheda = anagraficaCompDaAltraSchedaSel;
-			this.nuovo = true;
-			this.showNewParente = true;
-			nuovoParenteBean
-					.precaricaParenteDaComponente(this.anagraficaCompDaAltraScheda);
-		} else {
-			this.anagraficaCompDaAltraScheda = new CsAAnagrafica();
-			this.nuovo = false;
-			this.showNewParente = false;
-			nuovoParenteBean.reset();
-		}
+	public void setAnagraficaCompDaAltraScheda_id(Long anagraficaIdSel) {
+		this.anagraficaCompDaAltraScheda_id=anagraficaIdSel;
 	}
 	
+	@Override
+	public void onSelectComponenteDaAltraScheda(){
+		CsAAnagrafica anagraficaSel=null;
+		if(anagraficaCompDaAltraScheda_id!=null && anagraficaCompDaAltraScheda_id>0){
+			BaseDTO dto=new BaseDTO();
+			fillEnte(dto);
+			dto.setObj(anagraficaCompDaAltraScheda_id);
+			anagraficaSel= soggettoService.getAnagraficaById(dto);
+		}
+		nuovoParenteBean.reset();
+		if (anagraficaSel != null && anagraficaSel.getId() > 0) {
+			this.nuovo = true;
+			this.showNewParente = true;
+			nuovoParenteBean.precaricaParenteDaComponente(anagraficaSel);
+		} else {
+			this.nuovo = false;
+			this.showNewParente = false;
+		}
+		anagraficaCompDaAltraScheda_id = null;
+	}
+	
+	@Override
+	public boolean loadStatoRdC(CsAComponente c) {
+		boolean val = false;
+		if(!StringUtils.isBlank(c.getCsAAnagrafica().getCf())) {
+			BaseDTO dto = new BaseDTO();
+			fillEnte(dto);
+			dto.setObj(c.getCsAAnagrafica().getCf());
+			val = this.soggettoService.isBeneficiarioRdC(dto);
+		}
+		return val;
+	}
+	
+	@Override
 	public String loadStatoCartella(String cf){
 		boolean exists = cf2StatoCartella.containsKey(cf);
 		String s = null;
@@ -597,7 +582,7 @@ public class ParentiComp extends ValiditaCompBaseBean implements IParenti {
 			return "<b>Cartella Sociale esistente</b>"+ s;
 		else return s;
 	}
-
+	
 	@Override
 	public Boolean isHaParenti() {
 		Boolean val = null;
@@ -630,8 +615,29 @@ public class ParentiComp extends ValiditaCompBaseBean implements IParenti {
 			Integer disponibilitaDatiAnagraficiRisorse) {
 		this.disponibilitaDatiAnagraficiRisorse = disponibilitaDatiAnagraficiRisorse;
 	}
-
 	
+	public String getViveSolo() {
+		return viveSolo;
+	}
 
-	
+	public void setViveSolo(String viveSolo) {
+		this.viveSolo = viveSolo;
+	}
+
+	public String getHaParenti() {
+		return haParenti;
+	}
+
+	public void setHaParenti(String haParenti) {
+		this.haParenti = haParenti;
+	}
+
+	public String getParentiSconosciuti() {
+		return parentiSconosciuti;
+	}
+
+	public void setParentiSconosciuti(String parentiSconosciuti) {
+		this.parentiSconosciuti = parentiSconosciuti;
+	}
+
 }

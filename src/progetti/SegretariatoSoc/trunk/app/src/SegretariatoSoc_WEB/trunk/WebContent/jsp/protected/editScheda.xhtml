@@ -107,8 +107,7 @@
 						
 
 						 
-						<p:panelGrid columns="6" columnClasses="label, value"
-										styleClass=" #{'grid noBorderPanel'}"  >
+						<p:panelGrid columns="6" columnClasses="label, value" styleClass=" #{'grid noBorderPanel'}"  >
 						
 							<h:outputText value="Data di accesso *" for="data_accesso" />
 							<webred:pnlData  dataValue="#{nuovaSchedaWizard.accesso.dataAccesso}"
@@ -174,7 +173,7 @@
 							<h:outputText value="Motivo accesso Interlocutore *" for="motivo_accesso" />
 							<p:selectOneMenu label="Motivo Accesso" id="motivo_accesso" required="true" 
 											 value="#{nuovaSchedaWizard.accesso.motivo}" effect="fold" editable="false">
-								<f:selectItem itemLabel="- seleziona -" itemValue="" />
+								<f:selectItem itemLabel="- seleziona -" noSelectionOption="true" />
 								<f:selectItems value="#{nuovaSchedaWizard.accessi}" />
 								<p:ajax event="change" update="@(.updateOnMotivoAccessoChanged)" process="@this" 
 										listener="#{nuovaSchedaWizard.motivoAccessoChanged}"/>
@@ -190,7 +189,7 @@
 								<p:selectOneMenu 	label="Inviato da" id="inviante_segnalante" value="#{nuovaSchedaWizard.accesso.inviante}" 
 													effect="fold" editable="false"
 													rendered="#{nuovaSchedaWizard.invianteRendered}" >
-									<f:selectItem itemLabel="- seleziona -" itemValue="" />
+									<f:selectItem itemLabel="- seleziona -" noSelectionOption="true" />
 									<f:selectItems value="#{nuovaSchedaWizard.inviatiDa}" />
 								</p:selectOneMenu>
 								<h:outputText value=" " rendered="#{!nuovaSchedaWizard.invianteRendered}"/>
@@ -213,7 +212,7 @@
 
 							<h:outputText value="Modalità di accesso *" for="modalita_accesso" />
 							<p:selectOneMenu label="Modalità di accesso" id="modalita_accesso" required="true" value="#{nuovaSchedaWizard.accesso.modalitaAccesso}" effect="fold" editable="false">
-								<f:selectItem itemLabel="- seleziona -" itemValue="" />
+								<f:selectItem itemLabel="- seleziona -" noSelectionOption="true" />
 								<f:selectItems value="#{nuovaSchedaWizard.modalita}" />
 							</p:selectOneMenu>
   

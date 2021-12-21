@@ -1,6 +1,7 @@
 package it.webred.ss.web.bean.lista.incomplete;
 
 import it.webred.cs.csa.ejb.client.AccessTableSchedaSegrSessionBeanRemote;
+import it.webred.cs.data.DataModelCostanti;
 import it.webred.ejb.utility.ClientUtility;
 import it.webred.ss.ejb.client.SsSchedaSessionBeanRemote;
 import it.webred.ss.ejb.dto.BaseDTO;
@@ -184,7 +185,8 @@ public class SchedeIncompleteBean extends SegretariatoSocSchedeTblBaseBean {
 					it.webred.cs.csa.ejb.dto.BaseDTO baseDto = new it.webred.cs.csa.ejb.dto.BaseDTO();
 					fillUserData(baseDto);
 					baseDto.setObj(selectedScheda.getId());
-					statoScheda = schedaSegrService.findStatoSchedaSegrById(baseDto);
+					baseDto.setObj2(DataModelCostanti.SchedaSegr.PROVENIENZA_SS);	// SISO-938
+					statoScheda = schedaSegrService.findStatoSchedaSegrBySchedaIdProvenienza(baseDto);
 				}
     			
     			if (statoScheda==null || statoScheda.isEmpty()) {

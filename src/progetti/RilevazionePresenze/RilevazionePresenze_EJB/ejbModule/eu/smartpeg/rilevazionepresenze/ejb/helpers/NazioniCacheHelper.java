@@ -83,6 +83,31 @@ public class NazioniCacheHelper implements NazioniCacheHelperRemote, NazioniCach
 		return res;		
 	}	
 	
+	@Override
+	public AmTabNazioni getNazioneByCodiceIstat(String codiceIstat) {		
+		if(codiceIstat==null) {
+			logger.warn("getNazioneByCodiceIstat(String codiceIstat) con codice NULL");
+			return null;
+		}
+		
+		AmTabNazioni res= null;
+	
+			try {
+				//TODO: non ho ilmetodo per la query con codice anagrafe ... posso usare questo oppure devo scrivere query?
+				res = amTabNazioniAsyncWrapper.getNazioneByCodiceGenerico(codiceIstat).get();
+			} catch (InterruptedException e) {
+				logger.warn("Caricamento asincrono lista nazioni interrotto",e);
+			} catch (ExecutionException e) {
+				logger.warn("Errore durante caricamento asincrono lista nazioni",e);
+			}
+		
+		if(res==null) {
+			logger.warn("getNazioneByCodiceAnagrafe RETURN NULL per codiceIStat: "+codiceIstat);
+		}
+	
+		return res;		
+	}	
+	
 	public Map<String, AmTabNazioni> getMappaNazioni() {
 		if(mappaNazioni==null && getListaNazioni()!=null) {
 			logger.debug("mappaComuni NULL. Dati disponibili costruisco mappa.");

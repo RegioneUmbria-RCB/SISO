@@ -1,7 +1,6 @@
 package it.webred.ss.ejb.client;
 
 import it.webred.ss.data.model.ArBufferSsInvio;
-import it.webred.ss.data.model.ArOOrganizzazione;
 import it.webred.ss.data.model.SsAnagrafica;
 import it.webred.ss.data.model.SsAnagraficaLog;
 import it.webred.ss.data.model.SsClassificazioneMotivazione;
@@ -24,6 +23,7 @@ import it.webred.ss.ejb.dto.BaseDTO;
 import it.webred.ss.ejb.dto.DatiPrivacyDTO;
 import it.webred.ss.ejb.dto.DatiSchedaListDTO;
 import it.webred.ss.ejb.dto.OperatoreDTO;
+import it.webred.ss.ejb.dto.OrganizzazioneDTO;
 import it.webred.ss.ejb.dto.SintesiSchedeUfficioDTO;
 import it.webred.ss.ejb.dto.SsSearchCriteria;
 import it.webred.ss.ejb.dto.report.DatiPrivacyPdfDTO;
@@ -130,12 +130,11 @@ public interface SsSchedaSessionBeanRemote {
 	public Long countSchedeIncomplete(SsSearchCriteria dto);
 	public List<OperatoreDTO> getListaOperatori(BaseDTO dto);
 	public List<SsOOrganizzazione> readOrganizzazioniZona(BaseDTO dto);
-	public List<ArOOrganizzazione> readOrganizzazioniFuoriZona(BaseDTO dto);
+	
 	public List<SsOOrganizzazione> readOrganizzazioniAltre(BaseDTO dto);
 	public List<SsRelUffPcontOrg> readUfficiOrganizzazione(BaseDTO dto);
 	public ArBufferSsInvio inviaScheda(BaseDTO dto);
 	public SsOOrganizzazione readSsOOrganizzazioniById(BaseDTO dto);
-	public ArOOrganizzazione readArOOrganizzazioniById(BaseDTO dto);
 	public List<ArBufferSsInvio> readSchedeInviateByIdOrigZs(BaseDTO dto);
 	public void annullaInvioScheda(BaseDTO dto);
 	public int countSchedeInviateUfficioNonLette(SsSearchCriteria dto);
@@ -144,7 +143,7 @@ public interface SsSchedaSessionBeanRemote {
 	public Long countSchedeInviateEnte(SsSearchCriteria dto);
 	public List<DatiSchedaListDTO> searchSchedeInviateUfficio(SsSearchCriteria dto);
 	public List<DatiSchedaListDTO> searchSchedeInviateEnte(SsSearchCriteria dto);
-	public ArOOrganizzazione readSsArOOrganizzazioniById(BaseDTO dto);
+	public OrganizzazioneDTO findOrganizzazioneDestInvio(BaseDTO dto);
 	public Long saveAccessoInviante(BaseDTO bAccessoDto);
 	public ArBufferSsInvio riceviSchedaBuffer(BaseDTO ricevutaBufferdto);
 	public SsSchedaAccessoInviante readSsSchedaAccessoInvianteByIdNuovaScheda(BaseDTO dto);

@@ -179,13 +179,6 @@ public class InterventoErogazAttrBean implements Serializable {
 			e.printStackTrace();
 		}
 			
-	/*	for (CsCfgAttrUnitaMisura attrUm : listaAttrUnitaMisura) {
-			if ( attrUm.getCsCfgAttributo() == csAttr ){
-				if( attrUm.getCsTbUnitaMisura() == um )
-					return attrUm;
-			}
-		}
-		*/
 		throw new Error("Qui non ci deve arrivare mai");
 		
 	}

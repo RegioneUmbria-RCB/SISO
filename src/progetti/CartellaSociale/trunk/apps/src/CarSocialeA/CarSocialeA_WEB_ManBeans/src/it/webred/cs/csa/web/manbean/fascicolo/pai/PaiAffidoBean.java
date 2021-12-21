@@ -1,5 +1,14 @@
 package it.webred.cs.csa.web.manbean.fascicolo.pai;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+
+import javax.faces.event.ValueChangeEvent;
+import javax.faces.model.SelectItem;
+import javax.faces.model.SelectItemGroup;
+
 import it.webred.cs.csa.ejb.client.AccessTablePaiAffidoSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.AccessTableSchedaSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.domini.AccessTableDominiPaiSessionBeanRemote;
@@ -11,25 +20,9 @@ import it.webred.cs.csa.ejb.dto.pai.affido.CsPaiAffidoSoggettoDTO;
 import it.webred.cs.csa.ejb.dto.pai.affido.CsPaiAffidoStatoDTO;
 import it.webred.cs.csa.ejb.dto.pai.affido.PaiAffidoDominiEnum;
 import it.webred.cs.csa.ejb.dto.pai.affido.PaiAffidoStatoEnum;
-import it.webred.cs.csa.web.manbean.fascicolo.FascicoloCompBaseBean;
 import it.webred.cs.data.DataModelCostanti;
-import it.webred.cs.data.model.CsAAnagrafica;
 import it.webred.cs.data.model.CsAComponente;
-import it.webred.cs.data.model.CsAFamigliaGruppo;
 import it.webred.cs.jsf.manbean.superc.CsUiCompBaseBean;
-import it.webred.jsf.bean.ComuneBean;
-import it.webred.utils.type.Constant;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-
-import javax.faces.event.ValueChangeEvent;
-import javax.faces.model.SelectItem;
-import javax.faces.model.SelectItemGroup;
-
-import org.primefaces.event.SelectEvent;
 
 public class PaiAffidoBean extends CsUiCompBaseBean {
 
@@ -71,8 +64,7 @@ public class PaiAffidoBean extends CsUiCompBaseBean {
 	}
 
 	public void nuovo(Long idSoggetto) {
-		this.affido = new CsPaiAffidoDTO(PaiAffidoStatoEnum.VALUTAZIONE_CASO,
-				PaiAffidoDominiEnum.NATURA_ACCOGLIENZA.name() + "_GIUDIZIALE");
+		this.affido = new CsPaiAffidoDTO(PaiAffidoStatoEnum.VALUTAZIONE_CASO, PaiAffidoDominiEnum.NATURA_ACCOGLIENZA.name() + "_GIUDIZIALE");
 
 		statoAffido = affido.getCodiceStatoAttuale();
 		dataStatoAffido = affido.getDataStatoAffidoAttuale();
@@ -83,21 +75,8 @@ public class PaiAffidoBean extends CsUiCompBaseBean {
 		
 		// SISO-1074 caricare i dati relativi alla famiglia di origine
 		// controllo che siano stati inseriti in cartella
-		BaseDTO bdto = new BaseDTO();
-		fillEnte(bdto);
-		bdto.setObj(idSoggetto);
-		bdto.setObj2(new CsAFamigliaGruppo());
-
 		try {
-			List<CsAFamigliaGruppo> famg = (List<CsAFamigliaGruppo>) schedaService.findCsBySoggettoId(bdto);
-			List<CsAComponente> comps = new ArrayList<CsAComponente>();
-			// prendo solo quello attivo
-			for (CsAFamigliaGruppo fg : famg) {
-				if (fg.getDataFineApp().equals(DataModelCostanti.END_DATE)) {
-					comps.addAll(fg.getCsAComponentes());
-				}
-			}
-
+			List<CsAComponente> comps = caricaParenti(idSoggetto, DataModelCostanti.END_DATE);
 			for (CsAComponente c : comps) {
 				if (c != null
 						&& (c.getAffidatario() != null && !c.getAffidatario())
@@ -130,13 +109,8 @@ public class PaiAffidoBean extends CsUiCompBaseBean {
 				}
 			}
 			
-		
-			
 		} catch (Exception e) {
-			addError(
-					"Errore",
-					"Errore nel caricamento dei dati di origine");
-
+			addError("Errore","Errore nel caricamento dei dati di origine");
 		}
 
 		logger.debug("Inizializzato nuovo affido");
@@ -383,20 +357,9 @@ public class PaiAffidoBean extends CsUiCompBaseBean {
 						.getFamigliaAffidataria().getCsAComponenteIdPadre() == null) || (affido
 						.getFamigliaOrigine().getCsAComponenteIdMadre() == null && affido
 						.getFamigliaOrigine().getCsAComponenteIdPadre() == null))) {
+			
 			// controllo che sono stati inseriti in cartella
-			BaseDTO bdto = new BaseDTO();
-			fillEnte(bdto);
-			bdto.setObj(idSoggetto);
-			bdto.setObj2(new CsAFamigliaGruppo());
-
-			List<CsAFamigliaGruppo> famg = (List<CsAFamigliaGruppo>) schedaService.findCsBySoggettoId(bdto);
-			List<CsAComponente> comps = new ArrayList<CsAComponente>();
-			// prendo solo quello attivo
-			for (CsAFamigliaGruppo fg : famg) {
-				if (fg.getDataFineApp().equals(DataModelCostanti.END_DATE)) {
-					comps.addAll(fg.getCsAComponentes());
-				}
-			}
+			List<CsAComponente> comps = caricaParenti(idSoggetto, DataModelCostanti.END_DATE);
 			try {
 				for (CsAComponente c : comps) {
 					// SISO-906 - Controllo fatto su check affidatario e non su
@@ -441,21 +404,8 @@ public class PaiAffidoBean extends CsUiCompBaseBean {
 				&& affido.getFamigliaOrigine().getCsAComponenteIdPadre() == null) {
 
 			// controllo che sono stati inseriti in cartella
-			BaseDTO bdto = new BaseDTO();
-			fillEnte(bdto);
-			bdto.setObj(idSoggetto);
-			bdto.setObj2(new CsAFamigliaGruppo());
-
 			try {
-				List<CsAFamigliaGruppo> famg = (List<CsAFamigliaGruppo>) schedaService.findCsBySoggettoId(bdto);
-				List<CsAComponente> comps = new ArrayList<CsAComponente>();
-				// prendo solo quello attivo
-				for (CsAFamigliaGruppo fg : famg) {
-					if (fg.getDataFineApp().equals(DataModelCostanti.END_DATE)) {
-						comps.addAll(fg.getCsAComponentes());
-					}
-				}
-
+				List<CsAComponente> comps = caricaParenti(idSoggetto, DataModelCostanti.END_DATE);
 				for (CsAComponente c : comps) {
 					if (c != null && !c.getAffidatario() && (c.getCsTbTipoRapportoCon().getId().equals(GENITORE) || c.getCsTbTipoRapportoCon().getId().equals(GENITORE_ACQUISITO))) {
 						if (affido.getFamigliaOrigine().getCsAComponenteIdMadre() == null && c.getCsAAnagrafica().getSesso().equals("F")) {

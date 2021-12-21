@@ -95,6 +95,10 @@ public class ReportSchedaBean extends ReportBaseBean {
 	private String identificativoFile;
 	private DatiSchedaPdfDTO dati;
 	private boolean canAccessUfficio;
+	
+	public ReportSchedaBean(){
+		super();
+	}
 
 	public ReportSchedaBean(DatiSchedaPdfDTO pdf, boolean abilita) {
 		this.dati = pdf;
@@ -189,13 +193,9 @@ public class ReportSchedaBean extends ReportBaseBean {
 			parameters.put("sesso", dati!=null ? dati.getSesso() : "");
 			parameters.put("luogo_nascita", dati!=null ? dati.getLuogo_nascita() : "");
 			parameters.put("data_nascita",dati!=null ? dati.getData_nascita() : "");
-
-			String tel = dati!=null ? dati.getTel() : "";
-			parameters.put("tel", tel);
-
-			String cel = dati!=null ? dati.getCel() : "";
-			parameters.put("cel", cel);
-
+			parameters.put("tel", dati!=null ? dati.getTel() : "");
+			parameters.put("cel", dati!=null ? dati.getCel() : "");
+			parameters.put("email", dati!=null ? dati.getEmail() : "");
 			parameters.put("cf", dati!=null ? dati.getCf() : "");
 			parameters.put("cittadinanza", dati!=null ? dati.getCittadinanza() : "");
 			parameters.put("cittadinanza2", dati!=null ? dati.getCittadinanza2() : "");
@@ -369,7 +369,7 @@ public class ReportSchedaBean extends ReportBaseBean {
 				List<CsDValutazione> res = getSchedeJsonInterventiCustom(s);
 				for(CsDValutazione val : res){
 					
-					if(TipoDiario.ABITAZIONE_ID==val.getCsDDiario().getCsTbTipoDiario().getId()){
+					if(TipoDiario.INTERMEDIAZIONE_AB_ID==val.getCsDDiario().getCsTbTipoDiario().getId()){
 						sbListaTipiIntervento.append("Intermediazione Abitativa").append("\n");
 					}
 					if(TipoDiario.ORIENTAMENTO_LAVORO_ID==val.getCsDDiario().getCsTbTipoDiario().getId()){

@@ -206,3 +206,9 @@ td {
  }
    
  /*FINE GESTIONE SCROLL SELECTONEMENU CON RAGGRUPPAMENTO*/  
+ 
+/*SISO-1342*/ 
+ .ui-selectonelistbox, .ui-selectmanymenu,.ui-multiselectlistbox-listcontainer{
+    width:300px;
+}
+ 

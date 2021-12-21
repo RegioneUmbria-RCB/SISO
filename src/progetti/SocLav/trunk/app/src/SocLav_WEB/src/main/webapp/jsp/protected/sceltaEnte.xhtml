@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui" xmlns:adm="http://github.com/adminfaces"
+                template="#{layoutMB.template}">
+
+    <ui:define name="title">
+        Scegli l'ente per proseguire!
+    </ui:define>
+  
+    <ui:define name="body">
+       
+
+         <h:form id="form" prependId="false">
+          
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <div id="main-buttons" class="hidden-sm hidden-xs">
+                     <p:commandButton id="addButton" value="Prosegui"   icon="fa fa-check" styleClass="btn-primary"
+							actionListener="#{autenticazioneBean.accesso()}" process="@form" />
+                     </div>
+                   
+
+                    <p:separator/>
+ 				<h:panelGrid id="grid" cellpadding="5" columns="2" style="margin-bottom:10px">
+ 					    
+                      
+                       <p:outputLabel value="Operazione:" ></p:outputLabel>
+                               <p:selectOneMenu  id="selectEnte" value="#{autenticazioneBean.currentEnte}" style="width:350px">
+					              <f:selectItems value="#{autenticazioneBean.rdcUser.rdcEnti}" var="enti" itemLabel="#{enti.descrizione}" itemValue="#{enti.belfiore}"/>
+					       		 
+					        </p:selectOneMenu>
+					   
+ 				</h:panelGrid>	
+                  
+                </div>
+            </div>
+
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" styleClass="box-danger box-solid">
+                <p:commandButton value="Yes" type="button" styleClass="btn-material btn-primary ui-confirmdialog-yes"
+                                 icon="fa fa-check"/>
+                <p:commandButton value="No" type="button" styleClass="btn-material btn-danger ui-confirmdialog-no"
+                                 icon="fa fa-close"/>
+            </p:confirmDialog>
+        </h:form>
+
+
+    </ui:define>
+
+</ui:composition>

@@ -1,0 +1,709 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:webredcs="http://java.sun.com/jsf/composite/webredcs"
+	xmlns:webred="http://java.sun.com/jsf/composite/webred"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+<style>
+.ui-selectonemenu-panel .ui-selectonemenu-item {
+	width: auto !important;
+}
+</style>
+<p:outputPanel>
+
+	<p:spacer height="20px" />
+
+	<p:panel header="Progetto PTI" id="progetto-pti">
+		<p:panel style="border-color: orange">
+			<p:panelGrid styleClass="tableNoBg" >
+				<p:row column="2">
+				<p:column colspan="2"    rendered="#{cc.attrs.iPai.paiPTIBean.pti.id>0 }">
+						<h:outputText style="font-weight:bold; color: red" value="#{cc.attrs.iPai.checkScadenzeEquipe()}"/>
+					</p:column>
+				</p:row>
+				<p:row>
+					<p:column rendered="#{cc.attrs.iPai.paiPTIBean.pti.id>0 and cc.attrs.iPai.paiPTIBean.pti.flgEmergenza }">
+						<h:outputText style="font-weight:bold; color: red" value="#{cc.attrs.iPai.checkCompletamentoPTI()}"/>
+					</p:column>
+					<p:column>
+						<p:commandButton value="Completa PTI"
+							icon="ui-icon-pencil"
+							rendered="#{cc.attrs.iPai.paiPTIBean.pti.id>0 and cc.attrs.iPai.paiPTIBean.pti.flgEmergenza }"
+							process="@this"
+							action="#{cc.attrs.iPai.paiPTIBean.avviaCompletamentoPTI}"
+							update="progetto-pti" />
+
+					</p:column>
+					<p:column>
+						<p:commandButton value="Procedi alla Revisione del PTI"
+							icon="ui-icon-pencil"
+							rendered="#{cc.attrs.iPai.paiPTIBean.pti.id>0 and !cc.attrs.iPai.paiPTIBean.pti.flgEmergenza }"
+							process="@this"
+							action="#{cc.attrs.iPai.avviaModificaPTI(cc.attrs.iPai.paiPTIBean.pti)}"
+							update="progetto-pti" />
+
+					</p:column>
+					<p:column>
+						<h:outputText for="cbxMotivoRevisione" value="Motivo Revisione"
+							rendered="#{cc.attrs.iPai.paiPTIBean.visualizzaMotiviRevisione}">
+						</h:outputText>
+					</p:column>
+					<p:column>
+						<p:selectOneMenu id="cbxMotivoRevisione"
+							rendered="#{cc.attrs.iPai.paiPTIBean.visualizzaMotiviRevisione}"
+							value="#{cc.attrs.iPai.motivoRevisione}">
+							<f:selectItem itemLabel="- seleziona -" itemValue="" />
+							<f:selectItems
+								value="#{cc.attrs.iPai.paiPTIBean.lstMotiviRevisione}"
+								var="item" itemLabel="#{item.descrizione}"
+								itemValue="#{item.descrizione}" />
+							<p:ajax event="change" update="progetto-pti" process="@this"
+								partialSubmit="true" />
+						</p:selectOneMenu>
+					</p:column>
+					<p:column>
+						<h:outputText for="cbxProroga" value="Tipo Proroga"
+							rendered="#{cc.attrs.iPai.motivoRevisione == 4}">
+						</h:outputText>
+					</p:column>
+					<p:column>
+						<p:selectOneMenu id="cbxProroga"
+							value="#{cc.attrs.iPai.tipoProroga}"
+							rendered="#{cc.attrs.iPai.motivoRevisione == 4}">
+							<f:selectItem itemLabel="- seleziona -" itemValue="" />
+							<f:selectItems value="#{cc.attrs.iPai.paiPTIBean.lstTipoProroga}"
+								var="item" itemLabel="#{item.descrizione}"
+								itemValue="#{item.id}" />
+							<p:ajax event="change" process="@this" partialSubmit="true" />
+						</p:selectOneMenu>
+					</p:column>
+					<p:column style="text-align: center;">
+						<p:commandButton value="Abilita Modifica PTI"
+							rendered="#{not empty cc.attrs.iPai.motivoRevisione}"
+							action="#{cc.attrs.iPai.verificaSelezioneMotivo()}"
+							process="@this" update="statoPai progetto-pti" />
+
+					</p:column>
+					<p:column style="text-align: center;">
+						<p:commandButton value="Visualizza Revisioni"
+							rendered="#{cc.attrs.iPai.paiPTIBean.lstRevisioni.size() >0}"
+							icon="ui-icon-pencil" process="@this"
+							onclick="PF('dlgRevisioni').show()" />
+					</p:column>
+				</p:row>
+				<p:row>
+				<p:column>
+						<h:outputText for="rdFlgEmergenza" value="Emergenza">
+						</h:outputText>
+
+					</p:column>
+					<p:column>
+						<p:selectOneRadio id="rdFlgEmergenza"
+							disabled="#{!cc.attrs.iPai.paiPTIBean.abilitaModificaPti}"
+							value="#{cc.attrs.iPai.paiPTIBean.pti.flgEmergenza}">
+							<f:selectItem itemLabel="Sì" itemValue="#{true}" />
+							<f:selectItem itemLabel="No" itemValue="#{false}" />
+							<p:ajax event="change" listener="#{cc.attrs.iPai.paiPTIBean.onChangeEmergenza}" update="progetto-pti pnlRichiestaDisp" />
+						</p:selectOneRadio>
+					</p:column>
+				</p:row>
+				<p:row rendered="#{empty cc.attrs.iPai.paiPTIBean.pti.id and cc.attrs.iPai.paiPTIBean.pti.flgEmergenza}">
+					<p:column>
+						<h:outputText style="color:red" value="Per un PTI in emergenza, non sarà necessario inserire subito alcuni dati, ma dovrai completare l'inserimento entro 30 giorni.">
+						</h:outputText>
+
+					</p:column>
+				</p:row>
+					<p:row>
+					<p:column>
+						<h:outputText for="cmbxTipoMinore" value="Tipo Minore Beneficiario *">
+						</h:outputText>
+							</p:column>
+						<p:column >
+						<p:selectOneMenu id="cmbxTipoMinore" style="width:200px" 
+							disabled="#{!cc.attrs.iPai.paiPTIBean.abilitaModificaPti}"
+							value="#{cc.attrs.iPai.paiPTIBean.pti.tipoMinore}"
+							required="true"
+							requiredMessage="Tipo Minore Beneficiario non selezionato">
+							<f:selectItem itemLabel="- seleziona -" itemValue="" />
+							<f:selectItems
+								value="#{cc.attrs.iPai.paiPTIBean.lstTipoMinoreBeneficiario}" var="item"
+								itemLabel="#{item.tipoMinore}" itemValue="#{item.id}" />
+						</p:selectOneMenu>
+					</p:column>
+				
+					</p:row>
+				<p:row>
+					<p:column>
+						<h:outputLabel for="dtRedazione" value="Data redazione #{!cc.attrs.iPai.paiPTIBean.pti.flgEmergenza ? '*':''}" />
+					</p:column>
+					<p:column rendered="#{!cc.attrs.iPai.paiPTIBean.abilitaModificaPti}">
+						<webred:pnlData id="dtRedazione" style="width:100px"
+							dataValue="#{cc.attrs.iPai.paiPTIBean.pti.dataRedazione}"
+							required="#{!cc.attrs.iPai.paiPTIBean.pti.flgEmergenza}"
+							disabled="true" dataPattern="dd/MM/yyyy"
+							dataPatternLabel="gg/mm/aaaa" />
+					</p:column>
+					<p:column rendered="#{cc.attrs.iPai.paiPTIBean.abilitaModificaPti}">
+						<webred:pnlData id="dtRedazione1" style="width:100px"
+							dataValue="#{cc.attrs.iPai.paiPTIBean.pti.dataRedazione}"
+							required="#{!cc.attrs.iPai.paiPTIBean.pti.flgEmergenza}"
+							disabled="false" dataPattern="dd/MM/yyyy"
+							dataPatternLabel="gg/mm/aaaa" />
+					</p:column>
+
+				</p:row>
+				<p:row>
+					<p:column>
+						<h:outputText for="cbxFlgCondPresAdulti"
+							value="Condizioni verificate per presenza adulti in struttura #{!cc.attrs.iPai.paiPTIBean.pti.flgEmergenza ? '*':''}">
+						</h:outputText>
+					</p:column>
+					<p:column>
+						<p:selectOneMenu id="cbxFlgCondPresAdulti"
+							disabled="#{!cc.attrs.iPai.paiPTIBean.abilitaModificaPti}"
+							value="#{cc.attrs.iPai.paiPTIBean.pti.flgCondVerifPresenzaAdulti}"
+							required="#{!cc.attrs.iPai.paiPTIBean.pti.flgEmergenza}"
+							requiredMessage="Condizioni verificate per presenza adulti non selezionato">
+							<f:selectItem itemLabel="- seleziona -" itemValue="" />
+							<f:selectItem itemLabel="Sì" itemValue="#{true}" />
+							<f:selectItem itemLabel="No" itemValue="#{false}" />
+						</p:selectOneMenu>
+					</p:column>
+					<p:column>
+						<h:outputText for="cbxFlgCoinvFamiglia"
+							value="Elaborato con il coinvolgimento della famiglia #{!cc.attrs.iPai.paiPTIBean.pti.flgEmergenza ? '*':''}">
+						</h:outputText>
+					</p:column>
+					<p:column>
+						<p:selectOneMenu id="cbxFlgCoinvFamiglia"
+							disabled="#{!cc.attrs.iPai.paiPTIBean.abilitaModificaPti}"
+							value="#{cc.attrs.iPai.paiPTIBean.pti.flgCoinvFamiglia}"
+							required="#{!cc.attrs.iPai.paiPTIBean.pti.flgEmergenza}"
+							requiredMessage="Elaborato con il coinvolgimento della famiglia non selezionato">
+							<f:selectItem itemLabel="- seleziona -" itemValue="" />
+							<f:selectItem itemLabel="Sì" itemValue="#{true}" />
+							<f:selectItem itemLabel="No" itemValue="#{false}" />
+						</p:selectOneMenu>
+					</p:column>
+					<p:column>
+						<h:outputText for="cbxFlgDisabilita"
+							value="Minore con disabilità certificata #{!cc.attrs.iPai.paiPTIBean.pti.flgEmergenza ? '*':''}">
+						</h:outputText>
+					</p:column>
+					<p:column>
+						<p:selectOneMenu id="cbxFlgDisabilita"
+							disabled="#{!cc.attrs.iPai.paiPTIBean.abilitaModificaPti}"
+							value="#{cc.attrs.iPai.paiPTIBean.pti.flgDisabilita}"
+							required="#{!cc.attrs.iPai.paiPTIBean.pti.flgEmergenza}"
+							requiredMessage="Minore con disabilità certificata non selezionato">
+							<f:selectItem itemLabel="- seleziona -" itemValue="" />
+							<f:selectItem itemLabel="Sì" itemValue="#{true}" />
+							<f:selectItem itemLabel="No" itemValue="#{false}" />
+						</p:selectOneMenu>
+					</p:column>
+				</p:row>
+				<p:row>
+					<p:column>
+						<h:outputLabel for="dtPeriodoInsDa"
+							value="Periodo di inserimento pianificato DA *" />
+					</p:column>
+					<p:column rendered="#{!cc.attrs.iPai.paiPTIBean.abilitaModificaPti}">
+						<webred:pnlData id="dtPeriodoInsDa"
+							disabled="true"
+							dataValue="#{cc.attrs.iPai.paiPTIBean.pti.periodoInsPianificazioneDa}"
+							dataPattern="dd/MM/yyyy" dataPatternLabel="gg/mm/aaaa" />
+					</p:column>
+					<p:column rendered="#{cc.attrs.iPai.paiPTIBean.abilitaModificaPti}">
+						<webred:pnlData id="dtPeriodoInsDa1"
+							dataValue="#{cc.attrs.iPai.paiPTIBean.pti.periodoInsPianificazioneDa}"
+							dataPattern="dd/MM/yyyy" dataPatternLabel="gg/mm/aaaa" />
+					</p:column>
+					<p:column>
+						<h:outputLabel for="dtPeriodoInsA"
+							value="Periodo di inserimento pianificato A *" />
+					</p:column>
+					<p:column rendered="#{!cc.attrs.iPai.paiPTIBean.abilitaModificaPti}">
+						<webred:pnlData id="dtPeriodoInsA"
+							disabled="true"
+							dataValue="#{cc.attrs.iPai.paiPTIBean.pti.periodoInsPianificazioneA}"
+							dataPattern="dd/MM/yyyy" dataPatternLabel="gg/mm/aaaa" />
+					</p:column>
+					<p:column rendered="#{cc.attrs.iPai.paiPTIBean.abilitaModificaPti}">
+						<webred:pnlData id="dtPeriodoInsA1"
+							dataValue="#{cc.attrs.iPai.paiPTIBean.pti.periodoInsPianificazioneA}"
+							dataPattern="dd/MM/yyyy" dataPatternLabel="gg/mm/aaaa" />
+					</p:column>
+					<p:column>
+						<h:outputText for="cbxFlgInterventiDisabili"
+							value="Richiesta Interventi specifici per disabili #{!cc.attrs.iPai.paiPTIBean.pti.flgEmergenza ? '*':''}">
+						</h:outputText>
+					</p:column>
+					<p:column>
+						<p:selectOneMenu id="cbxFlgInterventiDisabili"
+							disabled="#{!cc.attrs.iPai.paiPTIBean.abilitaModificaPti}"
+							value="#{cc.attrs.iPai.paiPTIBean.pti.flgInterventiDisabili}"
+							required="#{!cc.attrs.iPai.paiPTIBean.pti.flgEmergenza}"
+							requiredMessage="Richiesta Interventi specifici per disabili non selezionato">
+							<f:selectItem itemLabel="- seleziona -" itemValue="" />
+							<f:selectItem itemLabel="Sì" itemValue="#{true}" />
+							<f:selectItem itemLabel="No" itemValue="#{false}" />
+						</p:selectOneMenu>
+					</p:column>
+					<p:column>
+						<h:outputText for="cbxFlgGravidanza"
+							value="Minore in gravidanza #{!cc.attrs.iPai.paiPTIBean.pti.flgEmergenza ? '*':''}">
+						</h:outputText>
+					</p:column>
+					<p:column>
+						<p:selectOneMenu id="cbxFlgGravidanza"
+							disabled="#{!cc.attrs.iPai.paiPTIBean.abilitaModificaPti}"
+							value="#{cc.attrs.iPai.paiPTIBean.pti.flgGravidanza}"
+							required="#{!cc.attrs.iPai.paiPTIBean.pti.flgEmergenza}"
+							requiredMessage="Minore in gravidanza non selezionato">
+							<f:selectItem itemLabel="- seleziona -" itemValue="" />
+							<f:selectItem itemLabel="Sì" itemValue="#{true}" />
+							<f:selectItem itemLabel="No" itemValue="#{false}" />
+						</p:selectOneMenu>
+					</p:column>
+				</p:row>
+				<p:row>
+					<p:column>
+						<h:outputText for="cbxFlgNeonato"
+							value="Minore con neonato #{!cc.attrs.iPai.paiPTIBean.pti.flgEmergenza ? '*':''}">
+						</h:outputText>
+					</p:column>
+					<p:column>
+						<p:selectOneMenu id="cbxFlgNeonato"
+							disabled="#{!cc.attrs.iPai.paiPTIBean.abilitaModificaPti}"
+							value="#{cc.attrs.iPai.paiPTIBean.pti.flgNeonato}"
+							required="#{!cc.attrs.iPai.paiPTIBean.pti.flgEmergenza}"
+							requiredMessage="Minore con neonato non selezionato">
+							<f:selectItem itemLabel="- seleziona -" itemValue="" />
+							<f:selectItem itemLabel="Sì" itemValue="#{true}" />
+							<f:selectItem itemLabel="No" itemValue="#{false}" />
+						</p:selectOneMenu>
+					</p:column>
+					<p:column>
+						<h:outputText for="cbxFlgAreaPenale"
+							value="Proveniente dall’area penale *">
+						</h:outputText>
+					</p:column>
+					<p:column>
+						<p:selectOneMenu id="cbxFlgAreaPenale"
+							disabled="#{!cc.attrs.iPai.paiPTIBean.abilitaModificaPti}"
+							value="#{cc.attrs.iPai.paiPTIBean.pti.flgAreaPenale}"
+							required="true"
+							requiredMessage="Proveniente dall’area penale non selezionato">
+							<f:selectItem itemLabel="- seleziona -" itemValue="" />
+							<f:selectItem itemLabel="Sì" itemValue="#{true}" />
+							<f:selectItem itemLabel="No" itemValue="#{false}" />
+						</p:selectOneMenu>
+					</p:column>
+				</p:row>
+				<p:row>
+					<p:column>
+						<h:outputLabel for="cbxProrRichMagg"
+							value="Proroga per richiesta da parte del minore al compimento del 18 anno" />
+					</p:column>
+					<p:column>
+						<p:selectOneMenu id="cbxProrRichMagg"
+							disabled="#{!cc.attrs.iPai.paiPTIBean.abilitaModificaPti}"
+							value="#{cc.attrs.iPai.paiPTIBean.pti.flgProrRichMagg}">
+							<f:selectItem itemLabel="- seleziona -" itemValue="" />
+							<f:selectItem itemLabel="Sì" itemValue="#{true}" />
+							<f:selectItem itemLabel="No" itemValue="#{false}" />
+						</p:selectOneMenu>
+					</p:column>
+					<p:column>
+						<h:outputLabel for="cbxProrLimiteEta"
+							value="Proroga al raggiungimento limite età" />
+					</p:column>
+					<p:column>
+						<p:selectOneMenu id="cbxProrLimiteEta"
+							disabled="#{!cc.attrs.iPai.paiPTIBean.abilitaModificaPti}"
+							value="#{cc.attrs.iPai.paiPTIBean.pti.flgProrLimiteEta}">
+							<f:selectItem itemLabel="- seleziona -" itemValue="" />
+							<f:selectItem itemLabel="Sì" itemValue="#{true}" />
+							<f:selectItem itemLabel="No" itemValue="#{false}" />
+						</p:selectOneMenu>
+					</p:column>
+					<p:column>
+						<h:outputLabel for="cbxEsisteEduPeda"
+							value="La struttura deve avere un educatore professionale o pedagogista aggiuntivo" />
+					</p:column>
+					<p:column>
+						<p:selectOneMenu id="cbxEsisteEduPeda"
+							disabled="#{!cc.attrs.iPai.paiPTIBean.abilitaModificaPti}"
+							value="#{cc.attrs.iPai.paiPTIBean.pti.flgEsisteEduPeda}">
+							<f:selectItem itemLabel="- seleziona -" itemValue="" />
+							<f:selectItem itemLabel="Sì" itemValue="#{true}" />
+							<f:selectItem itemLabel="No" itemValue="#{false}" />
+						</p:selectOneMenu>
+					</p:column>
+				</p:row>
+				<p:row>
+					<p:column>
+						<h:outputLabel for="cbxInvioSegnTM"
+							value="Invio Segnalazione/Relazione a Procura presso TM" />
+					</p:column>
+					<p:column>
+						<p:selectOneMenu id="cbxInvioSegnTM"
+							disabled="#{!cc.attrs.iPai.paiPTIBean.abilitaModificaPti}"
+							value="#{cc.attrs.iPai.paiPTIBean.pti.flgInvioSegnTM}">
+							<f:selectItem itemLabel="- seleziona -" itemValue="" />
+							<f:selectItem itemLabel="Sì" itemValue="#{true}" />
+							<f:selectItem itemLabel="No" itemValue="#{false}" />
+						</p:selectOneMenu>
+					</p:column>
+				</p:row>
+				<p:row>
+					<p:column>
+						<h:outputText for="cbxCaseManager" value="Case Manager *">
+						</h:outputText>
+					</p:column>
+					<p:column>
+						<p:selectOneMenu id="cbxCaseManager"
+							disabled="#{!cc.attrs.iPai.paiPTIBean.abilitaModificaPti}"
+							value="#{cc.attrs.iPai.paiPTIBean.pti.idCaseManager}"
+							required="true" requiredMessage="Case Manager non selezionato">
+							<f:selectItem itemLabel="- seleziona -" itemValue="" />
+							<f:selectItems value="#{cc.attrs.iPai.paiPTIBean.listaCaseManager}" var="item"
+								itemLabel="#{item.descrizione}" itemValue="#{item.descrizione}" />
+						</p:selectOneMenu>
+					</p:column>
+				</p:row>
+				<p:row rendered="#{cc.attrs.iPai.paiPTIBean.sinbaManBean!=null}">
+					<p:column>
+						<p:commandButton value="Visualizza Valutazione Multidimensionale"
+							icon="ui-icon-pencil"
+							rendered="#{cc.attrs.iPai.paiPTIBean.sinbaManBean!=null}"
+							process="@this" onclick="PF('sinbaDialog').show()" />
+
+					</p:column>
+				</p:row>
+				<p:row rendered="#{cc.attrs.iPai.paiPTIBean.sinbaManBean==null}">
+
+					<p:column colspan="3"
+						rendered="#{cc.attrs.iPai.paiPTIBean.sinbaManBean==null}">
+						<p:fileUpload uploadLabel="Carica Valutazione Multidimensionale"
+							label="Sfoglia File" invalidSizeMessage="File troppo grande"
+							id="uploadPAI" update="pnlTP" mode="advanced"
+							fileUploadListener="#{cc.attrs.iPai.paiPTIBean.handleAllegato}"
+							multiple="false" rendered="#{cc.attrs.iPai.paiPTIBean.documentoSinba ==null}"/>
+						<p:panel id="pnlTP">
+						<p:dataGrid var="allegato" 
+							value="#{cc.attrs.iPai.paiPTIBean.documentoSinba.documento != null ? cc.attrs.iPai.paiPTIBean.documentoSinba.documento : cc.attrs.iPai.paiPTIBean.documentoSinbaDaSalvare.documento }"
+							styleClass="allegatoTable" columns="1" layout="grid"
+							emptyMessage="Nessun allegato ancora salvato">
+							<p:panelGrid columns="2" style="width:100%" 
+								columnClasses="ui-grid-col-9,ui-grid-col-3"
+								styleClass="ui-panelgrid-blank noborder">
+								<h:outputText
+									value="#{cc.attrs.iPai.paiPTIBean.documentoSinba.documento != null ? cc.attrs.iPai.paiPTIBean.documentoSinba.nome :  cc.attrs.iPai.paiPTIBean.documentoSinbaDaSalvare.nome }" />
+								<p:commandButton immediate="true"  rendered="#{cc.attrs.iPai.paiPTIBean.documentoSinba.documento !=null}"
+									actionListener="#{cc.attrs.iPai.paiPTIBean.prepareFile()}"
+									value="Scarica Val.Multi." ajax="false">
+									<p:fileDownload value="#{cc.attrs.iPai.paiPTIBean.file}" />
+								</p:commandButton>
+							</p:panelGrid>
+						</p:dataGrid>
+						</p:panel>	
+
+					</p:column>
+
+				</p:row>
+			</p:panelGrid>
+			<p:spacer height="10px" />
+		</p:panel>
+	</p:panel>
+	
+
+	<p:panel header="Richiesta disponibilità strutture" id="pnlRichiestaDisp">
+		<p:panelGrid>
+			<p:row>
+				<p:column>
+					<h:outputLabel for="tipo-struttura" value="Tipo struttura * " />
+				</p:column>
+				<p:column>
+					<p:selectOneMenu id="tipo-struttura" style="width:300px;"
+						value="#{cc.attrs.iPai.paiPTIBean.pti.tipoStruttura}"
+						required="true" requiredMessage="Tipo struttura non selezionato">
+						<f:selectItem itemLabel="- seleziona -" noSelectionOption="true" />
+						<f:selectItems value="#{cc.attrs.iPai.paiPTIBean.listaTipiStruttura}"/>
+						<p:ajax event="change" process="@this" partialSubmit="true"
+							listener="#{cc.attrs.iPai.paiPTIBean.onChangeTipoStruttura}"
+							update="@(.struttureMan) dataTableStruttDisp" />
+					</p:selectOneMenu>
+
+				</p:column>
+				<p:column>
+				<h:outputText style="font-weight:bold; color: red" value="La lista delle strutture varia in base alla tipologia del servizio che può fornire, che dipende dall'età del minore "/>
+			</p:column>
+			</p:row>
+
+		</p:panelGrid>
+		<p:dataTable widgetVar="dtListaStruttureDisp" id="dataTableStruttDisp"
+			var="rowStrutt" rowIndexVar="rowKeyStr"
+			rowKey="#{rowStrutt.idStruttura}"
+			value="#{cc.attrs.iPai.paiPTIBean.lstStrutture}"
+			selection="#{cc.attrs.iPai.paiPTIBean.dtStruttureSelezionate}"
+			emptyMessage="Nessun struttura da visualizzare"
+			selectionPageOnly="false"
+			disabledSelection="#{cc.attrs.iPai.paiPTIBean.isStrutturaRowDisabled(rowStrutt)}"
+			filteredValue="#{cc.attrs.iPai.paiPTIBean.lstStruttureFiltered}" filterDelay="1000">
+
+           <p:ajax event="rowSelect" listener="#{cc.attrs.iPai.paiPTIBean.struttRichDispRowSelect}" update="dataTableStruttDisp"/>
+			<p:ajax event="rowSelectCheckbox" listener="#{cc.attrs.iPai.paiPTIBean.struttRichDispCheckRowSelect}" update="dataTableStruttDisp"/>
+			<f:facet name="header">
+				<p:outputLabel value="Elenco strutture" />
+			</f:facet>
+
+			<p:column id="clCheck"
+				selectionMode="#{'multiple'}"
+				style="width:16px;text-align:center" >
+					<p:tooltip id="toolTipStruttura" for="clCheck"
+					hideEvent="mouseleave click"
+					rendered="#{cc.attrs.iPai.paiPTIBean.isStrutturaRowDisabled(rowStrutt)}"
+					value="Struttura non selezionabile per tipologia servizio" />
+				</p:column>
+
+			<p:column headerText="Nome" filterBy="nomeStruttura" filterMatchMode="contains">
+				<h:outputText value="#{rowStrutt.nomeStruttura}" />
+			</p:column>
+
+			<p:column headerText="Tipologia Servizio" filterBy="tipologiaServizio" filterMatchMode="contains">
+				<h:outputText value="#{rowStrutt.tipologiaServizio}" />
+			</p:column>
+
+			<p:column headerText="Gestore Servizio" filterBy="gestoreServizio" filterMatchMode="contains">
+				<h:outputText value="#{rowStrutt.gestoreServizio}" />
+			</p:column>
+
+			<p:column headerText="Indirizzo" filterBy="indirizzo" filterMatchMode="contains">
+				<h:outputText value="#{rowStrutt.indirizzo}" />
+			</p:column>
+
+			<p:column headerText="Comune" filterBy="descrizioneComune" filterMatchMode="contains">
+				<h:outputText value="#{rowStrutt.descrizioneComune}" />
+			</p:column>
+			<p:column headerText="Stato" filterBy="richiesteDisponibilita.statoRichiestaDescrizione" filterMatchMode="exact">
+				<h:outputText
+					value="#{rowStrutt.richiesteDisponibilita != null ? rowStrutt.richiesteDisponibilita.statoRichiestaDescrizione : ''}" />
+			</p:column>
+
+			<p:column headerText="Azioni">
+				<p:commandButton value="Accetta" icon="ui-icon-check"
+					update="@parent:@parent:@parent:display"
+					oncomplete="dlgAccettaRichiesta.show()"
+					rendered="#{cc.attrs.iPai.paiPTIBean.actionVisibili(rowStrutt)}">
+
+					<f:setPropertyActionListener value="#{rowStrutt}"
+						target="#{cc.attrs.iPai.paiPTIBean.strutturaSelezionata}" />
+				</p:commandButton>
+				<p:commandButton value="Rifiuta" icon="ui-icon-close"
+					update="@parent:@parent:@parent:display2"
+					oncomplete="dlgRifiutaRichiesta.show()"
+					rendered="#{cc.attrs.iPai.paiPTIBean.actionVisibili(rowStrutt)}">
+
+					<f:setPropertyActionListener value="#{rowStrutt}"
+						target="#{cc.attrs.iPai.paiPTIBean.strutturaSelezionata}" />
+				</p:commandButton>
+				<p:commandButton value="Info" icon="ui-icon-info"
+					update="@parent:@parent:@parent:display3"
+					oncomplete="dlgInfoStruttura.show()"
+					rendered="#{cc.attrs.iPai.paiPTIBean.hasRequestInfo(rowStrutt)}">
+
+					<f:setPropertyActionListener value="#{rowStrutt}"
+						target="#{cc.attrs.iPai.paiPTIBean.strutturaSelezionata}" />
+				</p:commandButton>
+				<p:commandButton value="Info" icon="ui-icon-info"
+					update="@parent:@parent:@parent:display4"
+					oncomplete="dlgMotivoRifiutoStruttura.show()"
+					rendered="#{rowStrutt.isRifiutataFromStrutt()}">
+
+					<f:setPropertyActionListener value="#{rowStrutt}"
+						target="#{cc.attrs.iPai.paiPTIBean.strutturaSelezionata}" />
+				</p:commandButton>
+				<p:commandButton value="PAI" icon="ui-icon-info"
+					update="@parent:@parent:@parent:dlgDocPai"
+					oncomplete="dlgDocPai.show()"
+					rendered="#{rowStrutt.isAccettataFromCS() and not empty cc.attrs.iPai.paiPTIBean.listDocumentiPAI}">
+				</p:commandButton>
+				<p:commandButton value="PTI" icon="ui-icon-info"
+					update="@parent:@parent:@parent:dlgDocPTI"
+					oncomplete="dlgDocPTI.show()"
+					rendered="#{rowStrutt.isAccettataFromCS() and not empty cc.attrs.iPai.paiPTIBean.listDocumentiPTI}">
+				</p:commandButton>
+			</p:column>
+		</p:dataTable>
+		<!-- pannello date da consuntivare -->
+		<br/><br/>
+		<p:panel style="border-color: orange" id="pnlDaconsuntivare" rendered="#{cc.attrs.iPai.paiPTIBean.pti.id > 0 }">
+			<p:dataTable widgetVar="dtListaDateDaConsuntivare"
+				id="dataTableDateConsu" var="rowConsu" rowIndexVar="rowKeyCons"
+				rowKey="#{rowConsu.id}"
+				value="#{cc.attrs.iPai.paiPTIBean.lstConsuntivazioni}"
+				emptyMessage="Nessun Consuntivazione da visualizzare">
+				<f:facet name="header">
+					<p:outputLabel value="Elenco Consuntivazioni Struttura" />
+				</f:facet>
+
+				<p:column headerText="Data Da" style="text-align:left;width:40px;">
+					<h:outputText value="#{rowConsu.dataDa}">
+						<f:convertDateTime pattern="dd/MM/yyyy" />
+					</h:outputText>
+				</p:column>
+
+				<p:column headerText="Data A" style="text-align:left;width:40px;">
+					<h:outputText value="#{rowConsu.dataA}">
+						<f:convertDateTime pattern="dd/MM/yyyy" />
+					</h:outputText>
+				</p:column>
+				<p:column headerText="Numero giorni"
+					style="text-align:left;width:20px;">
+					<h:outputText value="#{rowConsu.numGiorni}" />
+				</p:column>
+				<p:column headerText="Erogato" width="5">
+					<p:graphicImage rendered="#{rowConsu.flagErogato}"
+						value="/images/check.png" />
+					<p:selectBooleanCheckbox id="chkFlgErogato"
+						value="#{rowConsu.flagErogato}"
+						rendered="#{!rowConsu.flagErogato}">
+						<p:ajax event="change" process="@this"
+							update="@parent:@parent:@parent:aggiornaCons"
+							listener="#{cc.attrs.iPai.verificaPeriodi(rowConsu)}"
+							oncomplete="PF('aggiornaCons').show()"></p:ajax>
+					</p:selectBooleanCheckbox>
+				</p:column>
+				<p:column style="text-align:left;width:70px;">
+					<p:commandButton value="Eroga" rendered="#{!rowConsu.flagErogato}"
+						action="#{cc.attrs.iPai.erogaServizio(rowConsu)}"
+						update="dataTableDateConsu" process="@this"
+						oncomplete="if(args &amp;&amp; args.isShowDialog){  updatePaiDlgFglInt(); PF('pnlFglInterventoNuovoPaiWidgetVar').show(); } ">
+					</p:commandButton>
+				</p:column>
+
+			</p:dataTable>
+
+		</p:panel>
+		<p:confirmDialog id="aggiornaCons" global="false"
+			header="Aggiorna Consuntivazione" widgetVar="aggiornaCons"
+			closable="false" message="#{cc.attrs.iPai.messaggioConsuntivazione}">
+			<p:panelGrid>
+				<p:row>
+					<p:column style="text-align: center;">
+						<p:commandButton value="SI" onclick="aggiornaCons.hide()"
+							actionListener="#{cc.attrs.iPai.aggiornaFLagErogatoConsuntivazione()}"
+							process="@this" update="dataTableDateConsu" />
+						<p:commandButton value="NO" onclick="aggiornaCons.hide()"
+							actionListener="#{cc.attrs.iPai.refreshFLagErogatoConsuntivazione()}"
+							process="@this" update="dataTableDateConsu" />
+					</p:column>
+				</p:row>
+			</p:panelGrid>
+		</p:confirmDialog>
+		<p:dialog header="Accetta Richiesta" widgetVar="dlgAccettaRichiesta" resizable="false" closable="true">
+			<h:panelGrid id="display" columns="2" cellpadding="4">
+				<p>Sei sicuro di voler accettare?</p>
+			</h:panelGrid>
+			<p:commandButton value="Accetta"
+				action="#{cc.attrs.iPai.paiPTIBean.accettaRichiesta()}"
+				update="@parent:@parent:@parent:pnlRichiestaDisp"
+				oncomplete="dlgAccettaRichiesta.hide()"></p:commandButton>
+			<p:commandButton value="Annulla" type="button"
+				onclick="PF('dlgAccettaRichiesta').hide()" />
+		</p:dialog>
+		<p:dialog header="Rifiuta Richiesta" widgetVar="dlgRifiutaRichiesta" resizable="false" closable="true">
+
+			<h:panelGrid id="display2" columns="2" cellpadding="4">
+				<p>Sei sicuro di voler rifiutare?</p>
+			</h:panelGrid>
+			<p:commandButton value="Rifiuta" id="cmdRifiuta"
+				action="#{cc.attrs.iPai.paiPTIBean.rifiutaRichiesta()}"
+				update="@parent:@parent:@parent:pnlRichiestaDisp"
+				oncomplete="dlgRifiutaRichiesta.hide()">
+			</p:commandButton>
+
+			<p:commandButton value="Annulla" type="button" id="AnnullaRifiuta"
+				onclick="PF('dlgRifiutaRichiesta').hide()" />
+
+		</p:dialog>
+		<p:dialog header="Info Struttura" widgetVar="dlgInfoStruttura" resizable="false" closable="true">
+			<p:fieldset legend="Date" id="display3">
+				<p:outputPanel columns="2">
+					<h:outputLabel for="dataPermanenzaDa" value="Data Permanenza da:" />
+					<h:outputText id="dataPermanenzaDa"
+						value="#{cc.attrs.iPai.paiPTIBean.strutturaSelezionata.richiesteDisponibilita.dataInizioPermamenza}"
+						style="font-weight:bold">
+						<f:convertDateTime type="date" pattern="dd-MM-yyyy" />
+					</h:outputText>
+				</p:outputPanel>
+				<p:spacer width="10px" />
+				<p:outputPanel>
+					<h:outputLabel for="dataPermanenzaA" value="Data Permanenza a:" />
+					<h:outputText id="dataPermanenzaA"
+						value="#{cc.attrs.iPai.paiPTIBean.strutturaSelezionata.richiesteDisponibilita.dataFinePermanenza}"
+						style="font-weight:bold">
+						<f:convertDateTime type="date" pattern="dd-MM-yyyy" />
+					</h:outputText>
+				</p:outputPanel>
+				<p:spacer width="10px" />
+				<p:outputPanel>
+					<p:commandButton value="Download PAI" ajax="false"
+						disabled="${empty cc.attrs.iPai.paiPTIBean.strutturaSelezionata or empty cc.attrs.iPai.paiPTIBean.strutturaSelezionata.richiesteDisponibilita or empty cc.attrs.iPai.paiPTIBean.strutturaSelezionata.richiesteDisponibilita.documento}">
+						<p:fileDownload value="#{cc.attrs.iPai.paiPTIBean.preparaPaiFile()}" />
+					</p:commandButton>
+
+					<p:commandButton value="Chiudi" type="button" id="Chiudi"
+						onclick="PF('dlgInfoStruttura').hide()" />
+				</p:outputPanel>
+			</p:fieldset>
+		</p:dialog>
+		<p:dialog header=""
+			widgetVar="dlgMotivoRifiutoStruttura" resizable="false" closable="true">
+			<p:fieldset legend="Motivo Rifiuto" id="display4">
+				<p:outputPanel columns="2">
+					<h:outputText id="motivoRifiuto"
+						value="#{cc.attrs.iPai.paiPTIBean.strutturaSelezionata.richiesteDisponibilita.motivoRifiuto}"
+						style="font-weight:bold" />
+				</p:outputPanel>
+				<br/>
+				<p:outputPanel>
+					<p:commandButton value="Chiudi" type="button" onclick="PF('dlgMotivoRifiutoStruttura').hide()" />
+				</p:outputPanel>
+			</p:fieldset>
+		</p:dialog>
+		<p:dialog id="dlgDocPai" widgetVar="dlgDocPai" resizable="false" closable="true">
+			<h:panelGrid>
+				<ui:include src="/webredcs/pnlPai/pnlDocumentiPaiPTI.xhtml" />
+			</h:panelGrid>
+		</p:dialog>
+		<p:dialog id="dlgDocPTI" widgetVar="dlgDocPTI" resizable="false" closable="true">
+			<h:panelGrid>
+				<ui:include src="/webredcs/pnlPai/pnlDocumentiPtiPTI.xhtml" />
+			</h:panelGrid>
+		</p:dialog>
+	</p:panel>
+	<p:dialog id="sinbaDialog" widgetVar="sinbaDialog"
+		resizable="false" closable="true"
+		header="Dettaglio Scheda Valutazione SInBa" modal="true"
+		dynamic="true" width="70%">
+		<p:outputPanel id="pnlDlgValSinba"
+			styleClass="updateOnOpenDialogValSinba">
+			<webredcs:pnlValSinba sinbaManBean="#{cc.attrs.iPai.paiPTIBean.sinbaManBean}" />
+		</p:outputPanel>
+	</p:dialog>
+	<p:dialog id="dlgRevisioni" widgetVar="dlgRevisioni" header="Revisioni"
+		modal="true" dynamic="true" width="70%">
+		<h:panelGrid>
+				<ui:include src="/webredcs/pnlPai/pnlRevisioniPTI.xhtml" />
+		</h:panelGrid>
+	</p:dialog>
+</p:outputPanel>
+</html>

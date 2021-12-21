@@ -17,12 +17,12 @@
 						renderVisualizzaFascicolo="#{fascicoloBean.renderVisualizzaFascicolo}"
 						renderVisualizzaDocIndividuali="#{fascicoloBean.visDocIndividuali}"
 						modificaSchedaListener="#{schedaBean.carica(listaCasiBean.selectedCaso)}"
-						initializeCatSocialeListener="#{soggCatSocialeBean.carica(listaCasiBean.selectedCaso.soggetto)}" 
+						initializeCatSocialeListener="#{soggCatSocialeBean.carica(listaCasiBean.selectedCaso.anagraficaId)}" 
 						dialogCatSocialeToUpdate="#{p:component('mdlSoggCatSocDialog')}"
 						dialogIterToUpdate="modalDialogIter"
-						initializeFascicoloListener="#{fascicoloBean.carica(listaCasiBean.selectedCaso.soggetto)}"
-						initializeDocIndividualiListener="#{docIndividualiBean.initializeDocIndividuali(listaCasiBean.selectedCaso.soggetto)}"
-						initializeStampaListener="#{reportBean.initializeStampaCartella(listaCasiBean.selectedCaso.soggetto)}"
+						initializeFascicoloListener="#{fascicoloBean.carica(listaCasiBean.selectedCaso.anagraficaId)}"
+						initializeDocIndividualiListener="#{docIndividualiBean.initializeDocIndividuali(listaCasiBean.selectedCaso.anagraficaId)}"
+						initializeStampaListener="#{reportBean.initializeStampaCartella(listaCasiBean.selectedCaso.anagraficaId)}"
 						renderedTableListaCasi="#{false}"
 						/>
 				</p:outputPanel>		

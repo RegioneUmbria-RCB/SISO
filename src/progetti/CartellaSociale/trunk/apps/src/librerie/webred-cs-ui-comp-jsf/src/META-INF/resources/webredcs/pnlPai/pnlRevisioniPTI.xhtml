@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite">
+
+
+<p:accordionPanel multiple="true" activeIndex="2"
+	value="#{cc.attrs.iPai.paiPTIBean.lstRevisioni}" var="rowRevisione">
+	<p:tab id="documentsTab" name="documentsTab">
+	  <f:facet name="title">
+    <h:outputText id="revisioniTitle" value="#{rowRevisione.dtIns}" >
+    <f:convertDateTime pattern="dd/MM/yyyy" />
+    </h:outputText>
+    </f:facet>
+
+		<h:panelGrid columns="4" cellpadding="10" width="70%">
+			<h:outputText value="Motivo Revisione" styleClass="bold" />
+			<h:outputText value="#{rowRevisione.motivoRevisione}" />
+
+			<h:outputText value="Proroga" styleClass="bold" />
+			<h:outputText
+				value="#{rowRevisione.proroga == null ? 'nessuna proroga': rowRevisione.proroga }" />
+		</h:panelGrid>
+		<h:panelGrid id="pnlMonitora" columns="6" cellpadding="5"
+			width="70%" rendered="#{!rowRevisione.monitoraggioObiettivi}">
+			<h:outputText value="Data Monitoraggio" styleClass="bold" />
+			<h:outputText value="#{rowRevisione.dataMonitoraggio}">
+				<f:convertDateTime pattern="dd/MM/yyyy" />
+			</h:outputText>
+			<h:outputText value="Verifica Ogni" styleClass="bold" />
+			<h:outputText value="#{rowRevisione.verificaOgni} #{rowRevisione.verificaUnitaMisura}" />
+			<h:outputText value="Obiettivi Breve" styleClass="bold" />
+			<h:outputText value="#{rowRevisione.obiettiviBreve}" />
+			<h:outputText value="Obiettivi Medio" styleClass="bold" />
+			<h:outputText value="#{rowRevisione.obiettiviMedio}" />
+			<h:outputText value="Obiettivi Lungo" styleClass="bold" />
+			<h:outputText value="#{rowRevisione.obiettiviLungo}" />
+			<h:outputText value="Raggiunti Breve" styleClass="bold" />
+			<h:outputText value="#{cc.attrs.iPai.decodificaObiettiviRaggiunti(rowRevisione.raggiuntiBreve)}" />
+			<h:outputText value="Raggiunti Medio" styleClass="bold" />
+			<h:outputText value="#{cc.attrs.iPai.decodificaObiettiviRaggiunti(rowRevisione.raggiuntiMedio)}" />
+			<h:outputText value="Raggiunti Lungo" styleClass="bold" />
+			<h:outputText value="#{cc.attrs.iPai.decodificaObiettiviRaggiunti(rowRevisione.raggiuntiLungo)}" />
+		</h:panelGrid>
+		<h:panelGrid id="pnlPTI" columns="6" cellpadding="10" width="100%">
+			<h:outputText value="Data Redazione PTI" styleClass="bold" />
+			<h:outputText value="#{rowRevisione.dataRedazione}">
+				<f:convertDateTime pattern="dd/MM/yyyy" />
+			</h:outputText>
+			<h:outputText value="flgEmergenza" styleClass="bold" />
+			<h:outputText
+				value="#{rowRevisione.flgEmergenza == true? 'Sì':'No'}" />
+			<h:outputText
+				value="Condizioni verificate per presenza adulti in struttura"
+				styleClass="bold" />
+			<h:outputText
+				value="#{rowRevisione.flgCondVerifPresenzaAdulti== true? 'Sì':'No'}" />
+			<h:outputText value="Elaborato con il coinvolgimento della famiglia"
+				styleClass="bold" />
+			<h:outputText
+				value="#{rowRevisione.flgCoinvFamiglia == true? 'Sì':'No'}" />
+			<h:outputText value="Minore con disabilità certificata"
+				styleClass="bold" />
+			<h:outputText
+				value="#{rowRevisione.flgDisabilita == true? 'Sì':'No'}" />
+			<h:outputText value="Richiesta Interventi specifici per disabili"
+				styleClass="bold" />
+			<h:outputText
+				value="#{rowRevisione.flgInterventiDisabili == true? 'Sì':'No'}" />
+			<h:outputText value="Periodo di inserimento pianificato DA "
+				styleClass="bold" />
+			<h:outputText value="#{rowRevisione.periodoInsPianificazioneDa}" >
+				<f:convertDateTime pattern="dd/MM/yyyy" />
+				</h:outputText>
+			<h:outputText value="A" styleClass="bold" />
+			<h:outputText value="#{rowRevisione.periodoInsPianificazioneA}" >
+					<f:convertDateTime pattern="dd/MM/yyyy" />
+			</h:outputText>
+			<h:outputText value="Minore in gravidanza" styleClass="bold" />
+			<h:outputText
+				value="#{rowRevisione.flgGravidanza == true? 'Sì':'No'}" />
+			<h:outputText value="Minore con neonato" styleClass="bold" />
+			<h:outputText value="#{rowRevisione.flgNeonato  == true? 'Sì':'No'}" />
+
+			<h:outputText value="Proveniente dall’area penale" styleClass="bold" />
+			<h:outputText
+				value="#{rowRevisione.flgAreaPenale == true? 'Sì':'No'}" />
+			<h:outputText
+				value="Proroga per richiesta da parte del minore al compimento del 18 anno"
+				styleClass="bold" />
+			<h:outputText
+				value="#{rowRevisione.flgProrRichMagg == true? 'Sì':'No'}" />
+
+			<h:outputText value="Proroga al raggiungimento limite età"
+				styleClass="bold" />
+			<h:outputText
+				value="#{rowRevisione.flgProrLimiteEta == true? 'Sì':'No'}" />
+			<h:outputText
+				value="La struttura deve avere un educatore professionale o pedagogista aggiuntivo"
+				styleClass="bold" />
+			<h:outputText
+				value="#{rowRevisione.flgEsisteEduPeda == true? 'Sì':'No'}" />
+
+			<h:outputText
+				value="Invio Segnalazione/Relazione a Procura presso TM"
+				styleClass="bold" />
+			<h:outputText
+				value="#{rowRevisione.flgInvioSegnTM == true? 'Sì':'No'}" />
+			<h:outputText value="Case Manager" styleClass="bold" />
+			<h:outputText value="#{rowRevisione.caseManager}" />
+		</h:panelGrid>
+
+
+	</p:tab>
+</p:accordionPanel>
+
+</html>

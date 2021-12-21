@@ -1,21 +1,19 @@
 package it.webred.cs.csa.web.bean.util;
 
 import it.webred.amprofiler.model.AmGroup;
+import it.webred.cs.csa.web.manbean.fascicolo.pai.ProgettiIndividualiExtBean;
 import it.webred.cs.data.DataModelCostanti.PermessiGenerali;
 import it.webred.cs.jsf.manbean.superc.CsUiCompBaseBean;
-import it.webred.cs.sociosan.ejb.client.CTConfigClientSessionBeanRemote;
-import it.webred.ejb.utility.ClientUtility;
-import it.webred.mailing.MailUtils;
-import it.webred.mailing.MailUtils.MailAddressList;
-import it.webred.mailing.MailUtils.MailParamBean;
+import it.webred.cs.sociosan.ejb.client.ArgoBufferManagerSessionBeanRemote;
 
 import java.io.IOException;
 import java.util.List;
 
-import javax.activation.FileDataSource;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+
 
 @ManagedBean
 @ViewScoped
@@ -23,91 +21,62 @@ public class NavigationBean extends CsUiCompBaseBean {
 	
 	private String appEmail;
 	
+	@ManagedProperty(value="#{progettiInvidualiExt}")
+	private ProgettiIndividualiExtBean progettiIndividualiExtBean;
+	
 	public void goHome() {
 		getSession().setAttribute("navigationHistory", "");
-		try {
-			FacesContext.getCurrentInstance().getExternalContext().redirect("home.faces");
-		} catch (IOException e) {
-			addError("Errore", "Errore durante il reindirizzamento");
-		}
+		redirect("home.faces");
 	}
 	public void goIterCartellaSociale() {
-		getSession().setAttribute("navigationHistory",
-				"iterCartellaSociale");
-
-		try {
-			FacesContext.getCurrentInstance().getExternalContext()
-					.redirect("iterCartellaSociale.faces");
-		} catch (IOException e) {
-			addError("Errore", "Errore durante il reindirizzamento");
-		}
+		getSession().setAttribute("navigationHistory","iterCartellaSociale");
+		redirect("iterCartellaSociale.faces");
 	}
 	public void goListaCasi(boolean clearFilters) {
 		if(clearFilters)
-			this.clearParametriFiltro();
+			this.clearParametriFiltroCasi();
 		
 		getSession().setAttribute("navigationHistory", "listaCasi");
 		getSession().setAttribute("fromListaCasi", Boolean.TRUE); //SISO-812
-		try {
-			FacesContext.getCurrentInstance().getExternalContext().redirect("listaCasi.faces");
-		} catch (IOException e) {
-			addError("Errore", "Errore durante il reindirizzamento");
-		}
+		redirect("listaCasi.faces");
 	}
 	
 	//SISO - 812, inizio
 	public void goListaCasiAssegnati(boolean clearFilters) {
 		if(clearFilters)
-			this.clearParametriFiltro();
+			this.clearParametriFiltroCasi();
 		
 		getSession().setAttribute("navigationHistory", "listaCasiAssegnati");
 		getSession().setAttribute("fromListaCasi", Boolean.FALSE);
-		
-		
-		try {
-			FacesContext.getCurrentInstance().getExternalContext().redirect("listaCasiAssegnati.faces");
-		} catch (IOException e) {
-			addError("Errore", "Errore durante il reindirizzamento");
-		}
+		redirect("listaCasiAssegnati.faces");
 	}
 	//SISO - 812, fine
 	public void goErogazioniInterventi(){
 		getSession().setAttribute("navigationHistory", "erogazioniInterventi");
-		try {
-			FacesContext.getCurrentInstance().getExternalContext().redirect("erogazioniInterventi.faces");
-		} catch (IOException e) {
-			addError("Errore", "Errore durante il reindirizzamento");
-		}
+		redirect("erogazioniInterventi.faces");
 	}
 	
+	// SISO-1280, inizio
+	public void goProgettiIndividuali() {
+		getSession().setAttribute("navigationHistory", "progettiIndividuali");
+		progettiIndividualiExtBean.initializeData();
+		redirect("progettiIndividuali.faces");
+	}
+	// SISO-1280, fine
+		
 	public void goEsportaCasellario(){
 		getSession().setAttribute("navigationHistory", "esportaCasellario");
-		try {
-			FacesContext.getCurrentInstance().getExternalContext().redirect("esportaCasellario.faces");
-		} catch (IOException e) {
-			addError("Errore", "Errore durante il reindirizzamento");
-		}
+		redirect("esportaCasellario.faces");
 	}
 	
 	public void goEsportaDatiSinba(){
 		getSession().setAttribute("navigationHistory", "esportaDatiSinba");
-		try {
-			FacesContext.getCurrentInstance().getExternalContext().redirect("esportaDatiSinba.faces");
-		} catch (IOException e) {
-			addError("Errore", "Errore durante il reindirizzamento");
-		}
+		redirect("esportaDatiSinba.faces");
 	}
 	
 	public void goInterscambioCartellaSociale() {
-		getSession().setAttribute("navigationHistory",
-				"interscambioCartellaSociale");
-
-		try {
-			FacesContext.getCurrentInstance().getExternalContext()
-					.redirect("interscambioCartellaSociale.faces");
-		} catch (IOException e) {
-			addError("Errore", "Errore durante il reindirizzamento");
-		}
+		getSession().setAttribute("navigationHistory", "interscambioCartellaSociale");
+		redirect("interscambioCartellaSociale.faces");
 	}
 
 	/**
@@ -116,8 +85,7 @@ public class NavigationBean extends CsUiCompBaseBean {
 	 * @param CF
 	 */
 	public void goListaEventiFiltrataPerCF(String CF, String type ) {
-		getSession().setAttribute("navigationHistory",
-				"interscambioCartellaSociale");
+		getSession().setAttribute("navigationHistory", "interscambioCartellaSociale");
 
 		/**
 		 * Immetto il codice fiscale del caso da visualizzare in sessione 
@@ -125,49 +93,33 @@ public class NavigationBean extends CsUiCompBaseBean {
 		getSession().setAttribute("eventListFilter", CF);
 		getSession().setAttribute("eventListFilterType", type);
 
-		try {
-			FacesContext.getCurrentInstance().getExternalContext()
-					.redirect("interscambioCartellaSociale.faces");
-		} catch (IOException e) {
-			addError("Errore", "Errore durante il reindirizzamento");
-		}
-	}
-	public boolean isInterscambioVisible(){
-		return getNavigationHistory().contains("interscambioCartellaSociale");
-	}
-	
-	public boolean isListaCasiVisible() {
-		return getNavigationHistory().contains("listaCasi") && !getNavigationHistory().contains("listaCasiAssegnati");//SISO-812
-	}
-	
-	//SISO-812
-	public boolean isListaCasiAssegnatiVisible() {
-		return getNavigationHistory().contains("listaCasiAssegnati");
+		redirect("interscambioCartellaSociale.faces");
 	}
 	
 	public void goSchedeSegretariato() {
 		getSession().setAttribute("navigationHistory", "listaSchedeSegretariato");
 		getSession().setAttribute("fromListaCasi", Boolean.FALSE);
 
-		try {
-			FacesContext.getCurrentInstance().getExternalContext().redirect("listaSchedeSegretariato.faces");
-		} catch (IOException e) {
-			addError("Errore", "Errore durante il reindirizzamento");
-		}
+		redirect("listaSchedeSegretariato.faces");
 	}
 	
-	public boolean isSchedeSegretariatoVisible() {
-		return getNavigationHistory().contains("listaSchedeSegretariato");
+	public void goRedditoCittadinanza() {
+		getSession().setAttribute("navigationHistory", "listaRedditoCittadinanza");
+		getSession().setAttribute("fromListaCasi", Boolean.FALSE);
+
+		redirect("listaRedditoCittadinanza.faces");
+	}
+	
+	public void goListaFse() {
+		clearParametriFiltroFse();
+		getSession().setAttribute("navigationHistory", "listaFse");
+		getSession().setAttribute("fromListaCasi", Boolean.FALSE);
+		redirect("listaFse.faces");
 	}
 	
 	public void goConfigurazione() {
 		getSession().setAttribute("navigationHistory", "configurazione");
-		
-		try {
-			FacesContext.getCurrentInstance().getExternalContext().redirect("configurazione.faces");
-		} catch (IOException e) {
-			addError("Errore", "Errore durante il reindirizzamento");
-		}
+		redirect("configurazione.faces");
 	}
 	//SISO-1233
 	public void goMenuLayout() {
@@ -190,8 +142,31 @@ public class NavigationBean extends CsUiCompBaseBean {
 		}
 	}
 	
+
+	//Variabili per attivazione BREADCRUMB
+	public boolean isListaCasiAssegnatiVisible() {
+		return getNavigationHistory().contains("listaCasiAssegnati");
+	}
+	public boolean isRedditoCittadinanzaVisibile() {
+		return getNavigationHistory().contains("listaRedditoCittadinanza");
+	}
+	public boolean isProgettiIndividualiVisible(){
+		return getNavigationHistory().contains("progettiIndividuali");
+	}
+	public boolean isSchedeSegretariatoVisible() {
+		return getNavigationHistory().contains("listaSchedeSegretariato");
+	}
 	public boolean isConfigurazioneVisible() {
 		return getNavigationHistory().contains("configurazione");
+	}
+	public boolean isInterscambioVisible(){
+		return getNavigationHistory().contains("interscambioCartellaSociale");
+	}
+	public boolean isListaCasiVisible() {
+		return getNavigationHistory().contains("listaCasi") && !getNavigationHistory().contains("listaCasiAssegnati");//SISO-812
+	}
+	public boolean isListaFseVisibile() {
+		return getNavigationHistory().contains("listaFse");
 	}
 	
 	public boolean isCasoVisible() {
@@ -221,25 +196,16 @@ public class NavigationBean extends CsUiCompBaseBean {
 	
 	public void sendEmailApp(){
 		try{
-		CTConfigClientSessionBeanRemote mailConf = 
-				(CTConfigClientSessionBeanRemote) ClientUtility.getEjbInterface("SocioSanitario","SocioSanitario_EJB", "CTConfigClientSessionBean");
-		String link = CsUiCompBaseBean.getAppErogazioniLink();
-		if(appEmail!=null && !appEmail.trim().isEmpty()){
+			ArgoBufferManagerSessionBeanRemote argoBufferManager = 
+					(ArgoBufferManagerSessionBeanRemote) getEjb("SocioSanitario", "SocioSanitario_EJB", "ArgoBufferManagerSessionBean");
+			String link = CsUiCompBaseBean.getAppErogazioniLink();
+			String subject = "SISO - APP EROGAZIONI ";
+			String messageBody = "L'app per la gestione erogazioni del sistema SISO può essere scaricata da <a href=\""+link+"\">qui</a>";
+		
+			argoBufferManager.sendSimpleMailFromSISO(appEmail, subject, messageBody);
+			addInfo("E-mail inviata","Il collegamento per scaricare l'app erogazioni è stato inviato a "+appEmail);
+			appEmail=null;
 			
-				// Now try to send email
-				MailAddressList addressTO = new MailAddressList(appEmail);
-				MailAddressList addressCC = new MailAddressList();
-				MailAddressList addressBCC = new MailAddressList();
-	
-				// Segnalibri
-				String subject = "SISO - APP EROGAZIONI ";
-				String messageBody = "L'app per la gestione erogazioni del sistema SISO può essere scaricata da <a href=\""+link+"\">qui</a>";
-				
-				MailParamBean params = mailConf.getSISOMailParametres();
-				MailUtils.sendEmail(params, addressTO, addressCC, addressBCC, subject,messageBody, (FileDataSource[]) null);
-				addInfo("E-mail inviata","Il collegamento per scaricare l'app erogazioni è stato inviato a "+appEmail);
-				appEmail=null;
-		}
 		}catch(Exception e){
 			this.addError("Non è stato possibile inviare l'email", e.getMessage());
 			logger.error("__ Errore in invio email per invio link APP EROGAZIONI:"+e.getMessage());
@@ -279,7 +245,20 @@ public class NavigationBean extends CsUiCompBaseBean {
 	public void setAppEmail(String appEmail) {
 		this.appEmail = appEmail;
 	}
+	public ProgettiIndividualiExtBean getProgettiIndividualiExtBean() {
+		return progettiIndividualiExtBean;
+	}
+	public void setProgettiIndividualiExtBean(ProgettiIndividualiExtBean progettiIndividualiExtBean) {
+		this.progettiIndividualiExtBean = progettiIndividualiExtBean;
+	}
 	
+	private void redirect(String paginaFaces){
+		try {
+			FacesContext.getCurrentInstance().getExternalContext().redirect(paginaFaces);
+		} catch (IOException e) {
+			addError("Errore", "Errore durante il reindirizzamento");
+		}
+	}
 /*	
  * public void mobile(){
 		AccessTableInterventoErogazioneSessionBeanRemote sb =  (AccessTableInterventoErogazioneSessionBeanRemote) getEjb("CarSocialeA", "CarSocialeA_EJB", "AccessTableInterventoErogazioneSessionBean");
@@ -290,6 +269,7 @@ public class NavigationBean extends CsUiCompBaseBean {
 		sb.verificaLoadingMobileStaging(bDto);
 	}*/
 
+	
 	
 	
 }

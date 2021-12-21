@@ -142,5 +142,12 @@ public class CsCMedico implements Serializable {
 	public void setIndirizzo(String indirizzo) {
 		this.indirizzo = indirizzo;
 	}
+	
+	public String getDenominazione(){
+		String denominazione = "";
+		if (cognome!=null || nome!=null)
+			denominazione = cognome + " " + nome;
+		return denominazione.trim();
+	}
 
 }

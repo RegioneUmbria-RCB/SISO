@@ -6,18 +6,8 @@ import it.webred.cs.jsf.bean.DatiUserSearchBean;
 import it.webred.cs.jsf.bean.UserSearchExtInput;
 import it.webred.cs.jsf.interfaces.IUserSearchExt;
 import it.webred.cs.jsf.manbean.superc.CsUiCompBaseBean;
-import it.webred.ct.data.access.basic.anagrafe.AnagrafeService;
-import it.webred.ct.data.access.basic.anagrafe.dto.RicercaSoggettoAnagrafeDTO;
-import it.webred.ct.data.model.anagrafe.SitDPersona;
-import it.webred.ejb.utility.ClientUtility;
-
-
-
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.TreeMap;
@@ -25,7 +15,6 @@ import java.util.TreeMap;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.event.AjaxBehaviorEvent;
-import javax.naming.NamingException;
 
 import org.apache.commons.lang3.StringUtils;
 import org.primefaces.context.RequestContext;
@@ -79,7 +68,7 @@ public class UserSearchBeanExt extends UserSearchBean implements IUserSearchExt{
 			TreeMap<String, DatiUserSearchBean> mappaSoggetti = new TreeMap<String, DatiUserSearchBean>();
 		
 		 	if(lstSoggetti.size() < maxResult)
-				this.ricercaInAnagrafeInterna(mappaSoggetti);
+		 		this.ricercaInAnagrafeEsterna(mappaSoggetti, DataModelCostanti.TipoRicercaSoggetto.DEFAULT);
 		
 			if (lstSoggetti.size() < maxResult)
 				this.ricercaInAnagrafeEsterna(mappaSoggetti, DataModelCostanti.TipoRicercaSoggetto.ANAG_SANITARIA_UMBRIA);
@@ -99,57 +88,6 @@ public class UserSearchBeanExt extends UserSearchBean implements IUserSearchExt{
 			
 			this.searchButtonPressed=true;
 	}
-	
-	private void ricercaInAnagrafeInterna(TreeMap<String,DatiUserSearchBean> listAutocomplete){
-			
-		if(isAnagrafeComunaleInternaAbilitata()){
-			try {	
-				
-				AnagrafeService anagrafeService = (AnagrafeService) ClientUtility.getEjbInterface("CT_Service", "CT_Service_Data_Access", "AnagrafeServiceBean");
-				RicercaSoggettoAnagrafeDTO rsDto = new RicercaSoggettoAnagrafeDTO();
-				fillEnte(rsDto);
-				rsDto.setCognome(params.getCognome());
-				rsDto.setNome(params.getNome());
-				rsDto.setCodFis(params.getCodiceFiscale());
-				rsDto.setSesso(params.getDatiSesso().getSesso());
-				rsDto.setDtRif(new Date());
-				rsDto.setAnnoNascitaDa(params.getAnnoNascitaDa());
-				rsDto.setAnnoNascitaA(params.getAnnoNascitaA());
-				
-				rsDto.setMaxResult(this.maxResult);
-				
-				List<SitDPersona> list = anagrafeService.searchSISOAnagrafiche(rsDto);
-				
-				int contatore = 0;
-				for(SitDPersona s: list){
-					boolean emigrato = s.getDataEmi()!=null && (s.getDataImm()==null || s.getDataImm().before(s.getDataEmi()));
-					if(!emigrato){
-						DatiUserSearchBean sDto = new DatiUserSearchBean();
-						sDto.setSoggetto(s);	
-						String itemLabel = s.getCognome().toUpperCase() + " " + s.getNome().toUpperCase();
-						if(s.getDataNascita() != null)
-							itemLabel += " nato il: " + sdf.format(s.getDataNascita());
-						
-						if(s.getDataMor()!=null)
-							itemLabel += " morto il: " + sdf.format(s.getDataMor());
-						
-						
-						sDto.setItemLabel(itemLabel);
-						sDto.setId(s.getId());
-						String key = !StringUtils.isBlank(s.getCodfisc()) ? s.getCodfisc().toUpperCase() : Integer.toString(itemLabel.hashCode());
-						if(!listAutocomplete.containsKey(key))
-							listAutocomplete.put(key, sDto);
-						contatore++;
-					}
-					if(contatore>=maxResult) break;
-				}
-				
-				} catch (NamingException e) {
-				addError("general", "caricamento.error");
-				logger.error(e.getMessage(), e);
-			}
-		}else logger.info("Ricerca in anagrafe interna non abilitata: impostare il parametro 'smartwelfare.ricercaSoggetto.tipo'");
-	}
 			
 	protected void ricercaInAnagrafeEsterna(TreeMap<String, DatiUserSearchBean> listAutocomplete, String tipoRicerca){			
 		int maxResultAnagReg=maxResult-listAutocomplete.size();
@@ -168,9 +106,12 @@ public class UserSearchBeanExt extends UserSearchBean implements IUserSearchExt{
 				rab.setAnnoNascitaDa(params.getAnnoNascitaDa());
 				rab.setAnnoNascitaA(params.getAnnoNascitaA());
 				
+				rab.setMaxResult(maxResult);
+				
 				RicercaAnagraficaResult res = ricercaPerDatiAnagrafici(rab);
-				if(StringUtils.isBlank(res.getMessaggio()) && res.getElencoAssisiti()!=null)
-					listAnagReg.addAll(res.getElencoAssisiti());
+				List<PersonaDettaglio> elenco = res.getElencoAssistiti();
+				if(StringUtils.isBlank(res.getMessaggio()) && elenco!=null)
+					listAnagReg.addAll(elenco);
 				if(!StringUtils.isBlank(res.getMessaggio()))
 					this.addWarning("", res.getMessaggio());
 				
@@ -179,26 +120,27 @@ public class UserSearchBeanExt extends UserSearchBean implements IUserSearchExt{
 						break;
 					}
 					
-					
 					PersonaDettaglio s=listAnagReg.get(i);
-					DatiUserSearchBean sDto = new DatiUserSearchBean();
-					sDto.setSoggetto(s);
-					String itemLabel = s.getCognome().toUpperCase() + " "+ s.getNome().toUpperCase();
-					if (s.getDataNascita() != null)
-						itemLabel += " nato il: " + sdf.format(s.getDataNascita()); 
-					
-					if(s.isDefunto()){
-						itemLabel += " - defunto";
-						itemLabel += s.getDataMorte()!=null ? " il: " + sdf.format(s.getDataMorte()) : "";
-					}
-					
-					sDto.setItemLabel(itemLabel);		
-					String identificativo = s.getIdentificativo()!=null ? s.getIdentificativo() : "@" +s.getCodfisc();
-					sDto.setId(tipoRicerca + identificativo);
-					String key = !StringUtils.isBlank(s.getCodfisc()) ? s.getCodfisc().toUpperCase() : Integer.toString(itemLabel.hashCode());
+					if(!s.isEmigrato()){
+						DatiUserSearchBean sDto = new DatiUserSearchBean();
+						sDto.setSoggetto(s);
+						String itemLabel = s.getCognome().toUpperCase() + " "+ s.getNome().toUpperCase();
+						if (s.getDataNascita() != null)
+							itemLabel += " nato il: " + sdf.format(s.getDataNascita()); 
 						
-					if(!listAutocomplete.containsKey(key))
-						listAutocomplete.put(key, sDto);
+						if(s.isDefunto()){
+							itemLabel += " - defunto";
+							itemLabel += s.getDataMorte()!=null ? " il: " + sdf.format(s.getDataMorte()) : "";
+						}
+						
+						sDto.setItemLabel(itemLabel);		
+						String identificativo = s.getIdentificativo()!=null ? s.getIdentificativo() : "@" +s.getCodfisc();
+						sDto.setId(tipoRicerca + identificativo);
+						String key = !StringUtils.isBlank(s.getCodfisc()) ? s.getCodfisc().toUpperCase() : Integer.toString(itemLabel.hashCode());
+							
+						if(!listAutocomplete.containsKey(key))
+							listAutocomplete.put(key, sDto);
+					}
 				}
 					
 			}catch (Exception e) {

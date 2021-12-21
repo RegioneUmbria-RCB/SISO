@@ -6,7 +6,6 @@ import it.webred.cs.csa.ejb.dto.InfoRecapitiDTO;
 import it.webred.cs.csa.ejb.dto.KeyValueDTO;
 import it.webred.cs.data.model.CsAComponente;
 import it.webred.cs.data.model.CsAComponenteGit;
-import it.webred.cs.data.model.CsAFamigliaGruppo;
 import it.webred.cs.data.model.CsAFamigliaGruppoGit;
 
 import java.io.Serializable;
@@ -50,22 +49,7 @@ public class ParentiDAO extends CarSocialeBaseDAO implements Serializable {
 		}	
 		return lista;
 	}
-	
-	@SuppressWarnings("unchecked")
-	public CsAFamigliaGruppo getFamigliaGruppo(Long idSoggetto) {
-		try{
-		Query q = em.createNamedQuery("CsAFamigliaGruppo.getFamigliaGruppoBySoggettoId")
-				.setParameter("idSoggetto", idSoggetto);
-		List<CsAFamigliaGruppo> lista = q.getResultList();
-		if(lista != null && lista.size() > 0)
-			return lista.get(0);
-		}catch(Exception e){
-			logger.error(e.getMessage(),e);
-			throw new CarSocialeServiceException(e);
-		}	
-		return null;
-	}
-	
+		
 	@SuppressWarnings("unchecked")
 	public List<CsAFamigliaGruppoGit> getFamiglieGruppoGitAggiornate() {
 		List<CsAFamigliaGruppoGit> s = new ArrayList<CsAFamigliaGruppoGit>();
@@ -121,9 +105,9 @@ public class ParentiDAO extends CarSocialeBaseDAO implements Serializable {
 				
 			String sql = 
 					  "SELECT tel, cell, email, indirizzo, civico, prov, com_cod, com_des, stato_cod, stato_des "
-					+ "FROM V_CS_SS_INFO_SOGGETTI WHERE CF = ? ORDER BY DATA DESC";
+					+ "FROM V_CS_SS_INFO_SOGGETTI WHERE CF = :cf ORDER BY DATA DESC";
 			Query q = em.createNativeQuery(sql);
-			q.setParameter(1, cf.toUpperCase());
+			q.setParameter("cf", cf.toUpperCase());
 			List<Object[]> lst = q.getResultList();
 			if(!lst.isEmpty()){
 				Object[] arr = new Object[lst.get(0).length];

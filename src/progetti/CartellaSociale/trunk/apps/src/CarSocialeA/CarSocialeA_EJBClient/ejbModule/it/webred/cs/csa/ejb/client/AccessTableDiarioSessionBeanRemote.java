@@ -1,10 +1,16 @@
 package it.webred.cs.csa.ejb.client;
 
 import it.webred.cs.csa.ejb.dto.*;
+import it.webred.cs.csa.ejb.dto.fascicolo.docIndividuali.DocIndividualeBean;
+import it.webred.cs.csa.ejb.dto.fascicolo.scuola.ListaDatiScuolaDTO;
+import it.webred.cs.csa.ejb.dto.pai.ListaDatiPaiDTO;
+import it.webred.cs.csa.ejb.dto.pai.PaiSearchCriteria;
+import it.webred.cs.csa.ejb.dto.pai.PaiSintesiDTO;
+import it.webred.cs.csa.ejb.dto.relazione.RelazioneSintesiDTO;
+import it.webred.cs.csa.ejb.dto.relazione.SaveRelazioneDTO;
 import it.webred.cs.data.model.*; 
 import it.webred.ct.support.datarouter.CeTBaseObject;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import javax.ejb.Remote;
@@ -18,8 +24,6 @@ public interface AccessTableDiarioSessionBeanRemote {
 
 	public CsDDiario updateDiarioNR(BaseDTO dto) throws Exception;
 
-	public void saveDiarioChild(BaseDTO dto);
-
 	public List<CsDColloquioBASIC> getColloquios(BaseDTO dto) throws Exception;
 
 	public CsDColloquio findColloquioById(BaseDTO dto) throws Exception;
@@ -31,18 +35,22 @@ public interface AccessTableDiarioSessionBeanRemote {
 	public CsDDiario findDiarioById(BaseDTO dto) throws Exception;
 
 	public List<RelazioneDTO> findRelazioniByCaso(BaseDTO i);
+	
+	public List<RelazioneSintesiDTO> findRelazioniSintesiByCaso(BaseDTO i);
 
-	public List<CsDRelazione> findRelazioniByCasoTipoIntervento(InterventoDTO i);
+	public List<KeyValueDTO> findRelazioniByCasoTipoIntervento(InterventoDTO i);
 
 	public CsDRelazione findRelazioneLazyById(BaseDTO dto);
 
 	public RelazioneDTO findRelazioneFullById(BaseDTO dto);
+	
+	public RelazioneSintesiDTO findRelazioneSintesiById(BaseDTO dto);
 
 	public void deleteDiario(BaseDTO b);
 
-	public RelazioneDTO saveRelazione(BaseDTO dto) throws Exception;
+	public RelazioneDTO saveRelazione(SaveRelazioneDTO dto) throws Exception;
 
-	public void updateRelazione(BaseDTO dto) throws Exception;
+	public void updateRelazione(SaveRelazioneDTO dto) throws Exception;
 
 	public List<CsDDiarioDoc> findDiarioDocById(BaseDTO b);
 
@@ -72,7 +80,7 @@ public interface AccessTableDiarioSessionBeanRemote {
 
 	public CsDValutazione findValutazioneChildByPadreId(JsonBaseDTO dto);
 
-	public List<CsDDocIndividuale> findDocIndividualiByCaso(BaseDTO dto);
+	public List<DocIndividualeBean> findDocIndividualiByCaso(BaseDTO dto);
 
 	public void updateDocIndividuale(BaseDTO dto) throws Exception;
 
@@ -90,8 +98,10 @@ public interface AccessTableDiarioSessionBeanRemote {
 
 	public void deleteCsRelSettCatsocEsclusiva(RelSettCatsocEsclusivaDTO dto);
 
-	public List<CsDScuola> findScuoleByCaso(BaseDTO dto);
+	public List<ListaDatiScuolaDTO> findScuoleByCaso(BaseDTO dto);
 
+	public CsDScuola getScuolaById(BaseDTO dto);
+	
 	public void updateScuola(BaseDTO dto) throws Exception;
 
 	public CsDDiario saveScuola(BaseDTO dto) throws Exception;
@@ -99,6 +109,8 @@ public interface AccessTableDiarioSessionBeanRemote {
 	public void deleteScuola(BaseDTO dto) throws Exception;
 
 	public List<CsDIsee> findIseeByCaso(BaseDTO dto);
+	
+	public List<KeyValueDTO> findSintesiIseeByCaso(BaseDTO dto);
 
 	public void updateIsee(BaseDTO dto) throws Exception;
 
@@ -127,7 +139,15 @@ public interface AccessTableDiarioSessionBeanRemote {
 	public void updatePai(BaseDTO dto) throws Exception;
 
 	public List<CsDPai> findPaiByCaso(BaseDTO dto);
-
+	
+	public List<ListaDatiPaiDTO> findListaPaiFascicolo(PaiSearchCriteria dto);
+	
+	public List<ListaDatiPaiDTO> findListaPaiEsterni(PaiSearchCriteria dto);
+	
+	public Integer countListaPaiFascicolo(PaiSearchCriteria dto);
+	
+	public Integer countListaPaiEsterni(PaiSearchCriteria dto);
+	
 	public void salvaRifRelazioneToPai(BaseDTO dto);
 
 	public CsCDiarioConchi getDiarioConchi(BaseDTO dto);
@@ -144,7 +164,7 @@ public interface AccessTableDiarioSessionBeanRemote {
 
 	public void createAndsaveDocIndividuale(DocIndividualeDTO dto) throws Exception; //SISO-438
 
-	public List<CsDDocIndividuale> findDocIndividualeByCfSchedaSegnalato(BaseDTO dto); //SISO-438
+	public List<DocIndividualeBean> findDocIndividualeByCfSchedaSegnalato(BaseDTO dto); //SISO-438
 
 	public void salvaColloquio(BaseDTO dto) throws Exception;
 	
@@ -152,13 +172,34 @@ public interface AccessTableDiarioSessionBeanRemote {
 	
 	public List<DiarioAnagraficaDTO> saveDiarioAnagrafica(BaseDTO dto) throws Exception; //SISO-763
 	
-	public List<Long> findDiarioAnaAttProfessionaliCasoIdsByAnagraficaId(BaseDTO bdto) throws Exception; //SISO-763
+	public List<RelazioneDTO> findRelazioniCollegate(BaseDTO bdto) throws Exception; //SISO-763
 	
 	public List<CsDValutazione> getSchedeValutazionebyTipo(BaseDTO dto);   // SISO-818
 	
 	public ConfrontoSsCsDTO estraiDatiSchedaSS(BaseDTO dto);
 
 	public ConfrontoSsCsDTO estraiDatiSchedaCS(BaseDTO dto);
+	
+	public PaiSintesiDTO findSintesiPaiById(BaseDTO dto);
+	
+	public List<RelazioneDTO> findRelazioniPaiEsterniByCF(BaseDTO dto);
+	
+	public List<RelazioneSintesiDTO> findRelazioniSintesiPaiEsterniByCF(BaseDTO dto);
+	
+	public void saveBeneficiariPai(BaseDTO dto);
+	
+	public List<CsIIntervento> findInterventiPaiEsterniByCF(BaseDTO dto);
+	
+	public List<CsPaiMastSogg> findSoggettiPaiSenzaCaso(BaseDTO dto);
+	
+	public void updateSoggettoPai(BaseDTO dto);
 
-	public List<CsDPai> findPaiAperti(CeTBaseObject dto);
+	public CsPaiMastSogg findSoggettoPaiByDiarioId(BaseDTO dto);
+
+	public CsDPai getPaiById(BaseDTO dto);
+
+	public List<PaiSintesiDTO> findDatePai(PaiSearchCriteria psc);
+
+	public List<RelazioneDTO> findRelazioniByIds(BaseDTO dto);
+
 }

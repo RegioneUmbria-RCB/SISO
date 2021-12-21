@@ -1,0 +1,52 @@
+package it.umbriadigitale.soclav.security;
+
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
+
+public class PreAuthAuthenticationProvider implements AuthenticationProvider {
+
+	private java.util.HashMap<String, String> userTable;
+	private SoclavSimpleUserDetailsService detailService;
+
+	@Override
+	public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+
+		String name = authentication.getName();
+		if (authentication.getName().isEmpty()) {
+			return null;
+		}
+
+		UserDetails ud = detailService.loadUserByUsername(name);
+
+		PreAuthenticatedAuthenticationToken res = new PreAuthenticatedAuthenticationToken(name, "",
+				ud.getAuthorities());
+		res.setDetails(ud);
+		return res;
+	}
+
+	@Override
+	public boolean supports(Class<?> arg0) {
+		return arg0.equals(
+				org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken.class);
+	}
+
+	public java.util.HashMap<String, String> getUserTable() {
+		return userTable;
+	}
+
+	public void setUserTable(java.util.HashMap<String, String> userTable) {
+		this.userTable = userTable;
+	}
+
+	public SoclavSimpleUserDetailsService getDetailService() {
+		return detailService;
+	}
+
+	public void setDetailService(SoclavSimpleUserDetailsService detailService) {
+		this.detailService = detailService;
+	}
+
+}

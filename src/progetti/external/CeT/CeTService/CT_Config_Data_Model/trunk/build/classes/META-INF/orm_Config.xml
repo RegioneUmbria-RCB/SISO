@@ -25,7 +25,18 @@
 			]]>
 		</query>
 	</named-query>
-
+	
+	<named-query name="AmApplication.getApplicationType">
+		<query>
+			<![CDATA[
+				select distinct o.appType 
+				from AmApplication o
+				where o.appType != :escludi
+				order by o.appType
+			]]>
+		</query>
+	</named-query>
+	
 	<!-- Query AmInstance -->
 	<named-query name="AmInstance.getInstanceByUsername">
 		<query>

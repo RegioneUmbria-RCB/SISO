@@ -222,7 +222,7 @@
   </wsdl:binding>
   <wsdl:service name="GestoreDettaglioProtocolloV2Service">
     <wsdl:port binding="impl:GestoreDettaglioProtocolloV2SoapBinding" name="GestoreDettaglioProtocolloV2">
-      <wsdlsoap:address location="http://10.150.130.117:80/protocollowebsoap/services/GestoreDettaglioProtocolloV2"/>
+      <wsdlsoap:address location="http://gwwssoap-collaudo-trged-coll.ecaas.datacenter.comune.roma/protocollo-web-services/GestoreDettaglioProtocolloV2"/>
     </wsdl:port>
   </wsdl:service>
 </wsdl:definitions>

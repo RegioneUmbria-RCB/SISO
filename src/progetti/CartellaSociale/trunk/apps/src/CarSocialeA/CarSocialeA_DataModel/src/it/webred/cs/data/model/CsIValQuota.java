@@ -48,6 +48,9 @@ public class CsIValQuota implements Serializable{
 	@Column(name="USR_MOD")
 	private String usrMod;
 	
+	@Column(name="TARIFFA_CUSTOM")
+	private BigDecimal tariffaCustom;
+	
 	//bi-directional one-to-one association to CsIRigaQuota
 	@OneToOne(mappedBy="csIValQuota")
 	private CsIRigaQuota csIRigaQuota;
@@ -126,4 +129,13 @@ public class CsIValQuota implements Serializable{
 	public void setCsIInterventoEseg(CsIInterventoEseg csIInterventoEseg) {
 		this.csIInterventoEseg = csIInterventoEseg;
 	}
+
+	public BigDecimal getTariffaCustom() {
+		return tariffaCustom;
+	}
+
+	public void setTariffaCustom(BigDecimal tariffaCustom) {
+		this.tariffaCustom = tariffaCustom;
+	}
+	
 }

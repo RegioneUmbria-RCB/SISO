@@ -6,7 +6,6 @@ import java.math.BigDecimal;
 import javax.persistence.*;
 
 import java.util.Date;
-import java.util.List;
 
 
 /**
@@ -15,7 +14,6 @@ import java.util.List;
  */
 @Entity
 @Table(name="CS_A_COMPONENTE")
-@NamedQuery(name="CsAComponente.findAll", query="SELECT c FROM CsAComponente c")
 public class CsAComponente implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -24,11 +22,6 @@ public class CsAComponente implements Serializable {
 	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="CS_A_COMPONENTE_ID_GENERATOR")
 	private Long id;
 
-	//bi-directional many-to-one association to CsAAnagrafica
-	@ManyToOne
-	@JoinColumn(name="ANAGRAFICA_ID")
-	private CsAAnagrafica csAAnagrafica;
-	
 	@Column(name="COM_ALTRO_COD")
 	private String comAltroCod;
 
@@ -75,6 +68,11 @@ public class CsAComponente implements Serializable {
 	@Column(name="USR_MOD")
 	private String usrMod;
 	
+	//bi-directional many-to-one association to CsAAnagrafica
+	@ManyToOne
+	@JoinColumn(name="ANAGRAFICA_ID")
+	private CsAAnagrafica csAAnagrafica;
+	
 	//bi-directional many-to-one association to CsAFamigliaGruppo
 	@ManyToOne
 	@JoinColumn(name="FAMIGLIA_GRUPPO_ID")
@@ -107,6 +105,8 @@ public class CsAComponente implements Serializable {
 	private BigDecimal condLavorativaId;
 
 	private Boolean affidatario; //SISO-906
+	
+	private Boolean disabile;
 	
 	public CsAComponente() {
 	}
@@ -310,5 +310,14 @@ public class CsAComponente implements Serializable {
 	public void setAffidatario(Boolean affidatario) {
 		this.affidatario = affidatario;
 	}
+
+	public Boolean getDisabile() {
+		return disabile;
+	}
+
+	public void setDisabile(Boolean disabile) {
+		this.disabile = disabile;
+	}
+	
 
 }

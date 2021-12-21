@@ -1,10 +1,5 @@
 package it.webred.cs.csa.ejb.client;
 
-import java.util.HashMap;
-import java.util.List;
-
-import javax.ejb.Remote;
-
 import it.webred.cs.csa.ejb.dto.BaseDTO;
 import it.webred.cs.csa.ejb.dto.ErogazionePrestazioneDTO;
 import it.webred.cs.csa.ejb.dto.ErogazioniSearchCriteria;
@@ -12,12 +7,11 @@ import it.webred.cs.csa.ejb.dto.InformativaDTO;
 import it.webred.cs.csa.ejb.dto.InterventoBaseDTO;
 import it.webred.cs.csa.ejb.dto.InterventoDTO;
 import it.webred.cs.csa.ejb.dto.KeyValueDTO;
-import it.webred.cs.csa.ejb.dto.SiruResultDTO;
 import it.webred.cs.csa.ejb.dto.erogazioni.ErogazioneBaseDTO;
+import it.webred.cs.csa.ejb.dto.erogazioni.ErogazioneDettaglioSintesiDTO;
 import it.webred.cs.csa.ejb.dto.erogazioni.ErogazioneMasterDTO;
 import it.webred.cs.csa.ejb.dto.erogazioni.configurazione.ErogStatoCfgDTO;
-import it.webred.cs.data.model.ArFfProgetto;
-import it.webred.cs.data.model.ArFfProgettoAttivita;
+import it.webred.cs.csa.ejb.dto.siru.SiruResultDTO;
 import it.webred.cs.data.model.ArRelClassememoPresInps;
 import it.webred.cs.data.model.ArRelIntCustomIstat;
 import it.webred.cs.data.model.ArRelIntCustomPresInps;
@@ -41,6 +35,7 @@ import it.webred.cs.data.model.CsIInterventoEsegMast;
 import it.webred.cs.data.model.CsIInterventoEsegMastSogg;
 import it.webred.cs.data.model.CsIInterventoPr;
 import it.webred.cs.data.model.CsIPasti;
+import it.webred.cs.data.model.CsIPs;
 import it.webred.cs.data.model.CsIQuota;
 import it.webred.cs.data.model.CsIResiAdulti;
 import it.webred.cs.data.model.CsIResiMinore;
@@ -56,12 +51,17 @@ import it.webred.cs.data.model.VServiziCustom;
 import it.webred.cs.data.model.VTipiInterventoUsati;
 import it.webred.ct.support.datarouter.CeTBaseObject;
 
+import java.util.HashMap;
+import java.util.List;
+
+import javax.ejb.Remote;
+
 @Remote
 public interface AccessTableInterventoSessionBeanRemote {
 
-	public List<CsCTipoIntervento> findAllTipiIntervento(CeTBaseObject dto);
+	public List<KeyValueDTO> findAllTipiIntervento(CeTBaseObject dto);
 	
-	public List<CsCTipoIntervento> findTipiInterventoAbilitati(CeTBaseObject dto);
+	public List<KeyValueDTO> findTipiInterventoAbilitati(BaseDTO dto);
 
 	public List<CsCTipoIntervento> findTipiInterventoCatSoc(BaseDTO dto);
 
@@ -93,17 +93,13 @@ public interface AccessTableInterventoSessionBeanRemote {
 
 	public CsCfgIntEseg findConfigurazioneInterventiEseguitiById(BaseDTO bDto);
 
-	//public CsCfgIntEseg findConfigIntErogByTipoIntervento(BaseDTO bDto);
-	
 	public HashMap<Long, ErogStatoCfgDTO> findConfigIntEsegByTipoIntervento(BaseDTO bDto);
-
-	public CsIInterventoEseg getErogazioniEseguiteHistory(BaseDTO bDto);
 
 	public List<CsCfgIntEsegStato> getListaIntEsegStatoByTipiStato(BaseDTO bDto);
 
-	public CsIInterventoEseg getInterventoEsegById(BaseDTO bDto);
-	
 	public List<CsIInterventoEseg> getInterventoEsegByMasterId(BaseDTO bDto);
+	
+	public List<ErogazioneDettaglioSintesiDTO> getSintesiErogazioniByInterventoId(BaseDTO bDto);
 	
 	public List<ErogazioneMasterDTO> searchListaErogInterventi(ErogazioniSearchCriteria bDto);
 
@@ -118,8 +114,8 @@ public interface AccessTableInterventoSessionBeanRemote {
 
 	public void eliminaInterventoEsegStorico(BaseDTO dto);
 
-	public List<VGerrarchiaServizi> findAllNodesTipoIntervento(BaseDTO dto);
-
+	public List<VGerrarchiaServizi> findAllNodesTipoIntervento(CeTBaseObject cet);
+	
 	//frida
 	public List<VLineaFin> findAllOrigineFinanziamenti(BaseDTO dto);
 
@@ -164,8 +160,6 @@ public interface AccessTableInterventoSessionBeanRemote {
 
 	public List<KeyValueDTO> findTipiInterventoCustomRecenti(BaseDTO dto);
 
-	public CsIInterventoEsegMast getErogazioneMasterById(BaseDTO dto);
-	
 	public CsIInterventoPr getProgettoByMasterId(BaseDTO dto);
 	
 	public CsIQuota salvaQuota(BaseDTO dto);
@@ -187,29 +181,26 @@ public interface AccessTableInterventoSessionBeanRemote {
 	public List<ErogazioneBaseDTO> getListaInterventiErogatiByCF(BaseDTO dto);
 
 	public List<InterventoBaseDTO> getListaInfoInterventiByCaso(BaseDTO dto);
-
-	public CsIInterventoEsegMast getCsIInterventoEsegMastByByInterventoId(BaseDTO bDto);  //SISO-500  
+	
+	public CsIInterventoEsegMast getCsIInterventoEsegMastByInterventoId(BaseDTO bDto);  //SISO-500  
+	
+	public Long getCsIInterventoEsegMastIdByInterventoId(BaseDTO bDto);  
 	
 	public CsIInterventoEsegMast getCsIInterventoEsegMastById(BaseDTO bDto);  //SISO-822  
 
 	public List<CsCfgAttrOption> findCsCfgAttrOptions(BaseDTO bdto);
 
-	public CsFlgIntervento getPrimoFoglioAmministrativo(BaseDTO dto); 
-
-	public List<ArFfProgetto> findProgettiByBelfioreOrganizzazione(BaseDTO dto);		//SISO-522 - modificato SISO-575
-
 	public CsCfgAttrUnitaMisura findAttrUnitaMisura(BaseDTO dto); 
 
 	public InformativaDTO findInformativa(BaseDTO dto);
 
-	public void gestisciAlertErogazioni(BaseDTO bdto) throws Exception;
+	public void gestisciAlertErogazioni(BaseDTO bdto) throws CarSocialeServiceException;
 	
 	public void salvaRifErogazioneToPai(BaseDTO bdto) throws Exception;
-	public List<ArFfProgettoAttivita> findSottocorsi(BaseDTO dto); //SISO-790
-	
-	public  SiruResultDTO validaSiru(BaseDTO dto);
 	
 	public void eliminaExports(BaseDTO dto); //SISO - 884
+	
+	public  SiruResultDTO validaSiru(BaseDTO dto);
 	
 	public List<CsIInterventoEsegMastSogg> getBeneficiari (BaseDTO dto);
 	//SISO-972
@@ -243,4 +234,6 @@ public interface AccessTableInterventoSessionBeanRemote {
 	
 	//SIO-469
 	public List<VArCTariffa> findTariffe(BaseDTO dto);
+
+	public CsIPs getCsIPsByInterventoId(BaseDTO bDto);
 }

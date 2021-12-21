@@ -40,13 +40,16 @@
 	            <p:inputText id="txtCognome" required="#{fglInterventoBean.erogazioneInterventoBean.unicoBeneficiario}"
 	               requiredMessage="Inserire il cognome del soggetto in Testata"
 	               value="#{fglInterventoBean.erogazioneInterventoBean.soggettoErogazione.cognome}"
-	               disabled="#{fglInterventoBean.erogazioneInterventoBean.disabilitaBeneficiarioRif}"/>
+	               disabled="#{fglInterventoBean.erogazioneInterventoBean.disabilitaBeneficiarioRif}">
+				<p:ajax partialSubmit="true" process="@this" />
+				</p:inputText>
 	            
 	            <p:outputLabel id="lblNome" for="txtNome" value="Nome" />
 	            <p:inputText id="txtNome" required="#{fglInterventoBean.erogazioneInterventoBean.unicoBeneficiario}"
 	               value="#{fglInterventoBean.erogazioneInterventoBean.soggettoErogazione.nome}"
-	               disabled="#{fglInterventoBean.erogazioneInterventoBean.disabilitaBeneficiarioRif}"/>
-	
+	               disabled="#{fglInterventoBean.erogazioneInterventoBean.disabilitaBeneficiarioRif}">
+				<p:ajax partialSubmit="true" process="@this" />
+				</p:inputText>
 	            <p:outputLabel id="lblCodFiscale" value="Cod.fiscale *" />
 	            <h:panelGrid columns="2">
 		            <webredcs:pnlCodFisc 
@@ -61,11 +64,13 @@
 	            <p:spinner value="#{fglInterventoBean.erogazioneInterventoBean.soggettoErogazione.annoNascita}"
 	               disabled="#{fglInterventoBean.erogazioneInterventoBean.disabilitaBeneficiarioRif}" 
 	               size="4" maxlength="4"
-	               min="1900" />
-				
+	               min="1900" >	
+				   <p:ajax partialSubmit="true" process="@this" />
+				</p:spinner>
 				<h:outputText value="Sesso *" />
 				<webred:pnlSesso id="pnlSessoBeneficiario" value="#{fglInterventoBean.erogazioneInterventoBean.sessoBeneficiario}" 
-				    disabled="#{fglInterventoBean.erogazioneInterventoBean.disabilitaBeneficiarioRif}"  />
+				    disabled="#{fglInterventoBean.erogazioneInterventoBean.disabilitaBeneficiarioRif}"  
+				    onUpdAction="true"/>
 	
 	            <p:outputLabel id="lblCittadinanza" value="Cittadinanza *" />
 	            <p:selectOneMenu label="Cittadinanza" id="txtCittadinanza"

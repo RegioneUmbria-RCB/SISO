@@ -30,6 +30,7 @@ import java.util.concurrent.TimeUnit;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.lang3.StringUtils;
 import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortOrder;
 
@@ -50,7 +51,7 @@ public class LazyListaCasiModel extends LazyDataModel<DatiCasoBean>  {
   
     @Override
     public Object getRowKey(DatiCasoBean datiCaso) {
-        return datiCaso.getSoggetto().getAnagraficaId();
+        return datiCaso.getAnagraficaId();
     }
     
     private String getCategorieId(String desc){
@@ -129,9 +130,20 @@ public class LazyListaCasiModel extends LazyDataModel<DatiCasoBean>  {
 		if (criteriaStati != null && !criteriaStati.isEmpty())
 			searchCriteria.setLstStati(criteriaStati);
 		
-		String criteriaResidenza = (String) getSession().getAttribute(FiltroCasi.RESIDENZA);
-		if (criteriaResidenza != null && !criteriaResidenza.isEmpty())
-			searchCriteria.setResidenza(criteriaResidenza);
+		String criteriaOpSegnalazione = (String) getSession().getAttribute(FiltroCasi.STATO_OPERATORE);
+		if (criteriaOpSegnalazione != null && !criteriaOpSegnalazione.isEmpty())
+			searchCriteria.setIdOperatoreIter(new Long(criteriaOpSegnalazione));
+		
+ 		String tipoRes = (String) getSession().getAttribute(FiltroCasi.RESIDENZA_TIPO);
+		String nazioneRes = (String) getSession().getAttribute(FiltroCasi.RESIDENZA_NAZIONE);
+		String comuneRes = (String) getSession().getAttribute(FiltroCasi.RESIDENZA_COMUNE);
+		if(!StringUtils.isBlank(tipoRes)){
+			if(tipoRes.equalsIgnoreCase("NAZIONE") && !StringUtils.isBlank(nazioneRes))
+				searchCriteria.setResidenzaNazione(nazioneRes);
+			else if(tipoRes.equalsIgnoreCase("COMUNE") && !StringUtils.isBlank(comuneRes))
+				searchCriteria.setResidenzaComune(comuneRes);
+			searchCriteria.setSenzaFissaDimora(tipoRes.equalsIgnoreCase("SFD"));
+		}
 
 		String criteriaOperatore = (String) getSession().getAttribute(FiltroCasi.OPERATORE);
 		if (criteriaOperatore != null && !criteriaOperatore.isEmpty()) {
@@ -176,20 +188,15 @@ public class LazyListaCasiModel extends LazyDataModel<DatiCasoBean>  {
 			AccessTableSoggettoSessionBeanRemote soggettiService = (AccessTableSoggettoSessionBeanRemote) ClientUtility.getEjbInterface("CarSocialeA", "CarSocialeA_EJB", "AccessTableSoggettoSessionBean");
 	
 			List<DatiCasoListaDTO> list = soggettiService.getCasiSoggettoLAZY(dto);
-			int index=0;
-			CsUiCompBaseBean.logger.debug("Inizio ciclo lista soggetti :" + new Date());
-
+			
 			ForkJoinPool pool = new ForkJoinPool();
 			List<InitDatiCaso> classiInit = new ArrayList<InitDatiCaso>();
 
 			for (DatiCasoListaDTO dc : list) {
 
-				CsASoggettoLAZY sogg = dc.getSoggetto();
-				CsACaso caso = sogg.getCsACaso();
-
 				BaseDTO bDto = new BaseDTO();
 				CsUiCompBaseBean.fillEnte(bDto);
-				bDto.setObj(caso.getId());
+				bDto.setObj(dc.getCasoId());
 
 				InitDatiCaso init = null;
 				init = new InitDatiCaso(dc, bDto);
@@ -197,8 +204,6 @@ public class LazyListaCasiModel extends LazyDataModel<DatiCasoBean>  {
 				pool.execute(init);
 
 			}
-
-			CsUiCompBaseBean.logger.debug("Fine ciclo lista soggetti :"+ new Date());
 
 			boolean poolEseguito = false;
 			do {
@@ -260,7 +265,7 @@ public class LazyListaCasiModel extends LazyDataModel<DatiCasoBean>  {
 					
 					Iterator<DatiCasoBean> dcIterator= data.iterator();
 					while(dcIterator.hasNext()){
-						Long idCasoTemp=dcIterator.next().getSoggetto().getCsACaso().getId();
+						Long idCasoTemp=dcIterator.next().getCasoId();
 						boolean trovato = false;
 						for(CsACasoAccessoFascicolo c:cf){
 							if(c!= null && c.getCasoId().equals(idCasoTemp)){

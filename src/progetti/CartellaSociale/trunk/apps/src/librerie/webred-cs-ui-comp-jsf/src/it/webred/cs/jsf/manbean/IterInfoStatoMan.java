@@ -24,6 +24,7 @@ public class IterInfoStatoMan extends CsUiCompBaseBean implements IIterInfoStato
 	private String nomeStato;
 	private String dataCreazione;
 	private String responsabile;
+	private String codEnteSegnalante;
 	private String enteSegnalante;
 	private String ufficioSegnalante;
 	private String operatoreSegnalante;
@@ -178,11 +179,7 @@ public class IterInfoStatoMan extends CsUiCompBaseBean implements IIterInfoStato
 		try {
 			if(itStepDTO!=null && itStepDTO.getCsItStep()!=null){
 				this.idCaso = itStepDTO.getCsItStep().getCsACasoId();
-				if (itStepDTO.getResponsabileUsername()!=null) {
-					 AmAnagrafica amAnaRespo = getAnagraficaByUsername(itStepDTO.getResponsabileUsername());
-					 this.responsabile = amAnaRespo!=null ? (amAnaRespo.getCognome() + " " + amAnaRespo.getNome()) : itStepDTO.getResponsabileUsername();
-					
-				}
+				this.responsabile = itStepDTO.getResposabileDenominazione();
 				this.listaAttrValues = new LinkedList<KeyValuePairBean<String,String>>();
 				for(CsItStepAttrValueBASIC itStepValue : itStepDTO.getCsItStep().getCsItStepAttrValues() )
 					this.listaAttrValues.add( new KeyValuePairBean<String,String>(itStepValue.getCsCfgAttr().getLabel(), itStepValue.getValore() ) );
@@ -191,7 +188,7 @@ public class IterInfoStatoMan extends CsUiCompBaseBean implements IIterInfoStato
 				
 				this.dataCreazione = DateTimeUtils.dateToString(itStepDTO.getDataAmministrativa(), "dd/MM/yy - HH:mm");
 				
-				
+				this.codEnteSegnalante = itStepDTO.getCsItStep().getCsOOrganizzazione1().getCodRouting();
 				this.enteSegnalante = itStepDTO.getCsItStep().getCsOOrganizzazione1().getNome();
 				this.ufficioSegnalante= itStepDTO.getCsItStep().getCsOSettore1().getNome();
 				this.operatoreSegnalante = getCognomeNomeUtente(itStepDTO.getCsItStep().getCsOOperatore1().getUsername());
@@ -225,15 +222,8 @@ public class IterInfoStatoMan extends CsUiCompBaseBean implements IIterInfoStato
 			if (ufficio != null)
 				this.ufficioSegnalato = ufficio;
 			
-			if (operatore2Username != null) {
-				AmAnagrafica amAna = getAnagraficaByUsername(operatore2Username);
-				this.operatoreSegnalato = amAna!=null ? amAna.getCognome() + " " + amAna.getNome() : "";
-				if (amAna!=null)
-					this.operatoreSegnalato = amAna.getCognome() + " " + amAna.getNome();
-				else
-					this.operatoreSegnalato = operatore2Username;
-					
-			}
+			if (operatore2Username != null)
+				this.operatoreSegnalato = getCognomeNomeUtente(operatore2Username);
 		
 		} catch (Exception e) {
 			addErrorFromProperties("caricamento.error");
@@ -244,6 +234,14 @@ public class IterInfoStatoMan extends CsUiCompBaseBean implements IIterInfoStato
 	@Override
 	public long getIdCaso() {
 		return idCaso;
+	}
+
+	public String getCodEnteSegnalante() {
+		return codEnteSegnalante;
+	}
+
+	public void setCodEnteSegnalante(String codEnteSegnalante) {
+		this.codEnteSegnalante = codEnteSegnalante;
 	}
 	
 }

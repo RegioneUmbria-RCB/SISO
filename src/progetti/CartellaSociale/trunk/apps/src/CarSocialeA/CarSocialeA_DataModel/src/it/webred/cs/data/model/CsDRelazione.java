@@ -76,10 +76,6 @@ public class CsDRelazione implements ICsDDiarioChild {
 	@Column(name="RICHIESTA_INDAGINE")
 	private String richiestaIndagine;
 
-	//bi-directional many-to-one association to CsIInterventoEseg
-//	@OneToMany(mappedBy="csDRelazione")
-//	private List<CsIInterventoEseg> csIInterventoEsegs;
-
 	//bi-directional one-to-one association to CsDDiario
 	@OneToOne
 	@JoinColumn(name="DIARIO_ID")
@@ -135,10 +131,6 @@ public class CsDRelazione implements ICsDDiarioChild {
 	@JsonIgnore
 	private List<CsRelRelazioneProbl> csRelRelazioneProblReverseRif;
 		
-	@ManyToOne
-	@JoinColumn(name="RIUNIONE_CON_ID")
-	private CsOSettore riunioneCon;	
-	
 	// bi-directional many-to-many association to CsCDiarioConchi
 	@ManyToMany(fetch = FetchType.EAGER )
 	@Fetch(FetchMode.SELECT)
@@ -146,6 +138,15 @@ public class CsDRelazione implements ICsDDiarioChild {
 			   joinColumns={@JoinColumn(name="RELAZIONE_ID") }, 
 			   inverseJoinColumns={@JoinColumn(name="DIARIO_CON_CHI_ID")})
 	 private List<CsCDiarioConchi> lstConChi;
+	
+	// bi-directional many-to-many association to CsCDiarioConchi
+	@ManyToMany(fetch = FetchType.EAGER )
+	@Fetch(FetchMode.SELECT)
+	@JoinTable(name="CS_D_RELAZIONE_RIUNIONE_CON", 
+			   joinColumns={@JoinColumn(name="RELAZIONE_ID") }, 
+			   inverseJoinColumns={@JoinColumn(name="SETTORE_ID")})
+	 private List<CsOSettore> lstRiunioneConChi;
+
 	
 	@Column(name="CON_CHI_ALTRO")
 	private String conChiAltro;
@@ -162,9 +163,17 @@ public class CsDRelazione implements ICsDDiarioChild {
 	@JoinColumn(name="DIARIO_ID")
 	private CsDTriage csDTriage;
 	
+	//uni-directional one-to-one association to CsDRelSal
+	@OneToOne(cascade=CascadeType.ALL)
+	@JoinColumn(name="DIARIO_ID")
+	private CsDRelSal csDRelSal;
+	
+	
 	public CsDRelazione() {
 		this.lstConChi = new ArrayList<CsCDiarioConchi>();
+		this.lstRiunioneConChi = new ArrayList<CsOSettore>();
 	}
+	
 
 	public Long getDiarioId() {
 		return diarioId;
@@ -214,28 +223,6 @@ public class CsDRelazione implements ICsDDiarioChild {
 	public void setSituazioneSanitaria(String situazioneSanitaria) {
 		this.situazioneSanitaria = situazioneSanitaria;
 	}
-
-//	public List<CsIInterventoEseg> getCsIInterventoEsegs() {
-//		return this.csIInterventoEsegs;
-//	}
-//
-//	public void setCsIInterventoEsegs(List<CsIInterventoEseg> csIInterventoEsegs) {
-//		this.csIInterventoEsegs = csIInterventoEsegs;
-//	}
-//
-//	public CsIInterventoEseg addCsIInterventoEseg(CsIInterventoEseg csIInterventoEseg) {
-//		getCsIInterventoEsegs().add(csIInterventoEseg);
-//		csIInterventoEseg.setCsDRelazione(this);
-//
-//		return csIInterventoEseg;
-//	}
-//
-//	public CsIInterventoEseg removeCsIInterventoEseg(CsIInterventoEseg csIInterventoEseg) {
-//		getCsIInterventoEsegs().remove(csIInterventoEseg);
-//		csIInterventoEseg.setCsDRelazione(null);
-//
-//		return csIInterventoEseg;
-//	}
 
 	public Date getDataProssimaRelazioneAl() {
 		return dataProssimaRelazioneAl;
@@ -333,14 +320,6 @@ public class CsDRelazione implements ICsDDiarioChild {
 		this.csRelRelazioneProbl = csRelRelazioneProbl;
 	}
 	
-	public CsOSettore getRiunioneCon() {
-		return riunioneCon;
-	}
-
-	public void setRiunioneCon(CsOSettore riunioneCon) {
-		this.riunioneCon = riunioneCon;
-	}
-
 	
 	/**
 	 * @return the conChiAltro
@@ -444,6 +423,22 @@ public class CsDRelazione implements ICsDDiarioChild {
 
 	public void setRichiestaIndagine(String richiestaIndagine) {
 		this.richiestaIndagine = richiestaIndagine;
+	}
+
+	public CsDRelSal getCsDRelSal() {
+		return csDRelSal;
+	}
+
+	public void setCsDRelSal(CsDRelSal csDRelSal) {
+		this.csDRelSal = csDRelSal;
+	}
+
+	public List<CsOSettore> getLstRiunioneConChi() {
+		return lstRiunioneConChi;
+	}
+
+	public void setLstRiunioneConChi(List<CsOSettore> lstRiunioneConChi) {
+		this.lstRiunioneConChi = lstRiunioneConChi;
 	}
 	
 	

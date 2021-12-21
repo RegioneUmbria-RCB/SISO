@@ -4,16 +4,14 @@ import it.webred.cs.csa.ejb.client.AccessTableCatSocialeSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.AccessTableConfigurazioneSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.AccessTableInterventoSessionBeanRemote;
 import it.webred.cs.csa.ejb.dto.BaseDTO;
+import it.webred.cs.csa.ejb.dto.KeyValueDTO;
 import it.webred.cs.data.model.CsCCategoriaSociale;
-import it.webred.cs.data.model.CsCTipoIntervento;
 import it.webred.cs.data.model.CsOOrganizzazione;
 import it.webred.cs.data.model.CsOSettoreBASIC;
-import it.webred.cs.data.model.CsRelCatsocTipoInter;
 import it.webred.cs.data.model.CsRelCatsocTipoInterPK;
 import it.webred.cs.data.model.CsRelSettCatsocEsclusiva;
 import it.webred.cs.data.model.CsRelSettCatsocEsclusivaPK;
 import it.webred.cs.data.model.CsRelSettCsocTipoInter;
-import it.webred.cs.data.model.CsRelSettCsocTipoInterPK;
 import it.webred.cs.data.model.CsRelSettoreCatsoc;
 import it.webred.cs.data.model.CsRelSettoreCatsocPK;
 import it.webred.cs.data.model.CsTbTipoDiario;
@@ -79,10 +77,8 @@ public class GestioneCatSocialeBean extends CsUiCompBaseBean implements IGestion
 		BaseDTO dto = new BaseDTO();
 		fillEnte(dto);
 		lstTipiIntervento = new ArrayList<SelectItem>();
-		List<CsCTipoIntervento> lstCsCTipiIntervento = interventoService.findAllTipiIntervento(dto);
-		for(CsCTipoIntervento tipoInt: lstCsCTipiIntervento) {
-			lstTipiIntervento.add(new SelectItem(tipoInt.getId(), tipoInt.getDescrizione()));
-		}
+		List<KeyValueDTO> lstCsCTipiIntervento = interventoService.findAllTipiIntervento(dto);
+		lstTipiIntervento = this.convertiLista(lstCsCTipiIntervento);
 		
 		CeTBaseObject cet = new CeTBaseObject();
 		fillEnte(cet);

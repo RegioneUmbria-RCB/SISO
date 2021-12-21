@@ -9,12 +9,10 @@ import it.webred.cs.csa.ejb.dto.erogazioni.IntEsegAttrBean;
 import it.webred.cs.csa.ejb.dto.erogazioni.SoggettoErogazioneBean;
 import it.webred.cs.csa.ejb.dto.erogazioni.SpesaDTO;
 import it.webred.cs.csa.ejb.dto.erogazioni.configurazione.ErogStatoCfgDTO;
-import it.webred.cs.data.model.CsCfgIntEsegStato;
+import it.webred.cs.data.DataModelCostanti;
 import it.webred.cs.data.model.CsIInterventoEseg;
-import it.webred.cs.data.model.CsIInterventoEsegMast;
 import it.webred.cs.data.model.CsIInterventoEsegValore;
 import it.webred.cs.data.model.CsIInterventoPr;
-import it.webred.cs.data.model.CsOOperatoreSettore;
 import it.webred.cs.data.model.CsOSettore;
 import it.webred.cs.jsf.bean.erogazioneIntervento.ErogazioneInterventoUtils;
 import it.webred.cs.jsf.bean.erogazioneIntervento.ErogazioneInterventoUtils.SumDTO;
@@ -25,10 +23,7 @@ import it.webred.utilities.CommonUtils;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -51,8 +46,6 @@ public class ErogInterventoRowBean extends CsUiCompBaseBean implements Serializa
 	//private List<SoggettoErogazioneBean> beneficiari;
 	private List<SoggettoErogazioneBean> altriBeneficiari;
 	private SoggettoErogazioneBean beneficiarioRiferimento;
-	
-	private CsOOperatoreSettore opSettore;
 
 	private boolean renderBtnAvviaErog = false;
 	private boolean renderBtnEroga = false;
@@ -85,27 +78,10 @@ public class ErogInterventoRowBean extends CsUiCompBaseBean implements Serializa
 	
 	protected AccessTableInterventoSessionBeanRemote interventoService = (AccessTableInterventoSessionBeanRemote) getEjb("CarSocialeA", "CarSocialeA_EJB", "AccessTableInterventoSessionBean");
 
-	public ErogInterventoRowBean(ErogazioneMasterDTO intervento) {
-		setupRowBean(intervento);
+	public ErogInterventoRowBean(ErogazioneMasterDTO intervento, boolean setupDettaglioErogazione) {
+		setupRowBean(intervento, setupDettaglioErogazione);
 	}
 
-	private List<IntEsegAttrBean> getAttributiByTipoInterventoId( Long id, CsCfgIntEsegStato stato ) {
-		BaseDTO bDto = new BaseDTO();
-		fillEnte(bDto);
-		bDto.setObj(id); 
-		
-		List<IntEsegAttrBean> lstAttr = new LinkedList<IntEsegAttrBean>();
-		HashMap<Long, ErogStatoCfgDTO> mappa = interventoService.findConfigIntEsegByTipoIntervento(bDto);
-			
-		if(mappa.isEmpty())
-			this.addWarning("Nessuna configurazione per il tipo Intervento:"+id, "");
-		else{
-			if(stato!=null) lstAttr = mappa.get(stato.getId()).getListaAttributi();
-		}
-		
-		return lstAttr;
-	}
-	
 	private List<ErogazioneDettaglioDTO> getListaDtoErogazioni(List<CsIInterventoEseg> lstEseg){
 		List<ErogazioneDettaglioDTO> lst = new LinkedList<ErogazioneDettaglioDTO>();
 		BigDecimal sommaEntita = BigDecimal.ZERO;
@@ -123,31 +99,29 @@ public class ErogInterventoRowBean extends CsUiCompBaseBean implements Serializa
 			d.setDescrizione(es.getNote());
 			d.setIdInterventoEseg(es.getId());
 			//SISO-859 Sommo tutti i valori di valQuota che non sono € per tutte le precedenti erogazioni
-			if (es.getCsIValQuota() != null && !es.getCsIInterventoEsegMast().getCsIQuota().isValuta() && !es.getCsIInterventoEsegMast().getCsIQuota().isOreMinuti()){
+			if(es.getCsIValQuota()!=null){
 				BigDecimal valQuota =  es.getCsIValQuota().getValQuota() != null ?   es.getCsIValQuota().getValQuota() : BigDecimal.ZERO ;
-				sommaEntita = sommaEntita.add(valQuota);
-				if(sommaUnitaMisura.isEmpty())
-					this.sommaUnitaMisura = es.getCsIInterventoEsegMast().getCsIQuota().getCsTbUnitaMisura().getValore();
-				
-				d.setEntita(valQuota.intValue() >0 ? valQuota.toString().concat("  ").concat(sommaUnitaMisura) : null);
-			}else if(es.getCsIInterventoEsegMast().getCsIQuota().isOreMinuti()) {
-				this.sommaUnitaMisura = es.getCsIInterventoEsegMast().getCsIQuota().getCsTbUnitaMisura().getValore();
-				BigDecimal valQuota =  es.getCsIValQuota().getValQuota() != null ?   es.getCsIValQuota().getValQuota() : BigDecimal.ZERO ;
-				
-				sommaEntitaOreMinuti = sommaEntitaOreMinuti.add(valQuota);
-				
-				int ore = valQuota.intValue();
-				BigDecimal minutiValQuota = valQuota.remainder(BigDecimal.ONE);
-				BigDecimal convMinutiValQuota = (minutiValQuota.multiply(new BigDecimal(60))).setScale(2, RoundingMode.HALF_UP);
-				//
-				int minuti = convMinutiValQuota.intValue();
-				
-				String strDate = StringUtils.leftPad(String.valueOf(ore), 2, "0")  + ":" + StringUtils.leftPad(String.valueOf(minuti),  2, "0");
+				if (!es.getCsIInterventoEsegMast().getCsIQuota().isValuta() && !es.getCsIInterventoEsegMast().getCsIQuota().isOreMinuti()){
+					sommaEntita = sommaEntita.add(valQuota);
+					if(sommaUnitaMisura.isEmpty())
+						this.sommaUnitaMisura = es.getCsIInterventoEsegMast().getCsIQuota().getCsTbUnitaMisura().getValore();
 					
-				
-				d.setEntita(valQuota.intValue() >0 ? strDate.concat("  ").concat(sommaUnitaMisura) : null);
-				
-				
+					d.setEntita(valQuota.intValue() >0 ? valQuota.toString().concat("  ").concat(sommaUnitaMisura) : null);
+				}else if(es.getCsIInterventoEsegMast().getCsIQuota().isOreMinuti()) {
+					this.sommaUnitaMisura = es.getCsIInterventoEsegMast().getCsIQuota().getCsTbUnitaMisura().getValore();
+					sommaEntitaOreMinuti = sommaEntitaOreMinuti.add(valQuota);
+					
+					int ore = valQuota.intValue();
+					BigDecimal minutiValQuota = valQuota.remainder(BigDecimal.ONE);
+					BigDecimal convMinutiValQuota = (minutiValQuota.multiply(new BigDecimal(60))).setScale(2, RoundingMode.HALF_UP);
+					//
+					int minuti = convMinutiValQuota.intValue();
+					
+					String strDate = StringUtils.leftPad(String.valueOf(ore), 2, "0")  + ":" + StringUtils.leftPad(String.valueOf(minuti),  2, "0");
+						
+					
+					d.setEntita(valQuota.intValue() >0 ? strDate.concat("  ").concat(sommaUnitaMisura) : null);
+				}
 			}
 			
 			lst.add(d);
@@ -172,12 +146,11 @@ public class ErogInterventoRowBean extends CsUiCompBaseBean implements Serializa
 		return lst;
 	}
 	
-	private void setupRowBean(ErogazioneMasterDTO erogazione) {
+	private void setupRowBean(ErogazioneMasterDTO erogazione, boolean setupDettaglioErogazione) {
         
 		List<CsIInterventoEseg> lstEseg = new LinkedList<CsIInterventoEseg>();
 		BaseDTO bDto = new BaseDTO();
 		fillEnte(bDto);
-		HashMap<Long, ErogStatoCfgDTO> mappaAttributi = new HashMap<Long, ErogStatoCfgDTO>();
 		this.master = erogazione;
 		this.idIntervento = erogazione.getIdIntervento();
 		Long idMaster = erogazione.getIdInterventoEsegMaster();
@@ -185,8 +158,7 @@ public class ErogInterventoRowBean extends CsUiCompBaseBean implements Serializa
 			this.idRow="I"+this.idIntervento;
 			if(idMaster==null){
 				bDto.setObj(idIntervento);
-				CsIInterventoEsegMast master = interventoService.getCsIInterventoEsegMastByByInterventoId(bDto);
-				idMaster = master!=null ? master.getId() : null;
+				idMaster = interventoService.getCsIInterventoEsegMastIdByInterventoId(bDto);
 			}
 			//lstEseg = interventoService.getInterventoEsegByIntervento(bDto);
 		}else{
@@ -218,7 +190,7 @@ public class ErogInterventoRowBean extends CsUiCompBaseBean implements Serializa
 		this.lineaFinanziamento += erogazione.getCodFinanziamento()!=null ? "(cod. "+erogazione.getCodFinanziamento()+")" : "";
 
 		if(this.ultimoCsIInterventoEseg!=null){
-			this.opSettore = this.ultimoCsIInterventoEseg.getCsIInterventoEsegMast().getCsOOperatoreSettore();
+			//this.opSettore = this.ultimoCsIInterventoEseg.getCsIInterventoEsegMast().getCsOOperatoreSettore();
 			
 			CsIInterventoPr progetto = ultimoCsIInterventoEseg.getCsIInterventoEsegMast().getCsIInterventoPr();
 			if(progetto!=null) {
@@ -226,7 +198,7 @@ public class ErogInterventoRowBean extends CsUiCompBaseBean implements Serializa
 				this.servizioAmbito = progetto.getServizioAmbito();
 				/* == SISO-663+664 SM == */
 				this.settoreGestore = progetto.getSettoreGestore();
-				this.descrizioneProgetto = progetto.getFfProgettoDescrizione();
+				this.descrizioneProgetto = progetto.getProgetto().getDescrizione();
 				/* --===-- */
 				//SISO-964 Modello POR solo per progetti FSE
 				BaseDTO dto = new BaseDTO();
@@ -238,16 +210,9 @@ public class ErogInterventoRowBean extends CsUiCompBaseBean implements Serializa
 				String	codiceForm = confService.findCodFormProgetto(dto);
 				
 				if(!StringUtils.isBlank(this.getModuloPorRegionale())) 
-					this.setRenderBtnStampaPor("FSE".equalsIgnoreCase(codiceForm));
+					this.setRenderBtnStampaPor(DataModelCostanti.TipoProgetto.FSE.equalsIgnoreCase(codiceForm));
 			}
 			this.settoreErogante = this.ultimoCsIInterventoEseg.getCsIInterventoEsegMast().getSettoreErogante();
-			
-			//Attributi dell'ultimo stato
-			//attrCount = getAttributiByTipoInterventoId((idTipoInterventoCustom!=null ? idTipoInterventoCustom : idTipoIntervento), ultimoCsIInterventoEseg.getStato()).size();
-		    
-			bDto.setObj((idTipoInterventoCustom!=null ? idTipoInterventoCustom : idTipoIntervento)); 
-			List<IntEsegAttrBean> lstAttr = new LinkedList<IntEsegAttrBean>();
-			mappaAttributi = interventoService.findConfigIntEsegByTipoIntervento(bDto);
 		}
 		
 		this.richiestaIntervento = erogazione.getDataUltimoFlg()!=null;
@@ -269,8 +234,8 @@ public class ErogInterventoRowBean extends CsUiCompBaseBean implements Serializa
 		}
 		
 		setupBtnRendering();
-		setupDettagliTotaleErogazione(lstEseg, mappaAttributi);	 //commentato mk_osmosit
-	
+		if(setupDettaglioErogazione)
+			setupDettagliTotaleErogazione(lstEseg);	
 }
 	
 	//SISO-748
@@ -288,162 +253,6 @@ public class ErogInterventoRowBean extends CsUiCompBaseBean implements Serializa
 		return toReturn;
 	}
 	
-/*	private void setupRowBean(CsIIntervento csIIntervento, String permesso) {
-
-		List<CsFlgIntervento> csFlgInterventos = new LinkedList<CsFlgIntervento>(csIIntervento.getCsFlgInterventos());
-		List<CsIInterventoEseg> lstInterventiEseguiti = new LinkedList<CsIInterventoEseg>();
-		
-		int attrCount = 0;
-		if (csFlgInterventos.size() > 0) {
-			BaseDTO bDto = new BaseDTO();
-			fillEnte(bDto);
-			bDto.setObj(csIIntervento.getId());
-			CsFlgIntervento curCsFlgIntervento = csFlgInterventos.get(0);
-			lstInterventiEseguiti = interventoService.getInterventoEsegByIntervento(bDto);
-			
-			this.ultimoCsIInterventoEseg = null;
-			if (lstInterventiEseguiti != null && !lstInterventiEseguiti.isEmpty() )
-				this.ultimoCsIInterventoEseg = lstInterventiEseguiti.get(0);
-				
-			this.diarioId = curCsFlgIntervento.getDiarioId();
-			this.idIntervento = csIIntervento.getId();
-			
-			this.soggettoErogazione = new SoggettoErogazioneBean(curCsFlgIntervento.getCsDDiario().getCsACaso().getCsASoggetto());
-			this.tipoIntervento = curCsFlgIntervento.getCsIIntervento().getCsRelSettCsocTipoInter().getCsRelCatsocTipoInter().getCsCTipoIntervento();
-			this.idTipoIntervento = this.tipoIntervento.getId();
-			this.idTipoInterventoCustom = null;
-			if( csIIntervento.getCsIInterventoCustom() != null ) idTipoInterventoCustom = csIIntervento.getCsIInterventoCustom().getId();
-			
-			if (ultimoCsIInterventoEseg != null) {
-				this.dataUltimaErogazione = ultimoCsIInterventoEseg.getDataEsecuzione();
-				this.statoUltimaErogazione = ultimoCsIInterventoEseg.getStato().getNome();
-				this.opSettore = ultimoCsIInterventoEseg.getCsOOperatoreSettore();
-			}
-
-			this.richiestaIntervento = curCsFlgIntervento.getCsDDiario().getDtAmministrativa()!=null;
-			this.infoRichiestaIntervento = new ArrayList<SelectItem>();
-			
-			String statoUltimoFlg = "-";
-			if ("A".equals(curCsFlgIntervento.getFlagAttSospC()))
-			{
-				String value = curCsFlgIntervento.getTipoAttivazione();
-				statoUltimoFlg = "Attivazione" + (StringUtils.isNotEmpty(value) ? " ( " + StringUtils.trimToEmpty(value) + " )" : "");
-			}
-			if ("S".equals(curCsFlgIntervento.getFlagAttSospC()))
-			{
-				String value = curCsFlgIntervento.getDescrSospensione();
-				statoUltimoFlg = "Sospensione" + (StringUtils.isNotEmpty(value) ? " ( " + StringUtils.trimToEmpty(value) + " )" : "");
-			}
-			if ("C".equals(curCsFlgIntervento.getFlagAttSospC()))
-			{   
-				CsTbMotivoChiusuraInt motivo = curCsFlgIntervento.getCsTbMotivoChiusuraInt();
-				String value = motivo!=null ? motivo.getDescrizione() : null;
-				statoUltimoFlg = "Chiusura" + (StringUtils.isNotEmpty(value) ? " ( " + StringUtils.trimToEmpty(value) + " )" : "");
-			}
-			
-			this.infoRichiestaIntervento.add(new SelectItem("Data richiesta", ddMMyyyy.format(csIIntervento.getDtIns())));
-			this.infoRichiestaIntervento.add(new SelectItem("Stato richiesta", statoUltimoFlg));
-			this.infoRichiestaIntervento.add(new SelectItem("Data foglio amministrativo", ddMMyyyy.format(curCsFlgIntervento.getCsDDiario().getDtAmministrativa())));
-	
-			attrCount = getAttributiByTipoInterventoId(tipoIntervento.getId()).size();
-		}
-		
-		setupBtnRendering(permesso);
-		setupDettagliTotaleErogazione(lstInterventiEseguiti, attrCount);
-	}
-	
-	private void setupRowBean(DatiAggregatiErogazioneDTO aggregato, String permesso) {//TODO: mk_osmosit
-	        this.datiAgregatiErogazioneDTO = aggregato;
-		    ErogazioneDTO erogazione= aggregato.getErogazioni().get(0);
-
-			lstInterventiEseguiti = new LinkedList<CsIInterventoEseg>();
-			BaseDTO bDto = new BaseDTO();
-			fillEnte(bDto);
-			int attrCount = 0;
-			
-			this.idIntervento = erogazione.getIdIntervento();
-			if(this.idIntervento!=null){
-				this.idRow=this.idIntervento;
-				bDto.setObj(idIntervento);
-				lstInterventiEseguiti = interventoService.getInterventoEsegByIntervento(bDto);
-			}else{
-				this.idRow=erogazione.getIdInterventoEsegMaster();
-				bDto.setObj(erogazione.getIdInterventoEsegMaster());
-				lstInterventiEseguiti = interventoService.getInterventoEsegByMasterId(bDto);
-			}
-			
-			this.ultimoCsIInterventoEseg = null;
-			if (lstInterventiEseguiti != null && !lstInterventiEseguiti.isEmpty() )
-				this.ultimoCsIInterventoEseg = lstInterventiEseguiti.get(0);
-		
-				
-			this.diarioId = erogazione.getDiarioId();
-			
-			if(erogazione.getSoggetto()!=null)
-				this.soggettoErogazione = new SoggettoErogazioneBean(erogazione.getSoggetto());
-			else
-				this.soggettoErogazione = new SoggettoErogazioneBean(erogazione.getNome(), erogazione.getCognome(), erogazione.getCf());
-
-			this.tipoIntervento = erogazione.getTipoIntervento();
-			this.idTipoIntervento = this.tipoIntervento.getId();
-			this.idTipoInterventoCustom = null;
-
-			this.dataUltimaErogazione = erogazione.getDataUltimaErogazione();
-			this.statoUltimaErogazione = erogazione.getStatoUltimaErogazione();
-			if(this.ultimoCsIInterventoEseg!=null)
-				this.opSettore = this.ultimoCsIInterventoEseg.getCsIInterventoEsegMast().getCsOOperatoreSettore();
-			
-			this.richiestaIntervento = erogazione.getDataUltimoFlg()!=null;
-			this.infoRichiestaIntervento = new ArrayList<SelectItem>();
-			
-			if(erogazione.getDataRichiestaIntervento()!=null)
-				this.infoRichiestaIntervento.add(new SelectItem("Data richiesta", ddMMyyyy.format(erogazione.getDataRichiestaIntervento())));
-			if( erogazione.getStatoUltimoFlg()!=null)
-				this.infoRichiestaIntervento.add(new SelectItem("Stato richiesta", erogazione.getStatoUltimoFlg()));
-			if(erogazione.getDataUltimoFlg()!=null)
-				this.infoRichiestaIntervento.add(new SelectItem("Data foglio amministrativo", ddMMyyyy.format(erogazione.getDataUltimoFlg())));
-			
-			attrCount = getAttributiByTipoInterventoId(tipoIntervento.getId()).size();
-			
-			setupBtnRendering(permesso);
-			this.dettaglioTotaleErogazione = aggregato.getTotaleErogato(); 
-			this.tipoInterventoCustom = aggregato.getTipoInterventoCustom(); 
-			//setupDettagliTotaleErogazione(lstInterventiEseguiti, attrCount);	 //commentato mk_osmosit
-		
-	}
-
-	private void setupRowBean(CsIInterventoEseg csIInterventoEseg, String permesso) {
-		this.idIntervento = null;
-		this.ultimoCsIInterventoEseg = csIInterventoEseg;
-
-		this.richiestaIntervento=false;
-		if (csIInterventoEseg.getCaso() != null)
-			this.soggettoErogazione = new SoggettoErogazioneBean(csIInterventoEseg.getCaso().getCsASoggetto());
-		else
-			this.soggettoErogazione = new SoggettoErogazioneBean(csIInterventoEseg.getSoggettoNome(), csIInterventoEseg.getSoggettoCognome(), csIInterventoEseg.getSoggettoCodiceFiscale());
-
-		this.tipoIntervento = csIInterventoEseg.getCsIInterventoEsegMast().getCsCTipoIntervento();
-		this.idTipoIntervento = this.tipoIntervento.getId();
-		this.idTipoInterventoCustom = null;
-		//TODO frida manca la tabella tipocustom(sinonimo)
-		if( csIInterventoEseg.getCsIInterventoEsegMast().getCsIInterventoCustom() != null ) {
-			idTipoInterventoCustom = csIInterventoEseg.getCsIInterventoEsegMast().getCsIInterventoCustom().getId();
-			this.idTipoInterventoCustom=idTipoInterventoCustom;//TODO frida questo l'ho aggiunto
-			//problema nel recupero degli attributi per i tipi interventi non censiti nella CS_CFG_INT_ESEG_ATT_UM
-		}
-			
-
-		this.dataUltimaErogazione = ultimoCsIInterventoEseg.getDataEsecuzione();
-		this.statoUltimaErogazione = ultimoCsIInterventoEseg.getStato().getNome();
-		this.opSettore = ultimoCsIInterventoEseg.getCsIInterventoEsegMast().getCsOOperatoreSettore();
-
-		List<CsIInterventoEseg> lstIntEseg = Arrays.asList(csIInterventoEseg);
-		int attrCount = getAttributiByTipoInterventoId(tipoIntervento.getId()).size();
-
-		setupBtnRendering(permesso);
-		setupDettagliTotaleErogazione(lstIntEseg, attrCount);
-	}*/
-
 	private void setupBtnRendering() {
 		boolean foglioNonPresente = idIntervento==null || idIntervento<=0;
 		renderBtnEliminaErog = ultimoCsIInterventoEseg != null && foglioNonPresente && CsUiCompBaseBean.isPermessoAutorizzativo();
@@ -462,13 +271,12 @@ public class ErogInterventoRowBean extends CsUiCompBaseBean implements Serializa
 		
 	}
 
-	protected Boolean canCalcTotale( CsIInterventoEsegValore val) {
+	protected Boolean canCalcTotale( CsIInterventoEsegValore val, HashMap<Long, ErogStatoCfgDTO> mappaStatiTipoIntervento) {
 		CsIInterventoEseg eseg = val.getCsIInterventoEseg();
-		Long tipoInterventoId = eseg.getCsIInterventoEsegMast().getCsCTipoIntervento().getId();
-		Long tipoInterventoCustom = eseg.getCsIInterventoEsegMast().getCsIInterventoCustom()!=null ?  eseg.getCsIInterventoEsegMast().getCsIInterventoCustom().getId() : null;
-		List<IntEsegAttrBean> lstAttr = getAttributiByTipoInterventoId(tipoInterventoCustom!=null ? tipoInterventoCustom : tipoInterventoId, eseg.getStato());
-		
-		
+		List<IntEsegAttrBean> lstAttr = new ArrayList<IntEsegAttrBean>();
+		if(!mappaStatiTipoIntervento.isEmpty() && eseg.getStato()!=null) 
+			lstAttr = mappaStatiTipoIntervento.get(eseg.getStato().getId()).getListaAttributi();
+	
 		Boolean canCalc = null;
 		int i = 0;
 		while( canCalc==null && i<lstAttr.size()){
@@ -479,17 +287,27 @@ public class ErogInterventoRowBean extends CsUiCompBaseBean implements Serializa
 		
 		return canCalc!= null ? canCalc : false;
 	}
-	protected void setupDettagliTotaleErogazione(List<CsIInterventoEseg> listIntEseg, HashMap<Long, ErogStatoCfgDTO>  mappa) {
+	protected void setupDettagliTotaleErogazione(List<CsIInterventoEseg> listIntEseg) {
 
 		dettaglioTotaleErogazione = "-";
 		if (listIntEseg == null || listIntEseg.size() == 0)
 			return;
 
+		//Recupero configurazione attributi per tipo intervento e calcolo dettagli
+		Long tipoInterventoCorrente = (idTipoInterventoCustom!=null ? idTipoInterventoCustom : idTipoIntervento);
+		HashMap<Long, ErogStatoCfgDTO>  mappaStatiTipoIntervento = new HashMap<Long, ErogStatoCfgDTO>();
+		BaseDTO dto = new BaseDTO();
+		fillEnte(dto);
+		dto.setObj(tipoInterventoCorrente); 
+		mappaStatiTipoIntervento = interventoService.findConfigIntEsegByTipoIntervento(dto);
+		if(mappaStatiTipoIntervento.isEmpty())
+			this.addWarning("Nessuna configurazione per il tipo Intervento:"+tipoInterventoCorrente, "");
+		
 		HashMap<String, SumDTO> mappaSomme = new HashMap<String, SumDTO>();
 		
 		for (CsIInterventoEseg intEseg : listIntEseg) {
 			for (int i = 0; i < intEseg.getCsIInterventoEsegValores().size(); i++) {
-				Boolean calcTotale = canCalcTotale( intEseg.getCsIInterventoEsegValores().get(i) );
+				Boolean calcTotale = canCalcTotale( intEseg.getCsIInterventoEsegValores().get(i), mappaStatiTipoIntervento);
 				InterventoErogazAttrBean valBean = new InterventoErogazAttrBean(intEseg.getCsIInterventoEsegValores().get(i), calcTotale);
 				if( valBean.getAttr().getCalcTotale() ){
 					SumDTO sold = mappaSomme.get(valBean.getLabel());
@@ -517,14 +335,6 @@ public class ErogInterventoRowBean extends CsUiCompBaseBean implements Serializa
 
 	public boolean isInterventoDaErogare() {
 		return interventoDaErogare;
-	}
-
-	public CsOOperatoreSettore getOpSettore() {
-		return opSettore;
-	}
-
-	public void setOpSettore(CsOOperatoreSettore opSettore) {
-		this.opSettore = opSettore;
 	}
 
 	public void setInterventoService(AccessTableInterventoSessionBeanRemote interventoService) {

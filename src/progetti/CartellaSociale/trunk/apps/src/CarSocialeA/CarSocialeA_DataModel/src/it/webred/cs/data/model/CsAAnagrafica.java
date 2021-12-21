@@ -1,15 +1,11 @@
 package it.webred.cs.data.model;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
-
 import javax.persistence.*;
 
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Date;
-import java.util.List;
-
 
 /**
  * The persistent class for the CS_A_ANAGRAFICA database table.
@@ -77,18 +73,18 @@ public class CsAAnagrafica implements Serializable {
 	@Column(name="DATA_APERTURA_FASC_FAM")
 	private Date dataAperturaFascFam;
 	
-	//bi-directional one-to-one association to CsAComponente
+/*	//bi-directional one-to-one association to CsAComponente
 	@OneToOne(mappedBy="csAAnagrafica", fetch = FetchType.LAZY)
 	private CsAComponente csAComponente;
 	
 	//bi-directional one-to-one association to CsASoggetto
 	@OneToOne(mappedBy="csAAnagrafica", fetch = FetchType.LAZY )
 	@PrimaryKeyJoinColumn
-	private CsASoggettoLAZY csASoggetto;
+	private CsASoggettoLAZY csASoggetto;*/
 	
-//	//bi-directional one-to-one association to CsAAnagraficaLog
+/*	//bi-directional one-to-one association to CsAAnagraficaLog
 	@OneToMany(mappedBy="csAAnagrafica", cascade=CascadeType.ALL )
-	private List<CsAAnagraficaLog> csAAnagraficaLog;
+	private List<CsAAnagraficaLog> csAAnagraficaLog;*/
 	
 	@Column(name="TIT_TELEFONO")
 	private String titolareTelefono;
@@ -102,11 +98,6 @@ public class CsAAnagrafica implements Serializable {
 	@Column(name="ID_ORIG_WS")
 	private String idOrigWs;
 	
-		
-	//bi-directional many-to-one association to CsCComunita
-	/*@OneToMany(mappedBy="csAAnagrafica")
-	private List<CsCComunita> csCComunitas;*/
-
 	public CsAAnagrafica() {
 	}
 
@@ -262,32 +253,8 @@ public class CsAAnagrafica implements Serializable {
 		this.cittadinanzaAcq = cittadinanzaAcq;
 	}
 
-	public CsASoggettoLAZY getCsASoggetto() {
-		return csASoggetto;
-	}
-
-	public void setCsASoggetto(CsASoggettoLAZY csASoggetto) {
-		this.csASoggetto = csASoggetto;
-	}
-
-	public CsAComponente getCsAComponente() {
-		return csAComponente;
-	}
-
-	public void setCsAComponente(CsAComponente csAComponente) {
-		this.csAComponente = csAComponente;
-	}
-
 	public Date getDataAperturaFascFam() {
 		return dataAperturaFascFam;
-	}
-
-	public List<CsAAnagraficaLog> getCsAAnagraficaLog() {
-		return csAAnagraficaLog;
-	}
-
-	public void setCsAAnagraficaLog(List<CsAAnagraficaLog> csAAnagraficaLog) {
-		this.csAAnagraficaLog = csAAnagraficaLog;
 	}
 
 	public void setDataAperturaFascFam(Date dataAperturaFascFam) {
@@ -349,5 +316,10 @@ public class CsAAnagrafica implements Serializable {
 				"ANONIMO".equalsIgnoreCase(this.nome);
 	}
 
-	
+	public String getDenominazione(){
+		String denominazione = "";
+		if (cognome!=null || nome!=null)
+			denominazione = cognome + " " + nome;
+		return denominazione.trim();
+	}
 }

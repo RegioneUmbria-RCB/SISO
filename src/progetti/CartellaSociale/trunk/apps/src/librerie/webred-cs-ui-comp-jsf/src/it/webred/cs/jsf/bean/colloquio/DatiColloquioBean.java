@@ -1,13 +1,12 @@
 package it.webred.cs.jsf.bean.colloquio;
 
-import it.webred.amprofiler.model.AmAnagrafica;
 import it.webred.cs.data.model.CsDColloquio;
 import it.webred.cs.jsf.manbean.superc.CsUiCompBaseBean;
 
 public class DatiColloquioBean extends CsUiCompBaseBean {
 	
 	private CsDColloquio colloquio;
-	private AmAnagrafica opAnagrafica;
+	private String opAnagrafica;
 	private boolean riservato;
 	private boolean abilitato4riservato;
 	
@@ -37,7 +36,7 @@ public class DatiColloquioBean extends CsUiCompBaseBean {
 	public void Initialize(CsDColloquio csColl, String usernameOp, boolean riservato, boolean abilitato4riservato) throws Exception
 	{
 		colloquio = csColl;
-		opAnagrafica = getAnagraficaByUsername(usernameOp);
+		opAnagrafica = CsUiCompBaseBean.getCognomeNomeUtente(usernameOp);
 		
 		this.abilitato4riservato = abilitato4riservato;
 		this.riservato = riservato;
@@ -53,10 +52,14 @@ public class DatiColloquioBean extends CsUiCompBaseBean {
 		return colloquio;
 	}
 	
-	public AmAnagrafica getOpAnagrafica() {
+	public String getOpAnagrafica() {
 		return opAnagrafica;
 	}
-	
+
+	public void setOpAnagrafica(String opAnagrafica) {
+		this.opAnagrafica = opAnagrafica;
+	}
+
 	public void setRiservato(boolean riservato) {
 		this.riservato = riservato;
 	}

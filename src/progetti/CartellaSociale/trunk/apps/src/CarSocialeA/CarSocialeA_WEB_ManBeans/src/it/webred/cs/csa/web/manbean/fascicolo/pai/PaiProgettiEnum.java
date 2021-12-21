@@ -2,7 +2,10 @@ package it.webred.cs.csa.web.manbean.fascicolo.pai;
 
 public enum PaiProgettiEnum {
 
-	AFFIDO("affido");
+	AFFIDO("affido"),
+	PTI("pti"),
+	SAL("sal"), ;
+	
 	
 	private String progetto;
 	

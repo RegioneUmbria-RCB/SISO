@@ -13,6 +13,8 @@ public abstract class ComuneNazioneMan extends BasicManBean implements IComuneNa
 	
 	private String value;
 	
+	public ComuneNazioneMan(){}
+	
 	public abstract String getExtraLabel();
 	
 	/**

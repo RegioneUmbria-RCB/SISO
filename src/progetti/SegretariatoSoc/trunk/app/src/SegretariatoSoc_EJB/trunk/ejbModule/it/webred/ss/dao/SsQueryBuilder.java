@@ -30,7 +30,8 @@ public class SsQueryBuilder {
 				"pc.id p_contatto_id, PC.NOME punto_contatto, "+
 				"nvl(ANA.COGNOME,'') cognome, nvl(ANA.NOME,''), ANA.DATA_NASCITA,  "+
 				"nvl(trim(oANA.COGNOME||' '||oANA.NOME),a.operatore) operatore, I.TIPO tipo_intervento, "+
-				"nvl(S.DT_MOD,s.dt_ins) data_modifica, P.DT_INS data_privacy, s.identificativo, cs.stato, ana.cf, ana.alias ";
+				"nvl(S.DT_MOD,s.dt_ins) data_modifica, P.DT_INS data_privacy, s.identificativo, cs.stato, cs_o.nome, "+
+				"ana.cf, ana.alias ";
 
 	/*	String sqlSchede = 
 				"from SsScheda s "+
@@ -54,7 +55,8 @@ public class SsQueryBuilder {
 						"left join ss_scheda_segnalato segn on s.segnalato=segn.id "+
 						"left join ss_anagrafica ana on segn.anagrafica=ana.id "+
 						"left join ss_operatore_anagrafica oana on OAna.operatore = A.OPERATORE "+
-						"left join cs_ss_scheda_segr cs on s.id=cs.id "+
+						"left join cs_ss_scheda_segr cs on (s.id=cs.SCHEDA_ID AND cs.PROVENIENZA = 'SS') "+
+						"left join cs_o_organizzazione cs_o on cs.cod_ente = cs_o.cod_routing "+
 						"left join ss_scheda_privacy p on (upper(p.cf)=upper(ana.cf) and a.REL_UPO_ORGANIZZAZIONE_ID=p.organizzazione_id) "+
 						"where 1=1 ";
 

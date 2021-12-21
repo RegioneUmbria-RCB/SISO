@@ -55,8 +55,8 @@ public class OperatoriTableDataModel extends LazyDataModel<DatiOperatore> implem
 				AmAnagrafica amAna = CsUiCompBaseBean.getAnagraficaByUsername(op.getUsername());
 				if(amAna != null) {
 					DatiOperatore datiOp = DatiOperatore.copyFromAmAnagrafica(amAna);
-					datiOp.setIdOperatore(op.getOperatore()!=null ? op.getOperatore().getId() : null);
-					datiOp.setAbilitato(op.getOperatore()!=null && op.getOperatore().getAbilitato());
+					datiOp.setIdOperatore(op.getOperatoreId());
+					datiOp.setAbilitato(op.getAbilitato());
 					
 					//Informazioni Ufficio
 					AmUserUfficio uff = userService.getDatiUfficio(datiOp.getAmUser().getName());

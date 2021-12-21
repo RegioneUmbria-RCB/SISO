@@ -6,6 +6,7 @@ import it.webred.cs.data.model.CsDValutazione;
 import it.webred.cs.jsf.bean.IseeBean;
 import it.webred.cs.json.ISchedaValutazione;
 import it.webred.cs.json.isee.IseeManBaseBean;
+import it.webred.cs.sociosan.ejb.dto.isee.DatiIsee;
 
 import java.util.List;
 
@@ -54,7 +55,7 @@ public class ManIseeBean extends IseeManBaseBean {
 			if(!validaData())
 				return ok;
 			
-			getSelected().setProtocolloBean(this.protDsuMan.getDto());
+			getSelected().setProtocolloBean(protDsuMan.getDto());
 			controller.save(this.getClass().getName());
 
 			//ora salva
@@ -154,4 +155,39 @@ public class ManIseeBean extends IseeManBaseBean {
 	@Override
 	public void init(CsDIsee jpa) {//Non implementare: valido solo per versione 1 che salva su DB
 	}
+
+	@Override
+	public void onChangeAnnoRiferimento(){
+		DatiIsee in = protDsuMan.cbxAnnoDsuListener();
+		if(in!=null){
+			this.getJsonCurrent().setIse(in.getIse());
+			this.getJsonCurrent().setIsee(in.getIsee());
+			this.getJsonCurrent().setScalaEquivalenza(in.getScalaEquivalenza());
+			this.getJsonCurrent().setTipo(in.getTipo());
+			this.getJsonCurrent().setDataScadenzaIsee(in.getDataScadenzaIsee());
+			this.getJsonCurrent().setDataIsee(in.getDataPresentazioneIsee());
+		}
+	}
+	
+	@Override 
+	public void onChangeTipologia(){
+		protDsuMan.setTipologia(getJsonCurrent().getTipo()!=null ? this.getJsonCurrent().getTipo().getId() : null);
+		DatiIsee in = protDsuMan.trovaAttestazione();
+		if(in!=null){
+			this.getJsonCurrent().setIse(in.getIse());
+			this.getJsonCurrent().setIsee(in.getIsee());
+			this.getJsonCurrent().setScalaEquivalenza(in.getScalaEquivalenza());
+			this.getJsonCurrent().setTipo(in.getTipo());
+			this.getJsonCurrent().setDataScadenzaIsee(in.getDataScadenzaIsee());
+			this.getJsonCurrent().setDataIsee(in.getDataPresentazioneIsee());
+		}else{
+			this.getJsonCurrent().setIse(null);
+			this.getJsonCurrent().setIsee(null);
+			this.getJsonCurrent().setScalaEquivalenza(null);
+			//this.getJsonCurrent().setTipo(in.getTipo());
+			this.getJsonCurrent().setDataScadenzaIsee(null);
+			this.getJsonCurrent().setDataIsee(null);
+		}
+	}
+	
 }

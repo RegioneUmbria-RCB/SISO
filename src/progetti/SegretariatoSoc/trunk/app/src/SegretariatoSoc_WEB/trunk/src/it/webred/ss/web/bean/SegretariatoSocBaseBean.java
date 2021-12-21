@@ -5,13 +5,15 @@ import it.webred.amprofiler.ejb.user.UserService;
 import it.webred.amprofiler.model.AmAnagrafica;
 import it.webred.amprofiler.model.AmGroup;
 import it.webred.cet.permission.CeTUser;
-import it.webred.cs.csa.ejb.client.AccessTableComuniSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.AccessTableConfigurazioneSessionBeanRemote;
+import it.webred.cs.csa.ejb.client.AccessTableDatiEsterniSoggettoSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.AccessTableDiarioSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.AccessTableInterventoSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.AccessTableNazioniSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.AccessTableOperatoreSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.AccessTableSoggettoSessionBeanRemote;
+import it.webred.cs.csa.ejb.client.domini.AccessTableDominiAmKeySessionBeanRemote;
+import it.webred.cs.csa.ejb.dto.DatiEsterniSoggettoViewDTO;
 import it.webred.cs.csa.ejb.dto.OperatoreDTO;
 import it.webred.cs.data.DataModelCostanti;
 import it.webred.cs.data.DataModelCostanti.TabUDC;
@@ -21,7 +23,6 @@ import it.webred.cs.data.model.CsOOrganizzazione;
 import it.webred.cs.data.model.CsOSettoreBASIC;
 import it.webred.cs.data.model.CsOZonaSoc;
 import it.webred.cs.data.model.CsTbAssenzaPermesso;
-import it.webred.cs.data.model.CsTbCittadinanzaAcq;
 import it.webred.cs.data.model.CsTbPermesso;
 import it.webred.cs.data.model.CsTbStatoCivile;
 import it.webred.cs.data.model.CsTbStatus;
@@ -43,24 +44,19 @@ import it.webred.cs.json.orientamentoistruzione.IOrientamentoIstruzione;
 import it.webred.cs.json.orientamentoistruzione.OrientamentoIstruzioneManBaseBean;
 import it.webred.cs.json.stranieri.IStranieri;
 import it.webred.cs.json.stranieri.StranieriManBaseBean;
-import it.webred.cs.sociosan.ejb.client.ricercaSoggetto.RicercaSoggettoSessionBeanRemote;
 import it.webred.ct.config.luoghi.LuoghiService;
 import it.webred.ct.config.model.AmInstance;
 import it.webred.ct.config.model.AmKeyValueExt;
-import it.webred.ct.config.model.AmTabComuni;
 import it.webred.ct.config.parameters.ParameterService;
 import it.webred.ct.config.parameters.application.ApplicationService;
+import it.webred.ct.config.parameters.comune.ComuneService;
 import it.webred.ct.config.parameters.dto.ParameterSearchCriteria;
-import it.webred.ct.data.access.basic.anagrafe.AnagrafeService;
-import it.webred.ct.data.access.basic.anagrafe.dto.ComponenteFamigliaDTO;
-import it.webred.ct.data.access.basic.anagrafe.dto.IndirizzoAnagDTO;
-import it.webred.ct.data.access.basic.anagrafe.dto.RicercaSoggettoAnagrafeDTO;
-import it.webred.ct.data.model.anagrafe.SitDPersona;
 import it.webred.ct.support.datarouter.CeTBaseObject;
 import it.webred.ejb.utility.ClientUtility;
 import it.webred.ss.data.model.SsDiario;
 import it.webred.ss.data.model.SsScheda;
 import it.webred.ss.data.model.SsSchedaAccessoInviante;
+import it.webred.ss.data.model.SsTipoScheda;
 import it.webred.ss.data.model.SsUfficio;
 import it.webred.ss.ejb.client.SsSchedaSessionBeanRemote;
 import it.webred.ss.ejb.dto.BaseDTO;
@@ -84,7 +80,6 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.ResourceBundle;
 
 import javax.faces.application.Application;
@@ -129,13 +124,27 @@ public class SegretariatoSocBaseBean {
 	//protected static final String PAGINA_CORRENTE_URL = "schede_inviate.faces";
 	
 	protected static final String ZONA_SOCIALE_KEY = "zs";
+	
+	protected ComuneService comuneService = (ComuneService) getEjb("CT_Service", "CT_Config_Manager", "ComuneServiceBean");
+	protected static ParameterService paramService = (ParameterService) getEjb("CT_Service", "CT_Config_Manager", "ParameterBaseService");
+	protected static LuoghiService luoghiService = (LuoghiService)  getEjb("CT_Service", "CT_Config_Manager", "LuoghiServiceBean");
+	
+	protected AccessTableInterventoSessionBeanRemote interventoService = 
+			(AccessTableInterventoSessionBeanRemote) getEjb("CarSocialeA", "CarSocialeA_EJB", "AccessTableInterventoSessionBean");
+	
+	protected AccessTableConfigurazioneSessionBeanRemote configurationCsBean =
+			(AccessTableConfigurazioneSessionBeanRemote) getEjb("CarSocialeA", "CarSocialeA_EJB", "AccessTableConfigurazioneSessionBean");
+	
+	protected SsSchedaSessionBeanRemote schedaService = 
+			(SsSchedaSessionBeanRemote) getEjb("SegretariatoSoc", "SegretariatoSoc_EJB", "SsSchedaSessionBean");
+	
+	protected  AccessTableDominiAmKeySessionBeanRemote amKeyDomini = 
+			(AccessTableDominiAmKeySessionBeanRemote) getEjb ("CarSocialeA", "CarSocialeA_EJB", "AccessTableDominiAmKeySessionBean");
 
-	private AccessTableConfigurazioneSessionBeanRemote configurationCsBean;
 	private AccessTableDiarioSessionBeanRemote diarioService;
 	
 	private final Date currentDate = new Date();
 
-	// private PuntoContatto preselectedPContatto;
 
 	private String logoBasePath;
 	protected String dirLoghi = "/images/logo/";
@@ -159,13 +168,6 @@ public class SegretariatoSocBaseBean {
 	public static final String delete = "DELETE";
 	public static final String print = "PRINT";
 
-	protected static ParameterService paramService = (ParameterService) getEjb("CT_Service", "CT_Config_Manager", "ParameterBaseService");
-	protected static LuoghiService luoghiService = (LuoghiService)  getEjb("CT_Service", "CT_Config_Manager", "LuoghiServiceBean");
-	protected SsSchedaSessionBeanRemote schedaService = 
-			(SsSchedaSessionBeanRemote) getEjb("SegretariatoSoc", "SegretariatoSoc_EJB", "SsSchedaSessionBean");
-	protected AccessTableInterventoSessionBeanRemote interventoService =  
-			(AccessTableInterventoSessionBeanRemote) getEjb("CarSocialeA", "CarSocialeA_EJB", "AccessTableInterventoSessionBean");
-	
 	public void logAction(String action) {
 		logAction(action, null);
 	}
@@ -193,30 +195,13 @@ public class SegretariatoSocBaseBean {
 	
 
 	public AccessTableConfigurazioneSessionBeanRemote getConfigurationCsBean(){
-		if (configurationCsBean == null)
-			configurationCsBean =
-					(AccessTableConfigurazioneSessionBeanRemote) getEjb("CarSocialeA", "CarSocialeA_EJB", "AccessTableConfigurazioneSessionBean");
 		return configurationCsBean;
-	}
-
-	
-
-	//INIZIO SISO-438-Possibilità di allegare documenti in UdC
-	public AccessTableInterventoSessionBeanRemote getAccessTableInterventoService() {
-		AccessTableInterventoSessionBeanRemote accessTableInterventoSessionBeanRemote = null;
-		try {
-			if (accessTableInterventoSessionBeanRemote == null) {
-				accessTableInterventoSessionBeanRemote = (AccessTableInterventoSessionBeanRemote) 
-							ClientUtility.getEjbInterface("CarSocialeA", "CarSocialeA_EJB", "AccessTableInterventoSessionBean");
-			}
-		} catch(Exception e){ 
-			logger.error(e.getMessage(), e);
-		}
-			
-		return accessTableInterventoSessionBeanRemote;
 	}
 	
 	private String getGlobalParameter(String paramName) {
+		String valore = amKeyDomini.findByKey(paramName);
+		if(!StringUtils.isBlank(valore)) return valore;
+		
 		ParameterSearchCriteria criteria = new ParameterSearchCriteria();
 		criteria.setKey(paramName);
 		criteria.setComune(null);
@@ -298,8 +283,7 @@ public class SegretariatoSocBaseBean {
 		FacesContext facesContext = FacesContext.getCurrentInstance();
 		String txt = bundle.getString(messageKey);
 
-		facesContext.addMessage(null, new FacesMessage(severity, txt,
-				details == null ? "" : details));
+		facesContext.addMessage(null, new FacesMessage(severity, txt,details == null ? "" : details));
 	}
 
 	public void addInfo(String msgKey) {
@@ -409,46 +393,6 @@ public class SegretariatoSocBaseBean {
 
 		}
 		if (user != null) {
-			HashMap<String, String> permessi = user.getPermList();
-			// permessi.put("permission@-@SegretariatoSoc@-@NomeDellaFunzioneOAreaFunzionale@-@segrsoc-stampa-statistiche",
-			// "permission@-@SegretariatoSoc@-@NomeDellaFunzioneOAreaFunzionale@-@segrsoc-stampa-statistiche");
-			// permessi.put("permission@-@"+istanza+"@-@NomeDellaFunzioneOAreaFunzionale@-@segrsoc-invia-caso",
-			// "permission@-@"+istanza+"@-@NomeDellaFunzioneOAreaFunzionale@-@segrsoc-invia-caso");
-
-			// Admin segretariato professionale
-			// permessi.put("permission@-@"+istanza+"@-@Organization@",
-			// "permission@-@"+istanza+"@-@Organization@-@segrsoc-Comune");
-			// permessi.put("permission@-@"+istanza+"@-@Role@",
-			// "permission@-@"+istanza+"@-@Role@-@segrsoc-Admin");
-			// "permission@-@"+istanza+"@-@Task@-@segrsoc-read"
-			// "permission@-@"+istanza+"@-@Task@-@segrsoc-write"
-			// "permission@-@"+istanza+"@-@Task@-@segrsoc-edit"
-			// "permission@-@"+istanza+"@-@Task@-@segrsoc-delete"
-			// "permission@-@"+istanza+"@-@Task@-@segrsoc-print"
-			// "permission@-@"+istanza+"@-@Task@-@segrsoc-readDiario"
-			// "permission@-@"+istanza+"@-@Task@-@segrsoc-readInterventiEconomiciNucleo"
-		/*	permessi.put("permission@-@" + istanza + "@-@Task@-@segrsoc-ufficio-0", "permission@-@" + istanza + "@-@Task@-@segrsoc-ufficio-0");
-			permessi.put("permission@-@" + istanza + "@-@Task@-@segrsoc-ufficio-1", "permission@-@" + istanza + "@-@Task@-@segrsoc-ufficio-1");
-			permessi.put("permission@-@" + istanza + "@-@Task@-@segrsoc-ufficio-2", "permission@-@" + istanza + "@-@Task@-@segrsoc-ufficio-2");
-			permessi.put("permission@-@" + istanza + "@-@Task@-@segrsoc-ufficio-3", "permission@-@" + istanza + "@-@Task@-@segrsoc-ufficio-3");
-			permessi.put("permission@-@" + istanza + "@-@Task@-@segrsoc-ufficio-4", "permission@-@" + istanza + "@-@Task@-@segrsoc-ufficio-4");
-			permessi.put("permission@-@" + istanza + "@-@Task@-@segrsoc-ufficio-5", "permission@-@" + istanza + "@-@Task@-@segrsoc-ufficio-5");
-			permessi.put("permission@-@" + istanza + "@-@Task@-@segrsoc-ufficio-6", "permission@-@" + istanza + "@-@Task@-@segrsoc-ufficio-6");
-			permessi.put("permission@-@" + istanza + "@-@Task@-@segrsoc-ufficio-7", "permission@-@" + istanza + "@-@Task@-@segrsoc-ufficio-7");
-			permessi.put("permission@-@" + istanza + "@-@Task@-@segrsoc-ufficio-8", "permission@-@" + istanza + "@-@Task@-@segrsoc-ufficio-8");
-			permessi.put("permission@-@" + istanza + "@-@Task@-@segrsoc-ufficio-9", "permission@-@" + istanza + "@-@Task@-@segrsoc-ufficio-9");
-			permessi.put("permission@-@" + istanza + "@-@Task@-@segrsoc-ufficio-10", "permission@-@" + istanza + "@-@Task@-@segrsoc-ufficio-10");
-*/
-			// Admin ente esterno
-			// permessi.put("permission@-@"+istanza+"@-@Organization@",
-			// "permission@-@"+istanza+"@-@Organization@-@segrsoc-Caritas");
-			// permessi.put("permission@-@"+istanza+"@-@Role@",
-			// "permission@-@"+istanza+"@-@Role@-@segrsoc-Admin");
-			// permessi.put("permission@-@"+istanza+"@-@Task@-@segrsoc-readDiario",
-			// "permission@-@"+istanza+"@-@Task@-@segrsoc-readDiario");
-			// permessi.put("permission@-@"+istanza+"@-@Task@-@segrsoc-readInterventiEconomiciNucleo",
-			// "permission@-@"+istanza+"@-@Task@-@segrsoc-readInterventiEconomiciNucleo")
-
 			HttpSession session = getRequest().getSession();
 			if (session.getAttribute(loginAction) == null) {
 				session.setAttribute(loginAction, true);
@@ -569,6 +513,10 @@ public class SegretariatoSocBaseBean {
 	public boolean canReadDiario() {
 		return CsUiCompBaseBean.checkPermessoSS("segrsoc-readDiario");
 	}
+	
+	public boolean isAccessoDatiSocLav() {
+		return CsUiCompBaseBean.checkPermessoSS("segrsoc-accesso dati SOCLAV");
+	}
 
 	public boolean canReadInterventiEconomiciNucleo() {
 		return CsUiCompBaseBean.checkPermessoSS("segrsoc-readInterventiEconomiciNucleo");
@@ -619,28 +567,6 @@ public class SegretariatoSocBaseBean {
 			return null;
 	}
 
-	private AmTabComuni getComunee(String belfiore) {
-		AmTabComuni comune = null;
-		try {
-			AccessTableComuniSessionBeanRemote opService = (AccessTableComuniSessionBeanRemote) ClientUtility.getEjbInterface("CarSocialeA", "CarSocialeA_EJB",
-					"AccessTableComuniSessionBean");
-
-			CeTUser user = getUser();
-			if (user != null)
-				comune = opService.getComuneByBelfiore(belfiore);
-
-		} catch (Exception e) {
-			logger.error("Errore recupero getComune", e);
-		}
-		return comune;
-	}
-
-	protected AccessTableConfigurazioneSessionBeanRemote getCsConfigurazioneService() {
-		AccessTableConfigurazioneSessionBeanRemote service =
-				(AccessTableConfigurazioneSessionBeanRemote)getEjb("CarSocialeA", "CarSocialeA_EJB", "AccessTableConfigurazioneSessionBean");
-		return service;
-	}
-
 	protected AccessTableNazioniSessionBeanRemote getAmConfigurazioneService() throws NamingException {
 		AccessTableNazioniSessionBeanRemote service2 =
 				(AccessTableNazioniSessionBeanRemote) ClientUtility.getEjbInterface("CarSocialeA", "CarSocialeA_EJB", "AccessTableNazioniSessionBean");
@@ -672,6 +598,11 @@ public class SegretariatoSocBaseBean {
 		return "";
 	}
 
+	public boolean isModuloPorMarche(){
+		String valore = this.getModuloPorRegionale();
+		return !StringUtils.isEmpty(valore) && valore.contains("Marche");
+	}
+	
 	@SuppressWarnings("unchecked")
 	private AmAnagrafica getAnagrafica(String user) {
 		AmAnagrafica amAna = null;
@@ -686,7 +617,7 @@ public class SegretariatoSocBaseBean {
 					amAna = anagraficaService.findAnagraficaByUserName(user);
 					if (amAna != null) {
 						mappaAnagrafiche.put(user, amAna);
-						this.getSession().setAttribute("mappaAnagraficheUdC", mappaAnagrafiche);
+						getSession().setAttribute("mappaAnagraficheUdC", mappaAnagrafiche);
 					}
 
 				} catch (NamingException e) {
@@ -723,7 +654,7 @@ public class SegretariatoSocBaseBean {
 	}
 
 
-	protected String readTipoScheda(Long idTipo) {
+/*	protected String readTipoScheda(Long idTipo) {
 		try {
 			SsSchedaSessionBeanRemote schedaService = (SsSchedaSessionBeanRemote) ClientUtility.getEjbInterface(
 					"SegretariatoSoc", "SegretariatoSoc_EJB", "SsSchedaSessionBean");
@@ -735,7 +666,7 @@ public class SegretariatoSocBaseBean {
 		} catch (Exception e) {
 			return "";
 		}
-	}
+	}*/
 
 /*	protected PuntoContatto getPContattoFromSession() {
 		PuntoContatto pcont = (PuntoContatto) this.getSession().getAttribute("preselectedPContatto");
@@ -794,18 +725,14 @@ public class SegretariatoSocBaseBean {
 	}
 
 	private String getParametro(ParameterSearchCriteria criteria) {
-		ParameterService paramService;
 		try {
-
-			paramService = (ParameterService) ClientUtility.getEjbInterface("CT_Service", "CT_Config_Manager", "ParameterBaseService");
-
 			AmKeyValueExt amKey = paramService.getAmKeyValueExt(criteria);
 			if (amKey != null)
 				return amKey.getValueConf();
 			else
 				return null;
 
-		} catch (NamingException e) {
+		} catch (Exception e) {
 			logger.error(e);
 		}
 		return null;
@@ -891,7 +818,7 @@ public class SegretariatoSocBaseBean {
 				it.webred.cs.csa.ejb.dto.BaseDTO d = new it.webred.cs.csa.ejb.dto.BaseDTO();
 				fillUserData(d);
 				d.setObj(new Long(id));
-				CsTbTipologiaFamiliare fa = this.getCsConfigurazioneService().getTipologiaFamiliareById(d);
+				CsTbTipologiaFamiliare fa = this.configurationCsBean.getTipologiaFamiliareById(d);
 				return fa;
 
 		} catch (Exception e) {
@@ -907,7 +834,7 @@ public class SegretariatoSocBaseBean {
 				it.webred.cs.csa.ejb.dto.BaseDTO d = new it.webred.cs.csa.ejb.dto.BaseDTO();
 				fillUserData(d);
 				d.setObj(id);
-				CsTbPermesso cl = this.getCsConfigurazioneService().getPermessoById(d);
+				CsTbPermesso cl = this.configurationCsBean.getPermessoById(d);
 				return cl;
 			}
 
@@ -925,7 +852,7 @@ public class SegretariatoSocBaseBean {
 				it.webred.cs.csa.ejb.dto.BaseDTO d = new it.webred.cs.csa.ejb.dto.BaseDTO();
 				fillUserData(d);
 				d.setObj(id);
-				CsTbAssenzaPermesso cl = this.getCsConfigurazioneService().getAssenzaPermessoById(d);
+				CsTbAssenzaPermesso cl = configurationCsBean.getAssenzaPermessoById(d);
 				return cl;
 			}
 
@@ -943,7 +870,7 @@ public class SegretariatoSocBaseBean {
 				it.webred.cs.csa.ejb.dto.BaseDTO d = new it.webred.cs.csa.ejb.dto.BaseDTO();
 				fillUserData(d);
 				d.setObj(id);
-				CsTbStatus cl = this.getCsConfigurazioneService().getStatusById(d);
+				CsTbStatus cl = configurationCsBean.getStatusById(d);
 				return cl;
 			}
 
@@ -1107,6 +1034,20 @@ public class SegretariatoSocBaseBean {
 	protected URL getMediciWebServiceWSDLLocation() throws NamingException {
 		String urlString = getGlobalParameter(DataModelCostanti.AmParameterKey.WS_MEDICI_URL);
 		return stringToUrl(urlString);
+	}
+	
+	protected boolean isVisualizzaModuloPorUdc() {
+		String val = getGlobalParameter(DataModelCostanti.AmParameterKey.POR_UDC_ABILITA);
+		return val!=null && "1".equalsIgnoreCase(val) ? true : false;
+	}
+	
+	public boolean isGestioneCapofilaPic() {
+		String val = getGlobalParameter(DataModelCostanti.AmParameterKey.GESTIONE_CAPOFILA_PIC);
+		return val!=null && "1".equalsIgnoreCase(val) ? true : false;
+	}
+	
+	protected String getModuloPorRegionale(){
+		return this.getGlobalParameter(DataModelCostanti.AmParameterKey.POR_MODELLO_STAMPA);
 	}
 	
 	private static URL stringToUrl(String urlString) {
@@ -1389,7 +1330,6 @@ public class SegretariatoSocBaseBean {
 		if(this.visPanelStranieri==null){
 			visPanelStranieri=false;
 			try{
-				ParameterService paramService = (ParameterService) ClientUtility.getEjbInterface("CT_Service", "CT_Config_Manager", "ParameterBaseService");
 				ParameterSearchCriteria criteria = new ParameterSearchCriteria();
 				criteria.setKey("smartwelfare.gestioneStranieri");
 				criteria.setComune(null);
@@ -1414,11 +1354,6 @@ public class SegretariatoSocBaseBean {
 		PreselPuntoContatto pContMan = (PreselPuntoContatto)getBeanReference("preselPuntoContatto");
 		pContMan.setPuntoContatto(pCont);
 	}
-	
-
-/*	public boolean canAccessUfficio(Long ufficio) {
-		return checkPermesso("permission@-@" + getNomeIstanza() + "@-@Task@-@segrsoc-ufficio-" + ufficio);
-	}*/
 	
 	public List<AmGroup> getGruppiUtenteEnte(){
 		String belfiore = this.getCurrentEnte();
@@ -1448,7 +1383,6 @@ public class SegretariatoSocBaseBean {
 		        		List<String> gruppiEsclusi = Arrays.asList(grs);
 	
 		        		//Verifico che i gruppi cui appartiene l'utente non siano compresi in quelli esclusi dall'accesso
-		        		int i=0;
 		        		for(AmGroup gr : gruppiUtente){
 		        			String gruppoUtente = gr.getName();
 		        			for(String gruppoEscluso : gruppiEsclusi){
@@ -1531,15 +1465,12 @@ public class SegretariatoSocBaseBean {
 		return null;
 	}
 	
-	protected String getIdExtSoggetto(String cf){
+/*	protected String getIdExtSoggetto(String cf){
 		RicercaSoggettoAnagrafeDTO dto = new RicercaSoggettoAnagrafeDTO();
     	fillUserData(dto);
     	dto.setCodFis(cf);
     	
     	try {
-    		
-    		AnagrafeService anagrafeService = (AnagrafeService) ClientUtility.getEjbInterface(
-    				"CT_Service", "CT_Service_Data_Access", "AnagrafeServiceBean");
     		
 			dto.setDtRif(new Date());
 			List<SitDPersona> listp = anagrafeService.getListaPersoneByCF(dto);
@@ -1552,7 +1483,7 @@ public class SegretariatoSocBaseBean {
 			if(lstIds.size()==1)
 				return lstIds.get(0);
     		
-    	} catch(NamingException e) {
+    	} catch(Exception e) {
     		logger.error(e.getMessage(), e);
     		addError("caricamento.soggetto.error");
 		}
@@ -1566,9 +1497,6 @@ public class SegretariatoSocBaseBean {
     	dto.setCodFis(cf);
     	
     	try {
-    		
-    		AnagrafeService anagrafeService = (AnagrafeService) ClientUtility.getEjbInterface(
-    				"CT_Service", "CT_Service_Data_Access", "AnagrafeServiceBean");
     		
     		if(idExt==null){
     			dto.setDtRif(new Date());
@@ -1586,42 +1514,19 @@ public class SegretariatoSocBaseBean {
 
     		return anagrafeService.getListaCompFamiglia(dto);
     		
-    	} catch(NamingException e) {
+    	} catch(Exception e) {
     		logger.error(e.getMessage(), e);
     		addError("caricamento.soggetto.error");
 		}
     	return null;
-	}
+	}*/
 	
 	@SuppressWarnings({ "unchecked", "el-syntax" })
 	public static <T> T findBean(String beanName) {
 		FacesContext context = FacesContext.getCurrentInstance();
 		return (T) context.getApplication().evaluateExpressionGet(context, "#{" + beanName + "}", Object.class);
 	}
-	
-	protected IndirizzoAnagDTO getResidenzaFromAnagrafe(String codFisc) {
-		IndirizzoAnagDTO indirizzo = null;
-		try {
-			
-			AnagrafeService anagrafeService = (AnagrafeService) ClientUtility
-					.getEjbInterface("CT_Service", "CT_Service_Data_Access",
-							"AnagrafeServiceBean");
 
-			RicercaSoggettoAnagrafeDTO dto = new RicercaSoggettoAnagrafeDTO();
-			fillUserData(dto);
-			dto.setCodFis(codFisc);
-			List<IndirizzoAnagDTO> lst = anagrafeService.getIndirizzoResidenzaByCodFisc(dto);
-			if(lst!=null && !lst.isEmpty())
-				indirizzo = lst.get(0);
-			
-		} catch (NamingException e) {
-			logger.error(e.getMessage(), e);
-    		addError("caricamento.soggetto.error");
-		}
-
-		return indirizzo;
-	}
-	
 	public boolean canReadNotaDiario(SsDiario nota, String operatoreAccesso, Long organizzazioneId){
 		if(nota.getPubblica()) //la nota è pubblica
 			return true;
@@ -1650,7 +1555,6 @@ public class SegretariatoSocBaseBean {
 	}
 	
 	public boolean canDeleteNotaDiario(SsDiario nota, String operatoreAccesso, Long anagraficaId ){
-		boolean delete = false;
 		//responsabile dell'organizzazione in cui è stata inserita la nota
 		if(this.isResponsabileEnte(nota.getEnte().getCodRouting()))
 			return true;
@@ -1694,6 +1598,10 @@ public class SegretariatoSocBaseBean {
 		
 	}
 	
+	public static Object getArgoEjb(String ejbName) {
+		return getEjb("Argo", "Argo_EJB", ejbName);
+	}
+	
 	public static Object getEjb(String ear, String module, String ejbName) {
 		Context cont;
 		try {
@@ -1708,11 +1616,10 @@ public class SegretariatoSocBaseBean {
 	public CsTbStatoCivile getStatoCivileByIdExtCeT(String statoCivile) {
 		
 			if (statoCivile != null && !statoCivile.isEmpty()) {
-				AccessTableConfigurazioneSessionBeanRemote configurazioneService =this.getCsConfigurazioneService();
 				it.webred.cs.csa.ejb.dto.BaseDTO dto = new it.webred.cs.csa.ejb.dto.BaseDTO();
 				fillUserData(dto);
 				dto.setObj(statoCivile);
-				CsTbStatoCivile sc = configurazioneService.getStatoCivileByIdExtCet(dto);
+				CsTbStatoCivile sc = configurationCsBean.getStatoCivileByIdExtCet(dto);
 				
 				if(sc==null)
 					addWarningMessage("Attenzione", "Non è stata configurata la corrisponenza dei codici di stato civile");
@@ -1805,6 +1712,10 @@ public class SegretariatoSocBaseBean {
 		return this.mappaLabelUDC.get(TabUDC.CHIUSURA_TAB);
 	}
 	
+	protected Object getRequestParameter(String key){
+		return FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get(key);
+	}
+	
 	 //Inizio SISO-1110
 	public  boolean isViewTipoInterventoStandard() {
 
@@ -1848,4 +1759,50 @@ public class SegretariatoSocBaseBean {
 		return verifica;
 	}
 	
+	//SISO-1531
+	public Boolean verificaPresenzaDatiEsterni(String cf) {
+		Boolean found = false;
+		List<DatiEsterniSoggettoViewDTO> verifica = null;
+		if(!StringUtils.isBlank(cf)){
+			it.webred.cs.csa.ejb.dto.BaseDTO dto = new it.webred.cs.csa.ejb.dto.BaseDTO();
+	    	fillUserData(dto);
+	    	dto.setObj(cf);
+	    	try {
+	    		AccessTableDatiEsterniSoggettoSessionBeanRemote soggettoService = 
+	    				(AccessTableDatiEsterniSoggettoSessionBeanRemote) ClientUtility.getEjbInterface("CarSocialeA", "CarSocialeA_EJB", "AccessTableDatiEsterniSoggettoSessionBean");
+	    		
+	    		verifica = soggettoService.getDatiEsterniSoggetto(dto);
+	    		if(verifica != null) {
+	    			for(DatiEsterniSoggettoViewDTO datiEsterni : verifica) {
+	    				if(datiEsterni.getTipologia().contains("Prestazione")) {
+	    					found = true;
+	    					break;
+	    				}
+	    			}
+	    		}
+	    	} catch(Exception e) {
+	    		logger.error(e.getMessage(), e);
+	    		addError("caricamento.error");
+			}
+		}
+		return found;
+	}
+	
+	protected SsTipoScheda readTipoSchedaFromIdTipoScheda(Long idTipoScheda) {
+		try {
+			if (idTipoScheda != null) {
+				BaseDTO dto = new BaseDTO();
+				fillUserData(dto);
+				dto.setObj(idTipoScheda);
+				SsTipoScheda tipo = this.getSsSchedaService().readTipoSchedaById(dto);
+				return tipo;
+			}
+		} catch (Exception e) {
+			logger.error("Errore recupero Esito Intervento ", e);
+			addErrorMessage("Errore recupero esito intervento", "");
+		}
+
+		return null;
+	}
+
 }

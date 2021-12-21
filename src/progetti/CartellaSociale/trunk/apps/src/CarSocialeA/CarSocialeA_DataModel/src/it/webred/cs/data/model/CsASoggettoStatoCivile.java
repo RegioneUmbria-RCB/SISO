@@ -53,11 +53,6 @@ public class CsASoggettoStatoCivile implements Serializable {
 	@Column(name="USR_MOD")
 	private String usrMod;
 
-	//bi-directional many-to-one association to CsASoggetto
-	@ManyToOne
-	@JoinColumn(name="SOGGETTO_ANAGRAFICA_ID", insertable=false, updatable=false)
-	private CsASoggettoLAZY csASoggetto;
-
 	//bi-directional many-to-one association to CsTbStatoCivile
 	@ManyToOne
 	@JoinColumn(name="STATO_CIVILE_COD", insertable=false, updatable=false)
@@ -153,13 +148,4 @@ public class CsASoggettoStatoCivile implements Serializable {
 	public void setCsTbStatoCivile(CsTbStatoCivile csTbStatoCivile) {
 		this.csTbStatoCivile = csTbStatoCivile;
 	}
-
-	public CsASoggettoLAZY getCsASoggetto() {
-		return this.csASoggetto;
-	}
-
-	public void setCsASoggetto(CsASoggettoLAZY csASoggetto) {
-		this.csASoggetto = csASoggetto;
-	}
-
 }

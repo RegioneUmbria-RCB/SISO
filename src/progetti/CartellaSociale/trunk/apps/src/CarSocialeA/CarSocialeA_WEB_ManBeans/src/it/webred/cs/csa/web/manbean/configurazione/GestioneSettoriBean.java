@@ -15,6 +15,7 @@ import it.webred.cs.data.model.CsTbSecondoLivello;
 import it.webred.cs.jsf.interfaces.IGestioneSettori;
 import it.webred.cs.jsf.manbean.ComuneResidenzaMan;
 import it.webred.cs.jsf.manbean.IndirizzoMan;
+import it.webred.cs.jsf.manbean.comuneNazione.ComuneGenericMan;
 import it.webred.cs.jsf.manbean.superc.CsUiCompBaseBean;
 import it.webred.ct.config.luoghi.LuoghiService;
 import it.webred.ct.config.model.AmComune;
@@ -42,8 +43,6 @@ import org.primefaces.event.SelectEvent;
 public class GestioneSettoriBean extends CsUiCompBaseBean implements IGestioneSettori {
 
 	private AccessTableConfigurazioneSessionBeanRemote confService = (AccessTableConfigurazioneSessionBeanRemote) getCarSocialeEjb("AccessTableConfigurazioneSessionBean");
-	private LuoghiService luoghiService = (LuoghiService) getEjb("CT_Service", "CT_Config_Manager", "LuoghiServiceBean");
-	private ComuneService comuneService = (ComuneService) getEjb("CT_Service", "CT_Config_Manager", "ComuneServiceBean");
 	private AccessTableCatSocialeSessionBeanRemote catSocService = (AccessTableCatSocialeSessionBeanRemote) getCarSocialeEjb( "AccessTableCatSocialeSessionBean");
 	
 	
@@ -64,6 +63,7 @@ public class GestioneSettoriBean extends CsUiCompBaseBean implements IGestioneSe
 	private List<SettoreCatSocialeDTO> selectedSettori;
 	private CsOSettore newSettore;
 	private IndirizzoMan newIndirizzo;
+	private ComuneGenericMan comuneSettoreMan; //Indirizzo del settore
 	
 	//cat.sociali
 	private List<SelectItem> lstCatSociali;
@@ -81,6 +81,7 @@ public class GestioneSettoriBean extends CsUiCompBaseBean implements IGestioneSe
 		newComune = new ComuneResidenzaMan();
 		newSettore = new CsOSettore();
 		newIndirizzo = new IndirizzoMan();
+		comuneSettoreMan = new ComuneGenericMan("Comune");
 		caricaOrganizzazioni();
 		caricaCatSociali();
 		carica2Liv();
@@ -247,6 +248,13 @@ public class GestioneSettoriBean extends CsUiCompBaseBean implements IGestioneSe
 			fillEnte(dto);
 			dto.setObj(selectedOrganizzazione.getId());
 			
+			String codCatastale = selectedOrganizzazione.getCodCatastale();
+			AmTabComuni comune = luoghiService.getComuneItaByBelfiore(codCatastale);
+			if(comune!=null){
+				ComuneBean cb = new ComuneBean(comune);
+				comuneSettoreMan.setComune(cb);
+			}
+		
 			try {
 				lstSettori = confService.findSettoreDTOByOrganizzazione(dto);
 			} catch(Exception e) {
@@ -394,7 +402,7 @@ public class GestioneSettoriBean extends CsUiCompBaseBean implements IGestioneSe
 	
 	public void aggiungiSettore() {
 		
-		if(newSettore.getNome() != null && !"".equals(newSettore.getNome())) {
+		if(!StringUtils.isBlank(newSettore.getNome())) {
 			try {
 				
 				BaseDTO dto = new BaseDTO();
@@ -405,18 +413,18 @@ public class GestioneSettoriBean extends CsUiCompBaseBean implements IGestioneSe
 				newSettore.setTooltip(newSettore.getNome());
 				
 				//indirizzo
-				if(newIndirizzo.getSelectedIndirizzo() != null && !"".equals(newIndirizzo.getSelectedIndirizzo())) {
+				if(!StringUtils.isBlank(newIndirizzo.getSelectedIndirizzo())) {
 					CsAAnaIndirizzo anaIndirizzo = new CsAAnaIndirizzo();
 					anaIndirizzo.setIndirizzo(newIndirizzo.getSelectedIndirizzo());
 					anaIndirizzo.setCivicoNumero(newIndirizzo.getSelectedCivico());
 					anaIndirizzo.setCodiceVia(newIndirizzo.getSelectedIdVia());
-					String codCatastale = dto.getEnteId();
-					if(selectedOrganizzazione.getCodCatastale() != null)
-						codCatastale = selectedOrganizzazione.getCodCatastale();
-					AmTabComuni amComune = luoghiService.getComuneItaByBelfiore(codCatastale);
-					anaIndirizzo.setComCod(amComune.getCodIstatComune());
-					anaIndirizzo.setComDes(amComune.getDenominazione());
-					anaIndirizzo.setProv(amComune.getSiglaProv());
+					
+					ComuneBean comune = comuneSettoreMan.getComune();
+					if(comune!=null){
+						anaIndirizzo.setComCod(comune.getCodIstatComune());
+						anaIndirizzo.setComDes(comune.getDenominazione());
+						anaIndirizzo.setProv(comune.getSiglaProv());
+					}
 					newSettore.setCsAAnaIndirizzo(anaIndirizzo);
 				}
 				
@@ -427,6 +435,7 @@ public class GestioneSettoriBean extends CsUiCompBaseBean implements IGestioneSe
 				caricaSettori();
 				newSettore = new CsOSettore();
 				newIndirizzo = new IndirizzoMan();
+				comuneSettoreMan = new ComuneGenericMan("Comune");
 				lstCatSocialiSel= new ArrayList<Long>();
 				addInfoFromProperties("salva.ok");
 				
@@ -580,6 +589,14 @@ public class GestioneSettoriBean extends CsUiCompBaseBean implements IGestioneSe
 
 	public void setNewIndirizzo(IndirizzoMan newIndirizzo) {
 		this.newIndirizzo = newIndirizzo;
+	}
+	
+	public ComuneGenericMan getComuneSettoreMan() {
+		return comuneSettoreMan;
+	}
+
+	public void setComuneSettoreMan(ComuneGenericMan comuneSettoreMan) {
+		this.comuneSettoreMan = comuneSettoreMan;
 	}
 
 	public ComuneResidenzaMan getNewComune() {

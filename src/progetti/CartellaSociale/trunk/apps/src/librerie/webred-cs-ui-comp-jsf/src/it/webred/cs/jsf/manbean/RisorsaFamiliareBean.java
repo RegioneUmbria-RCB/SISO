@@ -27,10 +27,14 @@ public class RisorsaFamiliareBean extends CsUiCompBaseBean implements IRisorsaFa
 	private List<SelectItem> risorseItem;
 	private String tooltip;
 	
+	public RisorsaFamiliareBean(){
+		this.tooltip = "Sono selezionabili sono i soggetti con cartella e dati sociali attivi";
+	}
+	
 	public RisorsaFamiliareBean(String cf){
+		this();
 		this.cf = cf;
 		loadRisorse();
-		this.tooltip = "Sono selezionabili sono i soggetti con cartella e dati sociali attivi";
 	}
 	
 	private void loadRisorse(){

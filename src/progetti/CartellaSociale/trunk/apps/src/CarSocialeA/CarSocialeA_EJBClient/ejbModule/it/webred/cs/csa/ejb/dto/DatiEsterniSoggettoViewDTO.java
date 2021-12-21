@@ -69,6 +69,7 @@ public class DatiEsterniSoggettoViewDTO implements Serializable {
 
 	private String nomeFile;
 	private Date dataImportazione;
+	private String tipologia;
 	private List<RigaDatiEsterni> righeDatiEsterni;
 
 	public DatiEsterniSoggettoViewDTO() {
@@ -85,6 +86,15 @@ public class DatiEsterniSoggettoViewDTO implements Serializable {
 
 	public Date getDataImportazione() {
 		return dataImportazione;
+	}
+
+	
+	public String getTipologia() {
+		return tipologia;
+	}
+
+	public void setTipologia(String tipologia) {
+		this.tipologia = tipologia;
 	}
 
 	public void setDataImportazione(Date dataImportazione) {

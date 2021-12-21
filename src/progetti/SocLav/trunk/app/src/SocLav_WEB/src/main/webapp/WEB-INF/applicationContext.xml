@@ -1,0 +1,69 @@
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans.xsd 
+	http://www.springframework.org/schema/tx 
+	http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+	http://www.springframework.org/schema/context 
+	http://www.springframework.org/schema/context/spring-context-4.0.xsd
+	http://www.springframework.org/schema/data/jpa 
+	http://www.springframework.org/schema/data/jpa/spring-jpa-1.2.xsd"
+	default-lazy-init="false" default-autowire="no">
+
+	<!-- <import resource="securityContext.xml" /> -->
+	<context:annotation-config />
+  <!--   <context:property-placeholder location="classpath:soclav.properties"/> -->
+    <context:property-placeholder  location="file:${jboss.server.config.dir}/soclav-db.properties" />
+	<context:component-scan base-package="it.umbriadigitale.soclav" />
+	<!--    <bean id="IRdCGepiAnagraficaService" 
+                  class="it.umbriadigitale.soclav.service.RdCGepiAnagraficaServiceImpl" />  -->
+	<!-- Datasource -->
+	<bean id="soclavDS"
+		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="${db.jdbc.driver.class.name}" />
+		<property name="url" value="${db.jdbc.url}" />
+		<property name="username" value="${db.username}" />
+		<property name="password" value="${db.password}" />
+	</bean>
+
+	<!-- Entity Manager -->
+	<bean id="entityManagerFactory"
+		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+		<property name="dataSource" ref="soclavDS" />
+		<property name="persistenceUnitName" value="soclavPU" />
+  		<property name="jpaVendorAdapter" ref="jpaVendorAdapter"/>
+		<property name="packagesToScan" >
+            <list>
+                <value>it.umbriadigitale.soclav.model</value>
+            </list>
+        </property>
+ 		<property name="jpaProperties">
+            <props>
+                <prop key="hibernate.dialect">${hib.dialect}</prop>
+				<prop key="hibernate.hbm2ddl.auto">${hib.hbm2ddl.auto}</prop>
+				<prop key="hibernate.show_sql">${hib.show.sql}</prop>
+				<prop key="hibernate.format_sql">${hib.format.sql}</prop>
+            </props>
+        </property>
+	</bean>
+	
+	<bean id="jpaVendorAdapter" class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+  		
+	</bean>
+	
+	<jpa:repositories base-package="it.umbriadigitale.soclav.repository"></jpa:repositories>
+
+	<tx:annotation-driven transaction-manager="transactionManager" />
+
+	<!-- Transaction Manager -->
+	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+		<property name="entityManagerFactory" ref="entityManagerFactory" />
+	</bean>
+	
+	
+
+</beans>

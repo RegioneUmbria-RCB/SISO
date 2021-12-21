@@ -39,10 +39,6 @@ public class CsASoggettoLAZY implements Serializable {
 	@OneToOne(optional=false, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "CASO_ID", referencedColumnName = "id", nullable=false)
 	private CsACaso csACaso;
-	
-	//bi-directional many-to-one association to CsAFamigliaGruppo
-	@OneToMany(mappedBy="csASoggetto")
-	private List<CsAFamigliaGruppo> csAFamigliaGruppos;
 
 	//bi-directional one-to-one association to CsAAnagrafica
 	@OneToOne
@@ -98,14 +94,6 @@ public class CsASoggettoLAZY implements Serializable {
 		this.csACaso = csACaso;
 	}
 
-	public List<CsAFamigliaGruppo> getCsAFamigliaGruppos() {
-		return this.csAFamigliaGruppos;
-	}
-
-	public void setCsAFamigliaGruppos(List<CsAFamigliaGruppo> csAFamigliaGruppos) {
-		this.csAFamigliaGruppos = csAFamigliaGruppos;
-	}
-	
 	public CsAAnagrafica getCsAAnagrafica() {
 		return this.csAAnagrafica;
 	}

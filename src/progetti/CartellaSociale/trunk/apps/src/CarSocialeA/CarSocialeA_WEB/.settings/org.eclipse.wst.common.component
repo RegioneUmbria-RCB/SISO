@@ -89,6 +89,9 @@
         <dependent-module archiveName="GedRomaClient.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/CT-LIBS/SISO/GedRomaClient.jar">
             <dependency-type>uses</dependency-type>
         </dependent-module>
+        <dependent-module archiveName="Argo_EJBClient.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/Argo_EJBClient/Argo_EJBClient">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
         <property name="context-root" value="CarSocialeA_WEB"/>
         <property name="java-output-path" value="/CarSocialeA_WEB/build/classes"/>
     </wb-module>

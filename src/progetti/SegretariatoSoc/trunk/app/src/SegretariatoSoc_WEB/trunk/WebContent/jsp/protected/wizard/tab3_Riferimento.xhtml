@@ -23,11 +23,11 @@
 	
 		<h:panelGrid id="dati_riferimento" columns="4" columnClasses="label, value" styleClass="grid">
 			<h:outputText value="Cognome " for="cognome_riferimento" />
-			<p:inputText label="Cognome" id="cognome_riferimento" style="text-transform: uppercase" disabled="#{nuovaSchedaWizard.riferimento.comeSegnalante}"
+			<p:inputText label="Cognome" id="cognome_riferimento" disabled="#{nuovaSchedaWizard.riferimento.comeSegnalante}"
 				value="#{nuovaSchedaWizard.riferimento.cognome}" />
 	
 			<h:outputText value="Nome " for="nome_riferimento" />
-			<p:inputText label="Nome" id="nome_riferimento" style="text-transform: uppercase" disabled="#{nuovaSchedaWizard.riferimento.comeSegnalante}" value="#{nuovaSchedaWizard.riferimento.nome}" />
+			<p:inputText label="Nome" id="nome_riferimento" disabled="#{nuovaSchedaWizard.riferimento.comeSegnalante}" value="#{nuovaSchedaWizard.riferimento.nome}" />
 			
 			<h:outputText value="Data di nascita " for="data_nascita_riferimento" />
 			<webred:pnlData id="data_nascita_riferimento" dataValue="#{nuovaSchedaWizard.riferimento.dataNascita}" disabled="#{nuovaSchedaWizard.riferimento.comeSegnalante}"
@@ -66,7 +66,7 @@
 			                 disabled="#{nuovaSchedaWizard.riferimento.comeSegnalante}">
 				<f:selectItem noSelectionOption="true" itemLabel="- seleziona -" />
 				<f:selectItems value="#{nuovaSchedaWizard.relazioni}" />
-				<p:ajax event="change" update="chkAffidatario" listener="#{nuovaSchedaWizard.onChangeTipoRiferimento}"/> 
+				<p:ajax event="change" update="chkAffidatario" listener="#{nuovaSchedaWizard.onChangeTipoRiferimento(1)}"/> 
 			</p:selectOneMenu>
 	        <p:selectBooleanCheckbox id="chkAffidatario" itemLabel="Affidatario"
 					value="#{nuovaSchedaWizard.riferimento.affidatario}">                 
@@ -94,11 +94,11 @@
 	
 		<h:panelGrid id="dati_riferimento2" columns="4" columnClasses="label, value" styleClass="grid">
 			<h:outputText value="Cognome " for="cognome_riferimento2" />
-			<p:inputText label="Cognome" id="cognome_riferimento2" style="text-transform: uppercase" disabled="#{nuovaSchedaWizard.riferimento2.comeSegnalante}"
+			<p:inputText label="Cognome" id="cognome_riferimento2" disabled="#{nuovaSchedaWizard.riferimento2.comeSegnalante}"
 				value="#{nuovaSchedaWizard.riferimento2.cognome}" />
 	
 			<h:outputText value="Nome " for="nome_riferimento2" />
-			<p:inputText label="Nome" id="nome_riferimento2" style="text-transform: uppercase" disabled="#{nuovaSchedaWizard.riferimento2.comeSegnalante}" value="#{nuovaSchedaWizard.riferimento2.nome}" />
+			<p:inputText label="Nome" id="nome_riferimento2" disabled="#{nuovaSchedaWizard.riferimento2.comeSegnalante}" value="#{nuovaSchedaWizard.riferimento2.nome}" />
 			
 			<h:outputText value="Data di nascita " for="data_nascita_riferimento2" />
 			<webred:pnlData id="data_nascita_riferimento2" dataValue="#{nuovaSchedaWizard.riferimento2.dataNascita}" disabled="#{nuovaSchedaWizard.riferimento2.comeSegnalante}"
@@ -137,7 +137,7 @@
 			                 disabled="#{nuovaSchedaWizard.riferimento2.comeSegnalante}">
 				<f:selectItem noSelectionOption="true" itemLabel="- seleziona -" />
 				<f:selectItems value="#{nuovaSchedaWizard.relazioni}" />
-				<p:ajax event="change" update="chkAffidatario2" listener="#{nuovaSchedaWizard.onChangeTipoRiferimento}"/> 
+				<p:ajax event="change" update="chkAffidatario2" listener="#{nuovaSchedaWizard.onChangeTipoRiferimento(2)}"/> 
 			</p:selectOneMenu>
 	        <p:selectBooleanCheckbox id="chkAffidatario2" itemLabel="Affidatario"
 					value="#{nuovaSchedaWizard.riferimento2.affidatario}">                 
@@ -165,14 +165,14 @@
 	
 		<h:panelGrid id="dati_riferimento3" columns="4" columnClasses="label, value" styleClass="grid">
 			<h:outputText value="Cognome " for="cognome_riferimento3" />
-			<p:inputText label="Cognome" id="cognome_riferimento3" style="text-transform: uppercase" disabled="#{nuovaSchedaWizard.riferimento3.comeSegnalante}"
+			<p:inputText label="Cognome" id="cognome_riferimento3" disabled="#{nuovaSchedaWizard.riferimento3.comeSegnalante}"
 				value="#{nuovaSchedaWizard.riferimento3.cognome}" />
 	
 			<h:outputText value="Nome " for="nome_riferimento3" />
-			<p:inputText label="Nome" id="nome_riferimento3" style="text-transform: uppercase" disabled="#{nuovaSchedaWizard.riferimento3.comeSegnalante}" value="#{nuovaSchedaWizard.riferimento3.nome}" />
+			<p:inputText label="Nome" id="nome_riferimento3" disabled="#{nuovaSchedaWizard.riferimento3.comeSegnalante}" value="#{nuovaSchedaWizard.riferimento3.nome}" />
 			
 			<h:outputText value="Data di nascita " for="data_nascita_riferimento3" />
-			<webred:pnlData id="data_nascita_riferimento3" dataValue="#{nuovaSchedaWizard.riferimento2.dataNascita}" disabled="#{nuovaSchedaWizard.riferimento3.comeSegnalante}"
+			<webred:pnlData id="data_nascita_riferimento3" dataValue="#{nuovaSchedaWizard.riferimento3.dataNascita}" disabled="#{nuovaSchedaWizard.riferimento3.comeSegnalante}"
 								dataPattern="dd/MM/yyyy" dataPatternLabel="gg/mm/aaaa" yearRange="c-100:c+0" />
 						    
 			<h:outputText value="Luogo di nascita " for="citta_nascita_riferimento3" />
@@ -208,7 +208,7 @@
 			                 disabled="#{nuovaSchedaWizard.riferimento3.comeSegnalante}">
 				<f:selectItem noSelectionOption="true" itemLabel="- seleziona -" />
 				<f:selectItems value="#{nuovaSchedaWizard.relazioni}" />
-				<p:ajax event="change" update="chkAffidatario3" listener="#{nuovaSchedaWizard.onChangeTipoRiferimento}"/> 
+				<p:ajax event="change" update="chkAffidatario3" listener="#{nuovaSchedaWizard.onChangeTipoRiferimento(3)}"/> 
 			</p:selectOneMenu>
 	        <p:selectBooleanCheckbox id="chkAffidatario3" itemLabel="Affidatario"
 					value="#{nuovaSchedaWizard.riferimento3.affidatario}">                 

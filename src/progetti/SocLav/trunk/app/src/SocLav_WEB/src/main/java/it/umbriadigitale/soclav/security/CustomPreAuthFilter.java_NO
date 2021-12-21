@@ -1,0 +1,19 @@
+package it.umbriadigitale.soclav.security;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
+
+public class CustomPreAuthFilter extends AbstractPreAuthenticatedProcessingFilter {
+ 
+	@Override
+	protected Object getPreAuthenticatedPrincipal(HttpServletRequest request) {
+			return request.getParameter("u");
+	}
+
+	@Override
+	protected Object getPreAuthenticatedCredentials(HttpServletRequest request) {
+		String credentials = "";
+		return credentials;
+	}
+}

@@ -10,7 +10,7 @@
 <ui:composition template="/jsp/protected/layout/layout.xhtml">
 	<ui:define name="content">
 			
-		<p:panel header="Documenti Individuali">
+		<p:panel header="Documenti Individuali - #{docIndividualiBean.intestazione}">
 			<h:form id="docIndForm">
 				<webredcs:pnlDocIndividuali iDocIndividuali="#{docIndividualiBean}"/>
 			</h:form>

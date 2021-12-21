@@ -2,8 +2,6 @@ package it.webred.cs.data.model;
 
 import it.webred.cs.data.base.ICsDDiarioChild;
 
-import java.util.Date;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -12,8 +10,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 
 /**
@@ -30,8 +26,14 @@ public class CsDScuola implements ICsDDiarioChild {
 	@Column(name="DIARIO_ID")
 	private Long diarioId;
 
-	@Column(name="ANNO_SCOLASTICO")
-	private String annoScolastico;
+	@Column(name="ANNO_ID")
+	private Long annoScolasticoId;
+	
+	@Column(name="TIPO_SCUOLA_ID")
+	private Long tipoScuolaId;
+
+	@Column(name="SCUOLA_ID")
+	private String scuolaId;
 
 	private Boolean fermo;
 
@@ -44,12 +46,15 @@ public class CsDScuola implements ICsDDiarioChild {
 	private String note;
 
 	@ManyToOne
-	@JoinColumn(name="TIPO_SCUOLA_ID")
+	@JoinColumn(name="TIPO_SCUOLA_ID", insertable=false, updatable=false)
 	private CsTbTipoScuola csTbTipoScuola;
-
-	//bi-directional many-to-one association to CsTbScuola
+	
 	@ManyToOne
-	@JoinColumn(name="SCUOLA_ID")
+	@JoinColumn(name="ANNO_ID", insertable=false, updatable=false)
+	private CsTbAnnoScolastico csTbAnnoScolastico;
+
+	@ManyToOne
+	@JoinColumn(name="SCUOLA_ID", insertable=false, updatable=false)
 	private CsTbScuola csTbScuola;
 	
 	//bi-directional one-to-one association to CsDDiario
@@ -100,14 +105,6 @@ public class CsDScuola implements ICsDDiarioChild {
 		this.diarioId = diarioId;
 	}
 
-	public String getAnnoScolastico() {
-		return annoScolastico;
-	}
-
-	public void setAnnoScolastico(String annoScolastico) {
-		this.annoScolastico = annoScolastico;
-	}
-
 	public CsTbTipoScuola getCsTbTipoScuola() {
 		return csTbTipoScuola;
 	}
@@ -140,11 +137,36 @@ public class CsDScuola implements ICsDDiarioChild {
 		this.note = note;
 	}
 
-	public String getNoteRid(){
-		if(note!=null && note.length()>40)
-			return (note.substring(0,40)+" [...]");
-		else
-			return note;
+	public Long getAnnoScolasticoId() {
+		return annoScolasticoId;
+	}
+
+	public void setAnnoScolasticoId(Long annoScolasticoId) {
+		this.annoScolasticoId = annoScolasticoId;
+	}
+
+	public Long getTipoScuolaId() {
+		return tipoScuolaId;
+	}
+
+	public void setTipoScuolaId(Long tipoScuolaId) {
+		this.tipoScuolaId = tipoScuolaId;
+	}
+
+	public String getScuolaId() {
+		return scuolaId;
+	}
+
+	public void setScuolaId(String scuolaId) {
+		this.scuolaId = scuolaId;
+	}
+
+	public CsTbAnnoScolastico getCsTbAnnoScolastico() {
+		return csTbAnnoScolastico;
+	}
+
+	public void setCsTbAnnoScolastico(CsTbAnnoScolastico csTbAnnoScolastico) {
+		this.csTbAnnoScolastico = csTbAnnoScolastico;
 	}
 	
 }

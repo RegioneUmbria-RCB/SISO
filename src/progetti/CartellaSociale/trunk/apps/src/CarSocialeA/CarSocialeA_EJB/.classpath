@@ -19,7 +19,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/CT_Config_Data_Model"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/CT_Config_ManagerClient"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/CT_Service_Data_AccessClient"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/CT_Service_Data_Model"/>
 	<classpathentry exported="true" kind="lib" path="/CT-LIBS/apache-poi/poi-ooxml-3.8-20120326.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

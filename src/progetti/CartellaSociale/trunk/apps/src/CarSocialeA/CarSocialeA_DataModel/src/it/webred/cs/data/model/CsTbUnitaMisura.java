@@ -14,9 +14,9 @@ public class CsTbUnitaMisura implements Serializable {
 	@Id
 	@SequenceGenerator(name="CS_TB_UNITA_MISURA_ID_GENERATOR", sequenceName="SQ_ID",allocationSize=1)
 	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="CS_TB_UNITA_MISURA_ID_GENERATOR")
-	private long id;
+	private Long id;
 
-	private String abilitato;
+	private Boolean abilitato;
 
 	private String valore;
 
@@ -30,11 +30,11 @@ public class CsTbUnitaMisura implements Serializable {
 		this.id = id;
 	}
 
-	public String getAbilitato() {
-		return this.abilitato;
+	public Boolean getAbilitato() {
+		return abilitato;
 	}
 
-	public void setAbilitato(String abilitato) {
+	public void setAbilitato(Boolean abilitato) {
 		this.abilitato = abilitato;
 	}
 

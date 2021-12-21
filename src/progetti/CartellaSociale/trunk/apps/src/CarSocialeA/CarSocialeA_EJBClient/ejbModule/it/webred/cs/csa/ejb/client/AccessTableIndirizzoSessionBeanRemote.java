@@ -6,6 +6,7 @@ import it.webred.cs.csa.ejb.dto.BaseDTO;
 import it.webred.cs.csa.ejb.dto.KeyValueDTO;
 import it.webred.cs.data.model.CsAAnaIndirizzo;
 import it.webred.cs.data.model.CsAIndirizzo;
+import it.webred.ct.support.datarouter.CeTBaseObject;
 
 import javax.ejb.Remote;
 
@@ -26,6 +27,8 @@ public interface AccessTableIndirizzoSessionBeanRemote {
 
 	public CsAAnaIndirizzo getIndirizzoDomicilio(BaseDTO dto);
 
-	public List<KeyValueDTO> getListaComuniResidenza();
+	public List<KeyValueDTO> getListaComuniResidenza(CeTBaseObject cet);
+	
+	public List<KeyValueDTO> getListaNazioniResidenza(CeTBaseObject cet);
 
 }

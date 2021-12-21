@@ -44,8 +44,8 @@ public class CsIInterventoPrFse implements Serializable {
 	private Boolean flagAltroCorso;
 	
 	/* 1 o 3 di ING_MERCATO*/
-	@Column(name="DURATA_RICERCA_LAVORO")
-	private String lavoroDurataRicerca;
+	@Column(name="DURATA_RIC_LAVORO_ID")
+	private String durataRicLavoroId;
 	
 	/* 2 di ING_MERCATO*/
 	@Column(name="DESC_TIPO_LAVORO")
@@ -122,6 +122,13 @@ public class CsIInterventoPrFse implements Serializable {
 	 //SISO-1010
 	 @Column(name="COMUNICA_VUL")
 	 private Boolean comunicaVul;
+	 
+	 @Temporal(TemporalType.DATE)
+	 @Column(name="DT_SOTTOSCRIZIONE")
+	 private Date dtSottoscrizione;
+	 
+	 @Column(name="SOGGETTO_ATTUATORE")
+	 private String soggettoAttuatore;
  
 	public String getStatoNascitaCod() {
 		return statoNascitaCod;
@@ -230,13 +237,13 @@ public class CsIInterventoPrFse implements Serializable {
 	}
 
 
-	public String getLavoroDurataRicerca() {
-		return lavoroDurataRicerca;
+	public String getDurataRicLavoroId() {
+		return durataRicLavoroId;
 	}
 
 
-	public void setLavoroDurataRicerca(String lavoroDurataRicerca) {
-		this.lavoroDurataRicerca = lavoroDurataRicerca;
+	public void setDurataRicLavoroId(String durataRicLavoroId) {
+		this.durataRicLavoroId = durataRicLavoroId;
 	}
 
 
@@ -446,4 +453,23 @@ public class CsIInterventoPrFse implements Serializable {
 		this.email = email;
 	}
 
+
+	public Date getDtSottoscrizione() {
+		return dtSottoscrizione;
+	}
+
+
+	public void setDtSottoscrizione(Date dtSottoscrizione) {
+		this.dtSottoscrizione = dtSottoscrizione;
+	}
+
+
+	public String getSoggettoAttuatore() {
+		return soggettoAttuatore;
+	}
+
+
+	public void setSoggettoAttuatore(String soggettoAttuatore) {
+		this.soggettoAttuatore = soggettoAttuatore;
+	}
 }

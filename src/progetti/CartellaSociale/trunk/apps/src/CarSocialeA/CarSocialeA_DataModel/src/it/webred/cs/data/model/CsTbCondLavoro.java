@@ -7,7 +7,6 @@ import javax.persistence.*;
 
 @Entity
 @Table(name="CS_TB_COND_LAVORO")
-@NamedQuery(name="CsTbCondLavoro.findAll", query="SELECT c FROM CsTbCondLavoro c order by c.csTbIngMercato.id, c.descrizione")
 public class CsTbCondLavoro implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -16,7 +15,7 @@ public class CsTbCondLavoro implements Serializable {
 	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="CS_TB_COND_LAVORO_ID_GENERATOR")
 	private long id;
 	
-	private String abilitato;
+	private Boolean abilitato;
 
 	private String descrizione;
 
@@ -37,11 +36,11 @@ public class CsTbCondLavoro implements Serializable {
 		this.id = id;
 	}
 
-	public String getAbilitato() {
-		return this.abilitato;
+	public Boolean getAbilitato() {
+		return abilitato;
 	}
 
-	public void setAbilitato(String abilitato) {
+	public void setAbilitato(Boolean abilitato) {
 		this.abilitato = abilitato;
 	}
 

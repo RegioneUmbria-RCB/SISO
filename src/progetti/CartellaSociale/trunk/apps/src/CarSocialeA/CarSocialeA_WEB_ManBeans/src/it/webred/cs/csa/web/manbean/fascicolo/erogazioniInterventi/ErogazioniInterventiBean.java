@@ -8,6 +8,9 @@ import it.webred.cs.csa.ejb.dto.BaseDTO;
 import it.webred.cs.csa.ejb.dto.KeyValueDTO;
 import it.webred.cs.csa.ejb.dto.erogazioni.ErogazioneMasterDTO;
 import it.webred.cs.csa.ejb.dto.erogazioni.SoggettoErogazioneBean;
+import it.webred.cs.csa.ejb.dto.pai.CsPaiMastSoggDTO;
+import it.webred.cs.csa.ejb.dto.pai.pti.InserimentoConsuntivazioneDTO;
+import it.webred.cs.csa.ejb.dto.pai.pti.StrutturaDisponibilitaDTO;
 import it.webred.cs.csa.web.manbean.fascicolo.FglInterventoBean;
 import it.webred.cs.csa.web.manbean.fascicolo.interventiTreeView.TipoInterventoManBean;
 import it.webred.cs.data.DataModelCostanti;
@@ -15,20 +18,14 @@ import it.webred.cs.data.DataModelCostanti.TipoRicercaSoggetto;
 import it.webred.cs.data.model.CsAAnaIndirizzo;
 import it.webred.cs.data.model.CsAAnagrafica;
 import it.webred.cs.data.model.CsASoggettoLAZY;
-import it.webred.cs.data.model.CsCTipoIntervento;
 import it.webred.cs.data.model.CsIInterventoEsegMast;
 import it.webred.cs.data.model.CsIPsExport;
 import it.webred.cs.data.model.CsOSettore;
 import it.webred.cs.jsf.bean.DatiUserSearchBean;
-import it.webred.cs.jsf.manbean.ComuneNascitaMan;
 import it.webred.cs.jsf.manbean.ComuneNazioneNascitaMan;
 import it.webred.cs.jsf.manbean.UserSearchBeanExt;
 import it.webred.cs.jsf.manbean.superc.CsUiCompBaseBean;
 import it.webred.ct.config.model.AmTabNazioni;
-import it.webred.ct.data.access.basic.anagrafe.AnagrafeService;
-import it.webred.ct.data.access.basic.anagrafe.dto.ComponenteFamigliaDTO;
-import it.webred.ct.data.access.basic.anagrafe.dto.RicercaSoggettoAnagrafeDTO;
-import it.webred.ct.data.model.anagrafe.SitDPersona;
 import it.webred.jsf.bean.ComuneBean;
 import it.webred.siso.ws.ricerca.dto.PersonaDettaglio;
 
@@ -66,7 +63,6 @@ public class ErogazioniInterventiBean extends CsUiCompBaseBean {
 
 	protected AccessTableInterventoSessionBeanRemote interventoService = (AccessTableInterventoSessionBeanRemote) getCarSocialeEjb ("AccessTableInterventoSessionBean");
 	protected AccessTableSoggettoSessionBeanRemote soggettoService = (AccessTableSoggettoSessionBeanRemote) getCarSocialeEjb ("AccessTableSoggettoSessionBean");
-	protected AnagrafeService anagrafeService = (AnagrafeService) getEjb("CT_Service", "CT_Service_Data_Access", "AnagrafeServiceBean");
 	protected AccessTableConfigurazioneSessionBeanRemote confService = (AccessTableConfigurazioneSessionBeanRemote) getCarSocialeEjb ("AccessTableConfigurazioneSessionBean");
 	  
 	@ManagedProperty(value = "#{lazyListaErogazioniModel}")
@@ -105,21 +101,22 @@ public class ErogazioniInterventiBean extends CsUiCompBaseBean {
 	
 	@PostConstruct
 	public void init() {
+		loadTipoInterventiAbilitati();
 		init( DataModelCostanti.ListaErogazioni.TUTTI );
 	}
 
 	protected void init(int defaultTipoFiltroIntervento ){
+		logger.debug("INIT ErogazioniInterventiBean");
+		
 		listaTipoFiltroInterventi.add(new SelectItem(DataModelCostanti.ListaErogazioni.TUTTI, "Tutti"));
 		listaTipoFiltroInterventi.add(new SelectItem(DataModelCostanti.ListaErogazioni.CON_RICHIESTA, "Richiesti"));
 		listaTipoFiltroInterventi.add(new SelectItem(DataModelCostanti.ListaErogazioni.SENZA_RICHIESTA, "Erogati senza richiesta "));
 
-		// tipoFiltroInterventiSelezionato =
-		// DataModelCostanti.ListaErogazioni.TUTTI;
 		lazyListaErogazioniModel = new LazyListaErogazioniModel();
 		lazyListaErogazioniModel.Setup(defaultTipoFiltroIntervento, soggettoErogazioneSelezionato);
 
-		// loadListaInterventi();
-		loadTipoInterventi();
+		loadTipoInterventiInps();
+		loadTipoInterventiRecenti();
 		
 		//SISO-745
 		//la componente treeview se provengo dal fascicolo è presente nel bean InterventiBean, non va caricata di nuovo
@@ -130,6 +127,7 @@ public class ErogazioniInterventiBean extends CsUiCompBaseBean {
 		tipoInterventoId = 0L;
 		// rowIndex = null;
 		idRow = null;
+		logger.debug("END INIT ErogazioniInterventiBean");
 	}
 	
 	public void SetFromFascicolo(CsASoggettoLAZY soggetto)
@@ -137,11 +135,30 @@ public class ErogazioniInterventiBean extends CsUiCompBaseBean {
 		provenienteDaFascicolo = true;
 		CsAAnaIndirizzo residenza = findIndirizzoResidenzaCaso(soggetto);
 		String via = residenza!=null ? residenza.getLabelIndirizzo() : null;
-		soggettoErogazioneSelezionato = new SoggettoErogazioneBean(soggetto,via, getCasoComuneResidenza(residenza),  true);
+		soggettoErogazioneSelezionato = new SoggettoErogazioneBean(soggetto,via, getCasoComuneResidenza(residenza), residenza.getStatoCod(), true);
 
 		init(DataModelCostanti.ListaErogazioni.TUTTI);
 	}
+	public void SetFromPai(CsASoggettoLAZY soggetto)
+	{
+		provenienteDaFascicolo = false;
+		CsAAnaIndirizzo residenza = findIndirizzoResidenzaCaso(soggetto);
+		String via = residenza!=null ? residenza.getLabelIndirizzo() : null;
+		soggettoErogazioneSelezionato = new SoggettoErogazioneBean(soggetto,via, getCasoComuneResidenza(residenza), residenza.getStatoCod(),  true);
 
+		init(DataModelCostanti.ListaErogazioni.TUTTI);
+		this.fglInterventoBean.setFromPai(Boolean.TRUE);
+	}
+	public void SetFromPai(CsPaiMastSoggDTO soggettoPai)
+	{
+		provenienteDaFascicolo = false;
+//		CsAAnaIndirizzo residenza = findIndirizzoResidenzaCaso(soggetto);
+//		String via = residenza!=null ? residenza.getLabelIndirizzo() : null;
+		soggettoErogazioneSelezionato = new SoggettoErogazioneBean(soggettoPai);
+
+		init(DataModelCostanti.ListaErogazioni.TUTTI);
+		fglInterventoBean.setFromPai(Boolean.TRUE);
+	}
 	public void inizializzaSoggettoDialog(DatiUserSearchBean sbean){
 		this.nuovoSoggetto=sbean;
 		this.inizializzaDialogo(null);
@@ -152,109 +169,56 @@ public class ErogazioniInterventiBean extends CsUiCompBaseBean {
 		DatiUserSearchBean sbean = this.nuovoSoggetto;
 		String idPersonaSelezionata = sbean!=null ? sbean.getId() : null;
 		if (StringUtils.isNotEmpty(idPersonaSelezionata)) {
-			if (sbean.isAnagrafeSanitaria() || sbean.isAnagrafeSigess()) {
 				PersonaDettaglio p = null;
 				if(sbean.getSoggetto()!=null)
 				  p = (PersonaDettaglio)sbean.getSoggetto();
 				
-				//Provenendo dall'anagrafe marche i dati sono già completi, non serve richiamare il WS
-				if(idPersonaSelezionata.trim().startsWith(DataModelCostanti.TipoRicercaSoggetto.ANAG_SANITARIA_UMBRIA))
-						p = getPersonaDaAnagEsterna(TipoRicercaSoggetto.ANAG_SANITARIA_UMBRIA, idPersonaSelezionata.replace(DataModelCostanti.TipoRicercaSoggetto.ANAG_SANITARIA_UMBRIA, ""));
-				if(idPersonaSelezionata.trim().startsWith(DataModelCostanti.TipoRicercaSoggetto.SIGESS))
-						p = getPersonaDaAnagEsterna(TipoRicercaSoggetto.SIGESS, idPersonaSelezionata.replace(DataModelCostanti.TipoRicercaSoggetto.SIGESS, ""));
+				//Provenendo dall'anagrafe marche e diogene i dati sono già completi, non serve richiamare il WS
+				if(sbean.isAnagrafeSanitariaUmbria())
+					p = getPersonaDaAnagEsterna(TipoRicercaSoggetto.ANAG_SANITARIA_UMBRIA, idPersonaSelezionata.replace(DataModelCostanti.TipoRicercaSoggetto.ANAG_SANITARIA_UMBRIA, ""));
+				if(sbean.isAnagrafeSigess())
+					p = getPersonaDaAnagEsterna(TipoRicercaSoggetto.SIGESS, idPersonaSelezionata.replace(DataModelCostanti.TipoRicercaSoggetto.SIGESS, ""));
 				
-				if (p != null){
-					//SISO 945 
-					comuneNazioneNascitaMan.init(p.getComuneNascita(), p.getNazioneNascita());
-					//SISO 945 FINE
-					
-					String jsonResidenza=null;
-					if(p.getComuneResidenza()!=null){
-						ComuneBean comuneResidenza = new ComuneBean(p.getComuneResidenza());
-						try {
-							jsonResidenza = om.writeValueAsString(comuneResidenza);
-						} catch (JsonProcessingException e1) {}
-					}
-					soggettoErogazioneSelezionato = new SoggettoErogazioneBean(p.getCognome(), p.getNome(), p.getCodfisc(), p.getCittadinanza(), p.getDataNascita(), p.getIndirizzoCivicoResidenza(), jsonResidenza, p.getSesso(),  true);
-					
-					//SISO-962 fine
+			if (p != null){
+				comuneNazioneNascitaMan.init(p.getComuneNascita(), p.getNazioneNascita());
+				
+				String jsonResidenza=null;
+				if(p.getComuneResidenza()!=null){
+					ComuneBean comuneResidenza = new ComuneBean(p.getComuneResidenza());
+					try {
+						jsonResidenza = om.writeValueAsString(comuneResidenza);
+					} catch (JsonProcessingException e1) {}
 				}
+				soggettoErogazioneSelezionato = new SoggettoErogazioneBean(p.getCognome(), p.getNome(), p.getCodfisc(), p.getCittadinanza(), p.getDataNascita(), p.getIndirizzoCivicoResidenza(), jsonResidenza, p.getSesso(),  true);
+				
+				//SISO-962 fine
 			}
-			else
-			{
-				RicercaSoggettoAnagrafeDTO ricercaDto = new RicercaSoggettoAnagrafeDTO();
-				fillEnte(ricercaDto);
-				ricercaDto.setIdVarSogg(idPersonaSelezionata);
-				SitDPersona persona = anagrafeService.getPersonaById(ricercaDto);
-				BaseDTO dto = new BaseDTO();
-				fillEnte(dto);
-				String codFisPersona = null == persona ? "" : persona.getCodfisc();
-				dto.setObj(codFisPersona);
-				CsASoggettoLAZY soggetto = soggettoService.getSoggettoByCF(dto);
-				if (soggetto != null){
-					CsAAnaIndirizzo residenza = findIndirizzoResidenzaCaso(soggetto);
-					String via = residenza!=null ? residenza.getLabelIndirizzo() : null;
-					soggettoErogazioneSelezionato = new SoggettoErogazioneBean(soggetto,via, getCasoComuneResidenza(residenza), true);
-					//SISO-945
-				    CsAAnagrafica csaAnagrafica =  soggetto.getCsAAnagrafica();
+				
+		   /*Verifico la  corrispondenza dei dati anagrafici con quelli del caso*/		
+			String codFisPersona = (p!=null ? p.getCodfisc() : null);
+			CsASoggettoLAZY soggetto = this.getSchedaCSByCF(codFisPersona);
+			if (soggetto != null){
+				CsAAnaIndirizzo residenza = findIndirizzoResidenzaCaso(soggetto);
+				String via = residenza!=null ? residenza.getLabelIndirizzo() : null;
+				soggettoErogazioneSelezionato.integraDatiMancanti(soggetto, via, getCasoComuneResidenza(residenza));
+				
+			    CsAAnagrafica csaAnagrafica =  soggetto.getCsAAnagrafica();
+			    if(p.getComuneNascita()==null && p.getNazioneNascita()==null){
 				    this.comuneNazioneNascitaMan = new ComuneNazioneNascitaMan();
-				     
 				    if (csaAnagrafica.getStatoNascitaCod() != null) {
 								AmTabNazioni amTabNazioni = CsUiCompBaseBean.getNazioneByIstat(csaAnagrafica.getStatoNascitaCod(),csaAnagrafica.getStatoNascitaDes());
 								this.comuneNazioneNascitaMan.setNazioneValue();
 								this.comuneNazioneNascitaMan.getNazioneMan().setNazione(amTabNazioni);
-							}
-					    	if (csaAnagrafica.getComuneNascitaCod() != null) {
-								ComuneBean comuneBean = new ComuneBean(
-										csaAnagrafica.getComuneNascitaCod(),
-										csaAnagrafica.getComuneNascitaDes(),
-										csaAnagrafica.getProvNascitaCod());
-								this.comuneNazioneNascitaMan.getComuneNascitaMan().setComune(comuneBean);
-							}
-	    			//siso - 945 fine
-					
-				}else if (persona != null){
-					
-					//siso - 945
-					ComponenteFamigliaDTO compDto = new ComponenteFamigliaDTO();
-					compDto.setPersona(persona);
-					fillEnte(compDto);
-					compDto = anagrafeService.fillInfoAggiuntiveComponente(compDto);
-					
-					String cittadinanza = compDto.getCittadinanza();//getCittadinanzaByIdExtStato(persona.getIdExtStato());
-					
-					String viaResidenza = null;
-					String jsonResidenza = null;
-					if(!StringUtils.isBlank(compDto.getCodComRes())){
-						ComuneBean comuneResidenza =  new ComuneBean(compDto.getCodComRes(), compDto.getDesComRes(),compDto.getSiglaProvRes());
-						try {
-							jsonResidenza = om.writeValueAsString(comuneResidenza);
-						} catch (JsonProcessingException e1) {}
 					}
-					
-					viaResidenza =  !StringUtils.isBlank(compDto.getIndirizzoResidenza()) ? compDto.getIndirizzoResidenza() : "";
-					viaResidenza += !StringUtils.isBlank(compDto.getCivicoResidenza()) ? ", "+compDto.getCivicoResidenza() : "";
-					
-					soggettoErogazioneSelezionato = new SoggettoErogazioneBean(persona.getCognome(), persona.getNome(), persona.getCodfisc(), cittadinanza, persona.getDataNascita(), viaResidenza, jsonResidenza, persona.getSesso(), true);
-
-					
-					AmTabNazioni amTabNazioni =  null;
-					if (compDto.getDesStatoNas() != null) {
-						amTabNazioni = CsUiCompBaseBean.getNazioneByIstat(compDto.getIstatStatoNas(),compDto.getDesStatoNas());
-						this.comuneNazioneNascitaMan.setNazioneValue();
-						this.comuneNazioneNascitaMan.getNazioneMan().setNazione(amTabNazioni);
-						}  
-					if(!StringUtils.isBlank(compDto.getCodComNas())) {
-							ComuneNascitaMan  comuneNascitaBean = new ComuneNascitaMan();
-							comuneNascitaBean.comune = new ComuneBean(compDto.getCodComNas(), compDto.getDesComNas(),compDto.getSiglaProvNas());
-							this.comuneNazioneNascitaMan.setComuneNascitaMan(comuneNascitaBean);
-						}
-					
-					}
-				
-				}
-			
-			//SISO-945 valorizza comune di nascita
+			    	if (csaAnagrafica.getComuneNascitaCod() != null) {
+						ComuneBean comuneBean = new ComuneBean(
+								csaAnagrafica.getComuneNascitaCod(),
+								csaAnagrafica.getComuneNascitaDes(),
+								csaAnagrafica.getProvNascitaCod());
+						this.comuneNazioneNascitaMan.getComuneNascitaMan().setComune(comuneBean);
+					}	
+			    }
+			}
 			
 		}else
 			soggettoErogazioneSelezionato = null;
@@ -264,78 +228,47 @@ public class ErogazioniInterventiBean extends CsUiCompBaseBean {
 		nuovoSoggetto=null;
 	}
 
-	
-	protected void loadTipoInterventi() {
-
-		BaseDTO dto = new BaseDTO();
-		fillEnte(dto);
-		List<CsCTipoIntervento> lstTipoInterventi = interventoService.findAllTipiIntervento(dto);
-		List<KeyValueDTO> lstTipoInterventiRecenti = interventoService.findTipiInterventoRecenti(dto);
-		List<KeyValueDTO> lstTipoInterventiInps = interventoService.findTipiInterventoInps(dto);//SISO-1162
-		List<KeyValueDTO> lstTipoInterventiCustom = interventoService.findTipiInterventoCustomRecenti(dto);
-		this.tipoInterventosAll = new LinkedList<SelectItem>();
+	private void loadTipoInterventiRecenti(){
 		this.tipoInterventosRecenti = new LinkedList<SelectItem>();
 		this.tipoInterventosCustom = new LinkedList<SelectItem>();
-		this.tipoInterventosInps = new LinkedList<SelectItem>(); //SISO-1162
-		for (CsCTipoIntervento i : lstTipoInterventi){ 
-			boolean abilitato = i.getAbilitato()!=null && "1".equalsIgnoreCase(i.getAbilitato());
-			SelectItem si = new SelectItem((Long)i.getId(), i.getDescrizione());
-			si.setDisabled(!abilitato);
-			this.tipoInterventosAll.add(si);
-		}
+		logger.debug("START loadTipoInterventiRecenti");
+		BaseDTO dto = new BaseDTO();
+		fillEnte(dto);
+		List<KeyValueDTO> lstTipoInterventiRecenti = interventoService.findTipiInterventoRecenti(dto);
+		List<KeyValueDTO> lstTipoInterventiCustom = interventoService.findTipiInterventoCustomRecenti(dto);
+		logger.debug("END loadTipoInterventiRecenti");
 		for (KeyValueDTO i : lstTipoInterventiRecenti)
 			this.tipoInterventosRecenti.add(new SelectItem((Long)i.getCodice(), i.getDescrizione()));
 
 		for (KeyValueDTO i : lstTipoInterventiCustom)
 			this.tipoInterventosCustom.add(new SelectItem((Long)i.getCodice(), i.getDescrizione()));
-      
+	}
+	
+	protected void loadTipoInterventiAbilitati() {
+
+		this.tipoInterventosAll = new LinkedList<SelectItem>();
+		
+		BaseDTO dto = new BaseDTO();
+		fillEnte(dto);
+		logger.debug("START loadTipoInterventiAbilitati");
+		List<KeyValueDTO> lstTipoInterventi = interventoService.findTipiInterventoAbilitati(dto);
+		logger.debug("END loadTipoInterventiAbilitati");
+		this.tipoInterventosAll = convertiLista(lstTipoInterventi);
+	}
+	
+	protected void loadTipoInterventiInps(){
+		this.tipoInterventosInps = new LinkedList<SelectItem>(); //SISO-1162
+		
+		BaseDTO dto = new BaseDTO();
+		fillEnte(dto);
+		logger.debug("START loadTipoInterventiInps");
+		List<KeyValueDTO> lstTipoInterventiInps = interventoService.findTipiInterventoInps(dto);//SISO-1162
+		logger.debug("END loadTipoInterventiInps");
 		for (KeyValueDTO i : lstTipoInterventiInps)
-           this.tipoInterventosInps.add(new SelectItem((String)i.getCodice(), (String)i.getCodice() + " - " + i.getDescrizione()));
+	           this.tipoInterventosInps.add(new SelectItem((String)i.getCodice(), (String)i.getCodice() + " - " + i.getDescrizione()));
 		this.tipoInterventosInps.add(new SelectItem( "Non definito", "Non definito"));
 	}
 	
-	/*
-	 * protected void loadListaInterventi() { this.listaInterventi=null;
-	 * this.listaInterventiFiltro=null;
-	 * 
-	 * CsOOperatoreSettore opSettore = getCurrentOpSettore(); String permesso =
-	 * getPermessoErogazioneInterventi(); ErogazioniSearchCriteria bDto = new
-	 * ErogazioniSearchCriteria(); fillEnte(bDto);
-	 * bDto.setSettoreId(opSettore.getCsOSettore().getId());
-	 * bDto.setOrganizzazioneId
-	 * (opSettore.getCsOSettore().getCsOOrganizzazione().getId());
-	 * bDto.setPermessoAutorizzativo
-	 * (TipoPermessoErogazioneInterventi.PERMESSO_AUTORIZZATIVO
-	 * .equals(getPermessoErogazioneInterventi()));
-	 * 
-	 * listaInterventiAll = new LinkedList<ErogInterventoRowBean>();
-	 *//**
-	 * Recupero gli interventi eseguiti, privi di foglio ammnistrativo che
-	 * abbiano una delle seguenti caratteristiche: 1. settore dell'operatore che
-	 * l'ha inserito = corrente 2. organizzazione dell'erogazione = corrente 3.
-	 * organizzazione del caso (recuperabile mediante CF) = corrente
-	 */
-	/*
-	 * 
-	 * List<ErogazioneDTO> lstInterventi =
-	 * interventoService.searchListaErogInterventiBySettore(bDto); for
-	 * (ErogazioneDTO csIIntervento : lstInterventi) { ErogInterventoRowBean row
-	 * = new ErogInterventoRowBean(csIIntervento, permesso);
-	 * this.listaInterventiAll.add(row); }
-	 * 
-	 * this.listaInterventiRichiesti = new LinkedList<ErogInterventoRowBean>();
-	 * this.listaInterventiSenzaRichiesta = new
-	 * LinkedList<ErogInterventoRowBean>(); for (ErogInterventoRowBean row :
-	 * this.listaInterventiAll) { if (row.isRenderBtnAvviaErog())
-	 * this.listaInterventiRichiesti.add(row); else if
-	 * (row.isRenderBtnEliminaErog())
-	 * this.listaInterventiSenzaRichiesta.add(row); }
-	 * 
-	 * }
-	 */
-
-	// /******PUBLIC METHODS*********
-
 	//SISO-748
 	public void inizializzaDialogoByTreeView(TipoInterventoManBean tipoIntTreeView){
 		this.tipoInterventoId = tipoIntTreeView.getSelTipoInterventoId();
@@ -343,10 +276,12 @@ public class ErogazioniInterventiBean extends CsUiCompBaseBean {
 			addError("Selezionare un tipo di intervento", "Selezionare un tipo di intervento");
 			return;
 		}
-		
-		//boolean datiErogazioniTabRendered = !provenienteDaFascicolo;
+
+		Long tipoInterventoCustomId = tipoIntTreeView.getSelTipoInterventoCutomId();
+		Long catSoc = tipoIntTreeView.getSelCatSocialeId();
+
 		fglInterventoBean.inizializzaErogazione(soggettoErogazioneSelezionato);
-		fglInterventoBean.inizializzaDialog(false, true, 0L, 0L, tipoInterventoId, tipoIntTreeView.getSelTipoInterventoCutomId(), tipoIntTreeView.getSelCatSocialeId(), true, true, "Nuova Erogazione", null, true);
+		fglInterventoBean.inizializzaDialog(false, true, 0L, 0L, tipoInterventoId, tipoInterventoCustomId, catSoc, true, true, "Nuova Erogazione", null, true, null, null);
 		fglInterventoBean.setDatiInterventoTabRendered(false);
 		
 		//overwrite header
@@ -365,6 +300,33 @@ public class ErogazioniInterventiBean extends CsUiCompBaseBean {
 		nuovoSoggetto=null;
 	}
 	
+	public void inizializzaDialogoByTreeView(TipoInterventoManBean tipoIntTreeView, StrutturaDisponibilitaDTO struttDisp){
+		this.tipoInterventoId = tipoIntTreeView.getSelTipoInterventoId();
+		if (tipoInterventoId == null || tipoInterventoId <= 0) {
+			addError("Selezionare un tipo di intervento", "Selezionare un tipo di intervento");
+			return;
+		}
+		
+		//boolean datiErogazioniTabRendered = !provenienteDaFascicolo;
+		fglInterventoBean.inizializzaErogazione(soggettoErogazioneSelezionato);
+		fglInterventoBean.inizializzaDialog(false, true, 0L, 0L, tipoInterventoId, tipoIntTreeView.getSelTipoInterventoCutomId(), tipoIntTreeView.getSelCatSocialeId(), true, true, "Nuova Erogazione", null, true, struttDisp, null);
+		fglInterventoBean.setDatiInterventoTabRendered(false);
+		
+		//overwrite header
+		fglInterventoBean.setHeaderDialogo( "Erogazione - " + fglInterventoBean.getErogazioneInterventoBean().getNomeTipoErogazione());
+		
+		this.tipoInterventoId=0L;
+		this.tipoIntCustomName="";
+		
+		if (isTreeViewTipoIntervento())// SISO-1110
+			this.tipoIntTreeView.reset();
+		else
+			this.tipoIntTreeView.resetCustomIstat();
+		
+		UserSearchBeanExt ubean = (UserSearchBeanExt)getReferencedBean("userSearchBeanExt");
+		ubean.clearParameters();
+		nuovoSoggetto=null;
+	}
 	public void inizializzaDialogo(Object obj) {
 
 		if (obj == null) {
@@ -384,8 +346,10 @@ public class ErogazioniInterventiBean extends CsUiCompBaseBean {
 			}
 			//SISO 945 - Fine
 			//boolean datiErogazioniTabRendered = !provenienteDaFascicolo;
+			Long tipoInterventoCustomId = tipoIntTreeView.getSelTipoInterventoCutomId();
+			Long catSoc = tipoIntTreeView.getSelCatSocialeId();
 			fglInterventoBean.inizializzaErogazione(soggettoErogazioneSelezionato, comuneNazioneNascitaMan);
-			fglInterventoBean.inizializzaDialog(false, true, 0L, 0L, tipoInterventoId, tipoIntTreeView.getSelTipoInterventoCutomId(), tipoIntTreeView.getSelCatSocialeId(), true, true, "Nuova Erogazione", null, provenienteDaFascicolo);
+			fglInterventoBean.inizializzaDialog(false, true, 0L, 0L, tipoInterventoId, tipoInterventoCustomId, catSoc, true, true, "Nuova Erogazione", null, provenienteDaFascicolo, null, null);
 			
 		}else{
 			ErogInterventoRowBean row = (ErogInterventoRowBean) obj;
@@ -396,9 +360,8 @@ public class ErogazioniInterventiBean extends CsUiCompBaseBean {
 			BaseDTO dto = new BaseDTO();
 			fillEnte(dto);
 			dto.setObj(row.getMaster().getIdInterventoEsegMaster());
-			CsIInterventoEsegMast master = interventoService.getErogazioneMasterById(dto);
-		
-			fglInterventoBean.inizializzaDialog(false, datiErogazioniTabRendered, row.getIdIntervento(), row.getDiarioId(), row.getIdTipoIntervento(), row.getIdTipoInterventoCustom(), row.getIdCatSociale(), true, true, "Modifica Erogazione", master, provenienteDaFascicolo);
+			CsIInterventoEsegMast master = interventoService.getCsIInterventoEsegMastById(dto);
+			fglInterventoBean.inizializzaDialog(false, datiErogazioniTabRendered, row.getIdIntervento(), row.getDiarioId(), row.getIdTipoIntervento(), row.getIdTipoInterventoCustom(), row.getIdCatSociale(), true, true, "Modifica Erogazione", master, provenienteDaFascicolo, null, null);
 		}
 		
 		fglInterventoBean.setDatiInterventoTabRendered(false);
@@ -417,6 +380,64 @@ public class ErogazioniInterventiBean extends CsUiCompBaseBean {
 		//TODO:Reset ricerca
 	}
 
+	public void inizializzaDialogo(Object obj, InserimentoConsuntivazioneDTO consuntivazione) {
+
+		if (obj == null) {
+
+			this.tipoInterventoId = tipoIntTreeView.getSelTipoInterventoId();
+			if (tipoInterventoId == null || tipoInterventoId <= 0) {
+				addError("Selezionare un tipo di intervento", "Selezionare un tipo di intervento");
+				return;
+			}
+
+			if (!provenienteDaFascicolo)
+				loadSoggettoErogazioneSelezionato();
+			// SISO 945 - Inizio
+			else {
+				// proviene da fascicolo, devo recuperare dal soggetto i dati anagrafici
+
+			}
+			// SISO 945 - Fine
+			// boolean datiErogazioniTabRendered = !provenienteDaFascicolo;
+			Long catSoc = tipoIntTreeView.getSelCatSocialeId();
+			Long tipoInterventoCustom = tipoIntTreeView.getSelTipoInterventoCutomId();
+			fglInterventoBean.inizializzaErogazione(soggettoErogazioneSelezionato, comuneNazioneNascitaMan);
+			fglInterventoBean.inizializzaDialog(false, true, 0L, 0L, tipoInterventoId, tipoInterventoCustom, catSoc, true, true, "Nuova Erogazione", null, provenienteDaFascicolo, null, consuntivazione);
+
+		} else {
+			ErogInterventoRowBean row = (ErogInterventoRowBean) obj;
+			logger.info("Carico un'erogazione esistente per modificarla:" + row.getIdRow());
+			boolean datiErogazioniTabRendered = row.isRenderBtnEroga() || row.isRenderBtnAvviaErog();
+			fglInterventoBean.inizializzaRiferimentoErogazione(row);
+
+			BaseDTO dto = new BaseDTO();
+			fillEnte(dto);
+			dto.setObj(row.getMaster().getIdInterventoEsegMaster());
+			CsIInterventoEsegMast master = interventoService.getCsIInterventoEsegMastById(dto);
+
+			fglInterventoBean.inizializzaDialog(false, datiErogazioniTabRendered, row.getIdIntervento(),
+					row.getDiarioId(), row.getIdTipoIntervento(), row.getIdTipoInterventoCustom(),
+					row.getIdCatSociale(), true, true, "Modifica Erogazione", master, provenienteDaFascicolo,
+					null, consuntivazione);
+		}
+
+		fglInterventoBean.setDatiInterventoTabRendered(false);
+		this.nuovoSoggetto = null;
+		// overwrite header
+		fglInterventoBean.setHeaderDialogo(
+				"Erogazione - " + fglInterventoBean.getErogazioneInterventoBean().getNomeTipoErogazione());
+
+		this.tipoInterventoId = 0L;
+		this.tipoIntCustomName = "";
+
+		if (isTreeViewTipoIntervento())// SISO-1110
+			this.tipoIntTreeView.reset();
+		else
+			this.tipoIntTreeView.resetCustomIstat();
+
+		// TODO:Reset ricerca
+	}
+	
 	public void rimuoviInterventoSenzaRichiesta(ErogInterventoRowBean rowBean) {
 		if(rowBean==null){
 			addError("Non è stato selezionato alcune elemento da eliminare", "");
@@ -471,13 +492,14 @@ public class ErogazioniInterventiBean extends CsUiCompBaseBean {
 	 * di export delle singole colonne), si procede a generare un file Excel direttamente con Apache POI. */
 	private static final int EXCEL_COLUMN_INDEX_TIPO_BENEFICIARIO = 0;
 	private static final int EXCEL_COLUMN_INDEX_BENEFICIARI = 1;
-	private static final int EXCEL_COLUMN_INDEX_RICHIESTA = 2;
-	private static final int EXCEL_COLUMN_INDEX_TIPO_INTERVENTO = 3;
-	private static final int EXCEL_COLUMN_INDEX_TIPO_INTERVENTO_CUSTOM = 4;
-	private static final int EXCEL_COLUMN_INDEX_NOTE = 5;
-	private static final int EXCEL_COLUMN_INDEX_PROGETTO = 6;
-	private static final int EXCEL_COLUMN_INDEX_SETT_TITOLARE = 7;
-	private static final int EXCEL_COLUMN_INDEX_GESTORE = 8;
+	private static final int EXCEL_COLUMN_INDEX_BENEFICIARI_CF = 2;
+	private static final int EXCEL_COLUMN_INDEX_RICHIESTA = 3;
+	private static final int EXCEL_COLUMN_INDEX_TIPO_INTERVENTO = 4;
+	private static final int EXCEL_COLUMN_INDEX_TIPO_INTERVENTO_CUSTOM = 5;
+	private static final int EXCEL_COLUMN_INDEX_NOTE = 6;
+	private static final int EXCEL_COLUMN_INDEX_PROGETTO = 7;
+	private static final int EXCEL_COLUMN_INDEX_SETT_TITOLARE = 8;
+	//private static final int EXCEL_COLUMN_INDEX_GESTORE = 9;
 	private static final int EXCEL_COLUMN_INDEX_SETT_EROGANTE = 9;
 	private static final int EXCEL_COLUMN_INDEX_DATA_ULTIMA_EROG = 10;
 	private static final int EXCEL_COLUMN_INDEX_STATO_ULTIMA_EROG = 11;
@@ -507,13 +529,14 @@ public class ErogazioniInterventiBean extends CsUiCompBaseBean {
 		
 		createAndPopulateCell(headerRow, EXCEL_COLUMN_INDEX_TIPO_BENEFICIARIO, "Tipo beneficiario");
 		createAndPopulateCell(headerRow, EXCEL_COLUMN_INDEX_BENEFICIARI, "Beneficiari (cognome e nome)");
+		createAndPopulateCell(headerRow, EXCEL_COLUMN_INDEX_BENEFICIARI_CF, "Beneficiari (cod.fiscale)");
 		createAndPopulateCell(headerRow, EXCEL_COLUMN_INDEX_RICHIESTA, "Richiesta");
 		createAndPopulateCell(headerRow, EXCEL_COLUMN_INDEX_TIPO_INTERVENTO, "Tipo Intervento");
 		createAndPopulateCell(headerRow, EXCEL_COLUMN_INDEX_TIPO_INTERVENTO_CUSTOM, "Tipo intervento Custom");
 		createAndPopulateCell(headerRow, EXCEL_COLUMN_INDEX_NOTE, "Note");
 		createAndPopulateCell(headerRow, EXCEL_COLUMN_INDEX_PROGETTO, "Progetto");
 		createAndPopulateCell(headerRow, EXCEL_COLUMN_INDEX_SETT_TITOLARE, "Sett. Titolare");
-		createAndPopulateCell(headerRow, EXCEL_COLUMN_INDEX_GESTORE, "Gestore");
+		//createAndPopulateCell(headerRow, EXCEL_COLUMN_INDEX_GESTORE, "Gestore");
 		createAndPopulateCell(headerRow, EXCEL_COLUMN_INDEX_SETT_EROGANTE, "Sett. Erogante");
 		createAndPopulateCell(headerRow, EXCEL_COLUMN_INDEX_DATA_ULTIMA_EROG, "Data Ultima Erog.");
 		createAndPopulateCell(headerRow, EXCEL_COLUMN_INDEX_STATO_ULTIMA_EROG, "Stato Ultima Erog.");
@@ -543,13 +566,14 @@ public class ErogazioniInterventiBean extends CsUiCompBaseBean {
 			// popolo le colonne (replicando di fatto la logica della view)
 			createAndPopulateCell(row, EXCEL_COLUMN_INDEX_TIPO_BENEFICIARIO,rowListaErogazioni.getMaster().getTipoBeneficiario());
 			createAndPopulateCell(row, EXCEL_COLUMN_INDEX_BENEFICIARI,beneficiariValueExtraction(rowListaErogazioni.getBeneficiari()));	
+			createAndPopulateCell(row, EXCEL_COLUMN_INDEX_BENEFICIARI_CF,beneficiariCfValueExtraction(rowListaErogazioni.getBeneficiari()));	
 			createAndPopulateCell(row, EXCEL_COLUMN_INDEX_RICHIESTA,richiestaValueExtraction(rowListaErogazioni.isRichiestaIntervento()));
 			createAndPopulateCell(row, EXCEL_COLUMN_INDEX_TIPO_INTERVENTO,rowListaErogazioni.getMaster().getTipoIntervento().getDescrizione());
 			createAndPopulateCell(row, EXCEL_COLUMN_INDEX_TIPO_INTERVENTO_CUSTOM, rowListaErogazioni.getMaster().getTipoInterventoCustom());
 			createAndPopulateCell(row, EXCEL_COLUMN_INDEX_NOTE,rowListaErogazioni.getMaster().getDescrIntervento());
 			createAndPopulateCell(row, EXCEL_COLUMN_INDEX_PROGETTO,rowListaErogazioni.getDescrizioneProgetto());
 			createAndPopulateCell(row, EXCEL_COLUMN_INDEX_SETT_TITOLARE,settoreValueExtraction(rowListaErogazioni.getSettoreTitolare()));
-			createAndPopulateCell(row, EXCEL_COLUMN_INDEX_GESTORE,settoreValueExtraction(rowListaErogazioni.getSettoreGestore()));
+			//createAndPopulateCell(row, EXCEL_COLUMN_INDEX_GESTORE,settoreValueExtraction(rowListaErogazioni.getSettoreGestore()));
 			createAndPopulateCell(row, EXCEL_COLUMN_INDEX_SETT_EROGANTE,settoreValueExtraction(rowListaErogazioni.getSettoreErogante()));
 			createAndPopulateCell(row, EXCEL_COLUMN_INDEX_DATA_ULTIMA_EROG,dataUltimaErogValueExtraction(rowListaErogazioni.getMaster().getDataUltimaErogazione()));
 			createAndPopulateCell(row, EXCEL_COLUMN_INDEX_STATO_ULTIMA_EROG, rowListaErogazioni.getMaster().getStatoUltimaErogazione());
@@ -579,8 +603,9 @@ public class ErogazioniInterventiBean extends CsUiCompBaseBean {
 		ec.setResponseContentType(contentType);
 		ec.setResponseHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
 		
-		OutputStream responseOutputStream = ec.getResponseOutputStream();
-		workbook.write(responseOutputStream);	// scrivo il file direttamente sull'outputStream senza salvarlo
+		OutputStream os = null;
+		os = ec.getResponseOutputStream();
+		workbook.write(os);	// scrivo il file direttamente sull'outputStream senza salvarlo
 		
 		fc.responseComplete();
 	}
@@ -601,6 +626,17 @@ public class ErogazioniInterventiBean extends CsUiCompBaseBean {
 		}
 		
 		return StringUtils.join(beneficiariNames.iterator(), "\n");
+	}
+	
+	private String beneficiariCfValueExtraction(List<SoggettoErogazioneBean> beneficiari) {
+		List<String> cfs = new ArrayList<String>();
+		
+		for (SoggettoErogazioneBean soggettoErogazione : beneficiari) {
+			String cf = soggettoErogazione.getCodiceFiscale();
+			cfs.add(cf);
+		}
+		
+		return StringUtils.join(cfs.iterator(), "\n");
 	}
 
 	private String richiestaValueExtraction(boolean richiestaIntervento) {
@@ -671,9 +707,6 @@ public class ErogazioniInterventiBean extends CsUiCompBaseBean {
 		return tipoInterventosInps;
 	}
 
-	public void setTipoInterventosInps(List<SelectItem> tipoInterventosInps) {
-		this.tipoInterventosInps = tipoInterventosInps;
-	}
 	public Long getTipoInterventoId() {
 		return tipoIntTreeView.getSelTipoInterventoId();
 		//return tipoInterventoId;

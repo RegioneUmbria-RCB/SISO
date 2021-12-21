@@ -106,16 +106,11 @@ public class CsIInterventoEsegMast implements Serializable {
 	@JoinColumn(name="TIPO_INTERVENTO_ID")
 	private CsCTipoIntervento csCTipoIntervento;
 
-	//bi-directional many-to-one association to CsIIntervento
-	@ManyToOne
-	@JoinColumn(name="INTERVENTO_ID")
-	private CsIIntervento csIIntervento;
+	@Column(name="INTERVENTO_ID")
+	private Long interventoProgrammatoId; //FK DI CS_I_INTERVENTO: eliminata mappatura per alleggerire il caricamento
 	
 	@Column(name="FLAG_SPESA_CALC")
 	private Boolean flagSpesaCalc;
-	
-	@Column(name="FLAG_COMPART_CALC")
-	private Boolean flagCompartCalc;
 	
 	@Column(name="TIPO_BENEFICIARIO")
 	private String tipoBeneficiario;
@@ -260,7 +255,7 @@ public class CsIInterventoEsegMast implements Serializable {
 
 	public void setSpesa(BigDecimal spesa) {
 //		this.spesa = spesa; //SISO-810
-		this.spesa = spesa.setScale(2, RoundingMode.CEILING); //SISO-806
+		this.spesa = spesa.setScale(2, RoundingMode.HALF_EVEN); //SISO-806
 	}	
 
 	public String getUserIns() {
@@ -287,12 +282,10 @@ public class CsIInterventoEsegMast implements Serializable {
 		if(valoreGestitaEnte!=null){
 			if(valoreGestitaEnte.compareTo(new BigDecimal((long)0))==0)
 				this.valoreGestitaEnte=null;
-		else
-//			this.valoreGestitaEnte = valoreGestitaEnte;
-			this.valoreGestitaEnte = valoreGestitaEnte.setScale(2, RoundingMode.CEILING); //SISO-806;
+			else
+				this.valoreGestitaEnte = valoreGestitaEnte.setScale(2, RoundingMode.CEILING); //SISO-806;
 		}else
-//			this.valoreGestitaEnte = valoreGestitaEnte;
-			this.valoreGestitaEnte = valoreGestitaEnte.setScale(2, RoundingMode.CEILING); //SISO-806;
+			this.valoreGestitaEnte = valoreGestitaEnte;
 	}
 
 	public Set<CsIInterventoEseg> getCsIInterventoEsegs() {
@@ -332,14 +325,6 @@ public class CsIInterventoEsegMast implements Serializable {
 		this.csCTipoIntervento = csCTipoIntervento;
 	}
 
-	public CsIIntervento getCsIIntervento() {
-		return this.csIIntervento;
-	}
-
-	public void setCsIIntervento(CsIIntervento csIIntervento) {
-		this.csIIntervento = csIIntervento;
-	}
-
 	public CsCTipoInterventoCustom getCsIInterventoCustom() {
 		return csIInterventoCustom;
 	}
@@ -360,16 +345,8 @@ public class CsIInterventoEsegMast implements Serializable {
 		return flagSpesaCalc;
 	}
 
-	public Boolean getFlagCompartCalc() {
-		return flagCompartCalc;
-	}
-
 	public void setFlagSpesaCalc(Boolean flagSpesaCalc) {
 		this.flagSpesaCalc = flagSpesaCalc;
-	}
-
-	public void setFlagCompartCalc(Boolean flagCompartCalc) {
-		this.flagCompartCalc = flagCompartCalc;
 	}
 
 	public String getTipoBeneficiario() {
@@ -498,6 +475,14 @@ public class CsIInterventoEsegMast implements Serializable {
 		this.totBeneficiari = totBeneficiari;
 	}
 
+	public Long getInterventoProgrammatoId() {
+		return interventoProgrammatoId;
+	}
+
+	public void setInterventoProgrammatoId(Long interventoProgrammatoId) {
+		this.interventoProgrammatoId = interventoProgrammatoId;
+	}
+
 	@Override
 	public String toString() {
 		return "CsIInterventoEsegMast [id=" + id 
@@ -512,9 +497,9 @@ public class CsIInterventoEsegMast implements Serializable {
 				+ ", categoriaSocialeId=" + categoriaSocialeId  + ", protDomPrest=" + protDomPrest
 				+ ", csIInterventoEsegs=" + csIInterventoEsegs
 				+ ", beneficiari=" + beneficiari + ", csCTipoIntervento="
-				+ csCTipoIntervento + ", csIIntervento=" + csIIntervento 
+				+ csCTipoIntervento + ", csIIntervento=" + interventoProgrammatoId 
 				+ ", flagSpesaCalc=" + flagSpesaCalc + ", flagCompartCalc="
-				+ flagCompartCalc + ", tipoBeneficiario=" + tipoBeneficiario
+				+ ", tipoBeneficiario=" + tipoBeneficiario
 				+ ", csOOperatoreSettore=" + csOOperatoreSettore
 				+ ", csIQuota=" + csIQuota + ", csIPs=" + csIPs + "]";
 

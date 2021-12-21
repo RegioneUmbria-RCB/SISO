@@ -24,6 +24,8 @@
 		<class>it.umbriadigitale.argo.data.cs.data.ArFfLineafin</class>
 		<class>it.umbriadigitale.argo.data.cs.data.ArFfFondo</class>
 		<class>it.umbriadigitale.argo.data.cs.data.ArFfProgetto</class>
+		<class>it.umbriadigitale.argo.data.cs.data.ArFfProgettoOrg</class>
+		<class>it.umbriadigitale.argo.data.cs.data.ArFfProgettoAttivita</class>
 		<class>it.umbriadigitale.argo.data.cs.data.ArFfTbOrigine</class>
 		<class>it.umbriadigitale.argo.data.cs.data.ArOOrganizzazione</class>
 		<class>it.umbriadigitale.argo.data.cs.data.ArOOrganizzazioneFse</class>
@@ -51,10 +53,13 @@
 			
 			<!-- <property name="hibernate.hbm2ddl.auto" value="update"/>  -->
 			 <property name="javax.persistence.validation.mode" value="NONE" />    
-            <property name="hibernate.show_sql" value="true" />   <!-- RIMETTERE A TRUE PER VISUALIZZARE IL LOG --> 
-            <property name="hibernate.format_sql" value="true" /> <!-- RIMETTERE A TRUE PER VISUALIZZARE IL LOG --> 
+            <property name="hibernate.show_sql" value="false" />   <!-- RIMETTERE A TRUE PER VISUALIZZARE IL LOG --> 
+            <property name="hibernate.format_sql" value="false" /> <!-- RIMETTERE A TRUE PER VISUALIZZARE IL LOG --> 
             
 		    <property name="hibernate.transaction.jta.platform" value="org.hibernate.service.jta.platform.internal.JBossAppServerJtaPlatform" /> 
+		    <property name="hibernate.cache.use_second_level_cache" value="true"/>
+ 			<property name="hibernate.cache.use_minimal_puts" value="true"/>
+ 			
 		</properties>
 	</persistence-unit>
 </persistence>

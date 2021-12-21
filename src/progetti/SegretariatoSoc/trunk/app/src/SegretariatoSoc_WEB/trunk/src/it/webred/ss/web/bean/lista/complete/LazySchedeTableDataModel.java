@@ -69,6 +69,7 @@ public class LazySchedeTableDataModel extends LazySchedeUdcDataModel {
         	SegretariatoSocBaseBean.fillEnte(dto);
         	for(DatiSchedaListDTO row: results)
         		schede.add(new Scheda(row));
+        	
     
     	} catch(Exception e) {
     		SegretariatoSocBaseBean.logger.error(e.getMessage(), e);

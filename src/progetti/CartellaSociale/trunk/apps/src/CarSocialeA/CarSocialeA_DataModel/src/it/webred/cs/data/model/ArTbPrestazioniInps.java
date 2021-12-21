@@ -36,11 +36,6 @@ public class ArTbPrestazioniInps implements Serializable{
 	@OneToMany(mappedBy="arTbPrestazioniInpCustom")
 	private List<ArRelIntCustomPresInps> arRelIntCustomPresInps;
 	
-	
-/*	// bi-directional many-to-many association to CsDSina
-	@ManyToMany(mappedBy = "arTbPrestazioniInps", fetch = FetchType.LAZY,cascade = CascadeType.ALL)
-	private List<CsDSina> csDSinas;*/
-	
 	//SISO-1110 Inizio
 	public List<ArRelIntCustomPresInps> getArRelIntCustomPresInps() {
 		return arRelIntCustomPresInps;
@@ -117,15 +112,4 @@ public class ArTbPrestazioniInps implements Serializable{
 	public void setFlagNonEsportare(Boolean flagNonEsportare) {
 		this.flagNonEsportare = flagNonEsportare;
 	}
-	
-	
-/*	public List<CsDSina> getCsDSinas() {
-		return csDSinas;
-	}
-
-	public void setCsDSinas(List<CsDSina> csDSinas) {
-		this.csDSinas = csDSinas;
-	}*/
-
-
 }

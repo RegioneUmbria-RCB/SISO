@@ -1,0 +1,99 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:webredcs="http://java.sun.com/jsf/composite/webredcs"
+	xmlns:webred="http://java.sun.com/jsf/composite/webred">
+
+	<h:form id="formConsuntivazione">
+		<p:growl id="msgs" showDetail="true"/>
+		
+		<p:outputPanel id="pnlConsuntivazione">
+			
+			<p:dataTable id="lstConsuntivazioni" var="cons"
+				rowKey="#{cons.id}" widgetVar="consun"
+				value="#{richiesteController.minoreStrutturaSelezionato.listaConsuntivazioni}" editable="true"
+				style="margin-bottom:20px">
+
+				<p:ajax event="rowEdit" listener="#{richiesteController.onRowEdit}" update="lstConsuntivazioni @parent:msgs"/>
+				<p:ajax event="rowEditCancel" listener="#{richiesteController.onRowCancel}" update="lstConsuntivazioni @parent:msgs"/>
+
+				<p:column headerText="ID">
+					<h:outputText value="#{cons.id != null ? cons.id : 'DA SALVARE'}" />
+				</p:column>
+
+				<p:column headerText="Data DA">
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:outputText value="#{cons.dataDa}">
+								<f:convertDateTime pattern="dd/MM/yyyy" />
+							</h:outputText>
+						</f:facet>
+						<f:facet name="input">
+							<p:calendar placeholder="Data" styleClass="disabledClass" id="calDataDa"
+                        		pattern="dd/MM/yyyy" locale="it"
+                        		value="#{cons.dataDa}" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+				
+				<p:column headerText="Data A">
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:outputText value="#{cons.dataA}" >
+								<f:convertDateTime pattern="dd/MM/yyyy" />
+							</h:outputText>
+						</f:facet>
+						<f:facet name="input">
+							<p:calendar placeholder="Data" styleClass="disabledClass" id="calDataA"
+                        		pattern="dd/MM/yyyy" locale="it"
+                        		value="#{cons.dataA}" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+				
+				<p:column headerText="Giorni Permanenza">
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:outputText value="#{cons.numGiorni}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputNumber value="#{cons.numGiorni}" decimalPlaces="0" minValue="0"/>
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+				<p:column headerText="Spedisci ad Inviante" style="text-align:center !important;">
+					<p:cellEditor>
+						<f:facet name="output">
+							<p:graphicImage rendered="#{cons.isInviato()}" value="/images/check.png" />
+							<p:graphicImage rendered="#{!cons.isInviato()}" value="/images/cross.png" />
+						</f:facet>
+						<f:facet name="input">
+							<p:selectBooleanCheckbox value="#{cons.inviatoEnte}" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+				
+				<p:column headerText="Erogato" style="text-align:center !important;">
+					<p:graphicImage rendered="#{cons.isErogato() }" value="/images/check.png" />
+					<p:graphicImage rendered="#{!cons.isErogato() }" value="/images/cross.png" />
+				</p:column>
+				
+				<p:column style="width:6rem">
+					<p:rowEditor rendered="#{!cons.isInviato()}" editTitle="Modifica" cancelTitle="Annulla" saveTitle="Salva" />
+				</p:column>
+			</p:dataTable>
+			
+			<div class="p-grid p-mt-3">
+				<div class="p-col-12">
+					<p:commandButton value="Aggiungi periodo" process="@this"
+						actionListener="#{richiesteController.onAddNew()}"
+						update="lstConsuntivazioni" />
+				</div>
+			</div>
+
+		</p:outputPanel>
+	</h:form>
+</ui:composition>

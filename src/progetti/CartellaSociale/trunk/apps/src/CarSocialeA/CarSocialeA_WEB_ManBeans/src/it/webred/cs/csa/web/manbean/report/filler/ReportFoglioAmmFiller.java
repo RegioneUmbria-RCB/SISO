@@ -1,11 +1,11 @@
 package it.webred.cs.csa.web.manbean.report.filler;
 
-import it.webred.amprofiler.model.AmAnagrafica;
 import it.webred.cs.csa.ejb.client.AccessTableCasoSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.AccessTableConfigurazioneSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.AccessTableDiarioSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.AccessTableInterventoSessionBeanRemote;
 import it.webred.cs.csa.ejb.dto.BaseDTO;
+import it.webred.cs.csa.ejb.dto.DatiOperatoreDTO;
 import it.webred.cs.csa.utils.bean.report.dto.BasePdfDTO;
 import it.webred.cs.csa.web.manbean.fascicolo.FglInterventoBean;
 import it.webred.cs.csa.web.manbean.report.ReportBaseBean;
@@ -24,7 +24,6 @@ import it.webred.cs.csa.web.manbean.report.dto.foglioAmm.custom.VoucherPdfDTO;
 import it.webred.cs.data.DataModelCostanti;
 import it.webred.cs.data.DataModelCostanti.FoglioAmministrativo;
 import it.webred.cs.data.model.CsAAnaIndirizzo;
-import it.webred.cs.data.model.CsAAnagrafica;
 import it.webred.cs.data.model.CsAComponente;
 import it.webred.cs.data.model.CsASoggettoLAZY;
 import it.webred.cs.data.model.CsCTipoInterventoCustom;
@@ -43,14 +42,9 @@ import it.webred.cs.data.model.CsIResiMinore;
 import it.webred.cs.data.model.CsISchedaLavoro;
 import it.webred.cs.data.model.CsISemiResiMin;
 import it.webred.cs.data.model.CsIVouchersad;
-import it.webred.cs.data.model.CsOOperatoreBASIC;
-import it.webred.cs.data.model.CsOSettore;
-import it.webred.cs.jsf.manbean.superc.CsUiCompBaseBean;
 import it.webred.ct.config.model.AmComune;
-import it.webred.ct.config.parameters.comune.ComuneService;
 
 import java.text.NumberFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -61,10 +55,10 @@ import javax.faces.model.SelectItem;
 
 public class ReportFoglioAmmFiller extends ReportBaseBean {
 
-	private ComuneService comuneService = (ComuneService) getEjb("CT_Service", "CT_Config_Manager", "ComuneServiceBean");
 	private AccessTableInterventoSessionBeanRemote interventoService = (AccessTableInterventoSessionBeanRemote) getEjb("CarSocialeA", "CarSocialeA_EJB", "AccessTableInterventoSessionBean");
 	private AccessTableDiarioSessionBeanRemote diarioService = (AccessTableDiarioSessionBeanRemote) getEjb("CarSocialeA", "CarSocialeA_EJB", "AccessTableDiarioSessionBean");
 	private AccessTableConfigurazioneSessionBeanRemote confService = (AccessTableConfigurazioneSessionBeanRemote) getEjb("CarSocialeA", "CarSocialeA_EJB", "AccessTableConfigurazioneSessionBean");
+	protected AccessTableCasoSessionBeanRemote casoService = (AccessTableCasoSessionBeanRemote) getEjb("CarSocialeA", "CarSocialeA_EJB", "AccessTableCasoSessionBean");
 	
 	private NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("it", "IT"));
 	
@@ -154,27 +148,32 @@ public class ReportFoglioAmmFiller extends ReportBaseBean {
 			pdfDto.setAttDal(ddMMyyyy.format(dataDa));
 		if(dataA != null)
 			pdfDto.setAttAl(ddMMyyyy.format(dataA));
-		if(flgIn.getFlagRespinto() != null && flgIn.getFlagRespinto().intValue() == 1)
+		if(flgIn.getFlagRespinto() != null && flgIn.getFlagRespinto())
 			pdfDto.setRespinto("SI");
 		else pdfDto.setRespinto("NO");
 		pdfDto.setMotivazione(flgIn.getMotivoRespinto());
 		
 		//sogg riferimento
-		if(in.getCsAComponente() != null) {
-			CsAComponente comp = in.getCsAComponente();
-			pdfDto.setRifDenominazione(comp.getCsAAnagrafica().getCognome() + " " + comp.getCsAAnagrafica().getNome() + " (" + comp.getCsTbTipoRapportoCon().getDescrizione() + ")");
-			pdfDto.setRifIndirizzo(comp.getIndirizzoRes() + " " + comp.getNumCivRes());
-			if(comp.getComResDes() != null)
-				pdfDto.setRifLuogo(comp.getComResDes() + " (" + comp.getProvResCod() + ")");
-			else pdfDto.setRifLuogo(comp.getComAltroDes());
-			String tel = "";
-			if(comp.getCsAAnagrafica().getTel() != null)
-				tel += comp.getCsAAnagrafica().getTel();
-			if(tel != null && comp.getCsAAnagrafica().getCell() != null)
-				tel += " - ";
-			if(comp.getCsAAnagrafica().getCell() != null)
-				tel += comp.getCsAAnagrafica().getCell();
-			pdfDto.setRifTelefono(tel);
+		if(in.getComponenteId() != null) {
+			BaseDTO dto = new BaseDTO();
+			fillEnte(dto);
+			dto.setObj(in.getComponenteId());
+			CsAComponente comp = schedaService.findComponenteById(dto);
+			if(comp!=null){
+				pdfDto.setRifDenominazione(comp.getCsAAnagrafica().getCognome() + " " + comp.getCsAAnagrafica().getNome() + " (" + comp.getCsTbTipoRapportoCon().getDescrizione() + ")");
+				pdfDto.setRifIndirizzo(comp.getIndirizzoRes() + " " + comp.getNumCivRes());
+				if(comp.getComResDes() != null)
+					pdfDto.setRifLuogo(comp.getComResDes() + " (" + comp.getProvResCod() + ")");
+				else pdfDto.setRifLuogo(comp.getComAltroDes());
+				String tel = "";
+				if(comp.getCsAAnagrafica().getTel() != null)
+					tel += comp.getCsAAnagrafica().getTel();
+				if(tel != null && comp.getCsAAnagrafica().getCell() != null)
+					tel += " - ";
+				if(comp.getCsAAnagrafica().getCell() != null)
+					tel += comp.getCsAAnagrafica().getCell();
+				pdfDto.setRifTelefono(tel);
+			}
 		} else {
 			pdfDto.setRifDenominazione(in.getCompDenominazione());
 			pdfDto.setRifIndirizzo(in.getCompIndirizzo());
@@ -204,12 +203,8 @@ public class ReportFoglioAmmFiller extends ReportBaseBean {
 		pdfDto.setComune(nomeEnte);
 		pdfDto.setDataOdierna(ddMMyyyy.format(new Date()));
 		baseDto.setObj(soggetto.getCsACaso().getId());
-		CsOOperatoreBASIC responsabile = casoService.findResponsabileBASIC(baseDto);
-		if(responsabile != null) {
-			AmAnagrafica amAna = getAnagraficaByUsername(responsabile.getUsername());
-			if(amAna != null)
-				pdfDto.setAssSociale(amAna.getCognome() + " " +amAna.getNome());
-		}
+		DatiOperatoreDTO responsabile = casoService.findResponsabileCaso(baseDto);
+		pdfDto.setAssSociale(responsabile!=null ? responsabile.getDenominazione() : null);
 		
 		this.fillReportPieDiPagina(pdfDto);
 		

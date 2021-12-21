@@ -9,16 +9,13 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name="CS_REL_SOTTOCART_DOC_PROT")
-@NamedQuery(name="CsRelSottocartDocProt.findCodiceDocumentoGed", query="SELECT c.codiceDocumentoGed FROM CsRelSottocartDocProt c WHERE c.sottocartellaDocId = :sottocartellaDocId and c.codRoutingOrgId = :codRoutingOrgId")
+@NamedQuery(name="CsRelSottocartDocProt.findCodiceDocumentoGed", query="SELECT c.codiceDocumentoGed FROM CsRelSottocartDocProt c WHERE c.codRoutingOrgId = :codRoutingOrgId")
 public class CsRelSottocartDocProt implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private Long id;
-
-	@Column(name="SOTTOCARTELLA_DOC_ID")
-	private Long sottocartellaDocId;
 
 	@Column(name="COD_ROUTING_ORG_ID")
 	private String codRoutingOrgId;
@@ -46,14 +43,6 @@ public class CsRelSottocartDocProt implements Serializable {
 
 	public void setId(long id) {
 		this.id = id;
-	}
-
-	public Long getSottocartellaDocId() {
-		return this.sottocartellaDocId;
-	}
-
-	public void setSottocartellaDocId(Long sottocartellaDocId) {
-		this.sottocartellaDocId = sottocartellaDocId;
 	}
 
 	public String getCodRoutingOrgId() {

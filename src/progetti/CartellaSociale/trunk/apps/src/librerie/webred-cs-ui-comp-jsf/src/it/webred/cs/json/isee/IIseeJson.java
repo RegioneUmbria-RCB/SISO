@@ -12,5 +12,9 @@ public interface IIseeJson extends ISchedaValutazione {
 
 	public ProtocolloDsuMan getProtDsuMan();
 
+	public void onChangeAnnoRiferimento();
+
+	public void onChangeTipologia();
+
 	
 }

@@ -1,6 +1,7 @@
 package it.webred.cs.sociosan.ejb.ejb;
 
 
+import it.webred.cs.csa.ejb.client.domini.AccessTableDominiAmKeySessionBeanRemote;
 import it.webred.cs.sociosan.ejb.client.CTConfigClientSessionBeanRemote;
 import it.webred.cs.sociosan.ejb.client.SocialeSessionBeanRemote;
 import it.webred.cs.sociosan.ejb.exception.SocioSanitarioException;
@@ -13,14 +14,18 @@ import it.webred.mailing.MailUtils.MailParamBean;
 import javax.ejb.Stateless;
 import javax.naming.NamingException;
 
+import org.apache.commons.lang3.StringUtils;
+
 @Stateless
 public class CTConfigClientSessionBean extends BaseSessionBean implements CTConfigClientSessionBeanRemote {
 
 	protected ParameterService parameterService;
-
+	protected static AccessTableDominiAmKeySessionBeanRemote amKeyDomini;
+	
 	public CTConfigClientSessionBean() throws NamingException {
 		super();
 		parameterService = (ParameterService) ClientUtility.getEjbInterface("CT_Service", "CT_Config_Manager", "ParameterBaseService");
+		amKeyDomini = (AccessTableDominiAmKeySessionBeanRemote) ClientUtility.getEjbInterface("CarSocialeA", "CarSocialeA_EJB", "AccessTableDominiAmKeySessionBean");
 
 	}
 	
@@ -58,6 +63,9 @@ public class CTConfigClientSessionBean extends BaseSessionBean implements CTConf
 	
 	@Override
 	public String getGlobalParameter(String paramName) {
+		String valore = amKeyDomini.findByKey(paramName);
+		if(!StringUtils.isBlank(valore)) return valore;
+		
 		ParameterSearchCriteria criteria = new ParameterSearchCriteria();
 		criteria.setKey(paramName);
 		criteria.setComune(null);

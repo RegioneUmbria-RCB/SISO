@@ -76,11 +76,6 @@ public class CsIQuota implements Serializable{
 	@OneToOne(mappedBy="csIQuota", cascade = CascadeType.ALL, orphanRemoval = true)
 	private CsIQuotaRipartiz csIQuotaRipartiz;
 	
-/*	@OneToOne(mappedBy="csIQuota", fetch=FetchType.LAZY)
-	private CsIIntervento csIIntervento;
-	
-	@OneToOne(mappedBy="csIQuota", fetch=FetchType.LAZY)
-	private CsIInterventoEsegMast csIInterventoEsegMast;*/
 
 	public Long getId() {
 		return id;
@@ -197,13 +192,5 @@ public class CsIQuota implements Serializable{
 	public boolean isKm(){
 		return getCsTbUnitaMisura()!=null && "km".equalsIgnoreCase(getCsTbUnitaMisura().getValore());
 	}
-	
-/*	public CsIIntervento getCsIIntervento() {
-		return csIIntervento;
-	}
-
-	public void setCsIIntervento(CsIIntervento csIIntervento) {
-		this.csIIntervento = csIIntervento;
-	}*/
 	
 }

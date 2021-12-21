@@ -14,4 +14,6 @@ public interface AccessTableDatiEsterniSoggettoSessionBeanRemote {
 
 	public List<DatiEsterniSoggettoViewDTO> getDatiEsterniSoggetto(BaseDTO dto);
 
+	public Boolean existsPrestazione(BaseDTO bDto);
+
 }

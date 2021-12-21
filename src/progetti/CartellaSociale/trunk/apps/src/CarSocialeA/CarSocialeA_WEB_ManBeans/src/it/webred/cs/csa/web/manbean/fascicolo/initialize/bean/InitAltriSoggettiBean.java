@@ -1,22 +1,22 @@
 package it.webred.cs.csa.web.manbean.fascicolo.initialize.bean;
 
-import java.util.List;
-
-import it.webred.cs.data.model.CsAFamigliaGruppo;
+import it.webred.cs.data.model.CsAComponente;
 import it.webred.ct.data.model.anagrafe.SitDPersona;
+
+import java.util.List;
 
 public class InitAltriSoggettiBean {
 
-	CsAFamigliaGruppo famigliaGruppo;
+	List<CsAComponente> listaComponenti;
 	
 	List<SitDPersona> listaFamiglia_anagrafe;
 
-	public CsAFamigliaGruppo getFamigliaGruppo() {
-		return famigliaGruppo;
+	public List<CsAComponente> getListaComponenti() {
+		return listaComponenti;
 	}
 
-	public void setFamigliaGruppo(CsAFamigliaGruppo famigliaGruppo) {
-		this.famigliaGruppo = famigliaGruppo;
+	public void setListaComponenti(List<CsAComponente> listaComponenti) {
+		this.listaComponenti = listaComponenti;
 	}
 
 	public List<SitDPersona> getListaFamiglia_anagrafe() {

@@ -12,6 +12,7 @@
 	</h:head>
 	<h:body>
 		<composite:interface componentType="pnlData" >
+		    <composite:attribute name="id" />
 			<composite:attribute name="dataValue" />
 			<composite:attribute name="dataPattern" />
 			<composite:attribute name="dataReq" />
@@ -26,7 +27,7 @@
 		</composite:interface>
 		<composite:implementation>
 				
-				<p:calendar value="#{cc.attrs.dataValue}" pattern="#{cc.attrs.dataPattern}" required="#{cc.attrs.dataReq}" requiredMessage="#{cc.attrs.dataReqMes}" size="15"
+				<p:calendar id="#{cc.attrs.id}" value="#{cc.attrs.dataValue}" pattern="#{cc.attrs.dataPattern}" required="#{cc.attrs.dataReq}" requiredMessage="#{cc.attrs.dataReqMes}" size="15"
 	     			validatorMessage="#{cc.attrs.dataValMes}" navigator="true" yearRange="#{cc.attrs.yearRange}" converterMessage="#{cc.attrs.dataConMes}"
 	     			disabled="#{cc.attrs.disabled}" maxdate="#{cc.attrs.maxDate}" mindate="#{cc.attrs.minDate}" placeholder="#{cc.attrs.dataPatternLabel}">
         				<f:validator validatorId="dateValidator"/>

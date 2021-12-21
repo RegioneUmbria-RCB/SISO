@@ -16,10 +16,10 @@ import javax.persistence.*;
 			@NamedQuery(name="ArRelClassememoPresInps.findAll", query="SELECT a FROM ArRelClassememoPresInps a"),
 		    @NamedQuery(
 		      name = "ArRelClassememoPresInps.findByCodiceMeno",
-		      query="SELECT a FROM ArRelClassememoPresInps a join a.arTClasse b WHERE b.codiceMemo = :codiceMemo") ,
+		      query="SELECT a FROM ArRelClassememoPresInps a join fetch a.arTClasse b WHERE b.codiceMemo = :codiceMemo") ,
 		    @NamedQuery(
 				      name = "ArRelClassememoPresInps.findByTipoInterventoId",
-				      query="SELECT a FROM ArRelClassememoPresInps a join a.arTClasse  WHERE a.arTClasse.id = :tipoInterventoId")
+				      query="SELECT a FROM ArRelClassememoPresInps a join fetch a.arTClasse  WHERE a.arTClasse.id = :tipoInterventoId")
 		})
 
  

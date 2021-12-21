@@ -2,6 +2,18 @@ html{
 	font-size: 100%;
 }
 
+.statoCol {
+	text-align:center;
+}
+.accettata .statoCol {
+	background-color:green;
+	color:white;
+}
+.accettata_altra_struttura .statoCol {
+	background-color:orange;
+	color:white;
+}
+
 .top-aligned-columns td{
     vertical-align: top;
     padding: 0px;

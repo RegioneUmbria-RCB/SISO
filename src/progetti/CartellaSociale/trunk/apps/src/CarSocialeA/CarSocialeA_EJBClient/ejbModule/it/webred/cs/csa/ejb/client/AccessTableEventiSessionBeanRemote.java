@@ -33,5 +33,5 @@ public interface AccessTableEventiSessionBeanRemote {
 	 * @param opSettId
 	 * @return
 	 */
-	public List<EventoDTO>findEventsByOpSettIdAndCF(String CF, long opSettId, String type);
+	public List<EventoDTO>findEventsByOpSettIdAndCF(BaseDTO dto);
 }

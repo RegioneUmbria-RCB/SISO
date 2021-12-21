@@ -52,10 +52,6 @@ public class CsIInterventoPr implements Serializable {
 	@Column(name="CODICE_FIN1")
 	private String codiceFin1;
 	
-	@Column(name="FF_PROGETTO_DESCRIZIONE")
-	private String ffProgettoDescrizione;
-	
-	
 	//Settore EROGANTE
 	@Column(name="FF_ORIGINE_ID")
 	private Long ffOrigineId; 
@@ -86,8 +82,13 @@ public class CsIInterventoPr implements Serializable {
 	@JoinColumn(name="SETT_IMPIEGO_ID")
 	private CsTbSettoreImpiego csTbSettoreImpiego;
 
-	@Column(name="N_SOTTOCORSO_ATTIVITA")  //SISO-790
-	 private String nSottocorsoAttivita;
+	@ManyToOne(fetch = FetchType.EAGER, optional = true)
+	@JoinColumn(name="PROGETTO_ID")
+	private ArFfProgetto progetto;
+		
+	@ManyToOne(fetch = FetchType.EAGER, optional = true)
+	@JoinColumn(name="PROGETTO_ATTIVITA_ID")
+	private ArFfProgettoAttivita progettoAttivita;
 	
 	//bi-directional one-to-one association to CsIAffidoFam
 	@OneToOne(mappedBy="csIInterventoPr",cascade = CascadeType.ALL , fetch=FetchType.EAGER, orphanRemoval=true )
@@ -145,14 +146,6 @@ public class CsIInterventoPr implements Serializable {
 
 	public void setUsrMod(String usrMod) {
 		this.usrMod = usrMod;
-	}
-
-	public String getFfProgettoDescrizione() {
-		return ffProgettoDescrizione;
-	}
-
-	public void setFfProgettoDescrizione(String ffProgettoDescrizione) {
-		this.ffProgettoDescrizione = ffProgettoDescrizione;
 	}
 
 	public CsTbTitoloStudio getCsTbTitoloStudio() {
@@ -214,14 +207,6 @@ public class CsIInterventoPr implements Serializable {
 	public void setCodiceFin1(String codiceFin1) {
 		this.codiceFin1 = codiceFin1;
 	}
-	
-	public String getnSottocorsoAttivita() {
-		return nSottocorsoAttivita;
-	}
-
-	public void setnSottocorsoAttivita(String nSottocorsoAttivita) {
-		this.nSottocorsoAttivita = nSottocorsoAttivita;
-	}
 
 	// SISO-663 SM
 	public CsOSettore getSettoreGestore() {
@@ -271,5 +256,21 @@ public class CsIInterventoPr implements Serializable {
 
 	public void setServizioAmbito(Boolean servizioAmbito) {
 		this.servizioAmbito = servizioAmbito;
+	}
+
+	public ArFfProgetto getProgetto() {
+		return progetto;
+	}
+
+	public void setProgetto(ArFfProgetto progetto) {
+		this.progetto = progetto;
+	}
+
+	public ArFfProgettoAttivita getProgettoAttivita() {
+		return progettoAttivita;
+	}
+
+	public void setProgettoAttivita(ArFfProgettoAttivita progettoAttivita) {
+		this.progettoAttivita = progettoAttivita;
 	}
 }

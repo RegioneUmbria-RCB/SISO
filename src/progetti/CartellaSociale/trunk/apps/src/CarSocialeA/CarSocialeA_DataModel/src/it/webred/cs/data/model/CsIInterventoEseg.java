@@ -89,8 +89,7 @@ public class CsIInterventoEseg implements Serializable {
 	private CsOOperatoreSettore csOOperatoreSettore;
 
 	//bi-directional many-to-one association to csIInterventoEsegValores
-	@OneToMany(mappedBy = "csIInterventoEseg", fetch = FetchType.EAGER,cascade = CascadeType.ALL)
-	@OrderBy("csAttributoUnitaMisura.id ASC")
+	@OneToMany(mappedBy = "csIInterventoEseg", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<CsIInterventoEsegValore> csIInterventoEsegValores;
 	
 	@OneToOne(cascade = CascadeType.ALL, orphanRemoval=true)

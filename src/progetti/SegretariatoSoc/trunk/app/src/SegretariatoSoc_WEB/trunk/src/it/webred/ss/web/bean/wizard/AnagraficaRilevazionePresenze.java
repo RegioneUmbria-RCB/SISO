@@ -1,14 +1,16 @@
 package it.webred.ss.web.bean.wizard;
 
-import javax.faces.bean.ManagedBean;
-
-import eu.smartpeg.rilevazionepresenze.AnagraficaSessionBeanRemote;
-import eu.smartpeg.rilevazionepresenze.data.model.Anagrafica;
 import it.webred.cs.data.DataModelCostanti;
 import it.webred.cs.jsf.manbean.superc.CsUiCompBaseBean;
-import it.webred.ct.config.model.AmTabComuni;
 import it.webred.siso.ws.ricerca.dto.RicercaAnagraficaParams;
 import it.webred.ss.web.dto.RilevazionePresenzeDettaglio;
+
+import javax.faces.bean.ManagedBean;
+
+import org.apache.commons.lang3.StringUtils;
+
+import eu.smartpeg.rievazionepresenze.dto.AnagraficaDTO;
+import eu.smartpeg.rilevazionepresenze.AnagraficaSessionBeanRemote;
 
 @ManagedBean
 public class AnagraficaRilevazionePresenze extends CsUiCompBaseBean{
@@ -21,13 +23,13 @@ public class AnagraficaRilevazionePresenze extends CsUiCompBaseBean{
 		
 			RicercaAnagraficaParams rab = new RicercaAnagraficaParams(tipoRicerca,true);
 				//fillEnte(rab);
-				rab.setIdentificativo(identificativo);
-				
-				RilevazionePresenzeDettaglio result = getPersonaDaAnaRP(rab);
-				if(result.getMessaggio()==null && result != null){
-					p = result;
-				}else
-					logger.error("Errore ricerca "+tipoRicerca+" id ["+result.getIdentificativo()+"]"+ result.getMessaggio(), result.getEccezione());
+			rab.setIdentificativo(identificativo);
+			
+			RilevazionePresenzeDettaglio result = getPersonaDaAnaRP(rab);
+			if(result.getMessaggio()==null && result != null){
+				p = result;
+			}else
+				logger.error("Errore ricerca "+tipoRicerca+" id ["+result.getIdentificativo()+"]"+ result.getMessaggio(), result.getEccezione());
 			return p;
 		}
 
@@ -35,13 +37,10 @@ public class AnagraficaRilevazionePresenze extends CsUiCompBaseBean{
 		//#ROMA CAPITALE 
 	public static RilevazionePresenzeDettaglio getPersonaDaAnaRP(RicercaAnagraficaParams params) {
 		RilevazionePresenzeDettaglio result = new RilevazionePresenzeDettaglio();
-		Anagrafica anagraficaRP = new Anagrafica();
+		AnagraficaDTO anagraficaRP = new AnagraficaDTO();
 		// query di interrogazione Anagraferilevazione presenze
 		RilevazionePresenzeDettaglio pd = new RilevazionePresenzeDettaglio();
 		try {
-
-			
-
 			if (anagraficaRP != null) {
 				if (params.getIdentificativo() != null) {
 					if(params.getCf() == null) {
@@ -71,60 +70,36 @@ public class AnagraficaRilevazionePresenze extends CsUiCompBaseBean{
 
 		return result;
 	}
-		private static void initFromAnagRilevazionePresenze(RilevazionePresenzeDettaglio rilevazionePresenzeBean, Anagrafica anagraficaRP, String identificativo, String tipoRicerca){
-			
-		try {
-			rilevazionePresenzeBean
-					.setIdentificativo(identificativo != null ? identificativo : String.valueOf(anagraficaRP.getId()));
-			rilevazionePresenzeBean.setCodfisc(anagraficaRP.getCf());
-			rilevazionePresenzeBean.setCognome(anagraficaRP.getCognome());
-			rilevazionePresenzeBean.setNome(anagraficaRP.getNome());
-			rilevazionePresenzeBean.setDataNascita(anagraficaRP.getDataNascita());
-			rilevazionePresenzeBean.setDefunto(false);// non abbiamo questa info
-			rilevazionePresenzeBean.setSesso(anagraficaRP.getGenere());
+	
+	private static void initFromAnagRilevazionePresenze(RilevazionePresenzeDettaglio pd, AnagraficaDTO anagraficaRP, String identificativo, String tipoRicerca){
+		pd.setProvenienzaRicerca(tipoRicerca);
+		pd.setIdentificativo(identificativo != null ? identificativo : String.valueOf(anagraficaRP.getId()));
+		pd.setCodfisc(anagraficaRP.getCf());
+		pd.setCognome(anagraficaRP.getCognome());
+		pd.setNome(anagraficaRP.getNome());
+		pd.setDataNascita(anagraficaRP.getDataNascita());
+		pd.setDefunto(false);// non abbiamo questa info
+		pd.setSesso(anagraficaRP.getSesso());
 
-			// Cittadinanza
-			rilevazionePresenzeBean.setCittadinanza(anagraficaRP.getCittadinanza());
+		// Cittadinanza
+		pd.setCittadinanza(anagraficaRP.getCittadinanza());
 
-			// nascita
-			String codIstat = anagraficaRP.getComuneNascitaCod() != null ? anagraficaRP.getComuneNascitaCod() : null;
-			AmTabComuni comuneNascita = luoghiService.getComuneItaByIstat(codIstat);
-			if (comuneNascita != null)
-				rilevazionePresenzeBean.setComuneNascita(comuneNascita);
-			else
-				rilevazionePresenzeBean.setNazioneNascita(
-						getNazioneByIstat(anagraficaRP.getStatoNascitaCod(), anagraficaRP.getStatoNascitaDes()));
+		pd.setComuneNascita(anagraficaRP.getComuneNascita());
+		pd.setNazioneNascita(anagraficaRP.getNazioneNascita());
+		
+		// Residenza
+		pd.setIndirizzoResidenza(anagraficaRP.getIndirizzoResidenza());
+		pd.setComuneResidenza(anagraficaRP.getComuneResidenza());
+		
+		// Domicilio
+		pd.setIndirizzoDomicilio(anagraficaRP.getIndirizzoDomicilio());
+		pd.setComuneDomicilio(anagraficaRP.getComuneDomicilio());
 
-			// Residenza
-			rilevazionePresenzeBean.setIndirizzoResidenza(anagraficaRP.getIndirizzoResidenza());
-			if (anagraficaRP.getComuneResidenzaCod() != null && !anagraficaRP.getComuneResidenzaCod().isEmpty()) {
-				AmTabComuni comuneResidenza = luoghiService.getComuneItaByIstat(anagraficaRP.getComuneResidenzaCod());
-				rilevazionePresenzeBean.setComuneResidenza(comuneResidenza);
-
-			}
-			// Domicilio
-			rilevazionePresenzeBean.setIndirizzoDomicilio(anagraficaRP.getIndirizzoDomicilio());
-			if (anagraficaRP.getComuneDomicilioCod() != null && !anagraficaRP.getComuneDomicilioCod().isEmpty()) {
-				AmTabComuni comuneDomicilio = luoghiService.getComuneItaByIstat(anagraficaRP.getComuneDomicilioCod());
-				rilevazionePresenzeBean.setComuneDomicilio(comuneDomicilio);
-			}
-			else if (anagraficaRP.getComuneResidenzaCod() != null  && !anagraficaRP.getComuneResidenzaCod().isEmpty()) {
-				rilevazionePresenzeBean.setIndirizzoDomicilio(anagraficaRP.getIndirizzoResidenza());
-				//imposto il comuneDOmicilio uguale alla residenza
-				AmTabComuni comuneDomicilio = luoghiService.getComuneItaByIstat(anagraficaRP.getComuneResidenzaCod());
-				rilevazionePresenzeBean.setComuneDomicilio(comuneDomicilio);
-			}
-
-			rilevazionePresenzeBean.setIdTitoloDiStudio(anagraficaRP.getIdTitoloStudio());
-			rilevazionePresenzeBean.setIdVulnerabilita(anagraficaRP.getIdVulnerabilita());
-			rilevazionePresenzeBean.setIdCondizioneLavorativa(anagraficaRP.getIdCondizioneLavorativa());
-			rilevazionePresenzeBean.setIdStruttura(anagraficaRP.getStruttura().getId());
-			rilevazionePresenzeBean.setIdArea(anagraficaRP.getIdAreaStruttura());
-			rilevazionePresenzeBean.setUnitaAbitativa(anagraficaRP.getUnitaAbitativa());
-
-		} catch (Exception e) {
-			logger.error(e);
-			rilevazionePresenzeBean.setEccezione(e);
-		}
-		}
+		pd.setIdTitoloDiStudio(anagraficaRP.getIdTitoloStudio());
+		pd.setIdVulnerabilita(anagraficaRP.getIdVulnerabilita());
+		pd.setIdCondizioneLavorativa(anagraficaRP.getIdCondizioneLavorativa());
+		pd.setIdStruttura(anagraficaRP.getIdStruttura());
+		pd.setIdArea(anagraficaRP.getIdAreaStruttura());
+		pd.setUnitaAbitativa(anagraficaRP.getUnitaAbitativa());
+	}
 }

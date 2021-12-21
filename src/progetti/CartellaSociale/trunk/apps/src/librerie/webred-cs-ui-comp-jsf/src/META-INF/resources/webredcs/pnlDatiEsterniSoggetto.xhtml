@@ -14,7 +14,13 @@
 	</composite:interface>
 	<composite:implementation>
 
-		<p:outputPanel deferred="true">
+<!-- 		<p:outputPanel deferred="true">
+			<p:graphicImage value="#{resource['webredcs/img/dati_esterni.png']}"
+					rendered="#{not empty schedaDatiEsterniSoggettoBean.datiEsterniSoggetto}" 
+					height="26px" id="content" title="Dati Esterni"
+					onclick="PF('dlgDatiEsterni').show()" />
+		</p:outputPanel> -->
+				<p:outputPanel deferred="true">
 			<p:graphicImage value="#{resource['webredcs/img/dati_esterni.png']}"
 					rendered="#{not empty schedaDatiEsterniSoggettoBean.datiEsterniSoggetto}" 
 					height="26px" id="content" title="Dati Esterni"
@@ -23,9 +29,11 @@
 
 		<p:dialog widgetVar="dlgDatiEsterni" position="10,10" modal="true" width="1280" height="640">
 			<p:accordionPanel value="#{schedaDatiEsterniSoggettoBean.datiEsterniSoggetto}" var="de" styleClass="leftAlign">
-				<p:tab title="File : #{de.nomeFile}">
+				<p:tab title="File : #{de.nomeFile} - Tipologia : #{de.tipologia}">
 					<h:outputText styleClass="bold" style="margin: 1em" value="Data e ora importazione:" />
-					<h:outputText value="#{de.dataImportazione}" />
+					<h:outputText value="#{de.dataImportazione}" >
+						 <f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+					</h:outputText>
 					<ui:repeat var="rigaDatiEsterni" value="#{de.righeDatiEsterni}">
 						<p:dataGrid value="#{rigaDatiEsterni.contenuti}" var="nvp" columns="5">
 							<p:panelGrid columns="1">

@@ -3,8 +3,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
+import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.naming.Context;
+import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -13,7 +16,8 @@ import org.jboss.logging.Logger;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 
-import eu.smartpeg.rievazionepresenze.dto.BaseDTO;
+import eu.smartpeg.rilevazionepresenze.StruttureSessionBeanRemote;
+import eu.smartpeg.rilevazionepresenze.data.model.Struttura;
 import it.webred.cet.permission.CeTUser;
 import it.webred.ct.config.model.AmKeyValueExt;
 import it.webred.ct.config.parameters.ParameterService;
@@ -25,9 +29,13 @@ public class RilevazionePresenzeBaseController {
 
 
 
+	@EJB
+	private StruttureSessionBeanRemote struttureEJB;
+	
 	private String logoBasePath;
 	protected String dirLoghi = "/images/logo/";
 
+	private Struttura currentStruttura;
 	private StreamedContent logoComune;
 
 	public static Logger logger = Logger.getLogger("rilevazionepresenze.log");
@@ -95,13 +103,12 @@ public class RilevazionePresenzeBaseController {
 
 
 	protected String getPathLoghi() {
-		BaseDTO baseDto = new BaseDTO();
-		fillUserData(baseDto);
+		String enteId = getCurrentEnte();
 		String pathLoghi = null;
-		if (baseDto.getEnteId() != null) {
+		if (enteId != null) {
 			String dir = this.getDirDatiDiogene();
 			if (dir != null)
-				pathLoghi = dir + baseDto.getEnteId() + dirLoghi;
+				pathLoghi = dir + enteId + dirLoghi;
 		}
 		return pathLoghi;
 	}
@@ -159,6 +166,11 @@ public class RilevazionePresenzeBaseController {
 //			ro.setEnteId(ente);
 	}
 
+	public static String getCurrentEnte(){
+		CeTUser user = (CeTUser) getSession().getAttribute("user");
+		return user!=null ? user.getCurrentEnte() : null;
+	}
+	
 	public static void fillEnte(CeTBaseObject ro) {
 
 		//TODO: getSession non funziona .. perch�?
@@ -168,12 +180,20 @@ public class RilevazionePresenzeBaseController {
 			ro.setUserId(user.getUsername());
 			ro.setSessionId(user.getSessionId());
 		}
+	}
+
+	public void readCurrentStruttura(String codBelfioreFittizio) {
+		setCurrentStruttura(struttureEJB.findStrutturaByCodBelfFittizio(codBelfioreFittizio));
 		
-//		PreselPuntoContatto pContMan = (PreselPuntoContatto)getBeanReference("preselPuntoContatto");
-//		String ente = pContMan.getPuntoContatto().getOrganizzazione().getBelfiore();
-//		if (ente != null)
-//			ro.setEnteId(ente);
 	}
 	
+	public Struttura getCurrentStruttura() {
+		String enteId = getCurrentEnte();
+		return currentStruttura = struttureEJB.findStrutturaByCodBelfFittizio(enteId);
+	}
 
+	public void setCurrentStruttura(Struttura currentStruttura) {
+		this.currentStruttura = currentStruttura;
+	}
+	
 }

@@ -1,5 +1,6 @@
 package it.webred.cs.csa.ejb.dto.erogazioni;
 
+import it.webred.cs.csa.ejb.dto.pai.CsPaiMastSoggDTO;
 import it.webred.cs.data.DataModelCostanti;
 import it.webred.cs.data.model.CsAAnagrafica;
 import it.webred.cs.data.model.CsASoggettoLAZY;
@@ -109,27 +110,72 @@ public class SoggettoErogazioneBean implements Serializable {
  		//SISO-1138 FINE
 	}
 	
+	public SoggettoErogazioneBean(CsPaiMastSoggDTO pms) {
+		this.csASoggetto = pms.getCaso() != null ? pms.getCaso().getCsASoggetto() : null;
+
+		this.cognome = pms.getCognome();
+		this.nome = pms.getNome();
+		this.codiceFiscale = pms.getCf();
+		this.cittadinanza = pms.getCittadinanza();
+		this.cittadinanza2 = pms.getSecondaCittadinanza();
+		this.annoNascita = pms.getAnnoNascita();
+		this.riferimento = pms.getIntestatario() != null && pms.getIntestatario() ? true : false;
+
+		this.jsonComuneResidenza = pms.getComuneResidenza();
+		this.viaResidenza = pms.getViaResidenza();
+		this.codiceNazioneResidenzaEstero = pms.getNazioneResidenza();
+		this.sessoBeneficiario = pms.getSesso();
+	}
+	
 	//SISO-962 Inizio
-	public SoggettoErogazioneBean( CsASoggettoLAZY soggetto, String viaResidenza, String jsonLuogoResidenza, boolean riferimento) {
+	public SoggettoErogazioneBean( CsASoggettoLAZY soggetto, String viaResidenza, String jsonLuogoResidenza, String statoEsteroResidenza, boolean riferimento) {
 		csASoggetto = soggetto;
 	
 		this.sincronizzaDatiAnagrafici();
-		this.sincronizzaResidenza(viaResidenza, jsonLuogoResidenza);
+		this.sincronizzaResidenza(viaResidenza, jsonLuogoResidenza, statoEsteroResidenza);
 		
 		this.verificaDatiValidi(viaResidenza, jsonLuogoResidenza);
 		
 		this.riferimento = riferimento;
 	}
+	
+	public void integraDatiMancanti(CsASoggettoLAZY soggetto, String viaResidenza, String jsonLuogoResidenza){
+		csASoggetto = soggetto;
+		if(csASoggetto!=null){
+			CsAAnagrafica ana = csASoggetto.getCsAAnagrafica();
+			cognome = this.integraDatoMancante(cognome, ana.getCognome());
+			nome = this.integraDatoMancante(nome, ana.getNome());
+			codiceFiscale = this.integraDatoMancante(codiceFiscale, ana.getCf());
+			Integer anno = getAnno(csASoggetto.getCsAAnagrafica().getDataNascita());
+			if(annoNascita==null && anno!=null && anno>0)
+				this.annoNascita = anno;
+			cittadinanza = this.integraDatoMancante(cittadinanza, csASoggetto.getCsAAnagrafica().getCittadinanza());
+			cittadinanza2 = this.integraDatoMancante(cittadinanza2, csASoggetto.getCsAAnagrafica().getCittadinanza2());
+			sessoBeneficiario = this.integraDatoMancante(sessoBeneficiario, csASoggetto.getCsAAnagrafica().getSesso());		
+			jsonComuneResidenza = this.integraDatoMancante(jsonComuneResidenza, jsonLuogoResidenza);
+			viaResidenza = this.integraDatoMancante(this.viaResidenza, viaResidenza);
+			
+			this.verificaDatiValidi(viaResidenza, jsonLuogoResidenza);
+			
+			this.datiValidi = this.isValorizzato();
+		}
+	}
 	//SISO-962 Fine
 	
-	public void verificaAllineamento(CsASoggettoLAZY soggetto, String viaResidenza, String jsonLuogoResidenza, boolean riferimento) {
+	private String integraDatoMancante(String dest, String orig){
+		if(StringUtils.isBlank(dest) && !StringUtils.isBlank(orig))
+			dest = orig;
+		return dest;
+	}
+	
+	public void verificaAllineamento(CsASoggettoLAZY soggetto, String viaResidenza, String jsonLuogoResidenza, String statoEsteroResidenza, boolean riferimento) {
 		csASoggetto = soggetto;
 		
 		if(this.isAllineatoAnagrafica())
 			this.sincronizzaDatiAnagrafici();
 		
 		if(this.isAllineatoResidenza(viaResidenza, jsonLuogoResidenza))	
-		   this.sincronizzaResidenza(viaResidenza, jsonLuogoResidenza);
+		   this.sincronizzaResidenza(viaResidenza, jsonLuogoResidenza, statoEsteroResidenza);
 		
 		this.verificaDatiValidi(viaResidenza, jsonLuogoResidenza);
 		
@@ -185,9 +231,10 @@ public class SoggettoErogazioneBean implements Serializable {
 			this.datiValidi=true;
 	}
 	
-	public void sincronizzaResidenza(String viaResidenza, String jsonLuogoResidenza){
+	public void sincronizzaResidenza(String viaResidenza, String jsonLuogoResidenza, String statoEsteroResidenza){
 		this.jsonComuneResidenza = jsonLuogoResidenza;
 		this.viaResidenza = viaResidenza;
+		this.codiceNazioneResidenzaEstero = !"1".equals(statoEsteroResidenza) ? statoEsteroResidenza : null;
 		this.verificaDatiValidi(viaResidenza, jsonLuogoResidenza);
 	}
 	

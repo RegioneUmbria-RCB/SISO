@@ -4,6 +4,7 @@ import it.webred.cs.csa.ejb.CarSocialeBaseDAO;
 import it.webred.cs.csa.ejb.client.CarSocialeServiceException;
 import it.webred.cs.csa.ejb.dto.ErogazioniSearchCriteria;
 import it.webred.cs.csa.ejb.dto.EsportazioneDTOView;
+import it.webred.cs.csa.ejb.queryBuilder.ErogazioniQueryBuilder;
 import it.webred.cs.data.DataModelCostanti;
 import it.webred.cs.data.model.CsCTipoIntervento;
 import it.webred.cs.data.model.CsDSina;
@@ -39,111 +40,6 @@ public class ExportCasellarioDAO extends CarSocialeBaseDAO implements Serializab
 		q.setParameter("dataA", dataFine);
 		return q.getResultList();
 	}
-	
-	
-//	public List<EsportazioneDTO> findErogazDaInviareInPeriodo(ErogazioniSearchCriteria bDto) throws CarSocialeServiceException{
-//		List<Object[]> result= new ArrayList<Object[]>();
-//		List<EsportazioneDTO> listEsportazioni= new ArrayList<EsportazioneDTO>();
-//		ErogazioniQueryBuilder qb = new ErogazioniQueryBuilder(bDto);
-//		try{
-//			String sql=qb.createQueryErogazioniDaEportare();				
-//			Query q = em.createNativeQuery(sql);	
-//			q.setParameter("dataInizio", bDto.getDataInizio());
-//			q.setParameter("dataFine", bDto.getDataFine());	
-//			q.setParameter("operatoreId", bDto.getOperatoreId());
-//			result=(List<Object[]>)q.getResultList();
-//			
-//			for(Object[] o : result){
-//				EsportazioneDTO e= new EsportazioneDTO();
-//				e.setIdCsInterventoEseg(((BigDecimal)o[0]).longValue());
-//				if(o[1]!=null)
-//				e.setBenefAnnoNascita(((BigDecimal)o[1]).intValue());
-//				e.setBenefLuogoNascita((String)o[2]);
-//				if(o[3]!=null)
-//				e.setBenefSesso(((BigDecimal)o[3]).intValue());
-//				if(o[4]!=null)
-//				e.setBenefCittadinanza(((BigDecimal)o[4]).intValue());
-//				if(o[5]!=null)
-//				e.setBenefSecCittadinanza(((BigDecimal)o[5]).intValue());
-//				e.setBenefRegione((Long)o[6]);
-//				e.setBenefComune((Long)o[7]);
-//				e.setBenefNazione((Long)o[8]);
-//				e.setNumProtDSU((String)o[9]);
-//				if(o[10]!=null)
-//				e.setAnnoProtDSU(((BigDecimal)o[10]).intValue());
-//				e.setDataDSU((Date)o[11]);
-//				e.setCodPrestazione((String)o[12]);
-//				e.setDenomPrestazione((String)o[13]);				
-//				e.setProtDomPrest((String)o[14]);
-//				e.setSogliaISEE((BigDecimal)o[15]);				
-//				
-//				BigDecimal m_spesa=(BigDecimal)o[30];
-//				BigDecimal m_compart_altre=(BigDecimal)o[31];
-//				BigDecimal m_compart_ssn=(BigDecimal)o[32];
-//				BigDecimal m_compart_utenti=(BigDecimal)o[33];
-//				BigDecimal m_perc_gestita_ente=(BigDecimal)o[34];
-//				BigDecimal m_valore_gestita_ente=(BigDecimal)o[35];
-//				String m_note_altre_compart=(String)o[36];
-//				String m_soggetto_cf=(String)o[38];
-//				String m_soggetto_cognome=(String)o[39];
-//				String m_soggetto_nome=(String)o[40];
-//				
-//				if(m_spesa!=null)
-//					e.setSpesa(m_spesa);
-//				else
-//					e.setSpesa((BigDecimal)o[19]);
-//				if(m_compart_altre!=null)
-//					e.setCompartAltre(m_compart_altre);
-//				else
-//					e.setCompartAltre((BigDecimal)o[20]);
-//				if(m_compart_ssn!=null)
-//					e.setCompartSsn(m_compart_ssn);
-//				else
-//					e.setCompartSsn((BigDecimal)o[21]);
-//				if(m_compart_utenti!=null)
-//					e.setCompartUtenti(m_compart_utenti);
-//				else
-//					e.setCompartUtenti((BigDecimal)o[22]);
-//				if(m_perc_gestita_ente!=null)
-//					e.setPercGestitaEnte(m_perc_gestita_ente);
-//				else
-//					e.setPercGestitaEnte((BigDecimal)o[23]);
-//				if(m_valore_gestita_ente!=null)
-//					e.setValoreGestitaEnte(m_valore_gestita_ente);
-//				else
-//					e.setValoreGestitaEnte((BigDecimal)o[24]);
-//				if(m_note_altre_compart!=null)
-//					e.setNoteAltreCompart(m_note_altre_compart);
-//				else
-//					e.setNoteAltreCompart((String)o[29]);
-//				if(m_soggetto_cf!=null)
-//					e.setSoggettoCodiceFiscale(m_soggetto_cf);
-//				else
-//					e.setSoggettoCodiceFiscale((String)o[16]);
-//				if(m_soggetto_cognome!=null)
-//					e.setSoggettoCognome(m_soggetto_cognome);
-//				else
-//					e.setSoggettoCognome((String)o[17]);
-//				if(m_soggetto_nome!=null)
-//					e.setSoggettoNome(m_soggetto_nome);
-//				else
-//					e.setSoggettoNome((String)o[18]);
-//					
-//				e.setDataEsecuzione((Date)o[25]);
-//				e.setEnteOperatoreErogante((String)o[26]);
-//				e.setNomeOperatoreErog((String)o[27]);
-//				e.setNote((String)o[28]);
-//				e.setCarattere((String)o[37]);
-//				listEsportazioni.add(e);
-//			}			
-//		}catch(Throwable e){
-//			logger.error(e.getMessage(),e);
-//			e.printStackTrace();
-//		}
-//		return listEsportazioni;
-//	}
-	
-	
 
 	public List<EsportazioneDTOView> findErogazDaInviareInPeriodo(ErogazioniSearchCriteria bDto) throws CarSocialeServiceException{
 		List<Object[]> result= new ArrayList<Object[]>();
@@ -411,7 +307,7 @@ public class ExportCasellarioDAO extends CarSocialeBaseDAO implements Serializab
 		if (ids==null || ids.size()==0) {
 			lst = new ArrayList<VErogExportHelp>();
 		} else {
-			logger.debug("findVErogExportHelp IDS["+ids+"]");
+			logger.debug("findVErogExportHelp SIZE["+ids.size()+"] IDS["+ids+"]");
 			Query q = em.createNamedQuery("VErogExportHelp.findByIds");
 			q.setParameter("ids", ids ); 
 
@@ -472,20 +368,20 @@ public class ExportCasellarioDAO extends CarSocialeBaseDAO implements Serializab
 
 
 //INIZIO SISO-524 
-	public List<CsIPsExport> findCsIPsExportByCsIInterventoEsegIds( List<Long> ids) {
-		List<CsIPsExport> lst;
-
-		if (ids==null || ids.size()==0) {
-			lst = new ArrayList<CsIPsExport>();
-		} else {
-			Query q = em.createNamedQuery("CsIPsExport.findByCsIInterventoEsegIds");
-	  
-			q.setParameter("csIInterventoEsegIds", ids ); 
-
-			lst = q.getResultList();			
+	public Boolean verificaErogazioniEsportateByEsegIds( List<Long> ids) {
+        Boolean esportate = false;
+		try{
+	        if (ids!=null && ids.size()>0) {
+				Query q = em.createNamedQuery("CsIPsExport.countEsegExportedByIds");
+				q.setParameter("csIInterventoEsegIds", ids ); 
+	
+				Long count = (Long)q.getSingleResult();
+				esportate = count.longValue()>0;
+			}
+		} catch(Throwable e){
+			logger.error(e.getMessage(),e);
 		}
-
-		return lst;
+		return esportate;
 	}
 //FINE SISO-524 
 	
@@ -546,24 +442,6 @@ public class ExportCasellarioDAO extends CarSocialeBaseDAO implements Serializab
 		return listEsportazioni; 
 	}
 	
-	//SISO-884
-			public List<CsIPsExport> findCsIPsExportByCsIInterventoEsegIdsExported(List<Long> ids) {
-				List<CsIPsExport> lst;
-
-				if (ids==null || ids.size()==0) {
-					lst = new ArrayList<CsIPsExport>();
-				} else {
-					Query q = em.createNamedQuery("CsIPsExport.findByCsIInterventoEsegIdsExported");
-			  
-					q.setParameter("csIInterventoEsegIds", ids ); 
-
-					lst = q.getResultList();			
-				}
-
-				return lst;
-			}
-			
-			//SISO-884
 			public List<CsIPsExport> findCsIPsExportByCsIInterventoMastIdExported( Long id) {
 				Query q = em.createNamedQuery("CsIPsExport.findByCsIInterventoMastIdExported");
 				q.setParameter("csIInterventoMastId", id ); 

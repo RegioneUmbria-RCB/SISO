@@ -24,8 +24,10 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.NoneScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AjaxBehaviorEvent;
+import javax.faces.model.SelectItem;
 import javax.naming.NamingException;
 
+import org.apache.commons.lang3.StringUtils;
 import org.primefaces.context.RequestContext;
 
 @ManagedBean
@@ -39,7 +41,6 @@ public class ResidenzaCsaMan extends ResidenzaMan implements Serializable {
 	
 	private String tipoIndirizzo;
 	private String tipoComune;
-	private String nomeComune;
 	private CsAIndirizzo indirizzoAnagrafe;
 	private Date dataInizioAppComune;	
 	private String citta;
@@ -49,6 +50,8 @@ public class ResidenzaCsaMan extends ResidenzaMan implements Serializable {
 	private String codiceFiscale;
 	private Date dataInizioApp;
 	private Date dataAnnullamento = new Date();
+	private List<SelectItem> listaTipoLuogoResidenza;
+	private AmTabComuni comuneCorrente;
 		
 	private CsAIndirizzo indirizzoSelezionato;
 	
@@ -56,9 +59,19 @@ public class ResidenzaCsaMan extends ResidenzaMan implements Serializable {
 	private String addressMessage;
 	
 	private ComuneNazioneResidenzaMan comuneNazioneResidenzaMan = new ComuneNazioneResidenzaMan();
-	
-	 	
 	private IndirizzoMan indirizzoMan = new IndirizzoMan();
+	
+	public ResidenzaCsaMan(){
+		super();
+		indirizzoAnagrafe = null;
+		String belfiore = getCurrentOpSettore().getCsOSettore().getCsOOrganizzazione().getCodCatastale();
+		if(!StringUtils.isBlank(belfiore)){
+			AccessTableComuniSessionBeanRemote bean = (AccessTableComuniSessionBeanRemote) getCarSocialeEjb("AccessTableComuniSessionBean");
+			comuneCorrente = bean.getComuneByBelfiore(belfiore);
+		}
+		doLoadListaTipoLuogoResidenza();
+		resetTipoComune();
+	}
 
 	public ComuneNazioneResidenzaMan getComuneNazioneResidenzaMan() {
 		return comuneNazioneResidenzaMan;
@@ -93,9 +106,6 @@ public class ResidenzaCsaMan extends ResidenzaMan implements Serializable {
 	}
 
 	public String getTipoComune() {
-		if (tipoComune == null) {
-			tipoComune = getEnteValue(); //default
-		}
 		return tipoComune;
 	}
 
@@ -246,52 +256,39 @@ public class ResidenzaCsaMan extends ResidenzaMan implements Serializable {
 		return "residenzaCsaDialog";
 	}
 	
-	@Override
-	public String getEnteLabel() {
-		
-		//setto il clientId per l'update del pannello Residenza Estero
-		/*UIComponent comp = findComponent("pnlResidenzaNoComune");
-		comuneNazioneResidenzaMan.setClientIdToUpdate(comp.getClientId());*/
-		
+	private String getEnteLabel() {
+		String enteLabel = TIPO_LUOGO.COMUNE.getDescrizione();
 		String denominazione = null;
-		String belfiore = getCurrentOpSettore().getCsOSettore().getCsOOrganizzazione().getCodCatastale();
-		try {
-			AccessTableComuniSessionBeanRemote bean = (AccessTableComuniSessionBeanRemote) ClientUtility.getEjbInterface("CarSocialeA", "CarSocialeA_EJB", "AccessTableComuniSessionBean");
-			AmTabComuni comune = bean.getComuneByBelfiore(belfiore);
-			if (comune != null) {
-				denominazione = comune.getDenominazione();
-			}
-		} catch (NamingException e) {
-			logger.error(e);
+		if (comuneCorrente != null) {
+			denominazione = comuneCorrente.getDenominazione();
 		}
-		if (denominazione == null) {
-			return "COMUNE " + belfiore;
-		}
-		nomeComune = denominazione.toUpperCase();
-		
-		return "COMUNE DI " + denominazione.toUpperCase();
+		if(!StringUtils.isBlank(denominazione))
+			enteLabel = "COMUNE DI " + denominazione.toUpperCase();
+		return enteLabel;
 	}
+	
+	
+	public List<SelectItem> getListaTipoLuogoResidenza(){
+		return this.listaTipoLuogoResidenza;
+	}
+	
+	private void doLoadListaTipoLuogoResidenza(){	
+		listaTipoLuogoResidenza = new ArrayList<SelectItem>();
+		if(comuneCorrente!=null)
+			listaTipoLuogoResidenza.add(new SelectItem(TIPO_LUOGO.COMUNE.getCodice(), this.getEnteLabel()));
+		listaTipoLuogoResidenza.add(new SelectItem(TIPO_LUOGO.SENZA_FISSA_DIMORA.getCodice(), TIPO_LUOGO.SENZA_FISSA_DIMORA.getDescrizione()));	
+		listaTipoLuogoResidenza.add(new SelectItem(TIPO_LUOGO.ALTRO.getCodice(), TIPO_LUOGO.ALTRO.getDescrizione()));	
+	}
+	
 	//SISO-1127 Inizio
 	public String getEnteSiglaProv() {
-		
-		String siglaProv ="";
-		String belfiore = getCurrentOpSettore().getCsOSettore().getCsOOrganizzazione().getCodCatastale();
-		try {
-			AccessTableComuniSessionBeanRemote bean = (AccessTableComuniSessionBeanRemote) ClientUtility.getEjbInterface("CarSocialeA", "CarSocialeA_EJB", "AccessTableComuniSessionBean");
-			AmTabComuni comune = bean.getComuneByBelfiore(belfiore);
-			if (comune != null) {
-				siglaProv = comune.getSiglaProv();
-			}
-		} catch (NamingException e) {
-			logger.error(e);
-		}
-	  	return siglaProv.toUpperCase();
+		String siglaProv = comuneCorrente!=null && !StringUtils.isBlank(comuneCorrente.getSiglaProv()) ? comuneCorrente.getSiglaProv().toUpperCase() : "";
+		return siglaProv;
 	}
 	//SISO-1127 Fine
 	public void salvaIndirizzi() {
 		
 		boolean ok = true;
-		FacesContext facesContext = FacesContext.getCurrentInstance();
 		
 		//controlli
 		boolean residenza = false;
@@ -382,37 +379,44 @@ public class ResidenzaCsaMan extends ResidenzaMan implements Serializable {
 		}
 	}
 
+	public void trovaResidenza(){
+		String ti = getTipoIndirizzo();
+		CsTbTipoIndirizzo tipo = getTipoIndirizzo(ti);
+		boolean isResidenza = tipo!=null && tipo.getId() == DataModelCostanti.TipiIndirizzi.RESIDENZA_ID;
+		if (isResidenza && isCodFiscaleValido()){
+			if(indirizzoAnagrafe==null) 
+				indirizzoAnagrafe = getIndirizzoResidenzaCodFisc(getCodiceFiscale());
+		}else
+			indirizzoAnagrafe = null;
+		return;
+	}
+	
 	public boolean isResidenzaAnagrafeRendered() {
-		indirizzoAnagrafe = null;
 		String tc = getTipoComune();
 		String ti = getTipoIndirizzo();
-		boolean isResidenza = false;
-		for (CsTbTipoIndirizzo tipo : getBeanLstTipiIndirizzo()) {
-			if (ti != null && !ti.equals("") && tipo.getId() == new Long(ti) && tipo.getDescrizione().trim().equalsIgnoreCase("Residenza")) {
-				isResidenza = true;
-				break;
-			}
-		}		
-		boolean rendered = (codiceFiscale != null && !"".equals(codiceFiscale) && tc != null && tc.equals(getEnteValue()) && isResidenza);
-		if (rendered) {
-			indirizzoAnagrafe = getIndirizzoResidenzaCodFisc(getCodiceFiscale());
-		}
+		CsTbTipoIndirizzo tipo = getTipoIndirizzo(ti);
+		boolean isResidenza = tipo!=null && tipo.getId() == DataModelCostanti.TipiIndirizzi.RESIDENZA_ID;
+		boolean rendered = isCodFiscaleValido() && isResidenza && !StringUtils.isBlank(tc) && tc.equals(TIPO_LUOGO.COMUNE.getCodice());
 		return rendered;
+	}
+	
+	public boolean isCodFiscaleValido(){
+		return !StringUtils.isBlank(codiceFiscale);
 	}
 	
 	public boolean isSenzaFissaDimoraRendered(){
 		String tc = getTipoComune();
-		return tc != null && tc.equals(this.getSenzaFissaDimoraValue());
+		return tc != null && tc.equals(TIPO_LUOGO.SENZA_FISSA_DIMORA.getCodice());
 	}
 	
 	public boolean isResidenzaComuneRendered() {
 		String tc = getTipoComune();
-		return tc != null && tc.equals(getEnteValue());
+		return tc != null && tc.equals(TIPO_LUOGO.COMUNE.getCodice());
 	}
 	
 	public boolean isResidenzaNoComuneRendered() {
 		String tc = getTipoComune();
-		return tc != null && tc.equals(getAltroValue());
+		return tc != null && tc.equals(TIPO_LUOGO.ALTRO.getCodice());
 	}
 	
 	public void reset(AjaxBehaviorEvent event) {
@@ -437,7 +441,12 @@ public class ResidenzaCsaMan extends ResidenzaMan implements Serializable {
 		comuneNazioneResidenzaMan.getComuneMan().setComune(null);
 		comuneNazioneResidenzaMan.getNazioneMan().setNazione(null);		
 		tipoIndirizzo = null;
-		tipoComune = getEnteValue();
+		resetTipoComune();
+		
+	}
+	
+	protected void resetTipoComune(){
+		tipoComune = comuneCorrente!=null ? TIPO_LUOGO.COMUNE.getCodice() : TIPO_LUOGO.ALTRO.getCodice(); //default
 	}
 	
 	protected void resetPanelIndirizzoComune() {
@@ -464,15 +473,18 @@ public class ResidenzaCsaMan extends ResidenzaMan implements Serializable {
 	@Override
 	public CsAIndirizzo getIndirizzoResidenzaCodFisc(String codFisc) {
 		CsAIndirizzo indirizzoRes = null;
-		try {
-			AccessTablePersonaCiviciSessionBeanRemote bean = (AccessTablePersonaCiviciSessionBeanRemote) ClientUtility.getEjbInterface("CarSocialeA", "CarSocialeA_EJB", "AccessTablePersonaCiviciSessionBean");
+		if(isAnagrafeComunaleInternaAbilitata()){
+			AccessTablePersonaCiviciSessionBeanRemote bean = (AccessTablePersonaCiviciSessionBeanRemote) getCarSocialeEjb("AccessTablePersonaCiviciSessionBean");
 			BaseDTO dto = new BaseDTO();
 			fillEnte(dto);
 			dto.setObj(codFisc);
 			indirizzoRes = bean.getIndirizzoResidenzaByCodFisc(dto);
-		} catch (NamingException e) {
-			logger.error(e);
 		}
+		//TODO: Integrare la ricerca dell'indirizzo di residenza del soggetto in anagrafe
+		if(indirizzoRes == null && isAnagrafeSanitariaUmbriaAbilitata()){}
+		if(indirizzoRes == null && isAnagrafeSanitariaMarcheAbilitata()){}
+		if(indirizzoRes == null && isAnagrafeSigessAbilitata()){}
+		
 		return indirizzoRes;
 	}
 
@@ -511,21 +523,24 @@ public class ResidenzaCsaMan extends ResidenzaMan implements Serializable {
 	}
 	
 	public void aggiungiIndirizzo() {
-		FacesContext context = FacesContext.getCurrentInstance();
-		
+		String enteCorrente = getCurrentOpSettore().getCsOSettore().getCsOOrganizzazione().getCodCatastale();
 		//validazione
 		boolean err = false;
 		String ti = getTipoIndirizzo();
-		if (ti == null || ti.equalsIgnoreCase("")) {
+		if (StringUtils.isBlank(ti)) {
 			err = true;
 			addError("Tipo Indirizzo è un campo obbligatorio", null);
 		}
-		if (tipoComune.equals(getEnteValue())) {
-			if(indirizzoMan.getSelectedIndirizzo() == null){
+		if (TIPO_LUOGO.COMUNE.getCodice().equals(tipoComune)) {
+			if(StringUtils.isBlank(indirizzoMan.getSelectedIndirizzo())){
 				err = true;
 				addError("Indirizzo è un campo obbligatorio", null);
 			}
-		} else if(tipoComune.equals(getSenzaFissaDimoraValue())){
+			if(StringUtils.isBlank(enteCorrente)){
+				err= true;
+				addError("Impossibile recuperare il Comune di Residenza: l'ente corrente non ha un codice catastale.", null);
+			}
+		} else if(TIPO_LUOGO.SENZA_FISSA_DIMORA.getCodice().equals(tipoComune)){
 			//Niente da validare
 		}else {
 			
@@ -541,12 +556,12 @@ public class ResidenzaCsaMan extends ResidenzaMan implements Serializable {
 				}
 			}
 			String citta = getCitta();
-			if (!getComuneNazioneResidenzaMan().isComuneRendered() && (citta == null || citta.equals(""))) {
+			if (!getComuneNazioneResidenzaMan().isComuneRendered() && StringUtils.isBlank(citta)) {
 				err = true;
 				addError("Città è un campo obbligatorio", null);
 			}
 			String ind = getIndirizzo();
-			if (ind == null || ind.equalsIgnoreCase("")) {
+			if (StringUtils.isBlank(ind)) {
 				err = true;
 				addError("Indirizzo è un campo obbligatorio", null);
 			}	
@@ -559,66 +574,52 @@ public class ResidenzaCsaMan extends ResidenzaMan implements Serializable {
 		
 		CsAIndirizzo indirizzo = new CsAIndirizzo();
 		CsAAnaIndirizzo anaIndirizzo = new CsAAnaIndirizzo();
-		CsTbTipoIndirizzo tipoIndirizzo = null;
 		
-		for (CsTbTipoIndirizzo tipo : getBeanLstTipiIndirizzo()) {
-			if (ti != null && !ti.equals("") && tipo.getId() == new Long(ti)) {
-				tipoIndirizzo = tipo;
-			}
-		}
+		CsTbTipoIndirizzo tipoIndirizzo = getTipoIndirizzo(ti);
 		indirizzo.setCsTbTipoIndirizzo(tipoIndirizzo);
 		
-		
-		AmTabNazioni nazione = null;
 		Date dtIniApp = null;
 		
-		if(tipoComune.equals(getSenzaFissaDimoraValue())){
+		if(TIPO_LUOGO.SENZA_FISSA_DIMORA.getCodice().equals(tipoComune)){
 			anaIndirizzo.setIndirizzo(DataModelCostanti.SENZA_FISSA_DIMORA);
 			dtIniApp = dataInizioApp == null ? getToday() : dataInizioApp;
 		}else{
-		
-			if (tipoComune.equals(getEnteValue())) {
-				nazione = NazioneResidenzaMan.getCurrNazione();
+			if (TIPO_LUOGO.COMUNE.getCodice().equals(tipoComune)) {
+				//nazione = NazioneResidenzaMan.getCurrNazione();
 				anaIndirizzo.setIndirizzo(indirizzoMan.getSelectedIndirizzo());
 				anaIndirizzo.setCivicoNumero(indirizzoMan.getSelectedCivico());
 				anaIndirizzo.setCodiceVia(indirizzoMan.getSelectedIdVia());
 				anaIndirizzo.setCivicoAltro(null);
-				try {
-					String enteCorrente = getCurrentOpSettore().getCsOSettore().getCsOOrganizzazione().getCodCatastale();
-					AccessTableComuniSessionBeanRemote bean = (AccessTableComuniSessionBeanRemote) ClientUtility.getEjbInterface("CarSocialeA", "CarSocialeA_EJB", "AccessTableComuniSessionBean");
-					AmTabComuni comune = bean.getComuneByBelfiore(enteCorrente);
-					if (comune != null) {
+				
+				AmTabComuni comune = luoghiService.getComuneItaByBelfiore(enteCorrente);
+				if (comune != null) {
 						anaIndirizzo.setComDes(comune.getDenominazione());
 						anaIndirizzo.setComCod(comune.getCodIstatComune());
 						anaIndirizzo.setProv(comune.getSiglaProv());
-					}
-				} catch (NamingException e) {
-					logger.error(e);
 				}
 				dtIniApp = dataInizioAppComune == null ? getToday() : dataInizioAppComune;
 			}else{
 				if (comuneNazioneResidenzaMan.isComune()) {
 					//comune italiano
 					ComuneBean comune = comuneNazioneResidenzaMan.getComuneMan().getComune();
-					nazione = NazioneResidenzaMan.getCurrNazione();
+					//nazione = NazioneResidenzaMan.getCurrNazione();
 					anaIndirizzo.setProv(comune == null ? null : comune.getSiglaProv());
 					anaIndirizzo.setComCod(comune == null ? null : comune.getCodIstatComune());
 					anaIndirizzo.setComDes(comune == null ? null : comune.getDenominazione());
 				} else if (comuneNazioneResidenzaMan.isNazione()) {
 					//stato estero
-					nazione = comuneNazioneResidenzaMan.getNazioneMan().getNazione();
-					anaIndirizzo.setProv(nazione == null ? null : nazione.getSigla());
+					AmTabNazioni nazione = comuneNazioneResidenzaMan.getNazioneMan().getNazione();
+					//anaIndirizzo.setProv(nazione == null ? null : nazione.getSigla());
 					anaIndirizzo.setComCod(null);
 					anaIndirizzo.setComDes(getCitta());
+					anaIndirizzo.setStatoCod(nazione == null ? null : nazione.getCodIstatNazione());
+					anaIndirizzo.setStatoDes(nazione == null ? null : nazione.getNazione());
 				}
 				anaIndirizzo.setIndirizzo(getIndirizzo());
 				anaIndirizzo.setCivicoNumero(getCivicoNumero());
 				anaIndirizzo.setCivicoAltro(getCivicoAltro());
 				dtIniApp = dataInizioApp == null ? getToday() : dataInizioApp;
 			}
-			anaIndirizzo.setStatoCod(nazione == null ? null : nazione.getCodIstatNazione());
-			anaIndirizzo.setStatoDes(nazione == null ? null : nazione.getNazione());
-		
 		}
 		indirizzo.setDataInizioApp(dtIniApp);
 		indirizzo.setCsAAnaIndirizzo(anaIndirizzo);
@@ -631,6 +632,8 @@ public class ResidenzaCsaMan extends ResidenzaMan implements Serializable {
 		resetPanelIndirizzoNoComune();
 		resetPanelIndirizzoComune();
 	}
+	
+
 
 	public String getWarningMessage() {
 		return warningMessage;
@@ -646,6 +649,26 @@ public class ResidenzaCsaMan extends ResidenzaMan implements Serializable {
 
 	public void setAddressMessage(String addressMessage) {
 		this.addressMessage = addressMessage;
+	}
+
+	public AmTabComuni getComuneCorrente() {
+		return comuneCorrente;
+	}
+
+	public void setComuneCorrente(AmTabComuni comuneCorrente) {
+		this.comuneCorrente = comuneCorrente;
+	}
+
+	public void setListaTipoLuogoResidenza(List<SelectItem> listaTipoLuogoResidenza) {
+		this.listaTipoLuogoResidenza = listaTipoLuogoResidenza;
+	}
+	
+	public boolean isIndirizzoResidenzaTrovato(){
+		return indirizzoAnagrafe != null && indirizzoAnagrafe.getCsAAnaIndirizzo().getCodiceVia() != null;
+	}
+	
+	public boolean isCodViaResidenzaTrovata(){
+		return indirizzoAnagrafe!=null && !StringUtils.isBlank(indirizzoAnagrafe.getCsAAnaIndirizzo().getCodiceVia());
 	}
 
 }

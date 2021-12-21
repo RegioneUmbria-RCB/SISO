@@ -44,10 +44,10 @@
 									<h:outputText value="Data di inserimento della valutazione: *" style="font-weight: bold;" />
 									<p:inputText id="iTxtHidden" style="visibility:hidden;" />	
 								</h:panelGroup>
-							     <p:calendar value="#{cc.attrs.sinbaManBean.jsonCurrent.datiGenerali.dataRiferimentoValutazione}" pattern="dd/MM/yyyy" size="10"
+								<p:calendar value="#{cc.attrs.sinbaManBean.jsonCurrent.datiGenerali.dataRiferimentoValutazione}" pattern="dd/MM/yyyy" size="10"
 							           disabled = "#{!cc.attrs.sinbaManBean.isNew()}" placeholder="gg/mm/aaaa" mask="true" onchange="PF('listaCodificaPrest').filter();" readonlyInput="true">
-							          <p:ajax  event="dateSelect" process="@this" listener="#{cc.attrs.sinbaManBean.initCalendar}" update="@this :#{p:component('dtPrestazioni')}"/>
-							          <f:ajax  event="change" process="@this" listener="#{cc.attrs.sinbaManBean.initCalendar}"   update="@this :#{p:component('dtPrestazioni')}" />
+							          <p:ajax  event="dateSelect" process="@this" listener="#{cc.attrs.sinbaManBean.initCalendar}" update="@this :#{p:component('dtPrestazioni')}  :#{p:component('panelSegnalazioni')}  :#{p:component('affidamentoPAI')} :#{p:component('affidamentoForma')} :#{p:component('affidamentoCarattere')}"/>
+							          <f:ajax  event="change" process="@this" listener="#{cc.attrs.sinbaManBean.initCalendar}" update="@this :#{p:component('dtPrestazioni')} :#{p:component('panelSegnalazioni')}  :#{p:component('affidamentoPAI')} :#{p:component('affidamentoForma')} :#{p:component('affidamentoCarattere')}" />
 							     </p:calendar>
 								<h:outputText value="Codice anonimo beneficiario: *" style="font-weight: bold;" />
 								<p:inputText id="codBeneficiarioaVal" disabled="true"
@@ -669,57 +669,75 @@
 					<p:scrollPanel mode="native" style="height: 550px;">
 					 			
 						<p:outputPanel>
+						<p:panelGrid id="affidamentoPAI" cellpadding="10" width="100%" styleClass="tableNoBg" columns="2">
+						
+						 <h:outputText id="msgDaPAI" rendered="#{cc.attrs.sinbaManBean.jsonCurrent.datiAffidamento.datiDaProgettoPAI}"  value="#{cc.attrs.sinbaManBean.jsonCurrent.datiAffidamento.messaggioDaPai}"
+													style="font-weight: bold;background-color: red;color: white" />
+								 				
+								 			 
+									 
+						</p:panelGrid>	
+						
 						    <p:fieldset legend="Dati relativi all'affido">
-							<p:panelGrid cellpadding="10" width="100%" styleClass="tableNoBg"
-								columns="2">
+						    
+						   
+							<p:panelGrid id="affidamentoForma" cellpadding="10" width="100%" styleClass="tableNoBg" columns="2">
 							
-									<h:outputText value="Forme di intervento" style="font-weight: bold;" />
-									<p:selectOneButton id="formeInterventoVal"
-										value="#{cc.attrs.sinbaManBean.jsonCurrent.datiAffidamento.formaIntervento}"
-										style="width:200px">
-										<f:selectItem itemLabel="Consensuale" itemValue="1" />
-										<f:selectItem itemLabel="Giudiziario" itemValue="2" />
-									</p:selectOneButton>
+									 
+								  
 								
-									<h:outputText value="Esito" style="font-weight: bold;" />
-									<p:selectOneMenu id="esitoVal"
-										value="#{cc.attrs.sinbaManBean.jsonCurrent.datiAffidamento.esito}"
-										style="width:200px">
-										<f:selectItem noSelectionOption="true" itemLabel="- seleziona -" />
-										<f:selectItem itemLabel="Rientrato nella famiglia di origine"
-											itemValue="1" />
-										<f:selectItem itemLabel="Affidato ad altro nucleo familiare"
-											itemValue="2" />
-										<f:selectItem itemLabel="Adottato" itemValue="3" />
-										<f:selectItem itemLabel="Inserito in struttura socio-educativa"
-											itemValue="4" />
-										<f:selectItem itemLabel="Inserito in struttura sanitaria"
-											itemValue="5" />
-										<f:selectItem itemLabel="Vita in autonomia" itemValue="6" />
-										<f:selectItem itemLabel="Rimpatriato" itemValue="7" />
-										<f:selectItem itemLabel="Destinazione ignota" itemValue="8" />
-										<f:selectItem itemLabel="Altro" itemValue="9" />
-									</p:selectOneMenu>
-		
-								
-									<h:outputText value="Tipo di intervento" style="font-weight: bold;" />
-									<p:selectOneButton id="tipoInterventoVal" value="#{cc.attrs.sinbaManBean.jsonCurrent.datiAffidamento.tipoIntervento}">
-										<f:selectItem itemLabel="Intrafamiliare" itemValue="1" />
-										<f:selectItem itemLabel="Eterofamiliare" itemValue="2" />
-									</p:selectOneButton>
-		
-									<h:outputText value="Durata" style="font-weight: bold;" />
-									<p:selectOneButton id="durataVal" value="#{cc.attrs.sinbaManBean.jsonCurrent.datiAffidamento.durata}">
-										<f:selectItem itemLabel="Tempo pieno" itemValue="1" />
-										<f:selectItem itemLabel="Tempo parziale" itemValue="2" />
-									</p:selectOneButton>
-		
-									<h:outputText value="Carattere" style="font-weight: bold;" />
-									<p:selectOneButton id="carattereVal" value="#{cc.attrs.sinbaManBean.jsonCurrent.datiAffidamento.carattere}">
-										<f:selectItem itemLabel="Residenziale" itemValue="1" />
-										<f:selectItem itemLabel="Diurno" itemValue="2" />
-									</p:selectOneButton>
-		
+										<h:outputText value="Forme di intervento" style="font-weight: bold;" />
+									   
+											<p:selectOneButton id="formeInterventoVal"
+												value="#{cc.attrs.sinbaManBean.jsonCurrent.datiAffidamento.formaIntervento}"
+												style="width:200px">
+												<f:selectItem itemLabel="Consensuale" itemValue="1" />
+												<f:selectItem itemLabel="Giudiziario" itemValue="2" />
+											</p:selectOneButton>
+									 
+											<h:outputText value="Esito" style="font-weight: bold;" />
+									 	 	<p:selectOneMenu id="esitoVal"
+												value="#{cc.attrs.sinbaManBean.jsonCurrent.datiAffidamento.esito}"
+												style="width:200px">
+												<f:selectItem noSelectionOption="true" itemLabel="- seleziona -" />
+												<f:selectItem itemLabel="Rientrato nella famiglia di origine"
+													itemValue="1" />
+												<f:selectItem itemLabel="Affidato ad altro nucleo familiare"
+													itemValue="2" />
+												<f:selectItem itemLabel="Adottato" itemValue="3" />
+												<f:selectItem itemLabel="Inserito in struttura socio-educativa"
+													itemValue="4" />
+												<f:selectItem itemLabel="Inserito in struttura sanitaria"
+													itemValue="5" />
+												<f:selectItem itemLabel="Vita in autonomia" itemValue="6" />
+												<f:selectItem itemLabel="Rimpatriato" itemValue="7" />
+												<f:selectItem itemLabel="Destinazione ignota" itemValue="8" />
+												<f:selectItem itemLabel="Altro" itemValue="9" />
+											</p:selectOneMenu>
+
+										
+									 
+											<h:outputText value="Tipo di intervento" style="font-weight: bold;" />
+									  
+											<p:selectOneButton id="tipoInterventoVal" value="#{cc.attrs.sinbaManBean.jsonCurrent.datiAffidamento.tipoIntervento}">
+												<f:selectItem itemLabel="Intrafamiliare" itemValue="1" />
+												<f:selectItem itemLabel="Eterofamiliare" itemValue="2" />
+											</p:selectOneButton>
+										 
+										<h:outputText value="Durata" style="font-weight: bold;" />
+									 	 
+											<p:selectOneButton id="durataVal" value="#{cc.attrs.sinbaManBean.jsonCurrent.datiAffidamento.durata}">
+												<f:selectItem itemLabel="Tempo pieno" itemValue="1" />
+												<f:selectItem itemLabel="Tempo parziale" itemValue="2" />
+											</p:selectOneButton>
+									 
+										<h:outputText value="Carattere" style="font-weight: bold;" />
+									 	 
+										<p:selectOneButton id="carattereVal" value="#{cc.attrs.sinbaManBean.jsonCurrent.datiAffidamento.carattere}">
+											<f:selectItem itemLabel="Residenziale" itemValue="1" />
+											<f:selectItem itemLabel="Diurno" itemValue="2" />
+										</p:selectOneButton>
+									 
 							</p:panelGrid>
 							</p:fieldset>
 							<p:fieldset legend="Dati relativi all'inserimento residenziale">

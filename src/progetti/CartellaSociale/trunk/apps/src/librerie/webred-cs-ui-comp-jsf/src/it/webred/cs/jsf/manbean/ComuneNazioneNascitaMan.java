@@ -102,7 +102,7 @@ public class ComuneNazioneNascitaMan extends ComuneNazioneMan implements Seriali
 			s+= getNazioneMan().getNazione().getNazione(); 
 		else {
 			ComuneBean cb = getComuneNascitaMan().getComune();
-			s+= cb!=null ? cb.getDenominazione()+ "("+cb.getSiglaProv()+")" : "";
+			s+= cb!=null ? cb.getDenominazione()+ " ("+cb.getSiglaProv()+")" : "";
 		}
 		return s;
 	}

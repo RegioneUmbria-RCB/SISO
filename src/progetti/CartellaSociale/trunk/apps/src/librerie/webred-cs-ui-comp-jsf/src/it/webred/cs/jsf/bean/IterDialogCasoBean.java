@@ -3,10 +3,9 @@ package it.webred.cs.jsf.bean;
 import it.webred.cs.csa.ejb.client.AccessTableCasoSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.AccessTableOperatoreSessionBeanRemote;
 import it.webred.cs.csa.ejb.dto.BaseDTO;
-import it.webred.cs.csa.ejb.dto.IterDTO;
+import it.webred.cs.csa.ejb.dto.DatiOperatoreDTO;
 import it.webred.cs.csa.ejb.dto.OperatoreDTO;
 import it.webred.cs.data.model.CsACaso;
-import it.webred.cs.data.model.CsOOperatore;
 import it.webred.cs.data.model.CsOOperatoreBASIC;
 import it.webred.cs.jsf.manbean.superc.CsUiCompBaseBean;
 import it.webred.utilities.DateTimeUtils;
@@ -45,17 +44,16 @@ public class IterDialogCasoBean extends IterBaseBean implements Serializable{
 			OperatoreDTO opDto = new OperatoreDTO();
 			fillEnte(opDto);
 			opDto.setUsername(caso.getUserIns());
-			CsOOperatore operatoreInserimento = operatoreSessionBean.findOperatoreByUsername(opDto);
+			CsOOperatoreBASIC operatoreInserimento = operatoreSessionBean.findOperatoreBASICByUsername(opDto);
 			
 			opDto.setUsername(caso.getUsrMod());
-			CsOOperatore operatoreModifica = operatoreSessionBean.findOperatoreByUsername(opDto);
+			CsOOperatoreBASIC operatoreModifica = operatoreSessionBean.findOperatoreBASICByUsername(opDto);
 			
 			BaseDTO bDto = new BaseDTO();
 			CsUiCompBaseBean.fillEnte(bDto);
 			bDto.setObj(caso.getId());
-			CsOOperatoreBASIC operatore = casoSessionBean.findResponsabileBASIC(bDto);
-			if( operatore != null ) 
-				this.responsabile = this.getCognomeNomeUtente(operatore.getUsername());
+			DatiOperatoreDTO operatore = casoSessionBean.findResponsabileCaso(bDto);
+			this.responsabile = operatore!=null ? operatore.getDenominazione() : "";
 			
 			this.nomeCaso = soggetto_Nome + "  " + soggetto_Cognome + "  (" + soggetto_Cf +")";
 			

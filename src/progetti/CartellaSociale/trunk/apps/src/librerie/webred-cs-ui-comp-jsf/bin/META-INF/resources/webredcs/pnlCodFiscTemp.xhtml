@@ -25,7 +25,6 @@
         		<p:outputLabel value="Cod. fiscale temporaneo" style="display: block; width: 100px;" />	
         		<h:panelGroup >        	
 		        	<p:inputMask id="codicefiscaleinput" value="#{tempCodFiscManagerDlg.codiceFiscaleTemporaneoScelto}" 
-		        		style="text-transform: uppercase;"
 		        		widgetVar="wv_codiceFiscaleTemporaneoScelto" mask="[***********?*********************]" placeholder="[***********?*********************]" placeHolder="_" maxlength="34" size="36">	        		
 		        			<p:ajax update="@form" listener="#{tempCodFiscManagerDlg.genOrEditCf}" event="blur"/>
 		        	</p:inputMask>

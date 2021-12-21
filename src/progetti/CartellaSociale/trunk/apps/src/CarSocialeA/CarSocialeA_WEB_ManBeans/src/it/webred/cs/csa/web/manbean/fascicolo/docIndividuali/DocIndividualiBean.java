@@ -1,5 +1,28 @@
 package it.webred.cs.csa.web.manbean.fascicolo.docIndividuali;
 
+import it.webred.amprofiler.model.AmAnagrafica;
+import it.webred.cs.csa.ejb.client.AccessTableConfigurazioneSessionBeanRemote;
+import it.webred.cs.csa.ejb.client.AccessTableIterStepSessionBeanRemote;
+import it.webred.cs.csa.ejb.dto.BaseDTO;
+import it.webred.cs.csa.ejb.dto.DatiOperatoreDTO;
+import it.webred.cs.csa.ejb.dto.fascicolo.docIndividuali.DocIndividualeBean;
+import it.webred.cs.csa.web.manbean.fascicolo.FascicoloCompSecondoLivello;
+import it.webred.cs.data.DataModelCostanti;
+import it.webred.cs.data.DataModelCostanti.PermessiFascicolo;
+import it.webred.cs.data.DataModelCostanti.TipoVisibilitaDocumento;
+import it.webred.cs.data.model.CsACaso;
+import it.webred.cs.data.model.CsASoggettoLAZY;
+import it.webred.cs.data.model.CsDDiario;
+import it.webred.cs.data.model.CsDDocIndividuale;
+import it.webred.cs.data.model.CsLoadDocumento;
+import it.webred.cs.data.model.CsOOperatoreSettore;
+import it.webred.cs.data.model.CsTbSottocartellaDoc;
+import it.webred.cs.data.model.CsTbTipoDiario;
+import it.webred.cs.jsf.interfaces.IDocIndividuali;
+import it.webred.cs.jsf.manbean.DiarioDocsMan;
+import it.webred.cs.jsf.manbean.TempCodFiscManager;
+import it.webred.cs.jsf.manbean.superc.CsUiCompBaseBean;
+
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -34,34 +57,6 @@ import eu.smartpeg.gedclient.GedRomaClient;
 import eu.smartpeg.gedclient.NominativoGED;
 import eu.smartpeg.gedclient.NumeroProtocolloGED;
 import eu.smartpeg.gedclient.exception.GedRomaException;
-import it.webred.amprofiler.model.AmAnagrafica;
-import it.webred.cs.csa.ejb.client.AccessTableAlertSessionBeanRemote;
-import it.webred.cs.csa.ejb.client.AccessTableConfigurazioneSessionBeanRemote;
-import it.webred.cs.csa.ejb.client.AccessTableIterStepSessionBeanRemote;
-import it.webred.cs.csa.ejb.dto.AlertDTO;
-import it.webred.cs.csa.ejb.dto.BaseDTO;
-import it.webred.cs.csa.ejb.dto.IterDTO;
-import it.webred.cs.csa.web.manbean.fascicolo.FascicoloCompSecondoLivello;
-import it.webred.cs.data.DataModelCostanti;
-import it.webred.cs.data.DataModelCostanti.PermessiFascicolo;
-import it.webred.cs.data.model.CsACaso;
-import it.webred.cs.data.model.CsACasoOpeTipoOpe;
-import it.webred.cs.data.model.CsASoggettoLAZY;
-import it.webred.cs.data.model.CsDDiario;
-import it.webred.cs.data.model.CsDDocIndividuale;
-import it.webred.cs.data.model.CsItStep;
-import it.webred.cs.data.model.CsLoadDocumento;
-import it.webred.cs.data.model.CsOOperatoreSettore;
-import it.webred.cs.data.model.CsTbSottocartellaDoc;
-import it.webred.cs.data.model.CsTbTipoDiario;
-import it.webred.cs.jsf.interfaces.IDocIndividuali;
-import it.webred.cs.jsf.manbean.DiarioDocsMan;
-import it.webred.cs.jsf.manbean.DocIndividualeBean;
-import it.webred.cs.jsf.manbean.TempCodFiscManager;
-import it.webred.cs.jsf.manbean.superc.CsUiCompBaseBean;
-import it.webred.ct.config.model.AmKeyValueExt;
-import it.webred.ct.config.parameters.ParameterService;
-import it.webred.ct.config.parameters.dto.ParameterSearchCriteria;
 
 @ManagedBean
 @ViewScoped
@@ -105,6 +100,11 @@ public class DocIndividualiBean extends FascicoloCompSecondoLivello implements I
 			this.initialize(csASoggetto);
 	}
 
+	public void initializeDocIndividuali(Long anagraficaId){
+		CsASoggettoLAZY s = getSoggettoById(anagraficaId);
+		initializeDocIndividuali(s);
+	}
+	
 	public void initializeDocIndividuali(CsASoggettoLAZY soggetto) {
 
 		if (soggetto != null) {
@@ -124,7 +124,7 @@ public class DocIndividualiBean extends FascicoloCompSecondoLivello implements I
 		try {
 
 			boolean permessoDown = checkPermesso(PermessiFascicolo.ITEM, PermessiFascicolo.TAB_DOC_INDIVIDUALI_DOWN);
-
+			
 			BaseDTO dto = new BaseDTO();
 			fillEnte(dto);
 
@@ -132,59 +132,31 @@ public class DocIndividualiBean extends FascicoloCompSecondoLivello implements I
 			listaSottocartelle = configService.getTipoCartelle(dto);
 
 			dto.setObj(idCaso);
-			listaDocIndividualiPubblica = new ArrayList<DocIndividualeBean>();
-			listaDocIndividualiPrivata = new ArrayList<DocIndividualeBean>();
-
-			List<CsDDocIndividuale> lista = diarioService.findDocIndividualiByCaso(dto);
-
-			for (CsDDocIndividuale docInd : lista) {
-				if (docInd.getPrivato() == null || !docInd.getPrivato()) {
-					DocIndividualeBean d = new DocIndividualeBean(docInd, permessoDown);
-					if (d.getCsLoadDocumento() != null)
-						listaDocIndividualiPubblica.add(d);
-				} else if (dto.getUserId().equals(docInd.getCsDDiario().getUserIns())) {
-					DocIndividualeBean d = new DocIndividualeBean(docInd, permessoDown);
-					if (d.getCsLoadDocumento() != null)
-						listaDocIndividualiPrivata.add(d);
-				}
-			}
-
+			dto.setObj2(permessoDown);
+			dto.setObj3(getCurrentOpSettore());
+			dto.setObj4(TipoVisibilitaDocumento.PRIVATO);
+			listaDocIndividualiPrivata = diarioService.findDocIndividualiByCaso(dto);
+			
+			dto.setObj4(TipoVisibilitaDocumento.PUBBLICO);
+			listaDocIndividualiPubblica = diarioService.findDocIndividualiByCaso(dto);
+		
 			// inizio SISO-438
 			listaDocIndividualiRichiestaServizio = new ArrayList<DocIndividualeBean>();
-			if (csASoggetto != null && csASoggetto.getCsAAnagrafica() != null) {
+			CsOOperatoreSettore opSettore = CsUiCompBaseBean.getCurrentOpSettore();
+			if (csASoggetto != null && csASoggetto.getCsAAnagrafica() != null && opSettore!=null) {
 				dto = new BaseDTO();
 				fillEnte(dto);
 				dto.setObj(csASoggetto.getCsAAnagrafica().getCf());
-				CsOOperatoreSettore opSettore = CsUiCompBaseBean.getCurrentOpSettore();
-				dto.setObj2(opSettore.getCsOSettore().getCsOOrganizzazione().getId());
-
-				List<CsDDocIndividuale> listaCsDDoc = diarioService.findDocIndividualeByCfSchedaSegnalato(dto);
-
-				for (CsDDocIndividuale docInd : listaCsDDoc) {
-					DocIndividualeBean d = new DocIndividualeBean(docInd, permessoDown);
-					if (d.getCsLoadDocumento() != null) {
-						listaDocIndividualiRichiestaServizio.add(d);
-					}
-				}
-
+				dto.setObj3(opSettore);
+				listaDocIndividualiRichiestaServizio = diarioService.findDocIndividualeByCfSchedaSegnalato(dto);
 			}
 			// fine SISO-438
 
 			diarioDocsMan = new DiarioDocsMan();
 			
-			
 			// #ROMACAPITALE
-			colonnaProtocolloVisibile = false;
-			ParameterSearchCriteria criteria = new ParameterSearchCriteria();
-			criteria.setKey("smartwelfare.docIndividuali.colonnaProtocollo.visibile");
-			criteria.setComune(null);
-			criteria.setSection(null);
-			AmKeyValueExt amKey = paramService.getAmKeyValueExt(criteria);
-			if (amKey != null && amKey.getValueConf() != null && !amKey.getValueConf().trim().isEmpty()) {
-				colonnaProtocolloVisibile = amKey.getValueConf() != null && "1".equals(amKey.getValueConf()) ? true : false;
-			} else
-				logger.warn("Parametro smartwelfare.docIndividuali.colonnaProtocollo.visibile non definito");
-
+			colonnaProtocolloVisibile = getDocIndividualiProtocolloVisibile();
+			
 		} catch (Exception e) {
 			addErrorFromProperties("caricamento.error");
 			logger.error(e.getMessage(), e);
@@ -259,8 +231,7 @@ public class DocIndividualiBean extends FascicoloCompSecondoLivello implements I
 
 		try {
 			String username = d.getUsrMod() != null ? d.getUsrMod() : d.getUserIns();
-			AmAnagrafica am = CsUiCompBaseBean.getAnagraficaByUsername(username);
-			return am != null ? am.getCognome() + " " + am.getNome() : "";
+			return CsUiCompBaseBean.getCognomeNomeUtente(username);
 
 		} catch (Exception e) {
 			addErrorFromProperties("salva.error");
@@ -307,7 +278,7 @@ public class DocIndividualiBean extends FascicoloCompSecondoLivello implements I
 				BaseDTO casodto = new BaseDTO();
 				fillEnte(casodto);
 				casodto.setObj(idCaso);
-				CsACasoOpeTipoOpe responsabile = casoService.findCasoOpeResponsabile(casodto);
+				DatiOperatoreDTO responsabile = casoService.findResponsabileCaso(casodto);
 				CsOOperatoreSettore opSettoreFrom = getCurrentOpSettore();
 				CsACaso csACaso = casoService.findCasoById(casodto);
 
@@ -318,9 +289,7 @@ public class DocIndividualiBean extends FascicoloCompSecondoLivello implements I
 				docIndividuale.getCsDDiario().setCsTbTipoDiario(cstd);
 				docIndividuale.getCsDDiario().setDtIns(new Date());
 				docIndividuale.getCsDDiario().setUserIns(dto.getUserId());
-				docIndividuale.getCsDDiario().setResponsabileCaso(responsabile != null
-						? responsabile.getCsOOperatoreTipoOperatore().getCsOOperatoreSettore().getCsOOperatore().getId()
-						: null);
+				docIndividuale.getCsDDiario().setResponsabileCaso(responsabile != null ? responsabile.getId(): null);
 				docIndividuale.getCsDDiario().setCsOOperatoreSettore(opSettoreFrom);
 				this.valorizzaSecondoLivello(docIndividuale.getCsDDiario());
 
@@ -746,23 +715,22 @@ public class DocIndividualiBean extends FascicoloCompSecondoLivello implements I
 			//codice fiscale utente collegato
 			BaseDTO dto = new BaseDTO();
 			fillEnte(dto);
+			String cfUtenteCollegato = getCurrentOpSettore().getCsOOperatore().getCsOOperatoreAnagrafica().getCodiceFiscale();
 			
-			AmAnagrafica am = CsUiCompBaseBean.getAnagraficaByUsername(dto.getUserId());
-			
-			String cfUtenteCollegato = "";
-			if(am != null)
+			if(!StringUtils.isBlank(cfUtenteCollegato))
 			{
-				cfUtenteCollegato = am.getCodiceFiscale();
-			
-				if (gedRomaClient.ricercaProtocolloSingolo(codiceDocumentoGED, numProtocollo, cfUtenteCollegato)) {
-					// found
-					addMessage("pnlProtocollo:msgProtocollo", "Documenti Individuali",
-							"Il numero di protocollo inserito risulta presente nel GED", FacesMessage.SEVERITY_INFO);
-				} else {
-					// not found
-					addMessage("pnlProtocollo:msgProtocollo", "Documenti Individuali",
-							"Il numero di protocollo inserito non risulta presente nel GED", FacesMessage.SEVERITY_WARN);
-				}
+				//if (gedRomaClient.ricercaProtocolloSingolo(codiceDocumentoGED, numProtocollo, cfUtenteCollegato)) {
+				//	// found
+				//	addMessage("pnlProtocollo:msgProtocollo", "Documenti Individuali",
+				//			"Il numero di protocollo inserito risulta presente nel GED", FacesMessage.SEVERITY_INFO);
+				//} else {
+				//	// not found
+				//	addMessage("pnlProtocollo:msgProtocollo", "Documenti Individuali",
+				//			"Il numero di protocollo inserito non risulta presente nel GED", FacesMessage.SEVERITY_WARN);
+				//}
+				
+				String msg = gedRomaClient.ricercaProtocolloSingolo(codiceDocumentoGED, numProtocollo, cfUtenteCollegato);
+				addMessage("pnlProtocollo:msgProtocollo", "Documenti Individuali", msg, FacesMessage.SEVERITY_INFO);				
 			}
 			else
 			{
@@ -771,8 +739,7 @@ public class DocIndividualiBean extends FascicoloCompSecondoLivello implements I
 			}
 		} catch (GedRomaException grx) {
 			addMessage("pnlProtocollo:msgProtocollo", "Documenti Individuali",
-					"Non è possibile verificare l’esistenza del numero protocollo a causa del seguente errore: "
-							+ grx.getMessage(),
+					"Non è possibile verificare l’esistenza del numero protocollo a causa del seguente errore: "+ grx.getMessage(),
 					FacesMessage.SEVERITY_WARN);
 		} catch (Exception e) {
 			addMessage("pnlProtocollo:msgProtocollo", "Documenti Individuali",
@@ -786,14 +753,18 @@ public class DocIndividualiBean extends FascicoloCompSecondoLivello implements I
 		BaseDTO dto = new BaseDTO();
 		fillEnte(dto);
 
+		//EMAIL Del 15 febbraio 2021 di Progetti Distribuiti
+		//Esiste un Codice GED per Municipio e non più legato alla tipologia di documento
+		//quindi commentiamo "id tipologia documento" e passiamo solo il COD_ROUTING
+		
 		// id tipologia documento
-		if (this.docIndividuale.getCsTbSottocartellaDoc().getId() != null) {
-			dto.setObj(this.docIndividuale.getCsTbSottocartellaDoc().getId());
-		}
+//		if (this.docIndividuale.getCsTbSottocartellaDoc().getId() != null) {
+//			dto.setObj(this.docIndividuale.getCsTbSottocartellaDoc().getId());
+//		}
 		
 		// cod routing dell'organizzazione dell'utente in sessione
 		if (dto.getEnteId() != null) {
-			dto.setObj2(dto.getEnteId());
+			dto.setObj(dto.getEnteId());
 		}
 
 		String codiceGED = confService.findCodiceDocumentoGed(dto);
@@ -801,10 +772,26 @@ public class DocIndividualiBean extends FascicoloCompSecondoLivello implements I
 		return codiceGED;
 	}
 
-	public void staccaProtocollo() {
+	public void staccaProtocollo_docPubblico() {
 		try {
 
 			docIndividuale = listaDocIndividualiPubblica.get(idxSelected).getCsDDocIndividuale();
+			String errorMessageGED = callGED(getDocumentFromDocIndividualeId(), true);
+			if (errorMessageGED == null) {
+				addInfoFromProperties("salva.ok");
+			} else {
+				RequestContext.getCurrentInstance().showMessageInDialog(new FacesMessage(FacesMessage.SEVERITY_WARN, "Attenzione", errorMessageGED));
+			}
+		} catch (Exception e) {
+			addErrorFromProperties("salva.error");
+			logger.error(e.getMessage(), e);
+		}
+	}
+	
+	public void staccaProtocollo_docPrivato() {
+		try {
+
+			docIndividuale = listaDocIndividualiPrivata.get(idxSelected).getCsDDocIndividuale();
 			String errorMessageGED = callGED(getDocumentFromDocIndividualeId(), true);
 			if (errorMessageGED == null) {
 				addInfoFromProperties("salva.ok");
@@ -839,8 +826,7 @@ public class DocIndividualiBean extends FascicoloCompSecondoLivello implements I
 		 * protocollo e allegare l'allegato la prima chiamata viene fatta se campo
 		 * ProtocolloDaSigess è true, protocollo null
 		 */
-		if (docIndividuale.getCsTbSottocartellaDoc().getProtocolloDaSigess()
-				&& docIndividuale.getNumeroProtocollo() == null) {
+		if (docIndividuale.getCsTbSottocartellaDoc().getProtocolloDaSigess() && docIndividuale.getNumeroProtocollo() == null) {
 			errorMessageGED = richiediNumeroProtocollo();
 			if (errorMessageGED == null) {
 				logger.info("[GED ROMA] Protocollo creato correttamente");
@@ -923,11 +909,11 @@ public class DocIndividualiBean extends FascicoloCompSecondoLivello implements I
 				Integer.parseInt(docIndividuale.getNumeroProtocollo()));
 		String codiceDocumento = getCodiceDocumentoGED();
 		AllegatoProtocolloGED allegato = AllegatoProtocolloGED.CreaAllegato(csLoadDocumento.getNome(), csLoadDocumento.getNome(), csLoadDocumento.getDocumento());
-		String codiceFiscale = csASoggetto.getCsAAnagrafica().getCf();
+		String codiceFiscale_Cittadino = csASoggetto.getCsAAnagrafica().getCf();
 		String result = null;
 		try {
 			String numeroAllegato = new GedRomaClient().inserisciAllegatoInProtocolloEsistente(numeroProtocollo,
-					codiceDocumento, allegato, codiceFiscale);
+					codiceDocumento, allegato, codiceFiscale_Cittadino);
 			docIndividuale.setNumeroAllegato(numeroAllegato);
 			logger.info("[GED ROMA] Protocollo creato correttamente");
 		} catch (Exception e) {
@@ -967,16 +953,8 @@ public class DocIndividualiBean extends FascicoloCompSecondoLivello implements I
 		
 		String dirTemplate = "/template/siso/templateRicevutaProtocolloGED.txt";
 		
-		ParameterService paramService = (ParameterService) getEjb("CT_Service", "CT_Config_Manager", "ParameterBaseService");
-		ParameterSearchCriteria criteria = new ParameterSearchCriteria();		
-		criteria.setKey("dir.files.datiDiogene");
-		criteria.setComune(null);
-		criteria.setSection(null);
-		
-		AmKeyValueExt amKey = paramService.getAmKeyValueExt(criteria);
-		
-		if(amKey != null) {
-			String dir =  amKey.getValueConf();
+		String dir = this.getDirDatiDiogene();
+		if(!StringUtils.isBlank(dir)) {
 			String pathCompleto = dir + dirTemplate;
 			
 			File fileTemplate = new File(pathCompleto);
@@ -1009,11 +987,12 @@ public class DocIndividualiBean extends FascicoloCompSecondoLivello implements I
 				ec.setResponseContentLength(exportContent.length);
 				ec.setResponseHeader("Content-Disposition", "attachment; filename=\"" + fileOutput + "\"");
 				
+				OutputStream output = null;
 				try {
-				    OutputStream output = ec.getResponseOutputStream();
+				    output = ec.getResponseOutputStream();
 				    Streams.copy(new ByteArrayInputStream(exportContent), output, false);
 				} catch (IOException ex) {
-				    ex.printStackTrace();
+					logger.error(ex.getMessage(), ex);
 				}
 				
 				fc.responseComplete();
@@ -1054,4 +1033,12 @@ public class DocIndividualiBean extends FascicoloCompSecondoLivello implements I
 		return DATE_YEAR_PATTERN.matcher(year).matches();
 	}
 	// #ROMACAPITALE fine
+	
+	@Override
+	public String getIntestazione(){
+		String denom = this.csASoggetto!=null ? this.csASoggetto.getCsAAnagrafica().getDenominazione() : "";
+		String identificativo = this.csASoggetto!=null ? this.csASoggetto.getCsACaso().getIdentificativo().toString() : "";
+		String tit = "Caso "+denom+ " [ID: "+identificativo+"]";
+		return tit;
+	}
 }

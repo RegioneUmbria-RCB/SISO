@@ -1,5 +1,7 @@
 package it.webred.cs.data.model;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -31,8 +33,27 @@ public class CsADatiEsterniSoggetto {
 	@Column(name = "ID_DATI_ESTERNI")
 	private Long idDatiEsterni;
 
-	// relations
+	@Column(name = "STATO_DOMANDA")
+	private String statoDomanda;
 
+	@Column(name = "COD_PRESTAZIONE")
+	private String codicePrestazione;
+
+	@Column(name = "ENTITA_SERVIZIO")
+	private String entitaServizio;
+	
+	@Column(name = "DT_APERTURA_DOMANDA")
+	private Date dtAperturaDomanda;
+	
+	@Column(name = "DT_CHIUSURA_DOMANDA")
+	private Date dtChiusuraDomanda;
+	
+	@Column(name = "TIPO_PRESTAZIONE")
+	private String tipoPrestazione;
+	
+	@Column(name = "INDIRIZZO")
+	private String indirizzo;
+	
 	@ManyToOne
 	@JoinColumn(name = "ID_SOGGETTO", insertable = false, updatable = false)
 	private CsASoggettoDatiEsterni soggetto;
@@ -40,8 +61,6 @@ public class CsADatiEsterniSoggetto {
 	@ManyToOne
 	@JoinColumn(name = "ID_DATI_ESTERNI", insertable = false, updatable = false)
 	private CsADatiEsterni datiEsterni;
-
-	// ctor
 
 	public CsADatiEsterniSoggetto() {
 //		id = new CsADatiEsterniSoggettoPK();
@@ -53,6 +72,66 @@ public class CsADatiEsterniSoggetto {
 //		this.soggetto = soggetto;
 //		this.datiEsterni = datiEsterni;
 		this.codiceEnte = codiceEnte;
+	}
+ 
+		
+		// relations
+
+	public String getCodicePrestazione() {
+		return codicePrestazione;
+	}
+
+	public void setCodicePrestazione(String codicePrestazione) {
+		this.codicePrestazione = codicePrestazione;
+	}
+
+	public String getEntitaServizio() {
+		return entitaServizio;
+	}
+
+	public void setEntitaServizio(String entitaServizio) {
+		this.entitaServizio = entitaServizio;
+	}
+
+	public Date getDtAperturaDomanda() {
+		return dtAperturaDomanda;
+	}
+
+	public void setDtAperturaDomanda(Date dtAperturaDomanda) {
+		this.dtAperturaDomanda = dtAperturaDomanda;
+	}
+
+	public Date getDtChiusuraDomanda() {
+		return dtChiusuraDomanda;
+	}
+
+	public void setDtChiusuraDomanda(Date dtChiusuraDomanda) {
+		this.dtChiusuraDomanda = dtChiusuraDomanda;
+	}
+
+	public String getTipoPrestazione() {
+		return tipoPrestazione;
+	}
+
+	public void setTipoPrestazione(String tipoPrestazione) {
+		this.tipoPrestazione = tipoPrestazione;
+	}
+
+	public String getIndirizzo() {
+		return indirizzo;
+	}
+
+	public void setIndirizzo(String indirizzo) {
+		this.indirizzo = indirizzo;
+	}
+
+
+	public String getStatoDomanda() {
+		return statoDomanda;
+	}
+
+	public void setStatoDomanda(String statoDomanda) {
+		this.statoDomanda = statoDomanda;
 	}
 
 	public Long getId() {
@@ -83,6 +162,7 @@ public class CsADatiEsterniSoggetto {
 		return codiceEnte;
 	}
 
+	
 	public void setCodiceEnte(String codiceEnte) {
 		this.codiceEnte = codiceEnte;
 	}

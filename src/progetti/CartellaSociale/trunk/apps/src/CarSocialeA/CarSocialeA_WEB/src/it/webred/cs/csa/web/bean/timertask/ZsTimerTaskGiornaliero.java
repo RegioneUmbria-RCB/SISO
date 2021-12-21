@@ -2,7 +2,6 @@ package it.webred.cs.csa.web.bean.timertask;
 
 import it.webred.cs.csa.ejb.client.AccessTableAlertSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.AccessTableCasoSessionBeanRemote;
-import it.webred.cs.csa.ejb.client.AccessTableConfigurazioneSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.AccessTableDiarioSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.AccessTableIndirizzoSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.AccessTableInterventoSessionBeanRemote;
@@ -20,25 +19,19 @@ import it.webred.cs.csa.web.manbean.fascicolo.provvedimentiMinori.IProvvedimenti
 import it.webred.cs.csa.web.manbean.fascicolo.provvedimentiMinori.ver1.ProvvedimentiMinoriManBean;
 import it.webred.cs.data.DataModelCostanti;
 import it.webred.cs.data.DataModelCostanti.TipiAlertCod;
+import it.webred.cs.data.DataModelCostanti.TipoDiario;
 import it.webred.cs.data.model.CsAAnaIndirizzo;
 import it.webred.cs.data.model.CsACaso;
-import it.webred.cs.data.model.CsACasoOpeTipoOpe;
 import it.webred.cs.data.model.CsAComponenteAnagCasoGit;
 import it.webred.cs.data.model.CsAFamigliaGruppoGit;
 import it.webred.cs.data.model.CsASoggettoLAZY;
-import it.webred.cs.data.model.CsAlertConfig;
-import it.webred.cs.data.model.CsDPai;
 import it.webred.cs.data.model.CsDRelazione;
 import it.webred.cs.data.model.CsDValutazione;
 import it.webred.cs.data.model.CsIInterventoEsegMastSogg;
-import it.webred.cs.data.model.CsItStepLAZY;
 import it.webred.cs.data.model.CsOOperatore;
-import it.webred.cs.data.model.CsOOperatoreBASIC;
 import it.webred.cs.data.model.CsOOperatoreSettore;
 import it.webred.cs.data.model.CsOOrganizzazione;
 import it.webred.cs.data.model.CsOSettore;
-import it.webred.cs.data.model.CsTbStatoCivile;
-import it.webred.cs.data.model.persist.CsAlert;
 import it.webred.cs.data.model.view.VSsSchedeUdcDiff;
 import it.webred.cs.jsf.manbean.superc.CsUiCompBaseBean;
 import it.webred.cs.json.abitazione.AbitazioneManBaseBean;
@@ -46,14 +39,6 @@ import it.webred.cs.json.abitazione.IAbitazione;
 import it.webred.cs.json.stranieri.IStranieri;
 import it.webred.cs.json.stranieri.StranieriManBaseBean;
 import it.webred.cs.json.stranieri.ver1.StranieriBean;
-import it.webred.ct.config.luoghi.LuoghiService;
-import it.webred.ct.config.model.AmTabComuni;
-import it.webred.ct.config.model.AmTabNazioni;
-import it.webred.ct.data.access.basic.anagrafe.AnagrafeService;
-import it.webred.ct.data.access.basic.anagrafe.dto.ComponenteFamigliaDTO;
-import it.webred.ct.data.access.basic.anagrafe.dto.IndirizzoAnagDTO;
-import it.webred.ct.data.access.basic.anagrafe.dto.RicercaSoggettoAnagrafeDTO;
-import it.webred.ct.data.model.anagrafe.SitDPersona;
 import it.webred.ct.support.datarouter.CeTBaseObject;
 import it.webred.ejb.utility.ClientUtility;
 import it.webred.siso.ws.ricerca.dto.FamiliareDettaglio;
@@ -64,7 +49,6 @@ import it.webred.siso.ws.ricerca.dto.RicercaAnagraficaResult;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.TimerTask;
@@ -83,9 +67,6 @@ public class ZsTimerTaskGiornaliero extends TimerTask {
 	private AccessTableAlertSessionBeanRemote alertService;
 	private AccessTableCasoSessionBeanRemote casoService;
 	private AccessTableDiarioSessionBeanRemote diarioService;
-	private LuoghiService luoghiService; 
-	private AccessTableConfigurazioneSessionBeanRemote configurazioneService;
-	private AnagrafeService anagrafeService;
 	private AccessTableSoggettoSessionBeanRemote soggettoService;
 	
 	private int variazioniAnagraficheElaborate;
@@ -102,26 +83,22 @@ public class ZsTimerTaskGiornaliero extends TimerTask {
 	public void run() {
 
 		try {
-			configurazioneService = (AccessTableConfigurazioneSessionBeanRemote) ClientUtility.getEjbInterface("CarSocialeA", "CarSocialeA_EJB", "AccessTableConfigurazioneSessionBean");
 			alertService = (AccessTableAlertSessionBeanRemote) ClientUtility.getEjbInterface("CarSocialeA", "CarSocialeA_EJB","AccessTableAlertSessionBean");
 			casoService =  (AccessTableCasoSessionBeanRemote) ClientUtility.getEjbInterface("CarSocialeA", "CarSocialeA_EJB","AccessTableCasoSessionBean");
 			diarioService =  (AccessTableDiarioSessionBeanRemote) ClientUtility.getEjbInterface("CarSocialeA", "CarSocialeA_EJB","AccessTableDiarioSessionBean");
 			soggettoService = (AccessTableSoggettoSessionBeanRemote)ClientUtility.getEjbInterface("CarSocialeA", "CarSocialeA_EJB","AccessTableSoggettoSessionBean");
 			//SISO-1297
 			iterStepService  = (AccessTableIterStepSessionBeanRemote) ClientUtility.getEjbInterface("CarSocialeA", "CarSocialeA_EJB", "AccessTableIterStepSessionBean");
-			luoghiService  = (LuoghiService)  ClientUtility.getEjbInterface("CT_Service", "CT_Config_Manager", "LuoghiServiceBean");
-			anagrafeService = (AnagrafeService) ClientUtility.getEjbInterface("CT_Service", "CT_Service_Data_Access","AnagrafeServiceBean");
 			
 			this.aggiornaFamiglieSIGESS();
-	    	this.aggiornaAlertRelazioni();
 	    	this.aggiornaAlertComponentiFamiliari();
+	    	this.aggiornaAlertRelazioni();
 	    	this.aggiornaAlertProvvedimentiTribunale();
 	    	this.aggiornaAlertPAI();
 	    	this.segnalaModificheSchedaCompletaUDC();
 	    	// SISO 1115
 	    	this.importaDatiEsterniSoggettoDaFile();
-	    	
-
+	   
 	    	this.elaboraVariazioniAnagrafiche();
 			
 			//SISO-1127 Fine
@@ -172,7 +149,7 @@ public class ZsTimerTaskGiornaliero extends TimerTask {
 						
 						CsACaso caso = componenteGIT .getCsASoggetto().getCsACaso();
 						
-						CsOOperatoreSettore opeTo = findOperatoreTo(caso);
+						CsOOperatoreSettore opeTo = findOperatoreTo(caso.getId());
 						
 						CsOSettore settTo = null ;
 						CsOOrganizzazione orgTo = null;
@@ -181,7 +158,7 @@ public class ZsTimerTaskGiornaliero extends TimerTask {
 						// orgTo = tipoOpe!=null ? tipoOpe.getCsOOperatoreTipoOperatore().getCsOOperatoreSettore().getCsOSettore().getCsOOrganizzazione() : null;
 						
 						if(opeTo!=null || settTo!=null || orgTo!=null){
-							boolean inserisco = this.validaInserimentoNuovoAlert(DataModelCostanti.TipiAlertCod.ANAGRAFICA_CASO_GIT, caso, opeTo.getId());
+							boolean inserisco = this.validaInserimentoNuovoAlert(DataModelCostanti.TipiAlertCod.ANAGRAFICA_CASO_GIT, caso.getId(), opeTo.getId());
 							if(inserisco){
 							
 								//nuovo alert
@@ -249,9 +226,9 @@ public class ZsTimerTaskGiornaliero extends TimerTask {
 								RicercaAnagraficaResult res = CsUiCompBaseBean.getPersonaDaAnagSigess(params);
 								
 								List<PersonaDettaglio> lista = new ArrayList<PersonaDettaglio>();
-								if(res!=null && !res.getElencoAssisiti().isEmpty()){
+								if(res!=null && !res.getElencoAssistiti().isEmpty()){
 									if(res.getMessaggio()==null){
-										lista = res.getElencoAssisiti();
+										lista = res.getElencoAssistiti();
 										elaboraVariazioniCaso(anagraficaCaso, lista, tipoRicerca);
 									}else
 										logger.error("aggiornaAnagraficaCasoSIGESS : Errore ricerca soggetto ["+cf+"]["+anagraficaCaso.getCsASoggetto().getCsAAnagrafica().getIdOrigWs()+"] "+tipoRicerca+" CODICE["+res.getCodice()+"]"+ res.getMessaggio(), res.getEccezione());
@@ -355,11 +332,15 @@ public class ZsTimerTaskGiornaliero extends TimerTask {
 		    	String cf = anagraficaCaso.getCsASoggetto().getCsAAnagrafica().getCf();
 				
 				RicercaAnagraficaResult res = null;
-				if((res == null || res.getElencoAssisiti().size() ==0) && CsUiCompBaseBean.isAnagrafeComunaleInternaAbilitata() ){
+				if((res == null || res.getElencoAssistiti().size() ==0) && CsUiCompBaseBean.isAnagrafeComunaleInternaAbilitata() ){
 					try{
 						String iterEnteId = getEnteId(anagraficaCaso.getCsASoggetto().getCsACaso().getId());
-						res = this.ricercaSoggettoDiogene(iterEnteId, cf);
-						if(res.getElencoAssisiti().size() > 0) {
+						
+						RicercaAnagraficaParams params = new RicercaAnagraficaParams(DataModelCostanti.TipoRicercaSoggetto.DEFAULT, true);
+						params.setEnteId(iterEnteId);
+						params.setCf(cf);
+						res = CsUiCompBaseBean.getDettaglioPersona(params);
+						if(res.getElencoAssistiti().size() > 0) {
 							tipoRicerca = DataModelCostanti.TipoRicercaSoggetto.DEFAULT;
 						}
 						
@@ -368,13 +349,13 @@ public class ZsTimerTaskGiornaliero extends TimerTask {
 				  	}
 			
 				}
-				if((res == null || res.getElencoAssisiti().size() ==0) && CsUiCompBaseBean.isAnagrafeSigessAbilitata()){
+				if((res == null || res.getElencoAssistiti().size() ==0) && CsUiCompBaseBean.isAnagrafeSigessAbilitata()){
 					try{
 						RicercaAnagraficaParams params = new RicercaAnagraficaParams( DataModelCostanti.TipoRicercaSoggetto.SIGESS, true);
 						params.setEnteId(enteId);
 						params.setCf(cf);
 						res = CsUiCompBaseBean.getPersonaDaAnagSigess(params);
-						if(res.getElencoAssisiti().size() > 0) {
+						if(res.getElencoAssistiti().size() > 0) {
 							tipoRicerca = DataModelCostanti.TipoRicercaSoggetto.SIGESS;
 						}
 					}catch(Exception ex) {
@@ -382,7 +363,7 @@ public class ZsTimerTaskGiornaliero extends TimerTask {
 				  	}
 				}
 				
-				if((res == null || res.getElencoAssisiti().size() ==0) && CsUiCompBaseBean.isAnagrafeSanitariaUmbriaAbilitata()) {
+				if((res == null || res.getElencoAssistiti().size() ==0) && CsUiCompBaseBean.isAnagrafeSanitariaUmbriaAbilitata()) {
 					try{
 						RicercaAnagraficaParams params = new RicercaAnagraficaParams( DataModelCostanti.TipoRicercaSoggetto.ANAG_SANITARIA_UMBRIA, true);
 						params.setEnteId(enteId);
@@ -390,7 +371,7 @@ public class ZsTimerTaskGiornaliero extends TimerTask {
 						params.setCaricaMedico(true);
 						res = CsUiCompBaseBean.getDettaglioPersona(params);
 						
-						if(res.getElencoAssisiti().size() > 0) {
+						if(res.getElencoAssistiti().size() > 0) {
 							tipoRicerca = DataModelCostanti.TipoRicercaSoggetto.ANAG_SANITARIA_UMBRIA;
 						}
 					}catch(Exception ex) {
@@ -398,13 +379,13 @@ public class ZsTimerTaskGiornaliero extends TimerTask {
 				  	}
 				}
 			
-				if((res == null || res.getElencoAssisiti().size() ==0) && CsUiCompBaseBean.isAnagrafeSanitariaMarcheAbilitata()){
+				if((res == null || res.getElencoAssistiti().size() ==0) && CsUiCompBaseBean.isAnagrafeSanitariaMarcheAbilitata()){
 					try{
 						RicercaAnagraficaParams params = new RicercaAnagraficaParams( DataModelCostanti.TipoRicercaSoggetto.ANAG_SANITARIA_MARCHE, true);
 						params.setEnteId(enteId);
 						params.setCf(cf);
 						res = CsUiCompBaseBean.getDettaglioPersona(params);
-						if(res.getElencoAssisiti().size() > 0) {
+						if(res.getElencoAssistiti().size() > 0) {
 							tipoRicerca = DataModelCostanti.TipoRicercaSoggetto.ANAG_SANITARIA_MARCHE;
 						}
 					}catch(Exception ex) {
@@ -413,10 +394,9 @@ public class ZsTimerTaskGiornaliero extends TimerTask {
 				}
 			
 				try{
-					List<PersonaDettaglio> lista = new ArrayList<PersonaDettaglio>();
-					if(res!=null && !res.getElencoAssisiti().isEmpty()){
+					if(res!=null && !res.getElencoAssistiti().isEmpty()){
 						if(res.getMessaggio()==null)
-							elaboraVariazioniCaso(anagraficaCaso, res.getElencoAssisiti(), tipoRicerca);
+							elaboraVariazioniCaso(anagraficaCaso, res.getElencoAssistiti(), tipoRicerca);
 						else
 							logger.error("aggiornaAnagraficaCasoSenzaIdProvenienza : Errore ricerca soggetto ["+cf+"]["+anagraficaCaso.getCsASoggetto().getCsAAnagrafica().getIdOrigWs()+"] "+tipoRicerca+" CODICE["+res.getCodice()+"]"+ res.getMessaggio(), res.getEccezione());
 					}
@@ -427,108 +407,12 @@ public class ZsTimerTaskGiornaliero extends TimerTask {
 		    logger.debug("__ FINE ZsTimerTaskGiornaliero: aggiornaAnagraficaCasoSenzaIdProvenienza");
 		 }
 		 
-		 
-		 private PersonaDettaglio initFromSitDPersona(SitDPersona soggetto, String enteRouting) {
-			 PersonaDettaglio pDett  = new PersonaDettaglio();	
-			 
-			 pDett.setEmigrato(soggetto.getDataEmi()!=null && (soggetto.getDataImm()==null || soggetto.getDataImm().before(soggetto.getDataEmi())));
-			 Date dataFineValidita = null;
-			 Date dataOdierna  = new Date();
-			 if(soggetto.getDtFineDato() != null && soggetto.getDtFineDato().compareTo(DataModelCostanti.END_DATE) != 0) {
-				 dataFineValidita =soggetto.getDtFineDato(); 
-			 }
-			 else if(soggetto.getDtFineVal()  != null && soggetto.getDtFineVal().compareTo(DataModelCostanti.END_DATE) != 0) {
-				 dataFineValidita =soggetto.getDtFineVal(); 
-			 }
-			 
-			 if(dataFineValidita == null || (dataFineValidita != null && dataFineValidita.compareTo(dataOdierna) > 0)) {
-				   String cf = soggetto.getCodfisc();
-					IndirizzoAnagDTO indirizzo = null; //getResidenzaFromAnagrafe(cf);
-					
-					RicercaSoggettoAnagrafeDTO dto = new RicercaSoggettoAnagrafeDTO();
-					dto.setEnteId(enteRouting);
-					dto.setCodFis(cf);
-					List<IndirizzoAnagDTO> lst = anagrafeService.getIndirizzoResidenzaByCodFisc(dto);
-					if(lst!=null && !lst.isEmpty())
-						indirizzo = lst.get(0);
-						
-					
-					if (indirizzo!=null) {
-						 
-						pDett.setIndirizzoResidenza(indirizzo.getIndirizzo());
-						String civico = indirizzo.getCivicoNumero() != null ? indirizzo.getCivicoNumero() : "";
-						civico+= indirizzo.getCivicoAltro() !=null ?  " "+ indirizzo.getCivicoAltro() : "";
-						pDett.setCivicoResidenza(civico.trim());
-						
-						AmTabComuni comuneResidenza = luoghiService.getComuneItaByIstat(indirizzo.getComCod());
-						pDett.setComuneResidenza(comuneResidenza);
-								
-					}else{
-							logger.debug("initFromSitDPersona : Implementare recupero stato estero di residenza");
-							//TODO:Implementare recupero 
-					}
-					
-					pDett.setCognome(soggetto.getCognome());
-					pDett.setNome(soggetto.getNome());
-					pDett.setDataNascita(soggetto.getDataNascita());
-					pDett.setDefunto(soggetto.getDataMor()!= null ? true :false);
-					
-					pDett.setSesso(soggetto.getSesso());
-
-				
-					ComponenteFamigliaDTO compDto = new ComponenteFamigliaDTO();
-					compDto.setEnteId(enteRouting);
-					compDto.setPersona(soggetto);
-					compDto = anagrafeService.fillInfoAggiuntiveComponente(compDto);
-
-					pDett.setStatoCivile(soggetto.getStatoCivile());
-					 
-					//Cittadinanza
-					pDett.setCittadinanza( compDto.getCittadinanza());
-					pDett.setCodfisc(cf);
-					pDett.setIdentificativo(soggetto.getIdExt());
-					//GESTIONE COMUNE
-					if("ITALIA".equals(compDto.getDesStatoNas())) {
-						if(compDto.getCodComNas()!=null){
-						 	pDett.setComuneNascita(luoghiService.getComuneItaByIstat(compDto.getCodComNas()));
-						} 
-					} else {
-						if(compDto.getIstatStatoNas()!=null){
-							if(!"ITALIA".equalsIgnoreCase(compDto.getDesStatoNas())){
-							  
-								pDett.setNazioneNascita( findNazione(compDto.getCodStatoNas(), compDto.getDesStatoNas()));
-				    		}	 
-						} 
-					}
-
-			 }
-			return pDett;	
-		 }
-		 private AmTabNazioni findNazione(String codice, String descrizione) {
-				AmTabNazioni nazione = null;
-				if(codice!=null && !codice.isEmpty()){
-					codice = "100".equalsIgnoreCase(codice) ? "1" : codice;
-					try{
-						nazione = luoghiService.getNazioneByIstat(codice);
-					}catch(Exception e){}
-					if(nazione==null && descrizione!=null){
-						logger.debug("Ricerco Nazione con cod.istat "+codice+ " --> NON TROVATA!");
-					    nazione = new AmTabNazioni();
-					    nazione.setCodIstatNazione(codice);
-					    nazione.setNazione(descrizione);
-					}
-				}
-				
-				return nazione;
-			}
-		 //FINE
 		 private void aggiornaAnagraficaCasoGIT(RicercaAnagraficaResult ricercaAnagraficaResult, CsAComponenteAnagCasoGit anagraficaCaso, String tipoRicerca) {
 			 try {
 	   	       
-	   	      	List<PersonaDettaglio> lista = new ArrayList<PersonaDettaglio>();
 					if(ricercaAnagraficaResult!=null){
 						if(ricercaAnagraficaResult.getMessaggio()==null)
-							elaboraVariazioniCaso(anagraficaCaso, ricercaAnagraficaResult.getElencoAssisiti(), tipoRicerca);
+							elaboraVariazioniCaso(anagraficaCaso, ricercaAnagraficaResult.getElencoAssistiti(), tipoRicerca);
 						else
 							logger.error("aggiornaAnagaggiornaAnagraficaCasoGIT  :"+tipoRicerca+" CODICE["+ricercaAnagraficaResult.getCodice()+"]"+ ricercaAnagraficaResult.getMessaggio(), ricercaAnagraficaResult.getEccezione());
 					}
@@ -634,9 +518,15 @@ public class ZsTimerTaskGiornaliero extends TimerTask {
 						 		String cf = anagraficaCaso.getCsASoggetto().getCsAAnagrafica().getCf();
 								String idOrigWs = anagraficaCaso.getCsASoggetto().getCsAAnagrafica().getIdOrigWsId();
 								String iterEnteId = getEnteId(anagraficaCaso.getCsASoggetto().getCsACaso().getId());
-								RicercaAnagraficaResult res = ricercaSoggettoDiogene(iterEnteId, cf);
-								this.aggiornaAnagraficaCasoGIT(res, anagraficaCaso, tipoRicerca);
 								
+								RicercaAnagraficaParams params = new RicercaAnagraficaParams(tipoRicerca, true);
+								params.setEnteId(iterEnteId);
+								params.setIdentificativo(idOrigWs);
+								params.setCf(cf);
+								RicercaAnagraficaResult res = CsUiCompBaseBean.ricercaPerDatiAnagrafici(params);
+								
+								this.aggiornaAnagraficaCasoGIT(res, anagraficaCaso, tipoRicerca);
+									
 			    			} catch (Exception e2) {
 								logger.error("__ERRORE ZsTimerTaskGiornaliero: aggiornaAnagraficaInterna :  per anagraficaCaso ID [" + anagraficaCaso.getId() + "]" + e2.getMessage(), e2);
 							} 
@@ -649,30 +539,11 @@ public class ZsTimerTaskGiornaliero extends TimerTask {
 			    	
 				}
 			}
-		//SISO-1127 Fine
-	private RicercaAnagraficaResult ricercaSoggettoDiogene(String enteId, String cf){
-		RicercaAnagraficaResult res = new RicercaAnagraficaResult(); 
-		if(!StringUtils.isEmpty(enteId)){
-			RicercaSoggettoAnagrafeDTO rsDto = new RicercaSoggettoAnagrafeDTO();
-			rsDto.setEnteId(enteId);
-			rsDto.setCodFis(cf);
-	    	rsDto.setDtRif(new Date());
-	    	 	
-			List<SitDPersona> list = anagrafeService.searchSISOAnagrafiche(rsDto);
-			//if(list != null ) res = new RicercaAnagraficaResult(); 
-			for(SitDPersona s: list){
-				 PersonaDettaglio pDettaglio =  this.initFromSitDPersona(s, enteId);
-				 res.addAssistito(pDettaglio);
-			}
-		}
-		
-		return res;
-	}
-		 
+	
 	private void aggiornaFamiglieSIGESS(){	
 			
 		if(CsUiCompBaseBean.isAnagrafeSigessAbilitata()){
-		    logger.debug("__ INIZIO ZsTimerTaskGiornaliero: aggiornaFamiglieGIT");
+		    logger.debug("__ INIZIO ZsTimerTaskGiornaliero: aggiornaFamiglieSIGESS");
 			BaseDTO bDto = new BaseDTO();
 	    	bDto.setEnteId(enteId);
 	    	bDto.setUserId("aggiornaFamiglieSIGESS");
@@ -713,10 +584,10 @@ public class ZsTimerTaskGiornaliero extends TimerTask {
 					}
 				}
 			
-				logger.debug("__ FINE ZsTimerTaskGiornaliero: aggiornaFamiglieGIT");
+				logger.debug("__ FINE ZsTimerTaskGiornaliero: aggiornaFamiglieSIGESS");
 				
 	    	} catch (Exception e2) {
-				logger.error("__ERRORE ZsTimerTaskGiornaliero: aggiornaFamiglieGIT : " + e2.getMessage(), e2);
+				logger.error("__ERRORE ZsTimerTaskGiornaliero: aggiornaFamiglieSIGESS : " + e2.getMessage(), e2);
 			}
 	    	
 		}
@@ -876,20 +747,9 @@ public class ZsTimerTaskGiornaliero extends TimerTask {
 			    		
 				    		if(caso!=null) {
 					    		
-				    			BaseDTO bDto = new BaseDTO();
-					        	bDto.setEnteId(dto.getEnteId()); 
-					        	bDto.setObj(caso.getId());
-					        	
-					    		CsACasoOpeTipoOpe tipoOpe = casoService.findCasoOpeResponsabile(bDto);
-					        	
-					    		CsOOperatoreSettore opeTo = tipoOpe!=null ? tipoOpe.getCsOOperatoreTipoOperatore().getCsOOperatoreSettore(): null;
-					    				
-					    		//Responsabile altrimenti --> creatore
-					    		if(opeTo == null) {		
-					    			opeTo = casoService.findCreatoreCaso(bDto);
-					    		}
+					    		CsOOperatoreSettore opeTo = this.findOperatoreTo(caso.getId());
 					    		
-					    		boolean inserisco = this.validaInserimentoNuovoAlert(DataModelCostanti.TipiAlertCod.MODUDC, caso, opeTo.getId());
+					    		boolean inserisco = this.validaInserimentoNuovoAlert(DataModelCostanti.TipiAlertCod.MODUDC, caso.getId(), opeTo.getId());
 								if(inserisco)
 									addAlert(TipiAlertCod.MODUDC, caso, titDescrizione, descrizione, null, null,null, null, opeTo, null, null);
 								else 
@@ -938,28 +798,27 @@ public class ZsTimerTaskGiornaliero extends TimerTask {
     		AccessTableParentiGitSessionBeanRemote parentiService = (AccessTableParentiGitSessionBeanRemote) CsUiCompBaseBean.getCarSocialeEjb("AccessTableParentiGitSessionBean");
     	
 			List<CsAFamigliaGruppoGit> listaFamiglieAggiornate = parentiService.getFamigliaGruppoGitAggiornate(bDto);
+			CsOOrganizzazione orgFrom = this.findOrganizzazioneDefault(TipiAlertCod.FAMIGLIA_GIT);
 			for(CsAFamigliaGruppoGit fam: listaFamiglieAggiornate) {
 				
 				CsACaso caso = fam.getCsASoggetto().getCsACaso();
 				
-				CsOOperatoreSettore opeTo = findOperatoreTo(caso);
+				CsOOperatoreSettore opeTo = findOperatoreTo(caso.getId());
 				
 				CsOSettore settTo = null ;
 				CsOOrganizzazione orgTo = null;
 				
 				settTo = opeTo!=null ? opeTo.getCsOSettore() : null;
-				// orgTo = tipoOpe!=null ? tipoOpe.getCsOOperatoreTipoOperatore().getCsOOperatoreSettore().getCsOSettore().getCsOOrganizzazione() : null;
 				
 				if(opeTo!=null || settTo!=null || orgTo!=null){
-					boolean inserisco = this.validaInserimentoNuovoAlert(DataModelCostanti.TipiAlertCod.FAMIGLIA_GIT, caso, opeTo.getId());
+					boolean inserisco = this.validaInserimentoNuovoAlert(DataModelCostanti.TipiAlertCod.FAMIGLIA_GIT, caso.getId(), opeTo.getId());
 					if(inserisco){
 					
 						//nuovo alert
-						String nome = fam.getCsASoggetto().getCsAAnagrafica().getCognome() + " " + fam.getCsASoggetto().getCsAAnagrafica().getNome();
+						String nome = fam.getCsASoggetto().getCsAAnagrafica().getDenominazione();
 						String cf = fam.getCsASoggetto().getCsAAnagrafica().getCf();
 						String descrizione = "Anagrafe comunale: sono state rilevate delle variazioni relative ai dati del nucleo familiare di "+ nome +" ("+ cf +").";
 						String titDescrizione = "Notifica caso "+ nome + ": variazione situazione familiare";
-						CsOOrganizzazione orgFrom = this.findOrganizzazioneDefault(TipiAlertCod.FAMIGLIA_GIT);
 						logger.info(enteId + " __ Aggiungo Alert per aggiornamento famiglia: " + fam.getCsASoggetto().getCsAAnagrafica().getCf());
 						addAlert(TipiAlertCod.FAMIGLIA_GIT, caso, titDescrizione, descrizione, null, null,null, orgFrom, opeTo, settTo, orgTo);
 					}else
@@ -1004,7 +863,7 @@ public class ZsTimerTaskGiornaliero extends TimerTask {
 			for(CsDRelazione rel : listaRelazioni){
 				
 				CsACaso caso = rel.getCsDDiario().getCsACaso();
-				CsOOperatoreSettore opeTo = findOperatoreTo(caso);
+				CsOOperatoreSettore opeTo = findOperatoreTo(caso.getId());
 				
 				CsOSettore settTo = null;
 				CsOOrganizzazione orgTo = null;
@@ -1014,7 +873,7 @@ public class ZsTimerTaskGiornaliero extends TimerTask {
 				//CsOOrganizzazione orgTo = tipoOpe!=null ? tipoOpe.getCsOOperatoreTipoOperatore().getCsOOperatoreSettore().getCsOSettore().getCsOOrganizzazione() : null;
 			
 				if(opeTo!=null || settTo!=null || orgTo!=null){
-					boolean inserisco = this.validaInserimentoNuovoAlert(DataModelCostanti.TipiAlertCod.RELAZIONE, caso, opeTo.getId());
+					boolean inserisco = this.validaInserimentoNuovoAlert(DataModelCostanti.TipiAlertCod.RELAZIONE, caso.getId(), opeTo.getId());
 					if(inserisco){
 						//nuovo alert
 						String nome = caso.getCsASoggetto().getCsAAnagrafica().getCognome() + " " + caso.getCsASoggetto().getCsAAnagrafica().getNome();
@@ -1056,7 +915,7 @@ public class ZsTimerTaskGiornaliero extends TimerTask {
 		itDto.setEnteId(enteId);
     	opDto.setEnteId(enteId);
     	bDto.setEnteId(enteId);
-    	bDto.setObj2(DataModelCostanti.TipoDiario.PROVVEDIMENTI_TRIBUNALE);
+    	bDto.setObj2(TipoDiario.PROVVEDIMENTI_TRIBUNALE);
     	
     	SimpleDateFormat formatta = new SimpleDateFormat("dd/MM/yyyy");
     	Date now = new Date();
@@ -1096,7 +955,7 @@ public class ZsTimerTaskGiornaliero extends TimerTask {
 				/*CONTROLLO DATE POI CREAZIONE ALERT**/
 				
     			CsACaso caso = csDValutazione.getCsDDiario().getCsACaso();
-    			CsOOperatoreSettore opeTo = findOperatoreTo(caso);
+    			CsOOperatoreSettore opeTo = findOperatoreTo(caso.getId());
 				
     			CsOSettore settTo = null;
 				CsOOrganizzazione orgTo = null;
@@ -1105,7 +964,7 @@ public class ZsTimerTaskGiornaliero extends TimerTask {
 				if(opeTo==null) settTo = opeTo!=null ? opeTo.getCsOSettore() : null;
 			
 				if((opeTo!=null || settTo!=null || orgTo!=null) && !descrizione.isEmpty()){
-					boolean inserisco = this.validaInserimentoNuovoAlert(DataModelCostanti.TipiAlertCod.PROTRIB, caso, opeTo.getId());
+					boolean inserisco = this.validaInserimentoNuovoAlert(DataModelCostanti.TipiAlertCod.PROTRIB, caso.getId(), opeTo.getId());
 					if(inserisco){
 					String nome = caso.getCsASoggetto().getCsAAnagrafica().getCognome() + " " + caso.getCsASoggetto().getCsAAnagrafica().getNome();
 					
@@ -1127,94 +986,11 @@ public class ZsTimerTaskGiornaliero extends TimerTask {
 	
 	private void aggiornaAlertPAI() {
 		logger.debug("__ INIZIO ZsTimerTaskGiornaliero: aggiornaAlertPAI_");
-		
 		CeTBaseObject idto = new CeTBaseObject();
     	idto.setEnteId(enteId);
     
     	try {
-    		AccessTableDiarioSessionBeanRemote diarioService = (AccessTableDiarioSessionBeanRemote) CsUiCompBaseBean.getCarSocialeEjb("AccessTableDiarioSessionBean");
-    		
-			List<CsDPai> listaPai = diarioService.findPaiAperti(idto);
-			if(listaPai.size()>0 ) logger.info(" __ Trovati "+listaPai.size()+" PAI aperti.");
-			for(CsDPai p : listaPai){
-				
-				CsACaso caso = p.getCsDDiario().getCsACaso();
-				CsOOperatoreSettore opeTo = findOperatoreTo(caso);
-				
-				CsOSettore settTo = null;
-				CsOOrganizzazione orgTo = null;
-				
-				String nome = caso.getCsASoggetto().getCsAAnagrafica().getCognome() + " " + caso.getCsASoggetto().getCsAAnagrafica().getNome();
-				String cf = caso.getCsASoggetto().getCsAAnagrafica().getCf();
-				
-				//Notifico al settore, solo se non trovo un operatore responsabile!
-				if(opeTo==null) settTo = opeTo!=null ? opeTo.getCsOSettore() : null;
-				
-				/**Gli alert sono riferiti al responsabile del caso:il sistema legge tutti i pai non chiusi
-					-se data odierna > data chiusura prevista: il sistema registra un alert sul superamento della data chiusura prevista
-					-altrimenti
-						- se il pai ha data prossimo monitoraggio (calcolata da data ultima + verifica ogni) minore di data chiusura
-							- se data odierna >= data prossimo monitoraggio - 1 giorno: il sistema invia un alert "Monitoraggio degli obiettivi necessario per <tipo pai> del <nome e cognome soggetto>"
-						- altrimenti se data chiusura prevista < data odierna + 7 gg: il sistema registra un alert che avverte dell'avvicinarsi della data chiusura progetto*/
-				
-				ArrayList<String> msg= new ArrayList<String>();
-				Date today = new Date();
-				Calendar dataAlert7GG = Calendar.getInstance();
-				dataAlert7GG.add(Calendar.DAY_OF_MONTH, 7);
-				if(p.getDataChiusuraPrevista()!=null && today.after(p.getDataChiusuraPrevista())){
-					msg.add("Superamento della data chiusura prevista per progetto PAI");
-				}else{
-					//Calcolo data prossimo monitoraggio (calcolata da data ultima + verifica ogni) 
-					Calendar dataProssimoMonitoraggio = null;
-					if(p.getVerificaOgni()!=null && p.getVerificaOgni().intValue()>0 && p.getDataMonitoraggio()!=null){
-						dataProssimoMonitoraggio = Calendar.getInstance();
-						dataProssimoMonitoraggio.setTime(p.getDataMonitoraggio());
-						if(p.getVerificaUnitaMisura().equalsIgnoreCase(DataModelCostanti.Pai.PERIODO_TEMPORALE.GIORNI.getCodice()))
-							dataProssimoMonitoraggio.add(Calendar.DAY_OF_MONTH, p.getVerificaOgni().intValue());
-						else if(p.getVerificaUnitaMisura().equalsIgnoreCase(DataModelCostanti.Pai.PERIODO_TEMPORALE.SETTIMANE.getCodice()))
-							dataProssimoMonitoraggio.add(Calendar.DAY_OF_MONTH, 7*p.getVerificaOgni().intValue());
-						else if(p.getVerificaUnitaMisura().equalsIgnoreCase(DataModelCostanti.Pai.PERIODO_TEMPORALE.MESI.getCodice()))
-							dataProssimoMonitoraggio.add(Calendar.MONTH, p.getVerificaOgni().intValue());
-						else if(p.getVerificaUnitaMisura().equalsIgnoreCase(DataModelCostanti.Pai.PERIODO_TEMPORALE.ANNI.getCodice()))
-								dataProssimoMonitoraggio.add(Calendar.YEAR, p.getVerificaOgni().intValue());
-					}
-					if(dataProssimoMonitoraggio!=null && 
-							(p.getDataChiusuraPrevista()==null || dataProssimoMonitoraggio.getTime().before(p.getDataChiusuraPrevista()))){
-						Calendar dataAlertMonitoraggio = Calendar.getInstance();
-						dataAlertMonitoraggio.setTime(dataProssimoMonitoraggio.getTime());
-						dataAlertMonitoraggio.add(Calendar.DAY_OF_MONTH, -1);
-						if(!today.before(dataAlertMonitoraggio.getTime()))
-							msg.add("Monitoraggio degli obiettivi necessario");
-					}
-					if(p.getDataChiusuraPrevista()!=null && p.getDataChiusuraPrevista().before(dataAlert7GG.getTime()))
-						msg.add("Chiusura del progetto PAI prevista tra meno di una settimana");
-				}
-				
-				if(!msg.isEmpty() && (opeTo!=null || settTo!=null || orgTo!=null)){
-					boolean inserisco = this.validaInserimentoNuovoAlert(DataModelCostanti.TipiAlertCod.PAI, caso, opeTo.getId());
-					if(inserisco){
-						//nuovo alert
-						String descrizione = "";
-						for(String s: msg ) descrizione += s+ "<br/>";
-						descrizione+="<br/>";
-						descrizione+= "Caso: "+nome+" ("+cf+") - Identificativo:"+caso.getIdentificativo()+" <br/>";
-						descrizione+= "Progetto PAI: "+p.getCsTbTipoPai().getDescrizione()+ "<br/>";
-						descrizione+= "Data chiusura prevista: "+ (p.getDataChiusuraPrevista()!=null ?  CsUiCompBaseBean.ddMMyyyy.format(p.getDataChiusuraPrevista()) : "") + "<br/>";
-						descrizione+= "Data ultimo monitoraggio: "+ (p.getDataMonitoraggio()!=null ? CsUiCompBaseBean.ddMMyyyy.format(p.getDataMonitoraggio()) : "") + "<br/>";
-						descrizione+= "Periodo monitoraggio: "+ p.getVerificaOgni() + " " + p.getVerificaUnitaMisura() + "<br/>";
-						
-						String titDescrizione = "Promemoria caso "+ nome + ": "+msg;
-						
-						CsOOrganizzazione orgFrom = this.findOrganizzazioneDefault(TipiAlertCod.PAI);
-									
-						logger.info(enteId + " __ Aggiungo Alert per aggiornamento PAI: [casoId:" + caso.getId()+"]");
-						addAlert(TipiAlertCod.PAI, caso, titDescrizione, descrizione, null, null, null, orgFrom, opeTo, settTo, orgTo);
-					}else
-						logger.info(enteId + " __ Sospeso Inserimento Alert per aggiornamento PAI: già presente [casoId:" + caso.getId()+"]");
-						
-				}
-			}
-		
+    		alertService.aggiornaAlertPAI(idto);
 			logger.debug("__ FINE ZsTimerTaskGiornaliero: aggiornaAlertPAI_");
 			
     	} catch (Exception e2) {
@@ -1228,65 +1004,28 @@ public class ZsTimerTaskGiornaliero extends TimerTask {
 		BaseDTO bDto = new BaseDTO();
 		bDto.setEnteId(enteId);
 		bDto.setObj(tipo);
-		CsAlertConfig aConfig = alertService.getAlertConfigByTipo(bDto);
-		if(aConfig != null && aConfig.getCsOOrganizzazioneDefault() != null)
-			return aConfig.getCsOOrganizzazioneDefault();
-		else return null;
+		CsOOrganizzazione org = alertService.findAlertOrganizzazioneDefault(bDto);
+		return org;
 	}
 	
-	private CsOOperatoreSettore findOperatoreTo(CsACaso caso) throws Exception{
+	private CsOOperatoreSettore findOperatoreTo(Long casoId) throws Exception{
 		
     	BaseDTO bDto = new BaseDTO();
-		OperatoreDTO opDto = new OperatoreDTO();
-
     	bDto.setEnteId(enteId);
-    	opDto.setEnteId(enteId);
-    	
-    	bDto.setObj(caso.getId());
-		CsACasoOpeTipoOpe tipoOpe = casoService.findCasoOpeResponsabile(bDto);
-    	
-		CsOOperatoreSettore opeTo = tipoOpe!=null ? tipoOpe.getCsOOperatoreTipoOperatore().getCsOOperatoreSettore(): null;
-				
-		//Responsabile altrimenti --> creatore
-		if(opeTo == null) {		
-			
-			opeTo = casoService.findCreatoreCaso(bDto);
-			
-			/*//creatore
-			opDto.setUsername(userIns);
-			opeTo = operatoreService.findOperatoreByUsername(opDto);*/
-		}
-		
+    	bDto.setObj(casoId);
+		CsOOperatoreSettore opeTo = casoService.findDestinatarioAlertCaso(bDto);
 		return opeTo;
 	}
 	
-	private boolean validaInserimentoNuovoAlert(String tipo, CsACaso caso, Long opeId ) throws Exception{
-		//Cerco se è già presente un alert NON LETTO, altrimenti inserisco.
-		boolean inserisco = true;
-		IterDTO itDto = new IterDTO();
+	private boolean validaInserimentoNuovoAlert(String tipo, Long casoId, Long opeId ) throws Exception{
 		
-		itDto.setEnteId(enteId);
-		itDto.setCsACaso(caso);
-		itDto.setTipo(tipo);
-		itDto.setIdOpSettoreTo(opeId);
-		List<CsAlert> listaAlert = alertService.findAlertVisibiliByIdCasoTipoOpeTo(itDto);
-	    /*TODO: inserisco solo se tutti gli alert sono letti*/
-		boolean tuttiLetti = true; 
-	    //Se ci sono degli alert vecchi li rendo non visibili
-		for(CsAlert al : listaAlert){
-	    	if(al.getLetto()){
-		    	al.setDtMod(new Date());
-		    	al.setVisibile(false);
-		    	
-		    	BaseDTO b = new BaseDTO();
-		    	b.setEnteId(enteId);
-		    	b.setObj(al);
-		    	alertService.updateAlert(b);
-	    	}else tuttiLetti = false;
-	    }
-	    
-	    inserisco = tuttiLetti;
-	    return inserisco;
+		BaseDTO dto = new BaseDTO();
+		dto.setEnteId(enteId);
+		dto.setObj(tipo);
+		dto.setObj2(casoId);
+		dto.setObj3(opeId);
+		
+		return alertService.validaInserimentoNuovoAlert(dto);
 	}
 	
 	private void addAlert(String tipo, CsACaso caso, String oggetto, String descrizione, String url, 

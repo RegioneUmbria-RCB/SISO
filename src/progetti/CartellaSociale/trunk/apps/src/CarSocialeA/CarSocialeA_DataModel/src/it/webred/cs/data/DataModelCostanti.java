@@ -3,6 +3,7 @@ package it.webred.cs.data;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -10,12 +11,19 @@ public class DataModelCostanti {
 
 	public static final String NOME_APPLICAZIONE = "CarSociale";
 	public static final Date END_DATE = new GregorianCalendar(9999, 11, 31).getTime();
+	public static final Date START_DATE = new GregorianCalendar(0001, 01, 01).getTime();
 	public static final String END_DATE_STRING = "31/12/9999";
 	public static final int INTESTATARIO_SCHEDA_REL_ID = 999;
 	public static final String CITTADINANZA_ITA = "ITALIANA";
+	public static final String STATO_ITA = "ITALIA";
 	public static final String SENZA_FISSA_DIMORA= "Senza fissa dimora";
 	public static final String ORG_CONFIGURAZIONE = "ORG AMMINISTRATORI CARTELLA";
 	public static final String SEGNALATO_CF_ANONIMO = "ANONIMO";
+	public static final int MAX_PARAMS_QUERY_IN_CLAUSE = 990;
+	public static final String patternFSE = "FSE: ";
+	public static Pattern patternNumTelFisso = Pattern.compile("(0{1}[1-9]{1,3})[\\s]?(\\d{4,})");
+	public static Pattern patternNumTelMobile = Pattern.compile("(\\d{1,3})[\\s]?(\\d{4,})");
+
 	
 	public static class Segnalibri implements Serializable {
 
@@ -40,6 +48,50 @@ public class DataModelCostanti {
 		public static final String ITERSTEP_DATA_CREAZIONE = ":ITERSTEP_DATA_CREAZIONE";
 		public static final String SETTORE_TO = ":SETTORE_TO";
 	}
+	
+	public static class TipoPOR
+	{
+		public static final long PRESA_IN_CARICO = 1l;
+		public static final long SCHEDA_ACCESSO = 2l;
+		
+	}
+	
+	public static class GrVulnerabile{
+		public static final String ALTRO = "07";
+		public static final String VITTIMA_VIOLENZA = "13";
+		public static final String NON_COMUNICA_VULNERABILITA = "00";
+		
+		public static final String[] stampaAltro = {"01","02","03","04","14","17","18","19","20"};
+		public static final String[] stampaVittimaViolenza = {"13","15","16"};
+		
+	}
+	
+	public static class CampiFse
+	{
+		 public static final String AZIENDA_RAGIONE_SOCIALE="AZIENDA_RAGIONE_SOCIALE";
+		 public static final String AZIENDA_PI="AZIENDA_PI";                     
+		 public static final String AZIENDA_CF="AZIENDA_CF";            
+		 public static final String AZIENDA_VIA="AZIENDA_VIA";                        
+		 public static final String AZIENDA_COMUNE="AZIENDA_COMUNE";      
+		 public static final String AZIENDA_COD_ATECO="AZIENDA_COD_ATECO";      
+		 public static final String AZIENDA_FORMA_GIURIDICA="AZIENDA_FORMA_GIURIDICA";       
+		 public static final String AZIENDA_DIMENSIONE="AZIENDA_DIMENSIONE";  
+		 
+		 public static final String LAVORO_TIPO="LAVORO_TIPO";  
+		 public static final String LAVORO_ORARIO="LAVORO_ORARIO";  
+		 
+		 public static final String ANNO_TITOLO_STUDIO="ANNO_TITOLO_STUDIO";  
+		 
+		 public static final String INATTIVO_ALTRO_CORSO="INATTIVO_ALTRO_CORSO";  
+		 public static final String DURATA_RICERCA_LAVORO="DURATA_RICERCA_LAVORO";  
+		 
+		 public static final String PAG_IBAN="PAG_IBAN";   
+		 public static final String PAG_RES_DOM="PAG_RES_DOM";  
+		 
+		 public static final String DATA_SOTTOSCRIZIONE = "DATA_SOTTOSCRIZIONE";
+		 public static final String SOGGETTO_ATTUATORE  = "SOGGETTO_ATTUATORE";
+	}
+	
 	public static class TipoStatoErogazione
 	{
 		public static final String PRELIMINARE = "P";
@@ -63,6 +115,9 @@ public class DataModelCostanti {
 		public static final String NUCLEO="NUCLEO";
 		public static final String GRUPPO="GRUPPO";
 	}
+	public static class TipoProgetto{
+		public static final String FSE = "FSE";
+	}
 	
 	public static class IterStatoInfo
 	{
@@ -75,6 +130,15 @@ public class DataModelCostanti {
 		public static final Long RIAPERTO = 6L;
 
 		public static final Long DEFAULT_ITER_STEP_ID = APERTO;
+	}
+	
+	public static class TipoIsee{
+		public static final Long ORDINARIO = 1L;
+		public static final Long UNIVERSITARIO = 2L;
+		public static final Long SOCIOSAN = 3L;
+		public static final Long SOCIOSANRES = 4L;
+		public static final Long MINORENNI = 5L;
+		public static final Long CORRENTE = 6L;
 	}
 	
 	public static class TipoParamSchedaMultidime
@@ -208,6 +272,7 @@ public class DataModelCostanti {
 		public static final String VISUALIZZAZIONE_CASI_ORG = "Visualizza Tutti i Casi della mia Organizzazione";
 		public static final String VISUALIZZAZIONE_CARICO_LAVORO = "Visualizza Carico di Lavoro";
 		public static final String VISUALIZZAZIONE_LISTA_RDC = "Visualizza Reddito di Cittadinanza";
+		public static final String VISUALIZZAZIONE_LISTA_FSE = "Visualizza elenco FSE";
 		
 		public static final String ACCESSO_ESTERNO_DATI_CARTELLA = "Accesso esterno ai dati della cartella";
 	}
@@ -288,6 +353,7 @@ public class DataModelCostanti {
 		// per ora mettiamo solo quelli effettivamente utilizzati dall'applicazione
 		public static final Long FAMIGLIA_MINORI_ID = new Long(1);
 		public static final Long DISABILI_ID = new Long(2);
+		public static final Long ADULTI_ID = new Long(3);
 		public static final Long ANZIANI_ID = new Long(4);
 	}
 	
@@ -322,6 +388,7 @@ public class DataModelCostanti {
 		public static final String CERCA_PRIMA_OCCUPAZIONE = "1";
 		public static final String OCCUPATO = "2";
 		public static final String DISOCCUPATO = "3";
+		public static final String STUDENTE = "4";
 		public static final String INATTIVO = "5";
 	}
 	
@@ -356,6 +423,11 @@ public class DataModelCostanti {
 	public static class SchedaSegr implements Serializable {
 		private static final long serialVersionUID = 1L;
 		
+		public static final String PROVENIENZA_SS = "SS";
+		public static final String PROVENIENZA_SERENA = "SERENA";
+		
+		public static final String TIPO_PROPOSTA_PRESA_IN_CARICO = "Proposta di presa in carico";
+		
 		public static final String STATO_INS = "I";
 		public static final String STATO_MOD = "M";
 		
@@ -378,6 +450,50 @@ public class DataModelCostanti {
 	        String codice;
 			
 	        private STATO(String descrizione, String codice) {
+				this.descrizione = descrizione;
+				this.codice = codice;
+			}
+
+			public String getDescrizione() {return descrizione;}
+			public void setDescrizione(String descrizione) {this.descrizione = descrizione;}
+			public String getCodice() {return codice;}
+			public void setCodice(String codice) {this.codice = codice;}
+		}
+		
+		
+	}
+	
+	public static class EsportazioneSIUSS implements Serializable {
+		private static final long serialVersionUID = 1L;
+		
+		public static enum STATO{
+			TUTTO("Tutto", "a"),
+			ESPORTATE("Esportata", "e"),
+			DA_ESPORTARE("Da Esportare", "ne");
+			
+			String descrizione;
+	        String codice;
+			
+	        private STATO(String descrizione, String codice) {
+				this.descrizione = descrizione;
+				this.codice = codice;
+			}
+
+			public String getDescrizione() {return descrizione;}
+			public void setDescrizione(String descrizione) {this.descrizione = descrizione;}
+			public String getCodice() {return codice;}
+			public void setCodice(String codice) {this.codice = codice;}
+		}
+		
+		public static enum FREQUENZA{
+			REGOLARE("Regolare", "REGOLARE"),
+			IRREGOLARE("Irregolare", "IRREGOLARE"),
+			UNA_TANTUM("Una tantum", "UNATANTUM");
+			
+			String descrizione;
+	        String codice;
+			
+	        private FREQUENZA(String descrizione, String codice) {
 				this.descrizione = descrizione;
 				this.codice = codice;
 			}
@@ -524,6 +640,10 @@ public class DataModelCostanti {
 	//FINE SISO-538
 	
 	public static class Pai{
+		
+		public static final int RAGGIUNTI_NO = 1;
+		public static final int RAGGIUNTI_PARZIALMENTE = 2;
+		public static final int RAGGIUNTI_SI = 3;
 		
 		public enum PERIODO_TEMPORALE {
 			GIORNI("Giorni", "Giorni"),
@@ -703,6 +823,25 @@ public class DataModelCostanti {
 			public static final String ISTITUZIONALE = "Istituzionale";
 			public static final String ALTRO_SOGGETTO = "Altro soggetto"; 
 		}		
+		
+		public enum ModalitaAccesso {
+			PERSONA("Di Persona"),
+			EMAIL("e-mail"),
+			DOMICILIO("Rilevato a domicilio"),
+			SEGN_SCRITTA("Segnalazione scritta"),
+			SEGN_TELEFONIVA("Segnalazione telefonica"),
+			ALTRA_DISTANZA("Altra modalità a distanza");
+			
+			String descrizione;
+			
+	        private ModalitaAccesso(String descrizione) {
+				this.descrizione = descrizione;
+			}
+
+			public String getDescrizione() {return descrizione;}
+			public void setDescrizione(String descrizione) {this.descrizione = descrizione;}
+		}
+		
 	}
 	
 	//FINE SISO-346
@@ -727,6 +866,11 @@ public class DataModelCostanti {
 		public static final int DIARIO_FOTO = 130;
 	}
 	
+	public static class TipoVisibilitaDocumento implements Serializable {
+		public static final boolean PRIVATO = true;
+		public static final boolean PUBBLICO = false;
+	}
+	
 	public static class TipoDatoMobile implements Serializable {
 		public static final String MOBILE_DIARIO = "DIARIO";
 		public static final String MOBILE_SCANNER = "SCANNER";
@@ -742,13 +886,23 @@ public class DataModelCostanti {
 	}
 	public static class FiltroCasi implements Serializable{
 		public static String STATO="filtroCasi_STATO";
+		public static String STATO_OPERATORE = "filtroCasi_STATO_OPERATORE";
 		public static String OPERATORE="filtroCasi_OPERATORE";
 		public static String TIPO_OPERATORE="filtroCasi_TIPO_OPERATORE";
 		public static String STUDIO="filtroCasi_STUDIO";
 		public static String LAVORO="filtroCasi_LAVORO";
 		public static String TUTELA="filtroCasi_TUTELA";
 		public static String TRIBUNALE="filtroCasi_TRIBUNALE";
-		public static String RESIDENZA = "filtroCasi_RESIDENZA";
+		public static String RESIDENZA_COMUNE = "filtroCasi_RESIDENZA_COMUNE";
+		public static String RESIDENZA_NAZIONE = "filtroCasi_RESIDENZA_NAZIONE";
+		public static String RESIDENZA_TIPO = "filtroCasi_RESIDENZA_TIPO";
+	}
+	
+	public static class FiltroFse implements Serializable{
+		public static String TIPO="filtroFse_TIPO";
+		public static String DATA_DA = "filtroFse_DATA_DA";
+		public static String DATA_A="filtroFse_DATA_A";
+		public static String RESIDENZA_COMUNE = "filtroFse_RESIDENZA_COMUNE";
 	}
 	
 	public static class GestioneTipoFamiglia implements Serializable{
@@ -839,6 +993,14 @@ public class DataModelCostanti {
 		public static String WS_ATLANTE_USR = "smartwelfare.atlantews.username";
 		public static String WS_ATLANTE_PWD = "smartwelfare.atlantews.password";
 		
+		
+		public static String WS_ISEE_URL = "smartwelfare.isee.ws.url";
+		public static String WS_ISEE_USERNAME = "smartwelfare.isee.ws.username";
+		public static String WS_ISEE_UFFICIO = "smartwelfare.isee.ws.codiceUfficio";
+		public static String WS_ISEE_ENTE = "smartwelfare.isee.ws.codiceEnte";
+		public static String WS_ISEE_ABILITA = "smartwelfare.isee.ws.abilita";
+		
+		
 		public static String REQUIRED_FONTE_FINANZIAMENTO = "smartwelfare.obbligatorio.fonteFinanziamento";
 
 		public static String suffix_NIS = "NIS";
@@ -852,6 +1014,16 @@ public class DataModelCostanti {
 	
 		public static String RILEVAZIONE_PRESENZE_ABILITA = "smartwelfare.rilevazionepresenze.abilita";//#ROMACAPITALE
 		public static String MAX_VARIAZIONI_ANAGRAFICHE = "smartwelfare.timertask.maxVariazioniAnagrafiche";
+
+		public static String RDC_ABILITA = "smartwelfare.rdc.abilita";
+		
+		public static String POR_UDC_ABILITA = "smartwelfare.por.udc.abilita";
+		public static String POR_CS_ABILITA = "smartwelfare.por.cs.datiSociali.abilita";
+		public static String POR_MODELLO_STAMPA = "smartwelfare.stampa.por012019.nome";
+		public static String POR_RESIDENZA_DOMICILIO_REGIONE = "smartwelfare.resi.domi.por.regione";
+		public static String GESTIONE_CAPOFILA_PIC = "smartwelfare.udc.gestionePicCapofila.abilita";
+		public static String DOC_INDIVIDUALI_PROTOCOLLO_VIS = "smartwelfare.docIndividuali.colonnaProtocollo.visibile";
+		
 	/*	public static String KEY_AUTHENTICATION = "smartwelfare.umbria.api.authentication";
 		public static String KEY_URL_TOKEN = "smartwelfare.umbria.api.token.url";
 		public static String KEY_URL_SSOCIALI = "smartwelfare.umbria.api.serviziSociali.url";
@@ -929,6 +1101,52 @@ public class DataModelCostanti {
 		public static final int UDC_INVIO_A_ORGANIZZAZIONE_ESTERNA	 = 176;
 		public static final int UDC_INVIO_ALTRO_UFFICIO	 	 = 177;
 		
+		
+	}
+	
+	public static class PermessiProgettiIndividuali{
+		public static final String ITEM = "CarSociale";
+		public static final String ABILITA="Visualizza Lista PAI";
+	}
+	
+	public static class TipoFunzioneStruttura{
+		public static final long VILLAGGIO = 1;
+		public static final long STRUTTURE_MINORI = 2;
+	}
+	
+	public static class TipoSecondoLivello{
+		public static final String MINORI = "Equipe Minori";
+	}
+	
+	public static class StatiRichiesta {
+		public enum STATO_RICHIESTA {
+			INVIATA("INVIATA","Inviata"),
+			ACCETTATA_STRUTTURA("ACCETTATA_STRUTTURA","Accettata"),
+			ACCETTATA("ACCETTATA","Accettata da Ente"),
+			RIFIUTATA_STRUTTURA("RIFIUTATA_STRUTTURA","Rifiutata"),
+			RIFIUTATA("RIFIUTATA","Rifiutata da Ente");
+			
+			private String codice;
+			private String descrizione;
+			private STATO_RICHIESTA(String codice, String descrizione) {
+				this.codice = codice;
+				this.descrizione = descrizione;
+			}
+			public String getCodice() {
+				return codice;
+			}
+			public void setCodice(String codice) {
+				this.codice = codice;
+			}
+			public String getDescrizione() {
+				return descrizione;
+			}
+			public void setDescrizione(String descrizione) {
+				this.descrizione = descrizione;
+			}
+						
+			
+		}
 		
 	}
 }

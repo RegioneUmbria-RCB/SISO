@@ -38,7 +38,7 @@ public class CsFlgIntervento implements ICsDDiarioChild {
 	private String flagAttSospC;
 
 	@Column(name="FLAG_RESPINTO")
-	private BigDecimal flagRespinto;
+	private Boolean flagRespinto;
 
 	@Column(name="MOTIVO_RESPINTO")
 	private String motivoRespinto;
@@ -108,11 +108,11 @@ public class CsFlgIntervento implements ICsDDiarioChild {
 		this.flagAttSospC = flagAttSospC;
 	}
 
-	public BigDecimal getFlagRespinto() {
-		return this.flagRespinto;
+	public Boolean getFlagRespinto() {
+		return flagRespinto;
 	}
 
-	public void setFlagRespinto(BigDecimal flagRespinto) {
+	public void setFlagRespinto(Boolean flagRespinto) {
 		this.flagRespinto = flagRespinto;
 	}
 

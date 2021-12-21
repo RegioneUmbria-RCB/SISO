@@ -6,7 +6,9 @@ import it.webred.cs.data.model.CsACasoAccessoFascicolo;
 import it.webred.cs.data.model.CsACasoOpeTipoOpe;
 import it.webred.cs.data.model.CsACasoOpeTipoOpe2;
 import it.webred.cs.data.model.CsOOperatoreBASIC;
+import it.webred.cs.data.model.CsOOperatoreSettore;
 import it.webred.cs.data.model.CsOOperatoreTipoOperatore;
+import it.webred.cs.data.model.CsOSettore;
 import it.webred.cs.data.model.view.VSsSchedeUdcDiff;
 
 import java.io.Serializable;
@@ -69,6 +71,19 @@ public class CasoDAO extends CarSocialeBaseDAO implements Serializable {
 		return null;
 		
 	}
+	
+	public CsOOperatoreSettore findOpSettoreResponsabileCaso(long idCaso) {
+		
+		Query q = em.createNamedQuery("CsACasoOpeTipoOpe.findOpSettoreResponsabileByCaso");
+		q.setParameter("casoId", idCaso);
+		List<CsOOperatoreSettore> list = (List<CsOOperatoreSettore>) q.getResultList();
+		if(!list.isEmpty())
+			return list.get(0);
+		return null;
+		
+	}
+	
+	
 	
 	public CsOOperatoreBASIC findResponsabileBASIC(Long idCaso) {
 		if(idCaso!=null){
@@ -144,7 +159,7 @@ public class CasoDAO extends CarSocialeBaseDAO implements Serializable {
 	}
 	
 
-	public List<CsACasoAccessoFascicolo>getListaAccessoFascicoloByCasoId(Object obj){
+	public List<CsACasoAccessoFascicolo> getListaAccessoFascicoloByCasoId(Object obj){
 		Query q = em.createNamedQuery("CsACasoAccessoFascicolo.findByCasoId");
 		q.setParameter("casoId", obj);
 		return q.getResultList();
@@ -210,9 +225,11 @@ public class CasoDAO extends CarSocialeBaseDAO implements Serializable {
 	}
 
 	public Integer countDatiStorici(Integer tipoDiario, Long casoId) {
-		String sql = "select count(*) from cs_d_diario where tipo_diario_id="+tipoDiario+" and caso_id="+casoId;
+		String sql = "select count(*) from cs_d_diario where tipo_diario_id= :tipoDiarioId and caso_id= :casoId";
 		logger.debug("countDatiStorici SQL["+sql+"]");
 		Query q = em.createNativeQuery(sql);
+		q.setParameter("tipoDiarioId", tipoDiario);
+		q.setParameter("casoId", casoId);
 		BigDecimal count = (BigDecimal)q.getSingleResult();
 		return count.intValue();
 	}

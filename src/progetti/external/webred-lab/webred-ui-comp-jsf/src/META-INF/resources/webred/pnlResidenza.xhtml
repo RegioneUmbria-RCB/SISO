@@ -17,7 +17,7 @@
 			<composite:attribute name="panelStyleClass"/>
 			<composite:attribute name="codiceFiscale"/>
 			<composite:attribute name="disableModifica" default="false"/>
-			<composite:attribute name="attivaSalvataggio" default="true" />
+			<composite:attribute name="attivaSalvataggio" type="java.lang.Boolean" required="false" default="true"/>
 		</composite:interface>
 		<composite:implementation>
 			<style type="text/css">
@@ -31,12 +31,15 @@
 				<h:panelGrid border="0" columns="7">
 				
 					<h:panelGroup id="pnlIndirizzoAttivo">
-					   	<h:outputText  id="lblAttivo" value="#{cc.attrs.residenzaManBean.indirizzoResidenzaAttivoLabel}" rendered="#{!empty cc.attrs.residenzaManBean.indirizzoResidenzaAttivoLabel}" />
-						<h:outputText value="#{cc.attrs.residenzaManBean.textIfActiveEmpty}" rendered="#{cc.attrs.residenzaManBean.indirizzoResidenzaAttivo == null}"/>
+					   	<h:outputText  id="lblAttivo" value="#{cc.attrs.residenzaManBean.indirizzoResidenzaAttivoLabel}" 
+					   				   rendered="#{!empty cc.attrs.residenzaManBean.indirizzoResidenzaAttivoLabel}" />
+						<h:outputText value="#{cc.attrs.residenzaManBean.textIfActiveEmpty}" 
+									  rendered="#{cc.attrs.residenzaManBean.indirizzoResidenzaAttivo == null}"/>
 					</h:panelGroup>
 					<p:spacer width="10"/>
-					
-					<p:commandButton process="@this" value="#{cc.attrs.attivaSalvataggio ? 'Gestisci' : 'Visualizza'}" icon="gestione_icon" title="#{cc.attrs.residenzaManBean.buttonTooltip}"
+		
+					<p:commandButton process="@this" value="#{cc.attrs.attivaSalvataggio ? 'Gestisci' : 'Visualizza'}" icon="gestione_icon" 
+						title="#{cc.attrs.residenzaManBean.buttonTooltip}"
 						update="pnlGestionendirizzi, tblGestionendirizzi" disabled="#{cc.attrs.disableModifica}" 
 						oncomplete="PF('#{cc.attrs.residenzaManBean.widgetVar}').show()" >
 						<f:setPropertyActionListener value="#{cc.attrs.codiceFiscale}" target="#{cc.attrs.residenzaManBean.codiceFiscale}"/>
@@ -57,9 +60,9 @@
 				</h:panelGroup>
 			
 				<h:panelGroup id="pnlGestionendirizzi">
-				<webred:modalIndirizzi id="gestioneIndirizzi" residenzaManBean="#{cc.attrs.residenzaManBean}" 
-					pnlToUpdate="#{p:component('pnlIndirizzoAttivo')}" panelStyleClass="#{cc.attrs.panelStyleClass}"
-					attivaSalvataggio="#{cc.attrs.attivaSalvataggio}"/>
+					<webred:modalIndirizzi id="gestioneIndirizzi" residenzaManBean="#{cc.attrs.residenzaManBean}" 
+						pnlToUpdate="#{p:component('pnlIndirizzoAttivo')}" panelStyleClass="#{cc.attrs.panelStyleClass}"
+						attivaSalvataggio="#{cc.attrs.attivaSalvataggio}"/>
 				</h:panelGroup>
 		</composite:implementation>
 	</h:body>

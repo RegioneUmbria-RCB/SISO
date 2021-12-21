@@ -3,7 +3,6 @@
 	<name>RilevazionePresenze_EJB</name>
 	<comment></comment>
 	<projects>
-		<project>CarSocialeA_EJBClient</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

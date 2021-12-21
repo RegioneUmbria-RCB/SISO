@@ -26,4 +26,8 @@ public interface IFormazioneLavoro {
 	public void onChangeProfessione();
 
 	public boolean validaData();
+
+	public String getTitoloStudioIstat();
+
+	public String getTitoloStudio();
 }

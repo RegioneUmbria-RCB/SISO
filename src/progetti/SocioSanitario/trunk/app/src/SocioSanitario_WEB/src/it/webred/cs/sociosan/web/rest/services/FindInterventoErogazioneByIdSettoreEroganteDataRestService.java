@@ -49,8 +49,7 @@ public class FindInterventoErogazioneByIdSettoreEroganteDataRestService extends 
 	    	try {
 				String	json = objectMapper.writeValueAsString(resp);
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				logger.error(e.getMessage(), e);
 			}
 			
 			

@@ -15,7 +15,7 @@
 		<composite:attribute name="residenzaManBean" type="it.webred.jsf.interfaces.IResidenza" />
 		<composite:attribute name="pnlToUpdate" />
 		<composite:attribute name="panelStyleClass" />
-		<composite:attribute name="attivaSalvataggio" default="true" />
+		<composite:attribute name="attivaSalvataggio" type="java.lang.Boolean" required="false" default="true"/>
 	</composite:interface>
 	<composite:implementation>
 		<p:dialog id="dlgModalIndirizzi" dynamic="true" 
@@ -26,24 +26,19 @@
 			<h:panelGroup id="pnlModalIndirizzi">
 				<h:panelGrid columns="2" rendered="#{cc.attrs.attivaSalvataggio}">
 					<h:outputText value="Tipo Indirizzo *:" />
-
 					<p:selectOneMenu id="tipoIndirizzo" value="#{cc.attrs.residenzaManBean.tipoIndirizzo}">
-						<f:selectItems value="#{cc.attrs.residenzaManBean.lstTipiIndirizzo}" var="tipoIndirizzo" itemLabel="#{tipoIndirizzo.descrizione}"
-							itemValue="#{tipoIndirizzo}" />
-						<p:ajax event="change" process="@this" update="pnlResidenzaAnagrafe" />
+						<f:selectItem noSelectionOption="true" itemLabel="- seleziona -"/>
+						<f:selectItems value="#{cc.attrs.residenzaManBean.lstTipiIndirizzo}" />
+						<p:ajax event="change" process="@this" listener="#{cc.attrs.residenzaManBean.trovaResidenza}" update="pnlResidenzaAnagrafe"  />
 					</p:selectOneMenu>
 
 					<h:outputText value="Comune:" />
-
 					<p:selectOneButton id="tipoComune" value="#{cc.attrs.residenzaManBean.tipoComune}">
-						<f:selectItem itemLabel="#{cc.attrs.residenzaManBean.enteLabel}" itemValue="#{cc.attrs.residenzaManBean.enteValue}" />
-						<f:selectItem itemLabel="Senza fissa dimora" itemValue="#{cc.attrs.residenzaManBean.senzaFissaDimoraValue}" />
-						<f:selectItem itemLabel="Altro" itemValue="#{cc.attrs.residenzaManBean.altroValue}" />
-
-						<p:ajax event="change" process="@this" update="pnlResidenzaAnagrafe, pnlResidenzaComune, pnlResidenzaNoComune, pnlSenzaFissaDimora" />
+						<f:selectItems value="#{cc.attrs.residenzaManBean.listaTipoLuogoResidenza}"/>
+						<p:ajax event="change" process="@this" listener="#{cc.attrs.residenzaManBean.trovaResidenza}"
+								update="pnlResidenzaAnagrafe, pnlResidenzaComune, pnlResidenzaNoComune, pnlSenzaFissaDimora" />
 					</p:selectOneButton>
 				</h:panelGrid>
-
 			</h:panelGroup>
 			<p:spacer height="5px;" width="100%" />
 			<p:outputPanel id="pnlResidenzaAnagrafe">
@@ -58,30 +53,23 @@
 								<h:outputText value="Residenza da Anagrafe:" />
 							</td>
 							<td>
-								<p:outputPanel
-									rendered="#{cc.attrs.residenzaManBean.indirizzoAnagrafe != null and cc.attrs.residenzaManBean.indirizzoAnagrafe.csAAnaIndirizzo.codiceVia != null}">
-									<h:outputText
-										value="#{cc.attrs.residenzaManBean.indirizzoAnagrafe.csAAnaIndirizzo.labelIndirizzo}" />
+								<p:outputPanel rendered="#{cc.attrs.residenzaManBean.indirizzoResidenzaTrovato}">
+									<h:outputText value="#{cc.attrs.residenzaManBean.indirizzoAnagrafe.csAAnaIndirizzo.labelIndirizzo}" />
 									<p:spacer width="20px;" />
 									<p:commandButton value="Accetta" process="@this">
 										<p:ajax update="pnlTableIndirizzi" listener="#{cc.attrs.residenzaManBean.accettaIndirizzoAnagrafe}" />
 									</p:commandButton>
 								</p:outputPanel>
-								<p:outputPanel
-									rendered="#{cc.attrs.residenzaManBean.indirizzoAnagrafe == null || cc.attrs.residenzaManBean.indirizzoAnagrafe.csAAnaIndirizzo.codiceVia == null}">
-									<h:outputText value="NESSUN INDIRIZZO DI RESIDENZA TROVATO IN ANAGRAFE" />
-								</p:outputPanel>
+								<h:outputText value="NESSUN INDIRIZZO DI RESIDENZA TROVATO IN ANAGRAFE" rendered="#{!cc.attrs.residenzaManBean.indirizzoResidenzaTrovato}"/>
 							</td>
 						</tr>
 						<tr>
 							<td style="width: 150px;">
-								<h:outputText value="Dalla data:"
-									rendered="#{cc.attrs.residenzaManBean.indirizzoAnagrafe.csAAnaIndirizzo.codiceVia != null and cc.attrs.residenzaManBean.indirizzoAnagrafe.csAAnaIndirizzo.codiceVia != ''}" />
+								<h:outputText value="Dalla data:" rendered="#{cc.attrs.residenzaManBean.codViaResidenzaTrovata}" />
 							</td>
 							<td>
-								<h:outputText
-									rendered="#{cc.attrs.residenzaManBean.indirizzoAnagrafe.csAAnaIndirizzo.codiceVia != null and cc.attrs.residenzaManBean.indirizzoAnagrafe.csAAnaIndirizzo.codiceVia != ''}"
-									value="#{cc.attrs.residenzaManBean.indirizzoAnagrafe.dataInizioApp}">
+								<h:outputText value="#{cc.attrs.residenzaManBean.indirizzoAnagrafe.dataInizioApp}"
+									rendered="#{cc.attrs.residenzaManBean.codViaResidenzaTrovata}">
 									<f:convertDateTime pattern="dd/MM/yyyy" locale="it_IT" timeZone="GMT+1" />
 								</h:outputText>
 							</td>
@@ -89,7 +77,7 @@
 					</table>
 				</p:outputPanel>
 			</p:outputPanel>
-			<h:panelGroup rendered="#{cc.attrs.residenzaManBean.codiceFiscale == null || cc.attrs.residenzaManBean.codiceFiscale == ''}">
+			<h:panelGroup rendered="#{!cc.attrs.residenzaManBean.codFiscaleValido}">
 				<table border="0">
 					<tr>
 						<td>
@@ -229,7 +217,7 @@
 					<f:facet name="header">
 						<p:outputLabel value="#{cc.attrs.residenzaManBean.panelHeader}" />
 					</f:facet>
-
+					
 					<p:column headerText="Tipo indirizzo">
 						<h:outputText value="#{indirizzo.csTbTipoIndirizzo.descrizione == null ? '-' : indirizzo.csTbTipoIndirizzo.descrizione}" />
 					</p:column>
@@ -243,10 +231,10 @@
 						<h:outputText value="#{indirizzo.csAAnaIndirizzo.civicoFromNumeroAltro}" />
 					</p:column>
 					<p:column headerText="Comune">
-						<h:outputText value="#{indirizzo.csAAnaIndirizzo.comDes == null ? '-' : indirizzo.csAAnaIndirizzo.comDes}" />
+						<h:outputText value="#{indirizzo.csAAnaIndirizzo.labelComune}" />
 					</p:column>
 					<p:column headerText="Stato">
-						<h:outputText value="#{indirizzo.csAAnaIndirizzo.statoDes == null ? '-' : indirizzo.csAAnaIndirizzo.statoDes}" />
+						<h:outputText value="#{indirizzo.csAAnaIndirizzo.labelStato}" />
 					</p:column>
 					<p:column headerText="Dalla data">
 						<h:outputText value="#{indirizzo.dataInizioApp}">
@@ -262,29 +250,28 @@
 							rendered="#{indirizzo.dataFineApp == null or indirizzo.dataFineApp.time == cc.attrs.residenzaManBean.nullDateTime}" />
 					</p:column>
 					<p:column>
-						<p:commandButton value="Annulla" process="@this" onclick="confermaAnnulla.show()"
+						<p:commandButton value="Disattiva" process="@this" onclick="confermaAnnulla.show()"
 							rendered="#{indirizzo.dataFineApp == null or indirizzo.dataFineApp.time == cc.attrs.residenzaManBean.nullDateTime}" disabled="#{!cc.attrs.attivaSalvataggio}">
 							<f:setPropertyActionListener value="#{indirizzo}" target="#{cc.attrs.residenzaManBean.indirizzoSelezionato}" />
 						</p:commandButton>
-
-
+						
 						<p:commandButton value="Attiva" process="@this" onclick="confermaAttiva.show()"
 							rendered="#{indirizzo.dataFineApp != null and indirizzo.dataFineApp.time != cc.attrs.residenzaManBean.nullDateTime}" disabled="#{!cc.attrs.attivaSalvataggio}">
 							<f:setPropertyActionListener value="#{indirizzo}" target="#{cc.attrs.residenzaManBean.indirizzoSelezionato}" />
 						</p:commandButton>
 
-						<p:commandButton value="Elimina" process="@this" onclick="confermaElimina.show()" disabled="#{!cc.attrs.attivaSalvataggio}">
+						<p:commandButton title="Elimina" icon="ui-icon-trash" process="@this" onclick="confermaElimina.show()" disabled="#{!cc.attrs.attivaSalvataggio}">
 							<f:setPropertyActionListener value="#{indirizzo}" target="#{cc.attrs.residenzaManBean.indirizzoSelezionato}" />
 						</p:commandButton>
 					</p:column>
 				</p:dataTable>
 
-				<p:dialog header="Annulla indirizzo" widgetVar="confermaAnnulla" appendToBody="pnlModalIndirizzi" closable="false" resizable="false">
+				<p:dialog header="Disattiva indirizzo" widgetVar="confermaAnnulla" appendToBody="pnlModalIndirizzi" closable="false" resizable="false">
 					<p:outputPanel id="pnlAnnullaInd">
 						<table border="0">
 							<tr>
 								<td style="text-align: center;">
-									<p:outputLabel value="Procedere all'annullamento dell'indirizzo?" />
+									<p:outputLabel value="Procedere alla disattivazione dell'indirizzo?" />
 								</td>
 							</tr>
 							<tr><td><p:spacer height="10" /></td></tr>

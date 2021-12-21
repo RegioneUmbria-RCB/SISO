@@ -5,7 +5,6 @@ import it.webred.cet.permission.CeTUser;
 import it.webred.cs.data.model.CsOOrganizzazione;
 import it.webred.cs.jsf.manbean.superc.CsUiCompBaseBean;
 import it.webred.ct.config.model.AmComune;
-import it.webred.ct.config.model.AmTabComuni;
 import it.webred.ct.config.parameters.comune.ComuneService;
 import it.webred.ejb.utility.ClientUtility;
 import it.webred.ss.ejb.client.SsSchedaSessionBeanRemote;
@@ -55,7 +54,7 @@ public class UserBean extends SegretariatoSocBaseBean{
 		if("true".equals(retry)){
 			Map params = getRequest().getParameterMap();
 			params.remove("retry");
-			addError("login.denied", "Ricorda che la password e' sensibile alle maiuscole e minuscole");
+			addError("login.denied", "Credenziali non valide");
 		}
 		
 		if (getRequest().getUserPrincipal()==null || getRequest().getUserPrincipal().getName()==null)
@@ -129,7 +128,7 @@ public class UserBean extends SegretariatoSocBaseBean{
 							listaEntiAM.add(gr.getFkAmComune());
 					}
 				}
-					
+				
 				if(!listaEntiAM.isEmpty()){
 			   //Recupero tutti gli enti configurati nella zona sociale
 				List<CsOOrganizzazione> lstEnti = super.getListaEnti();
@@ -137,6 +136,7 @@ public class UserBean extends SegretariatoSocBaseBean{
 					String idLista = o.getCodRouting()+"|"+o.getId();
 					//Verifico che l'utente sia abilitato all'accesso per l'ente
 					if(listaEntiAM.contains(o.getCodRouting())){
+						boolean autorizzatoConfigurazione = CsUiCompBaseBean.checkPermessoSS("segrsoc-funzioniAdmin", o.getCodRouting());
 						
 						//Verifico che abbia almeno un record in SS_PUNTO_CONTATTO, in caso contrario escludo
 						SsSchedaSessionBeanRemote service = this.getSsSchedaService();
@@ -144,7 +144,8 @@ public class UserBean extends SegretariatoSocBaseBean{
 						this.fillUserData(bdto);
 						bdto.setObj(o.getId());
 						//Verifico se per l'organizzazione esistono punti di contatto
-						if(service.esistonoPContatto(bdto)){
+						
+						if(autorizzatoConfigurazione || service.esistonoPContatto(bdto)){
 							SelectItem si = new SelectItem(idLista,o.getNome());
 							this.listaOrganizzazioni.add(si);
 						}else{

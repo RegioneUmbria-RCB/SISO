@@ -20,11 +20,11 @@
 					<h:panelGroup>
 						<p:commandButton value="conferma"
 							process="relazioni_picklist_panel" 
-							action="#{cc.attrs.iPai.setOnUpdateRelazioni(false)}" 
+							action="#{cc.attrs.iPai.confermaCollegaAttivita()}" 
 							update="@([id$=paiTabViewContainer])"  />
 						<p:commandButton value="annulla" process="@this" 
 							update="relazioni_picklist_panel:@parent"
-							action="#{cc.attrs.iPai.setOnUpdateRelazioni(false)}"  />
+							action="#{cc.attrs.iPai.annullaCollegaAttivita()}"  />
 					</h:panelGroup>
 				</f:facet>
 				<p:pickList id="relazioni_picklist" style="width:100%"
@@ -37,35 +37,25 @@
 					showCheckbox="true">
 					<f:facet name="sourceCaption">Disponibili</f:facet>
 					<f:facet name="targetCaption">Collegate al progetto PAI</f:facet>
+					<p:column headerText="ID">
+						<h:outputText value="#{v_relazione.diarioId}"/>
+					</p:column>
 					<p:column headerText="Data" style="width:10%" >					
-						<h:outputText
-							value="#{v_relazione.relazione.csDDiario.dtAmministrativa}">
+						<h:outputText value="#{v_relazione.dtAmministrativa}">
 							<f:convertDateTime type="date" pattern="dd/MM/yyyy" />
 						</h:outputText>
 					</p:column>
+					<p:column headerText="Attività" style="width:30%" >
+						Attività:&sp;<h:outputText value="#{v_relazione.attivita}"/>
+					</p:column>	
 					<p:column headerText="Situazione" style="width:40%">
-						Sit.Ambientale:&sp;
-						<h:outputText 
-							value="#{v_relazione.relazione.situazioneAmb!=null and v_relazione.relazione.situazioneAmb.length()>20 ? v_relazione.relazione.situazioneAmb.substring(0,20).concat('...') : v_relazione.relazione.situazioneAmb}" />
-						<br/>
-						Sit.Parentale:&sp;
-						<h:outputText
-							value="#{v_relazione.relazione.situazioneParentale!=null and v_relazione.relazione.situazioneParentale.length()>20 ? v_relazione.relazione.situazioneParentale.substring(0,20).concat('...') : v_relazione.relazione.situazioneParentale}" />
-						<br/>
-						Sit.Sanitaria:&sp;
-						<h:outputText
-							value="#{v_relazione.relazione.situazioneSanitaria!=null and v_relazione.relazione.situazioneSanitaria.length()>20 ? v_relazione.relazione.situazioneSanitaria.substring(0,20).concat('...'): v_relazione.relazione.situazioneSanitaria}" />
+						Sit.Ambientale:&sp;<h:outputText value="#{v_relazione.situazioneAmbientaleTrunc}" /><br/>
+						Sit.Parentale:&sp;<h:outputText value="#{v_relazione.situazioneParentaleTrunc}" /><br/>
+						Sit.Sanitaria:&sp;<h:outputText value="#{v_relazione.situazioneSanitariaTrunc}" />
 					</p:column>
 					<p:column headerText="Proposta" style="width:20%">
-						prop.:&sp;
-						<h:outputText
-							value="#{v_relazione.relazione.proposta!=null and (v_relazione.relazione.proposta.length()>20) ? v_relazione.relazione.proposta.substring(0,20).concat('...') : v_relazione.relazione.proposta}" />
+						prop.:&sp;<h:outputText value="#{v_relazione.propostaTrunc}" />
 					</p:column>
-					<p:column headerText="Attività" style="width:30%" >
-						Attività.:&sp;
-						<h:outputText
-							value="#{v_relazione.relazione.macroAttivita.descrizione!=null ? v_relazione.relazione.macroAttivita.descrizione : '....' } (#{v_relazione.relazione.microAttivita.descrizione !=null ? v_relazione.relazione.microAttivita.descrizione : '...' })"/>
-					</p:column>					
 				</p:pickList>
 			</p:panelGrid>
 	  	

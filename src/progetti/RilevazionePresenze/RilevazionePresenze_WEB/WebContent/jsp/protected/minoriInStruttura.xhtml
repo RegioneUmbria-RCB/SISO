@@ -1,0 +1,485 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite">
+
+<script type="text/javascript">
+    function start() {
+        PF('loadingModal').show();
+    }
+
+    function stop() {
+        PF('loadingModal').hide();
+    }
+</script>
+
+<h:form id="formMinoriInStruttura">
+	<p:outputPanel id="pnlMinoriInStruttura" style="width:100%; ">
+		<p:panel id="panelMinori">
+
+			<h:panelGrid columns="1" cellpadding="0" cellspacing="0"
+				style="vertical-align: left;">
+				<h1>Progetti aperti</h1>
+			</h:panelGrid>
+
+			<p:dataTable id="dtMinoriInStruttura" var="rowMinoreInStruttura"
+				emptyMessage="Nessun elemento presente"
+				value="#{richiesteController.lstMinoriInStruttura}" rows="10"
+				paginator="true"
+				paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="5,10,15"
+				rowKey="#{rowMinoreInStruttura.richDisp.id}" scrollable="false"
+				rowExpandMode="single" sortMode="single"
+				sortBy="#{rowMinoreInStruttura.richDisp.id}" sortOrder="descending">
+
+				<f:facet name="header">
+					<p:outputPanel>
+						<h:outputText value="Cerca in tutti i campi:" />
+						<p:inputText id="globalFilter" style="width:160px"
+							placeholder="inserisci parola chiave" />
+					</p:outputPanel>
+				</f:facet>
+				<p:column headerText="ID Richiesta" width="5">
+					<h:outputText value="#{rowMinoreInStruttura.richDisp.id}">
+					</h:outputText>
+				</p:column>
+
+				<p:column headerText="Nominativo" width="20" styleClass="statoCol">
+					<h:outputText
+						value="#{rowMinoreInStruttura.richDisp.minore.nome}  #{rowMinoreInStruttura.richDisp.minore.cognome} " />
+				</p:column>
+				<p:column headerText="Codice fiscale" width="20"
+					styleClass="statoCol">
+					<h:outputText value="#{rowMinoreInStruttura.richDisp.minore.codiceFiscale}" />
+				</p:column>
+				<p:column headerText="Data Inizio Permanenza" width="10">
+					<h:outputText
+						value="#{rowMinoreInStruttura.richDisp.dataInizioPermanenza}">
+						<f:convertDateTime pattern="dd/MM/yyyy" />
+					</h:outputText>
+				</p:column>
+
+				<p:column headerText="Data Fine Permanenza" width="10">
+					<h:outputText
+						value="#{rowMinoreInStruttura.richDisp.dataFinePermanenza}">
+						<f:convertDateTime pattern="dd/MM/yyyy" />
+					</h:outputText>
+				</p:column>
+				<p:column headerText="Comune provenienza richiesta" width="20">
+					<h:outputText
+						value="#{richiesteController.retrieveComuneProvenienza(rowMinoreInStruttura.richDisp.codRouting)}">
+						<f:convertDateTime pattern="dd/MM/yyyy" />
+					</h:outputText>
+				</p:column>
+				<p:column headerText="Stato" width="10">
+					<h:outputText
+						value="#{rowMinoreInStruttura.richDisp.statoRichiestaAccettata}">
+						
+					</h:outputText>
+						
+				</p:column>
+				<p:column headerText="Note" width="30">
+					<h:outputText style="text-decoration: underline" rendered="#{rowMinoreInStruttura.richDisp.documento == null}"
+						value="#{rowMinoreInStruttura.richDisp.note}" />
+
+				</p:column> 
+				<p:column headerText="Azioni" width="50">
+					<p:commandButton value="PAI"  id="cmdPai" update="tabMinori:formMinoriInStruttura:caricaPAIDialog"
+						action="#{richiesteController.caricaSelectedRichiestaDocumenti()}"
+						oncomplete="PF('caricaPAIdlg').show();" process="@this"> 
+						<f:setPropertyActionListener value="#{rowMinoreInStruttura.richDisp}"
+							target="#{richiesteController.selectedRichiestaMinore}" />
+					</p:commandButton>
+                    <p:commandButton value="PTI" id="cmdPti"
+						action="#{richiesteController.caricaSelectedRichiestaDocumenti()}"  update="tabMinori:formMinoriInStruttura:caricaPTIDialog"
+						oncomplete="PF('caricaDialogPTI').show();" >
+						<f:setPropertyActionListener value="#{rowMinoreInStruttura.richDisp}"
+							target="#{richiesteController.selectedRichiestaMinore}" />
+					</p:commandButton>
+					  <p:commandButton id="cmdDettaglio" value="Dettaglio"
+						oncomplete="PF('caricaDettaglioWDG').show();"  update="tabMinori:formMinoriInStruttura:caricaDettaglio" >
+						<f:setPropertyActionListener value="#{rowMinoreInStruttura.richDisp}"
+							target="#{richiesteController.selectedRichiestaMinore}" /> 
+					</p:commandButton>
+					  <p:commandButton id="cmdConsuntivo" value="Consuntivazione"  action="#{richiesteController.readListConsuntivazione()}"
+						oncomplete="PF('dlgConsuntivoW').show();"    update="tabMinori:formMinoriInStruttura:dlgConsuntivo">
+						<f:setPropertyActionListener value="#{rowMinoreInStruttura}"
+							target="#{richiesteController.minoreStrutturaSelezionato}" /> 
+					</p:commandButton>
+				</p:column>
+			</p:dataTable>
+		</p:panel>
+		<p:dialog id="caricaPAIDialog" dynamic="true" modal="true"  width="1500" height="500"
+			widgetVar="caricaPAIdlg" header="Carica PAI" >
+			<h:panelGrid columns="1" cellpadding="0" cellspacing="0"
+				style="vertical-align: left; font-size: 20px !important"
+				rendered="#{empty richiesteController.listDocumentiPAI}">
+				<h:outputText style="font-weight:bold; color: red"
+					value="#{richiesteController.tempoRimanentePAI(richiesteController.selectedRichiestaMinore)}" />
+				<p:spacer height="10"></p:spacer>
+			</h:panelGrid>
+			<p:dataTable id="dtDocumentiPAI" var="rowDocumento" widgetVar="dtWDocumentiPAI"
+				emptyMessage="Nessun elemento presente" styleClass="allegatoTable"
+				value="#{richiesteController.listDocumentiPAI}" rows="10"
+				paginator="true"
+				paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="5,10,15" rowKey="#{rowDocumento.id}"
+				scrollable="false" rowExpandMode="single" sortMode="single"
+				sortBy="#{rowDocumento.validoDa}" sortOrder="descending">
+				<p:ajax event="rowToggle"
+				listener="#{richiesteController.setSelectedPai(rowDocumento)}" />
+				
+				<f:facet name="header">
+		            Elenco Documenti PAI
+		        </f:facet>
+        
+				<p:column style="width:16px">
+					<p:rowToggler />
+		    	</p:column>
+				<p:column headerText="Valido da" width="10">
+					<h:outputText value="#{rowDocumento.validoDa}">
+					</h:outputText>
+				</p:column>
+				<p:column headerText="Valido a" width="10">
+					<h:outputText value="#{rowDocumento.validoA}">
+					</h:outputText>
+				</p:column>
+				<p:column headerText="Documento" width="30">
+					<p:commandLink immediate="true"
+						actionListener="#{richiesteController.prepareFile(rowDocumento)}"
+						value="#{rowDocumento.nome}" ajax="false"
+						onclick="PrimeFaces.monitorDownload(start, stop)">
+						<p:fileDownload value="#{richiesteController.file}" />
+					</p:commandLink>
+				</p:column>
+				<p:column headerText="Appropriato" width="5">
+					<p:graphicImage rendered="#{rowDocumento.flgAppropriato}"
+						value="/images/check.png" />
+				</p:column>
+				<p:column headerText="Note" width="15">
+					<h:outputText value="#{rowDocumento.note}">
+					</h:outputText>
+				</p:column>
+				<p:rowExpansion id = "rowDatiminimi">
+					<p:outputPanel>
+						<p:dataTable id="panelDatiMinimi" value="#{rowDocumento.arCsPaiInfoSinteticheDTO}"
+							var="rowInfoSintetiche" styleClass="updatePresenteChanged">
+							<f:facet name="header">
+								<h:outputText value="Dati del Minore" />
+							</f:facet>
+							<p:column headerText="Minore Straniero Non Accompagnato"
+								width="20">
+								<p:selectBooleanCheckbox id="flagMsna" 
+								value="#{rowDocumento.arCsPaiInfoSinteticheDTO.msna}">
+									<p:ajax event="change"  process="@this"></p:ajax>
+							</p:selectBooleanCheckbox>
+							</p:column>
+							<p:column headerText="Alfabetizzato" width="20">
+								<p:selectBooleanCheckbox id="flagalfabetizzato" 
+								 value="#{rowDocumento.arCsPaiInfoSinteticheDTO.flagAlfabetizzato}" >
+									<p:ajax event="change"  process="@this"></p:ajax>
+							</p:selectBooleanCheckbox>
+							</p:column>
+							<p:column headerText="Copia PAI fornita" width="20">
+									<p:selectBooleanCheckbox id="flagCopiaFornita" 
+									value="#{rowDocumento.arCsPaiInfoSinteticheDTO.flagCopiaFornita}" >
+									<p:ajax event="change"  process="@this"></p:ajax>
+							</p:selectBooleanCheckbox>
+							</p:column>
+							<p:column headerText="Età accertata" width="20">
+									<p:selectBooleanCheckbox id="flagEtaAccertata" 
+									value="#{rowDocumento.arCsPaiInfoSinteticheDTO.flagEtaAccertata}" >
+									<p:ajax event="change"  process="@this"></p:ajax>
+							</p:selectBooleanCheckbox>
+							</p:column>
+							<p:column headerText="Beneficiario di supporto legale" width="20">
+								<p:selectBooleanCheckbox id="flagSuppLegale" 
+								   value="#{rowDocumento.arCsPaiInfoSinteticheDTO.flagSuppLegale}" >
+									<p:ajax event="change"  process="@this" ></p:ajax>
+							</p:selectBooleanCheckbox>
+							</p:column>
+							<p:column
+								headerText="Beneficiario di servizi di informazione e orientamento" width="20">
+								<p:selectBooleanCheckbox id="flagServizioInfOr" 
+								 value="#{rowDocumento.arCsPaiInfoSinteticheDTO.flagServizioInfOr}" >
+								 <p:ajax event="change"  process="@this"></p:ajax>
+								 	</p:selectBooleanCheckbox>
+							</p:column>
+							<p:column
+								headerText="Vittima di tratta o con esigenze particolari di cui all'articolo 17 del d.lgs. 142/2015"
+								width="20">
+								<p:selectBooleanCheckbox id="flagTrattaArt17" 
+								 value="#{rowDocumento.arCsPaiInfoSinteticheDTO.flagTrattaArt17}" >
+									<p:ajax event="change"  process="@this"></p:ajax>
+							</p:selectBooleanCheckbox>
+							</p:column>
+							<p:column headerText="" width="20">
+								<p:commandButton value="Aggiorna" 
+							         	action="#{richiesteController.aggiornaInfoSintetiche(rowDocumento)}" process="@this"
+				            	update="@parent panelDatiMinimi"></p:commandButton>
+							</p:column>
+						</p:dataTable>
+					</p:outputPanel>
+				</p:rowExpansion>
+			</p:dataTable>
+			<p:spacer height="10"></p:spacer>
+			<p:outputPanel style="width:70%; text-align: center; vertical-align:middle;">
+				<p:panel id="pnlLabel" >
+					<h3>Upload documentazione PAI</h3>
+				</p:panel>
+				<p:panel id="panelDatiMinimiPAI" style="border: 1px solid #007AD9; text-align: center;">
+					<h:panelGrid columns="4" cellpadding="0" cellspacing="0"
+						style="vertical-align: left; width:200px;">
+						<h4>Info sintetiche PAI</h4>
+					</h:panelGrid>
+					<h:panelGrid columns="4" id="panelDatiMinimi">
+						<p:selectBooleanCheckbox id="FLAG_MSNA"
+							itemLabel="MSNA"
+							value="#{richiesteController.infoSintetichePai.msna}"
+							disabled="#{richiesteController.uploadedFile == null}">
+							<p:ajax event="change" process="@this"
+								update="panelDatiMinimiPAI" />
+						</p:selectBooleanCheckbox>
+						<p:selectBooleanCheckbox id="FLAG_ALFABETIZZATO"
+							itemLabel="Alfabetizzato"
+							value="#{richiesteController.infoSintetichePai.flagAlfabetizzato}"
+							rendered="#{richiesteController.infoSintetichePai.msna}" 
+							disabled="#{richiesteController.uploadedFile == null}">
+							<p:ajax event="change" process="@this"
+								update="panelDatiMinimiPAI" />
+						</p:selectBooleanCheckbox>
+						<p:panel id="pnlAlfabetizzato"
+							rendered="#{richiesteController.infoSintetichePai.flagAlfabetizzato}"
+							styleClass="pnlAlfabetizzato" disabled="#{richiesteController.uploadedFile == null}">
+							<p:selectBooleanCheckbox id="FLAG_COPIA_FORNITA"
+								itemLabel="Copia PAI fornita" disabled="#{richiesteController.uploadedFile == null}"
+								value="#{richiesteController.infoSintetichePai.flagCopiaFornita}" />
+							<p:selectBooleanCheckbox id="FLAG_ETA_ACCERTATA"
+								itemLabel="Età accertata" disabled="#{richiesteController.uploadedFile == null}"
+								value="#{richiesteController.infoSintetichePai.flagEtaAccertata}" />
+							<p:selectBooleanCheckbox id="FLAG_SUPP_LEGALE"
+								itemLabel="Beneficiario di supporto legale" disabled="#{richiesteController.uploadedFile == null}"
+								value="#{richiesteController.infoSintetichePai.flagSuppLegale}" />
+							<p:selectBooleanCheckbox id="FLAG_SERVIZIO_INF_OR"
+								itemLabel="Beneficiario di servizi di informazione e orientamento:" disabled="#{richiesteController.uploadedFile == null}"
+								value="#{richiesteController.infoSintetichePai.flagServizioInfOr}" />
+							<p:selectBooleanCheckbox id="FLAG_TRATTA_ART17" disabled="#{richiesteController.uploadedFile == null}"
+								itemLabel="Vittima di tratta o con esigenze particolari di cui all'articolo 17 del d.lgs. 142/2015:"
+								value="#{richiesteController.infoSintetichePai.flagTrattaArt17}" />
+						</p:panel>
+					</h:panelGrid>
+
+
+					</p:panel>
+		           <p:panel id="panelUpld" style="border: 1px solid #007AD9; text-align: center;">
+		           
+		           <p:fileUpload uploadLabel="Carica PAI" label="Sfoglia File"
+						invalidSizeMessage="File troppo grande" id="uploadPAI"
+						value="#{richiesteController.uploadedFile}" mode="advanced"
+						fileUploadListener="#{richiesteController.fileUploadListener}"
+						multiple="false"  update="panelDatiMinimi">
+						<f:attribute name="tipoFile" value="PAI_DOC" />
+					</p:fileUpload>
+					
+								
+					<p:commandButton value="Salva"
+						oncomplete="PF('caricaPAIdlg').show();"
+						action="#{richiesteController.salvaFile}"
+						update="caricaPAIDialog"></p:commandButton>
+		           
+					</p:panel>
+				</p:outputPanel>
+		</p:dialog>
+		<p:dialog id="caricaPTIDialog" dynamic="true" modal="true"  width="1500" height="500"
+			widgetVar="caricaDialogPTI" header="Carica PTI" >
+			<h3>PTI</h3>
+			<p:dataTable id="dtDocumentiPTI" var="rowDocumentoPTI" widgetVar="dtWDocumentiPTI"
+				emptyMessage="Nessun elemento presente" styleClass="allegatoTable"
+				value="#{richiesteController.listDocumentiPTI}" rows="10"
+				paginator="true"
+				paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="5,10,15" rowKey="#{rowDocumento.id}"
+				scrollable="false" rowExpandMode="single" sortMode="single"
+				sortBy="#{rowDocumentoPTI.validoDa}" sortOrder="descending">
+					
+				<f:facet name="header">
+		            Elenco Documenti PTI
+		        </f:facet>
+		        		
+				<p:column headerText="Valido da" width="10">
+					<h:outputText value="#{rowDocumentoPTI.validoDa}">
+					</h:outputText>
+				</p:column>
+				<p:column headerText="Valido a" width="10">
+					<h:outputText value="#{rowDocumentoPTI.validoA}">
+					</h:outputText>
+				</p:column>
+				<p:column headerText="Documento" width="30">
+					<p:commandLink immediate="true"
+						actionListener="#{richiesteController.prepareFile(rowDocumentoPTI)}"
+						value="#{rowDocumentoPTI.nome}" ajax="false"
+						onclick="PrimeFaces.monitorDownload(start, stop)">
+						<p:fileDownload value="#{richiesteController.file}" />
+					</p:commandLink>
+				</p:column>
+			</p:dataTable>
+
+			<p:spacer height="10"></p:spacer>
+			<p:outputPanel style="width:70%;text-align: center;">
+				<p:panel id="pnlLabelInsPTI" >
+					<h:panelGrid columns="4" cellpadding="0" cellspacing="0"
+						style="vertical-align: left; width:200px;">
+						<h3>Inserimento nuovo PTI</h3>
+					</h:panelGrid>
+				</p:panel>
+				<p:fileUpload uploadLabel="Carica PTI" label="Sfoglia File"
+					invalidSizeMessage="File troppo grande" id="uploadPTI"
+					value="#{richiesteController.uploadedFile}" mode="advanced"
+					fileUploadListener="#{richiesteController.fileUploadListener}"
+					multiple="false">
+					<f:attribute name="tipoFile" value="PTI_DOC" />
+				</p:fileUpload>
+				<p:commandButton value="Salva"
+					oncomplete="PF('caricaDialogPTI').show();"
+					action="#{richiesteController.salvaFile}"
+					update="caricaPTIDialog"></p:commandButton>
+			</p:outputPanel>
+		</p:dialog>
+		<p:dialog id="caricaDettaglio" dynamic="true" modal="true"  width="1500" height="500"
+			widgetVar="caricaDettaglioWDG" header="Dettaglio PTI" >
+			<p:outputPanel>
+					<p:dataTable value="#{richiesteController.selectedRichiestaMinore.minore}" var="rowDtMinore">
+						<f:facet name="header">
+							<h:outputText value="Dati del Minore" />
+						</f:facet>
+						<p:column headerText="Nome e cognome" width="20">
+							<h:outputText value="#{rowDtMinore.nome} #{rowDtMinore.cognome}" />
+						</p:column>
+						<p:column headerText="Anno di nascita" width="20">
+							<h:outputText value="#{rowDtMinore.annoNascita}" />
+						</p:column>
+						<p:column headerText="Sesso" width="20">
+							<h:outputText value="#{rowDtMinore.sesso}" />
+						</p:column>
+						<p:column headerText="Indirizzo di residenza" width="20">
+							<h:outputText value="#{rowDtMinore.indirizzoResidenza}" />
+						</p:column>
+						<p:column headerText="Comune di residenza" width="20">
+							<h:outputText value="#{rowDtMinore.comuneResidenza}" />
+						</p:column>
+						<p:column headerText="Codice Fiscale" width="20">
+							<h:outputText value="#{rowDtMinore.codiceFiscale}" />
+						</p:column>
+
+					</p:dataTable>
+
+				</p:outputPanel>
+				<p:spacer height="5"></p:spacer>
+		
+				<p:dataTable style="text-align:center !important;" value="#{richiesteController.selectedRichiestaMinore.pti}" var="rowDtPTI">
+						<f:facet name="header">
+							<h:outputText value="Dettaglio PTI" />
+						</f:facet>
+						
+						<p:column headerText="Data Redazione" width="20">
+
+							<h:outputText value="#{rowDtPTI.dataRedazione}">
+								<f:convertDateTime pattern="dd/MM/yyyy" />
+							</h:outputText>
+						</p:column>
+						<p:column headerText="Periodo di inserimento pianificato da"
+							width="20">
+							<h:outputText value="#{rowDtPTI.periodoInsPianificatoDa}">
+								<f:convertDateTime pattern="dd/MM/yyyy" />
+							</h:outputText>
+						</p:column>
+						<p:column headerText="Periodo di inserimento pianificato a"
+							width="20">
+							<h:outputText value="#{rowDtPTI.periodoInsPianificatoA}">
+								<f:convertDateTime pattern="dd/MM/yyyy" />
+							</h:outputText>
+						</p:column>
+						<p:column headerText="Emergenza" width="20">
+							<p:graphicImage rendered="#{rowDtPTI.flgEmergenza}"
+								value="/images/check.png" />
+						</p:column>
+						
+						
+						<p:column headerText="Disabilità" width="20">
+							<p:graphicImage rendered="#{rowDtPTI.flgDisabilita}"
+								value="/images/check.png" />
+						</p:column>
+						<p:column headerText="Richiesta Interventi specifici per disabili"
+							width="20">
+							<p:graphicImage rendered="#{rowDtPTI.flgInterventiDisabili}"
+								value="/images/check.png" />
+						</p:column>
+						<p:column headerText="Condizioni verificate per presenza adulti"
+							width="20">
+							<p:graphicImage rendered="#{rowDtPTI.flgCondVerifPresenzaAdulti}"
+								value="/images/check.png" />
+						</p:column>
+						<p:column headerText="Minore in gravidanza" width="20">
+							<p:graphicImage rendered="#{rowDtPTI.flgGravidanza}"
+								value="/images/check.png" />
+						</p:column>
+						
+						
+						<p:column headerText="Minore con neonato" width="20">
+							<p:graphicImage rendered="#{rowDtPTI.flgNeonato}"
+								value="/images/check.png" />
+						</p:column>
+						<p:column headerText="Proveniente dall’area penale" width="20">
+							<p:graphicImage rendered="#{rowDtPTI.flgAreaPenale}"
+								value="/images/check.png" />
+						</p:column>
+						<p:column headerText="Case Manager" width="20">
+							<h:outputText value="#{rowDtPTI.caseManager}" />
+						</p:column>
+						<p:column
+							headerText="Elaborato con il coinvolgimento della famiglia"
+							width="20">
+							<p:graphicImage rendered="#{rowDtPTI.flgCoinvFamiglia}"
+								value="/images/check.png" />
+						</p:column>
+						
+						
+						<p:column width="20"
+							headerText="Proroga per richiesta da parte del minore al compimento del 18 anno">
+							<p:graphicImage rendered="#{rowDtPTI.flgProrRichMagg}"
+								value="/images/check.png" />
+						</p:column>
+						<p:column headerText="Proroga al raggiungimento limite età"
+							width="20">
+							<p:graphicImage rendered="#{rowDtPTI.flgProrLimiteEta}"
+								value="/images/check.png" />
+						</p:column>
+						<p:column width="20"
+							headerText="La struttura deve avere un educatore professionale o pedagogista aggiuntivo">
+							<p:graphicImage rendered="#{rowDtPTI.flgEsisteEduPeda}"
+								value="/images/check.png" />
+						</p:column>
+						<p:column width="20"
+							headerText="Invio Segnalazione/Relazione a Procura presso TM">
+							<p:graphicImage rendered="#{rowDtPTI.flgInvioSegnTM}"
+								value="/images/check.png" />
+						</p:column>
+					</p:dataTable>
+		</p:dialog>
+		<p:dialog id="dlgConsuntivo" widgetVar="dlgConsuntivoW"
+			closable="true" width="1500" height="500" header="Consuntivazione"
+			modal="true" resizable="true" dynamic="true" position="center"
+			draggable="true">
+			<ui:include src="/jsp/protected/minoriConsuntivazione.xhtml">
+			</ui:include>
+		</p:dialog>
+
+	</p:outputPanel>
+</h:form>
+</html>

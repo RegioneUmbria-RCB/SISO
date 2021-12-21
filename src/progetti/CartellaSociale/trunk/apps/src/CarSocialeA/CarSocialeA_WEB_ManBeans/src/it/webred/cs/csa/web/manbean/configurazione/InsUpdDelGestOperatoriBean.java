@@ -1,6 +1,5 @@
 package it.webred.cs.csa.web.manbean.configurazione;
 
-import it.webred.amprofiler.ejb.user.UserService;
 import it.webred.amprofiler.model.AmGroup;
 import it.webred.cs.csa.ejb.client.AccessTableConfigurazioneSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.AccessTableOperatoreSessionBeanRemote;
@@ -16,8 +15,6 @@ import it.webred.cs.data.model.CsTbTipoAlert;
 import it.webred.cs.data.model.CsTbTipoOperatore;
 import it.webred.cs.jsf.bean.DatiOperatore;
 import it.webred.cs.jsf.manbean.superc.CsUiCompBaseBean;
-import it.webred.ct.config.model.AmComune;
-import it.webred.ct.config.parameters.comune.ComuneService;
 import it.webred.ct.support.datarouter.CeTBaseObject;
 
 import java.io.Serializable;
@@ -29,7 +26,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.model.SelectItem;
 
@@ -64,12 +60,8 @@ public class InsUpdDelGestOperatoriBean extends CsUiCompBaseBean implements Seri
 	
 	private boolean disableFirma=true;
 	
-	protected ComuneService comuneService = (ComuneService) getEjb("CT_Service", "CT_Config_Manager", "ComuneServiceBean");
 	protected AccessTableConfigurazioneSessionBeanRemote confService = (AccessTableConfigurazioneSessionBeanRemote) getCarSocialeEjb ("AccessTableConfigurazioneSessionBean");
 	protected AccessTableOperatoreSessionBeanRemote operatoreService = (AccessTableOperatoreSessionBeanRemote) getCarSocialeEjb ("AccessTableOperatoreSessionBean");
-	protected UserService userService = (UserService) getEjb("AmProfiler", "AmProfilerEjb", "UserServiceBean");
-
-	
 	
 	public List<SelectItem> getOrganizzazioni() {
 		return organizzazioni;

@@ -5,21 +5,23 @@ import java.io.Serializable;
 import javax.persistence.*;
 
 import java.util.Date;
-import java.util.List;
 
-
-/**
- * The persistent class for the CS_SS_SCHEDA_SEGR database table.
- * 
- */
 @Entity
 @Table(name="CS_SS_SCHEDA_SEGR")
 public class CsSsSchedaSegr implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
+	@SequenceGenerator(name="CS_SS_SCHEDA_SEGR_ID_GENERATOR", sequenceName="SQ_CS_SS_SCHEDA_SEGR", allocationSize=1)
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="CS_SS_SCHEDA_SEGR_ID_GENERATOR")
 	private long id;
 
+	@Column(name="SCHEDA_ID")
+	private long schedaId;
+	
+	@Column(name="PROVENIENZA")
+	private String provenienza;
+	
 	@Temporal(TemporalType.DATE)
 	@Column(name="DT_INS")
 	private Date dtIns;
@@ -52,6 +54,10 @@ public class CsSsSchedaSegr implements Serializable {
 	@ManyToOne
 	@JoinColumn(name="SOGGETTO_ID", insertable=false, updatable=false)
 	private CsASoggettoLAZY csASoggetto;
+	
+	@ManyToOne
+	@JoinColumn(name="PROVENIENZA", insertable=false, updatable=false)
+	private CsTbSsProvenienza tbProvenienza;
 	
 	@Column(name="SOGGETTO_ID")
 	private Long soggettoId;
@@ -150,6 +156,30 @@ public class CsSsSchedaSegr implements Serializable {
 
 	public void setSoggettoId(Long soggettoId) {
 		this.soggettoId = soggettoId;
+	}
+
+	public long getSchedaId() {
+		return schedaId;
+	}
+
+	public void setSchedaId(long schedaId) {
+		this.schedaId = schedaId;
+	}
+
+	public String getProvenienza() {
+		return provenienza;
+	}
+
+	public void setProvenienza(String provenienza) {
+		this.provenienza = provenienza;
+	}
+
+	public CsTbSsProvenienza getTbProvenienza() {
+		return tbProvenienza;
+	}
+
+	public void setTbProvenienza(CsTbSsProvenienza tbProvenienza) {
+		this.tbProvenienza = tbProvenienza;
 	}
 
 }

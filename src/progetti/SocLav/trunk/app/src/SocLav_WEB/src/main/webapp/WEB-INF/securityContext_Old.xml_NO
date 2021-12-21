@@ -1,0 +1,88 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:security="http://www.springframework.org/schema/security"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans.xsd 
+	http://www.springframework.org/schema/tx 
+   http://www.springframework.org/schema/tx/spring-tx-4.0.xsd 
+   http://www.springframework.org/schema/security 
+   http://www.springframework.org/schema/security/spring-security-4.2.xsd"
+	default-lazy-init="false" default-autowire="no">
+
+	<security:http use-expressions="true" auto-config="true"
+		authentication-manager-ref="authenticationManager">
+		<security:csrf disabled="true" />
+		<security:headers>
+			<security:cache-control disabled="true" />
+		</security:headers>
+		<security:access-denied-handler
+			error-page="/access-denied.xhtml" />
+		<security:intercept-url pattern="/jsp/protected/**"
+			access="hasAnyRole('ROLE_USER')" />
+		<security:expression-handler ref="webExpressionHandler" />
+		<security:custom-filter position="PRE_AUTH_FILTER"
+			ref="preAuthFilter" />
+		<security:logout logout-url="/perform_logout"
+			invalidate-session="true" logout-success-url="/logoutsuccess.xhtml" />
+		<!-- 
+		<security:session-management>
+			<security:concurrency-control max-sessions="1"
+				error-if-maximum-exceeded="true" />
+		</security:session-management>
+		 -->
+	</security:http>
+
+	<security:global-method-security
+		pre-post-annotations="enabled">
+		<security:expression-handler ref="expressionHandler" />
+	</security:global-method-security>
+
+	<bean id="webExpressionHandler"
+		class="org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler">
+		<property name="permissionEvaluator" ref="permissionEvaluator" />
+	</bean>
+
+
+	<bean id="expressionHandler"
+		class="org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler">
+		<property name="permissionEvaluator" ref="permissionEvaluator" />
+	</bean>
+
+	<bean id="permissionEvaluator"
+		class="it.umbriadigitale.soclav.security.SoclavPermissionEvaluator" />
+
+	<!-- <bean id="userDetailsService"
+		class="it.umbriadigitale.soclav.security.SoclavUserDetailsService" />
+ -->
+
+
+
+
+
+
+	<security:authentication-manager alias="authenticationManager">
+		<security:authentication-provider
+			ref="myPreAuthAuthProvider" />
+
+	</security:authentication-manager>
+
+	<bean id="preAuthFilter" class="it.umbriadigitale.soclav.security.CustomPreAuthFilter">
+		<property name="authenticationManager" ref="authenticationManager" />
+	</bean>
+
+
+
+	<bean id="myPreAuthAuthProvider"
+		class="it.umbriadigitale.soclav.security.PreAuthAuthenticationProvider">
+		<property name="detailService" ref="myDetailService" />
+	</bean>
+
+	<bean id="myDetailService"
+		class="it.umbriadigitale.soclav.security.SoclavSimpleUserDetailsService">
+	</bean>
+
+ 
+ 
+
+</beans>

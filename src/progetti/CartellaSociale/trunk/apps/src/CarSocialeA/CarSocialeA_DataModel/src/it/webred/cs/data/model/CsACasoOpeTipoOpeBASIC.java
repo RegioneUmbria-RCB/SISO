@@ -30,9 +30,6 @@ public class CsACasoOpeTipoOpeBASIC implements Serializable {
 
 	@Column(name="OPERATORE_TIPO_OPERATORE_ID")
 	private long operatoreTipoOperatoreId;
-	
-/*	@EmbeddedId
-	private CsACasoOpeTipoOpePK id;*/
 
 	@Temporal(TemporalType.DATE)
 	@Column(name="DATA_FINE_SYS")
@@ -69,11 +66,6 @@ public class CsACasoOpeTipoOpeBASIC implements Serializable {
 	@Column(name="FLAG_RESPONSABILE")
 	private Boolean flagResponsabile;
 	
-	//bi-directional many-to-one association to CsACaso
-	@ManyToOne
-	@JoinColumn(name="CASO_ID", insertable=false, updatable=false)
-	private CsACasoBASIC csACasoBASIC;
-
 	//bi-directional many-to-one association to CsOOperatoreTipoOperatore
 	@ManyToOne
 	@JoinColumn(name="OPERATORE_TIPO_OPERATORE_ID", insertable=false, updatable=false)
@@ -82,14 +74,6 @@ public class CsACasoOpeTipoOpeBASIC implements Serializable {
 	public CsACasoOpeTipoOpeBASIC() {
 	}
 
-/*	public CsACasoOpeTipoOpePK getId() {
-		return this.id;
-	}
-
-	public void setId(CsACasoOpeTipoOpePK id) {
-		this.id = id;
-	}
-*/
 	public Date getDataFineSys() {
 		return this.dataFineSys;
 	}
@@ -160,14 +144,6 @@ public class CsACasoOpeTipoOpeBASIC implements Serializable {
 
 	public void setUsrMod(String usrMod) {
 		this.usrMod = usrMod;
-	}
-
-	public CsACasoBASIC getCsACasoBASIC() {
-		return this.csACasoBASIC;
-	}
-
-	public void setCsACasoBASIC(CsACasoBASIC csACasoBASIC) {
-		this.csACasoBASIC = csACasoBASIC;
 	}
 
 	public CsOOperatoreTipoOperatoreBASIC getCsOOperatoreTipoOperatoreBASIC() {

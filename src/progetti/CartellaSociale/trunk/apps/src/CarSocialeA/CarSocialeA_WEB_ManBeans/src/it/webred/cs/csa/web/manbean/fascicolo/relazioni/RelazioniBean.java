@@ -5,10 +5,12 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.faces.bean.ManagedProperty;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
@@ -17,6 +19,7 @@ import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.SelectItem;
 import javax.faces.model.SelectItemGroup;
 
+import org.apache.commons.lang3.StringUtils;
 import org.primefaces.component.wizard.Wizard;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.FlowEvent;
@@ -26,15 +29,21 @@ import org.primefaces.util.ComponentUtils;
 import it.webred.cs.csa.ejb.dto.BaseDTO;
 import it.webred.cs.csa.ejb.dto.DiarioAnagraficaDTO;
 import it.webred.cs.csa.ejb.dto.InterventoDTO;
+import it.webred.cs.csa.ejb.dto.KeyValueDTO;
 import it.webred.cs.csa.ejb.dto.RelazioneDTO;
+import it.webred.cs.csa.ejb.dto.cartella.RisorsaCalcDTO;
+import it.webred.cs.csa.ejb.dto.relazione.RelazioneSintesiDTO;
+import it.webred.cs.csa.ejb.dto.relazione.SaveRelazioneDTO;
 import it.webred.cs.csa.web.manbean.fascicolo.FascicoloBean;
 import it.webred.cs.csa.web.manbean.fascicolo.FascicoloCompSecondoLivello;
 import it.webred.cs.csa.web.manbean.fascicolo.interventiTreeView.TipoInterventoManBean;
+import it.webred.cs.csa.web.manbean.fascicolo.pai.ProgettiIndividualiExtBean;
 import it.webred.cs.csa.web.manbean.fascicolo.valMultidimensionale.ListaValMultidimensionaliBean;
 import it.webred.cs.csa.web.manbean.report.ReportBean;
 import it.webred.cs.data.DataModelCostanti;
-import it.webred.cs.data.model.CsAAnagrafica;
+import it.webred.cs.data.model.CsAComponente;
 import it.webred.cs.data.model.CsASoggettoLAZY;
+import it.webred.cs.data.model.CsCCategoriaSociale;
 import it.webred.cs.data.model.CsCDiarioConchi;
 import it.webred.cs.data.model.CsCTipoIntervento;
 import it.webred.cs.data.model.CsDDiario;
@@ -56,11 +65,15 @@ import it.webred.cs.jsf.bean.DatiInterventoBean;
 import it.webred.cs.jsf.interfaces.IRelazioni;
 import it.webred.cs.jsf.manbean.DiarioDocsMan;
 import it.webred.cs.jsf.manbean.SchedaPaiMan;
+import it.webred.cs.jsf.manbean.superc.CsUiCompBaseBean;
 import it.webred.cs.json.valMultidimensionale.IValMultidimensionale;
 import it.webred.ct.support.datarouter.CeTBaseObject;
 
 public class RelazioniBean extends FascicoloCompSecondoLivello implements IRelazioni{
 
+	@ManagedProperty(value = "#{progettiInvidualiExt}")
+	private ProgettiIndividualiExtBean progettiIndividualiExtBean;
+	
 	private List<RelazioneDTO> listaRelazioniDTO;
 	private int idxSelected;
 	private RelazioneDTO relazioneDTO;
@@ -71,9 +84,7 @@ public class RelazioniBean extends FascicoloCompSecondoLivello implements IRelaz
 	private boolean removeFile=false;
 	
 	private ReportBean reportS;
-//	private Long idTipoInterventoSelezionato;
 	private List<SelectItem> listaTipiIntervento;
-//	private List<CsCTipoIntervento> listaTipiInterventoAttivi;
 	private List<DatiInterventoBean> listaFogliAmmCollegati;
 	
 	private SchedaPaiMan managerPai;
@@ -101,9 +112,9 @@ public class RelazioniBean extends FascicoloCompSecondoLivello implements IRelaz
 	private TriageBean triageBean;
 	
 	//SISO-763
-	private HashMap<Long, DiarioAnagraficaDTO> idAna2diarioAna;
+	private HashMap<Long, DiarioAnagraficaDTO> idAna2diarioAna = new HashMap<Long, DiarioAnagraficaDTO>();
 	//private List<DiarioAnagraficaDTO> famigliaSelezionata;
-	private List<CsAAnagrafica> anagrafiche;
+	private List<RisorsaCalcDTO> anagrafiche;
 	private Boolean relazioneCollegata = false;
 	
 	//fix caricamento relazione da pai
@@ -111,7 +122,18 @@ public class RelazioniBean extends FascicoloCompSecondoLivello implements IRelaz
 	
 	//SISO-1110
 	protected boolean isTreeViewIntervento;
-		
+
+	private List<SelectItem> tipoInterventosAll = new LinkedList<SelectItem>();
+	private List<SelectItem> tipoInterventosRecenti = new LinkedList<SelectItem>();
+	private List<SelectItem> tipoInterventosCustom = new LinkedList<SelectItem>();
+	private List<SelectItem> tipoInterventosInps = new LinkedList<SelectItem>();
+	
+	private boolean fromFascicoloCartellaUtente = true;
+
+	private  List<String>  selectedRiunioneConChi = new ArrayList<String>();
+	private List<CsOSettore> listaSettoriRiunione ;
+	private List<String>  selectedRiunioneConChiToView = new ArrayList<String>();
+	
 	@Override
 	public void initializeData() {
 		try {
@@ -121,141 +143,215 @@ public class RelazioniBean extends FascicoloCompSecondoLivello implements IRelaz
 			selectedProblematicaVerificata=false;
 			loadRelazione = false;
 			uploadDisabled= false;
-			managerPai = new SchedaPaiMan();
-			managerPai.setIdCaso(idCaso);
-			managerPai.setResponsabileCaso(getOperResponsabileCaso());
-			
+//			managerPai = new SchedaPaiMan();
+//			managerPai.setIdCaso(idCaso);
+//			managerPai.setResponsabileCaso(getOperResponsabileCaso());
 			BaseDTO dto = new BaseDTO();
 			fillEnte(dto);
 			dto.setObj(idCaso);
-			listaRelazioniDTO = diarioService.findRelazioniByCaso(dto);
+			if (fromFascicoloCartellaUtente) {
+
+				listaRelazioniDTO = diarioService.findRelazioniByCaso(dto);
+				String cf = csASoggetto != null && csASoggetto.getCsAAnagrafica() != null ? csASoggetto.getCsAAnagrafica().getCf() : null;
+	          	if (cf != null) {
+					dto.setObj(cf);
+					listaRelazioniDTO.addAll(diarioService.findRelazioniPaiEsterniByCF(dto));
+				} 
+			} else {
+
+				listaRelazioniDTO = this.listaRelazioniDTO("propostaAttivitaExt");
+			}
 			
 			diarioDocsMan = new DiarioDocsMan();
 			
 			loadListaRichiestaIndagine();
 			
-			catalogoAttivita = new ArrayList<SelectItem>();
-			for (CsTbMacroAttivita macro : configService.getMacroAttivita(dto)) {
-				BaseDTO dto1 = new BaseDTO();
-				fillEnte(dto1);
-				dto1.setObj(macro.getId());
-				List<CsTbMicroAttivita> microl = configService.getMicroAttivitaByIdMacroAttivita(dto1);
-				ArrayList<SelectItem> iteml = new ArrayList<SelectItem>();
-				if (microl != null)
-					for (CsTbMicroAttivita micro : microl) {
-						SelectItem option = new SelectItem(micro,micro.getDescrizione(), micro.getTooltip());
-						iteml.add(option);
-					}
-
-				SelectItemGroup group = new SelectItemGroup(macro.getDescrizione(), macro.getTooltip(), false,
-						iteml.toArray(new SelectItem[iteml.size()]));
-				catalogoAttivita.add(group);
-			}
-
-			Map<String, Map<String, List<SelectItem>>> mapGroups = new HashMap<String, Map<String, List<SelectItem>>>();
-			for (CsTbProbl problematica : configService.getProbl(dto)) {
-				String flagMatImm = problematica.getFlagMatImm();
-				Map<String, List<SelectItem>> mapGroups2 = mapGroups.get(flagMatImm);
-				if (mapGroups2 == null) {
-					mapGroups2 = new HashMap<String, List<SelectItem>>();
-					mapGroups.put(flagMatImm, mapGroups2);
-				}
-
-				String tipo = problematica.getTipo();
-				List<SelectItem> items = mapGroups2.get(tipo);
-				if (items == null) {
-					items = new ArrayList<SelectItem>();
-					mapGroups2.put(tipo, items);
-				}
-
-				SelectItem option = new SelectItem(problematica.getId(),
-						problematica.getDescrizione(),
-						problematica.getTooltip());
-				items.add(option);
-			}
+			loadCatalogoMacroAttivita();
 			
-			catalogoProblematiche = new ArrayList<SelectItem>();
-			for (String matImm : mapGroups.keySet()) {
-				Map<String, List<SelectItem>> mapGroups2 = mapGroups.get(matImm);
-				List<SelectItemGroup> tipoGroups = new ArrayList<SelectItemGroup>();
-				for (String tipo : mapGroups2.keySet()) {
-					List<SelectItem> probls = mapGroups2.get(tipo);
-					SelectItemGroup tipoGroup = new SelectItemGroup(tipo, tipo, false,
-							probls.toArray(new SelectItem[probls.size()]));
-					tipoGroups.add(tipoGroup);
-				}
-
-				if ("M".equalsIgnoreCase(matImm)) {
-					SelectItemGroup groupMat = new SelectItemGroup("Materiale","Problematiche di tipo materiale",false,tipoGroups.toArray(new SelectItem[tipoGroups.size()]));
-					catalogoProblematiche.add(groupMat);
-				} else if ("I".equalsIgnoreCase(matImm)) {
-					SelectItemGroup groupImm = new SelectItemGroup("Immateriale","Problematiche di tipo immateriale",false, tipoGroups.toArray(new SelectItem[tipoGroups.size()]));
-					catalogoProblematiche.add(groupImm);
-				}
-
-			}
+			loadCatalogoProblematiche();
 			
+			// TODO SISO-1280 utilizza il fascicolo
 			tipoInterventoManBean = new TipoInterventoManBean(getListaTipiIntervento(), "");
 			
 			//SISO-763
 			this.idAna2diarioAna = new HashMap<Long, DiarioAnagraficaDTO>();
-			anagrafiche = new ArrayList<CsAAnagrafica>();
+			anagrafiche = new ArrayList<RisorsaCalcDTO>();
 
-			BaseDTO b = new BaseDTO();
-			b.setObj(csASoggetto.getCsAAnagrafica().getCf());
-			fillEnte(b);
-			//
-			// ParentiBean pbean = (ParentiBean) this.getBean("parentiBean");
-			// if(pbean.getListaComponenti() == null){
-			// pbean.initialize(idSoggetto);
-			// }
-			// ParentiComp pc = null;
-			// for(ValiditaCompBaseBean vcbb : pbean.getListaComponenti()){
-			// if(vcbb.getDataFine() == null ||
-			// vcbb.getDataFine().equals(DataModelCostanti.END_DATE)){
-			// pc = (ParentiComp) vcbb;
-			// break;
-			// }
-			// }
-			//
-			// if(pc != null){
-			// for(CsAComponente c : pc.getLstParenti()){
-			// CsAAnagrafica ana = c.getCsAAnagrafica();
-			//
-			// //cambio id anagrafica prendendo quello del soggetto
-			// if(c.getCsAFamigliaGruppo() != null &&
-			// c.getCsAFamigliaGruppo().getCsASoggetto() != null){
-			// ana.setId(c.getCsAFamigliaGruppo().getCsASoggetto().getAnagraficaId());
-			// }
-			//
-			// anagrafiche.add(ana);
-			// }
-			// }
+			if (fromFascicoloCartellaUtente) {
+				BaseDTO b = new BaseDTO();
+				fillEnte(b);
+				b.setObj(csASoggetto.getCsAAnagrafica().getCf());
+				anagrafiche = schedaService.findComponentiGiaFamigliariBySoggettoCf(b);
 
-			anagrafiche = schedaService.findComponentiGiaFamigliariBySoggettoCf(b);
-
-			for (CsAAnagrafica a : anagrafiche) {
-				if (a.getCf() != null) {
-					b.setObj(a.getCf());
-					CsASoggettoLAZY soggetto =  soggettoService.getSoggettoByCF(b);
-					if(soggetto != null){
-						a.setId(soggetto.getAnagraficaId());
+				for (RisorsaCalcDTO a : anagrafiche) {
+					if (a.getCf() != null) {
+						b.setObj(a.getCf());
+						CsASoggettoLAZY soggetto = soggettoService.getSoggettoByCF(b);
+						if (soggetto != null) {
+							a.setAnagraficaId(soggetto.getAnagraficaId());
+						}
 					}
 				}
+
+				// carico le relazioni collegate
+				b.setObj(csASoggetto.getCsAAnagrafica().getId());
+				List<RelazioneDTO> relCollegate = diarioService.findRelazioniCollegate(b);
+				listaRelazioniDTO.addAll(relCollegate);
 			}
-						
-			//carico le relazioni collegate
-			b.setObj(csASoggetto.getCsAAnagrafica().getId());
-			List<Long> casoIds = diarioService.findDiarioAnaAttProfessionaliCasoIdsByAnagraficaId(b);
-			for(Long l : casoIds){
-				b.setObj(l);
-				listaRelazioniDTO.addAll(diarioService.findRelazioniByCaso(b));
-			}
+			
+//			Leggo i settori per Riunione
+			readSettoriPerRiunione();
+
+			
+			
 		} 
 		catch (Exception e) {
 			addErrorFromProperties("caricamento.error");
 			logger.error(e.getMessage(),e);
 		}
+	}
+	
+	private void loadCatalogoMacroAttivita(){
+		catalogoAttivita = new ArrayList<SelectItem>();
+		CeTBaseObject cet = new CeTBaseObject();
+		fillEnte(cet);
+		for (CsTbMacroAttivita macro : configService.getMacroAttivita(cet)) {
+			/*BaseDTO dto1 = new BaseDTO();
+			fillEnte(dto1);
+			dto1.setObj(macro.getId());
+			List<CsTbMicroAttivita> microl = configService.getMicroAttivitaByIdMacroAttivita(dto1);*/
+			ArrayList<SelectItem> iteml = new ArrayList<SelectItem>();
+			if (macro.getLstMicroAttivita() != null)
+				for (CsTbMicroAttivita micro : macro.getLstMicroAttivita()) {
+					SelectItem option = new SelectItem(micro,micro.getDescrizione(), micro.getTooltip());
+					iteml.add(option);
+				}
+
+			SelectItemGroup group = new SelectItemGroup(macro.getDescrizione(), macro.getTooltip(), false,iteml.toArray(new SelectItem[iteml.size()]));
+			catalogoAttivita.add(group);
+		}
+	}
+	
+	private void loadCatalogoProblematiche(){
+		catalogoProblematiche = new ArrayList<SelectItem>();
+		CeTBaseObject cet = new CeTBaseObject();
+		fillEnte(cet);
+		Map<String, Map<String, List<SelectItem>>> mapGroups = new HashMap<String, Map<String, List<SelectItem>>>();
+		for (CsTbProbl problematica : configService.getProbl(cet)) {
+			String flagMatImm = problematica.getFlagMatImm();
+			Map<String, List<SelectItem>> mapGroups2 = mapGroups.get(flagMatImm);
+			if (mapGroups2 == null) {
+				mapGroups2 = new HashMap<String, List<SelectItem>>();
+				mapGroups.put(flagMatImm, mapGroups2);
+			}
+
+			String tipo = problematica.getTipo();
+			List<SelectItem> items = mapGroups2.get(tipo);
+			if (items == null) {
+				items = new ArrayList<SelectItem>();
+				mapGroups2.put(tipo, items);
+			}
+
+			SelectItem option = new SelectItem(problematica.getId(),problematica.getDescrizione(), problematica.getTooltip());
+			items.add(option);
+		}
+		
+		
+		for (String matImm : mapGroups.keySet()) {
+			Map<String, List<SelectItem>> mapGroups2 = mapGroups.get(matImm);
+			List<SelectItemGroup> tipoGroups = new ArrayList<SelectItemGroup>();
+			for (String tipo : mapGroups2.keySet()) {
+				List<SelectItem> probls = mapGroups2.get(tipo);
+				SelectItemGroup tipoGroup = new SelectItemGroup(tipo, tipo, false, probls.toArray(new SelectItem[probls.size()]));
+				tipoGroups.add(tipoGroup);
+			}
+
+			if ("M".equalsIgnoreCase(matImm)) {
+				SelectItemGroup groupMat = new SelectItemGroup("Materiale","Problematiche di tipo materiale",false,tipoGroups.toArray(new SelectItem[tipoGroups.size()]));
+				catalogoProblematiche.add(groupMat);
+			} else if ("I".equalsIgnoreCase(matImm)) {
+				SelectItemGroup groupImm = new SelectItemGroup("Immateriale","Problematiche di tipo immateriale",false, tipoGroups.toArray(new SelectItem[tipoGroups.size()]));
+				catalogoProblematiche.add(groupImm);
+			}
+
+		}
+	}
+	
+	public void initializeExternalPai() {
+		try {
+			lstConChiSel = new ArrayList<String>();
+			selectedProblematicaId=null;
+			selectedProblematicaRisolta=false;
+			selectedProblematicaVerificata=false;
+			loadRelazione = false;
+			uploadDisabled= false;
+			
+			BaseDTO dto = new BaseDTO();
+			fillEnte(dto);
+			// TODO da capire per pai esterni 
+			listaRelazioniDTO = new ArrayList<RelazioneDTO>();
+			
+			diarioDocsMan = new DiarioDocsMan();
+			
+			loadListaRichiestaIndagine();
+			
+			loadCatalogoMacroAttivita();
+
+			loadCatalogoProblematiche();
+			
+			//SISO-1280 non posso caricare i TIPI di intervento con Categoria sociale perchè quando avviamo il Progetto individuale non sappiamo 
+			//a quale categoria associare il beneficiario
+			
+			loadTipoInterventi();
+			tipoInterventoManBean = new TipoInterventoManBean(tipoInterventosAll, "");
+			
+			//SISO-763
+			this.idAna2diarioAna = new HashMap<Long, DiarioAnagraficaDTO>();
+			anagrafiche = new ArrayList<RisorsaCalcDTO>();
+
+		} 
+		catch (Exception e) {
+			addErrorFromProperties("caricamento.error");
+			logger.error(e.getMessage(),e);
+		}
+	}
+ 
+	
+	private void readSettoriPerRiunione() {
+	//CARICA La Lista Settori come partecipanti alla Riunione
+		CeTBaseObject bo = new CeTBaseObject();
+		fillEnte(bo);
+		if(listaSettoriRiunione == null ) {
+			
+			listaSettoriRiunione = configService.getSettoreRiunione(bo);
+		}
+		 
+	 
+ }
+	protected void loadTipoInterventi() {
+
+		BaseDTO dto = new BaseDTO();
+		fillEnte(dto);
+		List<KeyValueDTO> lstTipoInterventi = interventoService.findAllTipiIntervento(dto);
+		List<KeyValueDTO> lstTipoInterventiRecenti = interventoService.findTipiInterventoRecenti(dto);
+		List<KeyValueDTO> lstTipoInterventiInps = interventoService.findTipiInterventoInps(dto);//SISO-1162
+		List<KeyValueDTO> lstTipoInterventiCustom = interventoService.findTipiInterventoCustomRecenti(dto);
+		this.tipoInterventosAll = new LinkedList<SelectItem>();
+		this.tipoInterventosRecenti = new LinkedList<SelectItem>();
+		this.tipoInterventosCustom = new LinkedList<SelectItem>();
+		this.tipoInterventosInps = new LinkedList<SelectItem>(); //SISO-1162
+		for (KeyValueDTO i : lstTipoInterventi)
+			this.tipoInterventosAll.add(new SelectItem((Long)i.getCodice(), i.getDescrizione()));
+
+		for (KeyValueDTO i : lstTipoInterventiRecenti)
+			this.tipoInterventosRecenti.add(new SelectItem((Long)i.getCodice(), i.getDescrizione()));
+
+		for (KeyValueDTO i : lstTipoInterventiCustom)
+			this.tipoInterventosCustom.add(new SelectItem((Long)i.getCodice(), i.getDescrizione()));
+      
+		for (KeyValueDTO i : lstTipoInterventiInps)
+           this.tipoInterventosInps.add(new SelectItem((String)i.getCodice(), (String)i.getCodice() + " - " + i.getDescrizione()));
+		this.tipoInterventosInps.add(new SelectItem( "Non definito", "Non definito"));
 	}
 	
 	private void loadListaRichiestaIndagine(){
@@ -317,6 +413,8 @@ public class RelazioniBean extends FascicoloCompSecondoLivello implements IRelaz
 		buildMap();
 		relazioneCollegata = false;
 		lstConChiSel = new ArrayList<String>();
+		selectedRiunioneConChi= new ArrayList<String>();
+		selectedRiunioneConChiToView = new ArrayList<String>();
 	}
 	
 	@Override
@@ -325,6 +423,27 @@ public class RelazioniBean extends FascicoloCompSecondoLivello implements IRelaz
 		try {
 			this.lstConChiSel = new ArrayList<String>();
 			modalHeader = "Modifica attività";
+			
+			BaseDTO dtoL = new BaseDTO();
+			fillEnte(dtoL);
+			dtoL.setObj(idCaso);
+			// TODO da capire per pai esterni 
+			listaRelazioniDTO = new ArrayList<RelazioneDTO>();
+		
+			if (fromFascicoloCartellaUtente) {
+
+				listaRelazioniDTO = diarioService.findRelazioniByCaso(dtoL);
+				
+				String cf = csASoggetto != null && csASoggetto.getCsAAnagrafica() != null ? csASoggetto.getCsAAnagrafica().getCf() : null;
+	          	if (cf != null) {
+	          		dtoL.setObj(cf);
+					listaRelazioniDTO.addAll(diarioService.findRelazioniPaiEsterniByCF(dtoL));
+				} 
+			} else {
+
+				listaRelazioniDTO = this.listaRelazioniDTO("propostaAttivitaExt");
+			}
+			
 			
 			CsDRelazione rel = null;
 			if(this.idRelazioneSelezionata != null){
@@ -342,11 +461,25 @@ public class RelazioniBean extends FascicoloCompSecondoLivello implements IRelaz
 			}
 			
 			
-			if(!rel.getLstConChi().isEmpty()){
+			
+			
+			
+			if(rel.getLstConChi() != null && !rel.getLstConChi().isEmpty()){
 				for(CsCDiarioConchi cs : rel.getLstConChi()){
 					this.lstConChiSel.add(String.valueOf(cs.getId()));
 				}
 			}
+			
+			if(rel.getLstRiunioneConChi()!= null && !rel.getLstRiunioneConChi().isEmpty()) {
+				this.selectedRiunioneConChi.clear();
+				this.selectedRiunioneConChiToView.clear();
+				for(CsOSettore cs : rel.getLstRiunioneConChi()){
+					this.selectedRiunioneConChi.add(String.valueOf(cs.getId()));
+					this.selectedRiunioneConChiToView.add(cs.getCsOOrganizzazione().getNome() + " - " + cs.getNome() );
+				}
+			}
+			
+			
 			//Load full
 			BaseDTO dto = new BaseDTO();
 			fillEnte(dto);
@@ -366,20 +499,25 @@ public class RelazioniBean extends FascicoloCompSecondoLivello implements IRelaz
 			}
 					
 			listaFogliAmmCollegati = new ArrayList<DatiInterventoBean>();
+			List<CsAComponente> listaParenti = CsUiCompBaseBean.caricaParenti(idSoggetto, null);
 			for(CsDDiario d : relazioneDTO.getRelazione().getCsDDiario().getCsDDiariPadre()){
 				if(d.getCsTbTipoDiario().getId().equals(DataModelCostanti.TipoDiario.FOGLIO_AMM_ID)) {
 					fillEnte(dto);
 					dto.setObj(d.getId());
 					CsFlgIntervento fgl = diarioService.findFglInterventoById(dto);
-					DatiInterventoBean dib = new DatiInterventoBean(fgl.getCsIIntervento(), idSoggetto);
+					DatiInterventoBean dib = new DatiInterventoBean(fgl.getCsIIntervento(), idSoggetto, listaParenti);
 					listaFogliAmmCollegati.add(dib);
 				}
 			}
 			
-			if (isTreeViewTipoIntervento())//SISO-1110
-			    tipoInterventoManBean.reset();
-			else
-				tipoInterventoManBean.resetCustomIstat();
+			if (tipoInterventoManBean != null) {
+				if (isTreeViewTipoIntervento())// SISO-1110
+					
+					tipoInterventoManBean.reset();
+				else 
+					tipoInterventoManBean.resetCustomIstat();
+			}
+			
 						
 			resetWizardStep();
 			selectedProblematicaId=null;
@@ -434,6 +572,8 @@ public class RelazioniBean extends FascicoloCompSecondoLivello implements IRelaz
 		diarioDocsMan = new DiarioDocsMan();
 		diarioDocsMan.getuFileMan().setExternalSave(true);
 	}
+	
+	
     			
     @Override 			
 	protected void save() {
@@ -443,24 +583,18 @@ public class RelazioniBean extends FascicoloCompSecondoLivello implements IRelaz
 		}
 		
 		try{
-//			if(listaTipiInterventoAttivi != null)
-//			{	
-//				HashSet<CsCTipoIntervento> csCTipoInterventos = new HashSet<CsCTipoIntervento>();
-//				relazioneDTO.getRelazione().setCsCTipoInterventos(csCTipoInterventos);
-//				for(CsCTipoIntervento intervento: listaTipiInterventoAttivi)
-//				{					
-//					csCTipoInterventos.add(intervento);			
-//				}
-//			}
-//			
-			BaseDTO dto = new BaseDTO();
+
+			SaveRelazioneDTO dto = new SaveRelazioneDTO();
 			fillEnte(dto);
 						
 			//se ho editato la scheda triage
 			if(relazioneDTO.getRelazione().getMicroAttivita().getFlagTipoForm().equals("3")){
-			   dto.setObj2(relazioneDTO.getTriage());	
+			   dto.setTriage(relazioneDTO.getTriage());	
 			}
-
+			//SISO 1257 - se ho editato la scheda 
+			if(relazioneDTO.isAttivitaSAL()){
+			   dto.setSal(relazioneDTO.getSal());	
+			}			
 			if (relazioneDTO.getRelazione().getDiarioId() != null) {
 
 				if (removeFile || (loadRelazione && !uploadDisabled)) {
@@ -476,7 +610,7 @@ public class RelazioniBean extends FascicoloCompSecondoLivello implements IRelaz
 					}
 				}
 				
-				dto.setObj(relazioneDTO.getRelazione());
+				dto.setRelazione(relazioneDTO.getRelazione());
 				this.valorizzaSecondoLivello(relazioneDTO.getRelazione().getCsDDiario());
 				
 				diarioService.updateRelazione(dto);
@@ -484,9 +618,20 @@ public class RelazioniBean extends FascicoloCompSecondoLivello implements IRelaz
 
 				CsOOperatoreSettore opSettore = getCurrentOpSettore();
 				
-				dto.setObj(relazioneDTO.getRelazione());
-				dto.setObj2(idCaso);
-				dto.setObj3(opSettore);
+				dto.setRelazione(relazioneDTO.getRelazione());
+				
+				FacesContext context = FacesContext.getCurrentInstance();
+				progettiIndividualiExtBean = (ProgettiIndividualiExtBean) context.getApplication()
+						.evaluateExpressionGet(context, "#{progettiInvidualiExt}", ProgettiIndividualiExtBean.class);
+				
+				Long idCasoCorrente = null;
+				if (fromFascicoloCartellaUtente)
+					idCasoCorrente = idCaso;
+				else if (progettiIndividualiExtBean != null && progettiIndividualiExtBean.getPaiBean().getIdCasoSoggEsterno() != null)
+					idCasoCorrente = progettiIndividualiExtBean.getPaiBean().getIdCasoSoggEsterno();
+				
+				dto.setCasoId(idCasoCorrente);
+				dto.setOpSettore(opSettore);
 		
 		        this.valorizzaSecondoLivello(relazioneDTO.getRelazione().getCsDDiario());
 		        
@@ -495,16 +640,27 @@ public class RelazioniBean extends FascicoloCompSecondoLivello implements IRelaz
 				//Invio alert nuovo inserimento
 				BaseDTO bdto = new BaseDTO();
 				fillEnte(bdto);
-				bdto.setObj(getCsASoggetto().getCsAAnagrafica().getCf());
 				bdto.setObj2(opSettore);
 				bdto.setObj3(DataModelCostanti.TipiAlertCod.RELAZIONE);
 				bdto.setObj4("una nuova attività professionale");
-				
-				alertService.addAlertNuovoInserimentoToResponsabileCaso(bdto);
+				if (fromFascicoloCartellaUtente) {
+					
+					bdto.setObj(getCsASoggetto().getCsAAnagrafica().getCf());
+					alertService.addAlertNuovoInserimentoToResponsabileCaso(bdto);
+				} else {
+					// Pai esterno con soggetto che possiede presente in fascicolo
+					if (progettiIndividualiExtBean != null
+							&& progettiIndividualiExtBean.getPaiBean().getIdCasoSoggEsterno() != null
+							&& progettiIndividualiExtBean.getPaiBean().getSoggRiferimentoPai() != null
+							&& progettiIndividualiExtBean.getPaiBean().getSoggRiferimentoPai().getCf() != null) {
+						bdto.setObj(progettiIndividualiExtBean.getPaiBean().getSoggRiferimentoPai().getCf());
+						alertService.addAlertNuovoInserimentoToResponsabileCaso(bdto);
+					}
+				}
 			}
 			
 			// salvo il documento
-			if (this.loadRelazione){
+			if (this.loadRelazione || relazioneDTO.isAttivitaSAL()){
 				diarioDocsMan.getuFileMan().setIdDiario(relazioneDTO.getRelazione().getCsDDiario().getId());
 				for(CsLoadDocumento loadDoc: diarioDocsMan.getuFileMan().getDocumentiUploaded())
 					diarioDocsMan.getuFileMan().salvaDocumento(loadDoc);
@@ -514,9 +670,16 @@ public class RelazioniBean extends FascicoloCompSecondoLivello implements IRelaz
 			RequestContext.getCurrentInstance().addCallbackParam("saved", true);
 
 			//inizio modifica evoluzione-pai
-			FascicoloBean fbean = (FascicoloBean) getReferencedBean("fascicoloBean");
-			if (fbean != null && fbean.getPaiBean()!=null) { 
-				fbean.getPaiBean().refreshPicklistRelazioni(relazioneDTO);
+			RelazioneSintesiDTO sintesi = this.convertiSintesiDTO(relazioneDTO);
+			if (fromFascicoloCartellaUtente) {
+				FascicoloBean fbean = (FascicoloBean) getReferencedBean("fascicoloBean");
+				if (fbean != null && fbean.getPaiBean()!=null) { 
+					fbean.getPaiBean().refreshPicklistRelazioni(sintesi);
+				}
+			} else {
+				if ( progettiIndividualiExtBean != null) {
+					progettiIndividualiExtBean.getPaiBean().refreshPicklistRelazioni(sintesi);
+				}
 			}
 			//fine modifica evoluzione-pai
 			
@@ -529,11 +692,11 @@ public class RelazioniBean extends FascicoloCompSecondoLivello implements IRelaz
 					famigliaSelezionata.add(da);
 				}
 			}
-			dto = new BaseDTO();
-			dto.setObj(famigliaSelezionata);
-			dto.setObj2(relazioneDTO.getRelazione().getDiarioId());
-			fillEnte(dto);
-			famigliaSelezionata = diarioService.saveDiarioAnagrafica(dto);
+			BaseDTO bDto = new BaseDTO();
+			bDto.setObj(famigliaSelezionata);
+			bDto.setObj2(relazioneDTO.getRelazione().getDiarioId());
+			fillEnte(bDto);
+			famigliaSelezionata = diarioService.saveDiarioAnagrafica(bDto);
 			
 			initializeData();
 			
@@ -544,6 +707,21 @@ public class RelazioniBean extends FascicoloCompSecondoLivello implements IRelaz
 		
 	}
 	
+    private RelazioneSintesiDTO convertiSintesiDTO(RelazioneDTO in){
+    	RelazioneSintesiDTO out = new RelazioneSintesiDTO();
+    	out.setDiarioId(in.getRelazione().getDiarioId());
+    	out.setDtAmministrativa(in.getRelazione().getCsDDiario().getDtAmministrativa());
+    	out.setSituazioneAmbientale(in.getRelazione().getSituazioneAmb());
+    	out.setSituazioneParentale(in.getRelazione().getSituazioneParentale());
+    	out.setSituazioneSanitaria(in.getRelazione().getSituazioneSanitaria());
+    	out.setProposta(in.getRelazione().getProposta());
+    	out.setDescMacroAttivita(in.getRelazione().getMacroAttivita().getDescrizione());
+    	out.setDescMicroAttivita(in.getRelazione().getMicroAttivita().getDescrizione());
+    	out.setTipoFormMicroAttivita(in.getRelazione().getMicroAttivita().getFlagTipoForm());
+    	out.setPaiCollegati(in.getListaIdsPaiCollegati());
+    	return out;
+    }
+    
 	private boolean validaRelazione() {
 		
 		boolean ok = true;
@@ -586,31 +764,87 @@ public class RelazioniBean extends FascicoloCompSecondoLivello implements IRelaz
 	}
 	
 	@Override
-	public List<SelectItem> getListaTipiIntervento()  {
-		
-		if(listaTipiIntervento == null) {
-			try{
-				logger.debug("RelazioniBean - getListaTipiIntervento");
-				listaTipiIntervento = new ArrayList<SelectItem>();
-				InterventoDTO dto = new InterventoDTO();
-				fillEnte(dto);
-				dto.setLstIdCatSoc(this.getLstIdCatSoc());
-		        CsOOperatoreSettore opSettore = getCurrentOpSettore();
-				dto.setIdSettore(opSettore.getCsOSettore().getId());
-				List<CsCTipoIntervento> lista = interventoService.findTipiInterventoSettoreCatSoc(dto);
-				for(CsCTipoIntervento i: lista){ 
-					boolean abilitato = i.getAbilitato()!=null && "1".equalsIgnoreCase(i.getAbilitato());
-					SelectItem si = new SelectItem((Long)i.getId(), i.getDescrizione());
-					si.setDisabled(!abilitato);
-					listaTipiIntervento.add(si);
+	public List<SelectItem> getListaTipiIntervento() {
+
+		if (listaTipiIntervento == null) {
+			listaTipiIntervento = new ArrayList<SelectItem>();
+			try {
+				if (fromFascicoloCartellaUtente) {
+					logger.debug("RelazioniBean - getListaTipiIntervento (fascicolo)");
+				
+					InterventoDTO dto = new InterventoDTO();
+					fillEnte(dto);
+					dto.setLstIdCatSoc(this.getLstIdCatSoc());
+					CsOOperatoreSettore opSettore = getCurrentOpSettore();
+					dto.setIdSettore(opSettore.getCsOSettore().getId());
+					List<CsCTipoIntervento> lista = interventoService.findTipiInterventoSettoreCatSoc(dto);
+					for (CsCTipoIntervento i : lista) {
+						boolean abilitato = i.getAbilitato() != null && i.getAbilitato();
+						SelectItem si = new SelectItem((Long) i.getId(), i.getDescrizione());
+						si.setDisabled(!abilitato);
+						listaTipiIntervento.add(si);
+					}
+				} else {
+					logger.debug("RelazioniBean - getListaTipiIntervento (ext)");
+					BaseDTO b = new BaseDTO();
+					fillEnte(b);
+					List<KeyValueDTO> lst = interventoService.findTipiInterventoAbilitati(b);
+					listaTipiIntervento = this.convertiLista(lst);
 				}
 			} catch (Exception e) {
 				addErrorFromProperties("caricamento.error");
-				logger.error(e.getMessage(),e);
+				logger.error(e.getMessage(), e);
 			}
 		}
-		
+
 		return listaTipiIntervento;
+	}
+	
+	public void loadListaTipiIntervento(String cf) {
+		String filterCategorie = "";
+		if (!StringUtils.isBlank(cf)) {
+			
+			BaseDTO sdto = new BaseDTO();
+			fillEnte(sdto);
+			sdto.setObj(cf);
+			boolean existCarSoc = soggettoService.esisteSchedaSoggettoByCF(sdto);
+			if (existCarSoc) {
+
+				try {
+					logger.debug("RelazioniBean - getListaTipiIntervento");
+					listaTipiIntervento = new ArrayList<SelectItem>();
+
+					List<CsCCategoriaSociale> lstCategorie = soggettoService.getCatSocAttualiByCF(sdto);
+					filterCategorie = this.getFilterCategorie(lstCategorie);
+					
+					List<Long> lst = new ArrayList<Long>();
+					if (lstCategorie != null) {
+						for (CsCCategoriaSociale c : lstCategorie)
+							lst.add(c.getId());
+					}
+
+					InterventoDTO dto = new InterventoDTO();
+					fillEnte(dto);
+					dto.setLstIdCatSoc(lst);
+					CsOOperatoreSettore opSettore = getCurrentOpSettore();
+					dto.setIdSettore(opSettore.getCsOSettore().getId());
+					List<CsCTipoIntervento> lista = interventoService.findTipiInterventoSettoreCatSoc(dto);
+					for (CsCTipoIntervento i : lista) {
+						boolean abilitato = i.getAbilitato() != null && i.getAbilitato();
+						SelectItem si = new SelectItem((Long) i.getId(), i.getDescrizione());
+						si.setDisabled(!abilitato);
+						listaTipiIntervento.add(si);
+					}
+
+					tipoInterventoManBean = new TipoInterventoManBean(listaTipiIntervento, filterCategorie);
+
+				} catch (Exception e) {
+					addErrorFromProperties("caricamento.error");
+					logger.error(e.getMessage(), e);
+				}
+			}
+		}
+
 	}
 	
 	@Override
@@ -822,7 +1056,6 @@ public class RelazioniBean extends FascicoloCompSecondoLivello implements IRelaz
 			relazioneDTO.getRelazione().setOrganizzazioneServizio(null);
 			relazioneDTO.getRelazione().setLstConChi(new ArrayList<CsCDiarioConchi>());
 			relazioneDTO.getRelazione().setConChiAltro(null);
-			relazioneDTO.getRelazione().setRiunioneCon(null);
 		}else{
 			diarioDocsMan = new DiarioDocsMan();
 			diarioDocsMan.getuFileMan().setExternalSave(true);
@@ -861,9 +1094,6 @@ public class RelazioniBean extends FascicoloCompSecondoLivello implements IRelaz
 //        }
     }
 
-	/**
-	 * @return the catalogoAttivita
-	 */
 	public List<SelectItem> getCatalogoAttivita() {
 		return catalogoAttivita;
 	}
@@ -942,11 +1172,13 @@ public class RelazioniBean extends FascicoloCompSecondoLivello implements IRelaz
 	}
 
 	public List<SelectItem> getLstRiunioneCon() {
-		if(this.lstRiunioneCon == null)
-			lstRiunioneCon = this.loadListaSettoriFlag(true);
+		readSettoriPerRiunione();
+		if(this.lstRiunioneCon == null || this.lstRiunioneCon.size()<0)
+			lstRiunioneCon = this.loadListaSettoriPartecipanti();
 		return lstRiunioneCon;
 	}
 
+	
 	private List<SelectItem> loadListaSettoriFlag(boolean riunioneCon) {
 		List<SelectItem> lista = new ArrayList<SelectItem>();
 		SelectItem nullSi = new SelectItem("NULL","- seleziona -");		
@@ -993,6 +1225,24 @@ public class RelazioniBean extends FascicoloCompSecondoLivello implements IRelaz
 		return lista;
 	}
 
+	private List<SelectItem> loadListaSettoriPartecipanti() {
+		List<SelectItem> lista = new ArrayList<SelectItem>();
+		
+		if (listaSettoriRiunione != null) {
+			for (CsOSettore obj : listaSettoriRiunione) {
+			
+					String nomeOrg = obj.getCsOOrganizzazione().getNome();
+					SelectItem si = new SelectItem(obj.getId(), nomeOrg + " - " +   obj.getNome());
+					si.setDisabled(!obj.getAbilitato());
+				
+					lista.add(si);
+				}				
+			}
+		
+		return lista;
+	
+	}
+	
 	public Converter getRiunioneConConverter() {
 		return new Converter() {
 
@@ -1065,6 +1315,26 @@ public class RelazioniBean extends FascicoloCompSecondoLivello implements IRelaz
 				for(CsCDiarioConchi cs : lstConChi){
 					if(cs.getId() == l){
 						relazioneDTO.getRelazione().getLstConChi().add(cs);
+					}
+				}
+					
+			}
+		}
+	}
+	
+	public void riunioneConChiSelezionato(){//AjaxBehaviorEvent event
+		if(relazioneDTO.getRelazione().getLstRiunioneConChi()!=null) {
+			relazioneDTO.getRelazione().getLstRiunioneConChi().clear();
+			selectedRiunioneConChiToView.clear();
+		}
+		
+		if(!selectedRiunioneConChi.isEmpty()) {
+			for(int i=0; i < selectedRiunioneConChi.size(); i++){
+				long l = Long.valueOf(selectedRiunioneConChi.get(i)).longValue();
+				for(CsOSettore cs : listaSettoriRiunione){
+					if(cs.getId() == l){
+						relazioneDTO.getRelazione().getLstRiunioneConChi().add(cs);
+						selectedRiunioneConChiToView.add(cs.getCsOOrganizzazione().getNome() + " - " + cs.getNome() );
 					}
 				}
 					
@@ -1331,12 +1601,17 @@ public class RelazioniBean extends FascicoloCompSecondoLivello implements IRelaz
 	 * @return
 	 */
 	public List<RelazioneDTO> listaRelazioniDTO(Object var) {
+		List<RelazioneDTO> lstRelazDToToReturn = new ArrayList<RelazioneDTO>();
 		if (var!=null && var.equals("propostaAttivita") ) { 
 			FascicoloBean fbean = (FascicoloBean) getReferencedBean("fascicoloBean");
-			return	fbean.getPaiBean().getTargetRelazioneDTO();
+			lstRelazDToToReturn =	fbean.getPaiBean().getListaRelazioniDTO();
+		} else if(var!=null && var.equals("propostaAttivitaExt")){;
+			ProgettiIndividualiExtBean fbean = (ProgettiIndividualiExtBean) getReferencedBean("progettiInvidualiExt");
+			lstRelazDToToReturn = fbean.getPaiBean().getListaRelazioniDTO();
 		} else { 
-			return this.listaRelazioniDTO;
+			lstRelazDToToReturn =  this.listaRelazioniDTO;
 		}
+		return lstRelazDToToReturn;
 	}
 
 	// INIZIO residuo-evoluzione-pai
@@ -1383,19 +1658,21 @@ public class RelazioniBean extends FascicoloCompSecondoLivello implements IRelaz
 
 	private void buildMap() {
 		this.idAna2diarioAna.clear();
-		for (CsAAnagrafica fam : anagrafiche) {
-			
-			//solo i familiari con CF valorizzato
-			if(fam.getCf() == null || fam.getCf().trim().isEmpty()){
-				continue;
+		if (anagrafiche != null) {
+			for (RisorsaCalcDTO fam : anagrafiche) {
+
+				// solo i familiari con CF valorizzato
+				if (StringUtils.isBlank(fam.getCf())) {
+					continue;
+				}
+
+				DiarioAnagraficaDTO da = new DiarioAnagraficaDTO();
+				da.setAnagraficaId(fam.getAnagraficaId());
+				da.setCf(fam.getCf());
+				da.setCognome(fam.getCognome());
+				da.setNome(fam.getNome());
+				idAna2diarioAna.put(fam.getAnagraficaId(), da);
 			}
-						
-			DiarioAnagraficaDTO da = new DiarioAnagraficaDTO();
-			da.setAnagraficaId(fam.getId());
-			da.setCf(fam.getCf());
-			da.setCognome(fam.getCognome());
-			da.setNome(fam.getNome());
-			idAna2diarioAna.put(fam.getId(), da);
 		}
 	}
 
@@ -1454,4 +1731,52 @@ public class RelazioniBean extends FascicoloCompSecondoLivello implements IRelaz
 		this.isTreeViewIntervento = isTreeViewIntervento;
 	}
 	//Fine SISO-1110
+
+	public boolean isFromFascicoloCartellaUtente() {
+		return fromFascicoloCartellaUtente;
+	}
+
+	public void setFromFascicoloCartellaUtente(boolean fromFascicoloCartellaUtente) {
+		this.fromFascicoloCartellaUtente = fromFascicoloCartellaUtente;
+	}
+
+	public ProgettiIndividualiExtBean getProgettiIndividualiExtBean() {
+		return progettiIndividualiExtBean;
+	}
+
+	public void setProgettiIndividualiExtBean(ProgettiIndividualiExtBean progettiIndividualiExtBean) {
+		this.progettiIndividualiExtBean = progettiIndividualiExtBean;
+	}
+
+	public void setLstRiunioneCon(List<SelectItem> lstRiunioneCon) {
+		this.lstRiunioneCon = lstRiunioneCon;
+	}
+
+	public List<String> getSelectedRiunioneConChi() {
+		return selectedRiunioneConChi;
+	}
+
+	public void setSelectedRiunioneConChi(List<String> selectedRiunioneConChi) {
+		this.selectedRiunioneConChi = selectedRiunioneConChi;
+	}
+
+	public List<CsOSettore> getListaSettoriRiunione() {
+		return listaSettoriRiunione;
+	}
+
+	public void setListaSettoriRiunione(List<CsOSettore> listaSettoriRiunione) {
+		this.listaSettoriRiunione = listaSettoriRiunione;
+	}
+
+	public List<String> getSelectedRiunioneConChiToView() {
+		return selectedRiunioneConChiToView;
+	}
+
+	public void setSelectedRiunioneConChiToView(List<String> selectedRiunioneConChiToView) {
+		this.selectedRiunioneConChiToView = selectedRiunioneConChiToView;
+	}
+
+	
+
+
 }

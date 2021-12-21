@@ -1,6 +1,7 @@
 package it.webred.cs.csa.ejb.ejb;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -98,16 +99,41 @@ public class AccessTablePsExportSessionBean extends CarSocialeBaseSessionBean im
 
 	@Override
 	public List<VErogExportHelp> findVErogExportHelp(BaseDTO dto) {
-		List<BigDecimal> ids = (List<BigDecimal>) dto.getObj();
-		return exportCasellarioDao.findVErogExportHelp(ids);
+		List<VErogExportHelp> lstOut = new ArrayList<VErogExportHelp>();
+		List<BigDecimal> idsTot = (List<BigDecimal>) dto.getObj();
+		List<BigDecimal> ids = new ArrayList<BigDecimal>();
+		int range = DataModelCostanti.MAX_PARAMS_QUERY_IN_CLAUSE;
+		int size = idsTot.size();
+		
+		int numChunck = size / range;
+		int residui = size % range;
+		   
+		int min = 0;
+		int max = numChunck > 0 ? range : size;
+		
+		int i = 0;
+		while(i < numChunck){
+			ids = idsTot.subList(min, max);
+			lstOut.addAll(exportCasellarioDao.findVErogExportHelp(ids));
+			min += range;
+			max += range;
+			i++;
+		}
+		
+		if(residui > 0){
+			max = min + residui;
+			ids = idsTot.subList(min, max);
+			lstOut.addAll(exportCasellarioDao.findVErogExportHelp(ids));
+		}
+		return lstOut;
 	}
 	
 
 	//INIZIO SISO-524 
 	@Override
-	public List<CsIPsExport> findCsIPsExportByCsIInterventoEsegIds(BaseDTO dto) {
+	public Boolean verificaErogazioniEsportateByEsegIds(BaseDTO dto) {
 		List<Long> ids = (List<Long>) dto.getObj();
-		return exportCasellarioDao.findCsIPsExportByCsIInterventoEsegIds(ids);
+		return exportCasellarioDao.verificaErogazioniEsportateByEsegIds(ids);
 	}
 	
 	/*
@@ -141,14 +167,6 @@ public class AccessTablePsExportSessionBean extends CarSocialeBaseSessionBean im
 		return result;
 	}
 	
-	// SISO-884
-	@Override
-	public List<CsIPsExport> findCsIPsExportByCsIInterventoEsegIdsExported(BaseDTO dto) {
-		List<Long> ids = (List<Long>) dto.getObj();
-		return exportCasellarioDao.findCsIPsExportByCsIInterventoEsegIdsExported(ids);
-	}
-
-	// SISO-884
 	@Override
 	public List<CsIPsExport> findCsIPsExportByCsIInterventoMastIdExported(BaseDTO dto) {
 		Long id = (Long) dto.getObj();

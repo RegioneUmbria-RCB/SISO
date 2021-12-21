@@ -36,13 +36,11 @@ import it.webred.ct.config.parameters.dto.ParameterSearchCriteria;
 public class GedRomaClient {
 
 	private final static Logger logger = Logger.getLogger("gedroma.log");
-//	private URL webServiceUrlGestioneDettaglio;
-//	private URL webServiceUrlGestioneAllegato;
-//	private URL webServiceUrlGestioneProtocollo;
+	
 	private String webServiceUrlGestioneDettaglio;
 	private String webServiceUrlGestioneAllegato;
 	private String webServiceUrlGestioneProtocollo;
-	
+
 	private String codiceApplicazioneChiamante;
 	private String passwordApplicazioneChiamante;
 	private String codiceProceduraChiamante;
@@ -70,16 +68,21 @@ public class GedRomaClient {
 	 */
 	private void initFromConfiguration() throws MalformedURLException, ConfigurationException {
 
-//		URL endpointGestioneDettaglio = new URL(getAttributeKey("gedRoma.dettaglioProtocollo.ws.url"));
-//		URL endpointGestioneAllegato = new URL(getAttributeKey("gedRoma.gestioneAllegato.ws.url"));
-//		URL endpointGestioneProtocollo = new URL(getAttributeKey("gedRoma.gestioneProtocollo.ws.url"));
 		String endpointGestioneDettaglio = getAttributeKey("gedRoma.dettaglioProtocollo.ws.url");
 		String endpointGestioneAllegato = getAttributeKey("gedRoma.gestioneAllegato.ws.url");
 		String endpointGestioneProtocollo = getAttributeKey("gedRoma.gestioneProtocollo.ws.url");
-		
+
 		String codiceApplicazioneChiamante = getAttributeKey("gedRoma.common.applicazioneChiamante");
 		String passwordApplicazioneChiamante = getAttributeKey("gedRoma.common.passwordApplicazioneChiamante");
 		String codiceProceduraChiamante = getAttributeKey("gedRoma.common.codiceProceduraChiamante");
+		
+		logger.debug("gedRoma.dettaglioProtocollo.ws.url: "+endpointGestioneDettaglio);
+		logger.debug("gedRoma.gestioneAllegato.ws.url: "+endpointGestioneAllegato);
+		logger.debug("gedRoma.gestioneProtocollo.ws.url: "+endpointGestioneProtocollo);
+		logger.debug("gedRoma.common.applicazioneChiamante:"+codiceApplicazioneChiamante);
+		//logger.debug("gedRoma.common.passwordApplicazioneChiamante:"+passwordApplicazioneChiamante);
+		logger.debug("gedRoma.common.codiceProceduraChiamante:"+codiceProceduraChiamante);
+		
 
 		if (endpointGestioneDettaglio == null || codiceApplicazioneChiamante == null
 				|| passwordApplicazioneChiamante == null || codiceProceduraChiamante == null) {
@@ -109,22 +112,22 @@ public class GedRomaClient {
 	 * @throws Exception
 	 */
 	public String inserisciAllegatoInProtocolloEsistente(NumeroProtocolloGED numeroProtocollo, String codiceDocumento,
-			AllegatoProtocolloGED allegato, String utenteCollegato) throws Exception {
-				
-		logger.debug("[GED - inserisciAllegatoInProtocolloEsistente] PARAMETRI IN INPUT 4:");
-		logger.debug("[GED - inserisciAllegatoInProtocolloEsistente] " + numeroProtocollo.toString());
-		logger.debug("[GED - inserisciAllegatoInProtocolloEsistente] codiceDocumento: " + codiceDocumento);
-		logger.debug("[GED - inserisciAllegatoInProtocolloEsistente] " + allegato.toString());
-		logger.debug("[GED - inserisciAllegatoInProtocolloEsistente] utenteCollegato: " + utenteCollegato);
+			AllegatoProtocolloGED allegato, String codiceFiscale_Cittadino) throws Exception {
 
-		NumeroAllegato numeroAllegato = chiamaWsInserimentoAllegato(numeroProtocollo, codiceDocumento, allegato, utenteCollegato);
+		logger.debug("[GED - inserisciAllegatoInProtocolloEsistente] PARAMETRI IN INPUT 4:");
+		logger.debug("[GED - inserisciAllegatoInProtocolloEsistente] numeroProtocollo: " + numeroProtocollo.toString());
+		logger.debug("[GED - inserisciAllegatoInProtocolloEsistente] codiceDocumento: " + codiceDocumento);
+		logger.debug("[GED - inserisciAllegatoInProtocolloEsistente] allegato: " + allegato.toString());
+		logger.debug("[GED - inserisciAllegatoInProtocolloEsistente] codiceFiscale cittadino: " + codiceFiscale_Cittadino);
+
+		NumeroAllegato numeroAllegato = chiamaWsInserimentoAllegato(numeroProtocollo, codiceDocumento, allegato, codiceFiscale_Cittadino);
 
 		if (numeroAllegato.getErrore() != null) {
 			logger.error("Si è verificato il seguente errore: '" + numeroAllegato.getErrore().getCodiceErrore() + " - "
 					+ numeroAllegato.getErrore().getDescrizioneErrore() + "'");
 			throw new Exception(numeroAllegato.getErrore().getDescrizioneErrore());
 		}
-		
+
 		logger.debug("[GED - inserisciAllegatoInProtocolloEsistente] OUTPUT: numeroAllegato: " + numeroAllegato.getNumeroAllegato());
 
 		return numeroAllegato.getNumeroAllegato();
@@ -140,7 +143,7 @@ public class GedRomaClient {
 	public NumeroProtocolloGED protocollazioneMittenteEsterno(String tipoDocumentoGED, String testoOggetto,
 			String noteDocumento, NominativoGED nominativoMittente, String idUnivocoProceduraChiamante)
 			throws MalformedURLException {
-		
+
 		Autenticazione autenticazione = creaAutenticazioneGED();
 		logger.debug("[GED - protocollazioneMittenteEsterno] autenticazione OK");
 
@@ -156,20 +159,22 @@ public class GedRomaClient {
 		ArrayOf186797045598279129NillableStrutturaDestinataria destinatari = new ArrayOf186797045598279129NillableStrutturaDestinataria();
 
 		ArrayOf186797045598279129NillableNominativo interessati = new ArrayOf186797045598279129NillableNominativo();
-		
+
 		logger.debug("[GED - protocollazioneMittenteEsterno] PARAMETRI IN INPUT 5:");
 		logger.debug("[GED - protocollazioneMittenteEsterno] tipoDocumentoGED: " + tipoDocumentoGED);
 		logger.debug("[GED - protocollazioneMittenteEsterno] testoOggetto: " + testoOggetto);
 		logger.debug("[GED - protocollazioneMittenteEsterno] noteDocumento: " + noteDocumento);
-		logger.debug("[GED - protocollazioneMittenteEsterno] " + nominativoMittente.toString());
+		logger.debug("[GED - protocollazioneMittenteEsterno] nominativoMittente: " + nominativoMittente.toString());
 		logger.debug("[GED - protocollazioneMittenteEsterno] idUnivocoProceduraChiamante: " + idUnivocoProceduraChiamante);
-		logger.debug("[GED - protocollazioneMittenteEsterno] datiProtocollazione --> isIsEsistente: " + datiProtocollazione.isIsEsistente() + ", tipoCodificaStruttura: " + datiProtocollazione.getTipoCodificaStruttura()  + " isIsDocumentoRiservato: " + datiProtocollazione.isIsDocumentoRiservato() );
+		logger.debug("[GED - protocollazioneMittenteEsterno] datiProtocollazione --> isIsEsistente: "+ datiProtocollazione.isIsEsistente() + ", "
+				+ "tipoCodificaStruttura: " + datiProtocollazione.getTipoCodificaStruttura() + ""
+				+ " isIsDocumentoRiservato: "+ datiProtocollazione.isIsDocumentoRiservato());
 
-		ResultProtocollazione result = chiamaWsProtocollazione(autenticazione, tipologiaDocumenti, datiProtocollazione,
-				nominativo, destinatari, interessati);
+		ResultProtocollazione result = chiamaWsProtocollazione(autenticazione, tipologiaDocumenti, datiProtocollazione,nominativo, destinatari, interessati);
 		logger.debug("[GED - protocollazioneMittenteEsterno] chiamaWsProtocollazione OK");
-		
-		logger.debug("[GED - protocollazioneMittenteEsterno] OUTPUT: codice: " + result.getCodice() + ", descrizione: " + result.getDescrizione() + ", tipo: " + result.getTipo());
+
+		logger.debug("[GED - protocollazioneMittenteEsterno] OUTPUT: codice: " + result.getCodice() + ", "
+				+ "descrizione: "+ result.getDescrizione() + ", tipo: " + result.getTipo());
 
 		return decodificaRispostaWebService(result);
 	}
@@ -182,24 +187,23 @@ public class GedRomaClient {
 	 * @return
 	 * @throws Exception
 	 */
-	public boolean ricercaProtocolloSingolo(String codiceDocumentoGED, NumeroProtocolloGED numeroProtocollo,
-			String utenteCollegato) throws Exception {
+	public String ricercaProtocolloSingolo(String codiceDocumentoGED, NumeroProtocolloGED numeroProtocollo,String utenteCollegato) throws Exception {
 
 		logger.debug("[GED - ricercaProtocolloSingolo] PARAMETRI IN INPUT 3:");
 		logger.debug("[GED - ricercaProtocolloSingolo] codiceDocumentoGED: " + codiceDocumentoGED);
-		logger.debug("[GED - ricercaProtocolloSingolo] " + numeroProtocollo.toString());
+		logger.debug("[GED - ricercaProtocolloSingolo] numeroProtocollo: " + numeroProtocollo.toString());
 		logger.debug("[GED - ricercaProtocolloSingolo] utenteCollegato: " + utenteCollegato);
 
-		ProtocolloConAllegati protocolloConAllegati = chiamaWsDettaglioProtocollo(codiceDocumentoGED, numeroProtocollo,
-				utenteCollegato);
+		ProtocolloConAllegati protocolloConAllegati = chiamaWsDettaglioProtocollo(codiceDocumentoGED, numeroProtocollo,utenteCollegato);
 
-		logger.debug("[GED - ricercaProtocolloSingolo] OUTPUT: getAnnoProtocollo: " + protocolloConAllegati.getAnnoProtocollo());
-		
-		if(protocolloConAllegati.getErrore() != null)
-		{
-			logger.debug("[GED - ricercaProtocolloSingolo] ERRORE: codice: " + protocolloConAllegati.getErrore().getCodiceErrore() + " , descrizione: " + protocolloConAllegati.getErrore().getDescrizioneErrore());
+		logger.debug("[GED - ricercaProtocolloSingolo] OUTPUT: getAnnoProtocollo: "+ protocolloConAllegati.getAnnoProtocollo());
+
+		if (protocolloConAllegati.getErrore() != null) {
+			logger.debug("[GED - ricercaProtocolloSingolo] ERRORE: codice: "
+					+ protocolloConAllegati.getErrore().getCodiceErrore() + " , descrizione: "
+					+ protocolloConAllegati.getErrore().getDescrizioneErrore());
 		}
-		
+
 		return decodificaRispostaWsRicercaDettaglioProtocollo(protocolloConAllegati);
 	}
 
@@ -208,9 +212,8 @@ public class GedRomaClient {
 	// ====================================================================================
 	// METODI PRIVATI
 
-	private ProtocolloConAllegati chiamaWsDettaglioProtocollo(String codiceDocumentoGED,
-			NumeroProtocolloGED numeroProtocollo, String utenteCollegato) {
-		DettaglioProtocollo dettaglioProtocollo = new DettaglioProtocollo();		
+	private ProtocolloConAllegati chiamaWsDettaglioProtocollo(String codiceDocumentoGED,NumeroProtocolloGED numeroProtocollo, String utenteCollegato) {
+		DettaglioProtocollo dettaglioProtocollo = new DettaglioProtocollo();
 		dettaglioProtocollo.setCodiceApplicazioneChiamante(getCodiceApplicazioneChiamante());
 		dettaglioProtocollo.setPasswordApplicazioneChiamante(getPasswordApplicazioneChiamante());
 		dettaglioProtocollo.setCodiceProcedura(getCodiceProceduraChiamante());
@@ -218,57 +221,69 @@ public class GedRomaClient {
 		dettaglioProtocollo.setTipoProtocollo(numeroProtocollo.getTipoProtocollo());
 		dettaglioProtocollo.setAnnoProtocollo(numeroProtocollo.getAnnoProtocollo());
 		dettaglioProtocollo.setNumeroProgressivoProtocollo(numeroProtocollo.getNumeroProgressivoProtocollo());
-		dettaglioProtocollo.setUtenteCollegato(utenteCollegato);        
-		
+		dettaglioProtocollo.setUtenteCollegato(utenteCollegato);
+
 		URL url = getClass().getClassLoader().getResource(webServiceUrlGestioneDettaglio);
-		System.out.println("url: "+  url.toString());
-		
+		logger.debug("url: " + url.toString());
+
 		GestoreDettaglioProtocolloV2Service gestoreDettaglioProtocolloV2service = new GestoreDettaglioProtocolloV2Service(url);
 		GestoreDettaglioProtocolloV2 gestoreDettaglioProtocolloV2proxy = gestoreDettaglioProtocolloV2service.getGestoreDettaglioProtocolloV2();
-		
+
 		ProtocolloConAllegati protocolloConAllegati = gestoreDettaglioProtocolloV2proxy.dettaglioProtocollo(
 				dettaglioProtocollo.getCodiceApplicazioneChiamante(),
 				dettaglioProtocollo.getPasswordApplicazioneChiamante(), dettaglioProtocollo.getCodiceProcedura(),
 				dettaglioProtocollo.getCodiceDocumento(), dettaglioProtocollo.getTipoProtocollo(),
 				dettaglioProtocollo.getAnnoProtocollo(), dettaglioProtocollo.getNumeroProgressivoProtocollo(),
 				dettaglioProtocollo.getUtenteCollegato(), dettaglioProtocollo.getStrutturaUtenteCollegato());
-		
-		
-		
+
 		return protocolloConAllegati;
 	}
 
-	private boolean decodificaRispostaWsRicercaDettaglioProtocollo(ProtocolloConAllegati protocolloConAllegati)
-			throws Exception {
+	private String decodificaRispostaWsRicercaDettaglioProtocollo(ProtocolloConAllegati protocolloConAllegati)throws Exception {
 		if (protocolloConAllegati.getErrore() != null) {
-			if (protocolloConAllegati.getErrore().getCodiceErrore()
-					.equalsIgnoreCase(CODICE_ERRORE_PROTOCOLLO_NON_TROVATO)) {
+			if (protocolloConAllegati.getErrore().getCodiceErrore().equalsIgnoreCase(CODICE_ERRORE_PROTOCOLLO_NON_TROVATO)) {
 				logger.error("[GED - ricercaProtocolloSingolo/decodificaRispostaWsRicercaDettaglioProtocollo] OUTPUT: false - Protocollo non trovato");
-				return false;
+				return "Il numero di protocollo inserito non risulta presente nel GED.";
 			} else {
-				throw new GedRomaException(protocolloConAllegati.getErrore().getCodiceErrore(),
-						(protocolloConAllegati.getErrore().getDescrizioneErrore()));
+				throw new GedRomaException(protocolloConAllegati.getErrore().getCodiceErrore(),(protocolloConAllegati.getErrore().getDescrizioneErrore()));
 			}
 		}
-		
+
 		logger.debug("[GED - ricercaProtocolloSingolo/decodificaRispostaWsRicercaDettaglioProtocollo] OUTPUT: true");
 
-		return true;
+		StringBuilder messaggioProtocolloEsistente = new StringBuilder();
+		messaggioProtocolloEsistente.append("Il numero di protocollo inserito risulta presente nel GED.");
+		messaggioProtocolloEsistente.append("<br><br>");
+		messaggioProtocolloEsistente.append("STRUTTURA: " + protocolloConAllegati.getTipoProtocollo());
+		messaggioProtocolloEsistente.append("<br>");
+		messaggioProtocolloEsistente.append("ANNO: " + protocolloConAllegati.getAnnoProtocollo());
+		messaggioProtocolloEsistente.append("<br>");
+		messaggioProtocolloEsistente.append("N.PROTOCOLLO: " + protocolloConAllegati.getProgressivoProtocollo());
+		messaggioProtocolloEsistente.append("<br>");
+		messaggioProtocolloEsistente.append("MITTENTE: " + protocolloConAllegati.getMittenti().getMittente().get(0).getDescrizioneMittente());
+		messaggioProtocolloEsistente.append("<br>");
+		messaggioProtocolloEsistente.append("DESTINATARIO: " + protocolloConAllegati.getDestinatari().getDestinatario().get(0).getDescrizioneDestinatario());
+		messaggioProtocolloEsistente.append("<br>");
+		messaggioProtocolloEsistente.append("STRUTTURA PROTOCOLLANTE: " + protocolloConAllegati.getCodiceStrutturaProtocollante() + " - " + protocolloConAllegati.getDescrizioneStrutturaProtocollante());
+		messaggioProtocolloEsistente.append("<br>");
+		messaggioProtocolloEsistente.append("UTENTE PROTOCOLLANTE: " + protocolloConAllegati.getDescrizioneUtenteProtocollante() + " - " + protocolloConAllegati.getUtenteProtocollante());		
+		
+		return messaggioProtocolloEsistente.toString();
 	}
 
 	private NumeroAllegato chiamaWsInserimentoAllegato(NumeroProtocolloGED numeroProtocollo, String codiceDocumento,
-			AllegatoProtocolloGED allegato, String utenteCollegato) {
-		
+			AllegatoProtocolloGED allegato, String codiceFiscale_Cittadino) {
+
 		URL url = getClass().getClassLoader().getResource(webServiceUrlGestioneAllegato);
-		System.out.println("url: "+  url.toString());
-		
+		logger.debug("url: " + url.toString());
+
 		GestoreAllegatoService gestoreAlegatoService = new GestoreAllegatoService(url);
 		GestoreAllegato gestoreAllegatoProxy = gestoreAlegatoService.getGestoreAllegato();
 
 		Integer DIMENSIONE_FILE = new Integer(0); // probabilmente non serve
 		String TIPO_FILE = null; // nell'esempio questo parametro è NULL
 		NumeroAllegato numeroAllegato = gestoreAllegatoProxy.inserimentoAllegato(getCodiceApplicazioneChiamante(),
-				getPasswordApplicazioneChiamante(), getCodiceProceduraChiamante(), codiceDocumento, utenteCollegato,
+				getPasswordApplicazioneChiamante(), getCodiceProceduraChiamante(), codiceDocumento, codiceFiscale_Cittadino,
 				numeroProtocollo.getTipoProtocollo(), numeroProtocollo.getAnnoProtocollo(),
 				numeroProtocollo.getNumeroProgressivoProtocollo(), allegato.getDescrizione(), allegato.getNomeFile(),
 				DIMENSIONE_FILE, TIPO_FILE, allegato.getAllegato());
@@ -279,25 +294,22 @@ public class GedRomaClient {
 		NumeroProtocolloGED numeroProtocolloGED = null;
 
 		ArrayOfNumeroProtocollo protocolli = result.getNumeroProtocolli();
-		
-		if(protocolli != null)
-		{
+
+		if (protocolli != null) {
 			List<NumeroProtocollo> listaProtocolli = protocolli.getNumeroProtocollo();
-	
+
 			if (listaProtocolli.isEmpty() == false) {
 				NumeroProtocollo numeroProtocolo = listaProtocolli.get(0);
-	
+
 				numeroProtocolloGED = NumeroProtocolloGED.CreaNumeroProtocollo(numeroProtocolo.getTipoProtocollo(),
 						numeroProtocolo.getAnnoProtocollo(), numeroProtocolo.getProgressivoProtocollo());
 			}
-			
-			logger.debug("[GED - protocollazioneMittenteEsterno/decodificaRispostaWebService] OUTPUT: numeroProtocolloGED: " + numeroProtocolloGED.toString());
+
+			logger.debug("[GED - protocollazioneMittenteEsterno/decodificaRispostaWebService] OUTPUT: numeroProtocolloGED: "+ numeroProtocolloGED.toString());
+		} else {
+			logger.debug("[GED - protocollazioneMittenteEsterno/decodificaRispostaWebService] result.getNumeroProtocolli() è null ");
 		}
-		else
-		{
-			logger.debug("[GED - protocollazioneMittenteEsterno/decodificaRispostaWebService] result.getNumeroProtocolli() è null ");		
-		}
-		
+
 		return numeroProtocolloGED;
 	}
 
@@ -305,10 +317,10 @@ public class GedRomaClient {
 			TipologiaDocumenti tipologiaDocumenti, DatiProtocollazione datiProtocollazione, Nominativo nominativo,
 			ArrayOf186797045598279129NillableStrutturaDestinataria destinatari,
 			ArrayOf186797045598279129NillableNominativo interessati) {
-		
+
 		URL url = getClass().getClassLoader().getResource(webServiceUrlGestioneProtocollo);
-		System.out.println("url: "+  url.toString());
-		
+		logger.debug("url: " + url.toString());
+
 		GestoreGEDPRTService gestoreGEDPRTService = new GestoreGEDPRTService(url);
 		GestoreGEDPRT gestoreGEDPRTProxy = gestoreGEDPRTService.getGestoreGEDPRT();
 
@@ -320,15 +332,12 @@ public class GedRomaClient {
 	private Nominativo creaNominativo(NominativoGED nominativoMittente) {
 		Nominativo nominativo = new Nominativo();
 		nominativo.setTipoNominativo(getAttributeKey("gedRoma.gestioneProtocollo.nominativo.tipo"));
-		// TODO: verificare se questo parametro è fisso (per ora codiceGED è fisso)
-		nominativo.setCodiceGED(getAttributeKey("gedRoma.gestioneProtocollo.nominativo.codiceGED"));
 		nominativo.setDescrizioneNominativo(nominativoMittente.getDescrizione());
 		nominativo.setCodiceFiscale(nominativoMittente.getCodiceFiscale());
 		return nominativo;
 	}
 
-	private DatiProtocollazione creaDatiProtocollazione(String testoOggetto, String noteDocumento,
-			String idUnivocoProceduraChiamante) {
+	private DatiProtocollazione creaDatiProtocollazione(String testoOggetto, String noteDocumento, String idUnivocoProceduraChiamante) {
 		DatiProtocollazione datiProtocollazione = new DatiProtocollazione();
 		datiProtocollazione.setTestoOggetto(testoOggetto);
 		datiProtocollazione.setNoteDocumento(noteDocumento);
@@ -336,7 +345,7 @@ public class GedRomaClient {
 		datiProtocollazione.setIsEsistente(new Boolean(getAttributeKey("gedRoma.gestioneProtocollo.datiProtocollazione.isEsistente")));
 		datiProtocollazione.setTipoCodificaStruttura(getAttributeKey("gedRoma.gestioneProtocollo.datiProtocollazione.tipoCodStrutt"));
 		datiProtocollazione.setIsDocumentoRiservato(false);
-		
+
 		return datiProtocollazione;
 	}
 
@@ -403,8 +412,7 @@ public class GedRomaClient {
 	}
 
 	private String getAttributeKey(String keyConf) {
-		ParameterService paramService = (ParameterService) getEjb("CT_Service", "CT_Config_Manager",
-				"ParameterBaseService");
+		ParameterService paramService = (ParameterService) getEjb("CT_Service", "CT_Config_Manager","ParameterBaseService");
 		ParameterSearchCriteria criteria = new ParameterSearchCriteria();
 		criteria.setKey(keyConf);
 		return paramService.getAmKeyValueExt(criteria).getValueConf();

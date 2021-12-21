@@ -76,7 +76,7 @@
                                     LEFT JOIN AM_APPLICATION_ITEM ai ON air.FK_AM_APPLICATION_ITEM = ai.ID
                                     LEFT JOIN AM_APPLICATION a ON ai.FK_AM_APPLICATION = a.NAME
                                     LEFT JOIN AM_INSTANCE i ON ai.FK_AM_APPLICATION = i.FK_AM_APPLICATION
-                                    LEFT JOIN AM_INSTANCE_COMUNE ic ON i.NAME = ic.FK_AM_INSTANCE
+                                    LEFT JOIN AM_INSTANCE_COMUNE ic ON (i.NAME = ic.FK_AM_INSTANCE AND g.FK_AM_COMUNE=IC.FK_AM_COMUNE)
                                     ) sel ,
                                     AM_PERMISSION_AIR PAIR, AM_PERMISSION P
                                     where PAIR.FK_AM_AI_ROLE = sel.id_air
@@ -102,7 +102,7 @@
                                     LEFT JOIN AM_APPLICATION_ITEM ai ON air.FK_AM_APPLICATION_ITEM = ai.ID
                                     LEFT JOIN AM_APPLICATION a ON ai.FK_AM_APPLICATION = a.NAME
                                     LEFT JOIN AM_INSTANCE i ON ai.FK_AM_APPLICATION = i.FK_AM_APPLICATION
-                                    LEFT JOIN AM_INSTANCE_COMUNE ic ON i.NAME = ic.FK_AM_INSTANCE
+                                    LEFT JOIN AM_INSTANCE_COMUNE ic ON (i.NAME = ic.FK_AM_INSTANCE AND g.FK_AM_COMUNE=IC.FK_AM_COMUNE)
                                     ) sel ,
                                     AM_PERMISSION_AIR PAIR, AM_PERMISSION P
                                     where PAIR.FK_AM_AI_ROLE = sel.id_air

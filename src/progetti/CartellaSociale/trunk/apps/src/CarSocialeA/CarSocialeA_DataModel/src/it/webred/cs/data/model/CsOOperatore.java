@@ -5,7 +5,6 @@ import java.io.Serializable;
 import javax.persistence.*;
 
 import java.util.Date;
-import java.util.List;
 import java.util.Set;
 
 
@@ -135,8 +134,8 @@ public class CsOOperatore implements Serializable {
 	
 	public String getDenominazione(){
 		denominazione = "";
-		if (this.csOOperatoreAnagrafica != null && (csOOperatoreAnagrafica.getCognome()!=null || csOOperatoreAnagrafica.getNome()!=null))
-			denominazione = csOOperatoreAnagrafica.getCognome() + " " + csOOperatoreAnagrafica.getNome();
+		if (this.csOOperatoreAnagrafica != null) 
+			denominazione = this.csOOperatoreAnagrafica.getDenominazione();
 		if(denominazione.trim().isEmpty())
 			denominazione = this.username;
 		return denominazione;

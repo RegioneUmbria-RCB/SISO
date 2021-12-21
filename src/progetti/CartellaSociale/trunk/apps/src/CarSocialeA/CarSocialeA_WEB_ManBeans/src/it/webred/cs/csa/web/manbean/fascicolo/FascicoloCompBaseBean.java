@@ -11,15 +11,16 @@ import it.webred.cs.csa.ejb.client.AccessTableSchedaSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.AccessTableSinbaSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.AccessTableSoggettoSessionBeanRemote;
 import it.webred.cs.csa.ejb.dto.BaseDTO;
+import it.webred.cs.csa.ejb.dto.KeyValueDTO;
 import it.webred.cs.data.model.CsASoggettoLAZY;
-import it.webred.cs.data.model.CsCCategoriaSocialeBASIC;
-import it.webred.cs.data.model.CsOOperatoreBASIC;
-import it.webred.cs.data.model.CsOOperatoreSettore;
+import it.webred.cs.data.model.CsCCategoriaSociale;
 import it.webred.cs.jsf.bean.DatiCasoBean;
 import it.webred.cs.jsf.manbean.superc.CsUiCompBaseBean;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
 
 public abstract class FascicoloCompBaseBean extends CsUiCompBaseBean {
 
@@ -37,7 +38,7 @@ public abstract class FascicoloCompBaseBean extends CsUiCompBaseBean {
 	protected Long idCaso;
 	protected Long idSoggetto;
 	protected CsASoggettoLAZY csASoggetto;
-	protected List<CsCCategoriaSocialeBASIC> catsocCorrenti;
+	protected List<CsCCategoriaSociale> catsocCorrenti;
 	
 	protected boolean readOnly;
 	//Inizio SISO-1110
@@ -45,7 +46,7 @@ public abstract class FascicoloCompBaseBean extends CsUiCompBaseBean {
 	//Fine SISO-1110
 	
 	 
-	public void initialize(CsASoggettoLAZY soggetto, List<CsCCategoriaSocialeBASIC> catsocCorrenti, Object data) {
+	public void initialize(CsASoggettoLAZY soggetto, List<CsCCategoriaSociale> catsocCorrenti, Object data) {
 		
 		try{
 			csASoggetto = soggetto;
@@ -83,7 +84,7 @@ public abstract class FascicoloCompBaseBean extends CsUiCompBaseBean {
 		try{
 			BaseDTO b = new BaseDTO();
 			fillEnte(b);
-			b.setObj(selectedCaso.getSoggetto().getAnagraficaId());
+			b.setObj(selectedCaso.getAnagraficaId());
 			
 			csASoggetto = soggettoService.getSoggettoById(b);
 
@@ -100,9 +101,8 @@ public abstract class FascicoloCompBaseBean extends CsUiCompBaseBean {
 		
 	}
 	
-	private List<CsCCategoriaSocialeBASIC> loadCatSocialiAttuali(CsASoggettoLAZY soggetto){
-		//Recupero la categoria sociale
-		List<CsCCategoriaSocialeBASIC> catsocCorrenti = new ArrayList<CsCCategoriaSocialeBASIC>();
+	protected List<CsCCategoriaSociale> loadCatSocialiAttuali(CsASoggettoLAZY soggetto){
+		List<CsCCategoriaSociale> catsocCorrenti = new ArrayList<CsCCategoriaSociale>();
 		if(soggetto!=null){
 			BaseDTO b = new BaseDTO();
 			fillEnte(b);
@@ -112,10 +112,27 @@ public abstract class FascicoloCompBaseBean extends CsUiCompBaseBean {
 		return catsocCorrenti;
 	}
 	
+	protected String getFilterCategorie(List<CsCCategoriaSociale> lstCatSocialiAttuali) {
+		String filterCategorie = "";
+		List<CsCCategoriaSociale> lstCatSocCorrenti = new ArrayList<CsCCategoriaSociale>();
+
+		if (lstCatSocialiAttuali != null && lstCatSocialiAttuali.size() > 0) {
+			lstCatSocCorrenti.addAll(lstCatSocialiAttuali);
+		}
+
+		for (CsCCategoriaSociale item : lstCatSocCorrenti) {
+			if (filterCategorie.length() > 0) {
+				filterCategorie = filterCategorie + "|";// metto il separatore solo se sono più di due elementi - non uso la virgola perchè ci sono categorie che la contengono
+			}
+			filterCategorie = filterCategorie + item.getDescrizione();
+		}
+		return filterCategorie;
+	}
+	
 	protected List<Long> getLstIdCatSoc(){
 		List<Long> lst = new ArrayList<Long>();
 		if(this.catsocCorrenti!=null && !this.catsocCorrenti.isEmpty()){
-			for(CsCCategoriaSocialeBASIC c : catsocCorrenti)
+			for(CsCCategoriaSociale c : catsocCorrenti)
 				lst.add(c.getId());
 		}
 		return lst;
@@ -124,7 +141,7 @@ public abstract class FascicoloCompBaseBean extends CsUiCompBaseBean {
 	public String getDescCatSocialiCorrenti(){
 		String s="";
 		if(this.catsocCorrenti!=null && !this.catsocCorrenti.isEmpty()){
-			for(CsCCategoriaSocialeBASIC c : catsocCorrenti)
+			for(CsCCategoriaSociale c : catsocCorrenti)
 				s+=","+c.getTooltip();
 			s=s.substring(1);
 		}
@@ -149,11 +166,11 @@ public abstract class FascicoloCompBaseBean extends CsUiCompBaseBean {
 		this.idSoggetto = idSoggetto;
 	}
 
-	public List<CsCCategoriaSocialeBASIC> getCatsocCorrenti() {
+	public List<CsCCategoriaSociale> getCatsocCorrenti() {
 		return catsocCorrenti;
 	}
 
-	public void setCatsocCorrenti(List<CsCCategoriaSocialeBASIC> catsocCorrenti) {
+	public void setCatsocCorrenti(List<CsCCategoriaSociale> catsocCorrenti) {
 		this.catsocCorrenti = catsocCorrenti;
 	}
 
@@ -171,30 +188,6 @@ public abstract class FascicoloCompBaseBean extends CsUiCompBaseBean {
 
 	public void setReadOnly(boolean readOnly) {
 		this.readOnly = readOnly;
-	}
-	
-	protected CsOOperatoreBASIC getOperResponsabileCaso() throws Exception {
-		CsOOperatoreBASIC operatoreResponsabile = null;
-
-		BaseDTO dto = new BaseDTO();
-		fillEnte(dto);
-		dto.setObj(idCaso);
-		operatoreResponsabile = casoService.findResponsabileBASIC(dto);
-		
-		return operatoreResponsabile;
-	}
-	
-	protected CsOOperatoreSettore getOpSettoreCreatoreCaso() throws Exception {
-		CsOOperatoreSettore creatore = null;
-		
-		BaseDTO dto = new BaseDTO();
-		fillEnte(dto);
-		dto.setObj(idCaso);
-	
-		//creatore
-		creatore = casoService.findCreatoreCaso(dto);
-	
-		return creatore;
 	}
 	
 	//SISO-812

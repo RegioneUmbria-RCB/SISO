@@ -3,22 +3,15 @@ package it.webred.cs.csa.web.bean;
 import it.webred.cs.csa.ejb.client.AccessTableComuniSessionBeanRemote;
 import it.webred.cs.jsf.manbean.superc.CsUiCompBaseBean;
 import it.webred.ct.config.model.AmTabComuni;
-import it.webred.ct.data.access.aggregator.isee.IseeService;
-import it.webred.ct.data.access.aggregator.isee.dto.InfoIseeDTO;
-import it.webred.ct.data.access.aggregator.isee.dto.IseeDataIn;
 import it.webred.ejb.utility.ClientUtility;
 import it.webred.jsf.bean.ComuneBean;
 import it.webred.jsf.interfaces.IComune;
 import it.webred.jsf.utils.ComuneConverter;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
 import javax.faces.convert.Converter;
-import javax.faces.event.AjaxBehaviorEvent;
 import javax.naming.NamingException;
 
 public class ComuneTestMan extends CsUiCompBaseBean implements IComune {
@@ -43,7 +36,7 @@ public class ComuneTestMan extends CsUiCompBaseBean implements IComune {
 				}
 			}			
 		} catch (NamingException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}
 		return lstComuni;
 	}

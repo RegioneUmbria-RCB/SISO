@@ -2,11 +2,15 @@
 <entity-mappings xmlns="http://java.sun.com/xml/ns/persistence/orm" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_2_0.xsd" version="2.0">
 
-    <named-query name="CsRdcAnagraficaGepi.findByCf">
+    <named-query name="CsRdcAnagraficaGepi.findInNucleo">
        <query>
 		<![CDATA[
 			SELECT s FROM CsRdcAnagraficaGepi s 
-			WHERE s.cf IN (:lista)
+			WHERE s.cf=:cfSoggetto OR s.cf IN (
+				select UPPER(c.csAAnagrafica.cf) 
+				from CsAComponente c 
+				where c.csAFamigliaGruppo.csASoggetto.id = :idSoggetto 
+				and :dtVal between c.csAFamigliaGruppo.dataInizioApp and c.csAFamigliaGruppo.dataFineApp)
 		]]>
 	</query>
     </named-query> 
@@ -63,6 +67,26 @@
     
  
   <!-- Configurazioni -->
+  
+     <named-query name="CsTbTipoPai.findByDesc">
+    <query>
+			<![CDATA[
+				SELECT c FROM CsTbTipoPai c
+				WHERE UPPER(c.descrizione) = UPPER(:descrizione)
+			]]>
+		</query>
+  </named-query>
+  
+    <named-query name="CsTbCondLavoro.findAll">
+    <query>
+			<![CDATA[
+				SELECT c FROM CsTbCondLavoro c 
+				left join fetch c.csTbIngMercato ing
+				order by ing.id, c.descrizione
+			]]>
+		</query>
+  </named-query>
+  
   <named-query name="CsTbStatoCivile.findAllAbil">
     <query>
 			<![CDATA[
@@ -170,35 +194,23 @@
 		</query>
   </named-query>
 
-  <named-query name="CsTbProblematica.findAllAbil">
-    <query>
-			<![CDATA[
-				select cs 
-				from CsTbProblematica cs
-				where cs.abilitato = '1'
-				order by cs.descrizione
-			]]>
-		</query>
-  </named-query>
-
-  <named-query name="CsTbStesuraRelazioniPer.findAllAbil">
-    <query>
-			<![CDATA[
-				select cs 
-				from CsTbStesuraRelazioniPer cs
-				where cs.abilitato = '1'
-				order by cs.descrizione
-			]]>
-		</query>
-  </named-query>
-
   <named-query name="CsTbTitoloStudio.findAllAbil">
     <query>
 			<![CDATA[
 				select cs 
 				from CsTbTitoloStudio cs
 				where cs.abilitato = '1'
-				order by cs.id
+				order by cs.codIstat, cs.id
+			]]>
+		</query>
+  </named-query>
+  
+  <named-query name="CsTbTitoloStudio.findAll">
+    <query>
+			<![CDATA[
+				select cs 
+				from CsTbTitoloStudio cs
+				order by cs.codIstat, cs.id
 			]]>
 		</query>
   </named-query>
@@ -208,17 +220,6 @@
 			<![CDATA[
 				select cs 
 				from CsTbProfessione cs
-				where cs.abilitato = '1'
-				order by cs.descrizione
-			]]>
-		</query>
-  </named-query>
-
-  <named-query name="CsTbTipoContratto.findAllAbil">
-    <query>
-			<![CDATA[
-				select cs 
-				from CsTbTipoContratto cs
 				where cs.abilitato = '1'
 				order by cs.descrizione
 			]]>
@@ -395,19 +396,9 @@
   <named-query name="CsTbMacroAttivita.findAllAbil">
     <query>
 			<![CDATA[
-				select cs 
+				select distinct cs 
 				from CsTbMacroAttivita cs
-				where cs.abilitato = '1'
-				order by cs.id
-			]]>
-		</query>
-  </named-query>
-  
-  <named-query name="CsTbMacroSegnal.findAllAbil">
-    <query>
-			<![CDATA[
-				select cs 
-				from CsTbMacroSegnal cs
+				left join fetch cs.lstMicroAttivita
 				where cs.abilitato = '1'
 				order by cs.id
 			]]>
@@ -479,39 +470,6 @@
 		</query>
   </named-query>
   
-  <named-query name="CsTbMotivoSegnal.findAllAbil">
-    <query>
-			<![CDATA[
-				select cs 
-				from CsTbMotivoSegnal cs
-				where cs.abilitato = '1'
-				order by cs.descrizione
-			]]>
-		</query>
-  </named-query>
-
-  <named-query name="CsTbDisabEnte.findAllAbil">
-    <query>
-			<![CDATA[
-				select cs 
-				from CsTbDisabEnte cs
-				where cs.abilitato = '1'
-				order by cs.id
-			]]>
-		</query>
-  </named-query>
-
-  <named-query name="CsTbDisabGravita.findAllAbil">
-    <query>
-			<![CDATA[
-				select cs 
-				from CsTbDisabGravita cs
-				where cs.abilitato = '1'
-				order by cs.id
-			]]>
-		</query>
-  </named-query>
-
   <named-query name="CsTbDisabTipologia.findAllAbil">
     <query>
 			<![CDATA[
@@ -522,7 +480,7 @@
 			]]>
 		</query>
   </named-query>
-
+  
   <named-query name="CsTbServComunita.findAllAbil">
     <query>
 			<![CDATA[
@@ -717,29 +675,15 @@
 			]]>
 		</query>
   </named-query>
-
-  <named-query name="CsTbTipoScuola.findAllAbil">
+ 
+  <named-query name="CsTbAnnoScolastico.findAll">
     <query>
 			<![CDATA[
-				select s
-				from CsTbTipoScuola s
-				where s.abilitato = '1'
-				order by s.descrizione
+				SELECT c FROM CsTbAnnoScolastico c 
+				ORDER BY ordine, descrizione
 			]]>
 		</query>
   </named-query>
-
-  <named-query name="CsTbScuola.findAllAbil">
-    <query>
-			<![CDATA[
-				select s
-				from CsTbScuola s
-				where s.abilitato = '1'
-				order by s.descrizione
-			]]>
-		</query>
-  </named-query>
-
   <named-query name="CsTbScuola.findComuni">
     <query>
 			<![CDATA[
@@ -754,8 +698,8 @@
   <named-query name="CsTbScuola.findByComuneTipo">
     <query>
 			<![CDATA[
-				select s
-				from CsTbScuola s
+				select sa
+				from CsTbScuolaAnno sa inner join fetch sa.csTbScuola s
 				where s.abilitato = '1'
 				and s.comune = :comune
 				and s.tipoScuolaId = :idTipo
@@ -767,10 +711,10 @@
   <named-query name="CsTbScuola.findByComuneAnnoTipo">
     <query>
 			<![CDATA[
-				select s
-				from CsTbScuola s
+				select sa
+				from CsTbScuolaAnno sa inner join fetch sa.csTbScuola s
 				where s.abilitato = '1'
-				and s.annoScolastico = :anno
+				and sa.id.annoId = :anno
 				and s.tipoScuolaId = :idTipo
 				and s.comune = :comune
 				order by s.descrizione
@@ -1017,7 +961,9 @@
   <named-query name="CsASoggetto.findById">
     <query>
 			<![CDATA[
-				select s from CsASoggettoLAZY s inner join fetch  s.csACaso c
+				select s from CsASoggettoLAZY s 
+				inner join fetch  s.csACaso c
+				inner join fetch s.csAAnagrafica a
 				where s.id = :Id
 			]]>
 		</query>
@@ -1039,7 +985,7 @@
 			<![CDATA[
 				SELECT c 
 				FROM CsASoggettoCategoriaSoc c inner join fetch c.csCCategoriaSociale cs
-				where c.csASoggetto.anagraficaId = :idSoggetto
+				where c.id.soggettoAnagraficaId = :idSoggetto
 				order by c.prevalente desc, c.id.dataFineApp desc
 			]]>
 		</query>
@@ -1050,33 +996,18 @@
 			<![CDATA[
 				SELECT c
 				FROM CsASoggettoCategoriaSoc c inner join fetch c.csCCategoriaSociale ccs
-				where c.csASoggetto.anagraficaId = :idSoggetto
+				where c.id.soggettoAnagraficaId = :idSoggetto
 				and c.id.dataFineApp >= :dtRif
 				order by c.prevalente desc, c.id.dataFineApp desc
 			]]>
 		</query>
   </named-query>
-
-  <named-query name="CsASoggettoCategoriaSoc.findAttualiLAZYBySoggetto">
-    <query>
-			<![CDATA[
-				SELECT c
-				FROM CsASoggettoCategoriaSocLAZY c inner join fetch c.csCCategoriaSociale ccs
-				where c.csASoggetto.anagraficaId = :idSoggetto
-				and c.id.dataFineApp >= :dtRif
-				order by c.prevalente desc, c.id.dataFineApp desc
-			]]>
-		</query>
-  </named-query>
-
-
-
 
   <named-query name="CsASoggettoCategoriaSoc.eliminaBySoggettoId">
     <query>
 			<![CDATA[
 				DELETE FROM CsASoggettoCategoriaSoc cs
-				WHERE cs.csASoggetto.anagraficaId = :id
+				WHERE cs.id.soggettoAnagraficaId = :id
 			]]>
 		</query>
   </named-query>
@@ -1103,9 +1034,9 @@
     <query>
 			<![CDATA[
 				select cs 
-				from CsASoggettoMedico cs inner join fetch cs.csCMedico m inner join cs.csASoggetto s
+				from CsASoggettoMedico cs inner join fetch cs.csCMedico m
 				where cs.csCMedico.abilitato = '1'
-				and cs.csASoggetto.anagraficaId = :idSoggetto
+				and cs.id.soggettoAnagraficaId = :idSoggetto
 			]]>
 		</query>
   </named-query>
@@ -1114,7 +1045,7 @@
     <query>
 			<![CDATA[
 				DELETE FROM CsASoggettoMedico cs
-				WHERE cs.csASoggetto.anagraficaId = :id
+				WHERE cs.id.soggettoAnagraficaId = :id
 			]]>
 		</query>
   </named-query>
@@ -1123,9 +1054,10 @@
     <query>
 			<![CDATA[
 				select cs 
-				from CsASoggettoStatoCivile cs inner join fetch  cs.csTbStatoCivile sc inner join fetch cs.csASoggetto s
+				from CsASoggettoStatoCivile cs 
+				     inner join fetch  cs.csTbStatoCivile sc
 				where cs.csTbStatoCivile.abilitato = '1'
-				and cs.csASoggetto.anagraficaId = :idSoggetto
+				and cs.id.soggettoAnagraficaId = :idSoggetto
 			]]>
 		</query>
   </named-query>
@@ -1134,7 +1066,7 @@
     <query>
 			<![CDATA[
 				DELETE FROM CsASoggettoStatoCivile cs
-				WHERE cs.csASoggetto.anagraficaId = :id
+				WHERE cs.id.soggettoAnagraficaId = :id
 			]]>
 		</query>
   </named-query>
@@ -1143,9 +1075,9 @@
     <query>
 			<![CDATA[
 				select cs 
-				from CsASoggettoStatus cs inner join fetch cs.csTbStatus tbs inner join fetch cs.csASoggetto s
+				from CsASoggettoStatus cs inner join fetch cs.csTbStatus tbs
 				where cs.csTbStatus.abilitato = '1'
-				and cs.csASoggetto.anagraficaId = :idSoggetto
+				and cs.id.soggettoAnagraficaId = :idSoggetto
 			]]>
 		</query>
   </named-query>
@@ -1154,7 +1086,7 @@
     <query>
 			<![CDATA[
 				DELETE FROM CsASoggettoStatus cs
-				WHERE cs.csASoggetto.anagraficaId = :id
+				WHERE cs.id.soggettoAnagraficaId = :id
 			]]>
 		</query>
   </named-query>
@@ -1165,7 +1097,11 @@
 			<![CDATA[
 				select i 
 				from CsAIndirizzo i
-				where i.csASoggetto.id = :idSoggetto
+				inner join fetch i.csAAnaIndirizzo ind
+				inner join fetch i.csTbTipoIndirizzo tipo
+				inner join fetch i.csASoggetto s
+				inner join fetch s.csAAnagrafica ana
+				where s.anagraficaId = :idSoggetto
 			]]>
 		</query>
   </named-query>
@@ -1222,6 +1158,19 @@
 			]]>
 		</query>
   </named-query>
+  
+  <named-query name="CsAIndirizzo.getListaNazioni">
+    <query>
+			<![CDATA[
+				SELECT DISTINCT ind.csAAnaIndirizzo.statoCod, ind.csAAnaIndirizzo.statoDes  
+				FROM CsAIndirizzo ind
+				WHERE ind.csTbTipoIndirizzo.id= :tipo 
+				AND NVL(IND.dataFineApp, TO_DATE('31/12/9999','dd/MM/yyyy')) > SYSDATE
+				AND ind.csAAnaIndirizzo.statoCod IS NOT NULL and ind.csAAnaIndirizzo.statoCod <> '1'
+				ORDER BY ind.csAAnaIndirizzo.statoDes
+			]]>
+		</query>
+  </named-query>
  
 
   <!-- It Step / Alert -->
@@ -1236,10 +1185,19 @@
   </named-query>
 
   <!-- It Step / Alert -->
+   <named-query name="CsCfgItStato.findListItems">
+    <query>
+			<![CDATA[
+				SELECT c.id, c.nome 
+				FROM CsCfgItStato c order by c.nome
+			]]>
+		</query>
+  </named-query>
+  
   <named-query name="CsItStepLAZY.getIterStepLAZYListByCaso">
     <query>
 			<![CDATA[
-				select its from CsItStepLAZY its 
+				select its from CsItStepLAZY its
 				left join fetch its.csOOperatore1 
 				left join fetch its.csOOperatore2 
 				left join fetch its.csCfgItStato
@@ -1248,6 +1206,7 @@
 				inner join fetch its.csOSettore1
 				left join fetch its.csOOrganizzazione2
 				left join fetch its.csOSettore2
+				left join fetch its.csDDiario
 				where its.csACasoId = :csACasoId 
 				order by its.id desc
 			]]>
@@ -1258,7 +1217,9 @@
   <named-query name="CsItStep.getLastIterStepByCaso">
     <query>
 			<![CDATA[
-				select its from CsItStep its left join fetch its.csOOperatore1 left join fetch its.csOOperatore2
+				select its from CsItStep its 
+				left join fetch its.csOOperatore1 
+				left join fetch its.csOOperatore2
 				where its.csACaso.id = :idCaso 
 				and its.id = (select max(its2.id) from CsItStep its2 where its.csACaso.id=its2.csACaso.id)
 			]]>
@@ -1279,16 +1240,40 @@
     <query>
 			<![CDATA[
 				select its from CsItStepLAZY its 
-				left join fetch its.csOOperatore1 
-				left join fetch its.csOOperatore2 
+				left join fetch its.csOOperatore1 o1
+				left join fetch its.csOOperatore2 o2
 				left join fetch its.csCfgItStato
 				left join fetch its.csOSettore1
 				inner join fetch its.csOOrganizzazione1
 				inner join fetch its.csOSettore1
 				left join fetch its.csOOrganizzazione2
 				left join fetch its.csOSettore2
+				left join fetch its.csDDiario
+				left join fetch o1.csOOperatoreAnagrafica
+				left join fetch o2.csOOperatoreAnagrafica
 				where its.csACasoId = :idCaso 
 				and its.id = (select max(its2.id) from CsItStepLAZY its2 where its.csACasoId=its2.csACasoId)
+			]]>
+		</query>
+  </named-query>
+  
+  <named-query name="CsItStepLAZY.getLastIterStepLAZYByTipoCaso">
+    <query>
+			<![CDATA[
+				select its from CsItStepLAZY its 
+				left join fetch its.csOOperatore1 o1
+				left join fetch its.csOOperatore2 o2
+				left join fetch its.csCfgItStato 
+				left join fetch its.csOSettore1
+				inner join fetch its.csOOrganizzazione1
+				inner join fetch its.csOSettore1
+				left join fetch its.csOOrganizzazione2
+				left join fetch its.csOSettore2
+				left join fetch its.csDDiario
+				left join fetch o1.csOOperatoreAnagrafica
+				left join fetch o2.csOOperatoreAnagrafica
+				where its.csACasoId = :idCaso 
+				and its.id = (select max(its2.id) from CsItStepLAZY its2 where its.csACasoId=its2.csACasoId and its2.csCfgItStato.id = :idStato )
 			]]>
 		</query>
   </named-query>
@@ -1315,7 +1300,7 @@
   <named-query name="CsAlert.getAlertByIdCasoTipo">
     <query>
 			<![CDATA[
-				select a from CsAlert a 
+				select a from CsAlert a
 				where a.csACaso.id = :idCaso
 				and tipo = :tipo
 			]]>
@@ -1360,6 +1345,27 @@
 			]]>
 		</query>
   </named-query>
+  
+    <named-query name="CsOOpsettoreAlertConfig.findByOpSettore">
+    <query>
+			<![CDATA[
+				select distinct a.id.tipoCod 
+				from CsOOpsettoreAlertConfig a 
+				where a.id.operatoreSettoreId = :opSettoreId and a.flgNotifica=1
+			]]>
+		</query>
+  </named-query>
+  <named-query name="CsOOpSettoreAuthDownload.findByOpSettore">
+    <query>
+			<![CDATA[
+				select distinct a.id.sottocartellaDocId 
+				from CsOOpsettoreAuthDownload a 
+				where a.id.operatoreSettoreId = :opSettoreId
+			]]>
+		</query>
+  </named-query>
+  
+  
 
   <!-- Operatore / Settore -->
   <named-query name="CsOOperatore.findOperatoriByTipoId">
@@ -1407,24 +1413,24 @@
     <query>
 			<![CDATA[
 				select DISTINCT o
-				from CsOOperatoreSettore os inner join os.csOOperatore o , CsRelSettoreCatsoc sc
-				where os.csOSettore.id = sc.csOSettore.id
-				and sc.csCCategoriaSociale.id = :idCatSociale
-				and os.csOSettore.csOOrganizzazione.codRouting=:codRouting
+				from CsRelSettoreCatsoc sc, CsOOperatoreSettore os 
+				inner join os.csOOperatore o
+				inner join fetch o.csOOperatoreAnagrafica ana
+				where sc.id.settoreId =  os.csOSettore.id
+				and sc.id.categoriaSocialeId = :idCatSociale
+				and sc.csOSettore.csOOrganizzazione.codRouting=:codRouting
 				order by o.username 
 			]]>
 		</query>
   </named-query>
 
-<named-query name="CsOOperatoreSettore.findTipiOperatoreByOperatoreSettore">
+<named-query name="CsOOperatoreTipoOperatore.findTipiOperatoreByOperatoreSettore">
     <query>
 			<![CDATA[
-				select oto
+				select distinct oto.csTbTipoOperatore.descrizione
 				from CsOOperatoreTipoOperatore oto
-				where oto.csOOperatoreSettore.id = :idOperatoreSettore
-				order by oto.csOOperatoreSettore.csOOperatore.csOOperatoreAnagrafica.cognome, 
-				         oto.csOOperatoreSettore.csOOperatore.csOOperatoreAnagrafica.nome, 
-				         oto.csOOperatoreSettore.csOOperatore.username
+				where oto.csOOperatoreSettore.id IN (:idOperatoreSettore)
+				order by oto.csTbTipoOperatore.descrizione
 			]]>
 		</query>
   </named-query>
@@ -1476,6 +1482,7 @@
     <query>
 			<![CDATA[
 				select it from CsOOperatore it 
+				left join fetch it.csOOperatoreAnagrafica ana
 				where UPPER(it.username) = UPPER(:username)
 			]]>
 		</query>
@@ -1484,7 +1491,8 @@
   <named-query name="CsOOperatoreBASIC.getOperatoreBASICByUserName">
     <query>
 			<![CDATA[
-				select it from CsOOperatoreBASIC it 
+				select it from CsOOperatoreBASIC it
+				left join fetch it.csOOperatoreAnagrafica ana
 				where UPPER(it.username) = UPPER(:username)
 			]]>
 		</query>
@@ -1493,7 +1501,8 @@
   <named-query name="CsOOperatore.getOperatoreById">
     <query>
 			<![CDATA[
-				select it from CsOOperatore it 
+				select it from CsOOperatore it
+				left join fetch it.csOOperatoreAnagrafica ana 
 				where it.id = :idOp
 			]]>
 		</query>
@@ -1516,16 +1525,45 @@
 		</query>
   </named-query>
 
-  <named-query name="CsOOperatoreSettore.findOperatoreSettoreBySettore">
+  <named-query name="CsOOperatoreSettore.findOperatoreSettoreAnagraficaBySettore">
     <query>
 			<![CDATA[
-				select it from CsOOperatoreSettore it 
+				select distinct 
+				it.id, op.id, oana, 
+				nvl(it.dataInizioApp, TO_DATE('01/01/0001','dd/MM/yyyy')) as dataInizioApp, 
+				nvl(it.dataFineApp,   TO_DATE('31/12/9999','dd/MM/yyyy')) as dataFineApp,  
+				op.abilitato
+				from CsOOperatoreSettore it
+				inner join it.csOOperatore op
+				left join op.csOOperatoreAnagrafica oana
 				where it.csOSettore.id = :idSettore
-				order by it.dataFineApp desc, it.csOOperatore.abilitato desc, it.csOOperatore.csOOperatoreAnagrafica.cognome
 			]]>
 		</query>
   </named-query>
-
+  
+   <named-query name="CsOOperatoreSettore.findRespSettoreAttivo">
+    <query>
+			<![CDATA[
+				select it from CsOOperatoreSettore it 
+				where it.csOSettore.id = :idSettore and UPPER(it.amGroup) like ('%'||UPPER(:gruppo)||'%') 
+				and it.dataFineApp is not null 
+				and sysdate between it.dataInizioApp and it.dataFineApp and it.csOOperatore.abilitato = 1
+				order by it.csOOperatore.csOOperatoreAnagrafica.cognome
+			]]>
+		</query>
+  </named-query>
+	
+  <named-query name="CsOOperatoreSettore.findOperatoreIdAnagraficaBySettore">
+	   <query>
+				<![CDATA[
+					select it.csOOperatore.id, it.dataInizioApp, it.dataFineApp, it.csOOperatore.abilitato, it.csOOperatore.csOOperatoreAnagrafica 
+					from CsOOperatoreSettore it 
+					where it.csOSettore.id = :idSettore
+					order by it.csOOperatore.csOOperatoreAnagrafica.cognome
+				]]>
+			</query>
+  </named-query>
+	  
   <named-query name="CsOOperatoreSettore.findOperatoreSettoreByOperatore">
     <query>
 			<![CDATA[
@@ -1565,13 +1603,36 @@
 		</query>
   </named-query>
 
+   <named-query name="CsOOpsettoreAlertConfig.setEmailByIdOperatoreSettore">
+    <query>
+			<![CDATA[
+				UPDATE CsOOpsettoreAlertConfig os
+				SET os.flgEmail = :abilita
+				WHERE os.id.operatoreSettoreId = :idOpSettore
+			]]>
+		</query>
+  </named-query>
 
 
   <named-query name="CsOSettore.findAll">
     <query>
 			<![CDATA[
 				select it from CsOSettore it 
-				order by it.nOrd, it.csOOrganizzazione.nome, it.nome
+				       INNER JOIN FETCH it.csOOrganizzazione org
+				       left join fetch it.csAAnaIndirizzo ind
+				order by it.nOrd, org.nome, it.nome
+			]]>
+		</query>
+  </named-query>
+  
+  <named-query name="CsOSettore.findSettoriInvianteInviatoInCarico">
+    <query>
+			<![CDATA[
+				select it from CsOSettore it 
+				       INNER JOIN FETCH it.csOOrganizzazione org
+				       left join fetch it.csAAnaIndirizzo ind
+				where  (it.flgInviante = 1 or it.flgInviatoA = 1 or it.flgInCaricoA = 1)    
+				order by it.nOrd, org.nome, it.nome
 			]]>
 		</query>
   </named-query>
@@ -1677,9 +1738,14 @@
    <named-query name="CsAComponenteAnagCasoGit.getAnagraficaAggiornataBySoggId">
     <query>
 			<![CDATA[
-				select  it from CsAComponenteAnagCasoGit it inner join fetch it.csASoggetto s where it.csASoggetto.anagraficaId = :idSoggettoAnagrafica
-						 and it.segnalazione is not null and it.segnalazione != '-'
-								and (it.dtMod is not null and it.dtMod > :dtVal)
+				select  it 
+				from CsAComponenteAnagCasoGit it 
+					 inner join fetch it.csASoggetto s 
+					 inner join fetch s.csAAnagrafica ana
+					 inner join fetch s.csACaso c
+				where s.anagraficaId = :idSoggettoAnagrafica
+				  and it.segnalazione is not null and it.segnalazione != '-'
+				  and (it.dtMod is not null and it.dtMod > :dtVal)
 			]]>
 		</query>
   </named-query>
@@ -1714,6 +1780,9 @@
     <query>
 			<![CDATA[
 				select it from CsAFamigliaGruppo it 
+				inner join fetch it.csASoggetto s 
+				inner join fetch s.csACaso c
+				left join fetch it.csAComponentes comps
 				where it.id = :id
 			]]>
 		</query>
@@ -1723,18 +1792,39 @@
     <query>
 			<![CDATA[
 				select it from CsAFamigliaGruppo it 
-				where it.csASoggetto.id = :idSoggetto
+				inner join fetch it.csASoggetto s 
+				inner join fetch s.csACaso c
+				where it.csASoggetto.anagraficaId = :idSoggetto
 				order by it.dataFineApp desc, it.dataInizioApp desc
 			]]>
 		</query>
   </named-query>
- 
-  <named-query name="CsAFamigliaGruppo.getFamigliaGruppoAllaDataBySoggettoId">
+  
+   <named-query name="CsAFamigliaGruppo.getIdsFamigliaGruppoBySoggettoId">
     <query>
 			<![CDATA[
-				select it from CsAFamigliaGruppo it 
-				where it.csASoggetto.id = :idSoggetto 
-				and :dtVal between it.dataInizioApp and it.dataFineApp
+				select distinct fg.id 
+				from CsAFamigliaGruppo fg  
+				where fg.csASoggetto.anagraficaId = :anagraficaId
+			]]>
+		</query>
+  </named-query>
+ 
+   <named-query name="CsAComponente.getComponentiAllaDataBySoggettoId">
+    <query>
+			<![CDATA[
+				select c 
+				from CsAComponente c 
+				inner join fetch c.csAAnagrafica ana
+				left join fetch c.csTbContatto contatto
+				left join fetch c.csTbDisponibilita disponibilita
+				left join fetch c.csTbPotesta potesta
+				left join fetch c.csTbTipoRapportoCon rapporto
+				left join fetch c.csAFamigliaGruppo fg
+				left join fetch fg.csASoggetto sogg
+				left join fetch sogg.csAAnagrafica anaCaso
+				where sogg.id = :idSoggetto 
+				and :dtVal between fg.dataInizioApp and fg.dataFineApp
 			]]>
 		</query>
   </named-query>
@@ -1743,13 +1833,13 @@
     <query>
 			<![CDATA[
 				select distinct fg.csASoggetto 
-				from CsAFamigliaGruppo fg JOIN FETCH fg.csASoggetto.csACaso LEFT JOIN FETCH fg.csASoggetto.csAFamigliaGruppos
+				from CsAFamigliaGruppo fg 
+					JOIN FETCH fg.csASoggetto.csACaso 
 				where fg.id IN :famigliaIds
 			]]>
 		</query>
   </named-query>
-   
- 
+  
   <named-query name="CsAFamigliaGruppo.getAnaComponentiGiaFamigliariSoggettoCf">
     <query>
 			<![CDATA[
@@ -1829,6 +1919,17 @@
 			]]>
 		</query>
   </named-query>
+  <named-query name="CsADatiSociali.getSocialiAttiviBySoggettoCf">
+    <query>
+			<![CDATA[
+				select it from CsADatiSociali it 
+				where it.csASoggetto.csAAnagrafica.cf = :cfSoggetto
+				and sysdate between it.dataInizioApp and it.dataFineApp
+				order by it.dataFineApp desc, dataInizioApp desc
+			]]>
+		</query>
+  </named-query>
+  
 
   <named-query name="CsADatiSociali.eliminaSocialiById">
     <query>
@@ -1838,17 +1939,45 @@
 			]]>
 		</query>
   </named-query>
-
-  
-  <named-query name="CsACasoOpeTipoOpeBASIC.existsResponsabileCaso">
+    
+   <named-query name="CsExtraFseSiru.eliminaById">
     <query>
 			<![CDATA[
-				select it from CsACasoOpeTipoOpeBASIC it 
-				where it.casoId = :casoId and it.flagResponsabile=1
+				DELETE FROM CsExtraFseSiru s
+				WHERE s.id = :id
 			]]>
 		</query>
   </named-query>
+  
+  <named-query name="CsExtraFseDatiLavoro.eliminaByIdMast">
+    <query>
+			<![CDATA[
+				DELETE FROM CsExtraFseDatiLavoro s
+				WHERE s.master.id = :id
+			]]>
+		</query>
+  </named-query>
+  
+   <named-query name="CsExtraFseMast.eliminaById">
+    <query>
+			<![CDATA[
+				DELETE FROM CsExtraFseMast mast
+				WHERE mast.id = :id
+			]]>
+		</query>
+  </named-query>
+  
+  <named-query name="CsExtraFseDatiLavoro.findDatiPorUdcBySchedaId">
+   	<query>
+		<![CDATA[
+			SELECT m from CsExtraFseDatiLavoro m
+			WHERE m.master.tipo = :tipo and  m.master.schedaId = :schedaId
+			ORDER BY m.dtIns desc
+		]]>
+	</query>
+ </named-query>
 
+	
 
   <!-- Dati Invalidita -->
   <named-query name="CsADatiInvalidita.getInvaliditaBySoggettoId">
@@ -1860,6 +1989,17 @@
 			]]>
 		</query>
   </named-query>
+  <named-query name="CsADatiInvalidita.getInvaliditaBySoggettoIdAllaData">
+    <query>
+			<![CDATA[
+				select it from CsADatiInvalidita it 
+				where it.csASoggetto.anagraficaId = :idSoggetto
+				and :dtRif between it.dataInizioApp and it.dataFineApp
+				order by it.dataFineApp desc, dataInizioApp desc
+			]]>
+		</query>
+  </named-query>
+  
 
   <named-query name="CsADatiInvalidita.eliminaInvaliditaById">
     <query>
@@ -1885,44 +2025,6 @@
     <query>
 			<![CDATA[
 				DELETE FROM CsATribunale cs
-				WHERE cs.id = :id
-			]]>
-		</query>
-  </named-query>
-
-  <!-- Servizi -->
-  <named-query name="CsAServizi.getServiziBySoggettoId">
-    <query>
-			<![CDATA[
-				select it from CsAServizi it 
-				where it.csASoggetto.anagraficaId = :idSoggetto
-			]]>
-		</query>
-  </named-query>
-
-  <named-query name="CsAServizi.eliminaServiziById">
-    <query>
-			<![CDATA[
-				DELETE FROM CsAServizi cs
-				WHERE cs.id = :id
-			]]>
-		</query>
-  </named-query>
-
-  <!-- Contributi -->
-  <named-query name="CsAContributi.getContributiBySoggettoId">
-    <query>
-			<![CDATA[
-				select it from CsAContributi it 
-				where it.csASoggetto.anagraficaId = :idSoggetto
-			]]>
-		</query>
-  </named-query>
-
-  <named-query name="CsAContributi.eliminaContributiById">
-    <query>
-			<![CDATA[
-				DELETE FROM CsAContributi cs
 				WHERE cs.id = :id
 			]]>
 		</query>
@@ -1979,6 +2081,9 @@
 				INNER JOIN FETCH c.csDDiario d
 				INNER JOIN FETCH d.csACaso cs
 				INNER JOIN FETCH cs.csASoggetto sg
+				LEFT JOIN FETCH c.csCDiarioConchi
+				LEFT JOIN FETCH c.csCDiarioDove
+				LEFT JOIN FETCH c.csCTipoColloquio
 				WHERE sg.anagraficaId = :idSoggetto
 				ORDER BY d.dtAmministrativa desc, nvl(d.dtMod, d.dtIns) desc
 			]]>
@@ -2060,7 +2165,6 @@
       ]]>
     </query>
   </named-query>
-  
   <named-query name="CsDPai.findPaiAperti">
     <query>
       <![CDATA[
@@ -2069,15 +2173,72 @@
       ]]>
     </query>
   </named-query>
+ 
+  <named-query name="CsDPai.findSintesiById">
+    <query>
+      <![CDATA[
+        select distinct r.csTbTipoPai.descrizione, r.csDDiario.dtAttivazioneDa , r.csDDiario.dtChiusuraDa
+        from CsDPai r 
+        where r.diarioId = :diarioId
+      ]]>
+    </query>
+  </named-query>
+    <named-query name="CsPaiMastSogg.findSoggettiPaiSenzCaso">
+    <query>
+      <![CDATA[
+      	 select pms from CsPaiMastSogg pms 
+		 where pms.casoId is null and exists 
+		 (select 1 from CsASoggettoLAZY s where upper(s.csAAnagrafica.cf) = upper(pms.cf))
+		 order by pms.cf
+      ]]>
+    </query>
+  </named-query>
   
   
+  
+  <!-- <named-query name="CsDRelazione.findRelazioniPaiExt">
+		<query>
+			<![CDATA[
+				select r from CsDRelazione r inner join fetch r.csDDiario d inner join fetch r.csTbTipoDiario td
+				where  td.tipoDiario.id = 6
+			]]>
+		</query>
+	</named-query> -->
+
+
+	<named-query name="CsDRelazione.findByIds">
+		<query>
+			<![CDATA[
+				select r from CsDRelazione r 
+						inner join fetch r.csDDiario d 
+						inner join fetch d.csOOperatoreSettore os
+				where  d.id in :listaId 
+				order by d.dtAmministrativa desc
+			]]>
+		</query>
+  </named-query>
 
 	<named-query name="CsDRelazione.findRelazioniByCaso">
 		<query>
 			<![CDATA[
-				select r from CsDRelazione r inner join fetch r.csDDiario d inner join fetch d.csOOperatoreSettore os
+				select r from CsDRelazione r 
+						inner join fetch r.csDDiario d 
+						inner join fetch d.csOOperatoreSettore os
 				where  d.csACaso.id=:idCaso 
 				order by d.dtAmministrativa desc
+			]]>
+		</query>
+  </named-query>
+  
+  	<named-query name="CsDRelazione.findRelazioniSintesiByCaso">
+		<query>
+			<![CDATA[
+				select distinct r.diarioId, r.csDDiario.dtAmministrativa, 
+				r.situazioneAmb, r.situazioneParentale, r.situazioneSanitaria, r.proposta, 
+				r.macroAttivita.descrizione, r.microAttivita.descrizione, r.microAttivita.flagTipoForm
+				from CsDRelazione r 
+				where  r.csDDiario.csACaso.id=:idCaso 
+				order by r.csDDiario.dtAmministrativa desc
 			]]>
 		</query>
   </named-query>
@@ -2092,16 +2253,6 @@
 			]]>
 		</query>
 	</named-query>
-	
-  <named-query name="CsDDocIndividuale.findDocIndividualeByCaso">
-    <query>
-			<![CDATA[
-				select i from CsDDocIndividuale i 
-				where i.csDDiario.csACaso.id=:idCaso 
-				order by i.csDDiario.dtAmministrativa desc
-			]]>
-		</query>
-  </named-query>
 
   <named-query name="CsLoadDocumento.findLoadDocumentoByDiarioId">
     <query>
@@ -2123,8 +2274,22 @@
   <named-query name="CsFlgIntervento.getListaInterventiByIdCaso">
     <query>
 			<![CDATA[
-				select distinct i from CsFlgIntervento f  inner join f.csIIntervento i
-				where f.csDDiario.csACaso.id=:casoId 
+				select distinct i 
+				from CsIIntervento i
+				left join fetch i.csFlgInterventos f 
+				left join fetch f.csDDiario d
+				left join fetch d.csACaso c
+				left join fetch c.csASoggetto s
+				left join fetch s.csAAnagrafica anac
+				left join fetch i.csIQuota q
+				left join fetch i.csIInterventoPr pr
+				left join fetch pr.csIInterventoPrFse fse
+				left join fetch pr.csIInterventoPrFseSiru siru
+				left join fetch i.csRelSettCsocTipoInter rel
+				left join fetch rel.csRelCatsocTipoInter csocinter
+				left join fetch rel.csRelSettoreCatsoc setcsoc
+				left join fetch i.csIInterventoCustom custom
+				where c.id=:casoId 
 				order by i.dtIns desc
 			]]>
 		</query>
@@ -2138,65 +2303,18 @@
 		</query>
   </named-query>
   
-  <named-query name="CsFlgIntervento.getPrimoFoglioByIdIntervento">
-    <query>
-			<![CDATA[
-				select f from CsFlgIntervento f  inner join f.csIIntervento i
-				where f.csIIntervento.id = :interventoId
-				order by f.csDDiario.dtIns asc
-			]]>
-		</query>
-  </named-query>
-
-
-
-
-  <named-query name="CsACasoOpeTipoOpe.deleteByCasoId">
-    <query>
-			<![CDATA[
-				delete from CsACasoOpeTipoOpe d where d.casoId = :casoId
-			]]>
-		</query>
-  </named-query>
-
-  <named-query name="CsACasoOpeTipoOpe.deleteById">
-    <query>
-			<![CDATA[
-				delete from CsACasoOpeTipoOpe d where d.id= :id
-			]]>
-		</query>
-  </named-query>
-
-
-  <named-query name="CsACasoOpeTipoOpe2.deleteOpeByCasoId">
-    <query>
-			<![CDATA[
-				delete from CsACasoOpeTipoOpe2 d where d.csACaso.id  = :casoId
-			]]>
-		</query>
-  </named-query>
-
-  <named-query name="CsACasoOpeTipoOpe.findByCasoId">
-    <query>
-			<![CDATA[
-				select d from CsACasoOpeTipoOpe d where d.casoId = :casoId order by d.dataInizioSys
-			]]>
-		</query>
-  </named-query>
-
-  <named-query name="CsACasoOpeTipoOpe2.findOpeByCasoId">
-    <query>
-			<![CDATA[
-				select d from CsACasoOpeTipoOpe2 d where d.csACaso.id = :casoId order by d.dataInizioSys
-			]]>
-		</query>
-  </named-query>
 
 <!-- SISO-812 -->
 <named-query name="CsACasoAccessoFascicolo.findByCasoId">
     <query>
 			<![CDATA[
-				select d from CsACasoAccessoFascicolo d where d.casoId = :casoId order by d.dataInizioSys
+				select d from CsACasoAccessoFascicolo d 
+				left join fetch d.csOSettore s
+				left join fetch d.csOOrganizzazione o
+				left join fetch s.csTbSecondoLivello tb
+				left join fetch s.csAAnaIndirizzo ind
+				where d.casoId = :casoId 
+				order by d.dataInizioSys
 			]]>
 		</query>
   </named-query>
@@ -2259,16 +2377,43 @@
 		</query>
   </named-query>
 
+  <named-query name="CsSsSchedaSegr.findSchedaSegrBySchedaIdProvenienza">
+    <query>
+			<![CDATA[
+				select s from CsSsSchedaSegr s where s.schedaId = :schedaId and s.provenienza = :provenienza
+			]]>
+		</query>
+  </named-query>
+  
   <named-query name="CsSsSchedaSegr.findByIdAnagraficaStato">
     <query>
 			<![CDATA[
-				select s from CsSsSchedaSegr s 
-				where s.csASoggetto.anagraficaId = :idAnagrafica and s.stato=:stato
+				select s from CsSsSchedaSegr s  
+				     left join fetch s.csASoggetto sogg
+				     left join fetch s.tbProvenienza prov
+				where sogg.anagraficaId = :idAnagrafica and s.stato=:stato
 				order by s.dtIns desc
 			]]>
 		</query>
   </named-query>
 
+  <named-query name="CsSsSchedaSegr.findByIdAnagraficaNotSS">
+    <query>
+			<![CDATA[
+				select s from CsSsSchedaSegr s where s.csASoggetto.anagraficaId = :idAnagrafica and s.provenienza != :provenienza
+			]]>
+		</query>
+  </named-query>
+  
+	<!-- SISO-938 -->
+	<named-query name="CsSchedeAltraProvenienza.findVistaCasiAltriBySchedaIdProvenienza">
+		<query>
+			<![CDATA[
+				select s from CsSchedeAltraProvenienza s where s.idSchedaSegr = :idSchedaSegr and s.provenienza = :provenienza
+			]]>
+		</query>
+	</named-query>
+	
   <named-query name="CsDValutazione.findValutazioneById">
     <query>
 			<![CDATA[
@@ -2312,9 +2457,18 @@
   <named-query name="CsDScuola.findScuolaByCaso">
     <query>
 			<![CDATA[
-				select i from CsDScuola i 
+				select i.diarioId,i.grado, i.note, i.nome, anno.descrizione, tipo.descrizione, 
+				nvl(i.csDDiario.dtMod,i.csDDiario.dtIns), 
+				nvl(i.csDDiario.usrMod, i.csDDiario.userIns),
+				scuola,
+				i.csDDiario.visSecondoLivello,
+				i.csDDiario.csOOperatoreSettore.csOSettore.id
+				from CsDScuola i 
+				left join i.csTbAnnoScolastico anno
+				left join i.csTbTipoScuola tipo
+				left join i.csTbScuola scuola
 				where i.csDDiario.csACaso.id=:idCaso 
-				order by i.annoScolastico desc
+				order by anno.ordine desc
 			]]>
 		</query>
   </named-query>
@@ -2330,7 +2484,17 @@
   <named-query name="CsDIsee.findIseeByCaso">
     <query>
 			<![CDATA[
-				select i from CsDIsee i 
+				select i from CsDIsee i INNER JOIN FETCH i.tipoIsee tipo
+				where i.csDDiario.csACaso.id=:idCaso
+				order by i.annoRif, tipo.descrizione
+			]]>
+		</query>
+  </named-query>
+  <named-query name="CsDIsee.findSintesiByCaso">
+    <query>
+			<![CDATA[
+				select i.diarioId, i.annoRif, i.tipoIsee.descrizione 
+				from CsDIsee i
 				where i.csDDiario.csACaso.id=:idCaso
 				order by i.annoRif, i.tipoIsee.descrizione
 			]]>
@@ -2513,7 +2677,7 @@
 				from CsRelCatsocTipoInter rel, CsASoggettoCategoriaSoc scat
 				where rel.id.categoriaSocialeId = scat.id.categoriaSocialeId
 				and :dtRif between scat.dataInizioApp and scat.id.dataFineApp
-				and scat.csASoggetto.anagraficaId= :idSoggetto
+				and scat.id.soggettoAnagraficaId= :idSoggetto
 				and rel.csCTipoIntervento.abilitato='1'
 			]]>
 		</query>
@@ -2550,10 +2714,11 @@
   <named-query name="CsRelSettoreCatsoc.findRelSettoreCatsocBySettore">
     <query>
 			<![CDATA[
-				select DISTINCT rel, rel.csCCategoriaSociale.nOrd 
-				from CsRelSettoreCatsoc rel
+				select DISTINCT rel, csoc.nOrd 
+				from CsRelSettoreCatsoc rel 
+				inner join fetch rel.csCCategoriaSociale csoc
 				where rel.id.settoreId = :idSettore
-				order by rel.csCCategoriaSociale.nOrd
+				order by csoc.nOrd
 			]]>
 		</query>
   </named-query>
@@ -2642,6 +2807,55 @@
   </named-query>
 
   <!-- CsACasoOpeTipoOpe -->
+    <named-query name="CsACasoOpeTipoOpe.deleteByCasoId">
+    <query>
+			<![CDATA[
+				delete from CsACasoOpeTipoOpe d where d.casoId = :casoId
+			]]>
+		</query>
+  </named-query>
+
+  <named-query name="CsACasoOpeTipoOpe.deleteById">
+    <query>
+			<![CDATA[
+				delete from CsACasoOpeTipoOpe d where d.id= :id
+			]]>
+		</query>
+  </named-query>
+
+
+  <named-query name="CsACasoOpeTipoOpe2.deleteOpeByCasoId">
+    <query>
+			<![CDATA[
+				delete from CsACasoOpeTipoOpe2 d where d.csACaso.id  = :casoId
+			]]>
+		</query>
+  </named-query>
+  
+  <named-query name="CsACasoOpeTipoOpe2.findOpeByCasoId">
+    <query>
+			<![CDATA[
+				select d from CsACasoOpeTipoOpe2 d where d.csACaso.id = :casoId order by d.dataInizioSys
+			]]>
+		</query>
+  </named-query>
+
+  <named-query name="CsACasoOpeTipoOpe.findByCasoId">
+    <query>
+			<![CDATA[
+				select d from CsACasoOpeTipoOpe d 
+				left join fetch d.csOOperatoreTipoOperatore tipo
+				left join fetch tipo.csOOperatoreSettore os
+				left join fetch os.csOOperatore o
+				left join fetch os.csOSettore s
+				left join fetch s.csOOrganizzazione org
+				left join fetch o.csOOperatoreAnagrafica ana
+				where d.casoId = :casoId 
+				order by d.dataInizioApp
+			]]>
+		</query>
+  </named-query>
+
   <named-query name="CsACasoOpeTipoOpe.findResponsabileByCaso">
     <query>
 			<![CDATA[
@@ -2652,11 +2866,19 @@
 			]]>
 		</query>
   </named-query>
-  <named-query name="CsOOperatore.findResponsabileByCaso">
+  <named-query name="CsACasoOpeTipoOpe.findOpSettoreResponsabileByCaso">
     <query>
 			<![CDATA[
-				select cs.csOOperatoreTipoOperatore.csOOperatoreSettore.csOOperatore
+				select os
 				from CsACasoOpeTipoOpe cs 
+				left join cs.csOOperatoreTipoOperatore tipo
+				left join tipo.csOOperatoreSettore os
+				left join fetch os.csOOperatore o
+				left join fetch os.csOSettore s
+				left join fetch s.csOOrganizzazione org
+				left join fetch o.csOOperatoreAnagrafica ana
+				left join fetch os.tipoOperatore tipoOp
+				left join fetch tipoOp.csTbTipoOperatore tb
 				where cs.casoId = :casoId
 				and cs.flagResponsabile = 1
 			]]>
@@ -2667,14 +2889,13 @@
 			<![CDATA[
 				select cs.csOOperatoreTipoOperatoreBASIC.csOOperatoreSettoreBASIC.csOOperatoreBASIC
 				from CsACasoOpeTipoOpeBASIC cs 
-				where cs.id.casoId = :casoId
+				left join fetch cs.csOOperatoreTipoOperatoreBASIC.csOOperatoreSettoreBASIC.csOOperatoreBASIC.csOOperatoreAnagrafica
+				where cs.casoId = :casoId
 				and cs.flagResponsabile = 1
 				order by cs.dataFineApp desc
 			]]>
 		</query>
   </named-query>
-
-
   <named-query name="CsOOperatoreTipoOperatore.findOpTipoOpByOpSettore">
     <query>
 			<![CDATA[
@@ -2692,7 +2913,7 @@
 				select cs
 				from CsACasoOpeTipoOpe cs 
 				where cs.csOOperatoreTipoOperatore.csOOperatoreSettore.id = :opSettoreId
-				and   cs.csACaso.id = :casoId
+				and   cs.casoId = :casoId
 			]]>
 		</query>
   </named-query>
@@ -2723,8 +2944,9 @@
   <named-query name="CsCfgIntEseg.findConfigIntErogByTipoIntervento">
     <query>
 			<![CDATA[
-				select c from CsCfgIntEseg c 
-				where c.tipoIntervento.id = :tipoInterventoId 
+				select c from CsCfgIntEsegStatoInt c 
+				LEFT JOIN FETCH c.csCfgIntEsegStato stato
+				where c.csCfgIntervEseg.tipoIntervento.id = :tipoInterventoId 
 				]]>
 		</query>
   </named-query>
@@ -2758,25 +2980,32 @@
 		</query>
   </named-query>
   
-  <!-- inizio SISO-822 -->
-  <named-query name="CsIInterventoEsegMast.findById">
-    <query>
-			<![CDATA[
-				select mast
-				from CsIInterventoEsegMast mast 
-				where mast.id = :id 
-				]]>
-		</query>
-  </named-query>
-  <!-- fine SISO-822 -->
-  
+
   <!-- inizio SISO-500 -->
   <named-query name="CsIInterventoEsegMast.findByInterventoId">
     <query>
 			<![CDATA[
 				select mast
 				from CsIInterventoEsegMast mast 
-				where mast.csIIntervento.id = :interventoId 
+				where mast.interventoProgrammatoId = :interventoId 
+				]]>
+		</query>
+  </named-query>
+  <named-query name="CsIInterventoEsegMast.findIdByInterventoId">
+    <query>
+			<![CDATA[
+				select mast.id
+				from CsIInterventoEsegMast mast 
+				where mast.interventoProgrammatoId = :interventoId 
+				]]>
+		</query>
+  </named-query>
+    <named-query name="CsIPs.findByInterventoId">
+    <query>
+			<![CDATA[
+				select ps
+				from CsIPs ps 
+				where ps.csIInterventoEsegMast.interventoProgrammatoId = :interventoId 
 				]]>
 		</query>
   </named-query>
@@ -2812,8 +3041,8 @@
 				inner join fetch sogg.master sm inner join fetch sm.csIInterventoPr smIntPr
 				inner join fetch smIntPr.csIInterventoPrFse
 				where sogg.id.cf = :cf and sogg.riferimento = 1
-					and smIntPr.nSottocorsoAttivita = :nSottocorsoAttivita
- 						and smIntPr.ffProgettoDescrizione = :ffProgettoDescrizione
+					and smIntPr.progettoAttivita.id = :attivitaId
+ 						and smIntPr.progetto.id = :progettoId
 				order by sogg.id.masterId desc
 				]]>
 		</query>
@@ -2828,12 +3057,27 @@
 				]]>
 		</query>
   </named-query>
-  <named-query name="CsIInterventoEseg.findInterventoEsegByMasterId">
+
+   <named-query name="CsIInterventoEseg.findInterventoEsegByMasterId">
     <query>
 			<![CDATA[
 				select inteseg
-				from CsIInterventoEseg inteseg JOIN FETCH inteseg.csIInterventoEsegMast mast
-				where mast.id = :masterId 
+				from CsIInterventoEseg inteseg 
+				left join fetch inteseg.csIValQuota q
+				left join fetch inteseg.stato s
+				left join fetch inteseg.csOOperatoreSettore op
+				where inteseg.csIInterventoEsegMast.id = :masterId 
+				order by inteseg.dataEsecuzione desc, inteseg.dtIns desc
+				]]>
+		</query>
+  </named-query>
+  
+  <named-query name="CsIInterventoEseg.findSintesiInterventoEsegByInterventoId">
+    <query>
+			<![CDATA[
+				select distinct inteseg.dataEsecuzione, inteseg.dataEsecuzioneA, inteseg.stato.nome, inteseg.dtIns
+				from CsIInterventoEseg inteseg
+				where inteseg.csIInterventoEsegMast.interventoProgrammatoId = :interventoId 
 				order by inteseg.dataEsecuzione desc, inteseg.dtIns desc
 				]]>
 		</query>
@@ -2866,7 +3110,14 @@
 				]]>
 		</query>
   </named-query>
-
+  <named-query name="VGerrarchiaServizi.findAll">
+    <query>
+			<![CDATA[
+				select s
+				from VGerrarchiaServizi s
+				]]>
+		</query>
+  </named-query>
   <named-query name="VGerrarchiaServizi.findAllNodesTipoIntervento">
     <query>
 			<![CDATA[
@@ -2918,18 +3169,7 @@
         ]]>
     </query>
   </named-query>
-  
-  <named-query name="CsOOperatoreAnagrafica.findAllOperatoreAnagrafica">
-
-    <query>
-			<![CDATA[
-				select a
-				from CsOOperatoreAnagrafica a		
-				order by a.cognome		
-				]]>
-		</query>
-  </named-query>
-
+ 
   <named-query name="CsCCategoriaSociale.findByDescrizione">
     <query>
 			<![CDATA[
@@ -2941,14 +3181,6 @@
 	
 
 	<!-- INIZIO SISO-524 -->
-	<named-query name="CsIPsExport.findByCsIInterventoEsegIds">
-		<query>
-			<![CDATA[			 
-				select psex from CsIPsExport psex 
-				where psex.csIInterventoEseg.id IN :csIInterventoEsegIds					
-				]]>
-		</query>
-	</named-query>
 	<named-query name="CsIPsExport.findByCsIInterventoMastId">
 		<query>
 			<![CDATA[			 
@@ -2960,11 +3192,12 @@
 	<!-- FINE SISO-524 -->
 	
 	<!-- inizio SISO-884 -->
-	<named-query name="CsIPsExport.findByCsIInterventoEsegIdsExported">
+	<named-query name="CsIPsExport.countEsegExportedByIds">
 		<query>
 			<![CDATA[			 
-				select psex from CsIPsExport psex 
-				where psex.csIInterventoEseg.id IN :csIInterventoEsegIds and psex.flagEsportato = 1				
+				select count(psex) from CsIPsExport psex 
+				where psex.csIInterventoEseg.id IN :csIInterventoEsegIds 
+				and (psex.flagEsportato = 1	or psex.dtRevocaExport is null)		
 				]]>
 		</query>
 	</named-query>
@@ -3048,11 +3281,11 @@
 	</named-query>
 	<!-- FINE MOD-RL -->
 	
-	<named-query name="CsSsSchedaSegr.deleteSchedaById">
+	<named-query name="CsSsSchedaSegr.deleteSchedaBySchedaIdProvenienza">
 		<query>
 			<![CDATA[
-				delete from CsSsSchedaSegr d where d.id  = :idScheda
-			]]>
+ 				delete from CsSsSchedaSegr s where s.schedaId = :schedaId and s.provenienza = :provenienza
+ 			]]>
 		</query>
 	</named-query>
 	
@@ -3135,21 +3368,6 @@
 			]]>
 		</query>
 	</named-query>
-	
-	
-	<!-- inizio  SISO-575 --> 
-	<named-query name="ArFfProgetto.findByBelfioreOrganizzazione">
-		<query>
-			<![CDATA[
-				select p from ArFfProgetto p  
-						inner join p.arFfProgettoOrgs po
- 				where po.arOOrganizzazione.belfiore = :belfiore	 	
- 					  and po.abilitato = 1
- 				order by p.descrizione			
-			]]>
-		</query>
-	</named-query>  
-	<!-- fine  SISO-575 --> 
 
 	<!-- inizio  SISO-1131 --> 
 	 <named-query name="CsTbProgettoAltro.findProgettoAltroByDescrizione">
@@ -3191,10 +3409,10 @@
 			]]>
 		</query>
 	</named-query>  
-	<named-query name="CsCInterventoPrForm.find">
+	<named-query name="CsCfgIntPrForm.find">
 		<query>
 			<![CDATA[
-				select c from CsCInterventoPrForm c 				
+				select distinct c.rifFormInterventoPrDett from CsCfgIntPrForm c 				
  				where (c.csCCategoriaSociale is null OR c.csCCategoriaSociale.id = :catSocialeId)
  				and   (c.csIIntervento is null OR c.csIIntervento.id = :tipoInterventoId)
  				and   (c.csIInterventoCustom is null OR c.csIInterventoCustom.id = :tipoInterventoCustomId)
@@ -3273,15 +3491,6 @@
 	</named-query>
 	
 	<!--  inizio SISO-790 -->
-	<named-query name="ArFfProgettoAttivita.findByAbilitato">
-		<query>
-			<![CDATA[
-				select a from ArFfProgettoAttivita a  
-				where 	a.abilitato = 1
- 				order by a.descrizione			
-			]]>
-		</query>
-	</named-query> 
 	<named-query name="ArTbPrestazioniInps.findByCodice"> 
 		<query>
 			<![CDATA[
@@ -3299,10 +3508,7 @@
         ]]>
     </query>
   </named-query>
-  
-	<!-- fine SISO-790 -->
-
-	
+  	
 	<!-- SISO-780 -->
 	<named-query name="CsIPsExport.revocByEsegMastId">
 		<query>
@@ -3363,7 +3569,19 @@
 				]]>
 		</query>
 	</named-query>
-	  	
+	
+	<named-query name="CsDSinba.getLastSchedaSinbaByIdCaso">
+		<query>
+			<![CDATA[	
+			
+				SELECT sinba
+				FROM CsDSinba sinba
+				WHERE sinba.csDValutazione.csDDiario.csACaso.id = :casoId
+					order by sinba.csDValutazione.csDDiario.dtAmministrativa DESC
+				]]>
+		</query>
+	</named-query>
+	
 	<!-- SISO-812 -->
 	<named-query name="CsACasoAccessoFascicolo.getFlagNascondiFascicoloByCasoId">
 		<query>
@@ -3487,7 +3705,102 @@
 			]]>
 		</query>
      </named-query>
+   
+     <!-- Progetti Individuali -->
+	 <named-query name="CsPaiFaseChiusura.findPaiFaseChiusuraByTipoPaiId">
+	    <query>
+	      <![CDATA[
+	        select a 
+	        from CsPaiFaseChiusura a where a.id.tipoPai = :idTipoPai
+	        ]]>
+	    </query>
+	  </named-query>
+	  
+	 <named-query name="CsOSettore.findPerRiunione">
+    <query>
+			<![CDATA[
+				  select it from CsOSettore it 
+				       WHERE it.flgRiunioneCon = 1
+			]]>
+		</query>
+  </named-query>
 	
+  <named-query name="CsRelSettoreStruttura.findSettoreByIdStruttura">
+     <query>
+			<![CDATA[
+				SELECT s FROM CsRelSettoreStruttura s 
+				WHERE s.idStruttura = :idStruttura
+			]]>
+		</query>
+  </named-query>
+  
+  <named-query name="CsRelSettoreStruttura.findSettoreByStruttura">
+    <query>
+			<![CDATA[
+				SELECT cos FROM CsOSettore cos, CsRelSettoreStruttura crss 
+				WHERE cos.id = crss.idSettore and crss.idStruttura = :idStruttura
+			]]>
+		</query>
+  </named-query>
+  
+  <named-query name="CsOOperatoreSettore.findOperatoreSettoreByCodStruttura">
+    <query>
+			<![CDATA[
+				select DISTINCT os
+				from CsOOperatoreSettore os  
+				where os.csOSettore.csTbSecondoLivello.descrizione = :tipo2livello
+				and os.csOSettore.csOOrganizzazione.codRouting=:codRouting
+				
+			]]>
+		</query>
+  </named-query>
+  
+  <named-query name="CsOOperatoreSettore.findOperatoreSettore2LivByIdOperatore">
+    <query>
+			<![CDATA[
+				select os
+				from CsOOperatoreSettore os  
+				where os.csOSettore.csTbSecondoLivello.descrizione = :tipo2livello
+				and os.csOSettore.csOOrganizzazione.codRouting=:codRouting
+				and os.csOOperatore.id  = :idOperatore
+				and os.dataFineApp >= :dtRif
+			]]>
+		</query>
+  </named-query>
+  
+  <named-query name="CsOOperatoreSettore.findOperatoreSettore2LivByUsername">
+    <query>
+			<![CDATA[
+				select os
+				from CsOOperatoreSettore os  
+				where os.csOSettore.csTbSecondoLivello.descrizione = :tipo2livello
+				and os.csOSettore.csOOrganizzazione.codRouting=:codRouting
+				and os.csOOperatore.username  = :username
+				and os.dataFineApp >= :dtRif
+			]]>
+		</query>
+  </named-query>
+  
+  <named-query name="InserimentoMinoreDaStruttura.findInsMinoriInZsDaStruttura">
+    <query>
+      <![CDATA[
+       SELECT ins FROM InserimentoMinoreDaStruttura ins, CsOOrganizzazione o 
+       where ins.codRouting  = o.codRouting and ins.stato = :statoI 
+      ]]>
+    </query>
+  </named-query>
+  
+  <named-query name="CsPaiMastSogg.findSoggByDiarioId">
+    <query>
+      <![CDATA[
+        select c 
+        from CsPaiMastSogg c 
+        where c.diarioId = :diarioId
+      ]]>
+    </query>
+  </named-query>
+  
+  
      <!-- TASK SISO-1044 -->
      <named-native-query name="VMobiCasi.findCasiByOperatoreBySoggettoNomeCognome" result-set-mapping="VMobiCasiIdRicercaResult" >
         <query>

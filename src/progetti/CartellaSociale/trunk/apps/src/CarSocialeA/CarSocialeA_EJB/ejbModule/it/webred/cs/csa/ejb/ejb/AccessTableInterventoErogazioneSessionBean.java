@@ -1,26 +1,5 @@
 package it.webred.cs.csa.ejb.ejb;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
-import javax.ejb.EJB;
-import javax.ejb.Stateless;
-import javax.faces.model.SelectItem;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
-
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import it.webred.amprofiler.ejb.perm.LoginBeanService;
 import it.webred.cs.csa.ejb.CarSocialeBaseSessionBean;
 import it.webred.cs.csa.ejb.client.AccessTableCasoSessionBeanRemote;
@@ -28,6 +7,7 @@ import it.webred.cs.csa.ejb.client.AccessTableDiarioSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.AccessTableInterventoErogazioneSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.AccessTableInterventoSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.AccessTableSoggettoSessionBeanRemote;
+import it.webred.cs.csa.ejb.dao.CasoDAO;
 import it.webred.cs.csa.ejb.dao.ConfigurazioneDAO;
 import it.webred.cs.csa.ejb.dao.InterventoDAO;
 import it.webred.cs.csa.ejb.dao.InterventoErogazioneDAO;
@@ -57,6 +37,7 @@ import it.webred.cs.csa.ejb.dto.mobi.upload.UploadMobileDTO;
 import it.webred.cs.csa.ejb.dto.mobi.upload.UploadMobileDocumentiDTO;
 import it.webred.cs.csa.ejb.dto.mobi.upload.UploadMobileErogazioniDTO;
 import it.webred.cs.csa.ejb.dto.mobi.upload.UploadMobileValoreDTO;
+import it.webred.cs.csa.ejb.dto.relazione.SaveRelazioneDTO;
 import it.webred.cs.data.DataModelCostanti;
 import it.webred.cs.data.DataModelCostanti.PermessiErogazioneInterventi;
 import it.webred.cs.data.DataModelCostanti.TipoDatoMobile;
@@ -94,6 +75,27 @@ import it.webred.ct.support.datarouter.CeTBaseObject;
 import it.webred.ct.support.validation.annotation.AuditConsentiAccessoAnonimo;
 import it.webred.ct.support.validation.annotation.AuditSaltaValidazioneSessionID;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
+import javax.ejb.EJB;
+import javax.ejb.Stateless;
+import javax.faces.model.SelectItem;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
+
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 @Stateless
 public class AccessTableInterventoErogazioneSessionBean extends CarSocialeBaseSessionBean implements AccessTableInterventoErogazioneSessionBeanRemote {
 
@@ -109,6 +111,9 @@ public class AccessTableInterventoErogazioneSessionBean extends CarSocialeBaseSe
 	
 	@Autowired
 	private IterDAO iterDao;
+	
+	@Autowired
+	private CasoDAO casoDao;
 	
 	@Autowired
 	private InterventoErogazioneDAO interventoErogDao;
@@ -822,7 +827,7 @@ protected VmobiCasiDTO findCasiByOperatoreBySoggetto(FindInterventoErogazioneByI
 		long key = d.getErId().longValue();
 		CsIInterventoEsegMast master = mappaMaster.get(key);
 		if(master==null)
-			master = interventoErogDao.getErogazioneMasterById(d.getErId().longValue());
+			master = interventoErogDao.getCsIInterventoEsegMastById(d.getErId().longValue());
 		
 		List<CsIInterventoEseg> lstErogAlert = mappaAlert.get(key);
 		if(lstErogAlert==null)
@@ -974,9 +979,6 @@ protected VmobiCasiDTO findCasiByOperatoreBySoggetto(FindInterventoErogazioneByI
 				if(master.getPercGestitaEnte()!=null)
 					master.setValoreGestitaEnte(master.getSpesa().multiply(master.getPercGestitaEnte()));
 			}
-			if(master.getFlagCompartCalc()){
-				//todo?! -- Non arriva nessun dato dal mobile attualmente
-			}
 			
 			master.setDtMod(new Date());
 			master.setUsrMod(row.getErSoggCf());
@@ -1112,33 +1114,16 @@ protected VmobiCasiDTO findCasiByOperatoreBySoggetto(FindInterventoErogazioneByI
 	//Aggiunta gestione dell'inserimenti (solo inserimento) di nuove attività professionali tramite APP
 	private void salvaAttivitaProfessionale(BaseDTO dto, CsASoggettoLAZY soggetto, RelazioneDTO relazioneDTO,UploadMobileAttivitaProfessionaliDTO d,CsOOperatore operatoreCorrente)throws Exception{
 	//Long idCaso, CsDTriage csDTriage, CsOOperatoreSettore csOOperatoreSettore, DiarioAnagraficaDTO[] diarioAnagraficaDTOs) 
-		
+		copiaCsTBaseObject(relazioneDTO, dto);
+		 
 		dto.setObj(relazioneDTO.getRelazione());
 		// trovo il caso
 		
-		
-		relazioneDTO.setEnteId(dto.getEnteId());
-		relazioneDTO.setUserId(dto.getUserId());
-		relazioneDTO.setSessionId(dto.getSessionId());
-		
-		
-		
-		
-        CsACaso csa = new CsACaso();
-        csa.setId(d.getIdCaso());
-        
         CsTbTipoDiario cstd = new CsTbTipoDiario(); 
         cstd.setId(new Long(DataModelCostanti.TipoDiario.RELAZIONE_ID)); 
-        
-        CsOOperatoreBASIC operatoreResponsabile = null;
 
-		BaseDTO baseDto = new BaseDTO();
-		baseDto.setEnteId(dto.getEnteId());
-		baseDto.setUserId(dto.getUserId());
-		baseDto.setSessionId(dto.getSessionId());
-		baseDto.setObj(d.getIdCaso());
-		operatoreResponsabile = casoService.findResponsabileBASIC(baseDto);
-		
+		CsACaso csa = casoDao.findCasoById(d.getIdCaso());
+		CsOOperatoreBASIC responsabile = casoDao.findResponsabileBASIC(d.getIdCaso());
 		
 		//TODO ricostruire liste oggetti/oggetti da liste id/id
 		
@@ -1154,9 +1139,21 @@ protected VmobiCasiDTO findCasiByOperatoreBySoggetto(FindInterventoErogazioneByI
 		}
 		relazioneDTO.getRelazione().setLstConChi(lstConChiSel);
 		
-		CsOSettore riunioneCon =new CsOSettore();
-		riunioneCon.setId(d.getId_riunioneCon());
-		relazioneDTO.getRelazione().setRiunioneCon(riunioneCon);
+		//SISO-1481
+//		CsOSettore riunioneCon =new CsOSettore();
+//		riunioneCon.setId(d.getId_riunioneCon());
+//		relazioneDTO.getRelazione().setRiunioneCon(riunioneCon);
+		
+		
+		List<CsOSettore> lstRiunioneConChiSel = new ArrayList<CsOSettore>(); 
+		for (String strRiunioneConChi : d.getLstRiunioneConChi()) {
+			CsOSettore cs=new CsOSettore();
+			
+			cs.setId(Long.parseLong(strRiunioneConChi));
+			lstRiunioneConChiSel.add(cs);
+		}
+		
+		relazioneDTO.getRelazione().setLstRiunioneConChi(lstRiunioneConChiSel);
 		
 		
 		//*****************************************
@@ -1197,13 +1194,12 @@ protected VmobiCasiDTO findCasiByOperatoreBySoggetto(FindInterventoErogazioneByI
 		relazioneDTO.getRelazione().getCsDDiario().setDtAmministrativa(d.getDiarioDtAmministrativa());
         
         relazioneDTO.getRelazione().getCsDDiario().setCsACaso(csa);
-        relazioneDTO.getRelazione().getCsDDiario().setResponsabileCaso(operatoreResponsabile.getId());
+        relazioneDTO.getRelazione().getCsDDiario().setResponsabileCaso(responsabile.getId()!=null? responsabile.getId() : null);
         relazioneDTO.getRelazione().getCsDDiario().setCsTbTipoDiario(cstd);
         relazioneDTO.getRelazione().getCsDDiario().setDtIns(new Date());
         relazioneDTO.getRelazione().getCsDDiario().setUserIns(dto.getUserId());
         
         //********* recupero CsOOperatoreSettore tramite operatore_id e settore_id
-        List<SelectItem> listaSettori;
         CsOOperatoreSettore CsOOperatoreSettoreCurr=new CsOOperatoreSettore();
         
         List<CsOSettore> listaSettoriOrg;
@@ -1238,8 +1234,21 @@ protected VmobiCasiDTO findCasiByOperatoreBySoggetto(FindInterventoErogazioneByI
         relazioneDTO.getRelazione().getCsDDiario().setCsOOperatoreSettore(CsOOperatoreSettoreCurr);
         relazioneDTO.getRelazione().getCsDDiario().setVisSecondoLivello(CsOOperatoreSettoreCurr.getCsOSettore().getId());
 		//********
-        dto.setObj(relazioneDTO.getRelazione());
-        relazioneDTO = diarioService.saveRelazione(dto);
+        
+        SaveRelazioneDTO sdto = new SaveRelazioneDTO();
+        this.copiaCsTBaseObject(dto, sdto);
+        sdto.setRelazione(relazioneDTO.getRelazione());
+        
+		//se ho editato la scheda triage
+		if(relazioneDTO.getRelazione().getMicroAttivita().getFlagTipoForm().equals("3")){
+		   sdto.setTriage(relazioneDTO.getTriage());	
+		}
+		//SISO 1257 - se ho editato la scheda 
+		if(relazioneDTO.isAttivitaSAL()){
+		   sdto.setSal(relazioneDTO.getSal());	
+		}		
+        
+        relazioneDTO = diarioService.saveRelazione(sdto);
 		
 		
 		List<DiarioAnagraficaDTO> famigliaSelezionata = new ArrayList<DiarioAnagraficaDTO>();
@@ -1249,13 +1258,11 @@ protected VmobiCasiDTO findCasiByOperatoreBySoggetto(FindInterventoErogazioneByI
 				famigliaSelezionata.add(da);
 			}
 		}
+		
 		BaseDTO dtoDiarioAnagrafica = new BaseDTO();
-		dtoDiarioAnagrafica = new BaseDTO();
+		copiaCsTBaseObject(dto, dtoDiarioAnagrafica);
 		dtoDiarioAnagrafica.setObj(famigliaSelezionata);
 		dtoDiarioAnagrafica.setObj2(relazioneDTO.getRelazione().getDiarioId());
-		dtoDiarioAnagrafica.setEnteId(dto.getEnteId());
-		dtoDiarioAnagrafica.setUserId(dto.getUserId());
-		dtoDiarioAnagrafica.setSessionId(dto.getSessionId());
 		
 		famigliaSelezionata = diarioService.saveDiarioAnagrafica(dtoDiarioAnagrafica);
 		

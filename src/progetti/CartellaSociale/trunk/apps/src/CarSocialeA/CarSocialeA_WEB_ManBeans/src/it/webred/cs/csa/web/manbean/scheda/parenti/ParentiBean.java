@@ -1,7 +1,6 @@
 package it.webred.cs.csa.web.manbean.scheda.parenti;
 
 import it.webred.cs.csa.ejb.client.AccessTableParentiGitSessionBeanRemote;
-import it.webred.cs.csa.ejb.client.AccessTableSoggettoSessionBeanRemote;
 import it.webred.cs.csa.ejb.dto.BaseDTO;
 import it.webred.cs.csa.ejb.dto.ComponenteDTO;
 import it.webred.cs.csa.ejb.dto.InfoRecapitiDTO;
@@ -20,10 +19,6 @@ import it.webred.cs.jsf.manbean.UserSearchBeanExt;
 import it.webred.cs.jsf.manbean.superc.CsUiCompBaseBean;
 import it.webred.ct.config.model.AmTabComuni;
 import it.webred.ct.config.model.AmTabNazioni;
-import it.webred.ct.data.access.basic.anagrafe.AnagrafeService;
-import it.webred.ct.data.access.basic.anagrafe.dto.ComponenteFamigliaDTO;
-import it.webred.ct.data.access.basic.anagrafe.dto.RicercaSoggettoAnagrafeDTO;
-import it.webred.ct.data.model.anagrafe.SitDPersona;
 import it.webred.jsf.bean.ComuneBean;
 import it.webred.jsf.bean.SessoBean;
 import it.webred.siso.ws.ricerca.dto.PersonaDettaglio;
@@ -84,8 +79,8 @@ public class ParentiBean extends SchedaValiditaBaseBean implements IDatiValidita
 			maxAttiviWarning(nomeTab + ": Nuovo elemento non disponibile");
 			return;
 		}
-
-		ParentiComp comp = new ParentiComp();
+        Date dataInizio = new Date();
+		ParentiComp comp = new ParentiComp(dataInizio, null);
 		this.valorizzaComboComp(comp);
 		comp.setDataInizio(new Date());
 		listaComponenti.add(0, comp);
@@ -199,8 +194,8 @@ public class ParentiBean extends SchedaValiditaBaseBean implements IDatiValidita
 			result = this.recuperaAnagraficaDaAnagrafeEsterna(DataModelCostanti.TipoRicercaSoggetto.ANAG_SANITARIA_MARCHE, id.replace(DataModelCostanti.TipoRicercaSoggetto.ANAG_SANITARIA_MARCHE, ""),(PersonaDettaglio)sel.getSoggetto());
 		else if(id.trim().startsWith(DataModelCostanti.TipoRicercaSoggetto.SIGESS)){
 			result = this.recuperaAnagraficaDaAnagrafeEsterna(DataModelCostanti.TipoRicercaSoggetto.SIGESS, id.replace(DataModelCostanti.TipoRicercaSoggetto.SIGESS, ""),(PersonaDettaglio)sel.getSoggetto());
-		}else 
-			result = recuperaAnagraficaDaAnagrafe(id);
+		}else
+			result = this.recuperaAnagraficaDaAnagrafeEsterna(DataModelCostanti.TipoRicercaSoggetto.DEFAULT, id.replace(DataModelCostanti.TipoRicercaSoggetto.DEFAULT, ""),(PersonaDettaglio)sel.getSoggetto());
 		
 		UserSearchBeanExt fbean = (UserSearchBeanExt) getReferencedBean("userSearchBeanExt");
 		fbean.clearParameters();
@@ -208,73 +203,6 @@ public class ParentiBean extends SchedaValiditaBaseBean implements IDatiValidita
 		return result;
 	}
 
-	// /**********
-	public CsAComponente recuperaAnagraficaDaAnagrafe(String id) {
-		CsAComponente c = new CsAComponente();
-		CsAAnagrafica anaBean = new CsAAnagrafica();
-		try {
-		
-			// precarico anagrafica
-			AnagrafeService anagrafeService = (AnagrafeService) getEjb("CT_Service", "CT_Service_Data_Access","AnagrafeServiceBean");
-			RicercaSoggettoAnagrafeDTO ricercaDto = new RicercaSoggettoAnagrafeDTO();
-			fillEnte(ricercaDto);
-			ricercaDto.setIdVarSogg(id);
-			SitDPersona p = anagrafeService.getPersonaById(ricercaDto);
-
-			if (p != null) {
-
-				if (p.getDataMor() != null && p.getDataMor().before(new Date())) {
-					addWarning("Non è possibile utilizzare questo soggetto",
-							   "Il soggetto selezionato è deceduto il "+ ddMMyyyy.format(p.getDataMor()));
-					c = null;
-					return c;
-				}
-
-				ComponenteFamigliaDTO compDto = new ComponenteFamigliaDTO();
-				compDto.setPersona(p);
-				fillEnte(compDto);
-				compDto = anagrafeService.fillInfoAggiuntiveComponente(compDto);
-
-				// anagrafica
-				
-				if(p.getIdExt()!=null)
-					anaBean.setIdOrigWs(DataModelCostanti.TipoRicercaSoggetto.DEFAULT+"@"+p.getIdExt());
-				anaBean.setCf(p.getCodfisc());
-				anaBean.setCognome(p.getCognome());
-				anaBean.setNome(p.getNome());
-				anaBean.setDataNascita(p.getDataNascita());
-				anaBean.setSesso(p.getSesso());
-				
-				// Cittadinanza
-				anaBean.setCittadinanza(compDto.getCittadinanza());
-				
-				// nascita
-				anaBean.setComuneNascitaCod(compDto.getCodComNas());
-				anaBean.setComuneNascitaDes(compDto.getDesComNas());
-				anaBean.setProvNascitaCod(compDto.getSiglaProvNas());
-				anaBean.setStatoNascitaCod(compDto.getCodStatoNas());
-				anaBean.setStatoNascitaDes(compDto.getDesStatoNas());
-				
-				// indirizzo res
-				c.setComResCod(compDto.getCodComRes());
-				c.setComResDes(compDto.getDesComRes());
-				c.setProvResCod(compDto.getSiglaProvRes());
-				c.setIndirizzoRes(compDto.getIndirizzoResidenza());
-				c.setNumCivRes(compDto.getCivicoResidenza());
-
-			}
-
-			// FacesContext.getCurrentInstance().getExternalContext().redirect("scheda.faces");
-
-		} catch (Exception e) {
-			addError("Errore", "Errore durante il caricamento dell'anagrafica");
-			logger.error("", e);
-		}
-		
-		c.setCsAAnagrafica(anaBean);
-		return c;
-	}
-	
 	public CsAComponente recuperaAnagraficaDaAnagrafeEsterna(String tipoRicerca, String idSearch, PersonaDettaglio pIn) {
 		CsAComponente c = new CsAComponente();
 		CsAAnagrafica anaBean = new CsAAnagrafica();
@@ -284,11 +212,12 @@ public class ParentiBean extends SchedaValiditaBaseBean implements IDatiValidita
     		String codFiscale = !StringUtils.isBlank(idSearch) &&  idSearch.startsWith("@") ? idSearch.replace("@","") : null;
 			
 			PersonaDettaglio p = pIn;
-			if(!StringUtils.isBlank(id)) 
-				p = getPersonaDaAnagEsterna(tipoRicerca, id);
-			else if(!DataModelCostanti.TipoRicercaSoggetto.ANAG_SANITARIA_MARCHE.equals(tipoRicerca))
-				p = CsUiCompBaseBean.getPersonaDaAnagEsterna(tipoRicerca, null, null, codFiscale);
-			
+			if(!DataModelCostanti.TipoRicercaSoggetto.DEFAULT.equalsIgnoreCase(tipoRicerca)){
+				if(!StringUtils.isBlank(id)) 
+					p = getPersonaDaAnagEsterna(tipoRicerca, id);
+				else if(!DataModelCostanti.TipoRicercaSoggetto.ANAG_SANITARIA_MARCHE.equals(tipoRicerca))
+					p = CsUiCompBaseBean.getPersonaDaAnagEsterna(tipoRicerca, null, null, codFiscale);
+			}
 			
 			if (p != null) {
 				
@@ -596,13 +525,10 @@ public class ParentiBean extends SchedaValiditaBaseBean implements IDatiValidita
 			Integer idx = getFirstActiveComponentIndex();
 			if (idx != null) {
 				ParentiComp pComp = (ParentiComp) listaComponenti.get(idx);
-
 				for (ComponenteDTO dto : lstComponentiGit) {
 					dto.setAttiva(true);
-					// TODO:Verificare se il componente è già presente in
-					// cartella
-					dto.setAttiva(!this.isComponenteAttivato(dto.getCompGit(),
-							pComp));
+					// TODO:Verificare se il componente è già presente in cartella
+					dto.setAttiva(!this.isComponenteAttivato(dto.getCompGit(),pComp));
 				}
 			}
 		}
@@ -667,7 +593,7 @@ public class ParentiBean extends SchedaValiditaBaseBean implements IDatiValidita
 		List<CsAComponente> lstTmp = new ArrayList<CsAComponente>();
 		lstTmp.addAll(comp.getLstParenti());
 		lstTmp.addAll(comp.getLstConoscenti());
-		cs.setCsAComponentes(new ArrayList<CsAComponente>());
+		cs.getCsAComponentes().clear();
 		for (CsAComponente c : lstTmp)
 			cs.getCsAComponentes().add(duplica(c));
 
@@ -759,7 +685,7 @@ public class ParentiBean extends SchedaValiditaBaseBean implements IDatiValidita
 			cs.setCsASoggetto(sogg);
 		}
 
-		cs.setCsAComponentes(new ArrayList<CsAComponente>());
+		cs.getCsAComponentes().clear();
 		cs.getCsAComponentes().addAll(comp.getLstParenti());
 		cs.getCsAComponentes().addAll(comp.getLstConoscenti());
 		
@@ -790,7 +716,7 @@ public class ParentiBean extends SchedaValiditaBaseBean implements IDatiValidita
 	public ValiditaCompBaseBean getComponenteFromCs(Object obj) {
 
 		CsAFamigliaGruppo cs = (CsAFamigliaGruppo) obj;
-		ParentiComp comp = new ParentiComp();
+		ParentiComp comp = new ParentiComp(cs.getDataInizioApp(), cs.getDataFineApp());
 
 		for (CsAComponente csComp : cs.getCsAComponentes()) {
 			boolean isParente = csComp.getCsTbTipoRapportoCon() != null
@@ -827,7 +753,7 @@ public class ParentiBean extends SchedaValiditaBaseBean implements IDatiValidita
 
 		String dtInizio = (pComp != null ? ddMMyyyy.format(pComp.getDataInizio()) : "");
 		String dtFine = comp.getDataFine() != null ? ddMMyyyy.format(comp.getDataFine()) : "";
-		dtFine = "31/12/9999".equals(dtFine) ? "ATTUALE" : dtFine;
+		dtFine =  DataModelCostanti.END_DATE_STRING.equals(dtFine) ? "ATTUALE" : dtFine;
 		
 		String head = "Risorse [" + dtInizio + "-" + dtFine +"]" + ":";
 		List<String> msg = new ArrayList<String>();
@@ -875,19 +801,19 @@ public class ParentiBean extends SchedaValiditaBaseBean implements IDatiValidita
 
 			if (cs.getConvivente() == null) {
 				ok = false;
-				msg.add("Lista: " + cs.getCsAAnagrafica().getCognome()+ " " + cs.getCsAAnagrafica().getNome() + " - Convivente è un campo obbligatorio");
+				msg.add("Lista: " + cs.getCsAAnagrafica().getDenominazione() + " - Convivente è un campo obbligatorio");
 			}else{
 				if(cs.getConvivente().booleanValue()) countConviventi++;
 			}
 
 			if (cs.getCsTbContatto() == null || cs.getCsTbContatto().getId() == null) {
 				ok = false;
-				msg.add("Lista: " + cs.getCsAAnagrafica().getCognome()+ " " + cs.getCsAAnagrafica().getNome() + " - Contatto è un campo obbligatorio");
+				msg.add("Lista: " + cs.getCsAAnagrafica().getDenominazione()  + " - Contatto è un campo obbligatorio");
 			}
 
 			if (cs.getCsTbPotesta() == null || cs.getCsTbPotesta().getId() == null) {
 				ok = false;
-				msg.add("Lista: " + cs.getCsAAnagrafica().getCognome()+ " " + cs.getCsAAnagrafica().getNome() + " - Potestà è un campo obbligatorio");
+				msg.add("Lista: " + cs.getCsAAnagrafica().getDenominazione()  + " - Potestà è un campo obbligatorio");
 			}
 		}
 		
@@ -895,7 +821,7 @@ public class ParentiBean extends SchedaValiditaBaseBean implements IDatiValidita
 		for (CsAComponente cs : pComp.getLstConoscenti()) {
 			if (cs.getConvivente() == null) {
 				ok = false;
-				msg.add("Lista: " + cs.getCsAAnagrafica().getCognome()+ " " + cs.getCsAAnagrafica().getNome() + " - Convivente è un campo obbligatorio");
+				msg.add("Lista: " + cs.getCsAAnagrafica().getDenominazione()  + " - Convivente è un campo obbligatorio");
 			}else{
 				if(cs.getConvivente().booleanValue()) countConviventi++;
 			}
@@ -1077,5 +1003,4 @@ public class ParentiBean extends SchedaValiditaBaseBean implements IDatiValidita
 		// TODO Auto-generated method stub
 		
 	}
-	
 }

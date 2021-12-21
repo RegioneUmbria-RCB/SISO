@@ -85,18 +85,21 @@ public class AccessTableEventiSessionBean extends CarSocialeBaseSessionBean
 	}
 	
 	@Override
-	public List<EventoDTO> findEventsByOpSettIdAndCF(String CF, long orgID, String type){
-
+	public List<EventoDTO> findEventsByOpSettIdAndCF(BaseDTO dto){
+		String CF = (String)dto.getObj();
+		Long orgID = (Long)dto.getObj2();
+		String type = (String)dto.getObj3();
 		List<CsAImportExport> csaEventi = eventoDao.findAll();
-		
-
+	
 		List<EventoDTO> eventi = new ArrayList<EventoDTO>();
 		
 		for (CsAImportExport csaEvento : csaEventi) {
 			/**
 			 * Controllo che il CF dell'evento coincida con il CF del caso e che appartengano alla stessa organizzazione 
 			 */
-			if(csaEvento.getCodiceFiscale().equals(CF) && csaEvento.getOperatoreSettore().getCsOSettore().getCsOOrganizzazione().getId() == orgID  && csaEvento.getTipoEvento().equals(type)){
+			if(csaEvento.getCodiceFiscale().equals(CF) 
+					&& csaEvento.getOperatoreSettore().getCsOSettore().getCsOOrganizzazione().getId() == orgID  
+					&& csaEvento.getTipoEvento().equals(type)){
 				eventi.add(this.convertToEventDTO(csaEvento));
 			}
 		}

@@ -1,17 +1,14 @@
 package it.webred.cs.json.valSinba.ver1;
 
-import it.webred.cs.csa.ejb.client.AccessTableSchedaSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.CarSocialeServiceException;
 import it.webred.cs.csa.ejb.dto.BaseDTO;
 import it.webred.cs.csa.ejb.dto.SinbaDTO;
 import it.webred.cs.csa.ejb.dto.pai.affido.CsPaiAffidoDTO;
-import it.webred.cs.csa.ejb.dto.pai.affido.CsPaiAffidoDominioDTO;
 import it.webred.cs.csa.utils.bean.report.dto.ReportPdfDTO;
 import it.webred.cs.data.model.ArTbPrestazioniInps;
 import it.webred.cs.data.model.CsAComponente;
-import it.webred.cs.data.model.CsAFamigliaGruppo;
 import it.webred.cs.data.model.CsASoggettoLAZY;
-import it.webred.cs.data.model.CsCCategoriaSocialeBASIC;
+import it.webred.cs.data.model.CsCCategoriaSociale;
 import it.webred.cs.data.model.CsDDiario;
 import it.webred.cs.data.model.CsDPai;
 import it.webred.cs.data.model.CsDSinba;
@@ -33,7 +30,6 @@ import it.webred.cs.json.valSinba.ver1.tabs.DatiGeneraliBean;
 import it.webred.cs.json.valSinba.ver1.tabs.DatiGeneraliMan;
 import it.webred.cs.json.valSinba.ver1.tabs.DatiSegnalazioniBean;
 import it.webred.cs.json.valSinba.ver1.tabs.DatiSegnalazioniMan;
-import it.webred.ejb.utility.ClientUtility;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -48,8 +44,8 @@ import java.util.List;
 import javax.faces.application.FacesMessage;
 import javax.faces.event.AjaxBehaviorEvent;
 import javax.faces.model.SelectItem;
-import javax.naming.NamingException;
 
+import org.apache.commons.lang3.StringUtils;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 
@@ -64,7 +60,7 @@ public class ValSinbaManBean extends ValSinbaManBaseBean {
 	private boolean disabledSave = false;
     private boolean copia = false;
     
-	private List<CsCCategoriaSocialeBASIC> categorieSociali;
+	private List<CsCCategoriaSociale> categorieSociali;
 	private List<SelectItem> lstParenti = null;
 	
 	// Manager dei TABS
@@ -116,7 +112,9 @@ public class ValSinbaManBean extends ValSinbaManBaseBean {
 	   			
 		this.initPrestazioniBeneficiario(formatter.format(c.getTime()),formatter.format(dateSel));
 		
-		
+		//SISO-981 Inizio
+		this.initAffidoPAI(soggetto, c.getTime());
+		//SISO-981 Fine
 	}
 	//SISO-777 inizializzazione del calendario in quanto le prestazioni devono essere sempre allineate alla data che appare nella scheda
 	public void initCalendar(AjaxBehaviorEvent event){
@@ -124,6 +122,11 @@ public class ValSinbaManBean extends ValSinbaManBaseBean {
 		Date dateSel = (Date)((javax.faces.component.UIInput)event.getComponent()).getValue();
 		Calendar c = Calendar.getInstance();//giorno attuale
 		c.setTime(dateSel);
+		
+		//SISO-981 Inizio		
+		this.initAffidoPAI(soggetto, c.getTime());
+		//SISO-981 Fine
+
 		c.add(Calendar.YEAR, -1); //Data di riferimento - 1 anno
 	   	
 		this.initPrestazioniBeneficiario(formatter.format(c.getTime()),formatter.format(dateSel));
@@ -175,10 +178,9 @@ public class ValSinbaManBean extends ValSinbaManBaseBean {
 		if ( soggetto != null ){
 			long casoId = soggetto.getCsACaso().getId();
 			
-			if (!"".equals(belfiore) && casoId != 0l) {
+			if (!StringUtils.isBlank(belfiore) && casoId != 0l) {
 				return belfiore + casoId;
 			}
-		
 		}
 		
 		return "";
@@ -189,7 +191,7 @@ public class ValSinbaManBean extends ValSinbaManBaseBean {
 		if (soggetto != null) {
 			long casoId = soggetto.getCsACaso().getId();
 
-			if (!"".equals(belfiore) && casoId != 0l) {
+			if (!StringUtils.isBlank(belfiore) && casoId != 0l) {
 				return belfiore + casoId;
 			}
 		}
@@ -227,9 +229,63 @@ public class ValSinbaManBean extends ValSinbaManBaseBean {
 	}
 	
 
+	//SISO-981 Inizio
+	private void initAffidoPAI(CsASoggettoLAZY soggetto, Date dataRiferimento){
+	 
+			BaseDTO dto = new BaseDTO();
+			fillEnte(dto);
+			 
+		try {
+			
+			dto.setObj("AFFIDAMENTO FAMILIARE");
+			Long idProgAffido = confService.findIdProgettoPaiByDesc(dto);
+			
+			dto.setObj(soggetto.getCsACaso().getId());
+			List<CsDPai> lPai = diarioService.findPaiByCaso(dto);
+			
+			//<Teoricamente può essere attivo un solo progetto affido per volta.
+//			Data sinba ≥ data inizio pai
+//			And data sinba ≤ nvl(data fine pai,'31-12-9999')
+			// Per la nuova scheda si confronta di default la data corrente
+			Date today = new Date();
+			boolean found = false; 
+		 	for(CsDPai pai : lPai){
+		 		valUltimModifica(pai.getCsDDiario());
+		 		if(pai.getCsTbTipoPai().getId() == (idProgAffido) && 
+		 				(pai.getCsDDiario().getDtAttivazioneDa() != null && ( dataRiferimento == null ? today : dataRiferimento) .compareTo(pai.getCsDDiario().getDtAttivazioneDa()) >=0 )&&
+		 				(pai.getCsDDiario().getDtAttivazioneA() == null ||  ( dataRiferimento == null ? today : dataRiferimento) .compareTo(pai.getCsDDiario().getDtAttivazioneA()) >=0 )&&
+		 				
+		 				(pai.getDataChiusuraPrevista() == null || 
+		 					pai.getDataChiusuraPrevista().compareTo(getDtModifica())  <= 0)){
+		 			dto = new BaseDTO();
+		 			fillEnte(dto);
+		 			dto.setObj(pai.getDiarioId());
+		 			CsPaiAffidoDTO paiAffido =  paiService.findAffidoByDiarioPaiId(dto);
+		 			if(paiAffido != null){
+		 				valorizzaDatiAffido(pai,paiAffido, pai.getCsDDiario().getDtAttivazioneDa(),pai.getCsDDiario().getDtAttivazioneA(), false );
+		 				found = true;
+		 			}
+		 		}
+		 	}
+		 	if(!found){
+		 		//Non ha trovato nulla devo aggiornare i vecchi dati.
+		 		valorizzaDatiAffido(null,null, null,null, true );
+	 			
+		 	}
+			
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		}
+	}
+	//SISO-981 Fine
+	
 	public void init(CsASoggettoLAZY soggetto){
 		setSoggettoFascicolo(soggetto);
 		valorizzaDatiBase(soggetto.getCsACaso().getId(), null);
+		
+		//SISO-981 Inizio
+	     initAffidoPAI(soggetto, null);
+		//SISO-981 Fine
 	}
 	
 	/*Inizializza il Json compiando da altro*/
@@ -346,6 +402,93 @@ public class ValSinbaManBean extends ValSinbaManBaseBean {
 		    this.getJsonCurrent().getDatiGenerali().setAnnoNascita(yearformat.format(soggetto.getCsAAnagrafica().getDataNascita()));
 		}
 	}
+	
+	//SISO-981 Inizio
+	 
+	private void valorizzaDatiAffido(CsDPai progettoPai,CsPaiAffidoDTO csPaiAffido, Date dataAperturaProgetto, Date dataChiusuraProgetto, boolean reset) {
+		DatiAffidamentoBean datiAffidamentoBean = new DatiAffidamentoBean();
+		DatiSegnalazioniBean datiSegnalazioniBean = new DatiSegnalazioniBean();
+		
+		
+		if(!reset){
+		
+		String messaggioDaPai = "";
+		if(csPaiAffido.getCodiceCollocamento()  != null){
+			Integer tipoIntervento = dominiService.findSINBADominioByCodice(csPaiAffido.getCodiceCollocamento());
+			if(tipoIntervento != -1)
+				datiAffidamentoBean.setTipoIntervento(tipoIntervento);
+		}
+		if(csPaiAffido.getDataDecreto()  != null){
+			datiSegnalazioniBean.setDataProvvedimento(csPaiAffido.getDataDecreto());
+		}
+		
+		if(csPaiAffido.getCodiceNaturaAccoglienza()   != null){
+			Integer formaIntervento = dominiService.findSINBADominioByCodice(csPaiAffido.getCodiceNaturaAccoglienza());
+			if(formaIntervento != -1)
+			
+			datiAffidamentoBean.setFormaIntervento(formaIntervento);
+		}
+		 	
+		if(csPaiAffido.getCodiceAutoritaProvvedimento()   != null){
+			Integer codiceAutoritaProvvedimento = dominiService.findSINBADominioByCodice(csPaiAffido.getCodiceAutoritaProvvedimento());
+			if(codiceAutoritaProvvedimento != -1)
+				datiSegnalazioniBean.setAutoritaProvvedimento(codiceAutoritaProvvedimento);
+			
+		}
+		if(csPaiAffido.getCodiceEntitaAffido()   != null){
+			String carattereAffido = csPaiAffido.getCodiceEntitaAffido(); 
+			Integer codiceEntitaAffido = null;
+			if(carattereAffido != null && carattereAffido.contains("RESIDENZIALE")){
+				codiceEntitaAffido = 1;
+			}else
+				codiceEntitaAffido = 2;
+			datiAffidamentoBean.setCarattere(codiceEntitaAffido);
+			
+			Integer codiceDurataAffido = dominiService.findSINBADominioByCodice(csPaiAffido.getCodiceEntitaAffido());
+			if(codiceDurataAffido != -1)
+				datiAffidamentoBean.setDurata(codiceDurataAffido);
+		}
+//		if(csPaiAffido.getCodiceEsitoAffido()   != null){
+//			Integer codiceEsitoAffido = dominiService.findSINBADominioByCodice(csPaiAffido.getCodiceEsitoAffido() );
+//			if(codiceEsitoAffido != -1)
+//				datiAffidamentoBean.setEsito(codiceEsitoAffido);
+//				
+//		}
+		if (progettoPai.getMotivoChiusura() != null){
+			String codiceEsitoAffido = leggiCodiceEsito(progettoPai.getMotivoChiusura());
+			if (codiceEsitoAffido != null && !codiceEsitoAffido.isEmpty())
+			 datiAffidamentoBean.setEsito(Integer.parseInt(codiceEsitoAffido));
+		}
+			
+			
+		if(csPaiAffido.getCodiceInserimentoResidenziale()   != null){
+			Integer codiceCarattInsResidenziale = dominiService.findSINBADominioByCodice(csPaiAffido.getCodiceInserimentoResidenziale() );
+			if(codiceCarattInsResidenziale != -1)
+				datiAffidamentoBean.setCarattereInserimento(codiceCarattInsResidenziale); 
+				
+		}
+		 
+		if(csPaiAffido.getCodiceConvivenzaOrigineAffidataria()   != null){
+			Integer codiceConvivenzaOrigineAffidataria = dominiService.findSINBADominioByCodice(csPaiAffido.getCodiceConvivenzaOrigineAffidataria() );
+			if(codiceConvivenzaOrigineAffidataria != -1)
+				datiAffidamentoBean.setTipoInserimento(codiceConvivenzaOrigineAffidataria);
+				
+		}
+			datiAffidamentoBean.setDatiDaProgettoPAI(true);
+		
+			messaggioDaPai ="Dati riguardanti l'affidamento caricati dal progetto PAI di tipo AFFIDO aperto in data " + new SimpleDateFormat("dd-MM-yyyy").format(dataAperturaProgetto)+ (dataChiusuraProgetto != null ?  "e chiuso il " + new SimpleDateFormat("dd-MM-yyyy").format(dataChiusuraProgetto) : " e non ancora chiuso");
+			datiAffidamentoBean.setMessaggioDaPai(messaggioDaPai);
+		
+			
+		}
+		this.getJsonCurrent().setDatiAffidamento(datiAffidamentoBean);
+		
+		this.getJsonCurrent().getDatiSegnalazioni().setAutoritaProvvedimento(datiSegnalazioniBean.getAutoritaProvvedimento());		
+		this.getJsonCurrent().getDatiSegnalazioni().setDataProvvedimento(datiSegnalazioniBean.getDataProvvedimento());		
+
+ 
+	}
+	//SISO-981 Fine
 	
 	@Override
 	public JsonBaseBean getSelected() {
@@ -576,67 +719,6 @@ public class ValSinbaManBean extends ValSinbaManBaseBean {
 		loadCommonList();
 	}
 
-	
-/*	public void copiaDatiDaUltimaValutazione(CsDSinba csDSinbaSelezionato){
-
-		try {
-			
-			 CsDSinba ultimoSinba = null;
-			 
-			   if(MinoreCurrent != null && MinoreCurrent.getCsDSinbas()!=null)
-			   {
-				  if (csDSinbaSelezionato != null)					  
-					   ultimoSinba = csDSinbaSelezionato;
-				  else{
-					  for (CsDSinba sinba : MinoreCurrent.getCsDSinbas())
-					   {
-						   if (sinba.getCsDDiario().getDtIns() == null ){
-							   continue;
-						   }
-						   
-					      if(ultimoSinba == null  || ultimoSinba.getCsDDiario().getDtIns().before(sinba.getCsDDiario().getDtIns()))
-					      {
-						     ultimoSinba = sinba;
-					      }
-				        }
-				  }
-								   
-			    CsDSinba ultimoSinbaInModifica=null;
-			    //scheda sinba in modifica
-			    if(getController().getDiarioId()!= null )
-			    {
-			        Long currDiarioId=getController().getDiarioId();
-			        ultimoSinbaInModifica = ultimoSinba; //csDSinbaSelezionato;
-			        ultimoSinbaInModifica.getCsDDiario(). setId(currDiarioId.longValue());
-			        //ultimoSinbaInModifica.setDiarioId(currDiarioId);
-			    }
-			    if(ultimoSinba != null )
-			    {
-				    if(isNew())
-				    {
-				       //TODO: controlla se da togliere
-				       //ultimoSinba.getCsDDiario().setId(0L);	
-			    	   getController().loadData(ultimoSinba);
-			    	   this.getJsonCurrent().getDatiGenerali().setDataRiferimentoValutazione(null);
-			    	    ISSUE-777 di default daInserire è true (copia SINBA)
-			    	   controller.getDataModelSinba().setDaInserire(true);
-			    	  
-				    }
-			        if(!isNew())
-			        {
-			    	   getController().loadData(ultimoSinbaInModifica);
-			    	   this.getJsonCurrent().getDatiGenerali().setDataRiferimentoValutazione(null);
-			        }
-				
-			     }
-		  }
-			   
-			  
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-	*/
 	public List<SelectItem> getLstParenti() {
 		return lstParenti;
 	}
@@ -644,10 +726,6 @@ public class ValSinbaManBean extends ValSinbaManBaseBean {
 	public void setLstParenti(List<SelectItem> lstParenti) {
 		this.lstParenti = lstParenti;
 	}
-
-/*	public void setAttivaSalvataggio(boolean attivaSalvataggio) {
-		this.attivaSalvataggio = attivaSalvataggio;
-	}*/
 
 	public void setDatiGen(DatiGeneraliMan datiGen) {
 		this.datiGen = datiGen;
@@ -689,11 +767,11 @@ public class ValSinbaManBean extends ValSinbaManBaseBean {
 		this.disabledSave = disabledSave;
 	}
 
-	public List<CsCCategoriaSocialeBASIC> getCategorieSociali() {
+	public List<CsCCategoriaSociale> getCategorieSociali() {
 		return categorieSociali;
 	}
 
-	public void setCategorieSociali(List<CsCCategoriaSocialeBASIC> categorieSociali) {
+	public void setCategorieSociali(List<CsCCategoriaSociale> categorieSociali) {
 		this.categorieSociali = categorieSociali;
 	}
 

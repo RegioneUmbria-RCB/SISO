@@ -2,6 +2,7 @@ package it.webred.cs.csa.ejb.dto;
 
 import it.webred.cs.data.model.CsCDiarioConchi;
 import it.webred.cs.data.model.CsDPai;
+import it.webred.cs.data.model.CsDRelSal;
 import it.webred.cs.data.model.CsDRelazione;
 import it.webred.cs.data.model.CsDTriage;
 import it.webred.cs.data.model.CsLoadDocumento;
@@ -10,6 +11,7 @@ import it.webred.cs.data.model.CsRelRelazioneTipoint;
 import it.webred.cs.data.model.CsTbMicroAttivita;
 import it.webred.ct.support.datarouter.CeTBaseObject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @SuppressWarnings("serial")
@@ -22,12 +24,13 @@ public class RelazioneDTO extends CeTBaseObject {
 	private List<CsRelRelazioneTipoint> listaInterventi; //SISO-1223
 	private boolean containsDoc;
 	private CsDTriage triage;
-	
-	
+	private CsDRelSal sal; //SISO-1257
+	private boolean attivitaSAL;
 
 	public RelazioneDTO(){
 		this.relazione = new CsDRelazione();
 		this.triage = new CsDTriage();
+		this.sal = new CsDRelSal();
 	}
 	
 	public RelazioneDTO(CsDRelazione relazione, CsLoadDocumento documento, List<PaiDTOExt> listaPai) {
@@ -36,6 +39,7 @@ public class RelazioneDTO extends CeTBaseObject {
 		this.listaPaiDTO = listaPai;
 		this.containsDoc = this.csLaodDocumento != null;
 		this.triage = relazione.getCsDTriage();
+		this.sal = relazione.getCsDRelSal();
 	}
 	
 	public RelazioneDTO(CsDRelazione relazione, CsLoadDocumento documento, List<PaiDTOExt> listaPai, 
@@ -47,6 +51,8 @@ public class RelazioneDTO extends CeTBaseObject {
 		this.triage = relazione.getCsDTriage();
         this.listaProblematiche = listaProblematiche;
         this.listaInterventi = listaInterventi;
+        this.sal = relazione.getCsDRelSal();
+        
 	}
 	
 	public RelazioneDTO(CsDRelazione relazione, CsLoadDocumento documento, List<PaiDTOExt> listaPai, CsDTriage triage) {//, List<CsRelRelazioneProbl> listaProblematiche) {
@@ -57,9 +63,23 @@ public class RelazioneDTO extends CeTBaseObject {
 		this.triage = triage;
 //		this.listaProblematiche = listaProblematiche;
 	}
+	//SISO-1257
+	public RelazioneDTO(CsDRelazione relazione, CsLoadDocumento documento, List<PaiDTOExt> listaPai, CsDRelSal sal) {
+		this.relazione = relazione;
+		this.csLaodDocumento = documento;
+		this.listaPaiDTO = listaPai;
+		this.containsDoc = this.csLaodDocumento != null;
+		this.sal =sal;
+	}
 	
-	
-	
+	public CsDRelSal getSal() {
+		return sal;
+	}
+
+	public void setSal(CsDRelSal sal) {
+		this.sal = sal;
+	}
+
 	public CsDRelazione getRelazione() {
 		return relazione;
 	}
@@ -109,22 +129,7 @@ public class RelazioneDTO extends CeTBaseObject {
 		}
 		return false;
 	}
-
-	
-	
-	
-	public String getLabelConcatAll()
-	{
-		if(relazione!=null)
-		{
-			return relazione.getSituazioneAmb() + ", " +
-					relazione.getSituazioneParentale() + ", " +
-					relazione.getSituazioneSanitaria() + ", " +
-					relazione.getProposta();
-		}
-		return null;
-	}
-	
+		
 	@Override	
 	public boolean equals(Object obj) 
 	{		
@@ -140,7 +145,6 @@ public class RelazioneDTO extends CeTBaseObject {
 			return relazione.getMicroAttivita();
 		return null;
 	}
-
 	
 	public void setMicroAttivita(CsTbMicroAttivita microAttivita) {
 		if(relazione!=null)
@@ -180,14 +184,20 @@ public class RelazioneDTO extends CeTBaseObject {
 		}
 		return false;
 	}
-	
 
 	public CsDTriage getTriage() {
 		return triage;
 	}
 	public void setTriage(CsDTriage triage) {
 		this.triage = triage;
-	}	
+	}
+	
+	public List<Long> getListaIdsPaiCollegati(){
+		List<Long> ids = new ArrayList<Long>();
+		for(PaiDTOExt p : this.listaPaiDTO)
+			ids.add(p.getPai().getDiarioId());
+		return ids;
+	}
 
 	public boolean isRelazioneConChiAltro(){
 		boolean isAltro = false;
@@ -200,5 +210,17 @@ public class RelazioneDTO extends CeTBaseObject {
 			}
 		return isAltro;
 	}
+
+	//SISO-1257
+		
+		public boolean isAttivitaSAL() {
+			return (this.getRelazione().getMicroAttivita().getFlagTipoForm().equals("4") ||
+					this.getRelazione().getMicroAttivita().getFlagTipoForm().equals("5")||
+					this.getRelazione().getMicroAttivita().getFlagTipoForm().equals("6"));
+		}
+
+		public void setAttivitaSAL(boolean attivitaSAL) {
+			this.attivitaSAL = attivitaSAL;
+		}
 	
 }

@@ -9,7 +9,6 @@ import it.webred.ct.support.datarouter.CeTBaseObject;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.util.ResourceBundle;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
@@ -44,8 +43,7 @@ public class ArgoBaseBean {
 		
 		protected String getDirDatiDiogene() {
 			if(this.logoBasePath==null){
-				ParameterService paramService = (ParameterService) getEjb("CT_Service","CT_Config_Manager" , "ParameterBaseService");
-			    ParameterSearchCriteria criteria = new ParameterSearchCriteria();
+				ParameterSearchCriteria criteria = new ParameterSearchCriteria();
 				criteria.setKey("dir.files.datiDiogene");
 				criteria.setComune(null);
 				criteria.setSection(null);

@@ -57,6 +57,7 @@
 				<h:outputText value="Condizione Lavorativa " for="cond_lavorativa" styleClass="defaul-right-padding" />
 				<p:selectOneMenu label="Condizione Lavorativa " id="cond_lavorativa" required="false" value="#{cc.attrs.OrientamentoLavoroManBean.jsonCurrent.selectedCondLavorativa}" effect="fold" editable="false"
 					style="width:250px" disabled="#{cc.attrs.OrientamentoLavoroManBean.jsonCurrent.selectedCondLavorativa > 0 or cc.attrs.soloLettura}">
+					<f:selectItem noSelectionOption="true" itemLabel="- seleziona -"/>
 					<f:selectItems value="#{cc.attrs.OrientamentoLavoroManBean.lstCondLavorativa}" />
 				</p:selectOneMenu>
 				

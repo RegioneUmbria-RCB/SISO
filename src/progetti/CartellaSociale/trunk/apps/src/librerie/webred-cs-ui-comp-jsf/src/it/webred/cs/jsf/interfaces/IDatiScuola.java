@@ -1,5 +1,6 @@
 package it.webred.cs.jsf.interfaces;
 
+import it.webred.cs.csa.ejb.dto.fascicolo.scuola.ListaDatiScuolaDTO;
 import it.webred.cs.data.model.CsDScuola;
 
 import java.util.List;
@@ -16,9 +17,9 @@ public interface IDatiScuola {
 	public Long getIdCaso();
 	public String getComune();
 	public int getIdxSelected();
-	public List<CsDScuola> getListaScuole();
+	public List<ListaDatiScuolaDTO> getListaScuole();
 	public List<SelectItem> getListaAnni();
-	public List<SelectItem> getListaTipi();
+	public List<SelectItem> getListaTipoScuole();
 	public List<SelectItem> getListaNomi();
 	public List<SelectItem> getListaGradi();
 	public List<SelectItem> getListaProgetti();

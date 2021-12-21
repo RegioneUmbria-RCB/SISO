@@ -44,32 +44,32 @@
 				</p:column>
 				
 				<p:column headerText="Tipo">	
-					<h:outputText value="#{rowInd.csTbTipoScuola.descrizione}"/>
+					<h:outputText value="#{rowInd.tipoScuola}"/>
 				</p:column>
 				
 				<p:column headerText="Scuola">
-				  	<h:panelGroup rendered="#{rowInd.csTbScuola!=null}">
-				  	    <h:outputText value="#{rowInd.csTbScuola.descrizione} " />
+				  	<h:panelGroup rendered="#{rowInd.scuola!=null}">
+				  	    <h:outputText value="#{rowInd.scuola.descrizione} " />
 				  	    <p:spacer width="40px" height="1px;"/>
-				  		<h:outputText value="#{rowInd.csTbScuola.indirizzo} " />
-				  		<h:outputText value="#{rowInd.csTbScuola.cap} " rendered="#{rowInd.csTbScuola.cap!=null}" />
-				  		<h:outputText value="#{rowInd.csTbScuola.comune}" rendered="#{rowInd.csTbScuola.comune!=null}" /><br/>
+				  		<h:outputText value="#{rowInd.scuola.indirizzo} " />
+				  		<h:outputText value="#{rowInd.scuola.cap} " rendered="#{rowInd.scuola.cap!=null}" />
+				  		<h:outputText value="#{rowInd.scuola.comune}" rendered="#{rowInd.scuola.comune!=null}" /><br/>
 				  	</h:panelGroup>
-				  	<h:panelGroup rendered="#{rowInd.csTbScuola!=null and rowInd.csTbScuola.telefono!=null}">
+				  	<h:panelGroup rendered="#{rowInd.scuola!=null and rowInd.scuola.telefono!=null}">
 				  		<p:graphicImage value="#{resource['webredcs/img/phone-2.png']}" title="Telefono"/>
-				  	  	<h:outputText value=" #{rowInd.csTbScuola.telefono} "  />
+				  	  	<h:outputText value=" #{rowInd.scuola.telefono} "  />
 				  	</h:panelGroup>
-				  	<h:panelGroup rendered="#{rowInd.csTbScuola!=null and rowInd.csTbScuola.fax!=null}">
+				  	<h:panelGroup rendered="#{rowInd.scuola!=null and rowInd.scuola.fax!=null}">
 				  		<p:graphicImage value="#{resource['webredcs/img/telephone-fax.png']}" title="Fax"/>
-				  		<h:outputText value=" #{rowInd.csTbScuola.fax} "  />
+				  		<h:outputText value=" #{rowInd.scuola.fax} "  />
 				  	</h:panelGroup>
-				  	<h:panelGroup rendered="#{rowInd.csTbScuola!=null and rowInd.csTbScuola.sitoweb!=null}">
+				  	<h:panelGroup rendered="#{rowInd.scuola!=null and rowInd.scuola.sitoweb!=null}">
 				  		<p:graphicImage value="#{resource['webredcs/img/Website.png']}" title="Sito Web"/>
-				  		<h:outputText value=" #{rowInd.csTbScuola.sitoweb} "  />
+				  		<h:outputText value=" #{rowInd.scuola.sitoweb} "  />
 				  	 </h:panelGroup>
-				  	<h:panelGroup rendered="#{rowInd.csTbScuola!=null and rowInd.csTbScuola.email!=null}">
+				  	<h:panelGroup rendered="#{rowInd.scuola!=null and rowInd.scuola.email!=null}">
 				  		<p:graphicImage value="#{resource['webredcs/img/at_email.png']}" title="email"/>
-				  		<h:outputText value=" #{rowInd.csTbScuola.email} " />
+				  		<h:outputText value=" #{rowInd.scuola.email} " />
 				  	</h:panelGroup>
 					<h:outputText value="#{rowInd.nome}" rendered="#{rowInd.nome!=null}"/>
 				</p:column>
@@ -77,20 +77,20 @@
 					<h:outputText value="#{rowInd.noteRid}"/>
 				</p:column>
 				<p:column headerText="Ultima Modifica" style="text-align:center;">
-				        <h:outputLabel value="#{dati.opModifica} il " />	
-						<h:outputLabel value="#{cc.attrs.iDatiScuola.getDataUltimaModifica(rowInd.csDDiario)}">
+				        <h:outputLabel value="#{cc.attrs.iDatiScuola.getDescrizioneOperatore(rowInd.opModifica)} il " />	
+						<h:outputLabel value="#{rowInd.dataUltimaModifica}">
 							<f:convertDateTime type="date" pattern="dd/MM/yyyy HH:mm:ss" timeZone="Europe/Berlin" />
 						</h:outputLabel>
 				</p:column>
 				
 				<p:column headerText="" style="text-align:center;" width="200px;" >
-					<p:commandButton value="Modifica" process="@this" icon="ui-icon-pencil"
+					<p:commandButton id="btnModifica" value="Modifica" process="@this" icon="ui-icon-pencil"
 						action="#{cc.attrs.iDatiScuola.carica}" update=":#{p:component('dlgScuola')}"
 						oncomplete="wdgScuolaModal#{cc.attrs.var}.show()" disabled="#{cc.attrs.iDatiScuola.readOnly}">
 						<f:setPropertyActionListener value="#{rowKeyInd}" target="#{cc.attrs.iDatiScuola.idxSelected}" />
 					</p:commandButton>
 				 	<p:spacer width="5"/>
-					<p:commandButton value="Elimina" process="@this" icon="ui-icon-circle-minus"
+					<p:commandButton id="btnElimina" process="@this" icon="ui-icon-trash"
 						action="#{cc.attrs.iDatiScuola.carica}" 
 						oncomplete="confermaEliminaScuola.show()" disabled="#{cc.attrs.iDatiScuola.readOnly}">
 						<f:setPropertyActionListener value="#{rowKeyInd}" target="#{cc.attrs.iDatiScuola.idxSelected}" />
@@ -98,48 +98,52 @@
 				</p:column>
 			</p:dataTable>
 						
-			<p:dialog dynamic="true" modal="true" id="dlgScuola"
-				widgetVar="wdgScuolaModal#{cc.attrs.var}" width="800"
-				closable="true" header="Scuola">
-			
-				<h:panelGrid columns="4" id="scuolaPanel" width="100%">
+			<p:dialog id="dlgScuola"  header="Scuola" dynamic="true" modal="true" 
+					  widgetVar="wdgScuolaModal#{cc.attrs.var}" width="800" closable="true" >
+				<h:panelGrid id="scuolaPanel" columns="2" width="100%">
             		
             		<h:outputLabel value="Comune"/>
-					<p:selectOneMenu value="#{cc.attrs.iDatiScuola.comune}">
-            			<f:selectItems value="#{cc.attrs.iDatiScuola.listaComuni}"/>
+					<p:selectOneMenu value="#{cc.attrs.iDatiScuola.comune}" filter="true" filterMatchMode="contains">
+					    <f:selectItem noSelectionOption="true" itemLabel="- seleziona -"/>
+            			<f:selectItems  value="#{cc.attrs.iDatiScuola.listaComuni}"/>
             			<p:ajax update="lblNomeScuola,grdNomeScuola" event="change" listener="#{cc.attrs.iDatiScuola.aggiornaNomi}"/>
             		</p:selectOneMenu>
             		
             		<h:outputLabel value="Tipo *"/>
-					<p:selectOneMenu value="#{cc.attrs.iDatiScuola.scuola.csTbTipoScuola.id}">
-            			<f:selectItems value="#{cc.attrs.iDatiScuola.listaTipi}"/>
+					<p:selectOneMenu value="#{cc.attrs.iDatiScuola.scuola.tipoScuolaId}">
+						<f:selectItem noSelectionOption="true" itemLabel="- seleziona -"/>
+            			<f:selectItems value="#{cc.attrs.iDatiScuola.listaTipoScuole}"/>
             			<p:ajax update="lblNomeScuola,grdNomeScuola" event="change" listener="#{cc.attrs.iDatiScuola.aggiornaNomi}"/>
             		</p:selectOneMenu>
             		
             		<h:outputLabel value="Anno scolastico"/>
-					<p:selectOneMenu value="#{cc.attrs.iDatiScuola.scuola.annoScolastico}">
+					<p:selectOneMenu value="#{cc.attrs.iDatiScuola.scuola.annoScolasticoId}">
+						<f:selectItem noSelectionOption="true" itemLabel="- seleziona -"/>
             			<f:selectItems value="#{cc.attrs.iDatiScuola.listaAnni}"/>
             			<p:ajax update="lblNomeScuola,grdNomeScuola" event="change" listener="#{cc.attrs.iDatiScuola.aggiornaNomi}"/>
             		</p:selectOneMenu>
             		
             		<h:outputLabel id="lblNomeScuola" value="Nome scuola" title="#{!cc.attrs.iDatiScuola.renderScuole  ? 'Per attivare, selezionare Comune, Tipo e anno scolastico' : ''}"/>
 					<h:panelGrid id="grdNomeScuola" columns="2">
-						<p:selectOneMenu id="somNomeScuola"  value="#{cc.attrs.iDatiScuola.scuola.csTbScuola.id}" 
-							disabled="#{!cc.attrs.iDatiScuola.renderScuole}">
+						<p:selectOneMenu id="somNomeScuola"  value="#{cc.attrs.iDatiScuola.scuola.scuolaId}" 
+							disabled="#{!cc.attrs.iDatiScuola.renderScuole}" filter="true" filterMatchMode="contains">
+							<f:selectItem  noSelectionOption="true" itemLabel="- seleziona -"/>
 	            			<f:selectItems value="#{cc.attrs.iDatiScuola.listaNomi}"/>
 	            			<p:ajax update="nomeScuola" event="change" listener="#{cc.attrs.iDatiScuola.aggiornaAltroNome}" />
 	            		</p:selectOneMenu>
 	            		
 	            		<p:inputText id="nomeScuola" value="#{cc.attrs.iDatiScuola.scuola.nome}" title="Specificare il nome della scuola, se non presente tra le opzioni fornite"
-	            		             disabled="#{cc.attrs.iDatiScuola.scuola.csTbScuola.id>0}" size="50"  style="width:150px;" />
+	            		             disabled="#{cc.attrs.iDatiScuola.disabilitaCampoLiberoScuola}" size="50"  style="width:150px;" />
             		</h:panelGrid>
             		<h:outputLabel value="Grado"/>
 					<p:selectOneMenu value="#{cc.attrs.iDatiScuola.scuola.grado}">
+            			<f:selectItem noSelectionOption="true" itemLabel="- seleziona -"/>
             			<f:selectItems value="#{cc.attrs.iDatiScuola.listaGradi}"/>
             		</p:selectOneMenu>
             		
             		<h:outputLabel value="Progetto"/>
-					<p:selectOneMenu value="#{cc.attrs.iDatiScuola.scuola.progetto}">
+					<p:selectOneMenu value="#{cc.attrs.iDatiScuola.scuola.progetto}" filter="true" filterMatchMode="contains">
+            			<f:selectItem noSelectionOption="true" itemLabel="- seleziona -"/>
             			<f:selectItems value="#{cc.attrs.iDatiScuola.listaProgetti}"/>
             		</p:selectOneMenu>
             		

@@ -42,13 +42,16 @@
 				<webredcs:pnlFormazioneLavoro iFormazioneLavoro="#{cc.attrs.iDatiSociali.formLavoroMan}"
 						onChangeCondLavoro="#{cc.attrs.iDatiSociali.onChangeCondLavoro()}" 
 						onChangeTitoloStudio="#{cc.attrs.iDatiSociali.onChangeTitoloStudio()}"
+						condLavoroChangeUpdate="@(.panelpor)"
 						numColonne="2" soloLettura="#{cc.attrs.iDatiSociali.disabilitaForm}"/>
 			</p:fieldset>
 
 			<p:fieldset legend="Familiari e Conviventi" toggleable="false" style="display: inline-block; vertical-align: top;"
 				rendered="#{cc.attrs.iDatiSociali.abilitaInfoStranieri}">
 				<webredcs:pnlFamConviventi iFamConviventi="#{cc.attrs.iDatiSociali.famConviventiMan}" 
-				                           numColonne="2" soloLettura="#{cc.attrs.iDatiSociali.disabilitaForm}"/>
+				        onChangeGrVulnerabile="#{cc.attrs.iDatiSociali.onChangeGruppoVulnerabile()}" 
+				        grVulChangeUpdate="@(.grpVulner)"
+				        numColonne="2" soloLettura="#{cc.attrs.iDatiSociali.disabilitaForm}"/>
 			</p:fieldset>
 
 			<h:panelGrid columns="4" style="display: inline-block; vertical-align: top;" >
@@ -105,6 +108,26 @@
 				<p:selectBooleanCheckbox itemLabel="Affidamento al servizio sociale" value="#{cc.attrs.iDatiSociali.affServSociali}" disabled="#{cc.attrs.iDatiSociali.disabilitaForm}"/>
 			</p:outputPanel>
 		</p:outputPanel>
+		
+		<!-- Modifiche Por -->
+
+		<p:spacer height="20px" />
+		<h:panelGrid>
+
+			<p:spacer height="20px" />
+
+			<p:outputPanel id="pnlDatiPor" rendered="#{cc.attrs.iDatiSociali.datiPorMan.renderProgetto}" >
+				<h:panelGrid columns="4" width="100%">
+					<p:fieldset legend="Dati POR" toggleable="false"
+						style="display: inline-block; vertical-align: top; width:100%">
+						<webredcs:pnlDatiPor
+							iDatiPor="#{cc.attrs.iDatiSociali.datiPorMan}"
+							soloLettura="#{cc.attrs.iDatiSociali.disabilitaForm}"
+							stampabean="#{cc.attrs.iDatiSociali}" />
+					</p:fieldset>
+				</h:panelGrid>
+			</p:outputPanel>
+		</h:panelGrid>
 
 		<h:panelGrid columns="1">
 			<p:spacer height="20" />

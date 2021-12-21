@@ -21,7 +21,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/AnagrafeRegionaleClient_DTO"/>
 	<classpathentry kind="src" path="/CarSocialeA_DataModel"/>
 	<classpathentry kind="src" path="/CarSocialeA_EJBClient"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/SegretariatoSoc_DataModel"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/SegretariatoSoc_EJBClient"/>
+	<classpathentry kind="src" path="/SegretariatoSoc_EJBClient"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

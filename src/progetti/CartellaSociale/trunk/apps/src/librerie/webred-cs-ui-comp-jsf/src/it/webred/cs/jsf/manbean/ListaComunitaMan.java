@@ -28,6 +28,8 @@ public class ListaComunitaMan extends CsUiCompBaseBean implements IListaComunita
 	private Long idComunita;
 	private CsCComunita comunitaSel;
 
+	public ListaComunitaMan(){}
+	
 	public ListaComunitaMan(String descTipoComunita){
 		this.tipoComunita = descTipoComunita;
 	}

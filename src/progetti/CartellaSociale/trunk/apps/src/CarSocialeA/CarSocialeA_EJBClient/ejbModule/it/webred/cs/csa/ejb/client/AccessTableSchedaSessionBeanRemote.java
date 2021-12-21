@@ -7,14 +7,12 @@ import javax.ejb.Remote;
 
 import it.webred.cs.csa.ejb.dto.BaseDTO;
 import it.webred.cs.csa.ejb.dto.RisorsaFamDTO;
-import it.webred.cs.data.model.CsAAnagrafica;
+import it.webred.cs.csa.ejb.dto.cartella.RisorsaCalcDTO;
 import it.webred.cs.data.model.CsAComponente;
-import it.webred.cs.data.model.CsAContributi;
 import it.webred.cs.data.model.CsADatiInvalidita;
 import it.webred.cs.data.model.CsADatiSociali;
 import it.webred.cs.data.model.CsADisabilita;
 import it.webred.cs.data.model.CsAFamigliaGruppo;
-import it.webred.cs.data.model.CsAServizi;
 import it.webred.cs.data.model.CsATribunale;
 
 
@@ -37,15 +35,11 @@ public interface AccessTableSchedaSessionBeanRemote {
 
 	public CsATribunale getTribunaleById(BaseDTO dto);
 
-	public CsAServizi getServiziById(BaseDTO dto);
-
-	public CsAContributi getContributiById(BaseDTO dto);
-
 	public CsAFamigliaGruppo getFamigliaGruppoById(BaseDTO dto);
 
-	public CsAFamigliaGruppo findFamigliaAllaDataBySoggettoId(BaseDTO dto);
+	public List<CsAComponente> findComponentiFamigliaAllaDataBySoggettoId(BaseDTO dto);
 	
-	public List<CsAAnagrafica> findComponentiGiaFamigliariBySoggettoCf(BaseDTO dto);
+	public List<RisorsaCalcDTO> findComponentiGiaFamigliariBySoggettoCf(BaseDTO dto);
 
 	public Boolean existsDatiSocialiAttiviBySoggettoCf(BaseDTO dto);
 	
@@ -54,7 +48,6 @@ public interface AccessTableSchedaSessionBeanRemote {
 	public Hashtable<String, RisorsaFamDTO> findRisorseFamiliariBySoggettoCf(BaseDTO dto);
 	
 	public CsAComponente findComponenteById(BaseDTO dto);
-	
-	public List<CsADatiInvalidita> findDatiInvaliditaBySoggettoId(BaseDTO dto);
 
+	public void verificaAllineamentoDatiInvalidita(BaseDTO dto);
 }

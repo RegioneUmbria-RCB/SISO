@@ -11,4 +11,5 @@ public interface ComuniCacheHelperRemote {
 	public boolean isListaComuniCaricata();
 	public AmTabComuni getComuneByCodiceIstat(String codiceIstat);
 	public List <AmTabComuni> trovaComuniPerDenominazione(String query);
+	public AmTabComuni getComuneByCodBelfiore(String codBelfiore);
 }

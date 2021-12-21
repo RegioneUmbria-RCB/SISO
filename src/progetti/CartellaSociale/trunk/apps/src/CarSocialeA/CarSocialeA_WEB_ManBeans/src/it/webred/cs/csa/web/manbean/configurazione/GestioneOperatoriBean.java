@@ -29,7 +29,6 @@ import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.model.SelectItem;
 
-import org.apache.commons.lang3.StringUtils;
 
 @ManagedBean
 @ViewScoped
@@ -278,45 +277,30 @@ public class GestioneOperatoriBean extends CsUiCompBaseBean implements Serializa
 		else return null;
 	}
 	
-	private void disattivaOperatoreSettore(List<CsOOperatoreSettoreEstesa> selOpSets){
-		for (CsOOperatoreSettoreEstesa selOpSet : selOpSets) {
-			try{
-				CsOOperatoreSettore opSet = getCsOOperatoreSettore(null, selOpSet.getId(), null);
-				if (opSet != null) {
-					opSet.setDataFineApp(DF.parse(DF.format(new Date())));
-					opSet.setFirma(false);					
-					opSet = this.salvaOpSettore(opSet);
-					
-					//AGGIORNO CS_O_OPERATORE_TIPOOPERATORE
-					OperatoreDTO opDto = new OperatoreDTO();
-					opDto.setIdOperatoreSettore(opSet.getId());		
-					opDto.setDate(opSet.getDataFineApp());
-					fillEnte(opDto);
-					
-					CsOOperatoreTipoOperatore tipoOp = operatoreService.getTipoByOperatoreSettore(opDto);
-	               
-					tipoOp.setDataFineApp(opSet.getDataFineApp());
-					this.salvaTipoOperatore(tipoOp);
-				}
-			} catch (Exception e) {
-				addErrorFromProperties("salva.error");
-				logger.error(e.getMessage(),e);
-			}
-		}
+	private void disattivaOperatoreSettore(List<CsOOperatoreSettoreEstesa> selOpSets) throws Exception{
+		
+		BaseDTO dto = new BaseDTO();
+		fillEnte(dto);
+		dto.setObj(selOpSets);
+		operatoreService.disabilitaOperatoreSettore(dto);
 	}
 	
 	public void disattivaOperatoreSettore() {
-
-		List<CsOOperatoreSettoreEstesa> selOpSets = getSelOperatoreSettore();
-		if (selOpSets == null || selOpSets.size() == 0) {
-			addWarning("Selezionare almeno una riga della tabella", "");
-			return;
+		try{
+			List<CsOOperatoreSettoreEstesa> selOpSets = getSelOperatoreSettore();
+			if (selOpSets == null || selOpSets.size() == 0) {
+				addWarning("Selezionare almeno una riga della tabella", "");
+				return;
+			}
+			
+			disattivaOperatoreSettore(selOpSets);
+			DatiOperatore op = this.getOperatoreSelezionato();
+			getInsUpdDelGestOperatoriBean().loadDataTable(op.getIdOperatore());
+			addInfo("Disattivazione associazioni operatore/settore effettuata correttamente", "");
+		} catch (Exception e) {
+			addErrorFromProperties("salva.error");
+			logger.error(e.getMessage(),e);
 		}
-		
-		disattivaOperatoreSettore(selOpSets);
-		DatiOperatore op = this.getOperatoreSelezionato();
-		getInsUpdDelGestOperatoriBean().loadDataTable(op.getIdOperatore());
-		addInfo("Disattivazione associazioni operatore/settore effettuata correttamente", "");
 	}
 	
 	public void attivaOperatoreSettore() {
@@ -327,32 +311,11 @@ public class GestioneOperatoriBean extends CsUiCompBaseBean implements Serializa
 				return;
 			}
 			
-			for (CsOOperatoreSettoreEstesa selOpSet : selOpSets) {
-				if(!selOpSet.isAttivo()){
-					CsOOperatoreSettore opSet = getCsOOperatoreSettore(null, selOpSet.getId(), null);
-					if (opSet != null) {
-						
-						Date dataFineOld = opSet.getDataFineApp();
-						Date oggi = new Date();
-						if(!opSet.getDataFineApp().equals(oggi));
-							opSet.setDataInizioApp(new Date());
-							
-						opSet.setDataFineApp(DataModelCostanti.END_DATE);
-						opSet = this.salvaOpSettore(opSet);
-						
-						Iterator<CsOOperatoreTipoOperatore> lstTipo = opSet.getTipoOperatore().iterator();
-						while(lstTipo.hasNext()){
-							CsOOperatoreTipoOperatore tipo = lstTipo.next();
-							if(tipo.getDataFineApp().equals(dataFineOld)){
-								tipo.setDataInizioApp(opSet.getDataInizioApp());
-								tipo.setDataFineApp(opSet.getDataFineApp());
-								this.salvaTipoOperatore(tipo);
-							}
-						}
-						
-					}
-				}
-			}
+			BaseDTO dto = new BaseDTO();
+			fillEnte(dto);
+			dto.setObj(selOpSets);
+			operatoreService.abilitaOperatoreSettore(dto);
+			
 			DatiOperatore op = this.getOperatoreSelezionato();
 			getInsUpdDelGestOperatoriBean().loadDataTable(op.getIdOperatore());
 			addInfo("Attivazione associazioni operatore/settore effettuata correttamente", "");
@@ -380,7 +343,7 @@ public class GestioneOperatoriBean extends CsUiCompBaseBean implements Serializa
 	public void setIdxSelected(int idxSelected) {
 		this.idxSelected = idxSelected;
 	}
-
+	
 	private CsOOperatoreSettore salvaOpSettore(CsOOperatoreSettore opSettore) throws Exception{
 		BaseDTO dto = new BaseDTO();
 		fillEnte(dto);
@@ -413,15 +376,20 @@ public class GestioneOperatoriBean extends CsUiCompBaseBean implements Serializa
 	}
 
 	public void disabilitaOperatori(){
-		for(DatiOperatore op : operatoriSelezionati){
-		    op.setAbilitato(false);
-		    salvaOperatore(op);
-		    
-		    List<CsOOperatoreSettoreEstesa> lst = getInsUpdDelGestOperatoriBean().getConfigurazioniUtente(op.getIdOperatore());
-		    disattivaOperatoreSettore(lst);
-			getInsUpdDelGestOperatoriBean().loadDataTable(op.getIdOperatore());
-		   
-			logger.debug("Operatori disattivati"+op);
+		try{
+			for(DatiOperatore op : operatoriSelezionati){
+			    op.setAbilitato(false);
+			    salvaOperatore(op);
+			    
+			    List<CsOOperatoreSettoreEstesa> lst = getInsUpdDelGestOperatoriBean().getConfigurazioniUtente(op.getIdOperatore());
+			    disattivaOperatoreSettore(lst);
+				getInsUpdDelGestOperatoriBean().loadDataTable(op.getIdOperatore());
+			   
+				logger.debug("Operatori disattivati"+op);
+			}
+		} catch (Exception e) {
+			addErrorFromProperties("salva.error");
+			logger.error(e.getMessage(),e);
 		}
 	}
 	

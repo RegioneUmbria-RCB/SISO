@@ -52,4 +52,18 @@ public class NavigationBean extends SegretariatoSocBaseBean {
 		}
 		return permesso;
 	}
+	
+	public void goConfigurazione() {
+		getSession().setAttribute("navigationHistory", "configurazione");
+		
+		try {
+			FacesContext.getCurrentInstance().getExternalContext().redirect("configurazione.faces");
+		} catch (IOException e) {
+			addError("Errore", "Errore durante il reindirizzamento");
+		}
+	}
+	
+	public boolean isAutorizzatoConfigurazione() {
+		return CsUiCompBaseBean.checkPermessoSS("segrsoc-funzioniAdmin");
+	}
 }

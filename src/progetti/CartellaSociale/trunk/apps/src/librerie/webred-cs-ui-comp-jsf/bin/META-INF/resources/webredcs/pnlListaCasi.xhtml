@@ -28,82 +28,110 @@
 	</composite:interface>
 	<composite:implementation>
 		<p:panel id="pnlFiltro"  header="Lista Casi">
-					<h:panelGrid columns="6" width="100%">
-
-						<h:outputLabel value="Operatore" />
-						<h:panelGrid columns="2">
-						<p:selectOneMenu id="somOperatore" label="Operatore" 
+			<h:panelGrid columns="6" width="100%">
+				<h:outputLabel value="Operatore" />
+				<h:panelGrid columns="2">
+					<p:selectOneMenu id="somOperatore" label="Operatore" 
+							filter="true" filterMatchMode="contains" 
+							value="#{cc.attrs.listaCasiManBean.selOperatore}" >
+		                    <f:selectItem noSelectionOption="true" itemLabel="- seleziona -" />
+		                    <f:selectItems value="#{cc.attrs.listaCasiManBean.listaOperatori}"/>
+		                    <p:ajax event="change" update="dataTableCasiId,somTipoOperatore"/>
+			        </p:selectOneMenu>
+			        	<p:selectOneMenu id="somTipoOperatore" label="Tipo operatore" 
+			        		disabled="#{!cc.attrs.listaCasiManBean.renderTipoOperatore}"
+			        		value="#{cc.attrs.listaCasiManBean.selTipoOperatore}" >
+		                    <f:selectItem itemLabel="Tutti" itemValue="TUTTI"  />
+		                    <f:selectItem itemLabel="Responsabile" itemValue="RESP"  />
+		                    <f:selectItem itemLabel="Non responsabile" itemValue="NO_RESP"  />
+		                    <p:ajax event="change" update="dataTableCasiId,dataTableCasiId"/>
+			        </p:selectOneMenu>
+	        	</h:panelGrid>
+		        
+		        <h:outputLabel value="Stato dell'iter" />
+		        <h:panelGrid columns="2">
+					<p:selectOneMenu id="somIter" label="Stato dell'iter" value="#{cc.attrs.listaCasiManBean.selStato}" >
+		                    <f:selectItem noSelectionOption="true" itemLabel="- seleziona -" itemValue=""  />
+		                    <f:selectItems value="#{cc.attrs.listaCasiManBean.listaStati}"   />
+		                    <p:ajax event="change" update="dataTableCasiId, somIterOperatore"/>
+		            </p:selectOneMenu>
+		            <p:selectOneMenu id="somIterOperatore" label="Operatore segnalazione" 
 								filter="true" filterMatchMode="contains" 
-								value="#{cc.attrs.listaCasiManBean.selOperatore}" >
-			                    <f:selectItem noSelectionOption="true" itemLabel="- seleziona -" itemValue=""  />
+								disabled="#{!cc.attrs.listaCasiManBean.renderStatoOperatore}"
+								value="#{cc.attrs.listaCasiManBean.selStatoOperatore}" >
+			                    <f:selectItem noSelectionOption="true" itemLabel="- seleziona -" />
 			                    <f:selectItems value="#{cc.attrs.listaCasiManBean.listaOperatori}"/>
-			                    <p:ajax event="change" update="dataTableCasiId,somTipoOperatore"/>
-				        </p:selectOneMenu>
-				        	<p:selectOneMenu id="somTipoOperatore" label="Tipo operatore" 
-				        		disabled="#{!cc.attrs.listaCasiManBean.renderTipoOperatore}"
-				        		value="#{cc.attrs.listaCasiManBean.selTipoOperatore}" >
-			                    <f:selectItem itemLabel="Tutti" itemValue="TUTTI"  />
-			                    <f:selectItem itemLabel="Responsabile" itemValue="RESP"  />
-			                    <f:selectItem itemLabel="Non responsabile" itemValue="NO_RESP"  />
-			                    <p:ajax event="change" update="dataTableCasiId,dataTableCasiId"/>
-				        </p:selectOneMenu>
-				      
-				        </h:panelGrid>
-				        
-				        <h:outputLabel value="Stato dell'iter" />
-						<p:selectOneMenu id="somIter" label="Stato dell'iter" value="#{cc.attrs.listaCasiManBean.selStato}" >
-			                    <f:selectItem noSelectionOption="true" itemLabel="- seleziona -" itemValue=""  />
-			                    <f:selectItems value="#{cc.attrs.listaCasiManBean.listaStati}"   />
 			                    <p:ajax event="change" update="dataTableCasiId"/>
+				        </p:selectOneMenu>
+			    </h:panelGrid>
+	            
+	            <h:outputLabel value="Residenza" />
+	            <h:panelGrid columns="2">
+		            <p:selectOneMenu id="tipoRes" value="#{cc.attrs.listaCasiManBean.selTipoResidenza}">
+		                    <f:selectItem noSelectionOption="true" itemLabel="- seleziona -" itemValue=""  />
+		                    <f:selectItem itemLabel="Comune" itemValue="COMUNE"/>
+		                    <f:selectItem itemLabel="Nazione" itemValue="NAZIONE"/>
+		                    <f:selectItem itemLabel="Senza fissa dimora" itemValue="SFD"/>
+		                    <p:ajax event="change" process="@this" listener="#{cc.attrs.listaCasiManBean.onChangeTipoResidenza}" 
+		                    		update="pnlsomResidenza, dataTableCasiId"/>
+		            </p:selectOneMenu>
+		            <h:panelGroup id="pnlsomResidenza">
+			           <p:selectOneMenu id="nazRes" label="Nazione di Residenza" rendered="#{cc.attrs.listaCasiManBean.selTipoResidenza eq 'NAZIONE'}"
+			           			value="#{cc.attrs.listaCasiManBean.selNazioneResidenza}" filterMatchMode="contains" filter="true">
+			                    <f:selectItem noSelectionOption="true" itemLabel="- seleziona -" itemValue=""  />
+			                    <f:selectItems value="#{cc.attrs.listaCasiManBean.listaNazioniResidenza}"   />
+			                    <p:ajax event="change" process="@this" update="dataTableCasiId"/>
 			            </p:selectOneMenu>
-			            
-			            <h:outputLabel value="Comune di Residenza" />
-						<p:selectOneMenu id="somRes" label="Comune di Residenza" value="#{cc.attrs.listaCasiManBean.selResidenza}" filterMatchMode="contains" filter="true">
+						<p:selectOneMenu id="comRes" label="Comune di Residenza" 
+								rendered="#{cc.attrs.listaCasiManBean.selTipoResidenza eq 'COMUNE'}"
+								value="#{cc.attrs.listaCasiManBean.selComuneResidenza}" filterMatchMode="contains" filter="true">
 			                    <f:selectItem noSelectionOption="true" itemLabel="- seleziona -" itemValue=""  />
 			                    <f:selectItems value="#{cc.attrs.listaCasiManBean.listaComuniResidenza}"   />
-			                    <p:ajax event="change" update="dataTableCasiId"/>
+			                    <p:ajax event="change" process="@this" update="dataTableCasiId"/>
 			            </p:selectOneMenu>
-			            
-			            <h:outputLabel value="Tipo Tutela" />
-						<p:selectOneMenu id="somTutela" label="Tipo Tutela" value="#{cc.attrs.listaCasiManBean.selTutela}" filterMatchMode="contains" filter="true">
-			                    <f:selectItem noSelectionOption="true" itemLabel="- seleziona -" itemValue=""  />
-			                    <f:selectItem itemLabel="Affidamento al serv. sociale" itemValue="AFFI" />
-			                    <f:selectItem itemLabel="Amm.Sostegno" itemValue="SOST" />
-			                    <f:selectItem itemLabel="Curatela" itemValue="CURA" />
-			                    <f:selectItem itemLabel="Tutela" itemValue="TUTE" />
-			                    <p:ajax event="change" update="dataTableCasiId"/>
-			            </p:selectOneMenu>
-			            
-			            <h:outputLabel value="Tit.Studio" />
-						<p:selectOneMenu id="somTitStudio" label="Tit.Studio" value="#{cc.attrs.listaCasiManBean.selTitStudio}" 
-								style="width:300px" filterMatchMode="contains" filter="true">
-			                    <f:selectItem noSelectionOption="true" itemLabel="- seleziona -" itemValue=""  />
-			                    <f:selectItems value="#{cc.attrs.listaCasiManBean.listaTitStudio}"   />
-			                    <p:ajax event="change" update="dataTableCasiId"/>
-			            </p:selectOneMenu>
-			            
-			            <h:outputLabel value="Cond.Lavorativa" />
-						<p:selectOneMenu id="somCondLavoro" label="Cond.Lavorativa" value="#{cc.attrs.listaCasiManBean.selCondLavoro}" 
-								filterMatchMode="contains" filter="true"
-								style="width:300px" panelStyleClass="selectOneMenuGrouped">
-			                    <f:selectItem noSelectionOption="true" itemLabel="- seleziona -" itemValue=""  />
-			                    <f:selectItems value="#{cc.attrs.listaCasiManBean.listaCondLavoro}"   />
-			                    <p:ajax event="change" update="dataTableCasiId"/>
-			            </p:selectOneMenu>
-			            
-			            <h:outputLabel value="Dati tribunale" />
-			             <p:selectManyCheckbox  value="#{cc.attrs.listaCasiManBean.selDatiTribunale}" layout="grid" columns="3" multiple="true" >  <!-- style="width:300px" -->
-			            	<f:selectItems value="#{cc.attrs.listaCasiManBean.listaTribStrutture}"/>
-							<p:ajax event="change" update="dataTableCasiId" />
-			           </p:selectManyCheckbox> 
-						<p:spacer width="20"/>
-				        <p:commandButton value="Pulisci filtro" actionListener="#{cc.attrs.listaCasiManBean.clearFilters()}" update="pnlFiltro,dataTableCasiId" />
- 
-					</h:panelGrid>
+		            </h:panelGroup>
+	            </h:panelGrid>
+	            
+	            <h:outputLabel value="Tipo Tutela" />
+				<p:selectOneMenu id="somTutela" label="Tipo Tutela" value="#{cc.attrs.listaCasiManBean.selTutela}" filterMatchMode="contains" filter="true">
+	                    <f:selectItem noSelectionOption="true" itemLabel="- seleziona -" itemValue=""  />
+	                    <f:selectItem itemLabel="Affidamento al serv. sociale" itemValue="AFFI" />
+	                    <f:selectItem itemLabel="Amm.Sostegno" itemValue="SOST" />
+	                    <f:selectItem itemLabel="Curatela" itemValue="CURA" />
+	                    <f:selectItem itemLabel="Tutela" itemValue="TUTE" />
+	                    <p:ajax event="change" update="dataTableCasiId"/>
+	            </p:selectOneMenu>
+	            
+	            <h:outputLabel value="Tit.Studio" />
+				<p:selectOneMenu id="somTitStudio" label="Tit.Studio" value="#{cc.attrs.listaCasiManBean.selTitStudio}" 
+						style="width:300px" filterMatchMode="contains" filter="true">
+	                    <f:selectItem noSelectionOption="true" itemLabel="- seleziona -" itemValue=""  />
+	                    <f:selectItems value="#{cc.attrs.listaCasiManBean.listaTitStudio}"   />
+	                    <p:ajax event="change" update="dataTableCasiId"/>
+	            </p:selectOneMenu>
+	            
+	            <h:outputLabel value="Cond.Lavorativa" />
+				<p:selectOneMenu id="somCondLavoro" label="Cond.Lavorativa" value="#{cc.attrs.listaCasiManBean.selCondLavoro}" 
+						filterMatchMode="contains" filter="true"
+						style="width:300px" panelStyleClass="selectOneMenuGrouped">
+	                    <f:selectItem noSelectionOption="true" itemLabel="- seleziona -" itemValue=""  />
+	                    <f:selectItems value="#{cc.attrs.listaCasiManBean.listaCondLavoro}"   />
+	                    <p:ajax event="change" update="dataTableCasiId"/>
+	            </p:selectOneMenu>
+	            
+	            <h:outputLabel value="Dati tribunale" />
+	             <p:selectManyCheckbox  value="#{cc.attrs.listaCasiManBean.selDatiTribunale}" layout="grid" columns="3" multiple="true" >  <!-- style="width:300px" -->
+	            	<f:selectItems value="#{cc.attrs.listaCasiManBean.listaTribStrutture}"/>
+					<p:ajax event="change" update="dataTableCasiId" />
+	           </p:selectManyCheckbox> 
+				<p:spacer width="20"/>
+		        <p:commandButton value="Pulisci filtro" actionListener="#{cc.attrs.listaCasiManBean.clearFilters()}" update="pnlFiltro,dataTableCasiId" />
+
+			</h:panelGrid>
 		</p:panel>
 		<p:dataTable id="dataTableCasiId"  styleClass="#{cc.attrs.styleClass}"
 			var="caso" value="#{cc.attrs.listaCasiManBean.lazyListaCasiModel}" 
-			rowIndexVar="rowIndex" rowKey="#{caso.soggetto.anagraficaId}" 
+			rowIndexVar="rowIndex" rowKey="#{caso.anagraficaId}" 
 			selection="#{cc.attrs.listaCasiManBean.selectedCaso}" selectionMode="single"
 			emptyMessage="Nessun elemento trovato" widgetVar="dataTableCasi"
 			paginator="true" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} "
@@ -112,21 +140,21 @@
             rendered="#{cc.attrs.listaCasiManBean.renderedTableListaCasi}">
             
 		   <p:column headerText="ID" width="10" style="text-align:center;font-size:0.8em;">
-				<h:outputText value="#{caso.soggetto.csACaso.identificativo}" />
+				<h:outputText value="#{caso.identificativo}" />
 			</p:column>
 			
 			<p:column headerText="Cognome - Nome" filterBy="soggetto">
-				<h:outputText value="#{caso.soggetto.csAAnagrafica.cognome} #{caso.soggetto.csAAnagrafica.nome}" />
+				<h:outputText value="#{caso.denominazione}" />
 			</p:column>
-
+			 
 			<p:column headerText="Data nascita" filterBy="dataNascita" width="60">
-				<h:outputText value="#{caso.soggetto.csAAnagrafica.dataNascita}">
+				<h:outputText value="#{caso.dataNascita}">
 					<f:convertDateTime pattern="dd/MM/yyyy" />
 				</h:outputText>
 			</p:column>
 
 			<p:column headerText="Codice fiscale" filterBy="codiceFiscale">
-				<h:outputText value="#{caso.soggetto.csAAnagrafica.cf}" />
+				<h:outputText value="#{caso.cf}" />
 			</p:column>
 			
 			<p:column headerText="Residenza">
@@ -161,12 +189,12 @@
 					<h:outputText value="Int." title="Numero di interventi richiesti" />
 	        	</f:facet>
 				<p:outputLabel id="lblNumInterventi" value="#{caso.nInterventi}"/>
-           		<p:tooltip for="lblNumInterventi" styleClass="tooltip" rendered="#{caso.listaInterventi.size()>0}">
+           		<p:tooltip for="lblNumInterventi" styleClass="tooltip" style="width: auto;height: auto;" rendered="#{!empty caso.listaInterventi}">
            			<p:dataTable value="#{caso.listaInterventi}" var="int" style="font-size:0.6em;" >
 		           	    <f:facet name="header">Interventi richiesti</f:facet>
 		           	   <p:column headerText="Tipo">
-           					<h:outputLabel value="#{int.tipoIntervento.descrizione}" /><br/>
-           					<h:outputLabel value="#{int.tipoInterventoCustom.descrizione}" />
+           					<h:outputLabel value="#{int.tipoIntervento}" /><br/>
+           					<h:outputLabel value="#{int.tipoInterventoCustom}" />
            				</p:column>
 		           		<p:column headerText="Inizio" style="text-align:center;">
 		           			<h:outputText value="#{int.inizio} "/>
@@ -188,7 +216,7 @@
 	        	
          		<h:panelGroup>
            			<p:graphicImage id="lblErogati" rendered="#{caso.listaErogazioni.size()>0 }" value="#{resource['webredcs/img/check.png']}"/>
-           			<p:tooltip for="lblErogati" styleClass="tooltip" rendered="#{caso.listaErogazioni.size()>0}">
+           			<p:tooltip for="lblErogati" styleClass="tooltip" style="width: auto;height: auto;" rendered="#{caso.listaErogazioni.size()>0}" >
 	           			  <p:dataTable value="#{caso.listaErogazioni}" var="inte" rendered="#{not empty caso.listaErogazioni}" style="font-size:0.6em;">
 	          			    <f:facet name="header">Erogazioni senza richiesta</f:facet>
 							<p:column headerText="Tipo"><h:outputText value="#{inte.tipoIntervento}" /></p:column>
@@ -201,10 +229,13 @@
 							</p:column>
 						</p:dataTable>
 	           		</p:tooltip>
-           			<p:spacer width="10px"/>
            			<p:graphicImage id="lblRdC" rendered="#{caso.nucleoBeneficiarioRdC}"  
 	        				    title="Nucleo familiare beneficiario di Reddito di Cittadinanza (Patto per il sociale)" 
 	        				    value="#{resource['webredcs/img/rdc.png']}" width="20px"/>
+	        				    
+					<p:graphicImage id="lblDatiEsterni" rendered="#{caso.datiEsterniFound}"
+									title="Presenza di dati esterni: il soggetto ha beneficiato di Prestazioni Sociali"
+									value="#{resource['webredcs/img/earth256.png']}" width="20px" />		
   				</h:panelGroup>
   				
 			</p:column>
@@ -219,7 +250,7 @@
 			<p:column width="310">
 			  
 				<webredcs:pnlIterInfoStato iIterInfoStato="#{caso.lastIterStepInfo}" widgetDialog="dlg" dialogToUpdate="#{cc.attrs.dialogIterToUpdate}"
-				          openDialogListener="#{cc.attrs.listaCasiManBean.iterDialogMan.openDialog(caso.soggetto.csACaso.id)}"
+				          openDialogListener="#{cc.attrs.listaCasiManBean.iterDialogMan.openDialog(caso.casoId)}"
 				          showOpenDialogButton="#{cc.attrs.listaCasiManBean.renderedListaCasiAssegnati}" />
 			</p:column>
 			

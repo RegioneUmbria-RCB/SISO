@@ -14,6 +14,7 @@ import it.webred.cs.csa.ejb.client.AccessTableConfigurazioneSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.AccessTableSchedaSegrSessionBeanRemote;
 import it.webred.cs.csa.ejb.dto.BaseDTO;
 import it.webred.cs.csa.web.manbean.report.ReportBean;
+import it.webred.cs.data.DataModelCostanti;
 import it.webred.cs.data.DataModelCostanti.PermessiSchedeSegr;
 import it.webred.cs.data.DataModelCostanti.Scheda;
 import it.webred.cs.data.DataModelCostanti.TabUDC;
@@ -24,7 +25,7 @@ import it.webred.cs.data.model.CsSsSchedaSegr;
 import it.webred.cs.data.model.CsTbCittadinanzaAcq;
 import it.webred.cs.data.model.CsTbStatoCivile;
 import it.webred.cs.data.model.CsTbTipoRapportoCon;
-import it.webred.cs.data.model.CsTbTipologiaFamiliare;
+import it.webred.cs.data.model.CsSchedeAltraProvenienza;
 import it.webred.cs.jsf.interfaces.ISchedaSegr;
 import it.webred.cs.jsf.manbean.ConsensoPrivacyMan;
 import it.webred.cs.jsf.manbean.FormazioneLavoroMan;
@@ -43,7 +44,6 @@ import it.webred.cs.json.orientamentoistruzione.OrientamentoIstruzioneManBaseBea
 import it.webred.cs.json.serviziorichiestocustom.IServizioRichiestoCustom;
 import it.webred.cs.json.serviziorichiestocustom.ServizioRichiestoCustomManBaseBean;
 import it.webred.cs.json.stranieri.IStranieri;
-import it.webred.ct.config.luoghi.LuoghiService;
 import it.webred.ct.config.model.AmTabComuni;
 import it.webred.ejb.utility.ClientUtility;
 import it.webred.ss.data.model.SsAnagrafica;
@@ -68,6 +68,9 @@ public class SchedaSegrBean extends CsUiCompBaseBean implements ISchedaSegr {
 	private IStranieri stranieriMan;
 	private IAbitazione abitazioneMan;
 	private IFamConviventi famConviventiMan;
+	
+	private CsSchedeAltraProvenienza vistaCasiAltri;	// SISO-938
+	
 	private ConsensoPrivacyMan consensoPrivacyMan;
 
 	private List<ISchedaValutazione> lstServiziRichiesti;// SISO-438-Possibilità di allegare documenti in UdC
@@ -86,14 +89,14 @@ public class SchedaSegrBean extends CsUiCompBaseBean implements ISchedaSegr {
 	
 	private SsSchedaSessionBeanRemote ssSchedaSegrService = (SsSchedaSessionBeanRemote) getEjb("SegretariatoSoc", "SegretariatoSoc_EJB", "SsSchedaSessionBean");
 	private	AccessTableSchedaSegrSessionBeanRemote schedaSegrService = (AccessTableSchedaSegrSessionBeanRemote) getEjb("CarSocialeA", "CarSocialeA_EJB", "AccessTableSchedaSegrSessionBean");
-	private LuoghiService luoghiService = (LuoghiService) getEjb("CT_Service", "CT_Config_Manager", "LuoghiServiceBean");
-
+	
 	public void initialize(Long sId) {
 		
 		logger.debug("*** INIZIO chiamata SchedaSegrBean.initialize");
 		mappaLabelUDC = CsUiCompBaseBean.getMappaLabelUDC();
 		ssScheda = null;
 		ssSchedaSegnalato = null;
+		vistaCasiAltri = null;
 		comuneSegnalante = new AmTabComuni();
 		
 /*		lavoroSegnalato = new CsTbCondLavoro();
@@ -105,9 +108,13 @@ public class SchedaSegrBean extends CsUiCompBaseBean implements ISchedaSegr {
 			BaseDTO dto = new BaseDTO();
 			fillEnte(dto);
 			dto.setObj(sId);
-			CsSsSchedaSegr csSsSchedaSegr = schedaSegrService.findSchedaSegrCreataByIdAnagrafica(dto);
-			if(csSsSchedaSegr != null) 
-				caricaDettagliSchedaSegr(csSsSchedaSegr.getId());
+			CsSsSchedaSegr csss = schedaSegrService.findSchedaSegrCreataByIdAnagrafica(dto);
+			if(csss != null){
+				if(csss.getProvenienza().equals(DataModelCostanti.SchedaSegr.PROVENIENZA_SS)) 
+					caricaDettagliSchedaSegr(csss.getSchedaId());
+				else 
+					caricaDettagliAltri(csss.getSchedaId(), csss.getProvenienza());
+			}
 		}else{
 			logger.warn("SchedaSegrBean- initialize() - IdAnagrafica non valorizzato.");
 		}
@@ -115,6 +122,7 @@ public class SchedaSegrBean extends CsUiCompBaseBean implements ISchedaSegr {
 		logger.debug("*** FINE chiamata SchedaSegrBean.initialize");
 	}
 	
+	// SISO-938: action Info per PROVENIENZA == 'SS'
 	public void caricaDettagliSchedaSegr(Long idSchedaSegr) {
 		
 		try {
@@ -156,7 +164,7 @@ public class SchedaSegrBean extends CsUiCompBaseBean implements ISchedaSegr {
 					lstServiziRichiesti = new ArrayList<ISchedaValutazione>();
 					for(CsDValutazione val : res){
 
-						if(TipoDiario.ABITAZIONE_ID==val.getCsDDiario().getCsTbTipoDiario().getId()){
+						if(TipoDiario.INTERMEDIAZIONE_AB_ID==val.getCsDDiario().getCsTbTipoDiario().getId()){
 							IIntermediazioneAb intermediazioneAbMan = (IIntermediazioneAb)IntermediazioneManBaseBean.initByModel(val);
 							if (intermediazioneAbMan!=null) {
 								lstServiziRichiesti.add(intermediazioneAbMan);
@@ -235,6 +243,17 @@ public class SchedaSegrBean extends CsUiCompBaseBean implements ISchedaSegr {
 			logger.error(e.getMessage(),e);
 		}
 	}
+	
+	// SISO-938: action Info per PROVENIENZA == 'SS'
+	public void caricaDettagliAltri(Long id, String provenienza) {
+		BaseDTO csDto = new BaseDTO();
+		fillEnte(csDto);
+
+		csDto.setObj(id);
+		csDto.setObj2(provenienza);
+
+		vistaCasiAltri = schedaSegrService.findVistaCasiAltriBySchedaIdProvenienza(csDto);
+	}
 		
 	private boolean canReadNotaDiario(SsDiario nota, String operatoreAccesso){
 		return canReadNotaDiario(nota, operatoreAccesso, getCurrentOpSettore().getCsOSettore().getCsOOrganizzazione().getId());
@@ -280,6 +299,14 @@ public class SchedaSegrBean extends CsUiCompBaseBean implements ISchedaSegr {
 
 	public void setSsScheda(SsScheda ssScheda) {
 		this.ssScheda = ssScheda;
+	}
+
+	public CsSchedeAltraProvenienza getVistaCasiAltri() {
+		return vistaCasiAltri;
+	}
+	
+	public void setVistaCasiAltri(CsSchedeAltraProvenienza vistaCasiAltri) {
+		this.vistaCasiAltri = vistaCasiAltri;
 	}
 
 	@Override
@@ -336,33 +363,6 @@ public class SchedaSegrBean extends CsUiCompBaseBean implements ISchedaSegr {
 		this.listaInterventiEcon = listaInterventiEcon;
 	}
 
-/*	public CsTbTipologiaFamiliare getTipoFamigliaSegnalato() {
-		return tipoFamigliaSegnalato;
-	}
-
-	public void setTipoFamigliaSegnalato(
-			CsTbTipologiaFamiliare tipoFamigliaSegnalato) {
-		this.tipoFamigliaSegnalato = tipoFamigliaSegnalato;
-	}*/
-	
-		
-	private CsTbTipologiaFamiliare valorizzaTipoFamiglia(String  codfam){
-    	try{
-    		AccessTableConfigurazioneSessionBeanRemote configService = (AccessTableConfigurazioneSessionBeanRemote)
-    				ClientUtility.getEjbInterface("CarSocialeA", "CarSocialeA_EJB", "AccessTableConfigurazioneSessionBean");
-    	if(codfam!=null){
-    		BaseDTO d = new BaseDTO();
-    		CsUiCompBaseBean.fillEnte(d);
-    		d.setObj(new Long(codfam));
-    		return configService.getTipologiaFamiliareById(d);
-    	}
-		
-    	} catch(Exception e) {
-    		CsUiCompBaseBean.logger.error(e.getMessage(), e);
-		}
-    	return new CsTbTipologiaFamiliare();
-    }
-		
 	private CsTbCittadinanzaAcq valorizzaCittadinanzaAcq(Long  id){
     	try{
     		AccessTableConfigurazioneSessionBeanRemote configService = (AccessTableConfigurazioneSessionBeanRemote)

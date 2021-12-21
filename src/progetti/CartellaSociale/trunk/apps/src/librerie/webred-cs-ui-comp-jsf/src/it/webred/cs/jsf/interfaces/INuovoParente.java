@@ -28,6 +28,7 @@ public interface INuovoParente {
 	public boolean getConvivente();
 	public boolean getAffidatario();
 	public boolean getDecesso();
+	public boolean getDisabile();
 	public Date getDataDecesso();
 	public void resetDataDecesso();
 	public void resetAffidatario();

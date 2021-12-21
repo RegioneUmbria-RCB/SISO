@@ -33,7 +33,7 @@ public class ModelloPorPdfDTO extends ReportPdfDTO {
 	private String attuatore_prog = ""; // lo richiedo con una dialog non viene salvato nel db!
 	private String cod_prog = "";
 	private String attivita = "";
-	
+	private String dataSottoscrizione = "";
 	
 	private String imagePath = "";
 	
@@ -198,6 +198,12 @@ public class ModelloPorPdfDTO extends ReportPdfDTO {
 	}
 	public void setImagePath(String imagePath) {
 		this.imagePath = imagePath;
+	}
+	public String getDataSottoscrizione() {
+		return dataSottoscrizione;
+	}
+	public void setDataSottoscrizione(String dataSottoscrizione) {
+		this.dataSottoscrizione = dataSottoscrizione;
 	}
 	
 }

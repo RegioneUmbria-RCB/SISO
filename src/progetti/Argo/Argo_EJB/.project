@@ -3,7 +3,6 @@
 	<name>Argo_EJB</name>
 	<comment></comment>
 	<projects>
-		<project>WebredEJBUtility</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

@@ -114,8 +114,7 @@ public class JasperUtils extends CsUiCompBaseBean implements Serializable {
 			
 		try {
 			FacesContext faces = FacesContext.getCurrentInstance();
-			HttpServletResponse response = (HttpServletResponse) faces
-					.getExternalContext().getResponse();
+			HttpServletResponse response = (HttpServletResponse) faces.getExternalContext().getResponse();
 			
 			response.setHeader("Content-Type", "application/pdf");
 			response.setHeader("Content-Disposition", "attachment;filename=\"" + fileName + ".pdf");

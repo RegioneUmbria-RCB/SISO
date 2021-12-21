@@ -42,8 +42,11 @@ public abstract class BaseInterscambioCartellaSociale extends CsUiCompBaseBean {
 		return this.eventoService.findAllEvents(bdto);
 	}
 	
-	public List<EventoDTO> getListaEventi(BaseDTO bdto, String cf, String type){
-		return this.eventoService.findEventsByOpSettIdAndCF(cf, getCurrentOpSettore().getCsOSettore().getCsOOrganizzazione().getId(), type);
+	public List<EventoDTO> getListaEventi(BaseDTO dto, String cf, String type){
+		dto.setObj(cf);
+		dto.setObj2(getCurrentOpSettore().getCsOSettore().getCsOOrganizzazione().getId());
+		dto.setObj3(type);
+		return this.eventoService.findEventsByOpSettIdAndCF(dto);
 	}
 
 	public AccessTableEventiSessionBeanRemote getEventoService() {

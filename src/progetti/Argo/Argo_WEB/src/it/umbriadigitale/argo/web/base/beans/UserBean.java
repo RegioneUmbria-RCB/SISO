@@ -24,6 +24,8 @@ public class UserBean extends ArgoBaseBean {
 	private String ente;
 	private String denominazione;
 	
+	private ComuneService comuneService = (ComuneService) getEjb("CT_Service", "CT_Config_Manager", "ComuneServiceBean");
+	
 	public String getDenominazione() {
 		if(denominazione == null) {
 			String username = getUsername();
@@ -88,10 +90,6 @@ public class UserBean extends ArgoBaseBean {
 		this.denominazione = denominazione;
 	}
 	
-	
-	private LoginBeanService loginService = (LoginBeanService) getEjb("AmProfiler", "AmProfilerEjb", "LoginBean");
-	
-	private ComuneService comuneService = (ComuneService) getEjb("CT_Service", "CT_Config_Manager", "ComuneServiceBean");
 	
 	@PostConstruct
 	public void init() {

@@ -73,7 +73,7 @@ public class AccessTableComuniSessionBean extends CarSocialeBaseSessionBean impl
     	
     }*/
     
-    public List<AmTabComuni> getComuniByDenomContains(String denominazione, boolean attivi) {
+   public List<AmTabComuni> getComuniByDenomContains(String denominazione, boolean attivi) {
     	List<AmTabComuni> tutti = luoghiService.getComuniItaByDenominazioneContains(denominazione);
     	if(attivi){
     		List<AmTabComuni> lista = new ArrayList<AmTabComuni>();

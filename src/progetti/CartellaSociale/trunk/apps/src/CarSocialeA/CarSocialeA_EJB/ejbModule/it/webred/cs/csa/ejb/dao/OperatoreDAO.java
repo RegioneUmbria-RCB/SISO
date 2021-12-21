@@ -1,17 +1,21 @@
 package it.webred.cs.csa.ejb.dao;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 
 import javax.inject.Named;
 import javax.persistence.Query;
-import javax.persistence.TypedQuery;
 
 import org.apache.commons.lang.StringUtils;
 
 import it.webred.cs.csa.ejb.CarSocialeBaseDAO;
+import it.webred.cs.csa.ejb.client.CarSocialeServiceException;
+import it.webred.cs.csa.ejb.dto.KeyValueDTO;
 import it.webred.cs.csa.ejb.dto.OperatoriSearchCriteria;
 import it.webred.cs.data.model.CsODecodificaRuoli;
 import it.webred.cs.data.model.CsOOperatore;
@@ -27,10 +31,6 @@ import it.webred.cs.data.model.CsOZonaSoc;
 import it.webred.cs.data.model.view.CsAmAnagraficaOperatore;
 import it.webred.ct.support.validation.annotation.AuditSaltaValidazioneSessionID;
 
-/**
- * @author Andrea
- *
- */
 @Named
 public class OperatoreDAO extends CarSocialeBaseDAO implements Serializable {
 	
@@ -99,8 +99,7 @@ public class OperatoreDAO extends CarSocialeBaseDAO implements Serializable {
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public List<CsOOperatore> getOperatoriByCatSocialeOrg(Long idCatSociale, String codRouting) {
-			
-		Query q = em.createNamedQuery("CsOOperatore.findOperatoriByCatSocialeOrg");
+	    Query q = em.createNamedQuery("CsOOperatore.findOperatoriByCatSocialeOrg");
 		q.setParameter("idCatSociale", idCatSociale);
 		q.setParameter("codRouting", codRouting);
 		List result = q.getResultList();
@@ -113,7 +112,10 @@ public class OperatoreDAO extends CarSocialeBaseDAO implements Serializable {
 	
 	@SuppressWarnings("rawtypes")
 	public CsOOperatoreSettore findOperatoreSettoreById(long idOp, long idSettore, Date date) throws Exception {
-		Query q = em.createNamedQuery("CsOOperatoreSettore.getOperatoreSettoreById").setParameter("idOp", idOp).setParameter("date", date).setParameter("idSettore", idSettore);
+		Query q = em.createNamedQuery("CsOOperatoreSettore.getOperatoreSettoreById");
+		q.setParameter("idOp", idOp);
+		q.setParameter("date", date);
+		q.setParameter("idSettore", idSettore);
 		List result = q.getResultList();
 		
 		if( result != null && result.size() > 0 )
@@ -131,8 +133,14 @@ public class OperatoreDAO extends CarSocialeBaseDAO implements Serializable {
 	
 	@SuppressWarnings({"unchecked", "rawtypes"})
 	public List<CsOOperatoreSettore> findOperatoreSettoreByOperatore(long idOp, Date date) throws Exception {
-		Query q = em.createNamedQuery("CsOOperatoreSettore.findOperatoreSettoreByOperatore").setParameter("idOp", idOp).setParameter("date", date);
-		List results = q.getResultList();
+		Query q = em.createNamedQuery("CsOOperatoreSettore.findOperatoreSettoreByOperatore");
+		q.setParameter("idOp", idOp);
+		q.setParameter("date", date);
+		List<CsOOperatoreSettore> results = (List<CsOOperatoreSettore>)q.getResultList();
+		for(CsOOperatoreSettore os : results){
+			os.getAlertConfig().size();
+			os.getTipoOperatore().size();
+		}
 		return results;
 	}
 	
@@ -182,11 +190,18 @@ public class OperatoreDAO extends CarSocialeBaseDAO implements Serializable {
 	}
 	
 	public CsOOperatoreBASIC findOperatoreBASICByUserName(String userName) throws Exception {
-
-		Query op = em.createNamedQuery("CsOOperatoreBASIC.getOperatoreBASICByUserName")
-				.setParameter("username", userName);
-
-		return (CsOOperatoreBASIC) op.getSingleResult();
+		CsOOperatoreBASIC o = null;
+		try{
+			if(!StringUtils.isBlank(userName)){
+				Query op = em.createNamedQuery("CsOOperatoreBASIC.getOperatoreBASICByUserName");
+				op.setParameter("username", userName);
+		
+				o =  (CsOOperatoreBASIC) op.getSingleResult();
+			}
+		}catch(Exception e){
+			logger.error(e.getMessage()+"["+userName+"]", e);
+		}
+		return o;
 	}
 	
 
@@ -197,21 +212,58 @@ public class OperatoreDAO extends CarSocialeBaseDAO implements Serializable {
 		return results;
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public List<CsOOperatoreSettore> findOperatoreSettoreBySettore(long idSettore) throws Exception {
-		Query q = em.createNamedQuery("CsOOperatoreSettore.findOperatoreSettoreBySettore").setParameter("idSettore", idSettore);
-		List results = q.getResultList();
-		return results;
+	private List<KeyValueDTO> findListaOperatoreSettore(long idSettore, boolean keyOperatoreId){
+		List<KeyValueDTO> lstOperatori = new ArrayList<KeyValueDTO>();
+		Query q = em.createNamedQuery("CsOOperatoreSettore.findOperatoreSettoreAnagraficaBySettore");
+		q.setParameter("idSettore", idSettore);
+		List<Object[]> result =  q.getResultList();
+		Date today = new Date();
+		for(Object[] res : result){
+			Long idOperatoreSettore = (Long)res[0];
+			Long idOperatore = (Long)res[1];
+			CsOOperatoreAnagrafica ana = (CsOOperatoreAnagrafica)res[2];
+			Date dataInizio = (Date)res[3];
+			Date dataFine = (Date)res[4];
+			Boolean opAbilitato = res[5]!=null ? (Boolean)res[5] : Boolean.FALSE;
+			
+			boolean abilitato = today.after(dataInizio) && today.before(dataFine) && opAbilitato;
+			
+			if(ana!=null){
+				Long identificativo = keyOperatoreId ? idOperatore : idOperatoreSettore;
+				KeyValueDTO si = new KeyValueDTO(identificativo, ana.getDenominazione());
+				si.setAbilitato(abilitato);
+				lstOperatori.add(si);
+			}
+		}
+		
+		Collections.sort(lstOperatori, new Comparator<KeyValueDTO>() {
+			@Override
+			public int compare(final KeyValueDTO object1, final KeyValueDTO object2) {
+				return object1.getDescrizione().compareTo(object2.getDescrizione());
+			}
+		});
+		
+		return lstOperatori;
 	}
 	
-	//frida
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public List<CsOOperatoreAnagrafica> findAllOperatoreAnagrafica() throws Exception {
-		Query q = em.createNamedQuery("CsOOperatoreAnagrafica.findAllOperatoreAnagrafica");
+	public List<KeyValueDTO> findListaOperatoreBySettore(long idSettore) throws Exception {
+		return findListaOperatoreSettore(idSettore,true);
+	}
+	
+	public List<KeyValueDTO> findListaOperatoreSettoreBySettore(Long idSettore) {
+		return findListaOperatoreSettore(idSettore,false);
+	}
+	
+	public List<CsOOperatoreSettore> findRespSettoreAttivo(long idSettore, String enteId) throws Exception {
+		String gruppo = "CSOCIALE_RESPO_SETTORE_" + enteId;
+		
+		Query q = em.createNamedQuery("CsOOperatoreSettore.findRespSettoreAttivo");
+		q.setParameter("idSettore", idSettore);
+		q.setParameter("gruppo", gruppo);
 		List results = q.getResultList();
 		return results;
 	}
-		
+
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public CsOZonaSoc findZonaSocAbilitata() {
 		try{
@@ -325,15 +377,33 @@ public class OperatoreDAO extends CarSocialeBaseDAO implements Serializable {
 		}
 		
 	}
-	public List<CsOOperatoreTipoOperatore> findTipiOperatore(Long idOperatoreSettore) throws Exception {
+	
+	public void setEmailConfigAlertOpSettore(Long opSettoreId, Boolean abilita) throws Exception {
+		try{
+			
+			Query q = em.createNamedQuery("CsOOpsettoreAlertConfig.setEmailByIdOperatoreSettore");
+			q.setParameter("idOpSettore", opSettoreId);
+			q.setParameter("abilita", abilita);
+			q.executeUpdate();
+			
+		}catch(Exception e){
+			logger.error(e);
+			throw(e);
+		}
+		
+	}
+	
+	public List<String> findTipiOperatore(List<Long> idOperatoreSettore) throws Exception {
+		List<String> lst = new ArrayList<String>();
 		try {
-			TypedQuery<CsOOperatoreTipoOperatore> q = em.createNamedQuery("CsOOperatoreSettore.findTipiOperatoreByOperatoreSettore", CsOOperatoreTipoOperatore.class);
+			Query q = em.createNamedQuery("CsOOperatoreTipoOperatore.findTipiOperatoreByOperatoreSettore");
 			q.setParameter("idOperatoreSettore", idOperatoreSettore);
-			return q.getResultList();
+			lst = (List<String>) q.getResultList();
 		} catch (Exception e) {
 			logger.error(e);
 			throw (e);
 		}
+		return lst;
 	}
 
 	public String findLabelRuolo(String obj) {
@@ -360,18 +430,16 @@ public class OperatoreDAO extends CarSocialeBaseDAO implements Serializable {
 			String s = "SELECT c FROM CsAmAnagraficaOperatore c WHERE 1=1 ";
 			
 			if(!StringUtils.isBlank(cet.getCognome())) 
-				s+= "AND UPPER(c.cognome) LIKE '%"+cet.getCognome().toUpperCase()+"%'";
+				s+= "AND UPPER(c.cognome) LIKE '%'|| :cognome ||'%'";
 			if(!StringUtils.isBlank(cet.getNome())) 
-				s+= "AND UPPER(c.nome) LIKE '%"+cet.getNome().toUpperCase()+"%'";
+				s+= "AND UPPER(c.nome) LIKE '%'|| :nome ||'%'";
 			if(!StringUtils.isBlank(cet.getCodiceFiscale())) 
-				s+= "AND UPPER(c.codiceFiscale) LIKE '%"+cet.getCodiceFiscale().toUpperCase()+"%'";
+				s+= "AND UPPER(c.codiceFiscale) LIKE '%'|| :cf ||'%'";
 			if(!StringUtils.isBlank(cet.getUsername())) 
-				s+= "AND UPPER(c.username) LIKE '%"+cet.getUsername().toUpperCase()+"%'";
-			if(cet.getAbilitato()!=null){ 
-				s+= "AND (c.operatore IS "+(cet.getAbilitato().booleanValue() ? " NOT NULL AND " : " NULL OR ");
-				s+= "c.operatore.abilitato="+cet.getAbilitato().booleanValue();
-				s+= ")";
-			}if(cet.getEnti()!=null && !cet.getEnti().isEmpty()){
+				s+= "AND UPPER(c.username) LIKE '%'|| :username ||'%'";
+			if(cet.getAbilitato()!=null)
+				s+= "AND c.abilitato = :abilitato "; 
+			if(cet.getEnti()!=null && !cet.getEnti().isEmpty()){
 				s+="AND (";
 				String entis = "";
 				for(String ente : cet.getEnti())
@@ -382,6 +450,18 @@ public class OperatoreDAO extends CarSocialeBaseDAO implements Serializable {
 				   s+= "ORDER BY cognome, nome ";
 			
 			Query q = em.createQuery(s);
+			
+			if(!StringUtils.isBlank(cet.getCognome())) 
+				q.setParameter("cognome", cet.getCognome().toUpperCase());
+			if(!StringUtils.isBlank(cet.getNome())) 
+				q.setParameter("nome", cet.getNome().toUpperCase());
+			if(!StringUtils.isBlank(cet.getCodiceFiscale())) 
+				q.setParameter("cf", cet.getCodiceFiscale().toUpperCase());
+			if(!StringUtils.isBlank(cet.getUsername())) 
+				q.setParameter("username", cet.getUsername().toUpperCase());
+			if(cet.getAbilitato()!=null)
+				q.setParameter("abilitato", cet.getAbilitato().booleanValue());
+			
 			
 			if(!count){
 				q.setFirstResult(cet.getFirst());
@@ -395,5 +475,70 @@ public class OperatoreDAO extends CarSocialeBaseDAO implements Serializable {
 		return null;
 	
 	}
+			
+	public List<KeyValueDTO> findOperatoreIdAnagraficaBySettore(Long idSettore) {
+		List<KeyValueDTO> lstOut = new ArrayList<KeyValueDTO>();
+		Query q = em.createNamedQuery("CsOOperatoreSettore.findOperatoreIdAnagraficaBySettore");
+		q.setParameter("idSettore", idSettore);
+		List<Object[]> lst = q.getResultList();
+		Date today = new Date();
+		for(Object[] o :lst){
+			Long idOperatore = (Long)o[0];
+			Date dataInizio = (Date)o[1];
+			Date dataFine = (Date)o[2];
+			Boolean abilitato = (Boolean)o[3];
+			CsOOperatoreAnagrafica ana = (CsOOperatoreAnagrafica)o[4];
+			if(ana!=null){
+				KeyValueDTO val = new KeyValueDTO(idOperatore, ana.getDenominazione());
+				val.setAbilitato(abilitato && today.after(dataInizio) && today.before(dataFine));
+				lstOut.add(val);
+			}
+		}
+		return lstOut;
+	}
 	
+
+	public List<CsOOperatoreSettore> findOperatoreSettoreByCodStruttura(String tipo2Livello, String codRouting){
+		
+		Query q = em.createNamedQuery("CsOOperatoreSettore.findOperatoreSettoreByCodStruttura");
+		q.setParameter("tipo2livello", tipo2Livello);
+		q.setParameter("codRouting",  codRouting);
+		List <CsOOperatoreSettore> lst = q.getResultList();
+		
+		return lst;
+
+	}
+	
+     public CsOOperatoreSettore findOperatoreSettore2LivByIdOperatore(String tipo2Livello, Long idOperatore, String codRouting, Date dtRif){
+    	 CsOOperatoreSettore os = null;
+    	 try{
+			Query q = em.createNamedQuery("CsOOperatoreSettore.findOperatoreSettore2LivByIdOperatore");
+			q.setParameter("tipo2livello", tipo2Livello);
+			q.setParameter("codRouting",  codRouting);
+			q.setParameter("idOperatore",  idOperatore);
+			q.setParameter("dtRif", dtRif);
+			os = (CsOOperatoreSettore) q.getSingleResult();
+		}catch(Exception e){
+			logger.error("findOperatoreSettore2LivByIdOperatore"+e.getMessage(), e);
+			throw new CarSocialeServiceException (e);
+		}
+    	return os;
+	}
+     
+     public CsOOperatoreSettore findOperatoreSettore2LivByUsername(String tipo2Livello, String username, String codRouting, Date dtRif){
+    	 CsOOperatoreSettore os = null;
+    	 try{
+			Query q = em.createNamedQuery("CsOOperatoreSettore.findOperatoreSettore2LivByUsername");
+			q.setParameter("tipo2livello", tipo2Livello);
+			q.setParameter("codRouting",  codRouting);
+			q.setParameter("username",  username);
+			q.setParameter("dtRif", dtRif);
+			os = (CsOOperatoreSettore) q.getSingleResult();
+		}catch(Exception e){
+			logger.error("findOperatoreSettore2LivByUsername"+e.getMessage(), e);
+			throw new CarSocialeServiceException (e);
+		}
+    	return os;
+	}
+
 }

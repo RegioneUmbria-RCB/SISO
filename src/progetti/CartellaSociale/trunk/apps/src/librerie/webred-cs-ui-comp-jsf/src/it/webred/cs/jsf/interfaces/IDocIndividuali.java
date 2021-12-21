@@ -3,7 +3,7 @@ package it.webred.cs.jsf.interfaces;
 import it.webred.cs.data.model.CsDDiario;
 import it.webred.cs.data.model.CsDDocIndividuale;
 import it.webred.cs.jsf.manbean.DiarioDocsMan;
-import it.webred.cs.jsf.manbean.DocIndividualeBean;
+import it.webred.cs.csa.ejb.dto.fascicolo.docIndividuali.DocIndividualeBean;
 
 import java.util.List;
 
@@ -37,4 +37,5 @@ public interface IDocIndividuali {
 	public boolean isPannelloProtocolloVisibile();
 	public void verificaEsistenzaNumeroProtocollo();
 	// #ROMACAPITALE fine
+	public String getIntestazione();
 }

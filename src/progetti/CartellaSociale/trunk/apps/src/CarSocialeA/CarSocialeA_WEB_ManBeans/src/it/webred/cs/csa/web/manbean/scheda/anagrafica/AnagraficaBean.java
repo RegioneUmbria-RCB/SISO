@@ -1,13 +1,64 @@
 package it.webred.cs.csa.web.manbean.scheda.anagrafica;
 
+import it.webred.cs.csa.ejb.client.AccessTableAnagraficaLogSessionBeanRemote;
+import it.webred.cs.csa.ejb.client.AccessTableCasoSessionBeanRemote;
+import it.webred.cs.csa.ejb.client.AccessTableConfigurazioneSessionBeanRemote;
+import it.webred.cs.csa.ejb.client.AccessTableIndirizzoSessionBeanRemote;
+import it.webred.cs.csa.ejb.client.AccessTableIterStepSessionBeanRemote;
+import it.webred.cs.csa.ejb.client.AccessTableNazioniSessionBeanRemote;
+import it.webred.cs.csa.ejb.client.AccessTablePersonaCiviciSessionBeanRemote;
+import it.webred.cs.csa.ejb.client.AccessTableSoggettoSessionBeanRemote;
+import it.webred.cs.csa.ejb.dto.BaseDTO;
+import it.webred.cs.csa.ejb.dto.cartella.DatiAggCasoGitDTO;
+import it.webred.cs.csa.ejb.dto.cartella.DatiAnagraficaCasoDTO;
+import it.webred.cs.csa.web.manbean.scheda.SchedaBean;
+import it.webred.cs.csa.web.manbean.scheda.SchedaUtils;
+import it.webred.cs.csa.web.manbean.schedaSegr.SchedaSegr;
+import it.webred.cs.data.DataModelCostanti;
+import it.webred.cs.data.DataModelCostanti.TipoAggiornamentoAnagrafica;
+import it.webred.cs.data.DataModelCostanti.TipoIndirizzo;
+import it.webred.cs.data.DataModelCostanti.TipoRicercaSoggetto;
+import it.webred.cs.data.model.CsAAnaIndirizzo;
+import it.webred.cs.data.model.CsAAnagrafica;
+import it.webred.cs.data.model.CsAAnagraficaLog;
+import it.webred.cs.data.model.CsAComponenteAnagCasoGit;
+import it.webred.cs.data.model.CsAIndirizzo;
+import it.webred.cs.data.model.CsASoggettoLAZY;
+import it.webred.cs.data.model.CsASoggettoMedico;
+import it.webred.cs.data.model.CsASoggettoStatoCivile;
+import it.webred.cs.data.model.CsASoggettoStatus;
+import it.webred.cs.data.model.CsCMedico;
+import it.webred.cs.data.model.CsSchedeAltraProvenienza;
+import it.webred.cs.data.model.CsTbCittadinanzaAcq;
+import it.webred.cs.data.model.CsTbStatoCivile;
+import it.webred.cs.jsf.bean.DatiAnaBean;
+import it.webred.cs.jsf.bean.ValiditaCompBaseBean;
+import it.webred.cs.jsf.interfaces.IDatiAna;
+import it.webred.cs.jsf.manbean.ComuneNazioneNascitaMan;
+import it.webred.cs.jsf.manbean.ComuneNazioneResidenzaMan;
+import it.webred.cs.jsf.manbean.ComuneResidenzaMan;
+import it.webred.cs.jsf.manbean.ResidenzaCsaMan;
+import it.webred.cs.jsf.manbean.exception.CsUiCompException;
+import it.webred.cs.jsf.manbean.superc.CsUiCompBaseBean;
+import it.webred.cs.jsf.manbean.superc.ResidenzaMan.TIPO_LUOGO;
+import it.webred.ct.config.model.AmTabNazioni;
+import it.webred.ct.support.datarouter.CeTBaseObject;
+import it.webred.ejb.utility.ClientUtility;
+import it.webred.jsf.bean.ComuneBean;
+import it.webred.jsf.bean.SessoBean;
+import it.webred.siso.ws.ricerca.dto.FamiliareDettaglio;
+import it.webred.siso.ws.ricerca.dto.PersonaDettaglio;
+import it.webred.siso.ws.ricerca.dto.RicercaAnagraficaParams;
+import it.webred.siso.ws.ricerca.dto.RicercaAnagraficaResult;
+import it.webred.ss.data.model.SsScheda;
+import it.webred.ss.ejb.dto.report.DatiPrivacyPdfDTO;
+
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map.Entry;
@@ -24,72 +75,6 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import it.webred.cs.csa.ejb.client.AccessTableAnagraficaLogSessionBeanRemote;
-import it.webred.cs.csa.ejb.client.AccessTableCasoSessionBeanRemote;
-import it.webred.cs.csa.ejb.client.AccessTableConfigurazioneSessionBeanRemote;
-import it.webred.cs.csa.ejb.client.AccessTableIndirizzoSessionBeanRemote;
-import it.webred.cs.csa.ejb.client.AccessTableIterStepSessionBeanRemote;
-import it.webred.cs.csa.ejb.client.AccessTableNazioniSessionBeanRemote;
-import it.webred.cs.csa.ejb.client.AccessTablePersonaCiviciSessionBeanRemote;
-import it.webred.cs.csa.ejb.client.AccessTableSoggettoSessionBeanRemote;
-import it.webred.cs.csa.ejb.dto.BaseDTO;
-import it.webred.cs.csa.ejb.dto.cartella.DatiAggCasoGitDTO;
-import it.webred.cs.csa.ejb.dto.cartella.DatiAnagraficaCasoDTO;
-import it.webred.cs.csa.web.manbean.scheda.SchedaBean;
-import it.webred.cs.csa.web.manbean.scheda.SchedaUtils;
-import it.webred.cs.csa.web.manbean.scheda.parenti.ComuneResidenzaBean;
-import it.webred.cs.data.DataModelCostanti;
-import it.webred.cs.data.DataModelCostanti.TipoAggiornamentoAnagrafica;
-import it.webred.cs.data.DataModelCostanti.TipoRicercaSoggetto;
-import it.webred.cs.data.model.CsAAnaIndirizzo;
-import it.webred.cs.data.model.CsAAnagrafica;
-import it.webred.cs.data.model.CsAAnagraficaLog;
-import it.webred.cs.data.model.CsAComponenteAnagCasoGit;
-import it.webred.cs.data.model.CsAIndirizzo;
-import it.webred.cs.data.model.CsASoggettoLAZY;
-import it.webred.cs.data.model.CsASoggettoMedico;
-import it.webred.cs.data.model.CsASoggettoStatoCivile;
-import it.webred.cs.data.model.CsASoggettoStatus;
-import it.webred.cs.data.model.CsCCategoriaSocialeBASIC;
-import it.webred.cs.data.model.CsCMedico;
-import it.webred.cs.data.model.CsMobileStaging;
-import it.webred.cs.data.model.CsTbCittadinanzaAcq;
-import it.webred.cs.data.model.CsTbStatoCivile;
-import it.webred.cs.jsf.bean.DatiAnaBean;
-import it.webred.cs.jsf.bean.ValiditaCompBaseBean;
-import it.webred.cs.jsf.interfaces.IDatiAna;
-import it.webred.cs.jsf.manbean.ComuneNazioneNascitaMan;
-import it.webred.cs.jsf.manbean.ComuneNazioneResidenzaMan;
-import it.webred.cs.jsf.manbean.ComuneResidenzaMan;
-import it.webred.cs.jsf.manbean.IndirizzoMan;
-import it.webred.cs.jsf.manbean.ResidenzaCsaMan;
-import it.webred.cs.jsf.manbean.comuneNazione.ComuneNazioneGenericMan;
-import it.webred.cs.jsf.manbean.exception.CsUiCompException;
-import it.webred.cs.jsf.manbean.superc.ComuneMan;
-import it.webred.cs.jsf.manbean.superc.CsUiCompBaseBean;
-import it.webred.ct.config.model.AmTabNazioni;
-import it.webred.ct.support.datarouter.CeTBaseObject;
-import it.webred.ejb.utility.ClientUtility;
-import it.webred.jsf.bean.ComuneBean;
-import it.webred.jsf.bean.SessoBean;
-import it.webred.siso.ws.ricerca.dto.FamiliareDettaglio;
-import it.webred.siso.ws.ricerca.dto.PersonaDettaglio;
-import it.webred.siso.ws.ricerca.dto.RicercaAnagraficaParams;
-import it.webred.siso.ws.ricerca.dto.RicercaAnagraficaResult;
-import it.webred.ss.data.model.SsScheda;
-import it.webred.ss.ejb.dto.report.DatiPrivacyPdfDTO;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
-import javax.faces.model.SelectItem;
-import javax.naming.NamingException;
-
-import org.primefaces.context.RequestContext;
 
 
 @ManagedBean
@@ -209,15 +194,7 @@ public class AnagraficaBean extends SchedaUtils implements IDatiAna {
 				ValiditaCompBaseBean comp = new ValiditaCompBaseBean();
 				comp.setDataFine(csSoggComp.getId().getDataFineApp());
 				comp.setDataInizio(csSoggComp.getDataInizioApp());
-				String denominazione = (csSoggComp.getCsCMedico().getCognome() == null ? "" : csSoggComp.getCsCMedico().getCognome()).trim();
-				String nome = (csSoggComp.getCsCMedico().getNome() == null ? "" : csSoggComp.getCsCMedico().getNome()).trim();
-				if (!nome.equals("")) {
-					if (!denominazione.equals("")) {
-						denominazione += " ";
-					}
-					denominazione += nome;
-				}	
-				comp.setDescrizione(denominazione);
+				comp.setDescrizione(csSoggComp.getCsCMedico().getDenominazione());
 				comp.setId(csSoggComp.getId().getMedicoId());
 				mediciGestBean.addDettagliSelezione(comp);
 				lstMedici.add(comp);
@@ -253,8 +230,8 @@ public class AnagraficaBean extends SchedaUtils implements IDatiAna {
 			statoCivileGestBean.setLstComponents(lstStatoCivile);
 			statoCivileGestBean.setLstComponentsActive(statoCivileGestBean.getActiveList());
 			
-			List<CsCCategoriaSocialeBASIC> lstCatSociali = soggettoService.getCatSocAttualiBySoggetto(dto);
-			if(lstCatSociali.isEmpty()){
+			Boolean existsCatSoc = soggettoService.existsCatSocAttualiBySoggetto(dto);
+			if(!existsCatSoc){
 				soggCatSocialeBean.setDisableEsci(true);
 				soggCatSocialeBean.setRichiediCategoriaSociale(true);
 			}
@@ -294,14 +271,11 @@ public class AnagraficaBean extends SchedaUtils implements IDatiAna {
 		try {
 			return mapper.readValue(jsonEncode, typeRef);
 		} catch (JsonParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		} catch (JsonMappingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}
 		return null;
 	}
@@ -445,7 +419,7 @@ public class AnagraficaBean extends SchedaUtils implements IDatiAna {
 
 	private void verificaResidenzaDaAnagrafe() {
 		try{
-		if(datiAnaBean.getCodiceFiscale()!=null){
+		if(datiAnaBean.getCodiceFiscale()!=null && isAnagrafeComunaleInternaAbilitata()){
 			AccessTablePersonaCiviciSessionBeanRemote personaCiviciService = 
 					(AccessTablePersonaCiviciSessionBeanRemote) getCarSocialeEjb("AccessTablePersonaCiviciSessionBean");
 			BaseDTO dto = new BaseDTO();
@@ -457,7 +431,7 @@ public class AnagraficaBean extends SchedaUtils implements IDatiAna {
 				
 				CsAIndirizzo residenza = residenzaCsaMan.getIndirizzoResidenzaAttivo();
 				if(residenza!=null){
-					//Confornto i dati
+					//Confronto i dati
 					if(!residenza.getCsAAnaIndirizzo().getIndirizzo().equalsIgnoreCase(anaRes.getCsAAnaIndirizzo().getIndirizzo()) ||
 					   !residenza.getCsAAnaIndirizzo().getCivicoNumero().equalsIgnoreCase(anaRes.getCsAAnaIndirizzo().getCivicoNumero()) ||
 					   !residenza.getCsAAnaIndirizzo().getComCod().equalsIgnoreCase(anaRes.getCsAAnaIndirizzo().getComCod()) ||
@@ -558,17 +532,22 @@ public class AnagraficaBean extends SchedaUtils implements IDatiAna {
 				casoDTO.setListaFamiliari(getListaFamilari(soggetto));
 			}
 			
-			
-			
+
 			SchedaBean schedaBean = (SchedaBean) getSession().getAttribute("schedaBean");
 			SsScheda ssScheda = schedaBean!=null ? schedaBean.getSchedaSegrBean().getSsScheda() : null;
-			//aggancio la scheda segretariato se sono partito da quella
+			CsSchedeAltraProvenienza altraProv = schedaBean!=null ? schedaBean.getSchedaSegrBean().getVistaCasiAltri() : null;
+			// SISO-938 
+			// aggancio la scheda segretariato se sono partito da quella
 			if(ssScheda != null) {
+				casoDTO.setTipoScheda(DataModelCostanti.SchedaSegr.PROVENIENZA_SS);
 				//verifico che i soggetti corrispondano per CF
 				if(schedaBean.getSchedaSegrBean().getSsSchedaSegnalato().getAnagrafica().getCf().equalsIgnoreCase(datiAnaBean.getCodiceFiscale())){
 					casoDTO.setSsSchedaId(ssScheda.getId());
 					soggCatSocialeBean.setSchedaSegr(ssScheda);
 				}
+			} else if (altraProv != null) {
+				casoDTO.setSsSchedaId(altraProv.getIdSchedaSegr());
+				casoDTO.setTipoScheda(altraProv.getProvenienza());
 			}
 			
 			soggettoId = soggettoService.salvaAnagraficaCaso(casoDTO);
@@ -578,8 +557,8 @@ public class AnagraficaBean extends SchedaUtils implements IDatiAna {
 				soggetto = soggettoService.getSoggettoById(dto);
 			}
 			
-			List<CsCCategoriaSocialeBASIC> lstCatSociali = soggettoService.getCatSocAttualiBySoggetto(dto);
-			if(lstCatSociali.isEmpty())
+			Boolean existsCs = soggettoService.existsCatSocAttualiBySoggetto(dto);
+			if(!existsCs)
 				soggCatSocialeBean.carica(soggetto);
 						
 		} catch(Exception e) {
@@ -591,218 +570,6 @@ public class AnagraficaBean extends SchedaUtils implements IDatiAna {
 		return salvato;
 	}
 	
-	
-	
-	
-	/*public boolean salva() {
-		boolean salvato = true;
-		
-		try{
-			
-			if(!validaAnagrafica())
-				return false;
-
-			String username = getCurrentUsername();
-			boolean nuovoInserimento = soggettoId==null;
-			
-			BaseDTO dto = new BaseDTO();
-			fillEnte(dto);	
-			dto.setObj(soggettoId);
-			
-			//dati anagrafici
-			soggetto = new CsASoggettoLAZY();
-			if(nuovoInserimento) {
-				IterDTO itDto = new IterDTO();
-				fillEnte(itDto);
-				soggetto.setCsAAnagrafica(new CsAAnagrafica());
-				soggetto.setCsACaso(casoService.newCaso(itDto));
-			} else 
-				soggetto = soggettoService.getSoggettoById(dto);
-			CsAAnagrafica csAna = soggetto.getCsAAnagrafica();
-			CsACaso csCaso = soggetto.getCsACaso();
-			
-			csAna.setNome(datiAnaBean.getNome());
-			csAna.setCognome(datiAnaBean.getCognome());
-			csAna.setDataNascita(datiAnaBean.getDataNascita());
-			csAna.setCf(datiAnaBean.getCodiceFiscale());
-			csAna.setIdOrigWs(datiAnaBean.getIdOrigWs());
-			
-			if(comuneNazioneNascitaMan.isComune() && 
-			   comuneNazioneNascitaMan.getComuneNascitaMan().getComune() != null) {
-				csAna.setProvNascitaCod(comuneNazioneNascitaMan.getComuneNascitaMan().getComune().getSiglaProv());
-				csAna.setComuneNascitaCod(comuneNazioneNascitaMan.getComuneNascitaMan().getComune().getCodIstatComune());
-				csAna.setComuneNascitaDes(comuneNazioneNascitaMan.getComuneNascitaMan().getComune().getDenominazione());
-			}
-			if(comuneNazioneNascitaMan.isNazione() && 
-			   comuneNazioneNascitaMan.getNazioneNascitaMan().getNazione() != null) {
-				csAna.setStatoNascitaCod(comuneNazioneNascitaMan.getNazioneNascitaMan().getNazione().getCodIstatNazione());
-				csAna.setStatoNascitaDes(comuneNazioneNascitaMan.getNazioneNascitaMan().getNazione().getNazione());
-			}
-			csAna.setSesso(datiAnaBean.getDatiSesso().getSesso());
-			csAna.setCittadinanza(datiAnaBean.getCittadinanza());
-			csAna.setCittadinanzaAcq((datiAnaBean.getCittadinanzaAcq()!=null && datiAnaBean.getCittadinanzaAcq()>0) ? datiAnaBean.getCittadinanzaAcq() : null);
-			csAna.setCittadinanza2(datiAnaBean.getCittadinanza2());
-			csAna.setTel(datiAnaBean.getTelefono());
-			csAna.setTitolareTelefono(datiAnaBean.getTitTelefono());
-			csAna.setCell(datiAnaBean.getCellulare());
-			csAna.setTitolareCellulare(datiAnaBean.getTitCellulare());
-			csAna.setEmail(datiAnaBean.getEmail());
-			csAna.setTitolareEmail(datiAnaBean.getTitEmail());
-			csAna.setDataAperturaFascFam(datiAnaBean.getDataAperturaFascFam());
-			
-			dto.setObj(soggetto);
-			dto.setObj2(username);
-			
-			if(nuovoInserimento) soggetto = soggettoService.saveSoggetto(dto);
-			else 							soggettoService.updateSoggetto(dto); 
-			
-			//iterstep
-			if(nuovoInserimento) {
-				IterDTO itDto = new IterDTO();
-				fillEnte(itDto);
-				itDto.setNomeOperatore(username);			
-				itDto.setIdCaso(csCaso.getId());
-				CsOOperatoreSettore opSettore = getCurrentOpSettore();
-				itDto.setIdSettore(opSettore.getCsOSettore().getId());
-				itDto.setAlertUrl("");
-				itDto.setNotificaSettoreSegnalante(true);
-				itDto.setDataInserimento(new Date());
-				iterStepService.newIter(itDto);
-			}
-			
-			//indirizzi
-			if(!nuovoInserimento) {
-				dto.setObj(soggettoId);
-				indirizzoService.eliminaIndirizziBySoggetto(dto);
-			}
-			for(CsAIndirizzo csInd: residenzaCsaMan.getLstIndirizzi()) {
-				
-				dto.setObj(csInd);
-				csInd.setAnaIndirizzoId(null);
-				csInd.getCsAAnaIndirizzo().setId(null);
-				csInd.setDtIns(new Date());
-				csInd.setUserIns(username);
-				csInd.setDataInizioSys(new Date());
-				csInd.setCsASoggetto(soggetto);
-				if(csInd.getDataFineApp() != null && !csInd.getDataFineApp().equals(DataModelCostanti.END_DATE))
-					csInd.setDataFineSys(new Date());
-				indirizzoService.saveIndirizzo(dto);	
-			}
-			
-			//medici
-			if(!nuovoInserimento) {
-				dto.setObj(soggettoId);
-				soggettoService.eliminaSoggettoMedicoBySoggetto(dto);
-			}
-			for(ValiditaCompBaseBean comp: mediciGestBean.getLstComponents()) {
-				CsASoggettoMedico cs = new CsASoggettoMedico();
-				CsASoggettoMedicoPK csPK = new CsASoggettoMedicoPK();
-				cs.setCsASoggetto(soggetto);
-				cs.setDataInizioApp(comp.getDataInizio());
-				cs.setDataInizioSys(new Date());
-				cs.setDtIns(new Date());
-				cs.setUserIns(username);
-				csPK.setMedicoId(comp.getId());
-				csPK.setDataFineApp(comp.getDataFine());
-				csPK.setSoggettoAnagraficaId(soggetto.getAnagraficaId());
-				cs.setId(csPK);
-				
-				dto.setObj(cs);
-				soggettoService.saveSoggettoMedico(dto);
-			}
-			
-			//status
-			if(!nuovoInserimento) {
-				dto.setObj(soggettoId);
-				soggettoService.eliminaSoggettoStatusBySoggetto(dto);
-			}
-			for(ValiditaCompBaseBean comp: statusGestBean.getLstComponents()) {
-				CsASoggettoStatus cs = new CsASoggettoStatus();
-				CsASoggettoStatusPK csPK = new CsASoggettoStatusPK();
-				cs.setCsASoggetto(soggetto);
-				cs.setDataInizioApp(comp.getDataInizio());
-				cs.setDataInizioSys(new Date());
-				cs.setDtIns(new Date());
-				cs.setUserIns(username);
-				csPK.setStatusId(comp.getId());
-				csPK.setDataFineApp(comp.getDataFine());
-				csPK.setSoggettoAnagraficaId(soggetto.getAnagraficaId());
-				cs.setId(csPK);
-				
-				dto.setObj(cs);
-				soggettoService.saveSoggettoStatus(dto);
-			}
-			
-			//stato civile
-			if(!nuovoInserimento) {
-				dto.setObj(soggettoId);
-				soggettoService.eliminaSoggettoStatoCivileBySoggetto(dto);
-			}
-			for(ValiditaCompBaseBean comp: statoCivileGestBean.getLstComponents()) {
-				CsASoggettoStatoCivile cs = new CsASoggettoStatoCivile();
-				CsASoggettoStatoCivilePK csPK = new CsASoggettoStatoCivilePK();
-				cs.setCsASoggetto(soggetto);
-				cs.setDataInizioApp(comp.getDataInizio());
-				cs.setDataInizioSys(new Date());
-				cs.setDtIns(new Date());
-				cs.setUserIns(username);
-				
-				csPK.setStatoCivileCod(comp.getId().toString());
-				csPK.setDataFineApp(comp.getDataFine());
-				csPK.setSoggettoAnagraficaId(soggetto.getAnagraficaId());
-				cs.setId(csPK);
-				
-				dto.setObj(cs);
-				soggettoService.saveSoggettoStatoCivile(dto);
-			}
-			
-			if(nuovoInserimento) {
-				//creo la famiglia GIT
-				dto.setObj(soggetto);
-				dto.setObj2(getListaFamilari(soggetto));
-				parentiService.createFamigliaGruppoGit(dto);
-			}
-			
-			SchedaBean schedaBean = (SchedaBean) getSession().getAttribute("schedaBean");
-			SsScheda ssScheda = schedaBean!=null ? schedaBean.getSchedaSegrBean().getSsScheda() : null;
-			//aggancio la scheda segretariato se sono partito da quella
-			if(ssScheda != null) {
-				//verifico che i soggetti corrispondano per CF
-				if(schedaBean.getSchedaSegrBean().getSsSchedaSegnalato().getAnagrafica().getCf().equalsIgnoreCase(datiAnaBean.getCodiceFiscale())){
-				
-					soggCatSocialeBean.setSchedaSegr(ssScheda);
-					
-					if(soggettoId == null){ //Se è la creazione aggiorno la CS_SS
-						AccessTableSchedaSegrSessionBeanRemote schedaSegrService = 
-								(AccessTableSchedaSegrSessionBeanRemote) getCarSocialeEjb ("AccessTableSchedaSegrSessionBean");
-						dto.setObj(ssScheda.getId());
-						dto.setObj2(soggetto);
-						schedaSegrService.agganciaCartellaASchedaUDC(dto);
-					}
-				}
-			}
-			
-			if(nuovoInserimento){
-				dto.setObj(soggetto.getAnagraficaId());
-				soggetto = soggettoService.getSoggettoById(dto);
-			}
-			
-			dto.setObj(soggetto.getAnagraficaId());
-			List<CsCCategoriaSocialeBASIC> lstCatSociali = soggettoService.getCatSocAttualiBySoggetto(dto);
-			if(lstCatSociali.isEmpty())
-				soggCatSocialeBean.carica(soggetto);
-			
-			//soggetto=csSogg;
-						
-		} catch(Exception e) {
-			salvato = false;
-			addErrorFromProperties("salva.errorA");
-			logger.error(e.getMessage(),e);
-		}
-		
-		return salvato;
-	}
-	*/
 	public boolean salvaAnagraficaModificata() {
 		boolean salvato = true;
 		this.setAccessoModifica("MODIFICA");//M = MODIFICA Dei dati anagrafici base
@@ -948,327 +715,254 @@ public class AnagraficaBean extends SchedaUtils implements IDatiAna {
 		 
 		CsAAnaIndirizzo  indirizzoResAttivo = null;
 		CsASoggettoMedico soggettoMedico = null;
-			//A = ACCESSO AL PANNELLO DI MODIFICA Dei dati anagrafici base	ma ancora non ho salvato	
-			try{
-				//Devo salvare la modifica ai dati anagrafici base e tracciare la modifica
-				//Salvo il Log
-				String username = getCurrentUsername();
-//			
-			    BaseDTO dto = new BaseDTO();
-				fillEnte(dto);	
-				dto.setObj(soggettoId);
+		//A = ACCESSO AL PANNELLO DI MODIFICA Dei dati anagrafici base	ma ancora non ho salvato	
+		try{
+			//Devo salvare la modifica ai dati anagrafici base e tracciare la modifica
+			//Salvo il Log	
+		    BaseDTO dto = new BaseDTO();
+			fillEnte(dto);	
+			dto.setObj(soggettoId);
+			
+			//dati anagrafici
+			soggetto = new CsASoggettoLAZY();
+			soggetto = soggettoService.getSoggettoById(dto);
+			CsAAnagrafica csAna = soggetto!=null ?  soggetto.getCsAAnagrafica() : null;
+		
+			for(DatiAggCasoGitDTO datoAggiornato : lstAggiornamentiAnagraficaCasoGit) {
 				
-				//dati anagrafici
-				soggetto = new CsASoggettoLAZY();
-				soggetto = soggettoService.getSoggettoById(dto);
-				CsAAnagrafica csAna = soggetto!=null ?  soggetto.getCsAAnagrafica() : null;
-				ComuneNazioneResidenzaMan comuneNazioneResidenzaMan = null;
-				ComuneBean comuneBean = null;
-
-				
- 				for(DatiAggCasoGitDTO datoAggiornato : lstAggiornamentiAnagraficaCasoGit) {
- 					
-					if(datoAggiornato.getTipologiaVariazione().equals(TipoAggiornamentoAnagrafica.ANAGRAFICA)) {
-						for(String key	: datoAggiornato.getElementiVariati().keySet()) {
-							if(TipoAggiornamentoAnagrafica.ANAGRAFICA_CITTADINANZA.indexOf(key) > -1) {
-									datiAnaBean.setCittadinanza(datoAggiornato.getElementiVariati().get(key));
-							}
-							if(TipoAggiornamentoAnagrafica.ANAGRAFICA_CODICE_FISCALE.indexOf(key) > -1) {
-								datiAnaBean.setCodiceFiscale(datoAggiornato.getElementiVariati().get(key));
-							}
-							if(TipoAggiornamentoAnagrafica.ANAGRAFICA_COGNOME.indexOf(key) > -1) {
-								datiAnaBean.setCognome(datoAggiornato.getElementiVariati().get(key));
-							}
-							if(TipoAggiornamentoAnagrafica.ANAGRAFICA_DATA_DECESSO.indexOf(key) > -1) {
-//								datiAnaBean.setDataDecesso(stringToDate(datoAggiornato.getElementiVariati().get(key)));
-								//Al momento non viene effettuata alcuna operazione!
-							}
-							if(TipoAggiornamentoAnagrafica.ANAGRAFICA_NOME.indexOf(key) > -1) {
-								csAna.setNome(datoAggiornato.getElementiVariati().get(key));
-							}
-							if(TipoAggiornamentoAnagrafica.ANAGRAFICA_SESSO.indexOf(key) > -1) {
-								SessoBean sb = new SessoBean(datoAggiornato.getElementiVariati().get(key));
-								datiAnaBean.setDatiSesso(sb);
-							}
-							if(TipoAggiornamentoAnagrafica.ANAGRAFICA_TELEFONO.indexOf(key) > -1) {
-								 datiAnaBean.setTelefono(datoAggiornato.getElementiVariati().get(key));
-							}
-							if(TipoAggiornamentoAnagrafica.ANAGRAFICA_CELLULARE.indexOf(key) > -1) {
-								 datiAnaBean.setCellulare(datoAggiornato.getElementiVariati().get(key));
-							}
-							if(TipoAggiornamentoAnagrafica.ANAGRAFICA_STATO_CIVILE.indexOf(key) > -1) {
-								BaseDTO dtoSC = new BaseDTO();
-								fillEnte(dtoSC);	
-								dtoSC.setObj(datoAggiornato.getElementiVariati().get(key));
-								CsTbStatoCivile  tbStatoCivileNew = confService.getStatoCivileByDescrizione(dtoSC);
-								
-								ValiditaCompBaseBean compAttivo =  statoCivileGestBean.getComponenteAttivo();
-								if(compAttivo != null) {
-									statoCivileGestBean.setCompSelezionato(compAttivo);
-									statoCivileGestBean.setIndexSelezionato(statoCivileGestBean.getIndexComponenteAttivo());
-									statoCivileGestBean.chiudiSelezionato();
-									statoCivileGestBean.salva();
-									//Attenzone non può essere chiuso due volte nella stessa stata lo stesso codice stato ticivile per lo stesso soggetto
-									//perché è in chiave
-								}
-								
-								statoCivileGestBean.setItemSelezionato(tbStatoCivileNew.getCod() + "|" + tbStatoCivileNew.getDescrizione());
-								statoCivileGestBean.aggiungiSelezionato();
-								statoCivileGestBean.setMaxActiveComponents(1);
-								statoCivileGestBean.salva();
-								
-								
-							} 
-						}
-					}
-					
-					////// INIZIO NUOVA GESTIONE RESIDENZA
-					
-					if(datoAggiornato.getTipologiaVariazione().equals(TipoAggiornamentoAnagrafica.RESIDENZA)) {
-						
-						CsAIndirizzo oldIndirizzoResAttivo = residenzaCsaMan.getIndirizzoResidenzaAttivo();
-						if(oldIndirizzoResAttivo != null) {
-							residenzaCsaMan.setIndirizzoSelezionato(oldIndirizzoResAttivo);
-							residenzaCsaMan.setDataAnnullamento(new Date());
-							residenzaCsaMan.annullaIndirizzo();
-								
-						}
-						CsAAnaIndirizzo indirizzoAna = new CsAAnaIndirizzo();
-
-						residenzaCsaMan.setTipoIndirizzo(String.valueOf(residenzaCsaMan.getTipoIndirizzoResidenza().getId()));
-						
-						for(String key	: datoAggiornato.getElementiVariati().keySet()) {
-							if(TipoAggiornamentoAnagrafica.COD_COM_RESIDENZA.indexOf(key) > -1) { 
-								indirizzoAna.setComCod(datoAggiornato.getElementiVariati().get(key));
-							}
-							if(TipoAggiornamentoAnagrafica.COMUNE_DI_RESIDENZA.indexOf(key) > -1) {
-								indirizzoAna.setComDes(datoAggiornato.getElementiVariati().get(key));
-							}
-							if(TipoAggiornamentoAnagrafica.INDIRIZZO_RESIDENZA.indexOf(key) > -1) {
-								indirizzoAna.setIndirizzo(datoAggiornato.getElementiVariati().get(key));
-							}
-							if(TipoAggiornamentoAnagrafica.NUM_CIVICO_RESIDENZA.indexOf(key) > -1) {
-								indirizzoAna.setCivicoNumero(datoAggiornato.getElementiVariati().get(key));
-							}
-							if(TipoAggiornamentoAnagrafica.PROVINCIA_DI_RESIDENZA.indexOf(key) > -1) {
-								indirizzoAna.setProv(datoAggiornato.getElementiVariati().get(key));
-						   }
-						
-						}
-						//Se indirizzo non ha provincia, significa che non � variata e recupero la precedente per non � veriata!!!
-						//Stesso controllo anche per il comune/nazione.
-						if(indirizzoAna.getProv() == null || indirizzoAna.getComDes() == null || indirizzoAna.getComCod() == null || indirizzoAna.getIndirizzo() == null) {
-							List<CsAIndirizzo>listIndirizziOld = residenzaCsaMan.getLstIndirizziOld();
-							
-							if(listIndirizziOld !=null & listIndirizziOld.size() > 0) {
-								for(CsAIndirizzo csAIndirizzoOld : listIndirizziOld) {
-								   
-								if(csAIndirizzoOld.getDataFineApp() == null && csAIndirizzoOld.getCsTbTipoIndirizzo().getDescrizione().equalsIgnoreCase("Residenza"))
-									indirizzoAna.setProv(indirizzoAna.getProv() == null ? csAIndirizzoOld.getCsAAnaIndirizzo().getProv() : indirizzoAna.getProv());
-									indirizzoAna.setComDes(indirizzoAna.getComDes() == null ? csAIndirizzoOld.getCsAAnaIndirizzo().getProv() : indirizzoAna.getComDes());
-									indirizzoAna.setComCod(indirizzoAna.getComCod() == null ? csAIndirizzoOld.getCsAAnaIndirizzo().getProv() : indirizzoAna.getComCod());
-									indirizzoAna.setIndirizzo(indirizzoAna.getIndirizzo() == null ? csAIndirizzoOld.getCsAAnaIndirizzo().getIndirizzo() : indirizzoAna.getIndirizzo());
-									
-								}
-							}
-								
-						}
-						 if(indirizzoAna.getProv().equals(residenzaCsaMan.getEnteSiglaProv())) {
-							 residenzaCsaMan.setTipoComune(residenzaCsaMan.getEnteValue());
-							 IndirizzoMan indirizzoMan = new IndirizzoMan();
-							 indirizzoMan.setSelectedCivico(indirizzoAna.getCivicoNumero());
-							 indirizzoMan.setSelectedIndirizzo(indirizzoAna.getIndirizzo());
-							 residenzaCsaMan.setIndirizzoMan(indirizzoMan);
-						 }else {
-							 residenzaCsaMan.setTipoComune(residenzaCsaMan.getAltroValue());
-							 
-							 comuneBean = new ComuneBean();  
-							 comuneNazioneResidenzaMan = new ComuneNazioneResidenzaMan();
-							 comuneBean.setAttivo(true);
-							 comuneBean.setDenominazione(indirizzoAna.getComDes());
-							 comuneBean.setCap(indirizzoAna.getComCod());
-							 comuneBean.setSiglaProv(indirizzoAna.getProv());
-							
-							 ComuneResidenzaMan comuneResidenzaMan = new ComuneResidenzaMan();
-							 comuneResidenzaMan.setComune(comuneBean);
-							 comuneNazioneResidenzaMan.setComuneResidenzaMan(comuneResidenzaMan);
-							 comuneNazioneResidenzaMan.setComuneValue();
-							 residenzaCsaMan.setComuneNazioneResidenzaMan(comuneNazioneResidenzaMan);
-							 
-							 residenzaCsaMan.setIndirizzo(indirizzoAna.getIndirizzo());
-							 residenzaCsaMan.setCivicoNumero(indirizzoAna.getCivicoNumero());
-							 residenzaCsaMan.setDataInizioApp(new Date());
-						 }
-						 if(indirizzoAna.getIndirizzo() == null)
-								residenzaCsaMan.setIndirizzo(TipoAggiornamentoAnagrafica.ASSENTE);
-						 residenzaCsaMan.aggiungiIndirizzo();
-					}
-					
-					////// FINE NUOVA GESTIONE RESIDENZA
-					
-				
-					///NUOVA VERSIONE INDIRIZZO DOMICILIO
-					if(datoAggiornato.getTipologiaVariazione().equals(TipoAggiornamentoAnagrafica.DOMICILIO)) {
-						
-						 
-					    CsAIndirizzo indirizzoDomAttivo =	 residenzaCsaMan.getIndirizzoDomicilioAttivo();
-						if(indirizzoDomAttivo != null && indirizzoDomAttivo.getAnaIndirizzoId() != null) {
-							residenzaCsaMan.setIndirizzoSelezionato(indirizzoDomAttivo);
-							 residenzaCsaMan.setDataAnnullamento(new Date());
-								residenzaCsaMan.annullaIndirizzo();
-								
-						}
-					   
-						CsAAnaIndirizzo indirizzoAnaDom = new CsAAnaIndirizzo();
-						 
-					
-						residenzaCsaMan.setTipoComune(residenzaCsaMan.getEnteValue());
-						residenzaCsaMan.setDataInizioApp(new Date());
-						residenzaCsaMan.setTipoIndirizzo(String.valueOf(residenzaCsaMan.getTipoIndirizzoDomicilio().getId()));
-						
-						
-						
-						
-						for(String key	: datoAggiornato.getElementiVariati().keySet()) {
-							if(TipoAggiornamentoAnagrafica.CODICE_COMUNE_DOMICILIO.indexOf(key) > -1) {
-								indirizzoAnaDom.setComCod(datoAggiornato.getElementiVariati().get(key));
-							}
-							if(TipoAggiornamentoAnagrafica.COMUNE_DOMICILIO.indexOf(key) > -1) {
-								indirizzoAnaDom.setComDes(datoAggiornato.getElementiVariati().get(key));
-							}
-							if(TipoAggiornamentoAnagrafica.INDIRIZZO_DOMICILIO.indexOf(key) > -1) {
-								indirizzoAnaDom.setIndirizzo(datoAggiornato.getElementiVariati().get(key));
-							}
-							if(TipoAggiornamentoAnagrafica.NUM_CIVICO_DOMICILIO.indexOf(key) > -1) {
-								indirizzoAnaDom.setCivicoNumero(datoAggiornato.getElementiVariati().get(key));
-							}
-							if(TipoAggiornamentoAnagrafica.PROVINCIA_DI_DOMICILIO.indexOf(key) > -1) {
-								indirizzoAnaDom.setProv(datoAggiornato.getElementiVariati().get(key));
-									
-							 }
-						 }
-						//Se indirizzo non ha provincia, significa che non � variata e recupero la precedente per non � veriata!!!
-						//Stesso controllo anche per il comune/nazione.
-						if(indirizzoAnaDom.getProv() == null || indirizzoAnaDom.getComDes() == null || indirizzoAnaDom.getComCod() == null || indirizzoAnaDom.getIndirizzo() == null) {
-							List<CsAIndirizzo>listIndirizziOld = residenzaCsaMan.getLstIndirizziOld();
-							
-							if(listIndirizziOld !=null & listIndirizziOld.size() > 0) {
-								for(CsAIndirizzo csAIndirizzoOld : listIndirizziOld) {
-								   
-								if(csAIndirizzoOld.getDataFineApp() == null && csAIndirizzoOld.getCsTbTipoIndirizzo().getDescrizione().equalsIgnoreCase("Domicilio"))
-									indirizzoAnaDom.setProv(indirizzoAnaDom.getProv() == null ? csAIndirizzoOld.getCsAAnaIndirizzo().getProv() : indirizzoAnaDom.getProv());
-									indirizzoAnaDom.setComDes(indirizzoAnaDom.getComDes() == null ? csAIndirizzoOld.getCsAAnaIndirizzo().getProv() : indirizzoAnaDom.getComDes());
-									indirizzoAnaDom.setComCod(indirizzoAnaDom.getComCod() == null ? csAIndirizzoOld.getCsAAnaIndirizzo().getProv() : indirizzoAnaDom.getComCod());
-									indirizzoAnaDom.setIndirizzo(indirizzoAnaDom.getIndirizzo() == null ? csAIndirizzoOld.getCsAAnaIndirizzo().getIndirizzo() : indirizzoAnaDom.getIndirizzo());
-									
-								}
-							}
-								
-						}
-						 if(indirizzoAnaDom.getProv()!=null && 
-							indirizzoAnaDom.getProv().equals(residenzaCsaMan.getEnteSiglaProv())) {
-							 residenzaCsaMan.setTipoComune(residenzaCsaMan.getEnteValue());
-							 IndirizzoMan indirizzoMan = new IndirizzoMan();
-							 indirizzoMan.setSelectedCivico(indirizzoAnaDom.getCivicoNumero());
-							 indirizzoMan.setSelectedIndirizzo(indirizzoAnaDom.getIndirizzo());
-							 residenzaCsaMan.setIndirizzoMan(indirizzoMan);
-						 }else {
-							 residenzaCsaMan.setTipoComune(residenzaCsaMan.getAltroValue());
-
-							 comuneBean = new ComuneBean();  
-							 comuneNazioneResidenzaMan = new ComuneNazioneResidenzaMan();
-							 comuneBean.setAttivo(true);
-							 comuneBean.setDenominazione(indirizzoAnaDom.getComDes());
-							 comuneBean.setCap(indirizzoAnaDom.getComCod());
-							 comuneBean.setSiglaProv(indirizzoAnaDom.getProv());
-							
-							 ComuneResidenzaMan comuneResidenzaMan = new ComuneResidenzaMan();
-							 comuneResidenzaMan.setComune(comuneBean);
-							 comuneNazioneResidenzaMan.setComuneResidenzaMan(comuneResidenzaMan);
-							 comuneNazioneResidenzaMan.setComuneValue();
-							 residenzaCsaMan.setComuneNazioneResidenzaMan(comuneNazioneResidenzaMan);
-							 residenzaCsaMan.setIndirizzo(indirizzoAnaDom.getIndirizzo());
-							 residenzaCsaMan.setCivicoNumero(indirizzoAnaDom.getCivicoNumero());
-							 
-						 }
-						
-						 residenzaCsaMan.setDataInizioApp(new Date());
-						//Metto un carattere Jolly nel caso in cui fosse assente l'indirizzo del domicilio
-						if(indirizzoAnaDom.getIndirizzo() == null)
-							residenzaCsaMan.setIndirizzo(TipoAggiornamentoAnagrafica.ASSENTE);
-						
-						residenzaCsaMan.aggiungiIndirizzo();
-						
-						
-					}
-					///FINE NUOVA VERSIONE
-					
-					if(datoAggiornato.getTipologiaVariazione().equals(TipoAggiornamentoAnagrafica.MEDICO_REVOCATO)
-							|| datoAggiornato.getTipologiaVariazione().equals(TipoAggiornamentoAnagrafica.NUOVO_MEDICO)) {
-					 
-						soggettoMedico = new CsASoggettoMedico();
-						CsCMedico medico = new CsCMedico();
-						Date dataScelta = null;
-						Date dataRevoca = null;
+				if(datoAggiornato.getTipologiaVariazione().equals(TipoAggiornamentoAnagrafica.ANAGRAFICA)) {
 					for(String key	: datoAggiornato.getElementiVariati().keySet()) {
-						if(TipoAggiornamentoAnagrafica.COGNOME_MEDICO_REVOCATO.indexOf(key) > -1) {
-							medico.setCognome(datoAggiornato.getElementiVariati().get(key));
+						if(TipoAggiornamentoAnagrafica.ANAGRAFICA_CITTADINANZA.indexOf(key) > -1) {
+							datiAnaBean.setCittadinanza(datoAggiornato.getElementiVariati().get(key));
 						}
-						if(TipoAggiornamentoAnagrafica.COGNOME_NUOVO_MEDICO.indexOf(key) > -1) {
-							medico.setCognome(datoAggiornato.getElementiVariati().get(key));
+						if(TipoAggiornamentoAnagrafica.ANAGRAFICA_CODICE_FISCALE.indexOf(key) > -1) {
+							datiAnaBean.setCodiceFiscale(datoAggiornato.getElementiVariati().get(key));
 						}
-						if(TipoAggiornamentoAnagrafica.NOME_MEDICO_REVOCATO.indexOf(key) > -1) {
-							medico.setNome(datoAggiornato.getElementiVariati().get(key));
+						if(TipoAggiornamentoAnagrafica.ANAGRAFICA_COGNOME.indexOf(key) > -1) {
+							datiAnaBean.setCognome(datoAggiornato.getElementiVariati().get(key));
 						}
-						if(TipoAggiornamentoAnagrafica.NOME_NUOVO_MEDICO.indexOf(key) > -1) {
-							medico.setCognome(datoAggiornato.getElementiVariati().get(key));
+						if(TipoAggiornamentoAnagrafica.ANAGRAFICA_DATA_DECESSO.indexOf(key) > -1) {
+//							datiAnaBean.setDataDecesso(stringToDate(datoAggiornato.getElementiVariati().get(key)));
+							//Al momento non viene effettuata alcuna operazione!
 						}
-						if(TipoAggiornamentoAnagrafica.COD_REGIONALE_MEDICO_REVOCATO.indexOf(key) > -1) {
-							medico.setCodiceRegionale(datoAggiornato.getElementiVariati().get(key));
-						}else if(TipoAggiornamentoAnagrafica.CODICE_FISCALE_MEDICO_REVOCATO.indexOf(key) > -1) {
-							medico.setCodiceRegionale(datoAggiornato.getElementiVariati().get(key));
+						if(TipoAggiornamentoAnagrafica.ANAGRAFICA_NOME.indexOf(key) > -1) {
+							csAna.setNome(datoAggiornato.getElementiVariati().get(key));
 						}
-						if(TipoAggiornamentoAnagrafica.COD_REGIONALE_NUOVO_MEDICO.indexOf(key) > -1) {
-							medico.setCodiceRegionale(datoAggiornato.getElementiVariati().get(key));
-						}else if(TipoAggiornamentoAnagrafica.CODICE_FISCALE_NUOVO_MEDICO.indexOf(key) > -1) {
-							medico.setCodiceRegionale(datoAggiornato.getElementiVariati().get(key));
+						if(TipoAggiornamentoAnagrafica.ANAGRAFICA_SESSO.indexOf(key) > -1) {
+							SessoBean sb = new SessoBean(datoAggiornato.getElementiVariati().get(key));
+							datiAnaBean.setDatiSesso(sb);
 						}
-						if(TipoAggiornamentoAnagrafica.DATA_SCELTA_MEDICO_REVOCATO.indexOf(key) > -1) {
-							dataScelta = ddMMyyyy.parse(datoAggiornato.getElementiVariati().get(key));
+						if(TipoAggiornamentoAnagrafica.ANAGRAFICA_TELEFONO.indexOf(key) > -1) {
+							 datiAnaBean.setTelefono(datoAggiornato.getElementiVariati().get(key));
 						}
-						if(TipoAggiornamentoAnagrafica.DATA_SCELTA_NUOVO_MEDICO.indexOf(key) > -1) {
-							dataScelta = ddMMyyyy.parse(datoAggiornato.getElementiVariati().get(key));
+						if(TipoAggiornamentoAnagrafica.ANAGRAFICA_CELLULARE.indexOf(key) > -1) {
+							 datiAnaBean.setCellulare(datoAggiornato.getElementiVariati().get(key));
 						}
-						if(TipoAggiornamentoAnagrafica.DATA_REVOCA_MEDICO_REVOCATO.indexOf(key) > -1) {
-							dataScelta = ddMMyyyy.parse(datoAggiornato.getElementiVariati().get(key));
-						}
-						if(TipoAggiornamentoAnagrafica.DATA_REVOCA_NUOVO_MEDICO.indexOf(key) > -1) {
-							dataScelta = ddMMyyyy.parse(datoAggiornato.getElementiVariati().get(key));
-						}
-					  }
-					  
+						if(TipoAggiornamentoAnagrafica.ANAGRAFICA_STATO_CIVILE.indexOf(key) > -1) {
+							BaseDTO dtoSC = new BaseDTO();
+							fillEnte(dtoSC);	
+							dtoSC.setObj(datoAggiornato.getElementiVariati().get(key));
+							CsTbStatoCivile  tbStatoCivileNew = confService.getStatoCivileByDescrizione(dtoSC);
+							
+							ValiditaCompBaseBean compAttivo =  statoCivileGestBean.getComponenteAttivo();
+							if(compAttivo != null) {
+								statoCivileGestBean.setCompSelezionato(compAttivo);
+								statoCivileGestBean.setIndexSelezionato(statoCivileGestBean.getIndexComponenteAttivo());
+								statoCivileGestBean.chiudiSelezionato();
+								statoCivileGestBean.salva();
+								//Attenzone non può essere chiuso due volte nella stessa stata lo stesso codice stato ticivile per lo stesso soggetto
+								//perché è in chiave
+							}
+							
+							statoCivileGestBean.setItemSelezionato(tbStatoCivileNew.getCod() + "|" + tbStatoCivileNew.getDescrizione());
+							statoCivileGestBean.aggiungiSelezionato();
+							statoCivileGestBean.setMaxActiveComponents(1);
+							statoCivileGestBean.salva();
+						} 
+					}
+				}
+				
+				////// INIZIO NUOVA GESTIONE RESIDENZA
+				
+				if(datoAggiornato.getTipologiaVariazione().equals(TipoAggiornamentoAnagrafica.RESIDENZA)) {
 					
-					  if(!StringUtils.isBlank(anagraficaAggiornata.getIdOrigWs())){
-						  String[] idSplit = anagraficaAggiornata.getIdOrigWs().split("@");
-						  String tipo = idSplit[0];
-						  verificaAggiungiMedico(tipo, medico, dataScelta, dataRevoca);
-					  }
-					  
+					CsAIndirizzo oldIndirizzoResAttivo = residenzaCsaMan.getIndirizzoResidenzaAttivo();
+					if(oldIndirizzoResAttivo != null) {
+						residenzaCsaMan.setIndirizzoSelezionato(oldIndirizzoResAttivo);
+						residenzaCsaMan.setDataAnnullamento(new Date());
+						residenzaCsaMan.annullaIndirizzo();
+							
+					}
+					CsAAnaIndirizzo indirizzoAna = new CsAAnaIndirizzo();
+
+					residenzaCsaMan.setTipoIndirizzo(String.valueOf(residenzaCsaMan.getTipoIndirizzoResidenza().getId()));
+					
+					for(String key	: datoAggiornato.getElementiVariati().keySet()) {
+						if(TipoAggiornamentoAnagrafica.COD_COM_RESIDENZA.indexOf(key) > -1) { 
+							indirizzoAna.setComCod(datoAggiornato.getElementiVariati().get(key));
+						}
+						if(TipoAggiornamentoAnagrafica.COMUNE_DI_RESIDENZA.indexOf(key) > -1) {
+							indirizzoAna.setComDes(datoAggiornato.getElementiVariati().get(key));
+						}
+						if(TipoAggiornamentoAnagrafica.INDIRIZZO_RESIDENZA.indexOf(key) > -1) {
+							indirizzoAna.setIndirizzo(datoAggiornato.getElementiVariati().get(key));
+						}
+						if(TipoAggiornamentoAnagrafica.NUM_CIVICO_RESIDENZA.indexOf(key) > -1) {
+							indirizzoAna.setCivicoNumero(datoAggiornato.getElementiVariati().get(key));
+						}
+						if(TipoAggiornamentoAnagrafica.PROVINCIA_DI_RESIDENZA.indexOf(key) > -1) {
+							indirizzoAna.setProv(datoAggiornato.getElementiVariati().get(key));
+					   }
+					
+					}
+					//Se indirizzo non ha provincia, significa che non � variata e recupero la precedente per non � veriata!!!
+					//Stesso controllo anche per il comune/nazione.
+					if(indirizzoAna.getProv() == null || 
+					   indirizzoAna.getComDes() == null || indirizzoAna.getComCod() == null || 
+					   indirizzoAna.getIndirizzo() == null || indirizzoAna.getCivicoNumero() == null) {
+						valorizzaDatiDaIndirizzoPrecedente(oldIndirizzoResAttivo, indirizzoAna);
 					}
 					
- 				}
- 				//Salva tutto
-				salva();
-				loadListaForzatureAnagrafiche();
-				//Aggiorna la Segnalazione a '-'
-				this.anagraficaAggiornata.setSegnalazione("-");
-				this.anagraficaAggiornata.setDtMod(new Date());
-				dto = new BaseDTO();
-				fillEnte(dto);	
-				dto.setObj(anagraficaAggiornata);
-				soggettoService.updateAnagraficaComponenteCaso(dto);
-				verificaAggiornamentiSoggettoCaso();
-				RequestContext.getCurrentInstance().addCallbackParam("saved", salvato);	
+					 residenzaCsaMan.setTipoComune(TIPO_LUOGO.ALTRO.getCodice());
+					 
+					 ComuneBean comuneResidenza = new ComuneBean(indirizzoAna.getComCod(), indirizzoAna.getComDes(), indirizzoAna.getProv());  
+					 comuneResidenza.setAttivo(true);
+					
+					 residenzaCsaMan.getComuneNazioneResidenzaMan().setComuneValue(); 
+					 residenzaCsaMan.getComuneNazioneResidenzaMan().getComuneResidenzaMan().setComune(comuneResidenza);
+					 
+					 residenzaCsaMan.setIndirizzo(indirizzoAna.getIndirizzo());
+					 residenzaCsaMan.setCivicoNumero(indirizzoAna.getCivicoNumero());
+					 residenzaCsaMan.setDataInizioApp(new Date());
+					 
+					 residenzaCsaMan.aggiungiIndirizzo();
+				}
+				
+				////// FINE NUOVA GESTIONE RESIDENZA
+				
+				///NUOVA VERSIONE INDIRIZZO DOMICILIO
+				if(datoAggiornato.getTipologiaVariazione().equals(TipoAggiornamentoAnagrafica.DOMICILIO)) {
+					
+				    CsAIndirizzo oldIndirizzoDomAttivo = residenzaCsaMan.getIndirizzoDomicilioAttivo();
+					if(oldIndirizzoDomAttivo != null && oldIndirizzoDomAttivo.getAnaIndirizzoId() != null) {
+						residenzaCsaMan.setIndirizzoSelezionato(oldIndirizzoDomAttivo);
+						residenzaCsaMan.setDataAnnullamento(new Date());
+						residenzaCsaMan.annullaIndirizzo();	
+					}
+				   
+					CsAAnaIndirizzo indirizzoAnaDom = new CsAAnaIndirizzo();
+					residenzaCsaMan.setTipoIndirizzo(String.valueOf(residenzaCsaMan.getTipoIndirizzoDomicilio().getId()));
+					
+					for(String key	: datoAggiornato.getElementiVariati().keySet()) {
+						if(TipoAggiornamentoAnagrafica.CODICE_COMUNE_DOMICILIO.indexOf(key) > -1) {
+							indirizzoAnaDom.setComCod(datoAggiornato.getElementiVariati().get(key));
+						}
+						if(TipoAggiornamentoAnagrafica.COMUNE_DOMICILIO.indexOf(key) > -1) {
+							indirizzoAnaDom.setComDes(datoAggiornato.getElementiVariati().get(key));
+						}
+						if(TipoAggiornamentoAnagrafica.INDIRIZZO_DOMICILIO.indexOf(key) > -1) {
+							indirizzoAnaDom.setIndirizzo(datoAggiornato.getElementiVariati().get(key));
+						}
+						if(TipoAggiornamentoAnagrafica.NUM_CIVICO_DOMICILIO.indexOf(key) > -1) {
+							indirizzoAnaDom.setCivicoNumero(datoAggiornato.getElementiVariati().get(key));
+						}
+						if(TipoAggiornamentoAnagrafica.PROVINCIA_DI_DOMICILIO.indexOf(key) > -1) {
+							indirizzoAnaDom.setProv(datoAggiornato.getElementiVariati().get(key));
+								
+						 }
+					 }				
+					
+					//Se indirizzo non ha provincia, significa che non � variata e recupero la precedente per non � veriata!!!
+					//Stesso controllo anche per il comune/nazione.
+					if(indirizzoAnaDom.getProv() == null || 
+					   indirizzoAnaDom.getComDes() == null || indirizzoAnaDom.getComCod() == null || 
+					   indirizzoAnaDom.getIndirizzo() == null || indirizzoAnaDom.getCivicoNumero() == null) {
+						valorizzaDatiDaIndirizzoPrecedente(oldIndirizzoDomAttivo, indirizzoAnaDom);
+					}
+					
+					 residenzaCsaMan.setTipoComune(TIPO_LUOGO.ALTRO.getCodice());
+
+					 ComuneBean comuneDomicilio = new ComuneBean(indirizzoAnaDom.getComCod(), indirizzoAnaDom.getComDes(), indirizzoAnaDom.getProv());  
+					 comuneDomicilio.setAttivo(true);
+					
+					 residenzaCsaMan.getComuneNazioneResidenzaMan().setComuneValue(); 
+					 residenzaCsaMan.getComuneNazioneResidenzaMan().getComuneResidenzaMan().setComune(comuneDomicilio);
+					 
+					 residenzaCsaMan.setIndirizzo(indirizzoAnaDom.getIndirizzo());
+					 residenzaCsaMan.setCivicoNumero(indirizzoAnaDom.getCivicoNumero());
+					 residenzaCsaMan.setDataInizioApp(new Date());
+					 residenzaCsaMan.aggiungiIndirizzo();
+					
+					
+				}
+				///FINE NUOVA VERSIONE
+				
+				if(datoAggiornato.getTipologiaVariazione().equals(TipoAggiornamentoAnagrafica.MEDICO_REVOCATO) ||
+				   datoAggiornato.getTipologiaVariazione().equals(TipoAggiornamentoAnagrafica.NUOVO_MEDICO)) {
+				 
+					soggettoMedico = new CsASoggettoMedico();
+					CsCMedico medico = new CsCMedico();
+					Date dataScelta = null;
+					Date dataRevoca = null;
+				for(String key	: datoAggiornato.getElementiVariati().keySet()) {
+					if(TipoAggiornamentoAnagrafica.COGNOME_MEDICO_REVOCATO.indexOf(key) > -1) {
+						medico.setCognome(datoAggiornato.getElementiVariati().get(key));
+					}
+					if(TipoAggiornamentoAnagrafica.COGNOME_NUOVO_MEDICO.indexOf(key) > -1) {
+						medico.setCognome(datoAggiornato.getElementiVariati().get(key));
+					}
+					if(TipoAggiornamentoAnagrafica.NOME_MEDICO_REVOCATO.indexOf(key) > -1) {
+						medico.setNome(datoAggiornato.getElementiVariati().get(key));
+					}
+					if(TipoAggiornamentoAnagrafica.NOME_NUOVO_MEDICO.indexOf(key) > -1) {
+						medico.setCognome(datoAggiornato.getElementiVariati().get(key));
+					}
+					if(TipoAggiornamentoAnagrafica.COD_REGIONALE_MEDICO_REVOCATO.indexOf(key) > -1) {
+						medico.setCodiceRegionale(datoAggiornato.getElementiVariati().get(key));
+					}else if(TipoAggiornamentoAnagrafica.CODICE_FISCALE_MEDICO_REVOCATO.indexOf(key) > -1) {
+						medico.setCodiceRegionale(datoAggiornato.getElementiVariati().get(key));
+					}
+					if(TipoAggiornamentoAnagrafica.COD_REGIONALE_NUOVO_MEDICO.indexOf(key) > -1) {
+						medico.setCodiceRegionale(datoAggiornato.getElementiVariati().get(key));
+					}else if(TipoAggiornamentoAnagrafica.CODICE_FISCALE_NUOVO_MEDICO.indexOf(key) > -1) {
+						medico.setCodiceRegionale(datoAggiornato.getElementiVariati().get(key));
+					}
+					if(TipoAggiornamentoAnagrafica.DATA_SCELTA_MEDICO_REVOCATO.indexOf(key) > -1) {
+						dataScelta = ddMMyyyy.parse(datoAggiornato.getElementiVariati().get(key));
+					}
+					if(TipoAggiornamentoAnagrafica.DATA_SCELTA_NUOVO_MEDICO.indexOf(key) > -1) {
+						dataScelta = ddMMyyyy.parse(datoAggiornato.getElementiVariati().get(key));
+					}
+					if(TipoAggiornamentoAnagrafica.DATA_REVOCA_MEDICO_REVOCATO.indexOf(key) > -1) {
+						dataScelta = ddMMyyyy.parse(datoAggiornato.getElementiVariati().get(key));
+					}
+					if(TipoAggiornamentoAnagrafica.DATA_REVOCA_NUOVO_MEDICO.indexOf(key) > -1) {
+						dataScelta = ddMMyyyy.parse(datoAggiornato.getElementiVariati().get(key));
+					}
+				  }
+				  
+				
+				  if(!StringUtils.isBlank(anagraficaAggiornata.getIdOrigWs())){
+					  String[] idSplit = anagraficaAggiornata.getIdOrigWs().split("@");
+					  String tipo = idSplit[0];
+					  verificaAggiungiMedico(tipo, medico, dataScelta, dataRevoca);
+				  }
+				  
+				}
+				
+			}
+			//Salva tutto
+			salva();
+			loadListaForzatureAnagrafiche();
+			//Aggiorna la Segnalazione a '-'
+			this.anagraficaAggiornata.setSegnalazione("-");
+			this.anagraficaAggiornata.setDtMod(new Date());
+			dto = new BaseDTO();
+			fillEnte(dto);	
+			dto.setObj(anagraficaAggiornata);
+			soggettoService.updateAnagraficaComponenteCaso(dto);
+			verificaAggiornamentiSoggettoCaso();
+			RequestContext.getCurrentInstance().addCallbackParam("saved", salvato);	
 		} catch(Exception e) {
 			salvato = false;
 			addErrorFromProperties("salva.errorA");
@@ -1276,6 +970,19 @@ public class AnagraficaBean extends SchedaUtils implements IDatiAna {
 		}
 		
 		return salvato;
+	}
+	
+	private void valorizzaDatiDaIndirizzoPrecedente(CsAIndirizzo csAIndirizzoOld, CsAAnaIndirizzo indirizzoAnaNew){
+		if(csAIndirizzoOld!=null){
+			CsAAnaIndirizzo indOld = csAIndirizzoOld.getCsAAnaIndirizzo();
+			indirizzoAnaNew.setProv(indirizzoAnaNew.getProv() == null ? indOld.getProv() : indirizzoAnaNew.getProv());
+			indirizzoAnaNew.setComDes(indirizzoAnaNew.getComDes() == null ? indOld.getComDes() : indirizzoAnaNew.getComDes());
+			indirizzoAnaNew.setComCod(indirizzoAnaNew.getComCod() == null ? indOld.getComCod() : indirizzoAnaNew.getComCod());
+			indirizzoAnaNew.setIndirizzo(indirizzoAnaNew.getIndirizzo() == null ? indOld.getIndirizzo() : indirizzoAnaNew.getIndirizzo());
+			indirizzoAnaNew.setCivicoNumero(indirizzoAnaNew.getCivicoNumero() == null ? indOld.getCivicoNumero() : indirizzoAnaNew.getCivicoNumero());
+			indirizzoAnaNew.setStatoCod(indirizzoAnaNew.getStatoCod() == null ? indOld.getStatoCod() : indirizzoAnaNew.getStatoCod());
+			indirizzoAnaNew.setStatoDes(indirizzoAnaNew.getStatoDes() == null ? indOld.getStatoDes() : indirizzoAnaNew.getStatoDes());
+		}		
 	}
 	
 	private void verificaAggiungiMedico(String tipoRicerca, CsCMedico medicoGit, Date dataScelta, Date dataRevoca) throws CsUiCompException  {
@@ -1387,7 +1094,8 @@ public class AnagraficaBean extends SchedaUtils implements IDatiAna {
 			ok = false;
 		} 
 		
-		if(residenzaCsaMan.getIndirizzoResidenzaAttivo() == null || residenzaCsaMan.getIndirizzoResidenzaAttivo().getCsAAnaIndirizzo() == null) {
+		CsAIndirizzo indirizzoResAttivo = residenzaCsaMan.getIndirizzoResidenzaAttivo();
+		if(indirizzoResAttivo == null || indirizzoResAttivo.getCsAAnaIndirizzo() == null) {
 			this.addErrorCampiObbligatori(nomeTab,"Residenza");
 			ok = false;
 		}
@@ -1526,19 +1234,6 @@ public class AnagraficaBean extends SchedaUtils implements IDatiAna {
 	   }
 		return csSogg;
 	}
-	
-	/*public CsASoggettoLAZY getSoggettoLAZYSalvato() {
-		Long anagId = soggetto.getAnagraficaId();
-		CsASoggettoLAZY csSogg = soggetto;
-		if(anagId!=null){
-			BaseDTO dto = new BaseDTO();
-			fillEnte(dto);	
-			dto.setObj(anagId);
-		    csSogg = soggettoService.getSoggettoById(dto);
-		    csSogg = csSogg!=null ? csSogg : soggetto;
-	   }
-		return csSogg;
-	}*/
 
 	public boolean isVisDataAperturaFascicoloFam() {
 		return visDataAperturaFascicoloFam;

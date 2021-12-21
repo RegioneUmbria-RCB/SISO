@@ -95,6 +95,8 @@ public class TipoInterventoManBean extends CsUiCompBaseBean implements Serializa
 	private String labelLivello4 = null;
 	private String categorieSociali = "";
 	
+	public TipoInterventoManBean(){}
+	
 	//INIZIO SISO-1110	
 	public List<SelectItem> getListaTipoIntervento1Custom() {
 		listaTipoIntervento1Custom = new ArrayList<SelectItem>();
@@ -369,8 +371,6 @@ public class TipoInterventoManBean extends CsUiCompBaseBean implements Serializa
 
 	@ManagedProperty("#{treeController}")
 	private TreeController treeController;
-
-	private List<VServiziCustom> setlistaTipoInterventoPerAree;
 
 	public TipoInterventoManBean(List<SelectItem> lstTipoInterventi, String filteredNodes) {
 		if (isTreeViewTipoIntervento()) {

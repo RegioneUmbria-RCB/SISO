@@ -3,9 +3,6 @@ package it.webred.cs.csa.web.manbean.fascicolo.interventiTreeView;
 import it.webred.cs.data.model.VGerrarchiaServizi;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
-
-import org.primefaces.model.DefaultTreeNode;
 
 public class TreeNodeBean implements Serializable, Comparable<TreeNodeBean> {
 

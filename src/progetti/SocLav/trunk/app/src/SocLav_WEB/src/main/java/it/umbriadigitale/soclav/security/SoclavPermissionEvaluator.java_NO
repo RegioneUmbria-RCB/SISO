@@ -1,0 +1,37 @@
+package it.umbriadigitale.soclav.security;
+
+
+
+import java.io.Serializable;
+import java.util.StringTokenizer;
+
+import org.springframework.security.access.PermissionEvaluator;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+
+public class SoclavPermissionEvaluator implements PermissionEvaluator {
+
+	@Override
+	public boolean hasPermission(Authentication authentication, Object targetDomainObject, Object permission) {
+
+		 
+		StringTokenizer st = new StringTokenizer((String)permission,"|");
+		UserBean dets = (UserBean) authentication.getPrincipal() ;
+		boolean res = false;
+		while (st.hasMoreTokens())
+		{
+		    
+		    res = dets.getAuthorities().contains( new SimpleGrantedAuthority("ROLE_" + st.nextToken()));
+		    if(res)
+		    	return true;
+		}
+		return false;
+		 
+	}
+
+	@Override
+	public boolean hasPermission(Authentication a, Serializable srlzbl, String string, Object o) {
+		return true;
+	}
+}
+

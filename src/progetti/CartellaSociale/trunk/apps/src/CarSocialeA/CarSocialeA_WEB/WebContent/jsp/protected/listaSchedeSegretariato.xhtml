@@ -13,8 +13,8 @@
 			<p:outputPanel rendered="#{listaSchedeSegrBean.renderListaSchedeSegr}">
 			<webredcs:pnlListaSchedeSegr listaSchedeSegrBean="#{listaSchedeSegrBean}"
 				schedaSegrBean="#{schedaSegrBean}"
-				nuovaCartellaListener="#{schedaBean.nuovaDaSegretariatoSoc(scheda.id)}"
-				caricaCartellaListener="#{schedaBean.carica(scheda.csSsSchedaSegr.csASoggetto)}"/>
+				nuovaCartellaListener="#{schedaBean.nuovaDaSchedeUDC(scheda)}"
+				caricaCartellaListener="#{schedaBean.carica(scheda.soggettoId)}"/>
 			</p:outputPanel>
 		</h:form>
 			

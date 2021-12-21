@@ -16,8 +16,8 @@
 <h:body>
 	<composite:interface componentType="pnlListaPai">
 		<composite:attribute name="iPai" 	    type="it.webred.cs.jsf.interfaces.IPai" />
-		<composite:attribute name="iRelazioni"  type="it.webred.cs.jsf.interfaces.IRelazioni" required="true" />
-		<composite:attribute name="iDiarioDocs" type="it.webred.cs.jsf.interfaces.IDiarioDocs" required="true" />
+		<composite:attribute name="iRelazioni"  type="it.webred.cs.jsf.interfaces.IRelazioni"  />
+		<composite:attribute name="iDiarioDocs" type="it.webred.cs.jsf.interfaces.IDiarioDocs" />
 		<!--     <composite:attribute name="var" type="java.lang.String" required="false" default="1" /> -->
 	</composite:interface>
 
@@ -35,10 +35,13 @@
 		<!-- ELENCO PROGETTI -->
 		<ui:include src="/webredcs/pnlPai/listaPai.xhtml"/> 
 		
+		
+		<p:panel header="Beneficiario" rendered="#{not empty cc.attrs.iPai.selectedPai}">
+			<ui:include src="/webredcs/pnlPai/beneficiari.xhtml" />
+		</p:panel>
 
 		<!-- inizio aggiunta evoluzione-pai -->  
-        <p:panel id="paiDetailContainer2aaa" rendered="#{not empty cc.attrs.iPai.selectedPai}" >
-			
+        <p:panel id="paiDetailContainer" rendered="#{not empty cc.attrs.iPai.selectedPai}" >
 			    <f:facet name="header">
 			        <h:outputText id="nuovProgHeader" value="#{cc.attrs.iPai.modalHeader}" />
 			    </f:facet> 
@@ -51,11 +54,10 @@
 							<p:column>
 								<p:selectOneMenu id="tipoProgetto"
 											value="#{cc.attrs.iPai.selectedPai.csTbTipoPai.id}"
-											disabled="#{cc.attrs.iPai.closed or cc.attrs.iPai.onClosing}">
+											disabled="#{cc.attrs.iPai.closed or cc.attrs.iPai.onClosing or cc.attrs.iPai.progettoPTI}">
 											<f:selectItem noSelectionOption="true" itemLabel=" - seleziona - " />
 											<f:selectItems value="#{cc.attrs.iPai.lstTipoPai}" />
-											<p:ajax event="change" update="panel-progetti" 
-											        process="@this" 
+											<p:ajax event="change" update="panel-progetti" process="@this" 
 											        partialSubmit="true" listener="#{cc.attrs.iPai.onChangeTipoProgetto}" />
 								</p:selectOneMenu>
 							</p:column>
@@ -93,15 +95,6 @@
 					
 						<p:row>
 							<p:column>
-							<h:outputText value="Cittadinanza *" />
-							 </p:column>
-							 <p:column>
-							<p:selectOneMenu value="#{cc.attrs.iPai.selectedPai.cittadinanza}"  filter="true"
-								filterMatchMode="startsWith">
-								<f:selectItems value="#{cc.attrs.iPai.lstCittadinanza}" />
-							</p:selectOneMenu>
-							 </p:column>
-							<p:column>
 								<h:outputLabel for="dataAttivazione" value="Data Attivazione*" />
 							</p:column>
 							<p:column>
@@ -137,8 +130,8 @@
 				 
 				<!-- PROGETTI PAI -->
 				<p:outputPanel id="panel-progetti">
-				    <c:if test="#{cc.attrs.iPai.tipoProgetto != null}">
-				        <ui:include src="/webredcs/pnlPai/progetti/#{cc.attrs.iPai.tipoProgetto}.xhtml" />
+				    <c:if test="#{cc.attrs.iPai.classePai != null}">
+				        <ui:include src="/webredcs/pnlPai/progetti/#{cc.attrs.iPai.classePai}.xhtml" />
 				    </c:if>
 				</p:outputPanel>			
 			
@@ -192,6 +185,7 @@
 						<p:commandButton id="btnNuovoInteverntoPai" process="@this" value="Nuovo Intervento" title="Nuovo Intervento"
 							action="#{cc.attrs.iPai.aggiungiTipoInterventoButton()}"
 							disabled="#{cc.attrs.iPai.readOnly}"
+							rendered="#{cc.attrs.iPai.fromFascicoloCartellaUtente || cc.attrs.iPai.idCasoSoggEsterno != null}"
 							oncomplete="if(args &amp;&amp; args.interventoSelezionato){  updatePaiDlgFglInt(); PF('pnlFglInterventoNuovoPaiWidgetVar').show(); } " 
 							icon="ui-icon-plus" />
 						<p:remoteCommand id="rmtBtnNuovoInteverntoPai" name="updatePaiDlgFglInt" process="@this" update="paiDlgFglInt:frmDlgFglInterventi" />
@@ -211,7 +205,7 @@
 					
 			 	<h:panelGrid columns="1" >
 		        	<webredcs:pnlRelazioni iRelazioni="#{cc.attrs.iRelazioni}" 
-		        		iDiarioDocs="#{cc.attrs.iDiarioDocs}" styleClass="noBorder" var="propostaAttivita" /> 
+		        		iDiarioDocs="#{cc.attrs.iDiarioDocs}" styleClass="noBorder" var="#{cc.attrs.iPai.fromFascicoloCartellaUtente ? 'propostaAttivita' : 'propostaAttivitaExt'}" /> 
 			 	
 					<p:commandButton value="Collega attività"
 						disabled="#{cc.attrs.iPai.closed or cc.attrs.iPai.onClosing or cc.attrs.iPai.readOnly}"
@@ -275,12 +269,12 @@
 		</p:confirmDialog>
 		
 		<!-- SISO-520 -->
-			<p:confirmDialog header="Conferma salvataggio" widgetVar="confermaSalvataggioDettaglioPai"
-		severity="alert" closable="false" appendTo="@(body)"
-		message="Hai monitorato gli obiettivi?">
+		<p:confirmDialog header="Conferma salvataggio" widgetVar="confermaSalvataggioDettaglioPai"
+			severity="alert" closable="false" appendTo="@(body)"
+			message="Hai monitorato gli obiettivi?">
 			
-		<table border="0" width="100%">
-			<tr>
+			<table border="0" width="100%">
+				<tr>
 				<td style="text-align: center;">
 					<p:commandButton value="SÌ"
 						onclick="PF('confermaSalvataggioDettaglioPai').hide();"
@@ -297,7 +291,29 @@
 						/>
 					</td>
 				</tr>
-			</table>
+				</table>
+			</p:confirmDialog>
+			
+			
+			<p:confirmDialog header="Conferma salvataggio" widgetVar="confermaDataChiusura"
+				severity="alert" closable="false" appendTo="@(body)"
+				message="#{cc.attrs.iPai.messConsuntivazioneChiusura}">
+				<table border="0" width="100%">
+				<tr>
+				<td style="text-align: center;">
+					<p:commandButton value="SÌ"
+						onclick="PF('confermaDataChiusura').hide();"
+						 actionListener="#{cc.attrs.iPai.salvaDataChiusuraAggiornata}"
+						update="@form"
+						process="@form" 
+						partialSubmit="true"/> 
+					<p:commandButton value="NO" 
+						onclick="PF('confermaDataChiusura').hide();" 
+						partialSubmit="true"
+						/>
+					</td>
+				</tr>
+				</table>
 			</p:confirmDialog>
 			<p:spacer width="40px;" />
 		</p:outputPanel>

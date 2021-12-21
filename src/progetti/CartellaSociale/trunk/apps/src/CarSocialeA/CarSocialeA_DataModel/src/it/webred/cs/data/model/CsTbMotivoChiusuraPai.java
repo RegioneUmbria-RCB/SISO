@@ -1,6 +1,7 @@
 package it.webred.cs.data.model;
 
 import java.io.Serializable;
+import java.util.List;
 
 import javax.persistence.*;
 
@@ -28,10 +29,10 @@ public class CsTbMotivoChiusuraPai implements Serializable {
 	private Integer ordine;
 	
 	private String tipi_pai;
-
+	
 	@Column(name="CODICE_ESITO_SINBA")
 	private String codiceEsitoSinba; 
-	
+			
 	public CsTbMotivoChiusuraPai() {
 	}
 

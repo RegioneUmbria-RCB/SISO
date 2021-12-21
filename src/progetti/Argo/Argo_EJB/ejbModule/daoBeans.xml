@@ -22,7 +22,6 @@
 		http://www.springframework.org/schema/security 
 		http://www.springframework.org/schema/security/spring-security.xsd">
 	   	
-	   		
 	   <!-- Qui vanno aggiunti i DAO  -->
 	   	<context:annotation-config />
 	   	<context:component-scan base-package="it.umbriadigitale.argo.ejb.base.dao"  />
