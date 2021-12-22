@@ -4,6 +4,12 @@
         <wb-resource deploy-path="/" source-path="/src/main/webapp" tag="defaultRootSource"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/java"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/resources"/>
+        <dependent-module archiveName="soclavlib-1.0-RELEASE.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/SocLav_Lib/SocLav_Lib">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="soclavmodel-1.0-RELEASE.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/SocLav_DataModel/SocLav_DataModel">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
         <property name="java-output-path" value="/SocLav_WEB/target/classes"/>
         <property name="context-root" value="soclavweb"/>
     </wb-module>

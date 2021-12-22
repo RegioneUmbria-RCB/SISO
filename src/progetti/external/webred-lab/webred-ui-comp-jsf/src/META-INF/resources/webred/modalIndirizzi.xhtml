@@ -24,70 +24,73 @@
 			width="950" height="650">
           	
 			<h:panelGroup id="pnlModalIndirizzi">
-				<h:panelGrid columns="2" rendered="#{cc.attrs.attivaSalvataggio}">
-					<h:outputText value="Tipo Indirizzo *:" />
-					<p:selectOneMenu id="tipoIndirizzo" value="#{cc.attrs.residenzaManBean.tipoIndirizzo}">
-						<f:selectItem noSelectionOption="true" itemLabel="- seleziona -"/>
-						<f:selectItems value="#{cc.attrs.residenzaManBean.lstTipiIndirizzo}" />
-						<p:ajax event="change" process="@this" listener="#{cc.attrs.residenzaManBean.trovaResidenza}" update="pnlResidenzaAnagrafe"  />
-					</p:selectOneMenu>
-
-					<h:outputText value="Comune:" />
-					<p:selectOneButton id="tipoComune" value="#{cc.attrs.residenzaManBean.tipoComune}">
-						<f:selectItems value="#{cc.attrs.residenzaManBean.listaTipoLuogoResidenza}"/>
-						<p:ajax event="change" process="@this" listener="#{cc.attrs.residenzaManBean.trovaResidenza}"
-								update="pnlResidenzaAnagrafe, pnlResidenzaComune, pnlResidenzaNoComune, pnlSenzaFissaDimora" />
-					</p:selectOneButton>
-				</h:panelGrid>
-			</h:panelGroup>
-			<p:spacer height="5px;" width="100%" />
-			<p:outputPanel id="pnlResidenzaAnagrafe">
-				<p:outputPanel rendered="#{cc.attrs.residenzaManBean.residenzaAnagrafeRendered}">
-					<table border="0">
-						<tr>
-							<td style="width: 150px;"><h:outputText value="Codice fiscale inserito:" /></td>
-							<td><h:outputText value="#{cc.attrs.residenzaManBean.codiceFiscale}" /></td>
-						</tr>
-						<tr>
-							<td>
-								<h:outputText value="Residenza da Anagrafe:" />
-							</td>
-							<td>
-								<p:outputPanel rendered="#{cc.attrs.residenzaManBean.indirizzoResidenzaTrovato}">
-									<h:outputText value="#{cc.attrs.residenzaManBean.indirizzoAnagrafe.csAAnaIndirizzo.labelIndirizzo}" />
-									<p:spacer width="20px;" />
-									<p:commandButton value="Accetta" process="@this">
-										<p:ajax update="pnlTableIndirizzi" listener="#{cc.attrs.residenzaManBean.accettaIndirizzoAnagrafe}" />
-									</p:commandButton>
-								</p:outputPanel>
-								<h:outputText value="NESSUN INDIRIZZO DI RESIDENZA TROVATO IN ANAGRAFE" rendered="#{!cc.attrs.residenzaManBean.indirizzoResidenzaTrovato}"/>
-							</td>
-						</tr>
-						<tr>
-							<td style="width: 150px;">
-								<h:outputText value="Dalla data:" rendered="#{cc.attrs.residenzaManBean.codViaResidenzaTrovata}" />
-							</td>
-							<td>
-								<h:outputText value="#{cc.attrs.residenzaManBean.indirizzoAnagrafe.dataInizioApp}"
-									rendered="#{cc.attrs.residenzaManBean.codViaResidenzaTrovata}">
-									<f:convertDateTime pattern="dd/MM/yyyy" locale="it_IT" timeZone="GMT+1" />
-								</h:outputText>
-							</td>
-						</tr>
-					</table>
+				<p:outputPanel rendered="#{cc.attrs.attivaSalvataggio}">
+					    <h:panelGrid columns="2">
+							<h:outputText value="Tipo Indirizzo *:" />
+							<p:selectOneMenu id="tipoIndirizzo" value="#{cc.attrs.residenzaManBean.tipoIndirizzo}">
+								<f:selectItem noSelectionOption="true" itemLabel="- seleziona -"/>
+								<f:selectItems value="#{cc.attrs.residenzaManBean.lstTipiIndirizzo}" />
+								<p:ajax event="change" process="@this" listener="#{cc.attrs.residenzaManBean.trovaResidenza}" update="pnlResidenzaAnagrafe"  />
+							</p:selectOneMenu>
+						</h:panelGrid>
+						<p:spacer height="5px;" width="100%" />
+						<p:outputPanel id="pnlResidenzaAnagrafe">
+							<p:outputPanel rendered="#{cc.attrs.residenzaManBean.residenzaAnagrafeRendered}">
+								<table border="0">
+									<tr>
+										<td style="width: 150px;"><h:outputText value="Codice fiscale inserito:" /></td>
+										<td><h:outputText value="#{cc.attrs.residenzaManBean.codiceFiscale}" /></td>
+									</tr>
+									<tr>
+										<td>
+											<h:outputText value="Residenza da Anagrafe:" />
+										</td>
+										<td>
+											<p:outputPanel rendered="#{cc.attrs.residenzaManBean.indirizzoResidenzaTrovato}">
+												<h:outputText value="#{cc.attrs.residenzaManBean.indirizzoAnagrafe.csAAnaIndirizzo.labelIndirizzoCompleto}" />
+												<p:spacer width="20px;" />
+												<p:commandButton value="Accetta" process="@this">
+													<p:ajax update="pnlTableIndirizzi" listener="#{cc.attrs.residenzaManBean.accettaIndirizzoAnagrafe}" />
+												</p:commandButton>
+											</p:outputPanel>
+											<h:outputText value="NESSUN INDIRIZZO DI RESIDENZA TROVATO IN ANAGRAFE" rendered="#{!cc.attrs.residenzaManBean.indirizzoResidenzaTrovato}"/>
+										</td>
+									</tr>
+									<tr>
+										<td style="width: 150px;">
+											<h:outputText value="Dalla data:" rendered="#{cc.attrs.residenzaManBean.codViaResidenzaTrovata}" />
+										</td>
+										<td>
+											<h:outputText value="#{cc.attrs.residenzaManBean.indirizzoAnagrafe.dataInizioApp}"
+												rendered="#{cc.attrs.residenzaManBean.codViaResidenzaTrovata}">
+												<f:convertDateTime pattern="dd/MM/yyyy" locale="it_IT" timeZone="GMT+1" />
+											</h:outputText>
+										</td>
+									</tr>
+								</table>
+							</p:outputPanel>
+						</p:outputPanel>
+						<h:panelGroup rendered="#{!cc.attrs.residenzaManBean.codFiscaleValido}">
+							<table border="0">
+								<tr>
+									<td>
+										<h:outputText value="NESSUN CODICE FISCALE INSERITO - residenza da anagrafe non reperibile" />
+									</td>
+								</tr>
+							</table>
+						</h:panelGroup>
+						<p:spacer height="5px;" width="100%" />
+						
+						<h:panelGrid columns="2">
+							<h:outputText value="Comune:" />
+							<p:selectOneButton id="tipoComune" value="#{cc.attrs.residenzaManBean.tipoComune}">
+								<f:selectItems value="#{cc.attrs.residenzaManBean.listaTipoLuogoResidenza}"/>
+								<p:ajax event="change" process="@this" update="pnlResidenzaComune, pnlResidenzaNoComune, pnlSenzaFissaDimora" />
+							</p:selectOneButton>
+					</h:panelGrid>
 				</p:outputPanel>
-			</p:outputPanel>
-			<h:panelGroup rendered="#{!cc.attrs.residenzaManBean.codFiscaleValido}">
-				<table border="0">
-					<tr>
-						<td>
-							<h:outputText value="NESSUN CODICE FISCALE INSERITO - residenza da anagrafe non reperibile" />
-						</td>
-					</tr>
-				</table>
 			</h:panelGroup>
-			<p:spacer height="5px;" width="100%" />
-
+			
 			<p:outputPanel id="pnlResidenzaComune">
 				<p:panel header="Nuovo indirizzo" rendered="#{cc.attrs.residenzaManBean.residenzaComuneRendered and cc.attrs.attivaSalvataggio}" styleClass="#{cc.attrs.panelStyleClass}">
 					<table border="0">

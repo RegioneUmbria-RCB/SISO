@@ -16,6 +16,7 @@
 			<composite:attribute name="labelStyle" />
 			<composite:attribute name="panelStyleClass"/>
 			<composite:attribute name="codiceFiscale"/>
+			<composite:attribute name="tipoRicercaSoggetto"/>
 			<composite:attribute name="disableModifica" default="false"/>
 			<composite:attribute name="attivaSalvataggio" type="java.lang.Boolean" required="false" default="true"/>
 		</composite:interface>
@@ -43,6 +44,7 @@
 						update="pnlGestionendirizzi, tblGestionendirizzi" disabled="#{cc.attrs.disableModifica}" 
 						oncomplete="PF('#{cc.attrs.residenzaManBean.widgetVar}').show()" >
 						<f:setPropertyActionListener value="#{cc.attrs.codiceFiscale}" target="#{cc.attrs.residenzaManBean.codiceFiscale}"/>
+						<f:setPropertyActionListener value="#{cc.attrs.tipoRicercaSoggetto}" target="#{cc.attrs.residenzaManBean.tipoRicercaSoggetto}"/>
 						<f:setPropertyActionListener value="" target="#{cc.attrs.residenzaManBean.warningMessage}"/>
 					</p:commandButton>
 					
