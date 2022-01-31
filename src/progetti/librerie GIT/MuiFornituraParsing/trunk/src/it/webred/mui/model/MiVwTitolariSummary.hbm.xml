@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="it.webred.mui.model.MiVwTitolariSummary">
+		<subselect>
+			select 
+							iid_fornitura, 
+							count(*) as totale, 
+							max(to_number(iid)) as massimo
+				from		mi_dup_titolarita
+				group by	(iid_fornitura)
+		</subselect>
+		<synchronize table="mi_dup_nota_tras"/>
+		<id name="iid_fornitura" type="long">
+            <column name="iid_fornitura" precision="15" scale="0" />
+        </id>
+		<property name="totale" type="long">
+			 <column name="totale" precision="15" scale="0" />
+        </property>
+		<property name="massimo" type="long">
+			 <column name="massimo" precision="15" scale="0" />
+        </property>
+        <one-to-one name="miDupFornitura" class="it.webred.mui.model.MiDupFornitura"/>
+	</class>
+</hibernate-mapping>

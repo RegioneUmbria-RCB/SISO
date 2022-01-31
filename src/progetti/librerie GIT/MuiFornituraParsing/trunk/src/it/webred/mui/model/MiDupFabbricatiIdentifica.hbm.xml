@@ -1,0 +1,63 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 2-apr-2006 14.46.01 by Hibernate Tools 3.1.0.beta4 -->
+<hibernate-mapping>
+    <class name="it.webred.mui.model.MiDupFabbricatiIdentifica" table="MI_DUP_FABBRICATI_IDENTIFICA">
+ 	    <meta attribute="generated-class">
+	        it.webred.mui.model.MiDupFabbricatiIdentificaBase
+	    </meta>
+        <id name="iid" type="long">
+            <column name="IID" precision="15" scale="0" />
+            <generator class="increment" />
+        </id>
+        <many-to-one name="miDupFornitura" class="it.webred.mui.model.MiDupFornitura" fetch="select">
+            <column name="IID_FORNITURA" precision="15" scale="0" not-null="true" />
+        </many-to-one>
+        <property name="idNota" type="string">
+            <column name="ID_NOTA" length="20" />
+        </property>
+        <many-to-one name="miDupNotaTras" class="it.webred.mui.model.MiDupNotaTras" fetch="select">
+            <column name="IID_NOTA" precision="15" scale="0"/>
+        </many-to-one>
+        <property name="idImmobile" type="string">
+            <column name="ID_IMMOBILE" length="20" />
+        </property>
+        <many-to-one name="miDupFabbricatiInfo" class="it.webred.mui.model.MiDupFabbricatiInfo" fetch="select">
+            <column name="IID_FABBRICATIINFO" precision="15" scale="0"/>
+        </many-to-one>
+        <property name="idCatastaleImmobile" type="string">
+            <column name="ID_CATASTALE_IMMOBILE" length="20" />
+        </property>
+        <property name="sezioneCensuaria" type="string">
+            <column name="SEZIONE_CENSUARIA" length="1" />
+        </property>
+        <property name="sezioneUrbana" type="string">
+            <column name="SEZIONE_URBANA" length="3" />
+        </property>
+        <property name="foglio" type="string">
+            <column name="FOGLIO" length="4" />
+        </property>
+        <property name="numero" type="string">
+            <column name="NUMERO" length="5" />
+        </property>
+        <property name="denominatore" type="string">
+            <column name="DENOMINATORE" length="20" />
+        </property>
+        <property name="subalterno" type="string">
+            <column name="SUBALTERNO" length="4" />
+        </property>
+        <property name="edificabilita" type="string">
+            <column name="EDIFICABILITA" length="1" />
+        </property>
+        <property name="tipoDenuncia" type="string">
+            <column name="TIPO_DENUNCIA" length="1" />
+        </property>
+        <property name="numeroProtocollo" type="string">
+            <column name="NUMERO_PROTOCOLLO" length="9" />
+        </property>
+        <property name="anno" type="string">
+            <column name="ANNO" length="4" />
+        </property>
+    </class>
+</hibernate-mapping>

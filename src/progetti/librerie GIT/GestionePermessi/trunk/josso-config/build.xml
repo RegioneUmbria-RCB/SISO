@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="josso" default="tomcat.configuring.with.josso" basedir=".">
+
+    <target name="init">
+    	<tstamp>
+    	      <format property="oggi" pattern="dd/MM/yyyy hh:mm aa"/>
+    	</tstamp>    	
+    	<property name="libdir" value="${basedir}/../lib" />
+    	<property name="jardir" value="${basedir}/.." />
+    	<property name="cvs.root" value=":pserver:makerelease:makerelease@172.16.2.188:/cvs_repos" />
+    	<property name="comp.debug" value="true" />
+    	<property name="comp.deprecation" value="false" />
+
+    	<path id="libs">
+            <fileset dir="${basedir}/../lib">
+                <include name="*.jar"/>
+            </fileset>
+        </path>
+    	
+    </target>
+	
+	<target depends="init" name="input">
+	     <input message="Inserischi il path completo di Tomcat5.5 " addproperty="input.CATALINA_HOME" />
+	     <input message="Inserischi il path completo di eclipse " addproperty="eclipse.path" />
+    	
+    </target>
+    	
+
+	
+    <target name="josso.webapp.deploy">
+
+       	<echo message="Creo il war dell'applicazione josso gateway di default"/>
+
+    	<mkdir dir="${basedir}/.jossoDeleteMe"/>
+
+    	<unzip src="josso-1.4-builded.zip" dest="${basedir}/.jossoDeleteMe"/>
+		
+    	
+    	
+    	<ant antfile="${basedir}/.jossoDeleteMe/josso-1.4-builded/build.xml"
+    		dir="${basedir}/.jossoDeleteMe/josso-1.4-builded" target="war">
+    	</ant>
+
+    	<echo message="copia del war josso.war nella besedir"/>
+    	<copy file="${basedir}/.jossoDeleteMe/josso-1.4-builded/build/josso-1.4/josso.war" todir="${basedir}"/>
+
+    	<echo message="sto aspettando un attimo .. prima di cancellare i files di comodo"/>
+    	<sleep seconds="10"/>
+
+    	<delete dir="${basedir}/.jossoDeleteMe"/>
+
+    </target>
+
+	<!-- 
+	Questo target configura un tomcat per l'utilizzo con josso
+	Agest o GATEWAY che sia. Alla fine dovrebbe cancellare la directory di comodo creata, se fallisse va cancellata a mano
+	-->
+    <target depends="input" name="tomcat.configuring.with.josso">
+
+    	<mkdir dir="${basedir}/.jossoDeleteMe"/>
+    	<mkdir dir="${basedir}/.jossoDeleteMe/CATALINA_HOME"/>
+    	<property name="env.CATALINA_HOME" location="${basedir}/.jossoDeleteMe/CATALINA_HOME"/>
+	    <property environment="env"/>
+
+
+    	<echo message="CATALINA_HOME TEMPORANEO= ${env.CATALINA_HOME}"/>
+    	<echo message="ATTENZIONE !!! env.CATALINA_HOME ha un valore che non sta ad indicare la reale CATALINA_HOME !!!! TUTTO OK, BASTA SAPERLO! "/>
+
+    	<echo message="Sto copiando le librerie di josso sul tomcat"/>
+    	<unzip src="josso-1.4-builded.zip" dest="${basedir}/.jossoDeleteMe"/>
+    	
+    	
+    	<ant antfile="${basedir}/.jossoDeleteMe/josso-1.4-builded/build.xml"
+    		dir="${basedir}/.jossoDeleteMe/josso-1.4-builded" target="install-tomcat55">
+    	</ant>
+    	
+    	<echo message="sto aspettando un attimo .. prima di cancellare i files di comodo"/>
+    	<sleep seconds="10"/>
+		<copy todir="${input.CATALINA_HOME}" >
+			<fileset dir="${env.CATALINA_HOME}">
+			  <include name="**/*.*"/>
+			</fileset>
+			
+		</copy>
+
+		<copy todir="${input.CATALINA_HOME}/common/lib" >
+			<fileset dir="${basedir}/.jossoDeleteMe/josso-1.4-builded/build/josso-1.4">
+				  <include name="**/josso-1.4.jar"/>
+					  <include name="**/josso-common-1.4.jar"/>
+			</fileset>
+		</copy>
+    	
+		<copy todir="${input.CATALINA_HOME}/server/lib" >
+			<fileset dir="${basedir}/.jossoDeleteMe/josso-1.4-builded/build/josso-1.4/plugins">
+				  <include name="**/josso-tomcat55-plugin-1.4.jar"/>
+			</fileset>
+		</copy>
+    	
+    	<delete dir="${basedir}/.jossoDeleteMe"/>
+					  	
+			
+    </target>
+ 
+    <target depends="init" name="take.webredutils.from.cvs">
+    	<mkdir dir="${libdir}/.webredutils"/>
+    	<cvs command="export -d ${libdir}/.webredutils -r HEAD webredutils/releases/last/webredutils.jar" cvsRoot="${cvs.root}" />
+        <delete file="${libdir}/webredutils.jar"/>
+        <copy file="${libdir}/.webredutils/webredutils.jar" todir="${libdir}"/>
+        <delete dir="${libdir}/.webredutils"/>
+    </target>
+
+    <!-- 
+	Questo target aggiunge i files di configurazione josso perchè una applicazione funzioni
+	come agent di sso.
+	Inoltre configura il file agent
+	-->
+    <target depends="input" name="add.agent.conf.to.tomcat">
+	     <input message="gatewayLoginUrl (http://servergateway:port/josso/signon/login.do)" addproperty="gatewaylogin" />
+	     <input message="gatewayLogoutUrl (http://servergateway:port/josso/signon/logout.do)" addproperty="gatewaylogout" />
+	     <input message="endpoint (http://servergateway:port)" addproperty="endpoint" />
+
+	    <echo message="Devo inserire anche in eclipse i files agent per un problema con il plugin che avvia tomcat"/>
+		<copy file="${basedir}/Agent-config/josso-config.xml" todir="${input.CATALINA_HOME}/bin"/>
+
+		<copy file="${basedir}/Agent-config/josso-agent-config.xml" tofile="${basedir}/Agent-config/josso-agent-config.xml.bak"/>
+    	<java classname="it.webred.utils.JDomModifyXPath" classpathref="libs" fork="true">
+			<jvmarg value="-Dhttp.proxyHost=80.17.46.6"/>
+			<jvmarg value="-Dhttp.proxyPort=8888"/>
+			<arg value="${basedir}/Agent-config/josso-agent-config.xml.bak" />
+			<arg value="${basedir}/Agent-config/josso-agent-config.xml.bak" />
+			<arg value="tag" />
+			<arg value="agent/gatewayLoginUrl" />
+			<arg value="${gatewaylogin}" />
+			<arg value="tag" />
+			<arg value="agent/gatewayLogoutUrl" />
+			<arg value="${gatewaylogout}" />
+			<arg value="tag" />
+			<arg value="agent/service-locator/endpoint" />
+			<arg value="${endpoint}" />
+		</java>    	
+    	<copy file="${basedir}/Agent-config/josso-agent-config.xml.bak" tofile="${input.CATALINA_HOME}/bin/josso-agent-config.xml"/>
+		<copy file="${basedir}/Agent-config/josso-agent-config.xml.bak" tofile="${eclipse.path}/josso-agent-config.xml"/>
+		
+     	
+    	<copy file="${basedir}/Agent-config/josso-config.xml" todir="${eclipse.path}"/>
+    	<copy file="${basedir}/Agent-config/jaas.conf" todir="${input.CATALINA_HOME}/conf"/>
+
+       	<delete file="${basedir}/Agent-config/josso-agent-config.xml.bak"/>
+
+    </target>
+
+	<!--
+	Questo target rielabora il file josso-agent-config.xml ed aggiunge una nuova applicazione agent al sso
+	-->
+	<target depends="input" name="add.application.to.agent">
+	     <input message="Inserisci il nome dell'applicazione da aggiungere come agent di sso " addproperty="input.nomeapplicazioneAgent" />
+		<xslt basedir="${eclipse.path}" destdir="${eclipse.path}" includes="**/josso-agent-config.xml" extension=".bak" style="${basedir}/Agent-config/add-partnerapp-to-agent.xsl">
+			<param name="nomeapplicazioneAgent" expression="${input.nomeapplicazioneAgent}"/>
+		</xslt>
+		<move todir="${eclipse.path}">
+			<fileset dir="${eclipse.path}">
+				<include name="**/*.bak" />
+			</fileset>
+			<mapper type="glob" from="*.bak" to="*.xml" />
+		</move>
+		<copy file="${eclipse.path}\josso-agent-config.xml" overwrite="yes" todir="${input.CATALINA_HOME}\bin"/>
+		<copy file="${eclipse.path}\josso-config.xml" overwrite="yes" todir="${input.CATALINA_HOME}\bin"/>
+	</target>
+
+ 
+
+
+
+
+</project>

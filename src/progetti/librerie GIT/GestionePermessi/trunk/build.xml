@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="josso" default="make.release" basedir=".">
+
+    <target name="init">
+    	<tstamp>
+    	      <format property="oggi" pattern="dd/MM/yyyy hh:mm aa"/>
+    	</tstamp>    	
+    	<property name="libdir" value="${basedir}/lib" />
+    	<property name="jardir" value="${basedir}" />
+    	<property name="cvs.root" value=":pserver:makerelease:makerelease@cvs.webred-private.it:/cvs_repos" />
+    	<property name="comp.debug" value="true" />
+    	<property name="comp.deprecation" value="false" />
+
+    	<path id="libs">
+            <fileset dir="${basedir}/lib">
+                <include name="*.jar"/>
+            </fileset>
+        </path>
+    	
+	     <input message="Inserisci una descrizione delle modifiche apportate dalla precedente versione. " addproperty="frase.manifest" />
+
+    	
+    </target>
+	
+    	
+
+	
+ 
+    <target depends="init" name="take.webredutils.from.cvs">
+    	<mkdir dir="${libdir}/.webredutils"/>
+    	<cvs command="export -d ${libdir}/.webredutils -r HEAD webredutils/releases/last/webredutils.jar" cvsRoot="${cvs.root}" />
+        <delete file="${libdir}/webredutils.jar"/>
+        <copy file="${libdir}/.webredutils/webredutils.jar" todir="${libdir}"/>
+        <delete dir="${libdir}/.webredutils"/>
+    </target>
+
+
+    <target depends="init" name="make.release">
+    	<pathconvert property="manifest.classpath"
+    	             pathsep=",">
+    	  <path refid="libs"/>
+          <chainedmapper>
+		    <flattenmapper/>
+		    <globmapper from="*" to="lib/*"/>
+		  </chainedmapper>
+    	</pathconvert>
+    	<mkdir dir="${basedir}/.makeRelease"/>
+    	<cvs command="checkout -N -d ${basedir}/.makeRelease josso/gestionePermessi/releases/last/gestionePermessi.jar" cvsRoot="${cvs.root}" />
+    	<jar basedir="${basedir}/build/classes" compress="true" includes="it/**" jarfile="${basedir}/.makeRelease/josso/gestionePermessi/releases/last/gestionePermessi.jar">
+            <exclude name="**/*.java"/>
+            <exclude name="**/*.jar"/>
+    		<manifest>
+
+                <attribute name="Built-By" value="${user.name} - ${TODAY} at ${TSTAMP}"/>
+           	    <attribute name="Class-Path" value="${manifest.classpath}"/>
+            </manifest>
+        </jar>
+ 
+    	<cvs cvsRoot="${cvs.root}" 
+    	    	        command="commit -m '${frase.manifest}'"
+    	    	        package="josso"
+    	    	        dest="${basedir}/.makeRelease"/>
+    	
+    	<delete dir="${basedir}/.makeRelease"/>
+
+    	
+    </target>
+
+
+
+
+
+
+</project>

@@ -1,0 +1,141 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 2-apr-2006 14.46.00 by Hibernate Tools 3.1.0.beta4 -->
+<hibernate-mapping>
+    <class name="it.webred.mui.model.MiDupTitolarita" table="MI_DUP_TITOLARITA">
+        <id name="iid" type="long">
+            <column name="IID" precision="15" scale="0" />
+            <generator class="increment" />
+        </id>
+        <many-to-one name="miDupFornitura" class="it.webred.mui.model.MiDupFornitura" fetch="select">
+            <column name="IID_FORNITURA" precision="15" scale="0" not-null="true" />
+        </many-to-one>
+        <property name="idNota" type="string">
+            <column name="ID_NOTA" length="20" />
+        </property>
+        <many-to-one name="miDupNotaTras" class="it.webred.mui.model.MiDupNotaTras" fetch="select">
+            <column name="IID_NOTA" precision="15" scale="0" index="tit_nota" />
+        </many-to-one>
+        <property name="idSoggettoNota" type="string">
+            <column name="ID_SOGGETTO_NOTA" length="20" />
+        </property>
+        <many-to-one name="miDupSoggetti" class="it.webred.mui.model.MiDupSoggetti" fetch="select">
+            <column name="IID_SOGGETTO" precision="15" scale="0" index="tit_sgt" />
+        </many-to-one>
+        <property name="idSoggettoCatastale" type="string">
+            <column name="ID_SOGGETTO_CATASTALE" length="20" />
+        </property>
+        <property name="tipoSoggetto" type="string">
+            <column name="TIPO_SOGGETTO" length="1" />
+        </property>
+        <property name="idImmobile" type="string">
+            <column name="ID_IMMOBILE" length="20" />
+        </property>
+        <many-to-one name="miDupFabbricatiInfo" class="it.webred.mui.model.MiDupFabbricatiInfo" fetch="select">
+            <column name="IID_FABBRICATIINFO" precision="15" index="tit_fabinfo"  scale="0"/>
+        </many-to-one>
+        <many-to-one name="miDupTerreniInfo" class="it.webred.mui.model.MiDupTerreniInfo" fetch="select">
+            <column name="IID_TERRENIINFO" precision="15" index="tit_terinfo" scale="0"/>
+        </many-to-one>
+        <property name="tipologiaImmobile" type="string">
+            <column name="TIPOLOGIA_IMMOBILE" length="1" />
+        </property>
+        <property name="scFlagTipoTitolNota" type="string">
+            <column name="SC_FLAG_TIPO_TITOL_NOTA" length="1" />
+        </property>
+        <property name="scCodiceDiritto" type="string">
+            <column name="SC_CODICE_DIRITTO" length="3" />
+        </property>
+        <many-to-one name="codiceDup" class="it.webred.mui.model.CodiciDup" fetch="select">
+            <column name="CODICE_DUP" length="8"/>
+        </many-to-one>
+        <property name="scQuotaNumeratore" type="string">
+            <column name="SC_QUOTA_NUMERATORE" length="20" />
+        </property>
+        <property name="scQuotaDenominatore" type="string">
+            <column name="SC_QUOTA_DENOMINATORE" length="20" />
+        </property>
+        <property name="quota" type="big_decimal">
+            <column name="QUOTA" precision="15" scale="6"/>
+        </property>
+        <property name="scRegime" type="string">
+            <column name="SC_REGIME" length="1" />
+        </property>
+        <property name="scSoggettoRif" type="string">
+            <column name="SC_SOGGETTO_RIF" length="20" />
+        </property>
+        <property name="sfFlagTipoTitolNota" type="string">
+            <column name="SF_FLAG_TIPO_TITOL_NOTA" length="1" />
+        </property>
+        <property name="sfCodiceDiritto" type="string">
+            <column name="SF_CODICE_DIRITTO" length="3" />
+        </property>
+        <property name="sfQuotaNumeratore" type="string">
+            <column name="SF_QUOTA_NUMERATORE" length="20" />
+        </property>
+        <property name="sfQuotaDenominatore" type="string">
+            <column name="SF_QUOTA_DENOMINATORE" length="20" />
+        </property>
+        <property name="sfRegime" type="string">
+            <column name="SF_REGIME" length="1" />
+        </property>
+        <property name="sfSoggettoRif" type="string">
+            <column name="SF_SOGGETTO_RIF" length="20" />
+        </property>
+        <property name="prFlaTipoTitolCat" type="string">
+            <column name="PR_FLA_TIPO_TITOL_CAT" length="1" />
+        </property>
+        <property name="prIdTitolarita" type="string">
+            <column name="PR_ID_TITOLARITA" length="20" />
+        </property>
+        <property name="prCodiceDiritto" type="string">
+            <column name="PR_CODICE_DIRITTO" length="3" />
+        </property>
+        <property name="prQuotaNumeratore" type="string">
+            <column name="PR_QUOTA_NUMERATORE" length="20" />
+        </property>
+        <property name="prQuotaDenomin" type="string">
+            <column name="PR_QUOTA_DENOMIN" length="20" />
+        </property>
+        <property name="prTitoloNonCod" type="string">
+            <column name="PR_TITOLO_NON_COD" length="200" />
+        </property>
+        <property name="prRegime" type="string">
+            <column name="PR_REGIME" length="1" />
+        </property>
+        <property name="prSoggettoRif" type="string">
+            <column name="PR_SOGGETTO_RIF" length="20" />
+        </property>
+        <property name="drFlaTipoTitolCat" type="string">
+            <column name="DR_FLA_TIPO_TITOL_CAT" length="1" />
+        </property>
+        <property name="drIdTitolarita" type="string">
+            <column name="DR_ID_TITOLARITA" length="20" />
+        </property>
+        <property name="drCodiceDiritto" type="string">
+            <column name="DR_CODICE_DIRITTO" length="3" />
+        </property>
+        <property name="drQuotaNumeratore" type="string">
+            <column name="DR_QUOTA_NUMERATORE" length="20" />
+        </property>
+        <property name="drQuotaDenomin" type="string">
+            <column name="DR_QUOTA_DENOMIN" length="20" />
+        </property>
+        <property name="drTitoloNonCod" type="string">
+            <column name="DR_TITOLO_NON_COD" length="200" />
+        </property>
+        <property name="drRegime" type="string">
+            <column name="DR_REGIME" length="1" />
+        </property>
+        <property name="drSoggettoRif" type="string">
+            <column name="DR_SOGGETTO_RIF" length="20" />
+        </property>
+        <set name="miConsOggettos" inverse="true">
+            <key>
+                <column name="IID_TITOLARITA" precision="15" scale="0" not-null="true" />
+            </key>
+            <one-to-many class="it.webred.mui.model.MiConsOggetto" />
+        </set>
+    </class>
+</hibernate-mapping>

@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 2-apr-2006 14.46.01 by Hibernate Tools 3.1.0.beta4 -->
+<hibernate-mapping>
+	<class name="it.webred.mui.model.MiDupFornituraInfo"
+		table="MI_DUP_FORNITURA_INFO">
+		<id name="iid" type="long">
+			<column name="IID" precision="15" scale="0" />
+			<generator class="increment" />
+		</id>
+		<many-to-one name="miDupFornitura" unique="true"
+			class="it.webred.mui.model.MiDupFornitura" fetch="select">
+			<column name="IID_FORNITURA" precision="15" scale="0"
+				not-null="true" />
+		</many-to-one>
+		<property name="recordScritti" type="string">
+			<column name="RECORD_SCRITTI" length="20" />
+		</property>
+		<property name="note" type="string">
+			<column name="NOTE" length="20" />
+		</property>
+		<property name="noteRegistrate" type="string">
+			<column name="NOTE_REGISTRATE" length="20" />
+		</property>
+		<property name="noteScartate" type="string">
+			<column name="NOTE_SCARTATE" length="20" />
+		</property>
+		<property name="immobiliTrattati" type="string">
+			<column name="IMMOBILI_TRATTATI" length="20" />
+		</property>
+		<property name="particelle" type="string">
+			<column name="PARTICELLE" length="20" />
+		</property>
+		<property name="fabbricati" type="string">
+			<column name="FABBRICATI" length="20" />
+		</property>
+	</class>
+</hibernate-mapping>

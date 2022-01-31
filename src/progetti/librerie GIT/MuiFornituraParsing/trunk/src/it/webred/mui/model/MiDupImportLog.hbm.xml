@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 2-apr-2006 14.46.01 by Hibernate Tools 3.1.0.beta4 -->
+<hibernate-mapping>
+    <class name="it.webred.mui.model.MiDupImportLog" table="MI_DUP_IMPORT_LOG">
+ 	    <meta attribute="generated-class">
+	        it.webred.mui.model.MiDupImportLogBase
+	    </meta>
+        <id name="iid" type="long">
+            <column name="IID" precision="15" scale="0" />
+            <generator class="increment" />
+        </id>
+        <many-to-one name="miDupFornitura" class="it.webred.mui.model.MiDupFornitura" lazy="false" fetch="select">
+            <column name="IID_FORNITURA" precision="15" index="implog_forn" scale="0" not-null="true" />
+        </many-to-one>
+        <property name="idNota" type="string">
+            <column name="ID_NOTA" length="20" />
+        </property>
+        <many-to-one name="miDupNotaTras" class="it.webred.mui.model.MiDupNotaTras" lazy="false" fetch="select">
+            <column name="IID_NOTA" precision="15" index="implog_nota" scale="0"/>
+        </many-to-one>
+        <property name="tipoRecord" type="integer">
+            <column name="TIPO_RECORD" precision="3" />
+        </property>
+        <property name="tabellaRecord" type="string">
+            <column name="TABELLA_RECORD" length="64" />
+        </property>
+        <property name="colonnaRegolaInfranta" type="string">
+            <column name="COLONNA_REGOLA" length="64" />
+        </property>
+        <many-to-one name="codiceRegolaInfranta" class="it.webred.mui.model.CodiceErroreImport" lazy="false" fetch="select">
+            <column name="CODICE_REGOLA" index="implog_codiceReg" length="16" />
+        </many-to-one>
+        <many-to-one name="miDupFabbricatiIdentifica" class="it.webred.mui.model.MiDupFabbricatiIdentifica" lazy="false" fetch="select">
+            <column name="IID_FABBRICATO_IDENTIFICA" index="implog_fabid" precision="15" scale="0"/>
+        </many-to-one>
+        <many-to-one name="miDupFabbricatiInfo" class="it.webred.mui.model.MiDupFabbricatiInfo" lazy="false" fetch="select">
+            <column name="IID_FABBRICATO_INFO" index="implog_fabinfo" precision="15" scale="0"/>
+        </many-to-one>
+        <many-to-one name="miDupFornituraInfo" class="it.webred.mui.model.MiDupFornituraInfo" lazy="false" fetch="select">
+            <column name="IID_FORNITURA_INFO" index="implog_forninfo" precision="15" scale="0"/>
+        </many-to-one>
+        <many-to-one name="miDupIndirizziSog" class="it.webred.mui.model.MiDupIndirizziSog" lazy="false" fetch="select">
+            <column name="IID_INDIRIZZO_SOG" index="implog_indsog" precision="15" scale="0"/>
+        </many-to-one>
+        <many-to-one name="miDupSoggetti" class="it.webred.mui.model.MiDupSoggetti" lazy="false" fetch="select">
+            <column name="IID_SOGGETTO" index="implog_sog" precision="15" scale="0"/>
+        </many-to-one>
+        <many-to-one name="miDupTerreniInfo" class="it.webred.mui.model.MiDupTerreniInfo" lazy="false" fetch="select">
+            <column name="IID_TERRENO_INFO" index="implog_terinfo" precision="15" scale="0"/>
+        </many-to-one>
+        <many-to-one name="miDupTitolarita" class="it.webred.mui.model.MiDupTitolarita" lazy="false" fetch="select">
+            <column name="IID_TITOLARITA" index="implog_tit" precision="15" scale="0"/>
+        </many-to-one>
+    </class>
+</hibernate-mapping>

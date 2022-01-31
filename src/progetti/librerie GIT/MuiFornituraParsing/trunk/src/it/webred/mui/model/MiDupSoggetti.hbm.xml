@@ -1,0 +1,78 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 2-apr-2006 14.46.00 by Hibernate Tools 3.1.0.beta4 -->
+<hibernate-mapping>
+    <class name="it.webred.mui.model.MiDupSoggetti" table="MI_DUP_SOGGETTI">
+ 	    <meta attribute="generated-class">
+	        it.webred.mui.model.MiDupSoggettiBase
+	    </meta>
+        <id name="iid" type="long">
+            <column name="IID" precision="15" scale="0" />
+            <generator class="increment" />
+        </id>
+        <many-to-one name="miDupFornitura" class="it.webred.mui.model.MiDupFornitura" fetch="select">
+            <column name="IID_FORNITURA" precision="15" scale="0" not-null="true" />
+        </many-to-one>
+        <property name="idNota" type="string">
+            <column name="ID_NOTA" length="20" />
+        </property>
+        <many-to-one name="miDupNotaTras" class="it.webred.mui.model.MiDupNotaTras" fetch="select">
+            <column name="IID_NOTA" precision="15" scale="0"/>
+        </many-to-one>
+        <property name="idSoggettoNota" type="string">
+            <column name="ID_SOGGETTO_NOTA" length="20" />
+        </property>
+        <property name="idSoggettoCatastale" type="string">
+            <column name="ID_SOGGETTO_CATASTALE" length="20" />
+        </property>
+        <property name="tipoSoggetto" type="string">
+            <column name="TIPO_SOGGETTO" length="1" />
+        </property>
+        <property name="cognome" type="string">
+            <column index="sgt_cogcol" name="COGNOME" length="50" />
+        </property>
+        <property name="nome" type="string">
+            <column name="NOME" length="50" />
+        </property>
+        <property name="sesso" type="string">
+            <column name="SESSO" length="1" />
+        </property>
+        <property name="dataNascita" type="string">
+            <column name="DATA_NASCITA" length="8" />
+        </property>
+        <property name="luogoNascita" type="string">
+            <column name="LUOGO_NASCITA" length="4" />
+        </property>
+        <property name="codiceFiscale" type="string">
+            <column name="CODICE_FISCALE" length="16" />
+        </property>
+        <property name="denominazione" type="string">
+            <column name="DENOMINAZIONE" length="150" />
+        </property>
+        <property name="sede" type="string">
+            <column name="SEDE" length="4" />
+        </property>
+        <property name="codiceFiscaleG" type="string">
+            <column index="sgt_cfgcol" name="CODICE_FISCALE_G" length="11" />
+        </property>
+        <set name="miDupTitolaritas" inverse="true">
+            <key>
+                <column name="IID_SOGGETTO" precision="15" scale="0" />
+            </key>
+            <one-to-many class="it.webred.mui.model.MiDupTitolarita" />
+        </set>
+        <set name="miDupIndirizziSogs" inverse="true">
+            <key>
+                <column name="IID_SOGGETTO" precision="15" scale="0"/>
+            </key>
+            <one-to-many class="it.webred.mui.model.MiDupIndirizziSog" />
+        </set>
+        <set name="miConsComunicaziones" inverse="true">
+            <key>
+                <column name="IID_SOGGETTO" precision="15" scale="0" not-null="true" />
+            </key>
+            <one-to-many class="it.webred.mui.model.MiConsComunicazione" />
+        </set>
+    </class>
+</hibernate-mapping>

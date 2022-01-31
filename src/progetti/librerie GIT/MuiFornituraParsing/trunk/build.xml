@@ -1,0 +1,22 @@
+<project name="MuiFornituraParsing" basedir=".">
+	
+	<property name="src.home" value="src"/>
+	<property name="src_generated.home" value="src_generated"/>
+		
+	<target name="hb-build-pojos" >
+		<hibernatetool
+		  destdir="src_generated">
+	    	<classpath refid="compile.classpath"/>
+			<configuration configurationfile="hibernate.ant-cfg.xml">
+				<fileset dir="${src.home}" defaultexcludes="yes">
+					<patternset>
+						<!-- hibernate mapping files -->
+						<include name="**/*.hbm.xml"/>
+					</patternset>
+				</fileset>
+			</configuration>	
+			<hbm2java jdk5="true" ejb3="false"/>
+		</hibernatetool>
+	</target>
+	
+</project>

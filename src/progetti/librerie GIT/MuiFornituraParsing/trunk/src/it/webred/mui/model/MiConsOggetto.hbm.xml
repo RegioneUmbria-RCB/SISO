@@ -1,0 +1,192 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 2-apr-2006 14.46.01 by Hibernate Tools 3.1.0.beta4 -->
+<hibernate-mapping>
+    <class name="it.webred.mui.model.MiConsOggetto" table="MI_CONS_OGGETTO">
+ 	    <meta attribute="generated-class">
+	        it.webred.mui.model.MiConsOggettoBase
+	    </meta>
+        <id name="iid" type="long">
+            <column name="IID" precision="15" scale="0" />
+            <generator class="increment" />
+        </id>
+        <many-to-one name="miDupFornitura" class="it.webred.mui.model.MiDupFornitura" fetch="select">
+            <column name="IID_FORNITURA" precision="15" scale="0" not-null="true" />
+        </many-to-one>
+        <many-to-one name="miConsComunicazione" class="it.webred.mui.model.MiConsComunicazione" fetch="select">
+            <column name="IID_COMUNICAZIONE" precision="15" scale="0" not-null="true" />
+        </many-to-one>
+        <many-to-one name="miDupTitolarita" class="it.webred.mui.model.MiDupTitolarita" fetch="select">
+            <column name="IID_TITOLARITA" precision="15" scale="0" not-null="true" />
+        </many-to-one>
+        <property name="codiceVariazione" type="string">
+            <column name="CODICE_VARIAZIONE" length="30" />
+        </property>
+        <property name="descrizioneVariazione" type="string">
+            <column name="DESC_VARIAZIONE" length="128" />
+        </property>
+        <property name="decorrenza" type="date">
+            <column name="DECORRENZA" />
+        </property>
+        <property name="flagFabbricato" type="yes_no">
+            <column name="FLAG_FABBRICATO" />
+        </property>
+        <property name="flagAreaFabbricabile" type="yes_no">
+            <column name="FLAG_AREA_FABBRICABILE" />
+        </property>
+        <property name="flagFabbricatoD" type="yes_no">
+            <column name="FLAG_FABBRICATO_D" />
+        </property>
+        <property name="flagTerrenoAgricolo" type="yes_no">
+            <column name="FLAG_TERRENO_AGRICOLO" />
+        </property>
+        <property name="indirizzo" type="string">
+            <column name="INDIRIZZO" length="128" />
+        </property>
+        <property name="sezione" type="string">
+            <column name="SEZIONE" length="6" />
+        </property>
+        <property name="foglio" type="string">
+            <column name="FOGLIO" length="6" />
+        </property>
+        <property name="particella" type="string">
+            <column name="PARTICELLA" length="6" />
+        </property>
+        <property name="subalterno" type="string">
+            <column name="SUBALTERNO" length="6" />
+        </property>
+        <property name="numeroProtocollo" type="string">
+            <column name="NUMERO_PROTOCOLLO" length="10" />
+        </property>
+        <property name="anno" type="date">
+            <column name="ANNO" length="1" />
+        </property>
+        <property name="categoria" type="string">
+            <column name="CATEGORIA" length="3" />
+        </property>
+        <property name="classe" type="string">
+            <column name="CLASSE" length="2" />
+        </property>
+        <property name="flagRenditaPresunta" type="yes_no">
+            <column name="FLAG_RENDITA_PRESUNTA" />
+        </property>
+        <property name="flagRenditaDefinitiva" type="yes_no">
+            <column name="FLAG_RENDITA_DEFINITIVA" />
+        </property>
+        <property name="flagValoreVenale" type="yes_no">
+            <column name="FLAG_VALORE_VENALE" />
+        </property>
+        <property name="flagCostiContabili" type="yes_no">
+            <column name="FLAG_COSTI_CONTABILI" />
+        </property>
+        <property name="flagRedditoDomenicale" type="yes_no">
+            <column name="FLAG_REDDITO_DOMENICALE" />
+        </property>
+        <property name="redditoEuro" type="big_decimal">
+            <column name="REDDITO_EURO" precision="15" scale="5" />
+        </property>
+        <property name="sezioneVar" type="string">
+            <column name="SEZIONE_VAR" length="3" />
+        </property>
+        <property name="foglioVar" type="string">
+            <column name="FOGLIO_VAR" length="4" />
+        </property>
+        <property name="particellaVar" type="string">
+            <column name="PARTICELLA_VAR" length="5" />
+        </property>
+        <property name="subalternoVar" type="string">
+            <column name="SUBALTERNO_VAR" length="4" />
+        </property>
+        <property name="numeroProtocolloVar" type="string">
+            <column name="NUMERO_PROTOCOLLO_VAR" length="9" />
+        </property>
+        <property name="annoVar" type="date">
+            <column name="ANNO_VAR" length="1" />
+        </property>
+        <property name="categoriaVar" type="string">
+            <column name="CATEGORIA_VAR" length="3" />
+        </property>
+        <property name="classeVar" type="string">
+            <column name="CLASSE_VAR" length="2" />
+        </property>
+        <property name="percentualePossesso" type="big_decimal">
+            <column name="PERCENTUALE_POSSESSO" precision="15" scale="5" />
+        </property>
+        <property name="flagPossessoProprieta" type="yes_no">
+            <column name="FLAG_POSSESSO_PROPRIETA" />
+        </property>
+        <property name="flagPossessoUsufrutto" type="yes_no">
+            <column name="FLAG_POSSESSO_USUFRUTTO" />
+        </property>
+        <property name="flagPossessoUso" type="yes_no">
+            <column name="FLAG_POSSESSO_USO" />
+        </property>
+        <property name="flagPossessoDirittoAbitazione" type="yes_no">
+            <column name="FLAG_POSSESSO_DIRITTO_ABIT" />
+        </property>
+        <property name="flagPossessoSuperficie" type="yes_no">
+            <column name="FLAG_POSSESSO_SUPERFICIE" />
+        </property>
+        <property name="flagPossessoLeasing" type="yes_no">
+            <column name="FLAG_POSSESSO_LEASING" />
+        </property>
+        <property name="altroPossesso" type="string">
+            <column name="ALTRO_POSSESSO" length="50" />
+        </property>
+        <property name="flagAbitazionePrincipale" type="yes_no">
+            <column name="FLAG_ABIT_PRINCIPALE" />
+        </property>
+        <property name="flagAbitazionePrincipaleNoMore" type="yes_no">
+            <column name="FLAG_ABIT_PRINCIPALE_NM" />
+        </property>
+        <property name="contitolariAbitazionePrincipale" type="integer">
+            <column name="CONTITOLARI_ABIT_PRINCIPALE"/>
+        </property>
+        <property name="flagInagibile" type="yes_no">
+            <column name="FLAG_INAGIBILE" />
+        </property>
+        <property name="flagAgricolturaDiretta" type="yes_no">
+            <column name="FLAG_AGRICOLTURA_DIRETTA" />
+        </property>
+        <property name="flagImmobileEscluso" type="yes_no">
+            <column name="FLAG_IMMOBILE_ESCLUSO" />
+        </property>
+        <property name="flagRiduzioneLocazione" type="yes_no">
+            <column name="FLAG_RIDUZIONE_LOCAZIONE" />
+        </property>
+        <property name="flagStorico" type="yes_no">
+            <column name="FLAG_STORICO" />
+        </property>
+        <property name="flagDetrazioneDelibera" type="yes_no">
+            <column name="FLAG_DETRAZIONE_DELIB" />
+        </property>
+        <property name="flagDetrazioneDeliberaNM" type="yes_no">
+            <column name="FLAG_DETRAZIONE_DELIB_NM" />
+        </property>
+        <property name="membriNucleoFamiliare" type="integer">
+            <column name="MEMBRI_NUCLEO_FAMILIARE"/>
+        </property>
+        <property name="flagPensionato" type="yes_no">
+            <column name="FLAG_PENSIONATO" />
+        </property>
+        <property name="flagConiugePensionato" type="yes_no">
+            <column name="FLAG_CONIUGE_PENSIONATO" />
+        </property>
+        <property name="flagInvalido" type="yes_no">
+            <column name="FLAG_INVALIDO" />
+        </property>
+        <property name="flagDisoccupato" type="yes_no">
+            <column name="FLAG_DISOCCUPATO" />
+        </property>
+        <property name="flagMobilita" type="yes_no">
+            <column name="FLAG_MOBILITA" />
+        </property>
+        <property name="flagInterinale" type="yes_no">
+            <column name="FLAG_INTERINALE" />
+        </property>
+        <property name="flagCococo" type="yes_no">
+            <column name="FLAG_COCOCO" />
+        </property>     
+     </class>
+</hibernate-mapping>

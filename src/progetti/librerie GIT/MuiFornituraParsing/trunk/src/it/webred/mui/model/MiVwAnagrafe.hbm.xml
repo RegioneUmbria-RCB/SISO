@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="it.webred.mui.model.MiVwAnagrafe">
+		<subselect>
+			select distinct
+						CODICE_FISCALE,
+						COGNOME, 
+						NOME, 
+						SESSO, 
+						DATA_NASCITA, 
+						DESCR_COMUNE_NASCITA, 
+						DESCR_INDIRIZZO
+				from		
+						VW_ANAGRAFE 
+		</subselect>
+		<synchronize table="mi_dup_nota_tras"/>
+		<id name="codiceFiscale" type="string">
+       		<column name="CODICE_FISCALE" length="30" />
+        </id>
+		<property name="nome" type="string">
+        	<column name="NOME" length="255" />
+        </property>
+		<property name="cognome" type="string">
+        	<column name="COGNOME" length="255" />
+        </property>
+		<property name="sesso" type="string">
+        	<column name="SESSO" length="2" />
+        </property>
+		<property name="dataNascita" type="date">
+        	<column name="DATA_NASCITA" />
+        </property>
+		<property name="comuneNascita" type="string">
+        	<column name="DESCR_COMUNE_NASCITA" length="250" />
+        </property>
+		<property name="indirizzo" type="string">
+        	<column name="DESCR_INDIRIZZO" length="250" />
+        </property>
+	</class>
+</hibernate-mapping>

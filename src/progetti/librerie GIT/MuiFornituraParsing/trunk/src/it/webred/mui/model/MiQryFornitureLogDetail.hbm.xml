@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="it.webred.mui.model.MiQryFornitureLogDetail" table="VwFornitureLogDetail">
+		<subselect>
+				select 
+								iid_fornitura 
+								,count(*) totale
+								,l.codice_regola codice_regola
+								, tabella_record
+								, colonna_regola
+								,decode(bloccante,'N','N','S') bloccante
+							from 
+								mi_dup_import_log l,CODICE_ERRORE_IMPORT c
+							where 		c.codice_regola = l.codice_regola
+							group by iid_fornitura,l.codice_regola ,bloccante, colonna_regola , tabella_record 
+		</subselect>	
+		<composite-id>
+			<key-property name="iidFornitura" type="long"><column name="iid_fornitura" precision="15" scale="0" /></key-property>
+			<key-property name="codiceRegola"  type="string"><column name="CODICE_REGOLA" length="8" not-null="true" /></key-property>
+			<key-property name="tabella"  type="string"><column name="TABELLA_RECORD" length="8" not-null="true" /></key-property>
+			<key-property name="colonna"  type="string"><column name="COLONNA_REGOLA" length="8" not-null="true" /></key-property>
+			<key-property name="bloccante" type="string" ><column default="'N'" name="BLOCCANTE" /></key-property>		
+		</composite-id>
+		<property name="totali" type="long"> <column name="TOTALE" precision="15" scale="0" /></property>                       
+  	</class>
+</hibernate-mapping>

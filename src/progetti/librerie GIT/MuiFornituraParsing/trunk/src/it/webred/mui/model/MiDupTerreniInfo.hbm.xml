@@ -1,0 +1,87 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 2-apr-2006 14.46.01 by Hibernate Tools 3.1.0.beta4 -->
+<hibernate-mapping>
+    <class name="it.webred.mui.model.MiDupTerreniInfo" table="MI_DUP_TERRENI_INFO">
+        <id name="iid" type="long">
+            <column name="IID" precision="15" scale="0" />
+            <generator class="increment" />
+        </id>
+        <many-to-one name="miDupFornitura" class="it.webred.mui.model.MiDupFornitura" fetch="select">
+            <column name="IID_FORNITURA" precision="15" scale="0" not-null="true" />
+        </many-to-one>
+        <property name="idNota" type="string">
+            <column name="ID_NOTA" length="20" />
+        </property>
+        <many-to-one name="miDupNotaTras" class="it.webred.mui.model.MiDupNotaTras" fetch="select">
+            <column name="IID_NOTA" precision="15" scale="0"/>
+        </many-to-one>
+        <property name="tipologiaImmobile" type="string">
+            <column name="TIPOLOGIA_IMMOBILE" length="1" />
+        </property>
+        <property name="idImmobile" type="string">
+            <column name="ID_IMMOBILE" length="20" />
+        </property>
+        <property name="idCatastaleImmobile" type="string">
+            <column name="ID_CATASTALE_IMMOBILE" length="20" />
+        </property>
+        <property name="codiceEsito" type="string">
+            <column name="CODICE_ESITO" length="5" />
+        </property>
+        <property name="sezioneCensuaruia" type="string">
+            <column name="SEZIONE_CENSUARUIA" length="1" />
+        </property>
+        <property name="foglio" type="string">
+            <column name="FOGLIO" length="20" />
+        </property>
+        <property name="numero" type="string">
+            <column name="NUMERO" length="5" />
+        </property>
+        <property name="denominatore" type="string">
+            <column name="DENOMINATORE" length="20" />
+        </property>
+        <property name="subalterno" type="string">
+            <column name="SUBALTERNO" length="4" />
+        </property>
+        <property name="edificabilita" type="string">
+            <column name="EDIFICABILITA" length="1" />
+        </property>
+        <property name="natura" type="string">
+            <column name="NATURA" length="3" />
+        </property>
+        <property name="qualita" type="string">
+            <column name="QUALITA" length="20" />
+        </property>
+        <property name="classe" type="string">
+            <column name="CLASSE" length="2" />
+        </property>
+        <property name="ettari" type="string">
+            <column name="ETTARI" length="20" />
+        </property>
+        <property name="are" type="string">
+            <column name="ARE" length="20" />
+        </property>
+        <property name="centiare" type="string">
+            <column name="CENTIARE" length="20" />
+        </property>
+        <property name="flagReddito" type="string">
+            <column name="FLAG_REDDITO" length="1" />
+        </property>
+        <property name="redditoDominicaleEuro" type="string">
+            <column name="REDDITO_DOMINICALE_EURO" length="20" />
+        </property>
+        <property name="redditoAgrarioEuro" type="string">
+            <column name="REDDITO_AGRARIO_EURO" length="20" />
+        </property>
+        <property name="partita" type="string">
+            <column name="PARTITA" length="7" />
+        </property>
+        <set name="miDupTitolaritas" inverse="true">
+            <key>
+                <column name="IID_TERRENIINFO" precision="15" />
+            </key>
+            <one-to-many class="it.webred.mui.model.MiDupTitolarita" />
+        </set>
+    </class>
+</hibernate-mapping>
