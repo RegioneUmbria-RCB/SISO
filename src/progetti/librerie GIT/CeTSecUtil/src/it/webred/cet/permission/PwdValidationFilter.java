@@ -6,6 +6,9 @@ import it.webred.amprofiler.ejb.perm.LoginBeanService;
 
 import java.io.IOException;
 import java.security.Principal;
+import java.util.HashMap;
+import java.util.List;
+
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -30,38 +33,37 @@ public class PwdValidationFilter implements Filter {
     }
 
     @Override
-    public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain) throws IOException, ServletException {
-    	if(req instanceof HttpServletRequest)
-			System.out.println("PwdValidationFilter-doFilter "+ getCurrentUrlFromRequest((HttpServletRequest)req));
+    public void doFilter(ServletRequest req, ServletResponse resp,
+	    FilterChain chain) throws IOException, ServletException {
+	
+	HttpServletRequest request = (HttpServletRequest) req;
+	HttpSession session = request.getSession(false);
+	Boolean validata = (Boolean) session.getAttribute("pwdValida");
+	
+	if (session != null && validata != null && validata.equals(new Boolean(true))) {
+		chain.doFilter(req, resp);
+		return;
+	}
+	
+	Principal princ = request.getUserPrincipal();
+	
+	try {
+		int numGiorniVal = Integer.parseInt(conf.getInitParameter("numGiorniVal") == null ? "90" : conf.getInitParameter("numGiorniVal"));
 		
-		HttpServletRequest request = (HttpServletRequest) req;
-		HttpSession session = request.getSession(false);
-		Boolean validata = (Boolean) session.getAttribute("pwdValida");
+	    LoginBeanService service = (LoginBeanService) ctx.lookup("java:global/AmProfiler/AmProfilerEjb/LoginBean");
+	    boolean pwdValida = service.isPwdValida(princ.getName(), numGiorniVal);  
+	    session.setAttribute("pwdValida", new Boolean(pwdValida));
+	    
+		String paginaCambioPwd = "/AMProfiler/SalvaNuovaPassword?pwdScaduta=true&userName=" + princ.getName() + "&pathApp=" + ((HttpServletRequest)req).getContextPath();
 		
-		if (session != null && validata != null && validata.equals(new Boolean(true))) {
+		if (pwdValida) {
 			chain.doFilter(req, resp);
-			return;
+		} else {
+			((HttpServletResponse)resp).sendRedirect(paginaCambioPwd);
 		}
-		
-		Principal princ = request.getUserPrincipal();
-		
-		try {
-			int numGiorniVal = Integer.parseInt(conf.getInitParameter("numGiorniVal") == null ? "90" : conf.getInitParameter("numGiorniVal"));
-			
-		    LoginBeanService service = (LoginBeanService) ctx.lookup("java:global/AmProfiler/AmProfilerEjb/LoginBean");
-		    boolean pwdValida = service.isPwdValida(princ.getName(), numGiorniVal);  
-		    session.setAttribute("pwdValida", new Boolean(pwdValida));
-		    
-			String paginaCambioPwd = "/AMProfiler/SalvaNuovaPassword?pwdScaduta=true&userName=" + princ.getName() + "&pathApp=" + ((HttpServletRequest)req).getContextPath();
-			
-			if (pwdValida) {
-				chain.doFilter(req, resp);
-			} else {
-				((HttpServletResponse)resp).sendRedirect(paginaCambioPwd);
-			}
-		} catch (NamingException e) {	    
-		    e.printStackTrace();	    
-		}
+	} catch (NamingException e) {	    
+	    e.printStackTrace();	    
+	}
 	
     }
 
@@ -75,16 +77,5 @@ public class PwdValidationFilter implements Filter {
 	}
 
     }
-    
-	private String getCurrentUrlFromRequest(HttpServletRequest request)
-	{
-	    StringBuffer requestURL = request.getRequestURL();
-	    String queryString = request.getQueryString();
-
-	    if (queryString == null)
-	        return requestURL.toString();
-
-	    return requestURL.append('?').append(queryString).toString();
-	}
 
 }

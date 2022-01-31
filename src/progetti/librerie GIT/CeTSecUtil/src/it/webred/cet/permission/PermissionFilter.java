@@ -6,8 +6,11 @@ import it.webred.amprofiler.model.perm.PermAccesso;
 
 import java.io.IOException;
 import java.security.Principal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -37,11 +40,9 @@ public class PermissionFilter implements Filter {
 	}
 
 	@Override
-	public void doFilter(ServletRequest req, ServletResponse resp,FilterChain chain) throws IOException, ServletException {
-		
-		if(req instanceof HttpServletRequest)
-			System.out.println("Permission filter-doFilter "+ getCurrentUrlFromRequest((HttpServletRequest)req));
-		
+	public void doFilter(ServletRequest req, ServletResponse resp,
+			FilterChain chain) throws IOException, ServletException {
+
 		HttpServletRequest request = (HttpServletRequest) req;
 		HttpSession session = request.getSession(false);
 		
@@ -207,17 +208,6 @@ public class PermissionFilter implements Filter {
 			e.printStackTrace();
 		}
 
-	}
-	
-	private String getCurrentUrlFromRequest(HttpServletRequest request)
-	{
-	    StringBuffer requestURL = request.getRequestURL();
-	    String queryString = request.getQueryString();
-
-	    if (queryString == null)
-	        return requestURL.toString();
-
-	    return requestURL.append('?').append(queryString).toString();
 	}
 
 }
