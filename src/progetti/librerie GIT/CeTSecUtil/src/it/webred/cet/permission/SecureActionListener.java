@@ -1,23 +1,13 @@
 package it.webred.cet.permission;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
-import java.util.HashMap;
-
 import it.webred.cet.permission.annotation.Security;
 
-import javax.el.ELContext;
-import javax.el.ExpressionFactory;
-import javax.el.MethodExpression;
-import javax.el.ValueExpression;
+import java.util.HashMap;
+
 import javax.faces.application.Application;
 import javax.faces.application.NavigationHandler;
-import javax.faces.component.ActionSource;
-import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
-import javax.faces.el.MethodBinding;
 import javax.faces.event.ActionEvent;
-import javax.faces.event.ActionListener;
 import javax.servlet.http.HttpSession;
 
 //import com.sun.faces.application.ActionListenerImpl;
