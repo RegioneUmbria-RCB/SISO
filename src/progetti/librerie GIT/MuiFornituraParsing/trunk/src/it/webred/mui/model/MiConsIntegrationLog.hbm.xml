@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 2-apr-2006 14.46.01 by Hibernate Tools 3.1.0.beta4 -->
+<hibernate-mapping>
+    <class name="it.webred.mui.model.MiConsIntegrationLog" table="MI_CONS_INTEGRATION_LOG">
+        <id name="iid" type="long">
+            <column name="IID" precision="15" scale="0" />
+            <generator class="increment" />
+        </id>
+        <many-to-one name="miConsComunicazione" class="it.webred.mui.model.MiConsComunicazione" fetch="select">
+            <column name="IID_COMUNICAZIONE" precision="15" scale="0" not-null="true" />
+        </many-to-one>
+        <property name="tabellaRecord" type="string">
+            <column name="TABELLA_RECORD" length="64" />
+        </property>
+        <property name="colonnaRegolaInfranta" type="string">
+            <column name="COLONNA_REGOLA" length="64" />
+        </property>
+        <property name="codiceRegolaInfranta" type="string">
+            <column name="CODICE_REGOLA" length="16" />
+        </property>
+        <property name="note" type="string">
+            <column name="NOTE" length="256" />
+        </property>
+        <many-to-one name="miConsOggetto" class="it.webred.mui.model.MiConsOggetto" fetch="select">
+            <column name="IID_OGGETTO" precision="15" scale="0"/>
+        </many-to-one>
+        <many-to-one name="miDupFornitura" class="it.webred.mui.model.MiDupFornitura" fetch="select">
+            <column name="IID_FORNITURA" precision="15" scale="0" not-null="true" />
+        </many-to-one>
+    </class>
+</hibernate-mapping>

@@ -1,0 +1,154 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+	<class name="it.webred.mui.model.MiConsComunicazione"
+		table="MI_CONS_COMUNICAZIONE">
+		<id name="iid" type="long">
+			<column name="IID" precision="15" scale="0" />
+			<generator class="increment" />
+		</id>
+		<many-to-one name="miDupSoggetti"
+			class="it.webred.mui.model.MiDupSoggetti" unique="true"
+			fetch="select">
+			<column name="IID_SOGGETTO" precision="15"
+				scale="0" unique="true" not-null="true" />
+		</many-to-one>
+        <many-to-one name="miDupNotaTras" class="it.webred.mui.model.MiDupNotaTras" fetch="select">
+            <column name="IID_NOTA" precision="15" scale="0" not-null="true" />
+        </many-to-one>
+        <many-to-one name="miDupFornitura" class="it.webred.mui.model.MiDupFornitura" fetch="select">
+            <column name="IID_FORNITURA" precision="15" scale="0" not-null="true" />
+        </many-to-one>
+		<property name="codiceFiscale" type="string">
+			<column name="CODICE_FISCALE" length="16" />
+		</property>
+		<property name="prefisso" type="string">
+			<column name="PREFISSO" length="50" />
+		</property>
+		<property name="telefono" type="string">
+			<column name="TELEFONO" length="50" />
+		</property>
+		<property name="cognome" type="string">
+			<column name="COGNOME" length="150" />
+		</property>
+		<property name="nome" type="string">
+			<column name="NOME" length="50" />
+		</property>
+		<property name="dataNascita" type="date">
+			<column name="DATA_NASCITA" />
+		</property>
+		<property name="comuneNascita" type="string">
+			<column name="COMUNE_NASCITA" length="50" />
+		</property>
+		<property name="provinciaNascita" type="string">
+			<column name="PROVINCIA_NASCITA" length="2" />
+		</property>
+		<property name="sesso" type="string">
+			<column name="SESSO" length="1" />
+		</property>
+		<property name="indirizzo" type="string">
+			<column name="INDIRIZZO" length="50" />
+		</property>
+		<property name="cap" type="string">
+			<column name="CAP" length="5" />
+		</property>
+		<property name="comune" type="string">
+			<column name="COMUNE" length="50" />
+		</property>
+		<property name="provincia" type="string">
+			<column name="PROVINCIA" length="2" />
+		</property>
+		<property name="indirizzoDomicilio" type="string">
+			<column name="INDIRIZZO_DOMICILIO" length="50" />
+		</property>
+		<property name="capDomicilio" type="string">
+			<column name="CAP_DOMICILIO" length="5" />
+		</property>
+		<property name="comuneDomicilio" type="string">
+			<column name="COMUNE_DOMICILIO" length="50" />
+		</property>
+		<property name="provinciaDomicilio" type="string">
+			<column name="PROVINCIA_DOMICILIO" length="2" />
+		</property>
+		<property name="codiceFiscaleRL" type="string">
+			<column name="CODICE_FISCALERL" length="16" />
+		</property>
+		<property name="prefissoRL" type="string">
+			<column name="PREFISSORL" length="50" />
+		</property>
+		<property name="telefonoRL" type="string">
+			<column name="TELEFONORL" length="50" />
+		</property>
+		<property name="cognomeRL" type="string">
+			<column name="COGNOMERL" length="50" />
+		</property>
+		<property name="nomeRL" type="string">
+			<column name="NOMERL" length="50" />
+		</property>
+		<property name="dataNascitaRL" type="date">
+			<column name="DATA_NASCITARL" />
+		</property>
+		<property name="comuneNascitaRL" type="string">
+			<column name="COMUNE_NASCITARL" length="50" />
+		</property>
+		<property name="provinciaNascitaRL" type="string">
+			<column name="PROVINCIA_NASCITARL" length="2" />
+		</property>
+		<property name="sessoRL" type="string">
+			<column name="SESSORL" length="1" />
+		</property>
+		<property name="indirizzoRL" type="string">
+			<column name="INDIRIZZORL" length="50" />
+		</property>
+		<property name="capRL" type="string">
+			<column name="CAPRL" length="5" />
+		</property>
+		<property name="comuneRL" type="string">
+			<column name="COMUNERL" length="50" />
+		</property>
+		<property name="provinciaRL" type="string">
+			<column name="PROVINCIARL" length="2" />
+		</property>
+		<property name="indirizzoDomicilioRL" type="string">
+			<column name="INDIRIZZO_DOMICILIORL" length="50" />
+		</property>
+		<property name="capDomicilioRL" type="string">
+			<column name="CAP_DOMICILIORL" length="5" />
+		</property>
+		<property name="comuneDomicilioRL" type="string">
+			<column name="COMUNE_DOMICILIORL" length="50" />
+		</property>
+		<property name="provinciaDomicilioRL" type="string">
+			<column name="PROVINCIA_DOMICILIORL" length="2" />
+		</property>
+		<property name="flagRappresentanteLegale" type="yes_no">
+			<column name="FLAG_RAPPRESENTANTE_LEGALE" />
+		</property>
+		<property name="flagCuratoreFallimentare" type="yes_no">
+			<column name="FLAG_CURATORE_FALLIMENTARE" />
+		</property>
+		<property name="flagTutore" type="yes_no">
+			<column name="FLAG_TUTORE" />
+		</property>
+		<property name="flagErede" type="yes_no">
+			<column name="FLAG_EREDE" />
+		</property>
+		<property name="altraNatura" type="string">
+			<column name="ALTRA_NATURA" length="50" />
+		</property>
+		<property name="dataComunicazione" type="date">
+			<column name="DATA_COMUNICAZIONE" />
+		</property>
+		<property name="stato" type="integer">
+			<column name="STATO" length="4" />
+		</property>
+		<set name="miConsOggettos" inverse="true">
+			<key>
+				<column name="IID_COMUNICAZIONE" precision="15"
+					scale="0" not-null="true" />
+			</key>
+			<one-to-many class="it.webred.mui.model.MiConsOggetto" />
+		</set>
+	</class>
+</hibernate-mapping>

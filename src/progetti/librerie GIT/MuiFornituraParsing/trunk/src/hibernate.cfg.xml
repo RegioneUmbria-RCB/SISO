@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC
+"-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+	<session-factory>
+        <property name="hibernate.cglib.use_reflection_optimizer">false</property>
+        <property name="hibernate.bytecode.provider">cglib</property>
+        <!-- property name="connection.datasource">java:comp/env/jdbc/mui</property  -->
+        <property name="hibernate.connection.driver_class">oracle.jdbc.driver.OracleDriver</property>
+        <property name="hibernate.connection.password">virgilio</property>
+        <property name="hibernate.connection.url">jdbc:oracle:thin:@PRAGA:1521:PRAGA</property>
+        <property name="hibernate.connection.username">virgilio</property>
+        <!-- <property name="hibernate.default_schema">virgilio</property>  -->
+        <!-- -->
+        <property name="hibernate.dialect">org.hibernate.dialect.Oracle9iDialect</property>
+        <mapping resource="it/webred/mui/model/CodiciDup.hbm.xml" />
+		<mapping resource="it/webred/mui/model/CodiceBelfiore.hbm.xml" />
+        <mapping resource="it/webred/mui/model/CodiceErroreImport.hbm.xml" />
+        <mapping resource="it/webred/mui/model/MiDupUser.hbm.xml" />
+        <mapping resource="it/webred/mui/model/MiDupUserRole.hbm.xml" />
+        <mapping resource="it/webred/mui/model/MiDupSoggetti.hbm.xml" />
+        <mapping resource="it/webred/mui/model/MiDupIndirizziSog.hbm.xml" />
+        <mapping resource="it/webred/mui/model/MiDupTitolarita.hbm.xml" />
+        <mapping resource="it/webred/mui/model/MiDupFornitura.hbm.xml" />
+        <mapping resource="it/webred/mui/model/MiDupFornituraInfo.hbm.xml" />
+        <mapping resource="it/webred/mui/model/MiDupFabbricatiInfo.hbm.xml" />
+        <mapping resource="it/webred/mui/model/MiDupTerreniInfo.hbm.xml" />
+        <mapping resource="it/webred/mui/model/MiDupNotaTras.hbm.xml" />
+        <mapping resource="it/webred/mui/model/MiDupFabbricatiIdentifica.hbm.xml" />
+        <mapping resource="it/webred/mui/model/MiDupImportLog.hbm.xml" />
+        <mapping resource="it/webred/mui/model/MiConsComunicazione.hbm.xml" />
+        <mapping resource="it/webred/mui/model/MiConsOggetto.hbm.xml" />
+        <mapping resource="it/webred/mui/model/MiConsDap.hbm.xml" />
+        <mapping resource="it/webred/mui/model/MiConsIntegrationLog.hbm.xml" />
+ 		<mapping resource="it/webred/mui/model/MiVwNoteSummary.hbm.xml" />
+        <mapping resource="it/webred/mui/model/MiVwNoteDapExported.hbm.xml" />
+		<mapping resource="it/webred/mui/model/MiVwNoteDapToBeExported.hbm.xml" />
+        <mapping resource="it/webred/mui/model/MiVwFornitureLogSummary.hbm.xml" />
+        <mapping resource="it/webred/mui/model/MiQryFornitureLogDetail.hbm.xml" />
+        <mapping resource="it/webred/mui/model/MiVwComunicazioneSummary.hbm.xml" />
+        <mapping resource="it/webred/mui/model/MiVwTitolariSummary.hbm.xml" />
+        <mapping resource="it/webred/mui/model/MiVwCatasto.hbm.xml" />
+        <mapping resource="it/webred/mui/model/MiVwContribuenti.hbm.xml" />
+        <mapping resource="it/webred/mui/model/MiVwAnagrafe.hbm.xml" />
+    
+    </session-factory>
+</hibernate-configuration>

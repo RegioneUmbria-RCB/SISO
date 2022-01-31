@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class mutable="false" name="it.webred.mui.model.MiVwCatasto">
+	    <meta attribute="generated-class">
+	        it.webred.mui.model.MiVwCatastoBase
+	    </meta>
+		<subselect>
+			select 	
+						distinct
+						FOGLIO||'-'||PARTICELLA||'-'||UNIMM||'-'||to_char(DATA_INIZIO)||'-'||to_char(DATA_FINE) as IID,
+ 						FOGLIO, 
+ 						PARTICELLA, 
+ 						UNIMM as SUBALTERNO,
+ 						DATA_INIZIO, 
+ 						DATA_FINE
+ 						
+				from		
+						VW_SITICONDUZ_IMM_ALL 
+		</subselect>
+		<synchronize table="mi_dup_nota_tras"/>
+		<id name="iid" type="string">
+        	<column name="IID" length="60" />
+        </id>
+		<property name="foglio" type="string">
+           	<column name="FOGLIO" length="4" />
+		</property>
+		<property name="particella" type="string">
+           	<column name="PARTICELLA" length="5" />
+		</property>
+		<property name="subalterno" type="string">
+           	<column name="SUBALTERNO" length="4" />
+		</property>
+		<property name="dataInizio" type="date">
+           	<column name="DATA_INIZIO" />
+		</property>
+		<property name="dataFine" type="date">
+           	<column name="DATA_FINE" />
+		</property>
+	</class>
+</hibernate-mapping>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions name="ServiziUtenzeWS" targetNamespace="http://netservice.it/pda/utenze" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://netservice.it/pda/utenze" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+  <types>
+    <xs:schema targetNamespace="http://netservice.it/pda/utenze" version="1.0" xmlns:tns="http://netservice.it/pda/utenze" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+   <xs:element name="isPdAUser" type="tns:isPdAUser"/>
+   <xs:element name="isPdAUserResponse" type="tns:isPdAUserResponse"/>
+   <xs:complexType name="isPdAUser">
+    <xs:sequence>
+     <xs:element minOccurs="0" name="arg0" type="xs:string"/>
+    </xs:sequence>
+   </xs:complexType>
+   <xs:complexType name="isPdAUserResponse">
+    <xs:sequence>
+     <xs:element minOccurs="0" name="return" type="xs:boolean"/>
+    </xs:sequence>
+   </xs:complexType>
+  </xs:schema>
+  </types>
+  <message name="ServiziUtenzeWS_isPdAUser">
+    <part name="isPdAUser" element="tns:isPdAUser">
+    </part>
+  </message>
+  <message name="ServiziUtenzeWS_isPdAUserResponse">
+    <part name="isPdAUserResponse" element="tns:isPdAUserResponse">
+    </part>
+  </message>
+  <portType name="ServiziUtenzeWS">
+    <operation name="isPdAUser" parameterOrder="isPdAUser">
+      <input message="tns:ServiziUtenzeWS_isPdAUser">
+    </input>
+      <output message="tns:ServiziUtenzeWS_isPdAUserResponse">
+    </output>
+    </operation>
+  </portType>
+  <binding name="ServiziUtenzeWSBinding" type="tns:ServiziUtenzeWS">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <operation name="isPdAUser">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+  </binding>
+  <service name="ServiziUtenzeWS">
+    <port name="Utenze" binding="tns:ServiziUtenzeWSBinding">
+      <soap:address location="https://monza.ul.consiglioordineavvocati.it/utenze"/>
+    </port>
+  </service>
+</definitions>

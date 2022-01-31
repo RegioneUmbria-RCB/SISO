@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 2-apr-2006 14.46.01 by Hibernate Tools 3.1.0.beta4 -->
+<hibernate-mapping>
+    <class name="it.webred.mui.model.MiDupUser" table="MI_DUP_USER">
+        <id name="login" type="string">
+            <column name="LOGIN" length="8" not-null="true" />
+            <generator class="assigned" />
+        </id>
+        <property name="password" type="string">
+            <column name="PASSWORD" length="8" not-null="true" />
+        </property>
+        <set name="miDupUserRoles" inverse="true">
+            <key>
+                <column name="LOGIN" length="8" not-null="true" />
+            </key>
+            <one-to-many class="it.webred.mui.model.MiDupUserRole" />
+        </set>
+    </class>
+</hibernate-mapping>

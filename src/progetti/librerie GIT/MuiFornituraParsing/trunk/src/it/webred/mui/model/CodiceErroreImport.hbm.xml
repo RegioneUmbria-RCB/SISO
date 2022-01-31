@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="it.webred.mui.model.CodiceErroreImport" table="CODICE_ERRORE_IMPORT">
+ 	    <meta attribute="generated-class">
+	        it.webred.mui.model.CodiceErroreImportBase
+	    </meta>
+        <id name="codiceRegolaInfranta" type="string">
+            <column name="CODICE_REGOLA" length="8" not-null="true" />
+        </id>
+        <property name="descrizione" type="string">
+            <column name="DESCR_REGOLA" length="240"  />
+        </property>
+        <property name="classe" type="integer">
+            <column name="CLASSE" precision="5" scale="0" not-null="true" />
+        </property>
+        <property name="flagBloccante" type="yes_no" not-null="true" >
+			<column default="'N'" name="BLOCCANTE" />
+		</property>
+        <property name="effetto" type="string">
+            <column name="EFFETTO" length="127"  />
+        </property>
+    </class>
+</hibernate-mapping>

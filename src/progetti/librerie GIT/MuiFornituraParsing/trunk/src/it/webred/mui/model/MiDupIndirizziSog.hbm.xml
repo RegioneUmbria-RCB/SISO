@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 2-apr-2006 14.46.00 by Hibernate Tools 3.1.0.beta4 -->
+<hibernate-mapping>
+    <class name="it.webred.mui.model.MiDupIndirizziSog" table="MI_DUP_INDIRIZZI_SOG">
+        <id name="iid" type="long">
+            <column name="IID" precision="15" scale="0" />
+            <generator class="increment" />
+        </id>
+        <many-to-one name="miDupFornitura" class="it.webred.mui.model.MiDupFornitura" fetch="select">
+            <column name="IID_FORNITURA" precision="15" scale="0" not-null="true" />
+        </many-to-one>
+        <property name="idNota" type="string">
+            <column name="ID_NOTA" length="20" />
+        </property>
+        <many-to-one name="miDupNotaTras" class="it.webred.mui.model.MiDupNotaTras" fetch="select">
+            <column name="IID_NOTA" precision="15" scale="0"/>
+        </many-to-one>
+        <property name="idSoggettoNota" type="string">
+            <column name="ID_SOGGETTO_NOTA" length="50" />
+        </property>
+        <many-to-one name="miDupSoggetti" class="it.webred.mui.model.MiDupSoggetti" fetch="select">
+            <column name="IID_SOGGETTO" precision="15" scale="0"/>
+        </many-to-one>
+        <property name="tipoIndirizzo" type="string">
+            <column name="TIPO_INDIRIZZO" length="1" />
+        </property>
+        <property name="comune" type="string">
+            <column name="COMUNE" length="50" />
+        </property>
+        <property name="provincia" type="string">
+            <column name="PROVINCIA" length="2" />
+        </property>
+        <property name="indirizzo" type="string">
+            <column name="INDIRIZZO" length="50" />
+        </property>
+        <property name="cap" type="string">
+            <column name="CAP" length="5" />
+        </property>
+    </class>
+</hibernate-mapping>

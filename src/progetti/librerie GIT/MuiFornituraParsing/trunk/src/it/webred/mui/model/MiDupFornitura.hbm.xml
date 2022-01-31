@@ -1,0 +1,122 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 2-apr-2006 14.46.01 by Hibernate Tools 3.1.0.beta4 -->
+<hibernate-mapping>
+	<class name="it.webred.mui.model.MiDupFornitura"
+		table="MI_DUP_FORNITURA">
+		<meta attribute="generated-class">
+			it.webred.mui.model.MiDupFornituraBase
+		</meta>
+		<id name="iid" type="long">
+			<column name="IID" precision="15" scale="0" />
+			<generator class="increment" />
+		</id>
+		<property name="dataCaricamento" type="timestamp">
+			<column name="DATA_CARICAMENTO" length="7" not-null="true" />
+		</property>
+		<property name="codiceFornitura" type="string">
+			<column name="CODICE_FORNITURA" length="4" />
+		</property>
+		<property name="dataIniziale" type="string">
+			<column name="DATA_INIZIALE" length="8" />
+		</property>
+		<property name="dataInizialeDate" type="timestamp">
+			<column name="DATA_INIZIALE_DATE" />
+		</property>
+		<property name="dataFinale" type="string">
+			<column name="DATA_FINALE" length="8" />
+		</property>
+		<property name="dataFinaleDate" type="timestamp">
+			<column name="DATA_FINALE_DATE" />
+		</property>
+		<property name="dataEstrCons" type="string">
+			<column name="DATA_ESTR_CONS" length="8" />
+		</property>
+		<property name="dataEstrCata" type="string">
+			<column name="DATA_ESTR_CATA" length="8" />
+		</property>
+		<property name="fileLoadedNotParsed" type="string">
+			<column name="FILE_LOADED" length="128" />
+		</property>
+		<property name="fileTotNotParsed" type="string">
+			<column name="FILE_TOT" length="8" />
+		</property>
+		<set name="miDupSoggettis" inverse="true">
+			<key>
+				<column name="IID_FORNITURA" precision="15" scale="0"
+					not-null="true" />
+			</key>
+			<one-to-many class="it.webred.mui.model.MiDupSoggetti" />
+		</set>
+		<set name="miDupFabbricatiIdentificas" inverse="true">
+			<key>
+				<column name="IID_FORNITURA" precision="15" scale="0"
+					not-null="true" />
+			</key>
+			<one-to-many
+				class="it.webred.mui.model.MiDupFabbricatiIdentifica" />
+		</set>
+		<set name="miDupTerreniInfos" inverse="true">
+			<key>
+				<column name="IID_FORNITURA" precision="15" scale="0"
+					not-null="true" />
+			</key>
+			<one-to-many class="it.webred.mui.model.MiDupTerreniInfo" />
+		</set>
+		<set name="miDupFabbricatiInfos" inverse="true">
+			<key>
+				<column name="IID_FORNITURA" precision="15" scale="0"
+					not-null="true" />
+			</key>
+			<one-to-many
+				class="it.webred.mui.model.MiDupFabbricatiInfo" />
+		</set>
+		<set name="miDupIndirizziSogs" inverse="true">
+			<key>
+				<column name="IID_FORNITURA" precision="15" scale="0"
+					not-null="true" />
+			</key>
+			<one-to-many class="it.webred.mui.model.MiDupIndirizziSog" />
+		</set>
+		<set name="miDupTitolaritas" inverse="true">
+			<key>
+				<column name="IID_FORNITURA" precision="15" scale="0"
+					not-null="true" />
+			</key>
+			<one-to-many class="it.webred.mui.model.MiDupTitolarita" />
+		</set>
+		<set name="miDupNotaTrases" inverse="true">
+			<key>
+				<column name="IID_FORNITURA" precision="15" scale="0"
+					not-null="true" />
+			</key>
+			<one-to-many class="it.webred.mui.model.MiDupNotaTras" />
+		</set>
+		<set name="miConsComunicaziones" inverse="true">
+			<key>
+				<column name="IID_FORNITURA" precision="15" scale="0" />
+			</key>
+			<one-to-many
+				class="it.webred.mui.model.MiConsComunicazione" />
+		</set>
+		<set name="miQryFornitureLogDetail" inverse="true">
+			<key>
+				<column name="IID_FORNITURA" precision="15" scale="0" />
+			</key>
+			<one-to-many
+				class="it.webred.mui.model.MiQryFornitureLogDetail" />
+		</set>
+		<one-to-one name="miVwFornitureLogSummary"
+			class="it.webred.mui.model.MiVwFornitureLogSummary" />
+		<one-to-one name="miVwNoteSummary"
+			class="it.webred.mui.model.MiVwNoteSummary" />
+		<one-to-one name="miVwTitolariSummary"
+			class="it.webred.mui.model.MiVwTitolariSummary" />
+		<one-to-one name="miVwComunicazioneSummary"
+			class="it.webred.mui.model.MiVwComunicazioneSummary" />
+		<one-to-one name="miDupFornituraInfo"
+			class="it.webred.mui.model.MiDupFornituraInfo"
+			property-ref="miDupFornitura" />
+	</class>
+</hibernate-mapping>

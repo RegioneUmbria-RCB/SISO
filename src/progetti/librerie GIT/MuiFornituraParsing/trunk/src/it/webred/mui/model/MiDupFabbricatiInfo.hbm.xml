@@ -1,0 +1,171 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 2-apr-2006 14.46.01 by Hibernate Tools 3.1.0.beta4 -->
+<hibernate-mapping>
+    <class name="it.webred.mui.model.MiDupFabbricatiInfo" table="MI_DUP_FABBRICATI_INFO">
+ 	    <meta attribute="generated-class">
+	        it.webred.mui.model.MiDupFabbricatiInfoBase
+	    </meta>
+       <id name="iid" type="long">
+            <column name="IID" precision="15" scale="0" />
+            <generator class="increment" />
+        </id>
+        <many-to-one name="miDupFornitura" class="it.webred.mui.model.MiDupFornitura" fetch="select">
+            <column name="IID_FORNITURA" precision="15" scale="0" not-null="true" />
+        </many-to-one>
+        <property name="idNota" type="string">
+            <column name="ID_NOTA" length="20" />
+        </property>
+        <many-to-one name="miDupNotaTras" class="it.webred.mui.model.MiDupNotaTras" fetch="select">
+            <column name="IID_NOTA" precision="15" scale="0"/>
+        </many-to-one>
+        <property name="tipologiaImmobile" type="string">
+            <column name="TIPOLOGIA_IMMOBILE" length="1" />
+        </property>
+        <property name="flagGraffato" type="string">
+            <column name="FLAG_GRAFFATO" length="2" />
+        </property>
+        <property name="idImmobile" type="string">
+            <column name="ID_IMMOBILE" length="20" />
+        </property>
+        <property name="idCatastaleImmobile" type="string">
+            <column name="ID_CATASTALE_IMMOBILE" length="20" />
+        </property>
+<!--        
+        <many-to-one name="codiceEsitoRef" class="it.webred.mui.model.CodiceErroreImport" lazy="false" fetch="select">
+            <column name="CODICE_ESITO" index="implog_codice" length="16" />
+        </many-to-one>
+ --> 
+        <property name="codiceEsito" type="string">
+            <column name="CODICE_ESITO" length="5" />
+        </property>
+
+        <property name="naturaImmobile" type="string">
+            <column name="NATURA_IMMOBILE" length="3" />
+        </property>
+        <property name="zona" type="string">
+            <column name="ZONA" length="3" />
+        </property>
+        <property name="categoria" type="string">
+            <column name="CATEGORIA" length="3" />
+        </property>
+        <property name="classe" type="string">
+            <column name="CLASSE" length="5" />
+        </property>
+        <property name="vani" type="string">
+            <column name="VANI" length="20" />
+        </property>
+        <property name="mc" type="string">
+            <column name="MC" length="20" />
+        </property>
+        <property name="mq" type="string">
+            <column name="MQ" length="20" />
+        </property>
+        <property name="superficie" type="string">
+            <column name="SUPERFICIE" length="20" />
+        </property>
+        <property name="renditaEuro" type="string">
+            <column name="RENDITA_EURO" length="20" />
+        </property>
+        <property name="TLotto" type="string">
+            <column name="T_LOTTO" length="2" />
+        </property>
+        <property name="TEdificio" type="string">
+            <column name="T_EDIFICIO" length="2" />
+        </property>
+        <property name="TScala" type="string">
+            <column name="T_SCALA" length="2" />
+        </property>
+        <property name="TInterno1" type="string">
+            <column name="T_INTERNO1" length="3" />
+        </property>
+        <property name="TInterno2" type="string">
+            <column name="T_INTERNO2" length="3" />
+        </property>
+        <property name="TPiano1" type="string">
+            <column name="T_PIANO1" length="4" />
+        </property>
+        <property name="TPiano2" type="string">
+            <column name="T_PIANO2" length="4" />
+        </property>
+        <property name="TPiano3" type="string">
+            <column name="T_PIANO3" length="4" />
+        </property>
+        <property name="TPiano4" type="string">
+            <column name="T_PIANO4" length="4" />
+        </property>
+        <property name="TToponimo" type="string">
+            <column name="T_TOPONIMO" length="3" />
+        </property>
+        <property name="TIndirizzo" type="string">
+            <column name="T_INDIRIZZO" length="50" />
+        </property>
+        <property name="TCivico1" type="string">
+            <column name="T_CIVICO1" length="6" />
+        </property>
+        <property name="TCivico2" type="string">
+            <column name="T_CIVICO2" length="6" />
+        </property>
+        <property name="TCivico3" type="string">
+            <column name="T_CIVICO3" length="6" />
+        </property>
+        <property name="CLotto" type="string">
+            <column name="C_LOTTO" length="2" />
+        </property>
+        <property name="CEdificio" type="string">
+            <column name="C_EDIFICIO" length="2" />
+        </property>
+        <property name="CScala" type="string">
+            <column name="C_SCALA" length="2" />
+        </property>
+        <property name="CInterno1" type="string">
+            <column name="C_INTERNO1" length="3" />
+        </property>
+        <property name="CInterno2" type="string">
+            <column name="C_INTERNO2" length="3" />
+        </property>
+        <property name="CPiano1" type="string">
+            <column name="C_PIANO1" length="4" />
+        </property>
+        <property name="CPiano2" type="string">
+            <column name="C_PIANO2" length="4" />
+        </property>
+        <property name="CPiano3" type="string">
+            <column name="C_PIANO3" length="4" />
+        </property>
+        <property name="CPiano4" type="string">
+            <column name="C_PIANO4" length="4" />
+        </property>
+        <property name="CToponimo" type="string">
+            <column name="C_TOPONIMO" length="3" />
+        </property>
+        <property name="CIndirizzo" type="string">
+            <column name="C_INDIRIZZO" length="50" />
+        </property>
+        <property name="CCivico1" type="string">
+            <column name="C_CIVICO1" length="6" />
+        </property>
+        <property name="CCivico2" type="string">
+            <column name="C_CIVICO2" length="6" />
+        </property>
+        <property name="CCivico3" type="string">
+            <column name="C_CIVICO3" length="6" />
+        </property>
+        <property name="annotazioni" type="string">
+            <column name="ANNOTAZIONI" length="100" />
+        </property>
+        <set name="miDupTitolaritas" inverse="true">
+            <key>
+                <column name="IID_FABBRICATIINFO" precision="15" scale="0"/>
+            </key>
+            <one-to-many class="it.webred.mui.model.MiDupTitolarita" />
+        </set>
+        <set name="miDupFabbricatiIdentificas" inverse="true">
+            <key>
+                <column name="IID_FABBRICATIINFO" precision="15" scale="0"/>
+            </key>
+            <one-to-many class="it.webred.mui.model.MiDupFabbricatiIdentifica" />
+        </set>
+    </class>
+</hibernate-mapping>

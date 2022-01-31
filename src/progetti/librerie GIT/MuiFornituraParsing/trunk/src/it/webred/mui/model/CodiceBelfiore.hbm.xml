@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="it.webred.mui.model.CodiceBelfiore" table="CODICE_BELFIORE">
+        <id name="codice" type="string">
+            <column name="CODICE" length="4" not-null="true" />
+        </id>
+        <property name="descrizione" type="string">
+            <column name="DESCR_COMUNE" length="240" not-null="true"  />
+        </property>
+    </class>
+</hibernate-mapping>

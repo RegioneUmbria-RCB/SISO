@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="it.webred.mui.model.MiVwNoteDapExported">
+		<subselect>
+			select iid_fornitura,1 as code,'caricati' as descr, count(*) as totali from mi_dup_titolarita group by iid_fornitura 
+ 				union
+			select iid_fornitura,2 as code,'analizzati' as descr, count(*) as totali from mi_cons_dap group by iid_fornitura 
+			    union
+			select iid_fornitura, 3 as code, 'DAP N/A' as descr, count (*) as totali from mi_cons_dap where flag_skipped ='Y' group by iid_fornitura
+				union
+			select iid_fornitura, 4 as code, 'DAP SI' as descr, count (*) as totali from mi_cons_dap where flag_skipped ='N' and flag_dap_diritto='Y' group by iid_fornitura
+				union
+			select iid_fornitura, 5 as code, 'DAP NO' as descr, count (*) as totali from mi_cons_dap where flag_skipped ='N' and flag_dap_diritto='N' group by iid_fornitura
+		</subselect>
+		<synchronize table="mi_cons_dap"/>
+		<composite-id>
+			<key-property name="iidFornitura" type="long"><column name="iid_fornitura" precision="15" scale="0" /></key-property>
+			<key-property name="codice"  type="integer"><column name="CODE" precision="2" /></key-property>
+		</composite-id>
+		<property name="totali" type="long"> <column name="TOTALI" precision="15" scale="0" /></property>                       
+		<property name="descr" type="string"> <column name="DESCR" length="15" /></property>                       
+	</class>
+</hibernate-mapping>

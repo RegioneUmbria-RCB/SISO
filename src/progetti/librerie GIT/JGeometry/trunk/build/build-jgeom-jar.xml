@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="windows-1252" ?>
+<project default="init">
+    <property file="build-jgeom-jar.properties"/>
+    
+    <target name="init">
+       <tstamp/>
+    </target>
+    
+    <path id="classpath">
+      <fileset dir="${librariesPath1}">
+          <include name="**/*.jar"/>
+      </fileset>
+      <fileset dir="${librariesPath2}">
+          <include name="**/*.jar"/>
+      </fileset>
+    </path>
+
+    <target name="build" 
+             description="Creazione JAR classi" depends="init">
+        <antcall target="clean" />
+        <antcall target="prepare" />
+        <antcall target="compile" /> 
+        <antcall target="createJAR" />
+        <antcall target="finalize" />
+     </target>
+
+
+     <target name="clean"
+            description="Cancellazione delle directory di lavoro">
+        <echo message="Cancellazione delle directory di lavoro"></echo>
+        <delete dir="${buildPath}\jar\jgeom"/>
+        <delete file="${buildPath}\jar\jgeom\${jar.name.ref}.jar"/>
+    </target>
+    
+     <target name="prepare" description="Creazione delle directory necessarie"
+            depends="init">
+        <echo message="Creazione delle directory necessarie alla build"></echo>
+        <mkdir dir="${buildPath}/jar/jgeom"/>
+        <mkdir dir="${buildPath}/jar/jgeom/classes"/>
+    </target>
+    
+    
+    <target name="compile" description="Compilazione sorgenti java" depends="init">
+        <echo message="Compilo e copio i file compilati ...${buildPath}"/>
+        <javac srcdir="../src" 
+               destdir="${buildPath}/jar/jgeom/classes" >            
+            <classpath refid="classpath"/>
+        </javac>
+    </target>
+    
+    
+    <target name="createJAR" description="Creazione JAR jaxb" depends="init">
+        <jar destfile="${buildPath}/jar/jgeom/${jar.name.ref}.jar">
+            
+        	<manifest>
+                <attribute name="Built-By" value="Webred"/>
+                <attribute name="Implementation-Vendor" value="Webred"/>
+                <attribute name="Implementation-Vendor-Id" value="Webred"/>
+                <attribute name="Implementation-Title" value="jgeom"/>
+                <attribute name="Class-Path"
+                           value="jgeom.jar"/>
+            </manifest>
+        	
+        	<fileset dir="${buildPath}/jar/jgeom/classes" includes="**\*" />
+        	
+		</jar>
+    	
+    </target>
+     
+    
+    <target name="finalize"
+            description="Cancellazione delle directory di lavoro">
+        <echo message="Cancellazione delle directory di lavoro"></echo>
+        <delete dir="${buildPath}/jar/jgeom/classes"/>
+    </target>
+
+   
+</project>

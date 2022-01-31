@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="it.webred.mui.model.MiVwFornitureLogSummary">
+		<subselect>
+			select 
+							count(*) TOTALI
+							,l.iid_fornitura
+							,sum(DECODE(c.bloccante,'N', 0, 1)) BLOCCANTI
+				from 		mi_dup_import_log l,CODICE_ERRORE_IMPORT c
+				where 		c.codice_regola = l.codice_regola
+				group by	l.iid_fornitura
+		</subselect>
+		<synchronize table="mi_dup_import_log"/>
+		<id name="iid_fornitura" type="long">
+            <column name="iid_fornitura" precision="15" scale="0" />
+        </id>
+		<property name="totali" type="long"> <column name="TOTALI" precision="15" scale="0" /></property>                       
+		<property name="bloccanti" type="long"> <column name="BLOCCANTI" precision="15" scale="0" /></property>                       
+        <one-to-one name="miDupFornitura" class="it.webred.mui.model.MiDupFornitura"/>
+ 	</class>
+</hibernate-mapping>

@@ -1,0 +1,105 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 2-apr-2006 14.46.01 by Hibernate Tools 3.1.0.beta4 -->
+<hibernate-mapping>
+    <class name="it.webred.mui.model.MiConsDap" table="MI_CONS_DAP">
+ 	    <meta attribute="generated-class">
+	        it.webred.mui.model.MiConsDapBase
+	    </meta>
+        <id name="iid" type="long">
+            <column name="IID" precision="15" scale="0" />
+            <generator class="increment" />
+        </id>
+        <many-to-one name="miDupFornitura" class="it.webred.mui.model.MiDupFornitura" fetch="select">
+            <column name="IID_FORNITURA" precision="15" scale="0" not-null="true" />
+        </many-to-one>
+        <many-to-one name="miDupTitolarita" class="it.webred.mui.model.MiDupTitolarita" fetch="select">
+            <column name="IID_TITOLARITA" precision="15" scale="0" not-null="true" />
+        </many-to-one>
+        <property name="idNota" type="string">
+            <column name="ID_NOTA" length="20" />
+        </property>
+        <many-to-one name="miDupNotaTras" class="it.webred.mui.model.MiDupNotaTras" fetch="select">
+            <column name="IID_NOTA" precision="15" scale="0" index="dap_nota" />
+        </many-to-one>
+        <property name="flagSkipped" type="yes_no">
+            <column name="FLAG_SKIPPED" />
+        </property>
+        <property name="flagAbitativo" type="yes_no">
+            <column name="FLAG_ABITATIVO" />
+        </property>
+        <property name="flagAbitazionePrincipale" type="yes_no">
+            <column name="FLAG_ABIT_PRINC" />
+        </property>
+        <property name="dataInizialeDate" type="timestamp">
+            <column name="DATA_INIZIALE_DATE" />
+        </property>
+        <property name="dataFinaleDate" type="timestamp">
+            <column name="DATA_FINALE_DATE" />
+        </property>
+        <property name="idSoggettoNota" type="string">
+            <column name="ID_SOGGETTO_NOTA" length="20" />
+        </property>
+        <many-to-one name="miDupSoggetti" class="it.webred.mui.model.MiDupSoggetti" fetch="select">
+            <column name="IID_SOGGETTO" precision="15" scale="0" index="dap_sgt" />
+        </many-to-one>
+        <property name="idSoggettoCatastale" type="string">
+            <column name="ID_SOGGETTO_CATASTALE" length="20" />
+        </property>
+        <property name="tipoSoggetto" type="string">
+            <column name="TIPO_SOGGETTO" length="1" />
+        </property>
+        <property name="idImmobile" type="string">
+            <column name="ID_IMMOBILE" length="20" />
+        </property>
+        <property name="tipologiaImmobile" type="string">
+            <column name="TIPOLOGIA_IMMOBILE" length="1" />
+        </property>
+        <property name="dapImporto" type="big_decimal">
+            <column name="DAP_IMPORTO" precision="15" scale="2"/>
+        </property>
+        <property name="dapMesi" type="integer">
+            <column name="DAP_MESI" precision="4"/>
+        </property>
+        <property name="flagDapDiritto" type="yes_no">
+            <column name="FLAG_DAP_DIRITTO" />
+        </property>
+        <property name="dapNumeroSoggetti" type="integer">
+            <column name="DAP_NUMERO_SOGGETTI" precision="4"/>
+        </property>
+        <property name="dapData" type="timestamp">
+            <column name="DAP_DATA" />
+        </property>
+        <property name="flagRegoleDapNoDataResidenza" type="yes_no">
+            <column name="REGDAP_NO_DTRES" />
+        </property>
+        <property name="flagRegoleDapDataResOltre90Giorni" type="yes_no">
+            <column name="REGDAP_DTRES_OLTRE90" />
+        </property>
+        <property name="flagRegoleDapPrecentualePossessoTotaleErrata" type="yes_no">
+            <column name="REGDAP_PERCPOSSTOT_ERR" />
+        </property>
+        <property name="flagRegoleDapSoggettoPossessorePiuImmobili" type="yes_no">
+            <column name="REGDAP_SGTPOSS_PIUIMM" />
+        </property>
+        <property name="flagRegoleDapSoggettoPossessorePiuImmobiliStessoIndirizzo" type="yes_no">
+            <column name="REGDAP_SGTPOSS_PIUIMM_SI" />
+        </property>
+        <property name="flagRegoleDapNoDataComposizioneFamiliare" type="yes_no">
+            <column name="REGDAP_NO_DTCOMPFAM" />
+        </property>
+ 		<property name="codiceFiscale" type="string">
+			<column name="CODICE_FISCALE" length="16" />
+		</property>
+        <property name="foglio" type="integer">
+            <column name="FOGLIO" />
+        </property>
+        <property name="numero" type="string">
+            <column name="NUMERO" length="5" />
+        </property>
+        <property name="subalterno" type="integer">
+            <column name="SUBALTERNO"/>
+        </property>
+     </class>
+</hibernate-mapping>

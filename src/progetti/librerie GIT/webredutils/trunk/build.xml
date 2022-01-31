@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="webredutils" default="make.release" basedir=".">
+
+
+            	
+    <target name="init">
+    	<property name="libdir" value="${basedir}/lib"/>
+		<property name="cvs.root" value=":pserver:makerelease:makerelease@cvs.webred-private.it:/cvs_repos"/>
+		<property name="classdir" value="${basedir}/bin" />
+
+    	<path id="libs"> 
+            <fileset dir="${basedir}/lib">
+                <include name="**/*.jar"/>
+            </fileset>
+    		<pathelement location="${classdir}" />
+        </path>  
+    	
+    	     <description>Prepare for a build tasks</description>
+    	     <tstamp />
+    	
+    	     <input message="Inserisci una descrizione delle modifiche apportate dalla precedente versione. " addproperty="frase.manifest" />
+   
+    </target>
+    	
+ 
+	<property name="cp" refid="libs"/>
+	
+    <target depends="init" name="make.release">
+    	<pathconvert property="manifest.classpath"
+    	             pathsep=",">
+    	  <path refid="libs"/>
+          <chainedmapper>
+		    <flattenmapper/>
+		    <globmapper from="*" to="lib/*"/>
+		  </chainedmapper>
+    	</pathconvert>
+    	<mkdir dir="${basedir}/.makeRelease"/>
+    	<cvs command="checkout" package="webredutils" append="false"
+    		cvsroot="${cvs.root}" dest="${basedir}/.makeRelease"/>
+    	
+   	<jar basedir="${basedir}/bin" compress="true" includes="it/**" jarfile="${basedir}/.makeRelease/webredutils/releases/last/webredutils.jar">
+            <exclude name="**/*.java"/>
+            <exclude name="**/*.jar"/>
+    		<manifest>
+
+                <attribute name="Built-By" value="${user.name} - ${TODAY} at ${TSTAMP}"/>
+           	    <attribute name="Class-Path" value="${manifest.classpath}"/>
+            </manifest>
+        </jar>
+    	<cvs cvsRoot="${cvs.root}" 
+    	        command="commit -m '${frase.manifest}'"
+    	        package="webredutils"
+    	        dest="${basedir}/.makeRelease"/>
+    	
+    	
+    	<delete dir="${basedir}/.makeRelease"/>
+    </target>
+ 
+	<target depends="init" name="testModifyXPath">
+				<java classname="it.webred.utils.JDomModifyXPath" classpathref="libs" fork="true">
+					<arg value="C:\\user\\progetti\\catasto\\RulEngine\\JavaSource/hibernate.cfg.xml" />
+					<arg value="C:\\user\\progetti\\catasto\\RulEngine\\JavaSource/hibernate.cfg.xml2" />
+					<arg value="att" />
+					<arg value="hibernate-configuration/session-factory[@name='diogenedbdevfactory']/@name" />
+					<arg value="ciao" />
+				</java>
+	</target>
+	
+</project>

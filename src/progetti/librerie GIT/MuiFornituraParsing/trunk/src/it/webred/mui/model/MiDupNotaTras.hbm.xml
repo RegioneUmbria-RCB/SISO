@@ -1,0 +1,138 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 2-apr-2006 14.46.01 by Hibernate Tools 3.1.0.beta4 -->
+<hibernate-mapping>
+    <class name="it.webred.mui.model.MiDupNotaTras" table="MI_DUP_NOTA_TRAS">
+ 	    <meta attribute="generated-class">
+	        it.webred.mui.model.MiDupNotaTrasBase
+	    </meta>
+        <id name="iid" type="long">
+            <column name="IID" precision="15" scale="0" />
+            <generator class="increment" />
+        </id>
+        <many-to-one name="miDupFornitura" class="it.webred.mui.model.MiDupFornitura" fetch="select">
+            <column name="IID_FORNITURA" precision="15" scale="0" not-null="true" />
+        </many-to-one>
+        <property name="idNota" type="string">
+            <column name="ID_NOTA" length="20" />
+        </property>
+        <property name="tipoNota" type="string">
+            <column name="TIPO_NOTA" length="1" />
+        </property>
+        <property name="numeroNotaTras" type="string">
+            <column name="NUMERO_NOTA_TRAS" length="6" />
+        </property>
+        <property name="numeroNotaTrasLong" type="long">
+            <column name="NUMERO_NOTA_TRAS_LONG" precision="15" scale="0" />
+        </property>
+        <property name="progressivoNota" type="string">
+            <column name="PROGRESSIVO_NOTA" length="3" />
+        </property>
+        <property name="annoNota" type="string">
+            <column name="ANNO_NOTA" length="20" />
+        </property>
+        <property name="annoNotaDate" type="date">
+            <column name="ANNO_NOTA_DATE" />
+        </property>
+        <property name="dataValiditaAtto" type="string">
+            <column name="DATA_VALIDITA_ATTO" length="8" />
+        </property>
+        <property name="dataValiditaAttoDate" type="date">
+            <column name="DATA_VALIDITA_ATTO_DATE"/>
+        </property>
+        <property name="dataPresAtto" type="string">
+            <column name="DATA_PRES_ATTO" length="8" />
+        </property>
+        <property name="esitoNota" type="string">
+            <column name="ESITO_NOTA" length="1" />
+        </property>
+        <property name="esitoNotaNonReg" type="string">
+            <column name="ESITO_NOTA_NON_REG" length="2" />
+        </property>
+        <property name="dataRegInAtti" type="string">
+            <column name="DATA_REG_IN_ATTI" length="8" />
+        </property>
+        <property name="numeroRepertorio" type="string">
+            <column name="NUMERO_REPERTORIO" length="7" />
+        </property>
+        <property name="flagRettifica" type="string">
+            <column name="FLAG_RETTIFICA" length="20" />
+        </property>
+        <property name="tipoNotaRet" type="string">
+            <column name="TIPO_NOTA_RET" length="1" />
+        </property>
+        <property name="numeroNotaRet" type="string">
+            <column name="NUMERO_NOTA_RET" length="6" />
+        </property>
+        <property name="dataPresAttoRet" type="string">
+            <column name="DATA_PRES_ATTO_RET" length="8" />
+        </property>
+        <property name="cognomeNomeRog" type="string">
+            <column name="COGNOME_NOME_ROG" length="50" />
+        </property>
+        <property name="codFiscRog" type="string">
+            <column name="COD_FISC_ROG" length="16" />
+        </property>
+        <property name="sedeRog" type="string">
+            <column name="SEDE_ROG" length="4" />
+        </property>
+        <property name="registrazioneDif" type="string">
+            <column name="REGISTRAZIONE_DIF" length="1" />
+        </property>
+        <property name="dataInDif" type="string">
+            <column name="DATA_IN_DIF" length="8" />
+        </property>
+        <property name="codiceAtto" type="string">
+            <column name="CODICE_ATTO" length="3" />
+        </property>
+        <set name="miDupSoggettis" lazy="false" inverse="true">
+            <key>
+                <column name="IID_NOTA" precision="15" scale="0"/>
+            </key>
+            <one-to-many class="it.webred.mui.model.MiDupSoggetti" />
+        </set>
+        <set name="miDupFabbricatiIdentificas" inverse="true">
+            <key>
+                <column name="IID_NOTA" precision="15" scale="0"/>
+            </key>
+            <one-to-many class="it.webred.mui.model.MiDupFabbricatiIdentifica" />
+        </set>
+        <set name="miDupTerreniInfos" inverse="true">
+            <key>
+                <column name="IID_NOTA" precision="15" scale="0"/>
+            </key>
+            <one-to-many class="it.webred.mui.model.MiDupTerreniInfo" />
+        </set>
+        <set name="miDupFabbricatiInfos" inverse="true">
+            <key>
+                <column name="IID_NOTA" precision="15" scale="0"/>
+            </key>
+            <one-to-many class="it.webred.mui.model.MiDupFabbricatiInfo" />
+        </set>
+        <set name="miDupIndirizziSogs" inverse="true">
+            <key>
+                <column name="IID_NOTA" precision="15" scale="0"/>
+            </key>
+            <one-to-many class="it.webred.mui.model.MiDupIndirizziSog" />
+        </set>
+        <set name="miDupTitolaritas" inverse="true">
+            <key>
+                <column name="IID_NOTA" precision="15" scale="0"/>
+            </key>
+            <one-to-many class="it.webred.mui.model.MiDupTitolarita" />
+        </set>
+        <set name="miConsComunicaziones" inverse="true">
+            <key>
+                <column name="IID_NOTA" precision="15" scale="0"/>
+            </key>
+            <one-to-many class="it.webred.mui.model.MiConsComunicazione" />
+        </set>
+        <set name="miDupImportLogs" inverse="true">
+            <key>
+                <column name="IID_NOTA" precision="15" scale="0"/>
+            </key>
+            <one-to-many class="it.webred.mui.model.MiDupImportLog" />
+        </set>
+    </class>
+</hibernate-mapping>

@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="it.webred.mui.model.MiVwContribuenti">
+		<subselect>
+			select 
+						PK_SEQU_CONTRIBUENTI as IID,
+						CODICE_FISCALE, 
+						COGNOME, 
+						NOME, 
+						SESSO, 
+ 						DATA_NASCITA, 
+ 						DESCR_COMUNE_NASCITA, 
+ 						DESCR_INDIRIZZO
+				from		
+						VW_CONTRIBUENTI 
+		</subselect>
+        <id name="iid" type="long">
+            <column name="IID" precision="15" scale="0" />
+         </id>
+		<property name="codiceFiscale" type="string">
+        	<column name="CODICE_FISCALE" length="30" />
+        </property>
+		<property name="nome" type="string">
+        	<column name="NOME" length="255" />
+        </property>
+		<property name="cognome" type="string">
+        	<column name="COGNOME" length="255" />
+        </property>
+		<property name="sesso" type="string">
+        	<column name="SESSO" length="2" />
+        </property>
+		<property name="dataNascita" type="string">
+        	<column name="DATA_NASCITA"  length="12" />
+        </property>
+		<property name="comuneNascita" type="string">
+        	<column name="DESCR_COMUNE_NASCITA" length="250" />
+        </property>
+		<property name="indirizzo" type="string">
+        	<column name="DESCR_INDIRIZZO" length="250" />
+        </property>
+	</class>
+</hibernate-mapping>

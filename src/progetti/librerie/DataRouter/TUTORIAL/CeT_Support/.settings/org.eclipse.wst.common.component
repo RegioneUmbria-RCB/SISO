@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-modules id="moduleCoreId" project-version="1.5.0">
+    <wb-module deploy-name="CeT_Support">
+        <wb-resource deploy-path="/" source-path="/EarContent"/>
+        <dependent-module archiveName="CeT_Support_EJB.jar" deploy-path="/" handle="module:/resource/CeT_Support_EJB/CeT_Support_EJB">
+            <dependent-object/>
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="CeT_Support_EJBClient.jar" deploy-path="/" handle="module:/resource/CeT_Support_EJBClient/CeT_Support_EJBClient">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="CeT_Support_WEB.war" deploy-path="/" handle="module:/resource/CeT_Support_WEB/CeT_Support_WEB">
+            <dependent-object/>
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="CeT_Support_Model.jar" deploy-path="/lib" handle="module:/resource/CeT_Support_Model/CeT_Support_Model">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="DataRouter.jar" deploy-path="/lib" handle="module:/resource/DataRouter/DataRouter">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="Audit.jar" deploy-path="/lib" handle="module:/resource/Audit/Audit">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+    </wb-module>
+</project-modules>

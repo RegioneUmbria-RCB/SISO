@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?><!--
+  ~   Copyright (c) 2004-2006, Novascope S.A. and the JOSSO team
+  ~    All rights reserved.
+  ~    Redistribution and use in source and binary forms, with or
+  ~    without modification, are permitted provided that the following
+  ~    conditions are met:
+  ~
+  ~    * Redistributions of source code must retain the above copyright
+  ~      notice, this list of conditions and the following disclaimer.
+  ~
+  ~    * Redistributions in binary form must reproduce the above copyright
+  ~      notice, this list of conditions and the following disclaimer in
+  ~      the documentation and/or other materials provided with the
+  ~      distribution.
+  ~
+  ~    * Neither the name of the JOSSO team nor the names of its
+  ~      contributors may be used to endorse or promote products derived
+  ~      from this software without specific prior written permission.
+  ~
+  ~    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
+  ~    CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
+  ~    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+  ~    MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+  ~    DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS
+  ~    BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+  ~    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+  ~    TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+  ~    DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+  ~    ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+  ~    OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+  ~    OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+  ~    POSSIBILITY OF SUCH DAMAGE.
+  --><!--
+JOSSO Agent configuration file.
+--><agent>
+
+    <!-- JOSSO Agent classes -->
+    <!--class>org.josso.tc50.agent.CatalinaSSOAgent</class-->
+    <class>org.josso.tc55.agent.CatalinaSSOAgent</class>
+    <!--class>org.josso.jb32.agent.JBossCatalinaSSOAgent</class-->
+    <!--class>org.josso.jb4.agent.JBossCatalinaSSOAgent</class-->
+
+    <!-- Login/Logout URLs -->
+    <gatewayLoginUrl>http://s069.webred-private.it:8090/josso/signon/login.do</gatewayLoginUrl>
+    <gatewayLogoutUrl>http://s069.webred-private.it:8090/josso/signon/logout.do</gatewayLogoutUrl>
+    <!--gatewayLoginErrorUrl>http://s069.webred-private.it:8090/josso/signon/login.do</gatewayLoginErrorUrl-->
+
+    <!--
+    Usefull when working in N-Tier modes behind a reverse proxy or load balancer
+    Here you should place the reverse proxy or load balancer base URL.
+
+    Note : When using this options, the gatewayLoginURL and gatewayLogoutURL should also point to this host.
+
+    <singlePointOfAccess>http://reverse-proxy-host:8090</singlePointOfAccess>
+
+    <gatewayLoginUrl>http://reverse-proxy-host:8090/josso/signon/login.do</gatewayLoginUrl>
+    <gatewayLogoutUrl>http://reverse-proxy-host:8090/josso/signon/logout.do</gatewayLogoutUrl>
+    -->
+
+    <!-- Mininum interval between sso session access , in milliseconds -->
+    <sessionAccessMinInterval>1000</sessionAccessMinInterval>
+
+    <!-- JOSSO Agent service locator configuration -->
+    <service-locator>
+        <class>org.josso.gateway.WebserviceGatewayServiceLocator</class>
+        <endpoint>s069.webred-private.it:8090</endpoint>
+
+        <!-- Associate an identity to SOAP messages
+        <username>wsclient</username>
+        <password>wsclientpwd</password>
+        -->
+
+        <!-- Enabled SSL on the SOAP circuit.
+        <transportSecurity>confidential</transportSecurity>
+        -->
+    </service-locator>
+
+    <!--
+    JOSSO Parnter application definicions :
+
+    Configure all web applications that should be a josso partner application within this server.
+    For each partner application you have to define the propper web-context.
+    -->
+    <partner-apps>
+
+        <partner-app>
+            <context>/caronte</context>
+          </partner-app>
+        <partner-app>
+            <context>/diogenedb</context>
+          </partner-app>
+  
+    </partner-apps>
+
+</agent>

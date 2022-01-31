@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="libs/webredutils.jar"/>
+	<classpathentry kind="lib" path="libs/commons-beanutils.jar"/>
+	<classpathentry kind="lib" path="libs/commons-collections-3.1.jar"/>
+	<classpathentry kind="lib" path="libs/commons-fileupload-1.1.jar"/>
+	<classpathentry kind="lib" path="libs/commons-io-1.2.jar"/>
+	<classpathentry kind="lib" path="libs/commons-lang-2.1.jar"/>
+	<classpathentry kind="lib" path="libs/commons-logging-1.0.4.jar"/>
+	<classpathentry kind="lib" path="libs/skillbill-ant.jar"/>
+	<classpathentry kind="lib" path="libs/skillbill-common.jar"/>
+	<classpathentry kind="lib" path="libs/skillbill-i18n.jar"/>
+	<classpathentry kind="lib" path="libs/skillbill-logging.jar"/>
+	<classpathentry kind="lib" path="libs/skillbill-property.jar"/>
+	<classpathentry kind="lib" path="libs/skillbill-web.jar"/>
+	<classpathentry kind="lib" path="libs/log4j-1.2.8.jar"/>
+	<classpathentry kind="lib" path="libs/dom4j-1.6.1.jar"/>
+	<classpathentry kind="lib" path="libs/ehcache-1.1.jar"/>
+	<classpathentry kind="lib" path="libs/cglib-2.1.3.jar"/>
+	<classpathentry kind="lib" path="libs/asm.jar"/>
+	<classpathentry kind="lib" path="libs/jta.jar"/>
+	<classpathentry kind="lib" path="libs/antlr-2.7.6rc1.jar"/>
+	<classpathentry kind="lib" path="libs/ojdbc6.jar"/>
+	<classpathentry kind="lib" path="libs/hibernate-core-4.1.11.Final.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
