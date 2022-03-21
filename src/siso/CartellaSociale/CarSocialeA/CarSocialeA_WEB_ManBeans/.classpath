@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jst.server.core.container/org.jboss.ide.eclipse.as.core.server.runtime.runtimeTarget/JBoss 7.1 Runtime"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/CarSocialeA_EJBClient"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/WebredEJBUtility"/>
+	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jre6">
+		<attributes>
+			<attribute name="owner.project.facets" value="java"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="src" path="/webred-ui-comp-jsf"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/webred-cs-ui-comp-jsf"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/CT_Config_Data_Model"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/CarSocialeA_DataModel"/>
+	<classpathentry kind="lib" path="/CT-LIBS/cet-lib/cetsecutil.jar"/>
+	<classpathentry kind="lib" path="/CT-LIBS/primefaces/v4/primefaces-4.0.jar"/>
+	<classpathentry kind="src" path="/CT_Service_Data_AccessClient"/>
+	<classpathentry kind="src" path="/AmProfilerDataModel"/>
+	<classpathentry kind="src" path="/AmProfilerEjbClient"/>
+	<classpathentry kind="lib" path="/CT-LIBS/json/jackson-databind-2.2.3.jar"/>
+	<classpathentry kind="lib" path="/CT-LIBS/json/jackson-annotations-2.2.3.jar"/>
+	<classpathentry kind="lib" path="/CT-LIBS/json/jackson-core-2.2.3.jar"/>
+	<classpathentry kind="src" path="/SegretariatoSoc_DataModel"/>
+	<classpathentry kind="src" path="/SegretariatoSoc_EJBClient"/>
+	<classpathentry kind="src" path="/CT_Config_ManagerClient"/>
+	<classpathentry kind="lib" path="/CT-LIBS/jasper/jasperreports-5.6.0.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/SocioSanitario_EJBClient"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/AnagrafeRegionaleClient_DTO"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/FlussoINPS"/>
+	<classpathentry kind="src" path="/Argo_EJBClient"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/InterscambioCartellaSociale"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/AnagrafeRomaBridgeClient"/>
+	<classpathentry kind="src" path="/Argo_DataModel"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

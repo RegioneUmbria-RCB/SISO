@@ -1,0 +1,287 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui" xmlns:webred="http://java.sun.com/jsf/composite/webred"
+	xmlns:webredcs="http://java.sun.com/jsf/composite/webredcs">
+	
+<ui:composition template="/jsp/protected/layout/layout.xhtml">
+	<ui:define name="content">
+		<h:form id="frmVerifica">
+		
+			<p:panel id="pnlEsportaCasellarioid" header="Esporta SIUSS" styleClass="#{'onVerificaSIUSS'}">
+				<h:panelGrid id="pnlVerificaid" columns="6" cellpadding="8">
+					<p:outputLabel value="Da : " />
+					<p:calendar id="data-da" value="#{esportaCasellarioBean.dataDA}" pattern="dd/MM/yyyy" required="true" requiredMessage="Data DA non valorizzato"/>
+					
+					<p:outputLabel value="A : " />
+					<p:calendar value="#{esportaCasellarioBean.dataA}" pattern="dd/MM/yyyy" />
+				</h:panelGrid>
+				
+				<h:panelGrid id="pnlEsportaid" columns="6" cellpadding="8">
+				        <p:outputLabel value="CF: " />
+				        <p:inputText value="#{esportaCasellarioBean.cf}"  />
+				         <p:outputLabel value="Cognome: " />
+				        <p:inputText value="#{esportaCasellarioBean.cognome}"  />
+				        <p:outputLabel value="Nome: " />
+				        <p:inputText value="#{esportaCasellarioBean.nome}"  />
+				        <p:outputLabel value="Prestazione: " />
+				        <p:inputText value="#{esportaCasellarioBean.prestazione}"  />
+				        <p:outputLabel value="Area target: " />
+				        <p:selectOneMenu id="pnlAreaTarget" value="#{esportaCasellarioBean.areaTarget}" >
+				           <f:selectItem noSelectionOption="true" itemLabel="- seleziona -"/>
+				           <f:selectItems value="#{esportaCasellarioBean.listaCategorieSociali}" />
+				        </p:selectOneMenu>
+				        <p:outputLabel value="Numero Protocollo: " />
+				        <p:inputText value="#{esportaCasellarioBean.numeroProtocollo}"  />
+				         <p:outputLabel value="Tipo intervento: " />
+				         <p:selectOneMenu id="pnlTipoIntervento" value="#{esportaCasellarioBean.tipoIntervento}"  filter="true"  filterMatchMode="contains" >
+				           <f:selectItem noSelectionOption="true" itemLabel="- seleziona -"/>
+				           <f:selectItems value="#{esportaCasellarioBean.listaTipoIntervento}" />
+				        </p:selectOneMenu>
+				        
+				        <p:spacer width="10"/>
+				        <p:spacer width="10"/>
+				        <p:spacer width="10"/>
+				        <p:spacer width="10"/>
+				        
+				         <p:outputLabel value="Tipo intervento custom: " />
+				         <p:selectOneMenu value="#{esportaCasellarioBean.tipoInterventoCustom}" filter="true"  filterMatchMode="contains" >
+				           <f:selectItem noSelectionOption="true" itemLabel="- seleziona -"/>
+				           <f:selectItems value="#{esportaCasellarioBean.listaTipoInterventoCustom}" />
+				        </p:selectOneMenu>
+				</h:panelGrid>
+				
+				<h:panelGrid columns="4" cellpadding="8">
+					   <p:outputLabel value="Stato: " />
+				        <p:selectOneButton value="#{esportaCasellarioBean.statoEsportazione}">
+				          <f:selectItems value="#{esportaCasellarioBean.listaStatoEsportazione}"/>
+				        </p:selectOneButton>
+				        
+						<p:outputLabel value="Frequenza: " />
+						<p:selectOneMenu value="#{esportaCasellarioBean.filtroFrequenza}">
+							<f:selectItem noSelectionOption="true" itemLabel="- seleziona -"  />
+				            <f:selectItems value="#{esportaCasellarioBean.listaFrequenza}"/>
+						</p:selectOneMenu>
+				</h:panelGrid>
+				
+				<p:spacer height="10" />
+				
+				<p:outputPanel id="pnlExportPulsantiTabella">
+				<h:panelGrid id="pnlExportPulsanti" columns="4" cellpadding="8">
+				   <p:commandButton id="btnVerificaid" value="Verifica" action="#{esportaCasellarioBean.onBtnVerificaCasellarioClick}" 
+				   					update="@(.onVerificaSIUSS)" icon="ui-icon-search"  />
+				   <p:commandButton id="btnResetid" value="Reset" action="#{esportaCasellarioBean.onBtnResetClick}" 
+				   					update="@(.onVerificaSIUSS)" icon="ui-icon-refresh" />
+				</h:panelGrid>
+				</p:outputPanel>
+				</p:panel>
+		</h:form>	
+		<h:form id="frmEsporta">
+				<!--  SISO-719 Nuova tabella di visualizzazione a due livelli -->
+				<p:outputPanel id="pnlVisualizzaDueLivelliid" styleClass="#{'onVerificaSIUSS'}" >
+				<h:panelGrid columns="1"  width="100%" rendered="#{esportaCasellarioBean.showPnlVisualizza}" >
+				
+				
+					<p:commandButton id="btnEsportaid2015" value="Esporta (vers.2015)" ajax="false" 
+				 			onclick="PrimeFaces.monitorDownload(start, stop);"
+							icon="ui-icon-arrowthick-1-s" 
+							disabled="#{esportaCasellarioBean.btnEsportaDisabled}" rendered="false">
+						<!-- SISO-538 il pulsante può essere disabilitato nel caso in cui ci siano esportazioni da visualizzare ma che no sono esportabili -->
+						<p:fileDownload value="#{esportaCasellarioBean.file2015}" />
+					</p:commandButton>
+					
+					<p:commandButton id="btnEsportaid" value="Esporta flusso PS-PSA-SINA"
+							ajax="false" onclick="PrimeFaces.monitorDownload(null, refreshPage);"
+							icon="ui-icon-transfer-e-w" 
+							disabled="#{esportaCasellarioBean.btnEsportaDisabled or !esportaCasellarioBean.esportazioneValida}">
+						<p:fileDownload value="#{esportaCasellarioBean.file}" />
+		   			</p:commandButton>
+		   			<!-- SISO-719 Funzione per refresh della form dopo il download -->
+					<p:remoteCommand name="refreshPage" update="@(.onVerificaSIUSS)" />
+		
+				    <!--  SISO-719 Nuova tabella di visualizzazione a due livelli -->
+					<p:dataTable id="dataTableDueLivelliStorico"
+						emptyMessage="Nessuna erogazione da esportare per l'intervallo temporale e i filtri selezionati."
+						rows="10" 
+						paginator="true"
+						paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} "
+            			currentPageReportTemplate="Risultati {startRecord} - {endRecord} di {totalRecords} " 
+            			rowsPerPageTemplate="10,20,40"
+            			var="testata" value="#{esportaCasellarioBean.erogTestataVisualizzazioneList}"            			
+            			expandedRow="true">
+            			
+            			
+            			
+            			<!-- rowExpansion -->
+						<p:column style="width:2%" exportable="false" >
+							<p:rowToggler rendered="true" />
+						</p:column>
+						
+						<p:rowExpansion>
+					
+							<p:dataTable id="dataTableDettaglioErogazione" var="dettaglioErogazione"
+								value="#{testata.dettagli}"  rowIndexVar="rowIndex">
+	                           <p:column headerText="Id Erogazione" width="100px;">
+									<h:outputText value="#{dettaglioErogazione.interventoEsegId}" style="#{dettaglioErogazione.style}" />
+								</p:column>
+								
+								<!--
+								
+									SISO-719
+									Invertita la logica originale da "Da inviare" a "Inviata"
+									
+									Vedi commenti al Ticket: http://progetti.asc.webred.it/browse/SISO-719?focusedCommentId=12412&page=com.atlassian.jira.plugin.system.issuetabpanels:comment-tabpanel#comment-12412
+								-->
+								
+								<p:column headerText="Esportata" style="text-align:center;" width="60px;" >
+								
+									<p:graphicImage value="#{resource['webredcs/img/check.png']}" width="16px" rendered="#{dettaglioErogazione.inviata}"
+										title="#{dettaglioErogazione.causaleMancatoInvio}" />
+ 									<p:graphicImage value="#{resource['webredcs/img/warning.png']}" width="16px" rendered="#{!dettaglioErogazione.inviata and !dettaglioErogazione.daInviare}" 
+ 										title="Non esportabile: #{dettaglioErogazione.causaleMancatoInvio}" />
+								</p:column>
+								
+                                <p:column sortBy="dataEsecuzione" width="150px;" style="text-align:center;">
+									<f:facet name="header">
+										<h:outputText value="Data Erogazione"  />
+									</f:facet>
+									<h:panelGrid columns="3" styleClass="noBorder">
+									<h:outputText value="#{dettaglioErogazione.dataEsecuzione}" style="#{dettaglioErogazione.style}">
+										<f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+									</h:outputText>
+									<h:outputLabel value=" - " rendered="#{dettaglioErogazione.dataEsecuzioneA!=null}"/>
+									<h:outputText value="#{dettaglioErogazione.dataEsecuzioneA}" rendered="#{dettaglioErogazione.dataEsecuzioneA!=null}" style="#{dettaglioErogazione.style}">
+										<f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+									</h:outputText>
+									</h:panelGrid>
+								</p:column>
+								
+								
+								<p:column headerText="Spesa Dettaglio €" width="150px;">
+									<h:outputText value="#{dettaglioErogazione.spesaDettaglio}" style="#{dettaglioErogazione.style}">
+										<f:convertNumber maxFractionDigits="2" maxIntegerDigits="8" type="number" />
+									</h:outputText>
+								</p:column>
+								
+								<!--
+									SISO-719
+									
+									Questa colonna è valorizzata solo se l'erogazione risulta già esportata, e mostra l'idFlusso
+									e i pulsanti per procedere alla revoca dell'esportazione.
+									
+									Poiché per il pregresso all'intervento SISO-719 non è possibile stabilire quale fosse
+									l'idFlusso né procedere in maniera automatica alla revoca dell'esportazione, viene mostrato
+									un messaggio ad hoc.
+								-->
+							
+								<p:column headerText="IdentificazioneFlusso" style="width:30%"  >
+									<h:outputText rendered="#{dettaglioErogazione.esportata and not dettaglioErogazione.revocabile}"
+										style="#{dettaglioErogazione.style}"
+										value="Impossibile stabilire l'IdentificazioneFlusso dell'esportazione. Per procedere alla revoca, contattare l'assistenza." />
+									
+									<h:panelGrid rendered="#{dettaglioErogazione.esportata and dettaglioErogazione.revocabile}" columns="2" styleClass="noBorder">
+										
+										<h:outputText value="#{dettaglioErogazione.idFlusso}" style="#{dettaglioErogazione.style}" />
+										
+										<p:commandButton value="Revoca" icon="ui-icon-cancel" oncomplete="PF('confermaRevoca').show()" 
+										                 actionListener="#{esportaCasellarioBean.impostaErogDaRevocare(dettaglioErogazione)}" partialSubmit="true" process="@this" />	
+										
+									</h:panelGrid>
+								</p:column>
+							</p:dataTable>
+						</p:rowExpansion>
+						
+						<p:column headerText="Numero prot." 
+								  styleClass="#{esportaCasellarioBean.renderValidator(testata.interventoEsegMastId) ? 'casellarioValidator' :''}" >
+							<h:outputText value="#{testata.prestazioneProtocolloEnte}" />
+						</p:column>
+						
+						<p:column headerText="Nome Beneficiario" sortBy="nomeBeneficiario" 
+								  styleClass="#{esportaCasellarioBean.renderValidator(testata.interventoEsegMastId) ? 'casellarioValidator' :''}">
+							<h:outputText value="#{testata.nomeBeneficiario}" />
+						</p:column>
+						
+						<p:column headerText="CF Beneficiario" sortBy="soggettoCodiceFiscale" styleClass="#{esportaCasellarioBean.renderValidator(testata.interventoEsegMastId) ? 'casellarioValidator' :''}">
+							<h:outputText value="#{testata.soggettoCodiceFiscale}" />
+						</p:column>
+            			
+            			<p:column headerText="Categoria Sociale" 
+            					  styleClass="#{esportaCasellarioBean.renderValidator(testata.interventoEsegMastId) ? 'casellarioValidator' :''}">
+							<h:outputText value="#{testata.categoriaSocialeDescrizione}" />
+						</p:column>
+
+						<p:column sortBy="denominazionePrestazione" 
+								  styleClass="#{esportaCasellarioBean.renderValidator(testata.interventoEsegMastId) ? 'casellarioValidator' :''}">
+							<f:facet name="header">
+								<h:outputText value="Denominazione Prestazione" />
+							</f:facet>
+							
+							<h:outputText value="#{testata.denominazionePrestazione}" />
+						</p:column>
+						
+						<p:column sortBy="tipoInterventoDesc" 
+								  styleClass="#{esportaCasellarioBean.renderValidator(testata.interventoEsegMastId) ? 'casellarioValidator' :''}">
+							<f:facet name="header">
+								<h:outputText value="Tipo Intervento" />
+							</f:facet>
+							<h:outputText value="#{testata.tipoInterventoDesc}" />
+						</p:column>
+						
+						<p:column styleClass="#{esportaCasellarioBean.renderValidator(testata.interventoEsegMastId) ? 'casellarioValidator' :''}">
+							<f:facet name="header">
+								<h:outputText value="Tipo Intervento Custom" />
+							</f:facet>
+							<h:outputText value="#{testata.tipoInterventoCustom.descrizione}" />
+						</p:column>
+						
+						<p:column sortBy="frequenza" styleClass="#{esportaCasellarioBean.renderValidator(testata.interventoEsegMastId) ? 'casellarioValidator' :''}">
+							<f:facet name="header">
+								<h:outputText value="Frequenza" />
+							</f:facet>
+							
+							<h:outputText value="#{testata.frequenza}" />
+						</p:column>
+
+						<p:column headerText="Spesa Testata €" width="150px;"
+								  styleClass="#{esportaCasellarioBean.renderValidator(testata.interventoEsegMastId) ? 'casellarioValidator' :''}">
+							<h:outputText value="#{testata.spesaTestata}">
+								<f:convertNumber maxFractionDigits="2" maxIntegerDigits="8" type="number" />
+							</h:outputText>
+						</p:column>
+									
+						<!-- SISO - 784 -->
+						<p:column headerText="SINA" style="text-align:center;" 
+						styleClass="#{esportaCasellarioBean.renderValidator(testata.interventoEsegMastId) ? 'casellarioValidator' :''}">						
+							<p:graphicImage value="#{resource['webredcs/img/check.png']}" width="16px" rendered="#{testata.sina and !testata.sinaFlagValutaDopo}"/>
+						</p:column>
+						<!-- SISO-822 -->
+						<p:column styleClass="#{esportaCasellarioBean.renderValidator(testata.interventoEsegMastId) ? 'casellarioValidator' :''}">
+							<f:facet name="header">
+								<h:outputText value="" />
+							</f:facet>
+							   <p:commandButton value="Gestisci esportazione" oncomplete="PF('#{esportaCasellarioBean.widgetVar}').show();" 
+							   actionListener="#{esportaCasellarioBean.impostaTestataDaGestire(testata)}"
+							   partialSubmit="true" process="@this" update="@form :panelEsporta" 
+							   rendered="#{esportaCasellarioBean.renderValidator(testata.interventoEsegMastId)}"/>
+						</p:column>
+            		</p:dataTable>
+				</h:panelGrid>
+
+				<p:confirmDialog message="Confermi la revoca?" header="Revoca" widgetVar="confermaRevoca">
+				    <p:commandButton value="Si" oncomplete="PF('confermaRevoca').hide();" update="@(.onVerificaSIUSS)" partialSubmit="true"
+				         actionListener="#{esportaCasellarioBean.onBtnRevocaClick()}" />
+				    <p:commandButton value="No" type="button" onclick="PF('confermaRevoca').hide();" />
+				</p:confirmDialog>
+				</p:outputPanel>
+
+		</h:form>
+		<!-- SISO-882 -->
+		<h:form id="panelEsporta">
+            <webredcs:pnlGestioneEsportazione styleClass="noBorder"  widgetVar="#{esportaCasellarioBean.widgetVar}" 
+            gestisciEsportazioneAction="#{esportaCasellarioBean.gestioneEsportazioneClick()}" 
+		  	dettaglio="#{esportaCasellarioBean.dettaglioDaGestire}"
+		  	pnlToUpdate="pnlExportPulsantiTabella"  />
+	    </h:form>
+		  	
+	</ui:define>
+</ui:composition>
+</html>

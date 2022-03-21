@@ -1,0 +1,234 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich">
+
+<ui:composition template="/jsp/protected/layout/layout.xhtml">
+
+	<ui:define name="template">
+		<script type="text/javascript"
+			src="${facesContext.externalContext.requestContextPath}/js/ricercaFiltro.js">
+		</script>
+
+
+		<h:form id="frmRicerca">
+
+			<rich:panel>
+				<f:facet name="header">
+					<h:outputLabel value="Criteri di ricerca" />
+				</f:facet>
+
+				<rich:panelBar>
+					<rich:panelBarItem id="panelItemUnico" label="Dato di riferimento">
+						<a4j:support event="onenter" immediate="true"
+							reRender="risRicercaPage, operationTablePage">
+							<a4j:actionparam value="/jsp/protected/empty.xhtml"
+								assignTo="#{indiceCommonBean.pageRisRicerca}" />
+							<a4j:actionparam value="/jsp/protected/empty.xhtml"
+								assignTo="#{indiceCommonBean.pageOperationTable}" />
+						</a4j:support>
+
+						<div align="center"><h:panelGrid columns="9" border="0"
+							cellpadding="0" cellspacing="10px">
+
+							<a4j:region renderRegionOnly="true">
+
+								<h:panelGrid columns="5" border="0" cellpadding="0"
+									cellspacing="0">
+									<h:outputLabel value="Denominazione   " />
+									<h:panelGrid border="0" cellpadding="0" cellspacing="5px" />
+									<h:inputText id="txtUnicoDenom" maxlength="200"
+										style=" width :300px"
+										value="#{dataProviderImpl.criteriaUnico.denominazione}">
+										<rich:toolTip direction="top-right" mode="ajax"
+											layout="inline"
+											value="Usare la freccia per attivare il suggerimento" />
+									</h:inputText>
+									<h:graphicImage value="/images/arrow.png"
+										onclick="#{rich:component('suggestionUnicoDenom')}.callSuggestion(true)"
+										alt="" />
+								</h:panelGrid>
+								<rich:suggestionbox width="300" height="180" minChars="15"
+									id="suggestionUnicoDenom" for="txtUnicoDenom"
+									suggestionAction="#{suggestionSoggettoBean.getSuggestionUnicoByDenominazione}"
+									var="result" ajaxSingle="true" nothingLabel="..." frequency="1"
+									fetchValue="#{result.denominazioneExt}" usingSuggestObjects="true"
+									onobjectchange="javascript:setTxtUnicoDenom(suggestion);">
+
+									<h:column>
+										<h:outputText value="#{result.denominazioneExt}"></h:outputText>
+									</h:column>
+
+								</rich:suggestionbox>
+							</a4j:region>
+
+							<a4j:region renderRegionOnly="true">
+								<h:outputLabel value="Codice fiscale  " />
+								<h:inputText id="txtUnicoCodFis" maxlength="16" size="16"
+									value="#{dataProviderImpl.criteriaUnico.codiceFiscale}" />
+								<rich:suggestionbox minChars="3" width="120" height="180"
+									for="txtUnicoCodFis"
+									suggestionAction="#{suggestionSoggettoBean.getSuggestionUnicoByCodiceFiscale}"
+									var="result" ajaxSingle="true" nothingLabel="..."
+									fetchValue="#{result.codfisc}" usingSuggestObjects="true"
+									onobjectchange="javascript:setTxtUnicoCF(suggestion);">
+
+									<h:column>
+										<h:outputText value="#{result.codfisc}"></h:outputText>
+									</h:column>
+
+								</rich:suggestionbox>
+							</a4j:region>
+
+							<a4j:region renderRegionOnly="true">
+								<h:outputLabel value="Partita IVA  " />
+								<h:inputText id="txtUnicoPIva" maxlength="11" size="11"
+									value="#{dataProviderImpl.criteriaUnico.partitaIva}" />
+								<rich:suggestionbox minChars="3" width="120" height="180"
+									for="txtUnicoPIva"
+									suggestionAction="#{suggestionSoggettoBean.getSuggestionUnicoByPartitaIva}"
+									var="result" ajaxSingle="true" nothingLabel="..."
+									fetchValue="#{result.pi}" usingSuggestObjects="true"
+									onobjectchange="javascript:setTxtUnicoPI(suggestion);">
+
+									<h:column>
+										<h:outputText value="#{result.pi}"></h:outputText>
+									</h:column>
+
+								</rich:suggestionbox>
+							</a4j:region>
+
+							<a4j:commandButton value="Ricerca" id="btnUnicoRicerca"
+								reRender="risRicercaPage, operationTablePage">
+								<a4j:actionparam
+									value="/jsp/protected/risRicerca/unicoSoggetto.xhtml"
+									assignTo="#{indiceCommonBean.pageRisRicerca}" />
+								<a4j:actionparam value="/jsp/protected/empty.xhtml"
+									assignTo="#{indiceCommonBean.pageOperationTable}" />
+							</a4j:commandButton>
+						</h:panelGrid></div>
+					</rich:panelBarItem>
+
+					<rich:panelBarItem id="panelItemTotale" label="Dato correlato">
+						<a4j:support event="onenter" immediate="true"
+							reRender="risRicercaPage, operationTablePage">
+							<a4j:actionparam value="/jsp/protected/empty.xhtml"
+								assignTo="#{indiceCommonBean.pageRisRicerca}" />
+							<a4j:actionparam value="/jsp/protected/empty.xhtml"
+								assignTo="#{indiceCommonBean.pageOperationTable}" />
+						</a4j:support>
+
+						<div align="center"><h:panelGrid columns="11">
+
+							<a4j:region renderRegionOnly="true">
+								<h:panelGrid columns="12" border="0" cellpadding="0"
+									cellspacing="0">
+									<h:outputLabel value="Denominazione   " />
+									<h:panelGrid border="0" cellpadding="0" cellspacing="5px" />
+									<h:inputText id="txtTotaleDenom" maxlength="200"
+										style=" width :200px"
+										value="#{dataProviderImpl.criteriaTotale.denominazione}">
+										<rich:toolTip direction="top-right" mode="ajax"
+											layout="inline"
+											value="Usare la freccia per attivare il suggerimento" />
+									</h:inputText>
+									<h:graphicImage value="/images/arrow.png"
+										onclick="#{rich:component('suggestionTotaleDenom')}.callSuggestion(true)"
+										alt="" />
+
+									<h:panelGrid border="0" cellpadding="0" cellspacing="5px" />
+									<h:outputLabel value="Codice fiscale  " />
+									<h:panelGrid border="0" cellpadding="0" cellspacing="5px" />
+									<h:inputText id="txtTotaleCodFis" maxlength="16" size="16"
+										value="#{dataProviderImpl.criteriaTotale.codiceFiscale}" />
+
+									<h:panelGrid border="0" cellpadding="0" cellspacing="5px" />
+									<h:outputLabel value="Partita IVA  " />
+									<h:panelGrid border="0" cellpadding="0" cellspacing="5px" />
+									<h:inputText id="txtTotalePI" maxlength="11" size="11"
+										value="#{dataProviderImpl.criteriaTotale.partitaIva}" />
+								</h:panelGrid>
+
+								<rich:suggestionbox minChars="15" width="300" height="180"
+									id="suggestionTotaleDenom" for="txtTotaleDenom"
+									suggestionAction="#{suggestionSoggettoBean.getSuggestionTotaleByDenominazione}"
+									var="result" ajaxSingle="true" nothingLabel="..." frequency="1"
+									fetchValue="#{result.denominazione}" usingSuggestObjects="true"
+									onobjectchange="javascript:setTxtTotaleDenom(suggestion);">
+
+									<h:column>
+										<h:outputText value="#{result.denominazione} (#{result.fonteDati})"></h:outputText>
+									</h:column>
+
+								</rich:suggestionbox>
+
+								<rich:suggestionbox minChars="3" width="120" height="180"
+									for="txtTotaleCodFis"
+									suggestionAction="#{suggestionSoggettoBean.getSuggestionTotaleByCodiceFiscale}"
+									var="result" ajaxSingle="true" nothingLabel="..."
+									fetchValue="#{result.codFis}" usingSuggestObjects="true"
+									onobjectchange="javascript:setTxtTotaleCF(suggestion);">
+
+									<h:column>
+										<h:outputText value="#{result.codFis} (#{result.fonteDati})"></h:outputText>
+									</h:column>
+
+								</rich:suggestionbox>
+
+								<rich:suggestionbox minChars="3" width="120" height="180"
+									for="txtTotalePI"
+									suggestionAction="#{suggestionSoggettoBean.getSuggestionTotaleByPartitaIva}"
+									var="result" ajaxSingle="true" nothingLabel="..."
+									fetchValue="#{result.pi}" usingSuggestObjects="true"
+									onobjectchange="javascript:setTxtTotalePI(suggestion);">
+
+									<h:column>
+										<h:outputText value="#{result.pi} (#{result.fonteDati})"></h:outputText>
+									</h:column>
+
+								</rich:suggestionbox>
+							</a4j:region>
+
+							<h:outputLabel value="Fonte dati  " />
+
+							<h:selectOneMenu id="cboEnteSorgente"
+								value="#{dataProviderImpl.criteriaTotale.enteSorgenteId}">
+								<f:selectItem itemValue="" itemLabel="--Tutti--"/>
+								<f:selectItems value="#{indiceCommonBean.listaEnteSorgente}" />
+							</h:selectOneMenu>
+
+							<a4j:commandButton value="Ricerca" id="btnTotaleRicerca"
+								reRender="risRicercaPage, operationTablePage">
+								<a4j:actionparam
+									value="/jsp/protected/risRicerca/totaleSoggetto.xhtml"
+									assignTo="#{indiceCommonBean.pageRisRicerca}" />
+								<a4j:actionparam value="/jsp/protected/empty.xhtml"
+									assignTo="#{indiceCommonBean.pageOperationTable}" />
+							</a4j:commandButton>
+						</h:panelGrid></div>
+
+					</rich:panelBarItem>
+				</rich:panelBar>
+			</rich:panel>
+
+		</h:form>
+
+		<rich:spacer height="15px" />
+
+		<a4j:include id="risRicercaPage"
+			viewId="#{indiceCommonBean.pageRisRicerca}" />
+
+		<rich:spacer height="15px" />
+
+		<a4j:include id="operationTablePage"
+			viewId="#{indiceCommonBean.pageOperationTable}" />
+
+		<a4j:include id="modalPanelPage"
+			viewId="#{dataProviderImpl.pageModalPanel}" />
+
+	</ui:define>
+</ui:composition>
+</html>

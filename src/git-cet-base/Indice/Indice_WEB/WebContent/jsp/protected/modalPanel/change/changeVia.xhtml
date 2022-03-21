@@ -1,0 +1,100 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich">
+
+<!-- INIZIO MODAL PANEL 4(scelta unico di scambio)-->
+<rich:modalPanel id="changeModalBox" minHeight="400" minWidth="800"
+	height="480" width="800">
+	<f:facet name="header">
+		<h:outputText value="Selezionare dato di riferimento"></h:outputText>
+	</f:facet>
+	<f:facet name="controls">
+		<h:form>
+			<h:panelGroup>
+				<h:graphicImage value="/images/close.png" style="cursor:pointer"
+					id="hidelink">
+					<a4j:support event="onclick"
+						oncomplete="javascript:Richfaces.hideModalPanel('changeModalBox');"
+						action="#{dataProviderImpl.resetModalPanelPage}" />
+				</h:graphicImage>
+			</h:panelGroup>
+		</h:form>
+	</f:facet>
+
+	<h:form id="frmModal4">
+
+		<div align="center"><h:panelGrid
+			rendered="#{indiceCommonBean.controlloTotaleNativo}" columns="1">
+
+			<h:graphicImage value="/images/warning.png" style="cursor:pointer"
+				id="hidelink" />
+			<h:outputLabel style="font-weight: bold; cursor: pointer;"
+				value="Attenzione per i seguenti elementi: #{indiceCommonBean.labelTotaleNativo}" />
+			<h:outputLabel style="font-weight: bold; cursor: pointer;"
+				value="E' stata rilevata una natura 'Nativa' quindi cambiando il loro dato di riferimento tutti i valori correlati a quest'ultimo saranno compresi nell'operazione di cambio, verra' infine eliminato il vecchio dato di riferimento." />
+
+			<rich:spacer height="15px" />
+		</h:panelGrid> <h:panelGrid columns="3">
+			<a4j:region renderRegionOnly="true">
+				<h:outputLabel value="Indirizzo  " />
+				<h:inputText id="txtModalVia4" maxlength="200" style=" width :300px"
+					value="#{dataProviderImpl.criteriaUnicoTwo.indirizzo}" />
+				<rich:suggestionbox minChars="3" width="300" height="150"
+					for="txtModalVia4"
+					suggestionAction="#{suggestionViaBean.getSuggestionUnicoByIndirizzo}"
+					var="result" ajaxSingle="true" nothingLabel="..."
+					fetchValue="#{result.indirizzo}" usingSuggestObjects="true">
+
+					<h:column>
+						<h:outputText value="#{result.indirizzo}"></h:outputText>
+					</h:column>
+
+				</rich:suggestionbox>
+			</a4j:region>
+			<a4j:commandButton value="Ricerca" id="btnRicerca4"
+				reRender="frmModal4">
+				<a4j:actionparam value="true"
+					assignTo="#{dataProviderImpl.switchCriteriaUnico}" />
+			</a4j:commandButton>
+		</h:panelGrid></div>
+
+		<rich:spacer height="15px" />
+
+
+		<rich:dataTable width="100%" var="unicoModal4"
+			value="#{unicoDataModel}" id="listModalTable4"
+			onRowMouseOver="this.style.backgroundColor='#F1F1F1'"
+			onRowMouseOut="this.style.backgroundColor='#{a4jSkin.tableBackgroundColor}'"
+			rows="10">
+			<f:facet name="header">
+				<rich:columnGroup>
+					<rich:column>
+						<h:outputText value="Lista dati di Riferimento" />
+					</rich:column>
+				</rich:columnGroup>
+			</f:facet>
+			<rich:column style="cursor: pointer;">
+				<f:facet name="header">
+					<h:outputText value="Indirizzo" />
+				</f:facet>
+				<h:outputLabel style="font-weight: normal; cursor: pointer;"
+					value="#{unicoModal4.sedime} #{unicoModal4.indirizzo}" />
+			</rich:column>
+			<f:facet name="footer">
+				<rich:datascroller id="scrollerModalTable4"></rich:datascroller>
+			</f:facet>
+
+			<rich:componentControl event="onRowClick" for="menuModal"
+				operation="show">
+				<f:param name="selModalIdUnico" value="#{unicoModal4.idVia}" />
+			</rich:componentControl>
+		</rich:dataTable>
+	</h:form>
+</rich:modalPanel>
+<!-- FINE MODAL PANEL 4 -->
+
+</html>

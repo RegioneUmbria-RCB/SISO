@@ -1,8 +1,0 @@
-[2017-08-21]
-
-E' stato aggiunto lo schema xml PS_PSA2016_SINA.xsd contenente la versione del
-nuovo schema xml per l'esportazione del casellario.
-Il file genera_PSA_InvioPrestazioni.bat non viene più utilizzato per la
-generazione delle classi a partire dallo schema.
-
->> Vedere la directory ${PROJECT_LOC}/util

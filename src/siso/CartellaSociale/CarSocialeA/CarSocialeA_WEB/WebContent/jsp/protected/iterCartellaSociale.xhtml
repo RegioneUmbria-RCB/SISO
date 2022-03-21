@@ -1,0 +1,258 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:webred="http://java.sun.com/jsf/composite/webred"
+	xmlns:webredcs="http://java.sun.com/jsf/composite/webredcs"
+	 xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+<ui:composition template="/jsp/protected/layout/layout.xhtml">
+
+	<ui:define name="content">
+		<!-- COMPOSIZIONE MASCHERE  STATO/ORGANIZZAZIONE/SETTORE/OPERATORE -->
+
+		<!-- RICERCA CARTELLA -->
+		<p:outputPanel styleClass="vistaPrincipale" id="IterCartellaSocialeInput">
+			<h:form>
+				<p:panel header="Utility passaggio di un operatore ad altro stato iter"
+					rendered="#{iterBean.mostraFormRicercaCartella}">
+
+					<h:panelGrid columns="4">
+						<h:outputLabel for="inputTXA_CF" value="Codici fiscali:" />
+						<p:inputTextarea id="inputTXA_CF" title="inserisci i codici fiscali separati da ';' " 
+										 value="#{iterBean.inputCFTA}" rows="2" cols="2000" style="width:250px;" autoResize="true"/>
+       
+						<p:commandButton name="validaCFDialog" value="Verifica Codici Fiscali"                  
+										 actionListener="#{iterBean.onClickValidaCF}"
+										  oncomplete="updateSalvaIterDialog();" /> 
+						                  <!--  oncomplete="if (args &amp;&amp; !args.validationFailed &amp;&amp; ){ updateSalvaIterDialog();} else {alert()}" /> -->
+										 
+						<p:remoteCommand name="updateSalvaIterDialog" 
+										 update=":formIter:risultatiRicerca :formIter:tblListaUtenti" />  			
+					</h:panelGrid>
+				</p:panel>
+			</h:form>
+		</p:outputPanel>
+			
+		 <h:form id="formIter">
+		 
+			<p:outputPanel id="risultatiRicerca" styleClass="#{'updateListaUtenti'}"> 
+					<p:panel rendered="#{iterBean.mostraTabellaUtenti}">
+						<p:dataTable  id="tblListaUtenti" var="iterSoggettoLAZY" value="#{iterBean.listaIterSoggettoLAZY}" emptyMessage="Nessun soggetto presente.">
+							 
+							<p:column headerText="INPUT">
+								<h:outputText value="#{iterSoggettoLAZY.inputCF}" style="#{iterSoggettoLAZY.style}" />
+							</p:column>
+						
+							<p:column headerText="ID CASO">
+								<h:outputText
+									value="#{iterSoggettoLAZY.casoId}" style="#{iterSoggettoLAZY.style}" />
+							</p:column>
+							
+							<p:column headerText="Cognome e nome" width="160">
+								<h:outputText value="#{iterSoggettoLAZY.denominazione}"/>
+							</p:column>
+
+							<p:column headerText="Codice fiscale">
+								<h:outputText value="#{iterSoggettoLAZY.cf}" />
+							</p:column>
+							
+							<p:column headerText="Data di nascita">
+								<h:outputText value="#{iterSoggettoLAZY.dataNascita}" />
+							</p:column>
+							
+							<p:column headerText="Responsabile">
+								<h:outputText value="#{iterSoggettoLAZY.operatore}" />
+							</p:column>
+
+							<p:column headerText="Stato">
+								<h:outputText value="#{iterSoggettoLAZY.nomeStatoIter}" />
+							</p:column>
+						
+							<p:column headerText="Categorie">
+						 	 	<h:outputText value="#{iterSoggettoLAZY.categoriaPrevalente}"/>
+						 	 	<h:outputText value=", #{iterSoggettoLAZY.categorieSecondarie}"  rendered="#{iterSoggettoLAZY.categorieSecondarie!=null}"/>
+			    			 </p:column>
+						
+							<p:column headerText="Settore">
+								<h:outputText value="#{iterSoggettoLAZY.settore}"  style="font-style: italic;" rendered="#{iterSoggettoLAZY.settore!=null}"/>
+			    			</p:column>
+					
+							<p:column headerText="Organizzazione">
+							    <h:outputText value="#{iterSoggettoLAZY.organizzazione}"  style="font-style: italic;" rendered="#{iterSoggettoLAZY.organizzazione!=null}"/>
+			    		 	 </p:column>
+					 </p:dataTable>
+					<p:spacer height="20px"/>
+					 <h:panelGrid columns="4">
+							<p:outputLabel for="selectITSTEP" value="Nuovo stato iter" />
+						    <p:selectOneMenu id="selectITSTEP" value="#{iterBean.iterStato}"  lazy="true" style="width:250px">
+					            <f:selectItem noSelectionOption="true" itemLabel="- seleziona -"/>
+					            <f:selectItems value="#{iterBean.listaStato}"/>
+					        </p:selectOneMenu>
+						
+							<p:outputLabel for="selectOORGANIZZAZIONE" value="Organizzazione" />
+							<p:selectOneMenu id="selectOORGANIZZAZIONE" value="#{iterBean.organizzazione}"  lazy="true" style="width:250px">
+				             	<p:ajax process="@this" listener="#{iterBean.onOrganizzazioneChange}" event="change" update="selectOSETTORE selectOOPERATORE" />
+					            <f:selectItem noSelectionOption="true" itemLabel="- seleziona -"/>
+					            <f:selectItems value="#{iterBean.listaOrganizzazione}" var="c" itemValue="#{c.id}" itemLabel="#{c.nome}" />
+					        </p:selectOneMenu>
+						
+							<p:outputLabel for="selectOSETTORE" value="Settore" />
+							<p:selectOneMenu id="selectOSETTORE" value="#{iterBean.settore}"  lazy="true" style="width:250px">
+				              	<p:ajax process="@this" listener="#{iterBean.onSettoreChange}" event="change" update="selectOOPERATORE" />
+					            <f:selectItem noSelectionOption="true" itemLabel="- seleziona -"/>
+					            <f:selectItems value="#{iterBean.listaSettori}" var="c" itemValue="#{c.id}" itemLabel="#{c.nome}" />
+					        </p:selectOneMenu>
+							
+							<p:outputLabel for="selectOOPERATORE" value="Operatore" />
+							<p:selectOneMenu id="selectOOPERATORE" value="#{iterBean.operatore}"  lazy="true" style="width:250px">
+					           <p:ajax process="@this" listener="#{iterBean.onOperatoreChange}" event="change" update="selectOOPERATORE" />
+				              	<f:selectItem noSelectionOption="true" itemLabel="- seleziona -"/>
+					            <f:selectItems value="#{iterBean.listaOperatoreSettore}" var="c" itemValue="#{c.id}" itemLabel="#{(empty c.csOOperatore.csOOperatoreAnagrafica.cognome ? '' :c.csOOperatore.csOOperatoreAnagrafica.cognome.concat(' ')).concat( empty c.csOOperatore.csOOperatoreAnagrafica.nome ? '' : c.csOOperatore.csOOperatoreAnagrafica.nome.concat(' ')).concat( empty c.csOOperatore.csOOperatoreAnagrafica.codiceFiscale ? c.csOOperatore.csOOperatoreAnagrafica.username :  ' CF: '.concat(c.csOOperatore.csOOperatoreAnagrafica.codiceFiscale))}" />
+					        </p:selectOneMenu>
+							
+							<!-- PULSANTE DI RICERCA -->
+							<p:commandButton value="Cambia" actionListener="#{iterBean.onClickCambiaStatoIter}" update="@form, @(.updateListaUtenti)" />
+						
+					</h:panelGrid>
+					</p:panel>
+					
+				</p:outputPanel>	
+			</h:form>
+			
+		<!--   
+		IMPORTAZIONE CARTELLA SOCIALE ___________________________________________________
+		<p:outputPanel styleClass="vistaPrincipale">
+			<p:panel
+				rendered="#{interscambioBean.mostraFormImportazioneCartella}">
+				<f:facet name="header">
+					<h:outputText value="Importazione Cartella Sociale" />
+				</f:facet>
+				<h:form>
+					<p:outputPanel style="text-align:center; margin:0 auto; width:30%;">
+						<p:fileUpload label="SELEZIONA FILE" uploadLabel="IMPORTA"
+							cancelLabel="ANNULLA" allowTypes="/(\.|\/)(xml)$/"
+							fileUploadListener="#{interscambioBean.importaFile}"
+							immediate="true" auto="true">
+						</p:fileUpload>
+					</p:outputPanel>
+				</h:form>
+			</p:panel>
+		</p:outputPanel>
+		__________________________________________________________________________________-->
+
+
+		<!-- VISUALIZZAZIONE ELENCO EVENTI ___________________________________________________-->
+	<!-- 	<p:outputPanel styleClass="vistaPrincipale">
+			<p:panel rendered="#{interscambioBean.mostraElencoEventi}"
+				header="Elenco eventi import/export">
+				<h:form>
+
+					<p:dataTable id="tblListaEventi" var="evento" value="#{interscambioBean.listaEventi}"
+						emptyMessage="Nessun evento trovato" widgetVar="tabellaEventi"
+						paginator="true"
+						paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+						rows="10" rowsPerPageTemplate="10,20,40">
+						<p:column headerText="Tipo" sortBy="tipoEvento"
+							filterMatchMode="exact" filterBy="tipoEvento"
+							filterOptions="#{interscambioBean.tipiEvento}">
+							<h:outputText value="#{evento.tipoEvento}" />
+						</p:column>
+						<p:column headerText="Operatore" filterBy="nomeCognomeOperatore"
+							filterMatchMode="contains">
+							<h:outputText value="#{evento.nomeCognomeOperatore}"></h:outputText>
+						</p:column>
+						<p:column headerText="Mittente" sortBy="mittente"
+							filterBy="mittente">
+							<h:outputText value="#{evento.mittente}" />
+						</p:column>
+						<p:column headerText="Destinatario" sortBy="destinatario"
+							filterBy="destinatario">
+							<h:outputText value="#{evento.destinatario}" />
+						</p:column>
+							<p:column headerText="Cognome" sortBy="cognomeSoggetto"
+							filterBy="cognomeSoggetto">
+							<h:outputText value="#{evento.cognomeSoggetto}" />
+						</p:column>
+						<p:column headerText="Nome" sortBy="nomeSoggetto"
+							filterBy="nomeSoggetto">
+							<h:outputText value="#{evento.nomeSoggetto}" />
+						</p:column>
+						<p:column headerText="Codice Fiscale" sortBy="codiceFiscale"
+							filterBy="codiceFiscale">
+							<h:outputText value="#{evento.codiceFiscale}" />
+						</p:column>
+						<p:column headerText="Data" filterBy="dataEventoStringa" width="200">
+							<h:outputText value="#{evento.dataEventoStringa}">
+								<f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+							</h:outputText>
+						</p:column>
+						<p:column>
+							<p:commandButton value="Dettaglio"
+								actionListener="#{interscambioBean.onClickEvento(evento)}"
+								update="@(.dialogDettaglioEvento)"
+								oncomplete="PF('dettaglioEvento').show();" icon="ui-icon-newwin" />
+								
+							<p:commandButton actionListener="#{interscambioBean.onClickDeleteEvento(evento)}"
+								update=":#{p:component('tblListaEventi')}" icon="ui-icon-trash" process="@this" />
+						</p:column>
+					</p:dataTable>
+				</h:form>
+			</p:panel>
+		</p:outputPanel> -->
+
+		<!-- MODAL DETTAGLIO EVENTO -->
+<!-- 		<p:dialog header="Dettaglio evento" widgetVar="dettaglioEvento"
+			styleClass="dialogDettaglioEvento">
+			<h:panelGrid columns="2">
+				<p:outputLabel value="Tipo:" />
+				<p:outputLabel
+					value="#{interscambioBean.eventoSelezionato.tipoEvento}" />
+
+				<p:outputLabel value="Mittente: " />
+				<p:outputLabel
+					value="#{interscambioBean.eventoSelezionato.mittente}" />
+
+				<p:outputLabel value="Destinatario: " />
+				<p:outputLabel
+					value=" #{interscambioBean.eventoSelezionato.destinatario}" />
+
+				<p:outputLabel value="Data: " />
+				<p:outputLabel
+					value="#{interscambioBean.eventoSelezionato.dataEvento}">
+					<f:convertDateTime type="date" pattern="dd/MM/yyyy HH:mm:ss" />
+				</p:outputLabel>
+
+				<p:outputLabel value="Cognome e nome: " />
+				<p:outputLabel
+					value="#{interscambioBean.eventoSelezionato.cognomeSoggetto} #{interscambioBean.eventoSelezionato.nomeSoggetto} " />
+
+				<p:outputLabel value="Codice fiscale: " />
+				<p:outputLabel
+					value=" #{interscambioBean.eventoSelezionato.codiceFiscale}" />
+			</h:panelGrid>
+
+			<p:spacer heigth="50" />
+
+			<p:outputPanel>
+				<p:outputLabel value="XML Cartella Sociale:" />
+				<p:inputTextarea
+					value="#{interscambioBean.eventoSelezionato.cartellaSociale}"
+					readonly="true" style="display: block;" autoResize="false"
+					cols="80" scrollHeight="60" />
+			</p:outputPanel>
+		</p:dialog>
+		__________________________________________________________________________________-->
+
+
+		<!-- NOTIFICHE -->
+		<h:form styleClass="notificaGrowl">
+			<p:growl id="notificaImportazione"></p:growl>
+		</h:form>
+
+
+	</ui:define>
+</ui:composition>
+</html>

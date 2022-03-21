@@ -1,0 +1,137 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich">
+
+<!-- INIZIO PRIMO MODAL PANEL (scelta secondo unico)-->
+<rich:modalPanel id="joinModalBox" minHeight="400" minWidth="800"
+	height="400" width="800">
+	<f:facet name="header">
+		<h:outputText
+			value="Selezionare dato di riferimento con cui accorpare: #{indiceCommonBean.labelUnicoSelezionato}"></h:outputText>
+	</f:facet>
+	<f:facet name="controls">
+		<h:form>
+			<h:panelGroup>
+				<h:graphicImage value="/images/close.png" style="cursor:pointer"
+					id="hidelink">
+					<a4j:support event="onclick"
+						oncomplete="javascript:Richfaces.hideModalPanel('joinModalBox');"
+						action="#{dataProviderImpl.resetModalPanelPage}" />
+				</h:graphicImage>
+			</h:panelGroup>
+		</h:form>
+	</f:facet>
+
+	<h:form id="frmModal">
+
+		<div align="center"><h:panelGrid columns="3">
+			<a4j:region renderRegionOnly="true">
+				<h:outputLabel value="Indirizzo  " />
+				<h:inputText id="txtModalVia" maxlength="200" style=" width :300px"
+					value="#{dataProviderImpl.criteriaUnicoTwo.indirizzo}" />
+				<rich:suggestionbox minChars="3" width="300" height="150"
+					for="txtModalVia"
+					suggestionAction="#{suggestionViaBean.getSuggestionUnicoByIndirizzo}"
+					var="result" ajaxSingle="true" nothingLabel="..."
+					fetchValue="#{result.indirizzo}" usingSuggestObjects="true">
+
+					<h:column>
+						<h:outputText value="#{result.indirizzo}"></h:outputText>
+					</h:column>
+
+				</rich:suggestionbox>
+			</a4j:region>
+			<a4j:commandButton value="Ricerca" id="btnRicerca"
+				reRender="frmModal">
+				<a4j:actionparam value="true"
+					assignTo="#{dataProviderImpl.switchCriteriaUnico}" />
+			</a4j:commandButton>
+		</h:panelGrid></div>
+
+		<rich:spacer height="15px" />
+
+		<rich:dataTable width="100%" var="unicoModal"
+			value="#{unicoDataModel}" id="listModalTable"
+			onRowMouseOver="this.style.backgroundColor='#F1F1F1'"
+			onRowMouseOut="this.style.backgroundColor='#{a4jSkin.tableBackgroundColor}'"
+			rows="10">
+			<f:facet name="header">
+				<rich:columnGroup>
+					<rich:column>
+						<h:outputText value="Lista dati di Riferimento" />
+					</rich:column>
+				</rich:columnGroup>
+			</f:facet>
+			<rich:column style="cursor: pointer;">
+				<f:facet name="header">
+					<h:outputText value="Indirizzo" />
+				</f:facet>
+				<h:outputLabel style="font-weight: normal; cursor: pointer;"
+					value="#{unicoModal.sedime} #{unicoModal.indirizzo}" />
+			</rich:column>
+			<f:facet name="footer">
+				<rich:datascroller id="scrollerModalTable"></rich:datascroller>
+			</f:facet>
+
+			<rich:componentControl event="onRowClick" for="menuJoinModal"
+				operation="show">
+				<f:param name="selModalIdUnico" value="#{unicoModal.idVia}" />
+				<f:param name="selIndirizzo2" value="#{unicoModal.indirizzo}" />
+				<f:param name="selSedime2" value="#{unicoModal.sedime}" />
+			</rich:componentControl>
+		</rich:dataTable>
+	</h:form>
+</rich:modalPanel>
+<!-- FINE PRIMO MODAL PANEL -->
+
+<!-- INIZIO SECONDO MODAL PANEL (conferma aggregazione unici)-->
+<rich:modalPanel id="joinModalBox2" minHeight="200" minWidth="400"
+	zindex="2000" height="200" width="400">
+	<f:facet name="header">
+		<h:outputText value="Nuovo valore di riferimento"></h:outputText>
+	</f:facet>
+	<f:facet name="controls">
+		<h:panelGroup>
+			<h:graphicImage value="/images/close.png" style="cursor:pointer"
+				id="hidelink2" />
+			<rich:componentControl for="joinModalBox2" attachTo="hidelink2"
+				operation="hide" event="onclick">
+			</rich:componentControl>
+		</h:panelGroup>
+	</f:facet>
+
+	<h:form id="frmModal2">
+		<div align="center"><h:panelGrid columns="2">
+			<h:outputText value="Valore 1:" />
+			<h:outputText value="#{indiceCommonBean.labelUnicoSelezionato}" />
+			<h:outputText value="Valore 2:" />
+			<h:outputText value="#{indiceCommonBean.labelUnicoSelezionato2}" />
+		</h:panelGrid> <rich:spacer height="30px" /> <h:outputText
+			value="Risultato proposto:" style="font-weight: bold;" /> <h:panelGrid
+			columns="2">
+			<h:outputLabel value="Qualificatore  " />
+			<h:inputText id="txtModal2SedIme" maxlength="200"
+				style=" width :250px"
+				value="#{indiceCommonBean.sitNuovoDTO.sitViaUnico.sedime}" />
+			<h:outputLabel value="Nome della via " />
+			<h:inputText id="txtModal2Via" maxlength="200" style=" width :250px"
+				value="#{indiceCommonBean.sitNuovoDTO.sitViaUnico.indirizzo}" />
+		</h:panelGrid> <a4j:commandButton value="Accorpa"
+			action="#{indiceCommonBean.doAggregaUnici}"
+			reRender="frmRisRicerca, joinModalBox2, joinModalBox" id="btnAggrega">
+			<a4j:support event="onclick"
+				onsubmit="if (!confirm('Procedere con l\'accorpamento?')) return false" />
+		</a4j:commandButton> <a4j:commandButton value="Indietro" style="margin-left: 10px;"
+			immediate="true" id="btnIndietro">
+			<rich:componentControl for="joinModalBox2" attachTo="btnIndietro"
+				operation="hide" event="onclick" />
+		</a4j:commandButton></div>
+	</h:form>
+</rich:modalPanel>
+<!-- FINE MODAL PANEL 2 -->
+
+</html>

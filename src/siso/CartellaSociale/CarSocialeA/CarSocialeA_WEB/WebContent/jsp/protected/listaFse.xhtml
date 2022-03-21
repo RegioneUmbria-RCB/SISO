@@ -1,0 +1,123 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:webred="http://java.sun.com/jsf/composite/webred"
+	xmlns:webredcs="http://java.sun.com/jsf/composite/webredcs">
+<ui:composition template="/jsp/protected/layout/layout.xhtml">
+
+	<ui:define name="content">			
+		<h:form id="frmListaFse">
+		     
+			<h:panelGroup rendered="#{listaFseBean.renderListaFse}">	
+				<p:outputPanel id="outputPanelListaFse">
+					
+					<p:panel id="pnlFiltro"  header="#{listaFseBean.headerText}">
+					<h:panelGrid columns="9" width="100%">
+						<p:outputLabel value="Data sottoscrizione"/>
+					 	<h:panelGrid columns = "4">
+				        <p:outputLabel value="da"/>
+						<p:calendar id="data-da" value="#{listaFseBean.dataSottoscrizioneDa}" pattern="dd/MM/yyyy">
+  							<p:ajax event="dateSelect" process="@this" update="dataTableFseId"/>
+   							<p:ajax event="change" process="@this" update="dataTableFseId"/>
+						</p:calendar>
+					
+						<p:outputLabel value="a" />
+						<p:calendar value="#{listaFseBean.dataSottoscrizioneA}" pattern="dd/MM/yyyy" >
+  							<p:ajax event="dateSelect" process="@this" update="dataTableFseId"/>
+   							<p:ajax event="change" process="@this" update="dataTableFseId"/>
+   						</p:calendar>	
+				        </h:panelGrid>
+				        <h:panelGroup>
+				        <p:selectBooleanCheckbox id="sbcFirst" itemLabel="Estrai il primo POR del soggetto, per tipo di progetto" 
+				        						 value="#{listaFseBean.extractFirst}" >
+				        	 <p:ajax process="@this" update="somTipoFse,dataTableFseId"
+				        	 		 listener="#{listaFseBean.onChangeFlagExtractFirst}"/>
+				        </p:selectBooleanCheckbox>
+				        <webredcs:tooltipInfo stringDescr="Selezionando l'opzione 'Estrai il primo POR del soggetto, per tipo di progetto' 
+				        					  verrà estratto il primo POR del soggetto per progetto, 
+											  erogato nel periodo e della provenienza selezionata (default: Erogazioni e Presa in Carico); 
+											  in caso contrario verranno estratti tutti i POR corrispondenti ai parametri di filtro "/>
+				        </h:panelGroup>
+			            <p:outputLabel value="Provenienza" />
+						<p:selectManyCheckbox  id="somTipoFse" label="Tipo" value="#{listaFseBean.selTipoFse}" layout="pageDirection">
+					           <f:selectItems value="#{listaFseBean.listaTipiFse}"   />
+					            <p:ajax event="change" process="@this" update="dataTableFseId"/>
+			            </p:selectManyCheckbox >
+			          
+				        
+			            <p:outputLabel value="Comune di residenza" rendered="false" />
+			            <p:selectOneMenu id="comRes" label="Comune di Residenza" rendered="false"
+										value="#{listaFseBean.selComuneResidenza}" filterMatchMode="contains" filter="true">
+					                    <f:selectItem noSelectionOption="true" itemLabel="- seleziona -"/>
+					                    <f:selectItems value="#{listaFseBean.listaComuniResidenza}"   />
+					                    <p:ajax event="change" process="@this" update="dataTableFseId"/>
+					    </p:selectOneMenu>
+			      		<p:spacer width="20"/>
+		        		<p:commandButton value="Pulisci filtro" actionListener="#{listaFseBean.clearFilters()}" 
+		        						update="pnlFiltro,dataTableFseId" />
+			      		
+					</h:panelGrid>
+					</p:panel>
+					<p:dataTable id="dataTableFseId"  styleClass="#{cc.attrs.styleClass}"
+						var="fse" value="#{listaFseBean.lazyListaFseModel}" 
+						rowIndexVar="rowIndex" rowKey="#{fse.identificativo}" 
+						selection="#{listaFseBean.selectedFse}" selectionMode="single"
+						emptyMessage="Nessun elemento trovato" widgetVar="dataTableFse"
+						paginator="true" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} "
+			            currentPageReportTemplate="Risultati {startRecord} - {endRecord} di {totalRecords} "
+			            rows="20" rowsPerPageTemplate="10,20,40" lazy="true" filterEvent="enter">
+			            
+						<p:column headerText="Provenienza">
+							<h:outputText value="#{fse.tipoFse}" />
+						</p:column>
+						
+						<p:column headerText="Cognome - Nome" filterBy="denominazione">
+							<h:outputText value="#{fse.denominazione}" />
+						</p:column>
+			
+						<p:column headerText="Codice fiscale" filterBy="codiceFiscale">
+							<h:outputText value="#{fse.cf}" />
+						</p:column>
+						
+						<p:column headerText="Progetto" filterBy="progetto">
+							<h:outputText value="#{fse.progettoDenominazione}" />
+						</p:column>
+						
+						<p:column headerText="Attivita" filterBy="attivita">
+							<h:outputText value="#{fse.progettoCod}" />
+						</p:column>
+								
+						<p:column headerText="Residenza">
+							<h:outputText value="#{fse.residenzaComuneDesc}" />
+						</p:column>
+						
+						<p:column headerText="Ente titolare" rendered="#{listaFseBean.canViewListaAmbito}">
+							<h:outputText value="#{fse.enteTitolare}" />
+						</p:column>
+						
+						<p:column style="text-align:center;">
+							<f:facet name="header">
+								<h:outputText value="Data sottoscrizione" width="60"/>
+				        	</f:facet>
+							 <h:outputText value="#{fse.dataSottoscrizione}">
+						    	<f:convertDateTime pattern="dd/MM/yyyy" />
+						    </h:outputText>
+						</p:column>
+						
+						<f:facet name="footer">
+			           		<!-- ajax dev'essere false per poter scatenare il download del file -->	
+							<p:commandButton value="Download Excel" rendered="#{listaFseBean.moduloPorMarche}" 
+											 title="L'esportazione conterrà tutti i record presenti in lista, verificare la correttezza dei parametri di filtro impostati"
+											 actionListener="#{listaFseBean.excelExportListaPorFse}" ajax="false"/>
+			        	</f:facet>
+			
+					</p:dataTable>	
+				</p:outputPanel>		
+			</h:panelGroup>
+		</h:form>
+	</ui:define>
+</ui:composition>
+</html>

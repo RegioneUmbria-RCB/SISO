@@ -1,0 +1,3 @@
+version: 8.0-M2
+svn revision: 38112
+build date: 06-Oct-2011 16:45
