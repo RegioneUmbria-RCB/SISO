@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PROCESS model-entity="JSFProcess">
+ <PROCESS-ITEM NAME="rules:" SHAPE="32,17,0,0" model-entity="JSFProcessGroup">
+  <PROCESS-ITEM ID="rules::0" NAME="item" model-entity="JSFProcessItem">
+   <PROCESS-ITEM-OUTPUT
+    ID="ricerca.soggetto::#jsp#protected#template#templateSoggetto.xhtml"
+    NAME="output" PATH="/jsp/protected/template/templateSoggetto.xhtml"
+    TARGET="rules:#jsp#protected#template#templateSoggetto.xhtml"
+    TITLE="ricerca.soggetto" model-entity="JSFProcessItemOutput"/>
+   <PROCESS-ITEM-OUTPUT
+    ID="ricerca.oggetto::#jsp#protected#template#templateOggetto.xhtml"
+    NAME="output1" PATH="/jsp/protected/template/templateOggetto.xhtml"
+    TARGET="rules:#jsp#protected#template#templateOggetto.xhtml"
+    TITLE="ricerca.oggetto" model-entity="JSFProcessItemOutput"/>
+   <PROCESS-ITEM-OUTPUT
+    ID="ricerca.via::#jsp#protected#template#templateVia.xhtml"
+    NAME="output2" PATH="/jsp/protected/template/templateVia.xhtml"
+    TARGET="rules:#jsp#protected#template#templateVia.xhtml"
+    TITLE="ricerca.via" model-entity="JSFProcessItemOutput"/>
+  </PROCESS-ITEM>
+ </PROCESS-ITEM>
+ <PROCESS-ITEM
+  NAME="rules:#jsp#protected#template#templateOggetto.xhtml"
+  PATH="/jsp/protected/template/templateOggetto.xhtml"
+  SHAPE="288,241,0,0" model-entity="JSFProcessGroup"/>
+ <PROCESS-ITEM NAME="rules:#jsp#protected#template#templateVia.xhtml"
+  PATH="/jsp/protected/template/templateVia.xhtml" SHAPE="288,353,0,0" model-entity="JSFProcessGroup"/>
+ <PROCESS-ITEM
+  NAME="rules:#jsp#protected#template#templateSoggetto.xhtml"
+  PATH="/jsp/protected/template/templateSoggetto.xhtml"
+  SHAPE="288,33,0,0" model-entity="JSFProcessGroup"/>
+</PROCESS>

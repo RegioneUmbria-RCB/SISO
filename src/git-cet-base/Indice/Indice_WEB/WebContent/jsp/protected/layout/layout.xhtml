@@ -1,0 +1,82 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich">
+
+
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+
+<title>Indice</title>
+<link rel="stylesheet" type="text/css"
+	href="${facesContext.externalContext.requestContextPath}/css/Indice.css" />
+</head>
+
+<body>
+
+<div id="header">
+		<h:panelGrid style="text-align: center; border: 1px solid #C0C0C0; border-bottom:0" cellpadding="0" cellspacing="0" bgcolor="white" width="100%"> 
+				<h:graphicImage value="/images/indice.png"/>
+		</h:panelGrid>
+</div>
+<rich:separator lineType="solid" />
+
+<a4j:include id="userPage"
+	viewId="/jsp/protected/user/user.xhtml" />
+
+<rich:spacer height="5px"/>
+
+<!-- LOADING BOX -->
+<a4j:status
+	onstart="Richfaces.showModalPanel('ajaxLoadingModalBox',{width:250, top:100})"
+	onstop="Richfaces.hideModalPanel('ajaxLoadingModalBox')">
+</a4j:status>
+
+<rich:modalPanel id="ajaxLoadingModalBox" minHeight="100" minWidth="450"
+	height="100" width="250" zindex="2000">
+	<f:facet name="header">
+		<h:outputText value="Richiesta in corso"></h:outputText>
+	</f:facet>
+	<center><h:panelGrid columns="1">
+		<h:panelGroup></h:panelGroup>
+		<h:panelGroup></h:panelGroup>
+
+		<h:outputText value="Attendere prego" style="font-size:15px"></h:outputText>
+	     				&nbsp; &nbsp; <h:graphicImage value="/images/wait.gif" />
+	</h:panelGrid></center>
+</rich:modalPanel>
+<!-- FINE LOADING BOX -->
+
+<h:form id="frmMain">
+
+	<div align="center"><h:selectOneRadio
+		value="#{uiPageBean.tableName}">
+		<f:selectItem itemLabel="Soggetti" itemValue="Soggetto" />
+		<f:selectItem itemLabel="Oggetti" itemValue="Oggetto" />
+		<f:selectItem itemLabel="Vie" itemValue="Via" />
+		<!-- <f:selectItem itemLabel="Civici" itemValue="Civico" /> -->
+		<a4j:support event="onclick" action="#{uiPageBean.doInit}" />
+	</h:selectOneRadio></div>
+
+</h:form>
+<rich:separator lineType="solid" />
+
+<rich:messages passedLabel="Operazione completata" layout="list">
+	<f:facet name="infoMarker">
+		<h:graphicImage value="/images/passed.gif" />
+	</f:facet>
+	<f:facet name="errorMarker">
+		<h:graphicImage value="/images/error.gif" />
+	</f:facet>
+</rich:messages>
+
+<div id="content"><ui:insert name="template">
+	<!-- TEMPLATE -->
+</ui:insert></div>
+
+</body>
+
+</html>

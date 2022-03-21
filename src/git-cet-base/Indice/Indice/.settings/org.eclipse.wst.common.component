@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-modules id="moduleCoreId" project-version="1.5.0">
+    <wb-module deploy-name="Indice">
+        <wb-resource deploy-path="/" source-path="/EarContent"/>
+        <dependent-module archiveName="Indice_WEB.war" deploy-path="/" handle="module:/resource/Indice_WEB/Indice_WEB">
+            <dependent-object/>
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="IndiceEJB.jar" deploy-path="/" handle="module:/resource/IndiceEJB/IndiceEJB">
+            <dependent-object/>
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="org.springframework.beans-3.0.4.RELEASE.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/spring/3.0.4/org.springframework.beans-3.0.4.RELEASE.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="org.springframework.core-3.0.4.RELEASE.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/spring/3.0.4/org.springframework.core-3.0.4.RELEASE.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="org.springframework.context-3.0.4.RELEASE.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/spring/3.0.4/org.springframework.context-3.0.4.RELEASE.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="cetsecutil.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/cet-lib/cetsecutil.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="datarouter.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/cet-lib/datarouter.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+    </wb-module>
+</project-modules>

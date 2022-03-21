@@ -1,0 +1,132 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich">
+
+<ui:composition template="/jsp/protected/layout/layout.xhtml">
+
+	<ui:define name="template">
+
+		<h:form id="frmRicerca">
+
+			<rich:panel>
+				<f:facet name="header">
+					<h:outputLabel value="Criteri di ricerca" />
+				</f:facet>
+
+				<rich:panelBar>
+					<rich:panelBarItem id="panelItemUnico" label="Dato di riferimento">
+						<a4j:support event="onenter" immediate="true"
+							reRender="risRicercaPage, operationTablePage">
+							<a4j:actionparam value="/jsp/protected/empty.xhtml"
+								assignTo="#{indiceCommonBean.pageRisRicerca}" />
+							<a4j:actionparam value="/jsp/protected/empty.xhtml"
+								assignTo="#{indiceCommonBean.pageOperationTable}" />
+						</a4j:support>
+
+						<div align="center"><h:panelGrid columns="7" border="0"
+							cellpadding="0" cellspacing="10px">
+
+							<a4j:region>
+								<h:outputLabel value="Foglio   " />
+								<h:inputText id="txtUnicoFoglio" maxlength="16"
+									style=" width :100px"
+									value="#{dataProviderImpl.criteriaUnico.foglio}" />
+							</a4j:region>
+
+							<a4j:region>
+								<h:outputLabel value="Particella  " />
+								<h:inputText id="txtUnicoCodFis" maxlength="16"
+									style=" width :100px"
+									value="#{dataProviderImpl.criteriaUnico.particella}" />
+							</a4j:region>
+
+							<a4j:region>
+								<h:outputLabel value="Subalterno  " />
+								<h:inputText id="txtUnicoSub" maxlength="16"
+									style=" width :100px"
+									value="#{dataProviderImpl.criteriaUnico.sub}" />
+							</a4j:region>
+
+							<a4j:commandButton value="Ricerca" id="btnUnicoRicerca"
+								reRender="risRicercaPage, operationTablePage">
+								<a4j:actionparam
+									value="/jsp/protected/risRicerca/unicoOggetto.xhtml"
+									assignTo="#{indiceCommonBean.pageRisRicerca}" />
+								<a4j:actionparam value="/jsp/protected/empty.xhtml"
+									assignTo="#{indiceCommonBean.pageOperationTable}" />
+							</a4j:commandButton>
+						</h:panelGrid></div>
+					</rich:panelBarItem>
+
+					<rich:panelBarItem id="panelItemTotale" label="Dato correlato">
+						<a4j:support event="onenter" immediate="true"
+							reRender="risRicercaPage, operationTablePage">
+							<a4j:actionparam value="/jsp/protected/empty.xhtml"
+								assignTo="#{indiceCommonBean.pageRisRicerca}" />
+							<a4j:actionparam value="/jsp/protected/empty.xhtml"
+								assignTo="#{indiceCommonBean.pageOperationTable}" />
+						</a4j:support>
+
+						<a4j:region>
+							<div align="center"><h:panelGrid columns="9">
+
+								<h:outputLabel value="Foglio   " />
+								<h:inputText id="txtTotaleFoglio" maxlength="16"
+									style=" width :100px"
+									value="#{dataProviderImpl.criteriaTotale.foglio}" />
+
+								<h:outputLabel value="Particella   " />
+								<h:inputText id="txtTotaleParticella" maxlength="16"
+									style=" width :100px"
+									value="#{dataProviderImpl.criteriaTotale.particella}" />
+
+								<h:outputLabel value="Subalterno   " />
+								<h:inputText id="txtTotaleSub" maxlength="16"
+									style=" width :100px"
+									value="#{dataProviderImpl.criteriaTotale.sub}" />
+
+								<h:outputLabel value="Fonte dati  " />
+
+								<h:selectOneMenu id="cboEnteSorgente"
+									value="#{dataProviderImpl.criteriaTotale.enteSorgenteId}">
+									<f:selectItem itemValue="" itemLabel="--Tutti--"/>
+									<f:selectItems value="#{indiceCommonBean.listaEnteSorgente}" />
+								</h:selectOneMenu>
+
+								<a4j:commandButton value="Ricerca" id="btnTotaleRicerca"
+									reRender="risRicercaPage, operationTablePage">
+									<a4j:actionparam
+										value="/jsp/protected/risRicerca/totaleOggetto.xhtml"
+										assignTo="#{indiceCommonBean.pageRisRicerca}" />
+									<a4j:actionparam value="/jsp/protected/empty.xhtml"
+										assignTo="#{indiceCommonBean.pageOperationTable}" />
+								</a4j:commandButton>
+							</h:panelGrid></div>
+						</a4j:region>
+
+					</rich:panelBarItem>
+				</rich:panelBar>
+			</rich:panel>
+
+		</h:form>
+
+		<rich:spacer height="15px" />
+
+		<a4j:include id="risRicercaPage"
+			viewId="#{indiceCommonBean.pageRisRicerca}" />
+
+		<rich:spacer height="15px" />
+
+		<a4j:include id="operationTablePage"
+			viewId="#{indiceCommonBean.pageOperationTable}" />
+
+		<a4j:include id="modalPanelPage"
+			viewId="#{dataProviderImpl.pageModalPanel}" />
+
+	</ui:define>
+</ui:composition>
+</html>

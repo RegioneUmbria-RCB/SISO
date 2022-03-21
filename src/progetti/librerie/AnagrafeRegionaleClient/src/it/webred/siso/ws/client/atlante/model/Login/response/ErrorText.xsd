@@ -1,5 +1,0 @@
-<xs:schema targetNamespace="http://schemas.datacontract.org/2004/07/AtlanteWebServices.ObjectModel.Messages" xmlns:mstns="http://sistematlante.it/gestioneServizi" xmlns="http://schemas.datacontract.org/2004/07/AtlanteWebServices.ObjectModel.Messages" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" attributeFormDefault="qualified" elementFormDefault="qualified" xmlns:app1="http://schemas.datacontract.org/2004/07/AtlanteWebServices.ObjectModel.Messages" xmlns:app2="http://sistematlante.it/AtlanteWebServices.ObjectModel.Messages">
-  <xs:import namespace="http://sistematlante.it/AtlanteWebServices.ObjectModel.Messages" />
-  <xs:import namespace="http://sistematlante.it/gestioneServizi" />
-  <xs:element name="ErrorText" type="xs:string" />
-</xs:schema>

@@ -1,0 +1,154 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich">
+
+<ui:composition template="/jsp/protected/layout/layout.xhtml">
+
+	<ui:define name="template">
+		<script type="text/javascript"
+			src="${facesContext.externalContext.requestContextPath}/js/ricercaFiltro.js"></script>
+
+
+		<h:form id="frmRicerca">
+
+			<rich:simpleTogglePanel switchType="client" opened="false"
+				label="Inserimento nuova Via">
+
+				<div align="center"><h:panelGrid columns="2">
+					<h:outputLabel value="Qualificatore (via, piazza, ...)  " />
+					<h:inputText id="txtNuovoSedIme" maxlength="200"
+						style=" width :250px" value="#{viaBean.nuovo.sedime}" />
+					<h:outputLabel value="Nome della via " />
+					<h:inputText id="txtNuovoVia" maxlength="200" style=" width :250px"
+						value="#{viaBean.nuovo.indirizzo}" />
+				</h:panelGrid> <a4j:commandButton value="Salva" action="#{viaBean.doNuovaVia}"
+					id="btnSalva">
+					<a4j:support event="onclick"
+						onsubmit="if (!confirm('Procedere con il salvataggio?')) return false" />
+				</a4j:commandButton></div>
+
+			</rich:simpleTogglePanel>
+
+			<rich:spacer height="15px" />
+
+			<rich:panel>
+				<f:facet name="header">
+					<h:outputLabel value="Criteri di ricerca" />
+				</f:facet>
+
+				<rich:panelBar>
+					<rich:panelBarItem id="panelItemUnico" label="Dato di riferimento">
+						<a4j:support event="onenter" immediate="true"
+							reRender="risRicercaPage, operationTablePage">
+							<a4j:actionparam value="/jsp/protected/empty.xhtml"
+								assignTo="#{indiceCommonBean.pageRisRicerca}" />
+							<a4j:actionparam value="/jsp/protected/empty.xhtml"
+								assignTo="#{indiceCommonBean.pageOperationTable}" />
+						</a4j:support>
+
+						<div align="center"><h:panelGrid columns="4">
+							<a4j:region renderRegionOnly="true">
+
+								<h:outputLabel value="Indirizzo  " />
+								<h:inputText id="txtUnicoVia" maxlength="200"
+									style=" width :400px"
+									value="#{dataProviderImpl.criteriaUnico.indirizzo}" />
+								<rich:suggestionbox minChars="3" width="400" height="180"
+									for="txtUnicoVia"
+									suggestionAction="#{suggestionViaBean.getSuggestionUnicoByIndirizzo}"
+									var="result" ajaxSingle="true" nothingLabel="..."
+									fetchValue="#{result.indirizzo}" usingSuggestObjects="true">
+
+									<h:column>
+										<h:outputText value="#{result.indirizzo}"></h:outputText>
+									</h:column>
+
+								</rich:suggestionbox>
+							</a4j:region>
+
+							<a4j:commandButton value="Ricerca" id="btnUnicoRicerca"
+								reRender="risRicercaPage, operationTablePage">
+								<a4j:actionparam
+									value="/jsp/protected/risRicerca/unicoVia.xhtml"
+									assignTo="#{indiceCommonBean.pageRisRicerca}" />
+								<a4j:actionparam value="/jsp/protected/empty.xhtml"
+									assignTo="#{indiceCommonBean.pageOperationTable}" />
+							</a4j:commandButton>
+						</h:panelGrid></div>
+
+					</rich:panelBarItem>
+
+					<rich:panelBarItem id="panelItemTotale" label="Dato correlato">
+						<a4j:support event="onenter" immediate="true"
+							reRender="risRicercaPage, operationTablePage">
+							<a4j:actionparam value="/jsp/protected/empty.xhtml"
+								assignTo="#{indiceCommonBean.pageRisRicerca}" />
+							<a4j:actionparam value="/jsp/protected/empty.xhtml"
+								assignTo="#{indiceCommonBean.pageOperationTable}" />
+						</a4j:support>
+
+						<div align="center"><h:panelGrid columns="6">
+							<a4j:region renderRegionOnly="true">
+
+								<h:outputLabel value="Indirizzo  " />
+								<h:inputText id="txtTotaleVia" maxlength="200"
+									style=" width :400px"
+									value="#{dataProviderImpl.criteriaTotale.indirizzo}" />
+								<rich:suggestionbox minChars="3" width="400" height="180"
+									for="txtTotaleVia"
+									suggestionAction="#{suggestionViaBean.getSuggestionTotaleByIndirizzo}"
+									var="result" ajaxSingle="true" nothingLabel="..."
+									fetchValue="#{result.indirizzo}" usingSuggestObjects="true">
+
+									<h:column>
+										<h:outputText value="#{result.indirizzo} (#{result.fonteDati})"></h:outputText>
+									</h:column>
+
+								</rich:suggestionbox>
+							</a4j:region>
+
+
+							<h:outputLabel value="Fonte dati  " />
+
+							<h:selectOneMenu id="cboEnteSorgente"
+								value="#{dataProviderImpl.criteriaTotale.enteSorgenteId}">
+								<f:selectItem itemValue="" itemLabel="--Tutti--"/>
+								<f:selectItems value="#{indiceCommonBean.listaEnteSorgente}" />
+							</h:selectOneMenu>
+
+							<a4j:commandButton value="Ricerca" id="btnTotaleRicerca"
+								reRender="risRicercaPage, operationTablePage">
+								<a4j:actionparam
+									value="/jsp/protected/risRicerca/totaleVia.xhtml"
+									assignTo="#{indiceCommonBean.pageRisRicerca}" />
+								<a4j:actionparam value="/jsp/protected/empty.xhtml"
+									assignTo="#{indiceCommonBean.pageOperationTable}" />
+							</a4j:commandButton>
+						</h:panelGrid></div>
+
+					</rich:panelBarItem>
+				</rich:panelBar>
+			</rich:panel>
+
+		</h:form>
+
+		<rich:spacer height="15px" />
+
+		<a4j:include id="risRicercaPage"
+			viewId="#{indiceCommonBean.pageRisRicerca}" />
+
+		<rich:spacer height="15px" />
+
+		<a4j:include id="operationTablePage"
+			viewId="#{indiceCommonBean.pageOperationTable}" />
+			
+		<a4j:include id="modalPanelPage"
+			viewId="#{dataProviderImpl.pageModalPanel}" />
+
+	</ui:define>
+</ui:composition>
+</html>

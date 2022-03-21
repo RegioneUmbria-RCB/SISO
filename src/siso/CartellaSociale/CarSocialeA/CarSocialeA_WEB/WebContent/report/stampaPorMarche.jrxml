@@ -1,0 +1,764 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" whenResourceMissingType="Empty" uuid="aac40627-9034-4852-841a-125bbd13a786">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="891"/>
+	<field name="nome" class="java.lang.String"/>
+	<field name="cognome" class="java.lang.String"/>
+	<field name="sesso" class="java.lang.String"/>
+	<field name="luogoNascita" class="java.lang.String"/>
+	<field name="dataNascita" class="java.lang.String"/>
+	<field name="residenza" class="java.lang.String"/>
+	<field name="resid_cap" class="java.lang.String"/>
+	<field name="resid_sigla_prov" class="java.lang.String"/>
+	<field name="resid_via" class="java.lang.String"/>
+	<field name="codFiscale" class="java.lang.String"/>
+	<field name="cittadinanza" class="java.lang.String"/>
+	<field name="telefono" class="java.lang.String"/>
+	<field name="cellulare" class="java.lang.String"/>
+	<field name="email" class="java.lang.String"/>
+	<field name="titolo_studio" class="java.lang.String"/>
+	<field name="condizione_lavoro" class="java.lang.String"/>
+	<field name="durata_ric_lavoro" class="java.lang.String"/>
+	<field name="cond_vulnerabilita" class="java.lang.String"/>
+	<field name="nome_prog" class="java.lang.String"/>
+	<field name="attuatore_prog" class="java.lang.String"/>
+	<field name="cod_prog" class="java.lang.String"/>
+	<field name="domicilio" class="java.lang.String"/>
+	<field name="dom_cap" class="java.lang.String"/>
+	<field name="dom_sigla_prov" class="java.lang.String"/>
+	<field name="dom_via" class="java.lang.String"/>
+	<field name="imagePath" class="java.lang.String"/>
+	<field name="attivita" class="java.lang.String"/>
+	<field name="dataSottoscrizione" class="java.lang.String"/>
+	<field name="titolo_studio_tooltip" class="java.lang.String"/>
+	<background>
+		<band/>
+	</background>
+	<title>
+		<band height="121" splitType="Immediate">
+			<image>
+				<reportElement x="1" y="2" width="553" height="86" uuid="f1900d42-4d50-4345-94f9-5e73b82cb6f6"/>
+				<imageExpression><![CDATA[$F{imagePath}+"logo_FSE_2014_2020_completo.jpg"]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="86" y="89" width="401" height="27" forecolor="#0066FF" uuid="4860a351-504a-40ec-8971-716f5049cf68"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font fontName="Calibri Light" size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[DOMANDA DI ISCRIZIONE ALL'INTERVENTO]]></text>
+			</staticText>
+		</band>
+	</title>
+	<detail>
+		<band height="282">
+			<staticText>
+				<reportElement x="0" y="0" width="100" height="20" uuid="0cbafe19-60db-450b-82bf-6f528465b551"/>
+				<textElement>
+					<font fontName="Calibri Light"/>
+				</textElement>
+				<text><![CDATA[La/ il sottoscritta/o]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="100" y="0" width="391" height="20" uuid="7d970240-4098-4777-a501-47cd6d450637"/>
+				<textElement>
+					<font fontName="Calibri Light" isUnderline="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cognome} + "  "+ $F{nome}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="100" y="19" width="327" height="1" forecolor="#999999" uuid="4ef9cbf4-1bb7-428d-9021-9914fe1bb9ac"/>
+			</line>
+			<staticText>
+				<reportElement x="0" y="176" width="60" height="20" uuid="6b951830-eec8-4244-9bda-97521995aea7"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Calibri Light" size="10"/>
+				</textElement>
+				<text><![CDATA[Telefono]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="234" width="555" height="44" uuid="57f4c291-7bec-4399-bba3-80b37b534900"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Calibri Light" size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[ai sensi degli art 46 e 47 del D.P.R. n. 445/2000 e consapevole delle sanzioni penali richiamate dagli art. 48 e 76 del D.P.R n. 445/2000 in caso di dichiarazioni mendaci e di formazione o uso di atti falsi,
+]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="280" y="176" width="54" height="20" uuid="c7248ea6-1077-4c7d-a5b9-94826022822e"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Calibri Light" size="10"/>
+				</textElement>
+				<text><![CDATA[Cellulare]]></text>
+			</staticText>
+			<textField isBlankWhenNull="false">
+				<reportElement x="65" y="156" width="456" height="20" uuid="30b5bec8-58f9-4dbf-87d3-50984f78f804"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Calibri Light" size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cittadinanza}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="false">
+				<reportElement x="432" y="20" width="123" height="20" uuid="40bc9995-2556-4f1f-b024-7407e8bae10c"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Calibri Light" size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{dataNascita}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="false">
+				<reportElement x="147" y="20" width="211" height="20" uuid="c0645c1f-ea6e-445f-9631-4f4b8d414b85"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Calibri Light" size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{luogoNascita}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="147" y="40" width="223" height="1" forecolor="#999999" uuid="125d9d9c-a47c-4f5d-ae77-5e0ca13184e2"/>
+			</line>
+			<staticText>
+				<reportElement x="0" y="43" width="55" height="20" uuid="4af0686a-dd0f-4891-bcd8-b0b8b80fd68b"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Calibri Light" size="10"/>
+				</textElement>
+				<text><![CDATA[residente a ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="136" width="60" height="20" isPrintWhenDetailOverflows="true" uuid="57108304-be4d-436f-aa5c-5b32e9095622"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Calibri Light" size="10"/>
+				</textElement>
+				<text><![CDATA[Cod. fiscale]]></text>
+			</staticText>
+			<textField isBlankWhenNull="false">
+				<reportElement x="334" y="176" width="181" height="20" uuid="2cbcaa66-6357-4bb8-a1d9-7ae8031e8989"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Calibri Light" size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cellulare}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="156" width="60" height="20" uuid="534f916c-584c-41e3-b9a1-20761eee544d"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Calibri Light" size="10"/>
+				</textElement>
+				<text><![CDATA[Cittadinanza]]></text>
+			</staticText>
+			<textField isBlankWhenNull="false">
+				<reportElement x="65" y="197" width="323" height="20" uuid="6c794141-7eda-4de4-8eac-b92b6c8c0a2b"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Calibri Light" size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{email}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="196" width="60" height="20" uuid="aeb7cb5a-88e2-4809-8a94-d0769bdd1d9c"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Calibri Light" size="10"/>
+				</textElement>
+				<text><![CDATA[e-mail / PEC]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="20" width="38" height="20" uuid="72aeecb1-2ff7-4c2d-b148-55d6bdb50c46"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Calibri Light" size="10"/>
+				</textElement>
+				<text><![CDATA[Sesso]]></text>
+			</staticText>
+			<textField isBlankWhenNull="false">
+				<reportElement x="65" y="176" width="180" height="20" uuid="edf4a52b-6401-4b1d-872c-9db90b723d91"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Calibri Light" size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{telefono}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="371" y="20" width="61" height="20" uuid="71facfd2-bdd2-4086-9034-6ab7924e7ea4"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Calibri Light" size="10"/>
+				</textElement>
+				<text><![CDATA[il giorno]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="105" y="20" width="42" height="20" uuid="e6aab897-ca6b-4a7b-ad02-323790ffcd1d"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Calibri Light" size="10"/>
+				</textElement>
+				<text><![CDATA[nata/o a ]]></text>
+			</staticText>
+			<textField isBlankWhenNull="false">
+				<reportElement x="65" y="136" width="310" height="20" uuid="aa274456-4615-4178-b396-8586f2844c0c"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Calibri Light" size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{codFiscale}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="false">
+				<reportElement x="55" y="43" width="220" height="20" uuid="39617cd6-6c1f-4e69-8b24-b4a7e4a0aac8"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Calibri Light" size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{residenza}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="275" y="43" width="26" height="20" uuid="b40ba51e-67be-47ca-ae4e-66bda577ce77"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Calibri Light"/>
+				</textElement>
+				<text><![CDATA[CAP]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="301" y="43" width="73" height="20" uuid="aa7fee50-f05b-488e-a52a-a745b863c6b1"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Calibri Light"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{resid_cap}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="374" y="43" width="47" height="20" uuid="02eda11e-2879-4244-9f32-8766fb2455c3"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Calibri Light"/>
+				</textElement>
+				<text><![CDATA[provincia]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="421" y="43" width="100" height="20" uuid="165fb711-bd7b-48c3-9741-292eeb386e28"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Calibri Light"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{resid_sigla_prov}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="2" y="63" width="38" height="20" uuid="65781398-c2b0-4275-9df5-ab8fc08050f7"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Calibri Light"/>
+				</textElement>
+				<text><![CDATA[via ]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="40" y="63" width="263" height="20" uuid="bde97138-796c-4cc5-b788-1bcda2b9d55e"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Calibri Light"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{resid_via}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="40" y="83" width="263" height="1" forecolor="#999999" uuid="1659a0cf-f23e-4e0a-b71a-c8b913d6985a"/>
+			</line>
+			<staticText>
+				<reportElement x="0" y="83" width="62" height="20" uuid="1e84ec9d-889e-40d2-a0f7-59ec28ee4d3a"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Calibri Light"/>
+				</textElement>
+				<text><![CDATA[domiciliata/o]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="63" y="83" width="239" height="20" uuid="c471c99a-f6ef-434b-86b7-1e6f8574c427"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Calibri Light"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{domicilio}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="425" y="83" width="100" height="20" uuid="76c50feb-2281-4d43-8af8-d8e22a4bab8d"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Calibri Light"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{dom_sigla_prov}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="325" y="83" width="54" height="20" uuid="12f77010-9252-4823-8518-cd06f19b9ce0"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Calibri Light"/>
+				</textElement>
+				<textFieldExpression><![CDATA["  "+$F{dom_cap}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="301" y="83" width="26" height="20" uuid="00d283cf-02da-4d20-8ecc-b4ba46a4edf4"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Calibri Light"/>
+				</textElement>
+				<text><![CDATA[CAP]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="378" y="83" width="47" height="20" uuid="869ab6c4-505a-4d39-8751-8ed150e59511"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Calibri Light"/>
+				</textElement>
+				<text><![CDATA[provincia]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="103" width="190" height="13" uuid="094c0ed9-930f-4cc0-a9b7-816139fad152"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Calibri Light" size="8" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[se il domicilo è diverso dalla residenza]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="116" width="60" height="20" uuid="25aa9aae-598f-4206-8055-e51b5d9e6e73"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Calibri Light"/>
+				</textElement>
+				<text><![CDATA[via ]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="65" y="116" width="263" height="20" uuid="bc8b02fe-079c-4d87-a91a-618b54708903"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Calibri Light"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{dom_via}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="38" y="20" width="53" height="20" uuid="119bf911-9f3d-4763-bff5-85374c452fce"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Calibri Light"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{sesso}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="38" y="39" width="24" height="1" forecolor="#999999" uuid="b82c0a21-8597-410c-85d1-5cf95b50fd34"/>
+			</line>
+			<line>
+				<reportElement x="421" y="62" width="56" height="1" forecolor="#999999" uuid="62398233-4d2a-41be-8565-5eda8212e0a8"/>
+			</line>
+			<line>
+				<reportElement x="55" y="102" width="246" height="1" forecolor="#999999" uuid="f596820a-4ed4-4a34-82b7-3a3aef33e794"/>
+			</line>
+			<line>
+				<reportElement x="60" y="136" width="480" height="1" forecolor="#999999" uuid="e600b9ee-a083-4453-b770-6f017bc76102"/>
+			</line>
+			<line>
+				<reportElement x="60" y="156" width="480" height="1" forecolor="#999999" uuid="3378a9f3-0fab-45e4-9653-339ace0106bf"/>
+			</line>
+			<line>
+				<reportElement x="60" y="176" width="480" height="1" forecolor="#999999" uuid="e7cbef25-bb4b-42c8-86e5-22be6fb18dc8"/>
+			</line>
+			<line>
+				<reportElement x="60" y="196" width="180" height="1" forecolor="#999999" uuid="241623af-12df-456f-935a-4aa3906e52af"/>
+			</line>
+			<line>
+				<reportElement x="336" y="195" width="180" height="1" forecolor="#999999" uuid="33bc4166-08b1-48e3-bda7-1d521906ef48"/>
+			</line>
+			<line>
+				<reportElement x="60" y="215" width="480" height="1" forecolor="#999999" uuid="5ff14137-c40e-467a-94a9-ed71e3b3aeec"/>
+			</line>
+			<line>
+				<reportElement x="302" y="61" width="72" height="1" forecolor="#999999" uuid="93ae8c17-dac2-4887-8b4b-ba94d2f3542a"/>
+			</line>
+			<line>
+				<reportElement x="327" y="103" width="52" height="1" forecolor="#999999" uuid="6be2408b-2c9a-4db3-a554-4863e7c6cbc5"/>
+			</line>
+			<line>
+				<reportElement x="425" y="101" width="52" height="1" forecolor="#999999" uuid="56eaa011-0017-4e16-9e15-abac04ee3f3b"/>
+			</line>
+			<line>
+				<reportElement x="53" y="63" width="222" height="1" forecolor="#999999" uuid="8e7d51ff-a275-4eaa-bc8c-7f0c734f1985"/>
+			</line>
+			<line>
+				<reportElement x="410" y="38" width="99" height="1" forecolor="#999999" uuid="f529984e-2b52-4714-8b13-6152572987d3"/>
+			</line>
+		</band>
+		<band height="228">
+			<staticText>
+				<reportElement x="227" y="0" width="100" height="20" uuid="aa10b174-f7a2-43da-ba51-bfa4543c24ba"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[DICHIARA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="20" width="447" height="20" uuid="1fc03b0d-96f4-4fd0-bb32-d99ceaec1115"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Calibri Light"/>
+				</textElement>
+				<text><![CDATA[i seguenti dati necessari alla partecipazione ad interventi finanziati dal Fondo Sociale Europeo:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="40" width="251" height="20" uuid="61bf22c9-205a-411b-9500-1868216a9b5a"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Calibri Light"/>
+				</textElement>
+				<text><![CDATA[di essere in possesso del seguente titolo di studio :]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="18" y="60" width="537" height="24" isRemoveLineWhenBlank="true" forecolor="#666666" uuid="d2ef82cc-a7d4-43fa-8d8a-db28f272f215"/>
+				<textElement markup="html">
+					<font fontName="Calibri Light" size="9" isBold="false" isItalic="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{titolo_studio}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="1" y="108" width="288" height="20" uuid="3cd165ab-afc6-49b5-aeef-c57409bb6d23"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Calibri Light"/>
+				</textElement>
+				<text><![CDATA[di essere nella seguente condizione sul mercato del lavoro:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="18" y="128" width="537" height="29" forecolor="#666666" uuid="41350ae4-8d30-4c89-a63c-42fd33dd824a"/>
+				<textElement markup="html">
+					<font fontName="Calibri Light" size="9" isItalic="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{condizione_lavoro}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="1" y="157" width="555" height="33" isRemoveLineWhenBlank="true" uuid="997194a1-73a0-49ba-9b5e-4075d920c71f">
+					<printWhenExpression><![CDATA[$F{durata_ric_lavoro} != null]]></printWhenExpression>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Calibri Light"/>
+				</textElement>
+				<text><![CDATA[in caso di condizione di: (01) in cerca di prima occupazione o (03) disoccupato alla ricerca di una nuova occupazione, indicare la durata della ricerca di lavoro:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="18" y="190" width="537" height="30" isRemoveLineWhenBlank="true" forecolor="#666666" uuid="7da599ce-f9aa-4eeb-88c2-512898c5d8f9">
+					<printWhenExpression><![CDATA[$F{durata_ric_lavoro} != null]]></printWhenExpression>
+				</reportElement>
+				<textElement verticalAlignment="Top" markup="html">
+					<font fontName="Calibri Light" size="9" isItalic="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{durata_ric_lavoro}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="18" y="84" width="537" height="24" isRemoveLineWhenBlank="true" forecolor="#666666" uuid="8ac0446a-aec2-40d8-ae97-5d49e45814c9"/>
+				<textElement markup="html">
+					<font fontName="Calibri Light" size="9" isBold="false" isItalic="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{titolo_studio_tooltip}]]></textFieldExpression>
+			</textField>
+		</band>
+		<band height="192">
+			<staticText>
+				<reportElement x="204" y="0" width="147" height="20" uuid="503616b3-87fa-4a1f-8ea5-cdcd030bbd8d"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[DICHIARA INOLTRE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="20" width="123" height="20" isRemoveLineWhenBlank="true" uuid="7afa4f6d-db51-4faa-a74e-cc9b37777d6b">
+					<printWhenExpression><![CDATA[$F{cond_vulnerabilita} != null]]></printWhenExpression>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Calibri Light" isBold="false"/>
+				</textElement>
+				<text><![CDATA[di trovarsi nell/e seguente/i ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="122" y="20" width="153" height="20" isRemoveLineWhenBlank="true" uuid="0cb504a2-0cf8-4d82-8548-28eb8f91b801">
+					<printWhenExpression><![CDATA[$F{cond_vulnerabilita} != null]]></printWhenExpression>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[ condizione/i di vulnerabilità :]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="18" y="40" width="535" height="47" isRemoveLineWhenBlank="true" forecolor="#666666" uuid="c2ae6d66-affd-48d7-b96e-d29bed9dafa2"/>
+				<textElement verticalAlignment="Top" markup="html">
+					<font fontName="Calibri Light" size="9" isItalic="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cond_vulnerabilita}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="87" width="555" height="45" isRemoveLineWhenBlank="true" forecolor="#000000" backcolor="#FFFFFF" uuid="6a36a9f5-30de-49b7-b03d-6fc804829897">
+					<printWhenExpression><![CDATA[$F{cond_vulnerabilita}.equals("L'utente non intende fornire informazioni sulla condizione di vulnerabilità")]]></printWhenExpression>
+				</reportElement>
+				<textElement verticalAlignment="Top">
+					<font fontName="Calibri Light" isUnderline="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Dichiarazione da compilarsi qualora il richiedente non intenda fornire le informazioni sulla condizione di vulnerabilità  "+
+" Il   sottoscritto  " + $F{cognome}+ " "+$F{nome}	+" non intende fornire all’Amministrazione le informazioni relative alla condizione di vulnerabilità di cui alla presente"+" “Domanda di iscrizione all’intervento”."]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="273" y="156" width="280" height="13" isRemoveLineWhenBlank="true" uuid="6cf3c8de-7a87-4adb-93c3-76e62bccde69">
+					<printWhenExpression><![CDATA[$F{cond_vulnerabilita}.equals("L'utente non intende fornire informazioni sulla condizione di vulnerabilità")]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font size="8" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[firma]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="156" width="100" height="20" isRemoveLineWhenBlank="true" uuid="d8045902-5a4c-4d48-815d-47bb48cbeeb3">
+					<printWhenExpression><![CDATA[$F{cond_vulnerabilita}.equals("L'utente non intende fornire informazioni sulla condizione di vulnerabilità")]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font size="8" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[luogo]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="273" y="169" width="280" height="13" isRemoveLineWhenBlank="true" uuid="0b0c05b9-6af6-4634-9e2a-805d05eaf1f0">
+					<printWhenExpression><![CDATA[$F{cond_vulnerabilita}.equals("L'utente non intende fornire informazioni sulla condizione di vulnerabilità")]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font fontName="Calibri Light" size="8" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[(per i minori di 18 anni firma del genitore o di chi ne esercita la tutela)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="133" y="156" width="100" height="20" isRemoveLineWhenBlank="true" uuid="f84afb69-f553-4a35-9b12-f1c710c2d972">
+					<printWhenExpression><![CDATA[$F{cond_vulnerabilita}.equals("L'utente non intende fornire informazioni sulla condizione di vulnerabilità")]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font size="8" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[data]]></text>
+			</staticText>
+			<line>
+				<reportElement x="274" y="154" width="280" height="1" isRemoveLineWhenBlank="true" uuid="5f860f15-84be-4984-adcd-2c56f0011c7e">
+					<printWhenExpression><![CDATA[$F{cond_vulnerabilita}.equals("L'utente non intende fornire informazioni sulla condizione di vulnerabilità")]]></printWhenExpression>
+				</reportElement>
+			</line>
+			<line>
+				<reportElement x="134" y="155" width="100" height="1" isRemoveLineWhenBlank="true" uuid="846c9df9-8d2e-41f0-99a1-f90c52dab61a">
+					<printWhenExpression><![CDATA[$F{cond_vulnerabilita}.equals("L'utente non intende fornire informazioni sulla condizione di vulnerabilità")]]></printWhenExpression>
+				</reportElement>
+			</line>
+			<line>
+				<reportElement x="1" y="156" width="100" height="1" isRemoveLineWhenBlank="true" uuid="4c7d5828-35bb-4b8e-b569-42ff5fb1f0b1">
+					<printWhenExpression><![CDATA[$F{cond_vulnerabilita}.equals("L'utente non intende fornire informazioni sulla condizione di vulnerabilità")]]></printWhenExpression>
+				</reportElement>
+			</line>
+			<textField isBlankWhenNull="false">
+				<reportElement x="133" y="138" width="100" height="14" isRemoveLineWhenBlank="true" uuid="8f68cea5-01ea-4c98-af6d-0fdbe5fdeee5">
+					<printWhenExpression><![CDATA[$F{cond_vulnerabilita}.equals("L'utente non intende fornire informazioni sulla condizione di vulnerabilità")]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Calibri Light" size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{dataSottoscrizione}]]></textFieldExpression>
+			</textField>
+		</band>
+		<band height="107">
+			<staticText>
+				<reportElement x="204" y="0" width="147" height="20" uuid="054c42dc-a663-42ba-b057-fae8fd32ee88"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CHIEDE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="20" width="204" height="20" uuid="ac7f34fa-c26c-4351-9c5d-ecc0d9b2d4a1"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Calibri Light"/>
+				</textElement>
+				<text><![CDATA[di partecipare al seguente progetto : ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="40" width="122" height="20" uuid="71b769a1-a753-4663-a023-9ee275cd04bd"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Calibri Light"/>
+				</textElement>
+				<text><![CDATA[Denominazione progetto :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="60" width="100" height="20" uuid="87870d10-410e-4b84-b3e6-77cddb1fba5b"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Calibri Light"/>
+				</textElement>
+				<text><![CDATA[Soggetto attuatore : ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="80" width="100" height="20" uuid="c8fcb8c4-4d32-44a1-90e3-577ab5e55206"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Calibri Light"/>
+				</textElement>
+				<text><![CDATA[Codice progetto : ]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="122" y="40" width="433" height="20" uuid="1559a25a-f3b7-483c-bede-f8fef8606ff8"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Calibri Light"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nome_prog}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="100" y="60" width="455" height="20" uuid="be52619a-295c-41c0-a73a-797027fd9343"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Calibri Light"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{attuatore_prog}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="100" y="80" width="454" height="20" uuid="1c669aac-ed39-41d1-8753-cc9b4364af5c"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Calibri Light"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cod_prog}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="100" y="100" width="455" height="1" forecolor="#999999" uuid="f1dd8d1a-c534-4ab2-a511-e660dcb756e7"/>
+			</line>
+			<line>
+				<reportElement x="100" y="80" width="455" height="1" forecolor="#999999" uuid="be520d23-80be-4a37-9a13-ca9cc65b1a2a"/>
+			</line>
+			<line>
+				<reportElement x="123" y="60" width="432" height="1" forecolor="#999999" uuid="1561e9cc-0b0b-4f00-a7a4-7eb6c18c9268"/>
+			</line>
+		</band>
+		<band height="159">
+			<textField>
+				<reportElement positionType="Float" x="2" y="2" width="552" height="69" uuid="b8e6ce22-8c6c-40ef-9640-3f8f969c6e17"/>
+				<textElement textAlignment="Justified" markup="html">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA["<b>COLLABORAZIONE NELLA RILEVAZIONE DEI RISULTATI OTTENUTI A SEGUITO DELLA PARTECIPAZIONE ALL’INTERVENTO</b><br/>"+
+"Al fine di poter valutare i risultati degli interventi realizzati nell’ambito del Programma operativo FSE Marche, così come previsto dai"
++"regolamenti europei in materia di FSE, l’Amministrazione potrebbe avere la necessità di conoscere alcune informazioni in merito alla Sua"
++"condizione sul mercato del lavoro successivamente alla conclusione dell’intervento. Con la sottoscrizione della presente domanda il"
++"richiedente si impegna a collaborare con l’Amministrazione fornendo le informazioni eventualmente richieste mediante questionari da"
++"compilare on line o interviste telefoniche."]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="1" y="71" width="301" height="17" uuid="b9733902-f601-40d9-880b-b6518dcbed91"/>
+				<textElement verticalAlignment="Middle" markup="html">
+					<font fontName="SansSerif" size="8" isItalic="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["<i>La presente scheda dovrà essere compilata in ogni sua parte.</i>"]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="0" y="102" width="100" height="1" uuid="fca3bcc9-acf3-4061-9990-912b4b3ff630"/>
+			</line>
+			<line>
+				<reportElement x="133" y="101" width="100" height="1" uuid="318413fe-9bc5-4dc7-aefd-1e44e0683afa"/>
+			</line>
+			<line>
+				<reportElement x="273" y="100" width="280" height="1" uuid="50970f7a-156a-41c8-8a15-30aa9331b399"/>
+			</line>
+			<staticText>
+				<reportElement x="0" y="106" width="100" height="20" uuid="cc8b9682-2022-431e-9283-9c0954b5f1df"/>
+				<textElement textAlignment="Center">
+					<font size="8" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[luogo]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="133" y="106" width="100" height="20" uuid="3c838257-e534-4aa1-b32f-7c035d46c955"/>
+				<textElement textAlignment="Center">
+					<font size="8" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[data]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="273" y="101" width="280" height="13" uuid="83922276-5084-4eda-ac0f-2083d0729341"/>
+				<textElement textAlignment="Center">
+					<font size="8" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[firma]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="273" y="113" width="280" height="13" uuid="d993a75e-fbdb-41cd-a66b-bbfe398738ae"/>
+				<textElement textAlignment="Center">
+					<font fontName="Calibri Light" size="8" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[(per i minori di 18 anni firma del genitore o di chi ne esercita la tutela)]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="-2" y="131" width="555" height="23" uuid="60803bb7-0b48-405a-bb82-4b6925f72690"/>
+				<textElement markup="html">
+					<font fontName="SansSerif" size="9" isItalic="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["<i>Allegare copia, chiara e leggibile, del documento d’identità del firmatario, ai sensi del DPR n. 445/2000.</i> "]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="false">
+				<reportElement x="134" y="86" width="100" height="14" isRemoveLineWhenBlank="true" uuid="9f828f02-400c-4548-bcb1-d8e911bc0a97"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Calibri Light" size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{dataSottoscrizione}]]></textFieldExpression>
+			</textField>
+		</band>
+		<band height="427">
+			<staticText>
+				<reportElement x="0" y="0" width="555" height="15" uuid="ae14812a-d309-4601-9fab-e7aaf1ee8f4e"/>
+				<textElement textAlignment="Center">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[INFORMATIVA SUL TRATTAMENTO DEI DATI PERSONALI]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="15" width="555" height="20" uuid="bf524640-4dd5-47b7-a344-d71bcdfa4bf3"/>
+				<textElement textAlignment="Center">
+					<font fontName="Calibri Light"/>
+				</textElement>
+				<text><![CDATA[(ai sensi dell’art. 13, Regolamento 2016/679/UE - GDPR)]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" x="0" y="39" width="555" height="387" uuid="c9455243-3ca2-423d-81c3-6b705dd6fd6d"/>
+				<textElement textAlignment="Justified" markup="html">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA["La Regione Marche in conformità al Regolamento 2016/679/UE <i>(General Data Protection Regulation – GDPR)</i> La informa sulle modalità di trattamento dei dati da Lei forniti.<br/>"
++"<b><u>Il Titolare del trattamento</u></b> è la Regione Marche - Giunta Regionale, con sede in via Gentile da Fabriano, 9 – 60125 Ancona.<br/>"
++"<b><u>I Delegati al trattamento</u></b> sono il Dirigente della Posizione di funzione “Programmazione nazionale e comunitaria” (tel. 071 806 3674/3801 email: pf.bilancio.programmazioneunitaria@regione.marche.it) Andrea Pellei e il Dirigente del Servizio Politiche Sociali e Sport Giovanni Santarelli (tel. 071 806 4048/4046 email: servizio.politichesociali_sport@regione.marche.it)<br/>"
++"<b><u>Il Responsabile della Protezione dei Dati</u></b> ha sede in via Gentile da Fabriano, 9 – 60125 Ancona. La casella di posta elettronica, cui potrà indirizzare questioni relative ai trattamenti di dati che La riguardano, è:"+"<font color='blue'><u>rpd@regione.marche.it</u></font><br/>"
++"<b><u>Finalità</u></b> I dati personali sono trattati per la partecipazione all’intervento nonché per consentire alla Regione, titolare del trattamento, l’adempimento degli obblighi di monitoraggio, valutazione e controllo previsti dal Reg. (UE) n. 1303/2013 e ss.mm.ii. e dal Reg. (UE)n. 1304/2013 e ss.mm.i.. I dati forniti saranno trattati in maniera informatizzata e manuale per procedere ai necessari adempimenti e alle necessarie verifiche, in relazione allo specifico procedimento amministrativo al quale fanno riferimento. I dati raccolti potranno essere trattati inoltre ai fini di archiviazione (protocollo e conservazione documentale) nonché, in forma aggregata, a fini statistici. Gli stessi dati potranno confluire nei sistemi informativi regionali, nazionali e comunitari di gestione e monitoraggio degli interventi finanziati dal Fondo Sociale Europeo (FSE).<br/>"
++"<b><u>La base giuridica del trattamento</u></b> (ai sensi degli articoli 6 e 9 del Regolamento 2016/679/UE) è costituita dal l Reg. (UE) n. 1303/2013 e ss.mm.ii. e dal Reg. (UE)n. 1304/2013 e ss.mm.i.<br/>"
++"<b><u>Comunicazione dei dati.</u></b> I suoi dati personali potranno essere conosciuti esclusivamente dagli operatori della Regione Marche, autorizzati al trattamento, nonché dai beneficiari/attuatori individuati quali Responsabili del trattamento. I dati forniti saranno messi a disposizione dell’Autorità di Certificazione e dell’Autorità di Audit per l’adempimento degli obblighi previsti dai Regolamenti europei. Potranno, inoltre, essere resi disponibili ai Servizi della Commissione Europea, alle Amministrazioni Centrali (es. MEF-IGRUE, Anpal) e alle altre Autorità di controllo (es. Corte dei Conti, Guardia di finanza) per l’espletamento delle loro funzioni istituzionali. Il trasferimento all'estero dei dati nei paesi extra UE non è previsto e non viene effettuato.</br>"
++"<b><u>Periodo di conservazione.</u></b> I dati saranno conservati, ai sensi dell'art.5, paragrafo 1, lett.e) del Regolamento 2016/679/UE per fini di archiviazione (protocollo e conservazione documentale), per il tempo stabilito dai regolamenti per la gestione procedimentale e documentale e da leggi e regolamenti in materia.</br>"
++"<b><u>Diritti.</u></b> Le competono i diritti previsti dal Regolamento 2016/679/UE e, in particolare, potrà chiedere l’accesso ai dati personali che La riguardano, la rettifica, o, ricorrendone gli estremi, la cancellazione o la limitazione del trattamento, ovvero opporsi al loro trattamento; potrà inoltre esercitare il diritto alla portabilità dei dati. Ha diritto di proporre reclamo, ai sensi dell’articolo 77 del Regolamento 2016/679/UE, al Garante per la protezione dei dati personali con sede a Roma. "]]></textFieldExpression>
+			</textField>
+		</band>
+		<band height="95" splitType="Prevent">
+			<staticText>
+				<reportElement x="2" y="1" width="273" height="20" uuid="0f5761e9-fbd9-43be-99ef-3276487dc570"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Calibri Light"/>
+				</textElement>
+				<text><![CDATA[Dichiaro di aver ricevuto e preso visione della presente informativa.]]></text>
+			</staticText>
+			<line>
+				<reportElement x="2" y="37" width="100" height="1" uuid="844667bb-7ecc-429e-a4d9-ef69a0f1fd7e"/>
+			</line>
+			<line>
+				<reportElement x="135" y="36" width="100" height="1" uuid="3fdd2e4c-ccb7-41d5-b040-96a40823173e"/>
+			</line>
+			<line>
+				<reportElement x="275" y="35" width="280" height="1" uuid="c19c70f4-40da-4434-9c08-49db7d9a1c7e"/>
+			</line>
+			<staticText>
+				<reportElement x="2" y="38" width="100" height="20" uuid="803df0d1-277d-4fdf-8c8d-8cd7fc86cf66"/>
+				<textElement textAlignment="Center">
+					<font size="8" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[luogo]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="135" y="38" width="100" height="20" uuid="bc1916c7-83fe-4d63-94bb-edc01b86b6bb"/>
+				<textElement textAlignment="Center">
+					<font size="8" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[data]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="275" y="35" width="280" height="13" uuid="0f052e96-8ce1-4cfd-afd5-e1de09fbb015"/>
+				<textElement textAlignment="Center">
+					<font size="8" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[firma]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="275" y="48" width="280" height="13" uuid="d18bce0e-acf8-4037-a9ce-ecf25e0efa3b"/>
+				<textElement textAlignment="Center">
+					<font fontName="Calibri Light" size="8" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[(per i minori di 18 anni firma del genitore o di chi ne esercita la tutela)]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="1" y="72" width="555" height="23" uuid="d2f33339-89a6-4fc4-8772-79e4274f2d2b"/>
+				<textElement markup="html">
+					<font fontName="SansSerif" size="9" isItalic="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["<i>Allegare copia, chiara e leggibile, del documento d’identità del firmatario, ai sensi del DPR n. 445/2000.</i> "]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="false">
+				<reportElement x="135" y="20" width="100" height="14" isRemoveLineWhenBlank="true" uuid="c6b312bb-be8a-4bc5-b886-8716e1626748"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Calibri Light" size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{dataSottoscrizione}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>
