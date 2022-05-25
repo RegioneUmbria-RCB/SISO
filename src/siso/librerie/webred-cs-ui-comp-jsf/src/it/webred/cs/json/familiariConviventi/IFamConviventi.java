@@ -27,5 +27,9 @@ public interface IFamConviventi extends ISchedaValutazione {
 	public void fillReport(DatiSocialiFamiliariConviventiPdfDTO familiariEConviventi);
 
 	public CsTbGVulnerabile getGruppoVulnerabile();
+
+	public boolean isGVulnerabileProfugoMigrante();
+
+	public void setValidaGVulnerabileMigrante(boolean arrivoInItaliaMigrante);
 	
 }

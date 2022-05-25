@@ -18,6 +18,7 @@ import it.webred.cs.data.model.CsCfgItStatoAttr;
 import it.webred.cs.data.model.CsCfgItTransizione;
 import it.webred.cs.data.model.CsDDiario;
 import it.webred.cs.data.model.CsItStep;
+import it.webred.cs.data.model.CsOOperatoreBASIC;
 import it.webred.cs.data.model.CsOOperatoreSettore;
 import it.webred.cs.data.model.CsOOrganizzazione;
 import it.webred.cs.data.model.CsOSettoreBASIC;
@@ -271,11 +272,16 @@ public class IterDialogCambioStatoBean extends IterBaseBean implements Serializa
 			bdto.setObj(this.idCaso);
 			CsACaso caso = getCasoSessioBean().findCasoById(bdto);
 			
+			OperatoreDTO opDto = new OperatoreDTO();
+			fillEnte(opDto);
+			opDto.setUsername(opUsername);
+			CsOOperatoreBASIC op  = confEnteService.findOperatoreBASICByUsername(opDto);
+			
 			IterDTO itDto = new IterDTO();
 			fillEnte(itDto);
 			itDto.setCsACaso(caso);
 			itDto.setIdStato(idStatoSuccessivo);
-			itDto.setNomeOperatore(opUsername);
+			itDto.setIdOperatore(op!=null ? op.getId() : null);
 			itDto.setIdSettore(idSettore);
 			
 			itDto.setIdOrgTo(enteSelezionato);

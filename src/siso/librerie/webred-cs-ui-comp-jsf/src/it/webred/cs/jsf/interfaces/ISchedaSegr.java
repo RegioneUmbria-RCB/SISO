@@ -1,7 +1,5 @@
 package it.webred.cs.jsf.interfaces;
 
-import java.util.List;
-
 import it.webred.cs.json.ISchedaValutazione;
 import it.webred.ct.config.model.AmTabComuni;
 import it.webred.ss.ejb.dto.SchedaUdcDTO;

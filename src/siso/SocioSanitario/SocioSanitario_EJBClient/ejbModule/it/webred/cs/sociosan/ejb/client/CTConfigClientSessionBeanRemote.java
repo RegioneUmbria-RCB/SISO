@@ -11,5 +11,7 @@ public interface CTConfigClientSessionBeanRemote {
 	public MailParamBean getSISOMailParametres() throws SocioSanitarioException;
 
 	public String getGlobalParameter(String paramName);
+	
+	public boolean isJksCustomAbilitato();
 
 }

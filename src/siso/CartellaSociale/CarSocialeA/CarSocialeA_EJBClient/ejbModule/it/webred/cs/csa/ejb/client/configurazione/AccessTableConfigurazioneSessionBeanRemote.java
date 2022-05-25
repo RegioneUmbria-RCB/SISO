@@ -405,5 +405,9 @@ public interface AccessTableConfigurazioneSessionBeanRemote {
 	public HashMap<Long, ErogStatoCfgDTO> findConfigIntEsegByTipoIntervento(BaseDTO bDto);
 
 	public List<CsCfgIntEsegStato> getListaIntEsegStatoByTipiStato(BaseDTO bDto);
+
+	public boolean existsTransizioneTraStati(BaseDTO dto);
+
+	public CsTbSinaRisposta findSinaRisposta(BaseDTO dto);
 	
 }

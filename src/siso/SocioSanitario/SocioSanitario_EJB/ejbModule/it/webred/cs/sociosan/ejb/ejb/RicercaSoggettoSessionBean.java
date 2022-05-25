@@ -35,6 +35,7 @@ import it.webred.siso.ws.ricerca.dto.RicercaAnagraficaResult;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.ejb.EJB;
@@ -50,6 +51,9 @@ public class RicercaSoggettoSessionBean extends CsBaseSessionBean implements Ric
 
 	private static final long serialVersionUID = 1L;
 	private final String ITALIA = "ITALIA";
+	
+	private HashMap<String,AmTabComuni> mappaIstatComuni;
+	private HashMap<String, AmTabNazioni> mappaIstatNazioni = new HashMap<String, AmTabNazioni>();
 
 	@EJB
 	private CTConfigClientSessionBeanRemote configService;
@@ -261,9 +265,10 @@ public class RicercaSoggettoSessionBean extends CsBaseSessionBean implements Ric
 		
 		String path =configService.getGlobalParameter(DataModelCostanti.AmParameterKey.WS_RICERCA_JKS_PATH);
 		String pwd = configService.getGlobalParameter(DataModelCostanti.AmParameterKey.WS_RICERCA_JKS_PWD);
-		
-		if(path!=null && pwd!=null){
-			RicercaAnagraficaClient rc = new RicercaAnagraficaClient(path, pwd);
+		boolean customJks = configService.isJksCustomAbilitato();
+		boolean ricercaAbilitata = !customJks || (customJks && !StringUtils.isBlank(pwd) && !StringUtils.isBlank(pwd));
+		if(ricercaAbilitata){
+			RicercaAnagraficaClient rc = new RicercaAnagraficaClient(path, pwd, customJks);
 			
 			RicercaAnagraficaDTO rab = new RicercaAnagraficaDTO();
 			
@@ -320,7 +325,6 @@ public class RicercaSoggettoSessionBean extends CsBaseSessionBean implements Ric
 				}
 			}
 			
-			//TODO: ordinare i nominativi
 			List<PersonaDettaglio> lstout = new ArrayList<PersonaDettaglio>();
 			for(PersonaResult p : lstTmp){
 				if(!StringUtils.isEmpty(p.getAssistitoId()))
@@ -328,7 +332,7 @@ public class RicercaSoggettoSessionBean extends CsBaseSessionBean implements Ric
 			}
 			result.setElencoAssistiti(lstout);
 		}else
-			result.setMessaggio("Non è stato possibile effettuare la ricerca in anagrafe sanitaria: parametri di connessione non impostati");
+			result.setMessaggio("Non è stato possibile effettuare la ricerca in anagrafe sanitaria: parametri di connessione non impostati: se il parametro smartwelfare.ricercaSoggetto.jks.custom.abilita=1 impostare anche i parametri smartwelfare.ricercaSoggetto.jks.path e smartwelfare.ricercaSoggetto.jks.pwd");
 		
 		return result;
 	}
@@ -508,27 +512,40 @@ public class RicercaSoggettoSessionBean extends CsBaseSessionBean implements Ric
 	
 	private AmTabComuni findComune(String codIstat){
 		AmTabComuni comuneNascita = null;
-		try{
-			comuneNascita = luoghiService.getComuneItaByIstat(codIstat);
-		}catch(Exception e){
-			logger.error(e.getMessage(), e);
-		}
+		if(mappaIstatComuni==null)
+			mappaIstatComuni = new HashMap<String,AmTabComuni>();
+		
+		if(!mappaIstatComuni.containsKey(codIstat)) {
+			try{
+				comuneNascita = luoghiService.getComuneItaByIstat(codIstat);
+				mappaIstatComuni.put(codIstat, comuneNascita);
+			}catch(Exception e){
+				logger.error(e.getMessage(), e);
+			}
+		}else comuneNascita = mappaIstatComuni.get(codIstat);
 		return comuneNascita;
 	}
 	
 	private AmTabNazioni findNazione(String codice, String descrizione) {
 		AmTabNazioni nazione = null;
+		
+		if(mappaIstatNazioni==null)
+			mappaIstatNazioni= new HashMap<String,AmTabNazioni>();
+
 		if(codice!=null && !codice.isEmpty()){
 			codice = "100".equalsIgnoreCase(codice) ? "1" : codice;
-			try{
-				nazione = luoghiService.getNazioneByIstat(codice);
-			}catch(Exception e){}
-			if(nazione==null && descrizione!=null){
-				logger.debug("Ricerco Nazione con cod.istat "+codice+ " --> NON TROVATA!");
-			    nazione = new AmTabNazioni();
-			    nazione.setCodIstatNazione(codice);
-			    nazione.setNazione(descrizione);
-			}
+			if(!mappaIstatNazioni.containsKey(codice)) {
+				try{
+					nazione = luoghiService.getNazioneByIstat(codice);
+				}catch(Exception e){}
+				if(nazione==null && descrizione!=null){
+					logger.debug("Ricerco Nazione con cod.istat "+codice+ " --> NON TROVATA!");
+				    nazione = new AmTabNazioni();
+				    nazione.setCodIstatNazione(codice);
+				    nazione.setNazione(descrizione);
+				}
+				mappaIstatNazioni.put(codice, nazione);
+			}else nazione = mappaIstatNazioni.get(codice);
 		}
 		
 		return nazione;
@@ -692,10 +709,18 @@ public class RicercaSoggettoSessionBean extends CsBaseSessionBean implements Ric
 	
 	private  AmTabNazioni getNazioneByCodiceGenerico(String codice) {
 		AmTabNazioni nazione = null;
-		if(codice!=null && !codice.isEmpty()){
-			try{
-				nazione = luoghiService.getNazioneByCodiceGenerico(codice);
-			}catch(Exception e){}
+		if(mappaIstatNazioni==null)
+			mappaIstatNazioni= new HashMap<String,AmTabNazioni>();
+
+		if(!StringUtils.isBlank(codice)){
+			if(!mappaIstatNazioni.containsKey(codice)) {
+				try{
+					nazione = luoghiService.getNazioneByIstat(codice);
+					if(nazione!=null) mappaIstatNazioni.put(codice, nazione);
+					
+					else nazione = luoghiService.getNazioneByCodCie(codice);
+				}catch(Exception e){}
+			}else nazione = mappaIstatNazioni.get(codice);
 		}
 		
 		return nazione;
@@ -706,9 +731,13 @@ public class RicercaSoggettoSessionBean extends CsBaseSessionBean implements Ric
 		if("100".equals(codice)){
 			cittadinanza = "ITALIANA";
 		}else{
-			AmTabNazioni nazione = getNazioneByCodiceGenerico(codice);
-			if(nazione!=null)
-				cittadinanza = nazione.getNazionalita();
+			if(!StringUtils.isBlank(codice)) {
+				AmTabNazioni nazione = getNazioneByCodiceGenerico(codice);
+				if(nazione!=null)
+					cittadinanza = nazione.getNazionalita();
+				else
+					logger.warn("getCittadinanzaByCodice: " + codice+ " - No Results");
+			}
 		}
 		
 		return cittadinanza;

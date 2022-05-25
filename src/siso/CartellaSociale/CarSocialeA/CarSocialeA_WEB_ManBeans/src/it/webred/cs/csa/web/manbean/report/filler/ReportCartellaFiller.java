@@ -50,7 +50,6 @@ import it.webred.cs.csa.web.manbean.scheda.operatori.OperatoriComp;
 import it.webred.cs.csa.web.manbean.scheda.parenti.ParentiComp;
 import it.webred.cs.csa.web.manbean.scheda.sociali.DatiSocialiComp;
 import it.webred.cs.csa.web.manbean.scheda.tribunale.DatiTribunaleComp;
-import it.webred.cs.data.DataModelCostanti;
 import it.webred.cs.data.DataModelCostanti.GrVulnerabile;
 import it.webred.cs.data.DataModelCostanti.Pai;
 import it.webred.cs.data.model.CsAComponente;
@@ -1342,6 +1341,9 @@ public class ReportCartellaFiller extends CsUiCompBaseBean {
 						gr = confService.getGrVulnerabileById(dto);
 					}else if(!StringUtils.isBlank(scelto) && Arrays.asList(GrVulnerabile.stampaVittimaViolenza).contains(scelto)){
 						dto.setObj(GrVulnerabile.VITTIMA_VIOLENZA); //11 Vittima di violenza, di tratta e grave sfruttamento
+						gr = confService.getGrVulnerabileById(dto);
+					}else if(!StringUtils.isBlank(scelto) && Arrays.asList(GrVulnerabile.stampaMigrante).contains(scelto)) {
+						dto.setObj(GrVulnerabile.MIGRANTE); //06 Migrante
 						gr = confService.getGrVulnerabileById(dto);
 					}
 					vulnerabilita = gr!=null ? gr.getTooltip() : datiProgetto.getDescrizioneVulnerabile();

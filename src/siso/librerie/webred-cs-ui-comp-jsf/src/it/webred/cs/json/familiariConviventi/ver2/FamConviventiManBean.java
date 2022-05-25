@@ -2,6 +2,7 @@ package it.webred.cs.json.familiariConviventi.ver2;
 
 import it.webred.cs.csa.ejb.client.CarSocialeServiceException;
 import it.webred.cs.data.DataModelCostanti;
+import it.webred.cs.data.DataModelCostanti.GrVulnerabile;
 import it.webred.cs.data.model.CsDValutazione;
 import it.webred.cs.data.model.CsTbGVulnerabile;
 import it.webred.cs.data.model.CsTbTipologiaFamiliare;
@@ -11,11 +12,13 @@ import it.webred.cs.json.familiariConviventi.FamiliariManBaseBean;
 import it.webred.ct.support.datarouter.CeTBaseObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.model.SelectItem;
 
+import org.apache.commons.lang3.StringUtils;
 import org.primefaces.context.RequestContext;
 
 public class FamConviventiManBean extends FamiliariManBaseBean{
@@ -40,6 +43,8 @@ public class FamConviventiManBean extends FamiliariManBaseBean{
 		
 		boolean validazioneOk = true;
 		List<String> messagges;
+		
+		getJsonCurrent().setValidaGVulnerabileMigrante(this.validaGVulnerabileMigrante);
 		messagges = controller.validaData();
 		if( messagges.size() > 0 ) {
 			for(String msg : messagges)
@@ -268,6 +273,11 @@ public class FamConviventiManBean extends FamiliariManBaseBean{
 	public CsTbGVulnerabile getGruppoVulnerabile() {
 		String s = this.getJsonCurrent().getGruppoVulnerabile();
 		return this.getGruppoVulnerabile(s);
+	}
+	
+	@Override
+	public boolean isGVulnerabileProfugoMigrante() {
+		return this.getJsonCurrent().existsProfugoMigrante();
 	}
 	
 }

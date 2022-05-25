@@ -36,6 +36,7 @@ import it.webred.cs.json.stranieri.IStranieri;
 import it.webred.ct.config.model.AmTabComuni;
 import it.webred.ss.data.model.SsDiario;
 import it.webred.ss.data.model.SsScheda;
+import it.webred.ss.data.model.SsSchedaAccesso;
 import it.webred.ss.data.model.SsSchedaRiferimento;
 import it.webred.ss.data.model.SsSchedaSegnalato;
 import it.webred.ss.ejb.client.SsSchedaSessionBeanRemote;
@@ -338,7 +339,12 @@ public class SchedaSegrBean extends CsUiCompBaseBean implements ISchedaSegr {
 
 	@Override
 	public String getInviatoDaAccesso(){
-		return getSettore(getSsScheda()!=null ? getSsScheda().getAccesso().getInviato_da() : null);
+		String s = "";
+		if(this.getSsScheda()!=null) {
+			SsSchedaAccesso accesso = this.getSsScheda().getAccesso();
+			s = accesso!=null && accesso.getSettoreInviante()!=null ? accesso.getSettoreInviante().getNome() : "";
+		}
+		return s;
 	}
 
 	private String getDescrizioneStatoCivile(String codStatoCivile) {

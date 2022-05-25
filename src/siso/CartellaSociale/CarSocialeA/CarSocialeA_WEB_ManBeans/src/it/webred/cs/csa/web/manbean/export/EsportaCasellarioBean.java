@@ -981,27 +981,26 @@ public class EsportaCasellarioBean extends CsUiCompBaseBean {
 		// SinaMan result = new SinaMan();
 		List<CsDSina> sinaList = null;
 
-		SinaMan sinaMan = new SinaMan(casoId, mastId,cf, uexp);
-		// ** indico al sina che lo sto aprendo da Esporta casellario **//
-		sinaMan.setExportMode(true);
+		SinaMan sinaMan = new SinaMan(casoId, mastId,cf, uexp, false);
 
 		if (sinaMan != null && sinaMan.getSinaCollegati().size() > 0) {
 			sinaList = sinaMan.getSinaCollegati();
+			
 			// ** ordino i sina per data descending **//
 			Collections.sort(sinaList, new Comparator<CsDSina>() {
 				@Override
 				public int compare(CsDSina left, CsDSina right) {
-					if(right.getData()!=null && left.getData()!=null)
-						return right.getData().compareTo(left.getData());
-					else
-						return right.getId().compareTo(left.getId());
+					Date oggi = new Date();
+					Date rightData = right.getData()!=null ? right.getData() : oggi;
+					Date leftData = left.getData()!=null ? left.getData() : oggi;
+					return rightData.compareTo(leftData);
 				}
 			});
-			// Collections.sort(sinaList, Collections.reverseOrder());
+			
 			// ** prendo il sina più recente (non esportato) **//
 			boolean trovato = false;
 			for (CsDSina s : sinaList) {
-				if (!erogazioneInterventoBean.erogazioneEsportata(s.getCsIInterventoEsegMast())) {
+				if (!erogazioneInterventoBean.erogazioneEsportata(s.getIntEsegMastId())) {
 					List<CsDSina> listOut = new CsDSina().InitListCsDSina();
 					listOut.add(sinaList.get(0));
 					sinaMan.setSinaCollegati(listOut);
@@ -1013,13 +1012,11 @@ public class EsportaCasellarioBean extends CsUiCompBaseBean {
 
 			if (!trovato) {
 				// ** creo nuovo sina **//
-				sinaMan = new SinaMan(casoId, new Long(0), cf, false);
-				sinaMan.setExportMode(true);
+				sinaMan = new SinaMan(casoId, new Long(0), cf, false, false);
 			}
 		} else {
 			// ** creo nuovo sina **//
-			sinaMan = new SinaMan(casoId, new Long(0), cf, false);
-			sinaMan.setExportMode(true);
+			sinaMan = new SinaMan(casoId, new Long(0), cf, false, false);
 		}
 
 		return sinaMan;
@@ -1047,7 +1044,7 @@ public class EsportaCasellarioBean extends CsUiCompBaseBean {
 			if (sina != null) {
 				// ** sto operando da "Esporta casellario" e devo togliere di forza
 				// il "Flag valuta dopo" per completare l'esportazione **//
-				sina.getSinaDTO().getCsDSina().setFlagValutaDopo(false);
+				sina.getSinaDTO().setFlagValutaDopo(false);
 				
 				Iterator<CsIInterventoEseg> it = interventoEsegMast.getCsIInterventoEsegs().iterator();
 				List<InterventoErogazHistoryRowBean> lstRows = new ArrayList<InterventoErogazHistoryRowBean>();
@@ -1061,10 +1058,10 @@ public class EsportaCasellarioBean extends CsUiCompBaseBean {
 				}
 				
 				msg = sina.validaSinaErogazione(getDettaglioDaGestire().getPresaInCarico().intValue(), lstRows);
-				if (msg.isEmpty())
-					{
-					sina.salvaDaFglIntervento(interventoEsegMast);
-					}
+				if (msg.isEmpty()){
+					boolean saved = sina.salvaDaFglIntervento(interventoEsegMast);
+					if(!saved) msg.add("Errore salvataggio SINA");
+				}
 			}else msg.add("Compilare dati");
 		}
 		return msg;

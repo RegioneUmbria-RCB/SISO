@@ -7,6 +7,7 @@ import javax.inject.Named;
 import javax.persistence.Query;
 
 import it.webred.cs.csa.ejb.CarSocialeBaseDAO;
+import it.webred.cs.csa.ejb.client.CarSocialeServiceException;
 import it.webred.cs.data.model.sal.CsPaiSAL;
 import it.webred.cs.data.model.sal.CsTbPaiSal;
 
@@ -20,7 +21,7 @@ public class PaiSalDAO extends CarSocialeBaseDAO implements Serializable {
 		return (List<CsTbPaiSal>) query.getResultList();
 	}
 	
-	public CsPaiSAL saveSAL(CsPaiSAL sal) throws Exception {
+	public CsPaiSAL saveSAL(CsPaiSAL sal) {
 		CsPaiSAL toReturn = new CsPaiSAL();
 		try {
 			if (sal.getId() == null) {
@@ -35,27 +36,35 @@ public class PaiSalDAO extends CarSocialeBaseDAO implements Serializable {
 
 		} catch (Exception e) {
 			logger.error("salvaSal " + e.getMessage(), e);
-
+			throw new CarSocialeServiceException(e);
 		}
 	
 		return toReturn;
 	}
 	
-	public CsPaiSAL findSalByDiarioPaiId(Long diarioPaiId) throws Exception {
-		Query query = em.createQuery("SELECT d FROM CsPaiSAL d WHERE d.diarioPaiId = ?1");
-		query.setParameter(1, diarioPaiId);
-		
-		List result = query.getResultList();
-		
-		if(!result.isEmpty()){
-			return (CsPaiSAL) result.get(0);
+	public CsPaiSAL findSalByDiarioPaiId(Long diarioPaiId) {
+		try {
+			Query query = em.createQuery("SELECT d FROM CsPaiSAL d WHERE d.diarioPaiId = ?1");
+			query.setParameter(1, diarioPaiId);
+			
+			List result = query.getResultList();
+			
+			if(!result.isEmpty()){
+				return (CsPaiSAL) result.get(0);
+			}
+			
+		}catch(Exception e) {
+			throw new CarSocialeServiceException(e);
 		}
 		
 		return null;
 	}
 	
-	public CsPaiSAL findById(Long salId ) throws Exception	{
-		return em.find(CsPaiSAL.class,  salId);
-		
+	public CsPaiSAL findById(Long salId ){
+		try {
+			return em.find(CsPaiSAL.class,  salId);
+		}catch(Exception e) {
+			throw new CarSocialeServiceException(e);
+		}
 	}
 }

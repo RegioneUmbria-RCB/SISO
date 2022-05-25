@@ -16,6 +16,8 @@ import it.webred.cs.data.model.CsDDiario;
 import it.webred.cs.data.model.CsDSinaEseg;
 import it.webred.cs.data.model.CsDValutazione;
 import it.webred.cs.data.model.CsTbSchedaMultidim;
+import it.webred.cs.data.model.CsTbSinaDomanda;
+import it.webred.cs.data.model.CsTbSinaRisposta;
 import it.webred.cs.jsf.manbean.SinaMan;
 import it.webred.cs.jsf.manbean.superc.CsUiCompBaseBean;
 import it.webred.cs.json.ISchedaValutazione;
@@ -34,6 +36,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.model.SelectItem;
@@ -407,8 +410,9 @@ public class ValMultidimensionaleManBean extends ValMultidimensionaleManBaseBean
 	@Override
 	public boolean save() {
 
+		Date dataAmministrativa = controller.getDtAmministrativa();
 		//Valorizzo la data sina con quella della valutazione multidimensionale
-		sinaMan.getSinaDTO().getCsDSina().setData(controller.getDtAmministrativa());
+		sinaMan.getSinaDTO().setData(dataAmministrativa);
 		
 		boolean ok = false;
 		try {
@@ -417,7 +421,7 @@ public class ValMultidimensionaleManBean extends ValMultidimensionaleManBaseBean
 				controller.save(this.getClass().getName());
 				ok = true;
 				
-				sinaMan.salva(controller.getDiarioId(),controller.getDtAmministrativa(), controller.getVisSecondoLivello());
+				sinaMan.salva(controller.getDiarioId(),dataAmministrativa, controller.getVisSecondoLivello());
 				
 				//this.prescSpec.salvaDocumento(controller.getDataModel().getCsDDiario());
 				
@@ -1063,19 +1067,32 @@ public class ValMultidimensionaleManBean extends ValMultidimensionaleManBaseBean
 			pdf.setMomValTel(this.getJsonCurrent().getMomValTel());
 			//Sina
 			List<ValoriPdfDTO> lstSina = new ArrayList<ValoriPdfDTO>();
-			for(CsDSinaEseg s :sinaMan.getSinaDTO().getCsDSina().getCsDSinaEseg()){
+			
+			BaseDTO dto = new BaseDTO();
+			fillEnte(dto);
+			Set<Long> domsId = sinaMan.getSinaDTO().getDomandas().keySet();
+			for(Long domId : domsId) {
+				CsTbSinaDomanda domanda = sinaMan.getSinaDTO().getDomandas().get(domId);
+				String rispostaID = sinaMan.getSinaDTO().getRispostas().get(domId);
+				CsTbSinaRisposta risposta = null;
+				if(!StringUtils.isBlank(rispostaID)) {
+					dto.setObj(new Long(rispostaID));
+					risposta = confService.findSinaRisposta(dto);
+				}
 				
-				String domanda = s.getCsTbSinaDomanda().getTesto() !=null ? s.getCsTbSinaDomanda().getTesto() : "";
-				String risposta = s.getCsTbSinaRisposta().getTooltip() !=null ? s.getCsTbSinaRisposta().getTooltip() : ""; 
+				String ds = domanda!=null && !StringUtils.isBlank(domanda.getTesto()) ? domanda.getTesto() : "";
+				String rs = risposta!=null && !StringUtils.isBlank(risposta.getTooltip()) ? risposta.getTooltip() : ""; 
 				
-				lstSina.add(new ValoriPdfDTO(domanda,risposta,null));
+				lstSina.add(new ValoriPdfDTO(ds,rs,null));
 			}
 			
 			map.put("sina", new JRBeanCollectionDataSource(lstSina));
 			//Prestazioni Inps
 			List<ValoriPdfDTO> lstInps = new ArrayList<ValoriPdfDTO>();
-			for(ArTbPrestazioniInps ar : sinaMan.getSinaDTO().getCsDSina().getArTbPrestazioniInps()){
-			 lstInps.add(new ValoriPdfDTO(ar.getCodice(),ar.getDescrizione(),null));
+			for(String s : sinaMan.getSinaDTO().getLstPrestazioniInpsScelte()){
+				dto.setObj(s); 	
+				ArTbPrestazioniInps ar = confService.findArTbPrestazioniInpsByCodice(dto);
+				lstInps.add(new ValoriPdfDTO(ar.getCodice(),ar.getDescrizione(),null));
 			}
 			map.put("inps", new JRBeanCollectionDataSource(lstInps));
 			List<ValoriPdfDTO> lstViveCon = new ArrayList<ValoriPdfDTO>();

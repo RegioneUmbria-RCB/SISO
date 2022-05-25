@@ -2193,6 +2193,14 @@ public class ConfigurazioneDAO extends CarSocialeBaseDAO implements Serializable
 		return results;
 	}
 	
+	public List<CsCfgItTransizione> findTransizionesByStatoDaA(Long idStatoDa, Long idStatoA) {
+		Query q = em.createNamedQuery("CsCfgItTransizione.findTransizionesByStatoDaA");
+		q.setParameter("idStatoDa", idStatoDa);
+		q.setParameter("idStatoA", idStatoA);
+		List results = q.getResultList();
+		return results;
+	}
+	
 	/*DATI INTERVENTO*/
 	@SuppressWarnings("unchecked")
 	public List<CsCTipoIntervento> findTipiIntervento(boolean soloAbilitati) {
@@ -2577,6 +2585,10 @@ public class ConfigurazioneDAO extends CarSocialeBaseDAO implements Serializable
 			throw new CarSocialeServiceException(e);
 		}
 		return lst;
+	}
+
+	public CsTbSinaRisposta findSinaRisposta(Long rispostaId) {
+		return em.find(CsTbSinaRisposta.class, rispostaId);
 	}
 		
 	

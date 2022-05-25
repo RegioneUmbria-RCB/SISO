@@ -15,8 +15,6 @@
 	<composite:interface componentType="pnlValSina">
 		<composite:attribute name="scheda" type="it.webred.cs.jsf.interfaces.ISina" required="true" />
 		<composite:attribute name="disabled" default="false" />
-		<!-- Mod. SISO-886 aggiunta gestione visibilità oggetti se pagina richiamata da "Esporta casellario"  -->
-		<composite:attribute name="exportMode" default="false" />
 	</composite:interface>
 	<composite:implementation
 		xmlns:webred="http://java.sun.com/jsf/composite/webred"
@@ -25,8 +23,8 @@
 		<!-- //** Mod. SISO - 886 **// -->
 		<!-- se pagina aperta in "Esporta casellario" il flag non deve essere visible -->
 		<p:spacer height="10px;" />		
-		<p:selectBooleanCheckbox id="cbx_flagValutaDopo" rendered="#{!cc.attrs.exportMode}"
-			value="#{cc.attrs.scheda.sinaDTO.csDSina.flagValutaDopo}" itemLabel="Valuta dopo"> 
+		<p:selectBooleanCheckbox id="cbx_flagValutaDopo" rendered="#{cc.attrs.scheda.renderValutaDopo}"
+			value="#{cc.attrs.scheda.sinaDTO.flagValutaDopo}" itemLabel="Valuta dopo"> 
 		</p:selectBooleanCheckbox>
 	
 			<p:spacer height="10px;" />

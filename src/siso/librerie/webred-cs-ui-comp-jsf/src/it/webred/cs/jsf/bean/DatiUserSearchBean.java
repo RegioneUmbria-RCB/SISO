@@ -1,11 +1,14 @@
 package it.webred.cs.jsf.bean;
 
+import java.io.Serializable;
+
 import it.webred.cs.data.DataModelCostanti;
+import it.webred.siso.ws.ricerca.dto.PersonaDettaglio;
 
 
-public class DatiUserSearchBean {
+public class DatiUserSearchBean implements Serializable, Comparable<DatiUserSearchBean>{
 
-	private Object soggetto;
+	private PersonaDettaglio soggetto;
 	private String itemLabel;
 	private String id;
 
@@ -25,11 +28,11 @@ public class DatiUserSearchBean {
 		this.id = id;
 	}
 
-	public Object getSoggetto() {
+	public PersonaDettaglio getSoggetto() {
 		return soggetto;
 	}
 
-	public void setSoggetto(Object soggetto) {
+	public void setSoggetto(PersonaDettaglio soggetto) {
 		this.soggetto = soggetto;
 	}
 
@@ -47,5 +50,14 @@ public class DatiUserSearchBean {
 	
 	public boolean isAnagrafeInterna(){
 		return id.startsWith(DataModelCostanti.TipoRicercaSoggetto.DEFAULT);
+	}
+	
+	@Override
+	public int compareTo(DatiUserSearchBean other) {
+		return getDenominazione().compareTo(other.getDenominazione());
+	}
+	
+	public String getDenominazione() {
+		return String.format("%s %s", soggetto.getCognome(), soggetto.getNome());
 	}
 }

@@ -25,7 +25,7 @@ public class Accesso {
 
 	private Boolean utenteAccompagnato;			//SISO-346
 	private Boolean utentePresenteInformato;;	//SISO-346
-	private String inviante;					//SISO-346
+	private Long inviante;					//SISO-346
 	private String accompagnatore;				//SISO-346
 	private String accompagnatorePopup;				//SISO-346
 	
@@ -106,7 +106,7 @@ public class Accesso {
 		accessoModel.setUtentePresenteInformato(!isUtente ? this.utentePresenteInformato : null);
 				
 
-		accessoModel.setInviato_da(inviante);	
+		accessoModel.setInviatoDa(inviante);	
 		if (accessoModel.getUtenteAccompagnato()!=null && accessoModel.getUtenteAccompagnato()==true) {
 			accessoModel.setAccompagnatore(accompagnatore);	 
 		}
@@ -126,7 +126,7 @@ public class Accesso {
 			puntoContatto.initFromModel(accesso.getSsRelUffPcontOrg());
 			utenteAccompagnato = accesso.getUtenteAccompagnato();
 			utentePresenteInformato = accesso.getUtentePresenteInformato();
-			inviante = accesso.getInviato_da();			//SISO-346
+			inviante = accesso.getInviatoDa();			//SISO-346
 			accompagnatore = accesso.getAccompagnatore();			//SISO-346
 		}
 		
@@ -181,16 +181,16 @@ public class Accesso {
 		this.utentePresenteInformato = utentePresenteInformato;
 	}
 
-	public String getInviante() {
+	public String getAccompagnatore() {
+		return accompagnatore;
+	}
+
+	public Long getInviante() {
 		return inviante;
 	}
 
-	public void setInviante(String inviante) {
+	public void setInviante(Long inviante) {
 		this.inviante = inviante;
-	}
-
-	public String getAccompagnatore() {
-		return accompagnatore;
 	}
 
 	public void setAccompagnatore(String accompagnatore) {

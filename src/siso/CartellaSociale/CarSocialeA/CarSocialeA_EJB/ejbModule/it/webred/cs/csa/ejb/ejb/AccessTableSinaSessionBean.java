@@ -7,13 +7,13 @@ import it.webred.cs.csa.ejb.dao.SinaDAO;
 import it.webred.cs.csa.ejb.dto.BaseDTO;
 import it.webred.cs.csa.ejb.dto.SinaEsegDTO;
 import it.webred.cs.data.DataModelCostanti;
+import it.webred.cs.data.DataModelCostanti.TipoSinaDomanda;
 import it.webred.cs.data.model.ArTbPrestazioniInps;
 import it.webred.cs.data.model.CsDSina;
 import it.webred.cs.data.model.CsDSinaEseg;
 import it.webred.cs.data.model.CsDSinaEsegPK;
 import it.webred.cs.data.model.CsDSinaLIGHT;
 import it.webred.cs.data.model.CsTbSinaDomanda;
-import it.webred.cs.data.model.CsTbSinaRisposta;
 import it.webred.ct.support.validation.ValidationStateless;
 
 import java.sql.Timestamp;
@@ -45,47 +45,86 @@ public class AccessTableSinaSessionBean extends CarSocialeBaseSessionBean implem
 	}
 	
 	@Override
-	public SinaEsegDTO getSinaByDiarioId(BaseDTO dto) {
-		return this.getSinaByDiarioId((Long)dto.getObj(), (List<CsTbSinaDomanda>)dto.getObj2());
-	}
-	
-	private SinaEsegDTO getSinaById(Long id, List<CsTbSinaDomanda> lstParams){
+	public SinaEsegDTO clonaSinaById(BaseDTO dto) {
+		Long id = (Long)dto.getObj();
+		List<CsTbSinaDomanda> lstParams = (List<CsTbSinaDomanda>)dto.getObj2();
 		try{
 			if(lstParams==null) lstParams = configurazioneDao.getListaDomandaSina();
 			CsDSina csDSina = sinaDao.getSinaById(id);
-			if(csDSina!=null)
-				return SinaEsegDTO.create(csDSina, lstParams);
+			List<CsDSinaEseg> lstSinaEseg = sinaDao.getSinaEsegBySinaId(id);
+			List<String> prestazioniInps = sinaDao.getSinaPrestazioniInpsBySinaId(id);
+			return SinaEsegDTO.clone(csDSina, lstParams, lstSinaEseg, prestazioniInps);
+			
 		}catch(Throwable e){
 			logger.error(e.getMessage(), e);
 		}
 		return null; 
 	}
 	
-	private SinaEsegDTO getSinaByDiarioId(Long id, List<CsTbSinaDomanda> lstParams){
-		try{
-			
-			CsDSina csDSina = null;
-			if(id!=null){
-				csDSina = sinaDao.getSinaByDiarioId(id);
-				if(csDSina!=null){
-					if(lstParams==null) lstParams = configurazioneDao.getListaDomandaSina();
-					return SinaEsegDTO.create(csDSina, lstParams);
+	@Override
+	public SinaEsegDTO getSinaByDiarioId(BaseDTO dto) {
+		Long id = (Long)dto.getObj();
+		List<CsTbSinaDomanda> lstParams = (List<CsTbSinaDomanda>)dto.getObj2();
+		
+			try{		
+				CsDSina csDSina = null;
+				if(id!=null){
+					csDSina = sinaDao.getSinaByDiarioId(id);
+					if(csDSina!=null){
+						List<CsDSinaEseg> lstSinaEseg = sinaDao.getSinaEsegBySinaId(csDSina.getId());
+						List<String> prestazioniInps = sinaDao.getSinaPrestazioniInpsBySinaId(csDSina.getId());
+						if(lstParams==null) lstParams = configurazioneDao.getListaDomandaSina();
+						return SinaEsegDTO.create(csDSina, lstParams, lstSinaEseg, prestazioniInps);
+					}
 				}
+			}catch(Exception e){
+				logger.error(e.getMessage(), e);
 			}
-		}catch(Exception e){
+			return null;
+	}
+	
+	private SinaEsegDTO getSinaById(Long id, List<CsTbSinaDomanda> lstParams){
+		try{
+			if(id!=null) {
+				if(lstParams==null) lstParams = configurazioneDao.getListaDomandaSina();
+				CsDSina csDSina = sinaDao.getSinaById(id);
+				List<CsDSinaEseg> lstSinaEseg = sinaDao.getSinaEsegBySinaId(id);
+				List<String> prestazioniInps = sinaDao.getSinaPrestazioniInpsBySinaId(id);
+				if(csDSina!=null)
+					return SinaEsegDTO.create(csDSina, lstParams, lstSinaEseg, prestazioniInps);
+			}
+		}catch(Throwable e){
 			logger.error(e.getMessage(), e);
 		}
-		return null;
+		return null; 
 	}
-
 	
 	@Override
-	public SinaEsegDTO saveSina(SinaEsegDTO e) {
-		CsDSina s = e.getCsDSina();
+	public Long saveSina(SinaEsegDTO e) {
+		CsDSina s = null;
+		List<CsDSinaEseg> esegs = new ArrayList<CsDSinaEseg>();
+		if(e.getSinaId()!=null) {
+			s = sinaDao.getSinaById(e.getSinaId());
+			esegs = sinaDao.getSinaEsegBySinaId(s.getId());
+		}else
+			s = new CsDSina();
+		
+		s.setData(e.getData());
+		s.setFlagValutaDopo(e.getFlagValutaDopo());
+		s.setIntEsegMastId(e.getInterventoEsegMastId());
+		s.setDiarioId(e.getDiarioMultidimId());
+		//s.setArTbPrestazioniInps(e.getPrestazioniSina());
+		
+		s = sinaDao.updateSina(s);
 	    
-		if(e.getRispostas() != null && s.getCsDSinaEseg().size() > 0){
-			s.getCsDSinaEseg().clear();
+		Long idSina = s.getId();
+		
+		sinaDao.savePrestazioneInpsSina(idSina, e.getLstPrestazioniInpsScelte());
+		
+		if(e.getRispostas() != null && !esegs.isEmpty()){
+			sinaDao.deleteSinaEsegById(s.getId());
 		}
+		
 		for (Entry<Long, String> entry:  e.getRispostas().entrySet()) { //in rispostas non ci dovrebbe più essere la domanda 10 ! e salva le altre 
 			   Long idDomanda = entry.getKey();
 			   Long idRisposta = null;
@@ -98,26 +137,21 @@ public class AccessTableSinaSessionBean extends CarSocialeBaseSessionBean implem
 				    CsDSinaEsegPK esegPK = new CsDSinaEsegPK();
 				    esegPK.setDomandaId(idDomanda);
 				    esegPK.setRispostaId(idRisposta);
-				    esegPK.setSinaId(s.getId());
+				    esegPK.setSinaId(idSina);
 				    eseg.setId(esegPK);
-				    eseg.setCsDSina(s);
-				    eseg.setUserIns(e.getUserId());//s.getCsDDiario().getUserIns()
+				    eseg.setUserIns(e.getUserId());
 				    Timestamp actual = new Timestamp(System.currentTimeMillis());
 				    eseg.setDtIns(actual);
-				    CsTbSinaDomanda d = new CsTbSinaDomanda();
-				    d.setId(idDomanda);
-				    eseg.setCsTbSinaDomanda(d);				    
-				    CsTbSinaRisposta r = new CsTbSinaRisposta();
-				    r.setId(idRisposta);			    
-				    eseg.setCsTbSinaRisposta(r);
-					s.getCsDSinaEseg().add(eseg);
+					
+					sinaDao.updateSinaEseg(eseg);
+					logger.debug(idDomanda+" "+idRisposta+" "+s.getId());
 					
 				}else{
 					//Delete?
 				}
 			}
 			if(!e.getLstSinaParamInvalidita().isEmpty()){
-				long idDomanda = Long.parseLong("10");
+				long idDomanda = TipoSinaDomanda.INVALIDITA_CIVILE;
 				for(Long l : e.getLstSinaParamInvalidita()){
 					
 					CsDSinaEseg eseg = new CsDSinaEseg();
@@ -125,47 +159,25 @@ public class AccessTableSinaSessionBean extends CarSocialeBaseSessionBean implem
 			    
 					esegPK.setDomandaId(idDomanda);
 					esegPK.setRispostaId(l);
-					esegPK.setSinaId(s.getId());
+					esegPK.setSinaId(idSina);
 			    
 					eseg.setId(esegPK);
-					eseg.setCsDSina(s);
-					eseg.setUserIns(e.getUserId());//s.getCsDDiario().getUserIns()
+					eseg.setUserIns(e.getUserId());
 					Timestamp actual = new Timestamp(System.currentTimeMillis());
 					eseg.setDtIns(actual);
-					CsTbSinaDomanda d = new CsTbSinaDomanda();
-					d.setId(idDomanda);
-					eseg.setCsTbSinaDomanda(d);				    
-					CsTbSinaRisposta r = new CsTbSinaRisposta();
-					r.setId(l);			    
-					eseg.setCsTbSinaRisposta(r);
-					s.getCsDSinaEseg().add(eseg);
+					
+					sinaDao.updateSinaEseg(eseg);
+					
 				}
 			}
+			
+			return idSina;
 		
-		
-	    sinaDao.updateSina(s);
-		Long idSina = s.getId();
-		//TODO: Implementare salvataggio parametri
-		
-		return this.getSinaById(idSina, e.getLstSinaParams());
-		
-	}
-
-	@Override
-	public SinaEsegDTO saveNewSina(SinaEsegDTO e) {
-		try{
-			CsDSina s = e.getCsDSina();
-			s = sinaDao.updateSina(s);
-			e.setCsDSina(s);
-		}catch(Exception ex){
-			logger.error(ex.getMessage(), ex);
-		}
-		return e;
 	}
 
 	@Override
 	public void deleteSina(BaseDTO dto) {
-		sinaDao.deleteSinaEsegById((Long) dto.getObj());
+		sinaDao.deleteSinaById((Long) dto.getObj());
 	}
 	
 	//SISO-783

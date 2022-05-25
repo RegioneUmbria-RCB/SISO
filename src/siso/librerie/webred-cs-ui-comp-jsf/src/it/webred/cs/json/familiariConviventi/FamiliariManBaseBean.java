@@ -19,6 +19,7 @@ public abstract class FamiliariManBaseBean extends SchedaValutazioneManBean impl
 	private static final long serialVersionUID = 1L;
 	
 	protected List<SelectItem> lstGruppoVulnerabile;
+	protected boolean validaGVulnerabileMigrante=false;
 	
 	public static IFamConviventi initByVersion(String defaultVersion)
 	{
@@ -83,5 +84,9 @@ public abstract class FamiliariManBaseBean extends SchedaValutazioneManBean impl
 		}
 		return lstGruppoVulnerabile;
 	}
-	
+
+	@Override
+	public void setValidaGVulnerabileMigrante(boolean valida){
+		this.validaGVulnerabileMigrante = valida;
+	}
 }

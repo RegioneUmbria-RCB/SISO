@@ -14,6 +14,8 @@ import java.util.List;
 import javax.faces.convert.Converter;
 import javax.naming.NamingException;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 
 public abstract class ComuneMan extends BasicManBean implements IComune  {
 
@@ -71,6 +73,15 @@ public abstract class ComuneMan extends BasicManBean implements IComune  {
 		return new ComuneConverter();
 	}
 	
-
+	public String getComuneAsJson(){
+		String s = null;
+		ObjectMapper mapper = new ObjectMapper();
+		try {
+			s = mapper.writeValueAsString(getComune());
+		} catch (Exception e) {
+			logger.error(e);
+		}
+		return s;
+	}
 	
 }

@@ -1,19 +1,17 @@
 package it.webred.cs.json.stranieri.ver1;
 
-import it.webred.cs.csa.ejb.client.CarSocialeServiceException;
-import it.webred.cs.data.model.CsDValutazione;
-import it.webred.cs.data.model.CsOOperatoreSettore;
-import it.webred.cs.json.ISchedaValutazione;
-import it.webred.cs.json.dto.JsonBaseBean;
-import it.webred.cs.json.dto.KeyValueDTO;
-import it.webred.cs.json.stranieri.StranieriManBaseBean;
-import it.webred.jsf.bean.ComuneBean;
-
 import java.util.List;
 
 import javax.faces.application.FacesMessage;
 
 import org.primefaces.context.RequestContext;
+
+import it.webred.cs.csa.ejb.client.CarSocialeServiceException;
+import it.webred.cs.data.model.CsDValutazione;
+import it.webred.cs.json.ISchedaValutazione;
+import it.webred.cs.json.dto.KeyValueDTO;
+import it.webred.cs.json.stranieri.StranieriManBaseBean;
+import it.webred.jsf.bean.ComuneBean;
 
 public class StranieriManBean extends StranieriManBaseBean{
 
@@ -37,6 +35,7 @@ public class StranieriManBean extends StranieriManBaseBean{
 		getJsonCurrent().setComuneUltimoArrivoREG(this.getComuneManREG().getComune());
 		getJsonCurrent().setValidaConoscenzaLingua(this.validaConoscenzaLingua);
 		getJsonCurrent().setValidaDatiImmigrazione(this.validaDatiImmigrazione);
+		getJsonCurrent().setValidaProfugoMigrante(this.validaProfugoMigrante);
 		messagges = controller.validaData();
 		if( messagges.size() > 0 ) {
 			addWarning(controller.getDescrizioneScheda(), messagges);
@@ -365,4 +364,9 @@ public class StranieriManBean extends StranieriManBaseBean{
 		return this.getSelected().getStatus()!=null ? this.getSelected().getStatus().getCodice() : null;
 	}
 
+	@Override
+	public boolean isArrivoInItaliaMigrante() {
+		boolean val =  ARRIVO_IN_ITALIA.MIGRANTE.getCodice().equals(getSelected().getArrivoItalia());
+		return val;
+	}
 }

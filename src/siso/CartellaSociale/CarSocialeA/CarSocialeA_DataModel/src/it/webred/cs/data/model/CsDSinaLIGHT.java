@@ -40,7 +40,7 @@ public class CsDSinaLIGHT implements Serializable {
 
 	// bi-directional many-to-many association to ArTbPrestazioniInps
 	 @ManyToMany(cascade=CascadeType.ALL)
-		@JoinTable( name="CS_D_SINA_PRES_INPS", 
+	 @JoinTable( name="CS_D_SINA_PRES_INPS", 
 		joinColumns={@JoinColumn(name="SINA_ID") }, 
 		inverseJoinColumns={@JoinColumn(name="PRESTAZIONE_INPS_ID")})
 	 private List<ArTbPrestazioniInps> arTbPrestazioniInps;

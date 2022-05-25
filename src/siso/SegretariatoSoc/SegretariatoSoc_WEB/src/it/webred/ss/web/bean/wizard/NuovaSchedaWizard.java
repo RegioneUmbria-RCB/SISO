@@ -3180,8 +3180,7 @@ public class NuovaSchedaWizard extends SegretariatoSocBaseBean {
 				ok = false;
 
 			if (this.isVisPanelStranieri()) {
-				boolean utenteInterlocutore = Scheda.Interlocutori.UTENTE
-						.equalsIgnoreCase(this.accesso.getInterlocutore());
+				boolean utenteInterlocutore = Scheda.Interlocutori.UTENTE.equalsIgnoreCase(this.accesso.getInterlocutore());
 				boolean cfgStranieriUfficio = this.accesso.getPuntoContatto().getUfficio().isReqStranieri();
 
 				stranieriMan.setValidaConoscenzaLingua(utenteInterlocutore); // disabilitare per anonimo
@@ -3190,11 +3189,15 @@ public class NuovaSchedaWizard extends SegretariatoSocBaseBean {
 																				// Paese
 																				// provenienza
 
+				stranieriMan.setValidaProfugoMigrante(famConviventiMan.isGVulnerabileProfugoMigrante());
+				
 				if (schedaStranieriRichiesta() && !stranieriMan.validaData())
 					ok = false;
 
 				if (!abitazioneMan.validaData())// disattivare per anonimo?
 					ok = false;
+				
+				famConviventiMan.setValidaGVulnerabileMigrante(stranieriMan.isArrivoInItaliaMigrante());
 				if (!famConviventiMan.validaData())// disattivare per anonimo?
 					ok = false;
 

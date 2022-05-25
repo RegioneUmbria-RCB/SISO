@@ -83,6 +83,9 @@ public class ReportPorBean extends ReportBaseBean {
 					}else if(!StringUtils.isBlank(scelto) && Arrays.asList(GrVulnerabile.stampaVittimaViolenza).contains(scelto)){
 						dto.setObj(GrVulnerabile.VITTIMA_VIOLENZA); //11 Vittima di violenza, di tratta e grave sfruttamento
 						gr = configurationCsBean.getGrVulnerabileById(dto);
+					}else if(!StringUtils.isBlank(scelto) && Arrays.asList(GrVulnerabile.stampaMigrante).contains(scelto)) {
+						dto.setObj(GrVulnerabile.MIGRANTE); //06 Migrante
+						gr = configurationCsBean.getGrVulnerabileById(dto);
 					}
 					vulnerabilita = gr!=null ? gr.getTooltip() : datiPor.getDescrizioneVulnerabile();
 				}else

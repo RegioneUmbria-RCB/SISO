@@ -214,7 +214,10 @@ public class CsPaiSalDTO implements Serializable {
 	}
 
 	public void setIdTitoloStudio(Long idTitoloStudio) {
-		this.idTitoloStudio = idTitoloStudio;
+		if(idTitoloStudio!=null && idTitoloStudio>0)
+			this.idTitoloStudio = idTitoloStudio;
+		else
+			this.idTitoloStudio = null;
 	}
 
 	public String getNoteCvScolastico() {

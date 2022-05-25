@@ -467,7 +467,7 @@ public class OperatoreDAO extends CarSocialeBaseDAO implements Serializable {
 	}
 	
 	@SuppressWarnings("rawtypes")
-	public CsOOperatoreSettore findOperatoreSettoreById(long idOp, long idSettore, Date date) throws Exception {
+	public CsOOperatoreSettore findOperatoreSettoreById(long idOp, long idSettore, Date date) {
 		Query q = em.createNamedQuery("CsOOperatoreSettore.getOperatoreSettoreById");
 		q.setParameter("idOp", idOp);
 		q.setParameter("date", date);

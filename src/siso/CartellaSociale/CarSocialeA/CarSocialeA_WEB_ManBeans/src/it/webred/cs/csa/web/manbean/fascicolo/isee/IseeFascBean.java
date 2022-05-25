@@ -181,6 +181,6 @@ public class IseeFascBean extends FascicoloCompBaseBean implements IIsee {
 	
 	@Override
 	public ProtocolloDsuMan getProtDsuMan() {
-		return manIsee.getProtDsuMan();
+		return manIsee!=null ? manIsee.getProtDsuMan() : null;
 	}
 }

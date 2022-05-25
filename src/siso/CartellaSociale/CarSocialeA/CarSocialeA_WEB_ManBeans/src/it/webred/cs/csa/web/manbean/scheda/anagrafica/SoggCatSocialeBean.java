@@ -165,7 +165,7 @@ public class SoggCatSocialeBean extends DatiValGestioneMan implements ISoggCatSo
 			List<ValiditaCompBaseBean> lstTempActive = getActiveList();
 			
 			if(lstTempActive.size() > maxActiveComponents) {
-				addError("Superato il numero di elementi attivi, massimo: " + maxActiveComponents, null);
+				addError("Superato il numero di elementi attivi, massimo: " + maxActiveComponents, (String)null);
 				ok = false;
 			}
 			
@@ -236,7 +236,7 @@ public class SoggCatSocialeBean extends DatiValGestioneMan implements ISoggCatSo
 					fillEnte(itDto);
 					itDto.setCsACaso(soggetto.getCsACaso());
 					itDto.setIdStato(DataModelCostanti.IterStatoInfo.SEGNALATO);
-					itDto.setNomeOperatore(itDto.getUserId());
+					itDto.setIdOperatore(opSettore.getCsOOperatore().getId());
 					itDto.setIdSettore(opSettore.getCsOSettore().getId());
 					itDto.setIdOpSettoreTo(null);
 					itDto.setIdSettTo(settIdTo);

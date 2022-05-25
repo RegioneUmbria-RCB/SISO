@@ -1299,6 +1299,16 @@
 			]]>
 		</query>
   </named-query>
+  
+  <named-query name="CsCfgItTransizione.findTransizionesByStatoDaA">
+    <query>
+			<![CDATA[
+				select itt from CsCfgItRuoloTransizione itgt join itgt.csCfgItTransizione itt 
+				where itt.csCfgItStatoDa.id = :idStatoDa and itt.csCfgItStatoA.id = :idStatoA
+			]]>
+		</query>
+  </named-query>
+  
 
   <named-query name="CsCfgAttrOption.findAttrOptionByCfgAttr">
     <query>
@@ -2539,10 +2549,28 @@
 		</query>
   </named-query>
 
- <named-query name="CsDSina.deleteSinaEsegById">
+ <named-query name="CsDSinaEseg.deleteBySinaId">
     <query>
 			<![CDATA[
-				delete from CsDSinaEseg sinaEseg where sinaEseg.csDSina.id = :idSina
+				delete from CsDSinaEseg sinaEseg 
+				where sinaEseg.id.sinaId = :idSina
+			]]>
+		</query>
+  </named-query>
+  <named-query name="CsDSinaPresInps.deleteBySinaId">
+    <query>
+			<![CDATA[
+				delete from CsDSinaPresInps p 
+				where p.id.sinaId = :idSina
+			]]>
+		</query>
+  </named-query>
+
+   <named-query name="CsDSina.deleteById">
+    <query>
+			<![CDATA[
+				delete from CsDSina sina 
+				where sina.id = :idSina
 			]]>
 		</query>
   </named-query>
@@ -2550,26 +2578,12 @@
     <query>
 			<![CDATA[
 				select sina from CsDSina sina
-				LEFT JOIN sina.csDSinaEseg sinaEsegs
-				LEFT JOIN sinaEsegs.csTbSinaDomanda domanda
-				LEFT JOIN sinaEsegs.csTbSinaRisposta risposta
-				where sina.csDDiario.id  = :idDiario
-				ORDER BY domanda.id asc
+				where sina.diarioId  = :idDiario
 			]]>
 		</query>
   </named-query>
   
-   <named-query name="CsDSina.getSinaEsegBySinaId">
-    <query>
-			<![CDATA[
-				select sinaEseg from CsDSinaEseg sinaEseg
-				where sinaEseg.csDSina.id  = :idSina
-				
-			]]>
-		</query>
-  </named-query>
-  
-      <named-query name="CsDSinaLIGHT.getSinaByMastId">
+  <named-query name="CsDSinaLIGHT.getSinaByMastId">
     <query>
 			<![CDATA[
 				select sinaEseg from CsDSinaLIGHT sinaEseg
@@ -2599,25 +2613,26 @@
 		</query>
   </named-query>
 
-  <named-query name="CsDSina.getSinaById">
+  <named-query name="CsDSinaEseg.getBySinaId">
     <query>
 			<![CDATA[
-				select sina from CsDSina sina
-				LEFT JOIN sina.csDSinaEseg sinaEsegs
+				select sinaEsegs from CsDSinaEseg sinaEsegs
 				LEFT JOIN sinaEsegs.csTbSinaDomanda domanda
 				LEFT JOIN sinaEsegs.csTbSinaRisposta risposta
-				where sina.id  = :idSina
+				where sinaEsegs.id.sinaId  = :idSina
 				ORDER BY domanda.id asc
 			]]>
 		</query>
   </named-query>
+  
+ 
   
     <!-- inizio SISO-884 -->
    <named-query name="CsDSina.getSinaByInterventoEsegMastId">
     <query>
 			<![CDATA[
 				select sina from CsDSina sina
-				where sina.csIInterventoEsegMast.id  = :interventoEsegMastId
+				where sina.intEsegMastId  = :interventoEsegMastId
 			]]>
 		</query>
   </named-query>
@@ -2637,20 +2652,13 @@
 			]]>
 		</query>
   </named-query>
-  <!-- fine SISO-884 -->
-  <named-query name="CsDSina.deleteSinaById">
-    <query>
-			<![CDATA[
-				delete from CsDSina sina where sina.id = :idSina
-			]]>
-	</query>
-  </named-query>
-
-
+ 
   <named-query name="CsDSina.findSinaByMastId">
     <query>
 			<![CDATA[
-				select sina from CsDSina sina where sina.csIInterventoEsegMast.id = :mastId order by sina.data desc
+				select sina from CsDSina sina 
+				where sina.intEsegMastId = :mastId 
+				order by sina.data desc
 			]]>
 	</query>
   </named-query>
@@ -2658,7 +2666,9 @@
   <named-query name="CsDSina.findSinaByCaso">
     <query>
 			<![CDATA[
-				select sina from CsDSina sina where sina.csDDiario.csACaso.id = :casoId order by sina.data desc
+				select sina from CsDSina sina 
+				where sina.csDDiario.csACaso.id = :casoId 
+				order by sina.data desc
 			]]>
 	</query>
   </named-query>
@@ -2666,7 +2676,10 @@
   <named-query name="CsDSina.findMinDateCollegatiByMastId">
     <query>
 			<![CDATA[
-				select sina.csDDiario.dtAmministrativa from CsDSina sina where sina.csIInterventoEsegMast.id = :mastId order by sina.csDDiario.dtAmministrativa asc
+				select sina.csDDiario.dtAmministrativa 
+				from CsDSina sina 
+				where sina.intEsegMastId = :mastId 
+				order by sina.csDDiario.dtAmministrativa asc
 			]]>
 	</query>
   </named-query>
@@ -2677,8 +2690,8 @@
 			<![CDATA[
 				select sina 
 				from CsDSina sina, CsIInterventoEsegMastSogg sogg
-				where sina.csIInterventoEsegMast.id = sogg.master.id
-				and sina.csIInterventoEsegMast.id != :mastId
+				where sina.intEsegMastId = sogg.master.id
+				and sina.intEsegMastId != :mastId
 				and UPPER(sogg.id.cf) = UPPER(:cf) 
 				and sogg.riferimento = 1
 				order by sina.data desc

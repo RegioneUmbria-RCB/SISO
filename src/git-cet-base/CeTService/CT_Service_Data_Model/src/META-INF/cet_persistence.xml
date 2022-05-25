@@ -152,6 +152,7 @@
 		<class>it.webred.ct.data.model.anagrafe.SitDPersFamDDate</class>
 		<class>it.webred.ct.data.model.anagrafe.SitDFamStorico</class>
 		<class>it.webred.ct.data.model.anagrafe.SitDPersona</class>
+		<class>it.webred.ct.data.model.anagrafe.SitDPersCoordCatV</class>		
 		<class>it.webred.ct.data.model.anagrafe.SitDPersonaCivico</class>
 		<class>it.webred.ct.data.model.anagrafe.SitDVia</class>
 		<class>it.webred.ct.data.model.anagrafe.SitDCodParentela</class>

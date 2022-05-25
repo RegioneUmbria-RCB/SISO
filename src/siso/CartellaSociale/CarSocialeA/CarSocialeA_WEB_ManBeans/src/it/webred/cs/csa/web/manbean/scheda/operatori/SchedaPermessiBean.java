@@ -489,7 +489,7 @@ public class SchedaPermessiBean extends DatiValGestioneMan  implements ISchedaPe
 		 
 		 }
 		} catch (Exception e) {
-			addError("Errore durante l'inserimento dell'elemento selezionato", null);
+			addError("Errore durante l'inserimento dell'elemento selezionato", (String)null);
 			logger.error(e.getMessage(),e);
 		}
 	}

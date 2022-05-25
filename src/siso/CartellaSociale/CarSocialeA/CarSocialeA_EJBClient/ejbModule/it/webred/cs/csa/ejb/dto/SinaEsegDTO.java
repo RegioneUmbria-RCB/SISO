@@ -1,33 +1,46 @@
 package it.webred.cs.csa.ejb.dto;
 
-import it.webred.cs.data.model.ArTbPrestazioniInps;
-import it.webred.cs.data.model.CsDDiario;
-import it.webred.cs.data.model.CsDSina;
-import it.webred.cs.data.model.CsDSinaEseg;
-import it.webred.cs.data.model.CsIInterventoEsegMast;
-import it.webred.cs.data.model.CsTbSinaDomanda;
-import it.webred.ct.support.datarouter.CeTBaseObject;
-
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
+import it.webred.cs.data.DataModelCostanti.TipoSinaDomanda;
+import it.webred.cs.data.model.CsDDiario;
+import it.webred.cs.data.model.CsDSina;
+import it.webred.cs.data.model.CsDSinaEseg;
+import it.webred.cs.data.model.CsTbSinaDomanda;
+import it.webred.ct.support.datarouter.CeTBaseObject;
+
 public class SinaEsegDTO extends CeTBaseObject {
 	private static final long serialVersionUID = 1L;
-	protected CsDSina csDSina;
+	
+	private Long sinaId;
+	private Long diarioMultidimId;
+	private Long interventoEsegMastId;
+	private Boolean flagValutaDopo;
+	private Date data;
+	
 	protected HashMap<Long, CsTbSinaDomanda> domandas = new HashMap<Long, CsTbSinaDomanda>();
 	protected HashMap<Long, String> rispostas = new HashMap<Long, String>();
-	//protected HashMap<Long, CsTbSinaDomanda> domandaInvalidita = new HashMap<Long, CsTbSinaDomanda>();
-	//protected HashMap<Long, String> rispostaInvalidita = new HashMap<Long, String>();
+
 	private List<CsTbSinaDomanda> lstSinaParams;
 	private List<Long> lstSinaParamInvalidita = new ArrayList<Long>();
 	private List<String> lstPrestazioniInpsScelte = new ArrayList<String>();	
 	
-	public static SinaEsegDTO create(CsDSina csDSina, List<CsTbSinaDomanda> params) {
+	public SinaEsegDTO() {
+		lstPrestazioniInpsScelte = new ArrayList<String>();	
+	}
+	
+	public static SinaEsegDTO nuovo(List<CsTbSinaDomanda> params){
+		return create(new CsDSina(), params, new ArrayList<CsDSinaEseg>(), new ArrayList<String>());
+	}
+	
+	public static SinaEsegDTO create(CsDSina csDSina, List<CsTbSinaDomanda> params, List<CsDSinaEseg> lstSinaEseg, List<String> prestazioniInps) {
 		try{
 		
-			return new SinaEsegDTO().init(csDSina, params);
+			return new SinaEsegDTO().init(csDSina, params, lstSinaEseg, prestazioniInps);
 		}
 		catch(Exception e){
 			e.printStackTrace();
@@ -35,85 +48,80 @@ public class SinaEsegDTO extends CeTBaseObject {
 		return null;
 	}
 	
-	protected SinaEsegDTO init(CsDSina csDSina, List<CsTbSinaDomanda> params) {
+	public static SinaEsegDTO clone(CsDSina csDSina, List<CsTbSinaDomanda> params, List<CsDSinaEseg> lstSinaEseg, List<String> prestazioniInps) {
+		CsDSina  sina = new CsDSina();
+		sina.setData(csDSina.getData());
+		sina.setFlagValutaDopo(csDSina.getFlagValutaDopo());
+		//sina.setArTbPrestazioniInps(csDSina.getArTbPrestazioniInps());
+		
+		List<CsDSinaEseg> lstSinaEsegClone = new ArrayList<CsDSinaEseg>();
+		for(CsDSinaEseg es : lstSinaEseg) {
+			CsDSinaEseg es2 = new CsDSinaEseg();
+			es2.setCsTbSinaDomanda(es.getCsTbSinaDomanda());
+			es2.setCsTbSinaRisposta(es.getCsTbSinaRisposta());
+			lstSinaEsegClone.add(es2);
+		}
+		
+		return new SinaEsegDTO().init(sina, params, lstSinaEsegClone, prestazioniInps);
+		
+	}
+	
+	protected SinaEsegDTO init(CsDSina csDSina, List<CsTbSinaDomanda> params, List<CsDSinaEseg> lstSinaEseg, List<String> prestazioniInps) {
 		lstSinaParams = new ArrayList<CsTbSinaDomanda>();
 		lstSinaParams=params;
 		
-		this.csDSina = csDSina!=null ? csDSina : new CsDSina();
-
-		for (Iterator<CsDSinaEseg> i = csDSina.getCsDSinaEseg().iterator(); i.hasNext();) {
-			CsDSinaEseg csRelSinaEseg = i.next(); 
+		if(csDSina!=null) {
+			sinaId = csDSina.getId();
+			data = csDSina.getData();
+			flagValutaDopo = csDSina.getFlagValutaDopo();
+			diarioMultidimId = csDSina.getDiarioId();
+			interventoEsegMastId = csDSina.getIntEsegMastId();
+		}
+		lstPrestazioniInpsScelte.addAll(prestazioniInps);
+		
+		for (CsDSinaEseg csRelSinaEseg: lstSinaEseg) {
 			CsTbSinaDomanda csTbSinaDomanda = csRelSinaEseg.getCsTbSinaDomanda();
 			
-		    if(csTbSinaDomanda.getId() == Long.parseLong("10")){
+		    if(csTbSinaDomanda.getId() == TipoSinaDomanda.INVALIDITA_CIVILE){
 		    	this.lstSinaParamInvalidita.add(csRelSinaEseg.getCsTbSinaRisposta().getId());
-		    	
 		    }else{
-		    	
-			this.domandas.put(csTbSinaDomanda.getId(), csRelSinaEseg.getCsTbSinaDomanda());
-			this.rispostas.put(csTbSinaDomanda.getId(), String.valueOf(csRelSinaEseg.getCsTbSinaRisposta().getId()) );
+		    	this.domandas.put(csTbSinaDomanda.getId(), csRelSinaEseg.getCsTbSinaDomanda());
+		    	this.rispostas.put(csTbSinaDomanda.getId(), String.valueOf(csRelSinaEseg.getCsTbSinaRisposta().getId()) );
 		    }
 		}
 		
 		for(CsTbSinaDomanda d: params){
-			if(!this.rispostas.containsKey(d.getId()) && d.getCsTbSinaRispostas().size() > 0 && d.getId() != Long.parseLong("10"))
+			if(!this.rispostas.containsKey(d.getId()) && d.getCsTbSinaRispostas().size() > 0 && d.getId() != TipoSinaDomanda.INVALIDITA_CIVILE)
 				this.rispostas.put(d.getId(), null);
-				//this.rispostas.put(d.getId(), d.getCsTbSinaRispostas().get(0).getId());
 		}
-//         this.domandaInvalidita = (HashMap<Long, CsTbSinaDomanda>) domandas.clone();
-//         this.rispostaInvalidita = (HashMap<Long, String>) rispostas.clone();
+
 		return this;
 	}
+	
+	
 
-	public CsDDiario getDiario() {
-		return this.csDSina.getCsDDiario();
-	}
+	/*
+	 * public CsDDiario getDiario() { return diario; }
+	 * 
+	 * public void associaDiario(Long idDiario){ if(idDiario!=null){
+	 * if(diario==null){ diario = new CsDDiario(); diario.setId(idDiario); } } }
+	 */
 	
-	public void associaDiario(Long idDiario){
-		if(idDiario!=null){
-			if(this.csDSina == null)
-				this.csDSina = new CsDSina();
-			
-			if(this.csDSina.getCsDDiario()==null){
-				CsDDiario d = new CsDDiario();
-				d.setId(idDiario);
-				this.csDSina.setCsDDiario(d);
-			}
-		}
-	}
-	
-	public void prestazioniScelte(List<ArTbPrestazioniInps> lstPrestazioniInps){
-		List<ArTbPrestazioniInps> prest = new ArrayList<ArTbPrestazioniInps>();
-		this.csDSina.getArTbPrestazioniInps().clear();
-		for(ArTbPrestazioniInps p : lstPrestazioniInps){
-			for(String s : lstPrestazioniInpsScelte)
-			if (s.contentEquals(p.getCodice())){
-				prest.add(p);
-				this.csDSina.addArTbPrestazioniInps(p);
-			}
-		}
-		
-		//this.csDSina.setArTbPrestazioniInps(prest);
-	}
+	/*
+	 * public void prestazioniScelte(List<ArTbPrestazioniInps> lstPrestazioniInps){
+	 * //this.csDSina.getArTbPrestazioniInps().clear(); for(ArTbPrestazioniInps p :
+	 * lstPrestazioniInps){ for(String s : lstPrestazioniInpsScelte) if
+	 * (s.contentEquals(p.getCodice())){ this.prestazioniSina.add(p);
+	 * //this.csDSina.addArTbPrestazioniInps(p); } }
+	 * 
+	 * //this.csDSina.setArTbPrestazioniInps(prest); }
+	 */
 
 	
-	
-	public CsIInterventoEsegMast getInterventoEsegMast() {
-		return this.csDSina.getCsIInterventoEsegMast();
-	}
-
 	public CsTbSinaDomanda getDomandaEsegById(Long id) {
 		return this.domandas.get(id);
 	}
-
-	public CsDSina getCsDSina() {
-		return csDSina;
-	}
-
-	public void setCsDSina(CsDSina csDSina) {
-		this.csDSina = csDSina;
-	}
-
+	
 	public HashMap<Long, CsTbSinaDomanda> getDomandas() {
 		return domandas;
 	}
@@ -129,23 +137,6 @@ public class SinaEsegDTO extends CeTBaseObject {
 	public void setRispostas(HashMap<Long, String> rispostas) {
 		this.rispostas = rispostas;
 	}
-
-//	public HashMap<Long, CsTbSinaDomanda> getDomandaInvalidita() {
-//		return domandaInvalidita;
-//	}
-//
-//	public void setDomandaInvalidita(
-//			HashMap<Long, CsTbSinaDomanda> domandaInvalidita) {
-//		this.domandaInvalidita = domandaInvalidita;
-//	}
-//
-//	public HashMap<Long, String> getRispostaInvalidita() {
-//		return rispostaInvalidita;
-//	}
-//
-//	public void setRispostaInvalidita(HashMap<Long, String> rispostaInvalidita) {
-//		this.rispostaInvalidita = rispostaInvalidita;
-//	}
 
 	public List<CsTbSinaDomanda> getLstSinaParams() {
 		return lstSinaParams;
@@ -186,5 +177,45 @@ public class SinaEsegDTO extends CeTBaseObject {
 		//	valida = false;
 
 		return valida;
+	}
+
+	public Long getSinaId() {
+		return sinaId;
+	}
+
+	public void setSinaId(Long sinaId) {
+		this.sinaId = sinaId;
+	}
+
+	public Long getInterventoEsegMastId() {
+		return interventoEsegMastId;
+	}
+
+	public void setInterventoEsegMastId(Long interventoEsegMastId) {
+		this.interventoEsegMastId = interventoEsegMastId;
+	}
+
+	public Boolean getFlagValutaDopo() {
+		return flagValutaDopo;
+	}
+
+	public void setFlagValutaDopo(Boolean flagValutaDopo) {
+		this.flagValutaDopo = flagValutaDopo;
+	}
+
+	public Date getData() {
+		return data;
+	}
+
+	public void setData(Date data) {
+		this.data = data;
+	}
+
+	public Long getDiarioMultidimId() {
+		return diarioMultidimId;
+	}
+
+	public void setDiarioMultidimId(Long diarioMultidimId) {
+		this.diarioMultidimId = diarioMultidimId;
 	}
 }

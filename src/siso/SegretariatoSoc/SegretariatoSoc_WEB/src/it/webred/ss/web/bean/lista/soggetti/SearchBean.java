@@ -1,38 +1,9 @@
 package it.webred.ss.web.bean.lista.soggetti;
 
-import it.webred.cs.csa.ejb.client.AccessTableInterventoSessionBeanRemote;
-import it.webred.cs.csa.ejb.client.AccessTableSoggettoSessionBeanRemote;
-import it.webred.cs.csa.ejb.dto.BaseDTO;
-import it.webred.cs.csa.ejb.dto.KeyValueDTO;
-import it.webred.cs.csa.ejb.dto.OrganizzazioneDTO;
-import it.webred.cs.csa.ejb.dto.SettoreDTO;
-import it.webred.cs.data.DataModelCostanti;
-import it.webred.cs.data.model.CsOOrganizzazione;
-import it.webred.cs.data.model.CsOSettore;
-import it.webred.cs.jsf.bean.UserSearchExtInput;
-import it.webred.cs.jsf.manbean.ConsensoPrivacyMan;
-import it.webred.cs.jsf.manbean.superc.CsUiCompBaseBean;
-import it.webred.cs.jsf.manbean.superc.CsUiCompBaseBean.CredenzialiWS;
-import it.webred.ct.config.model.AmTabComuni;
-import it.webred.ct.data.access.basic.anagrafe.dto.IndirizzoAnagDTO;
-import it.webred.ejb.utility.ClientUtility;
-import it.webred.siso.ws.ricerca.dto.FamiliareDettaglio;
-import it.webred.siso.ws.ricerca.dto.PersonaDettaglio;
-import it.webred.siso.ws.ricerca.dto.RicercaAnagraficaParams;
-import it.webred.siso.ws.ricerca.dto.RicercaAnagraficaResult;
-import it.webred.ss.data.model.SsAnagrafica;
-import it.webred.ss.data.model.SsOOrganizzazione;
-import it.webred.ss.data.model.SsSchedaSegnalato;
-import it.webred.ss.ejb.client.SsSchedaSessionBeanRemote;
-import it.webred.ss.ejb.dto.SintesiSchedeUfficioDTO;
-import it.webred.ss.ejb.dto.SsSearchCriteria;
-import it.webred.ss.web.bean.SegretariatoSocBaseBean;
-import it.webred.ss.web.bean.util.PuntoContatto;
-import it.webred.ss.web.bean.util.Soggetto;
-
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -54,6 +25,33 @@ import org.primefaces.context.RequestContext;
 import eu.smartpeg.rievazionepresenze.dto.AnagraficaDTO;
 import eu.smartpeg.rilevazionepresenze.AnagraficaSessionBeanRemote;
 import eu.smartpeg.rilevazionepresenze.data.dto.RpSearchCriteria;
+import it.webred.cs.csa.ejb.client.AccessTableInterventoSessionBeanRemote;
+import it.webred.cs.csa.ejb.client.AccessTableSoggettoSessionBeanRemote;
+import it.webred.cs.csa.ejb.dto.BaseDTO;
+import it.webred.cs.csa.ejb.dto.KeyValueDTO;
+import it.webred.cs.csa.ejb.dto.OrganizzazioneDTO;
+import it.webred.cs.csa.ejb.dto.SettoreDTO;
+import it.webred.cs.data.DataModelCostanti;
+import it.webred.cs.jsf.bean.UserSearchExtInput;
+import it.webred.cs.jsf.manbean.ConsensoPrivacyMan;
+import it.webred.cs.jsf.manbean.superc.CsUiCompBaseBean;
+import it.webred.cs.jsf.manbean.superc.CsUiCompBaseBean.CredenzialiWS;
+import it.webred.ct.config.model.AmTabComuni;
+import it.webred.ct.data.access.basic.anagrafe.dto.IndirizzoAnagDTO;
+import it.webred.ejb.utility.ClientUtility;
+import it.webred.siso.ws.ricerca.dto.FamiliareDettaglio;
+import it.webred.siso.ws.ricerca.dto.PersonaDettaglio;
+import it.webred.siso.ws.ricerca.dto.RicercaAnagraficaParams;
+import it.webred.siso.ws.ricerca.dto.RicercaAnagraficaResult;
+import it.webred.ss.data.model.SsAnagrafica;
+import it.webred.ss.data.model.SsOOrganizzazione;
+import it.webred.ss.data.model.SsSchedaSegnalato;
+import it.webred.ss.ejb.client.SsSchedaSessionBeanRemote;
+import it.webred.ss.ejb.dto.SintesiSchedeUfficioDTO;
+import it.webred.ss.ejb.dto.SsSearchCriteria;
+import it.webred.ss.web.bean.SegretariatoSocBaseBean;
+import it.webred.ss.web.bean.util.PuntoContatto;
+import it.webred.ss.web.bean.util.Soggetto;
 
 @ManagedBean
 @ViewScoped
@@ -288,11 +286,13 @@ public class SearchBean extends SegretariatoSocBaseBean{
 				}
 			}
 			
+			Collections.sort(soggetti);
+			
 			soggettiDataModel = new SoggettiTableDataModel(soggetti);
 		}
 	}
 		
-	protected List<Soggetto> ricercaInAnagrafeEsterna(String tipoRicerca){
+	private List<Soggetto> ricercaInAnagrafeEsterna(String tipoRicerca){
 		List<Soggetto> listAutocomplete = new ArrayList<Soggetto>();
 		
 		if(CsUiCompBaseBean.isAnagrafeAbilitata(tipoRicerca)){

@@ -1,6 +1,8 @@
 package it.webred.ct.data.access.basic.anagrafe;
 
 import it.webred.ct.data.access.basic.BaseGenericDTO;
+
+import it.webred.ct.data.access.basic.anagrafe.dto.AnagrafeCoordCatDTO;
 import it.webred.ct.data.access.basic.anagrafe.dto.AnagraficaDTO;
 import it.webred.ct.data.access.basic.anagrafe.dto.AttrPersonaDTO;
 import it.webred.ct.data.access.basic.anagrafe.dto.ComponenteFamigliaDTO;
@@ -14,11 +16,14 @@ import it.webred.ct.data.access.basic.anagrafe.dto.RicercaLuogoDTO;
 import it.webred.ct.data.access.basic.anagrafe.dto.RicercaSoggettoAnagrafeDTO;
 import it.webred.ct.data.access.basic.anagrafe.dto.SoggettoAnagrafeDTO;
 import it.webred.ct.data.access.basic.anagrafe.dto.StatoCivile;
+import it.webred.ct.data.access.basic.catasto.dto.CatastoSearchCriteria;
+import it.webred.ct.data.access.basic.catasto.dto.RicercaOggettoCatDTO;
 import it.webred.ct.data.access.basic.common.CommonDataIn;
 import it.webred.ct.data.access.basic.common.dto.RicercaCivicoDTO;
 import it.webred.ct.data.access.basic.common.dto.RicercaSoggettoDTO;
 import it.webred.ct.data.model.anagrafe.SitComune;
 import it.webred.ct.data.model.anagrafe.SitDCivicoV;
+import it.webred.ct.data.model.anagrafe.SitDPersCoordCatV;
 import it.webred.ct.data.model.anagrafe.SitDPersona;
 import it.webred.ct.data.model.anagrafe.SitDVia;
 import it.webred.ct.data.model.anagrafe.SitProvincia;
@@ -112,4 +117,7 @@ public interface AnagrafeService {
 	public List<SitDPersona> searchSISOAnagrafiche(RicercaSoggettoAnagrafeDTO rs);
 	/*//SISO-1297
 	public List<SitDPersona> getListaPersoneByCFAnonimo(RicercaSoggettoAnagrafeDTO rs);*/
+	
+	public List<AnagrafeCoordCatDTO> getListaPersoneByCoordCat(CatastoSearchCriteria rs);
+	
 }

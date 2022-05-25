@@ -99,15 +99,17 @@ public class SceltaEnte extends AccessoBase {
 					motivoDiAccesso = anagrafica.getMotivoAccesso().trim();
 			}
 			
-			if (request.getParameter("doOnlyAMInsPratica") != null && new Boolean(request.getParameter("doOnlyAMInsPratica")).booleanValue()) {
-				//p1
-				String disableCause = getDisableCause(user.getName());
-				if (disableCause != null && !disableCause.trim().equals("")) {
-					//p1.1
-					request.setAttribute("disableCause", disableCause);
-					request.getRequestDispatcher("/jsp/disabledUser.jsp").forward(request, response);
-				} else {
-					//p1.2
+			String disableCause = getDisableCause(user.getName());
+			if (disableCause != null && !disableCause.trim().equals("")) {
+				//p1.1
+				request.setAttribute("disableCause", disableCause);
+				request.getRequestDispatcher("/jsp/disabledUser.jsp").forward(request, response);
+				return;
+			} 
+			
+			String doOnlyAMInsPratica = request.getParameter("doOnlyAMInsPratica");
+			String doneInsPratica = request.getParameter("doneInsPratica");
+			if (doOnlyAMInsPratica != null && new Boolean(doOnlyAMInsPratica).booleanValue()) {
 					/*
 					 * 
 					 * recuperare la modalita di accesso selezionata in precedenza e:
@@ -161,9 +163,8 @@ public class SceltaEnte extends AccessoBase {
 							request.getRequestDispatcher("/jsp/sceltaEnte.jsp").forward(request, response);
 						}
 					}
-				}
 				return;
-			} else if (request.getParameter("doneInsPratica") != null && new Boolean(request.getParameter("doneInsPratica")).booleanValue()) {
+			} else if (doneInsPratica != null && new Boolean(doneInsPratica).booleanValue()) {
 				//p2
 				/*
 				 * 
@@ -187,17 +188,14 @@ public class SceltaEnte extends AccessoBase {
 				//SOCLAV salvataggio ente default
 				//SOCLAV salvataggio ente default
 				updateTracciaToken(request, user.getName(), request.getParameter("ragioneAccesso"), request.getParameter("pratica"));
-
 					
 				return;
-			}else if (request.getParameter("doOnlyAMInsPratica") != null && !new Boolean(request.getParameter("doOnlyAMInsPratica")).booleanValue()) {
+			}else if (doOnlyAMInsPratica != null && !new Boolean(doOnlyAMInsPratica).booleanValue()) {
 				salvaTracciaAccessi(request,user.getName(), ((HttpServletRequest) request).getRequestURL().toString().replace("SceltaEnte", ""), "SKIPPED BY AM PARAM", "SKIPPED BY AM PARAM", enteScelto, sessionId, null, null);
 				request.getRequestDispatcher("/CaricaMenu?doneInsPratica=true").forward(request, response);
 				//SOCLAV salvataggio ente default
-				//SOCLAV salvataggio ente default
 				updateTracciaToken(request, user.getName(), request.getParameter("ragioneAccesso"), request.getParameter("pratica"));
 
-				
 				return;
 			}
 			 

@@ -1,17 +1,19 @@
 package it.webred.ss.web.bean.util;
 
+import it.webred.cs.csa.ejb.dto.EsportazioneTestataDTO;
 import it.webred.cs.csa.ejb.dto.KeyValueDTO;
 import it.webred.cs.data.DataModelCostanti;
 import it.webred.ct.data.access.basic.anagrafe.dto.IndirizzoAnagDTO;
 import it.webred.ss.web.bean.SegretariatoSocBaseBean;
 import it.webred.ss.web.bean.wizard.Anagrafica;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
-public class Soggetto {
+public class Soggetto implements Serializable, Comparable<Soggetto>{
 	
 	private String id;
 	
@@ -299,5 +301,14 @@ public class Soggetto {
 		}else
 			key = key.toUpperCase();
 		return key;
+	}
+	
+	@Override
+	public int compareTo(Soggetto other) {
+		return getDenominazione().compareTo(other.getDenominazione());
+	}
+	
+	public String getDenominazione() {
+		return String.format("%s %s", cognome, nome);
 	}
 }

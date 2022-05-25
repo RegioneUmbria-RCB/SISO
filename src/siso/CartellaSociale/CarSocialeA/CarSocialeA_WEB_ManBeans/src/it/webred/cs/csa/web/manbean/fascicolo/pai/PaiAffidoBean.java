@@ -11,6 +11,7 @@ import javax.faces.model.SelectItemGroup;
 
 import it.webred.cs.csa.ejb.client.AccessTablePaiAffidoSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.AccessTableSchedaSessionBeanRemote;
+import it.webred.cs.csa.ejb.client.CarSocialeServiceException;
 import it.webred.cs.csa.ejb.client.domini.AccessTableDominiPaiSessionBeanRemote;
 import it.webred.cs.csa.ejb.dto.BaseDTO;
 import it.webred.cs.csa.ejb.dto.pai.affido.CsPaiAffidoDTO;
@@ -241,12 +242,10 @@ public class PaiAffidoBean extends CsUiCompBaseBean {
 			this.paiAffidoService.saveAffido(bdto);
 			// reset
 			this.affido = null;
-
-			addInfo("Salvataggio Affido", "Affido Salvato correttamente");
 			logger.debug("Affido Salvato correttamente");
 		} catch (Exception e) {
-			addError("Salvataggio Affido", "Errore salvataggio affido");
 			logger.error("Errore salvataggio affido", e);
+			throw new CarSocialeServiceException("Errore salvataggio dati affido");
 		}
 	}
 

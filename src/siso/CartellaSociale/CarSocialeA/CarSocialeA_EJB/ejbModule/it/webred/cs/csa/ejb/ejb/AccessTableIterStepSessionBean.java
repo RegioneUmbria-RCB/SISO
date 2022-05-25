@@ -222,8 +222,8 @@ public class AccessTableIterStepSessionBean extends CarSocialeBaseSessionBean im
 		CsItStep iterStep = new CsItStep();
 		Date dataInserimento = dto.getDataInserimento();
 
-		CsOOperatore operatore = operatoreDao.findOperatoreByUsername(dto.getNomeOperatore());
-		CsOOperatoreSettore currOpSett = operatoreDao.findOperatoreSettoreById(operatore.getId(), dto.getIdSettore(), new Date());
+		CsOOperatore operatore = operatoreDao.findOperatoreById(dto.getIdOperatore());
+		CsOOperatoreSettore currOpSett = operatoreDao.findOperatoreSettoreById(dto.getIdOperatore(), dto.getIdSettore(), new Date());
 		CsOSettore settoreUtente = operatoreDao.findSettoreById(dto.getIdSettore());
 		
 		CsACaso caso = dto.getCsACaso();
@@ -232,8 +232,8 @@ public class AccessTableIterStepSessionBean extends CarSocialeBaseSessionBean im
 		diario.setCsACaso(caso);
 		diario.setCsTbTipoDiario(tipoDiario);
 		diario.setCsOOperatoreSettore(currOpSett);
-		diario.setUserIns(operatore.getUsername());
-		diario.setDtIns(dataInserimento);
+		diario.setUserIns(dto.getUserId());
+		diario.setDtIns(new Date());
 		diario.setDtAmministrativa(dataInserimento);
 		
 		diario = diarioDao.newDiario(diario);
@@ -467,10 +467,9 @@ public class AccessTableIterStepSessionBean extends CarSocialeBaseSessionBean im
 		
 		//INFO FROM
 		CsOOperatore operatore = null;
-		if (dto.getIdOperatore()!=null){
+		if (dto.getIdOperatore()!=null)
 			operatore = operatoreDao.findOperatoreById(dto.getIdOperatore());
-		}else if(dto.getNomeOperatore()!= null) 
-			operatore = operatoreDao.findOperatoreByUsername(dto.getNomeOperatore());
+		
 		newAlert.setOperatoreFrom(operatore);
 		
 		if(dto.getIdSettore() != null) {

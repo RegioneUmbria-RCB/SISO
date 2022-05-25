@@ -1,6 +1,7 @@
 package it.webred.ct.data.access.basic.anagrafe.dao;
 
 import it.webred.ct.data.access.basic.anagrafe.AnagrafeException;
+import it.webred.ct.data.access.basic.anagrafe.dto.AnagrafeCoordCatDTO;
 import it.webred.ct.data.access.basic.anagrafe.dto.AnagraficaDTO;
 import it.webred.ct.data.access.basic.anagrafe.dto.ComponenteFamigliaDTO;
 import it.webred.ct.data.access.basic.anagrafe.dto.ComuneProvinciaDTO;
@@ -12,10 +13,13 @@ import it.webred.ct.data.access.basic.anagrafe.dto.RicercaLuogoDTO;
 import it.webred.ct.data.access.basic.anagrafe.dto.RicercaSoggettoAnagrafeDTO;
 import it.webred.ct.data.access.basic.anagrafe.dto.SoggettoAnagrafeDTO;
 import it.webred.ct.data.access.basic.anagrafe.dto.AttrPersonaDTO;
+import it.webred.ct.data.access.basic.catasto.dto.CatastoSearchCriteria;
+import it.webred.ct.data.access.basic.catasto.dto.RicercaOggettoCatDTO;
 import it.webred.ct.data.access.basic.common.dto.RicercaCivicoDTO;
 import it.webred.ct.data.access.basic.common.dto.RicercaSoggettoDTO;
 import it.webred.ct.data.model.anagrafe.SitComune;
 import it.webred.ct.data.model.anagrafe.SitDCivicoV;
+import it.webred.ct.data.model.anagrafe.SitDPersCoordCatV;
 import it.webred.ct.data.model.anagrafe.SitDPersona;
 import it.webred.ct.data.model.anagrafe.SitDPersonaCivico;
 import it.webred.ct.data.model.anagrafe.SitDStaciv;
@@ -126,4 +130,8 @@ public interface AnagrafeDAO {
 	public String findCittadinanzaByIdExtStato(String idExtStato);
 
 	public List<SitDPersona> getListaPersoneByDatiAnag(RicercaSoggettoAnagrafeDTO criteri)throws AnagrafeException;
+	
+	public List<SitDPersCoordCatV> getListaPersoneByCoordCat(CatastoSearchCriteria rs) throws AnagrafeException;
+		
+	
 }

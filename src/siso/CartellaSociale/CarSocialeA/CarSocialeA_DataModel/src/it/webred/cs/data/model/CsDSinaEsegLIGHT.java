@@ -39,16 +39,8 @@ public class CsDSinaEsegLIGHT implements Serializable {
 	@Column(name = "DT_INS")
 	private Date dtIns;
 
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "DT_MOD")
-	private Date dtMod;
-
 	@Column(name = "USER_INS")
 	private String userIns;
-
-	@Column(name = "USER_MOD")
-	private String userMod;
-
 
 	public CsDSinaEsegPK getId() {
 		return this.id;
@@ -82,28 +74,12 @@ public class CsDSinaEsegLIGHT implements Serializable {
 		this.dtIns = dtIns;
 	}
 
-	public Date getDtMod() {
-		return dtMod;
-	}
-
-	public void setDtMod(Date dtMod) {
-		this.dtMod = dtMod;
-	}
-
 	public String getUserIns() {
 		return userIns;
 	}
 
 	public void setUserIns(String userIns) {
 		this.userIns = userIns;
-	}
-
-	public String getUserMod() {
-		return userMod;
-	}
-
-	public void setUserMod(String userMod) {
-		this.userMod = userMod;
 	}
 
 	public CsDSinaLIGHT getCsDSina() {

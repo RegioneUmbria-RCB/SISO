@@ -1688,6 +1688,22 @@ SQL_VIA_CENED=select B.ID AS ID_DWH, \
                 WHERE B.belfiore = (select codent from sit_ente) \
                 AND NOT exists (SELECT 1 FROM sit_via_totale WHERE id_dwh = id AND fk_ente_sorgente =? AND prog_es=? )
                 
+SQL_VIA_CURIT=select B.ID AS ID_DWH, B.UBICAZIONE_TOPONIMO AS SEDIME, \
+                B.UBICAZIONE_INDIRIZZO AS INDIRIZZO, \
+                B.UBICAZIONE_CIVICO AS FIELD1, \
+                B.UBICAZIONE_COMUNE AS FIELD2, \
+                B.UBICAZIONE_PROVINCIA AS FIELD3, \
+                B.UBICAZIONE_CAP AS FIELD4, \
+                B.UBICAZIONE_CODICE_ISTAT AS FIELD5, \
+                b.IDENTIFICATIVO_IMPIANTO FIELD6, \
+                B.CATASTO_SEZIONE AS FIELD7, \
+                b.CATASTO_FOGLIO FIELD8, \
+                b.CATASTO_PARTICELLA FIELD9, \
+                B.CATASTO_SUBALTERNO FIELD10 \
+                from SIT_CURIT B \
+                WHERE 1=1 \
+                AND NOT exists (SELECT 1 FROM sit_via_totale WHERE id_dwh = id AND fk_ente_sorgente =? AND prog_es=? )
+                
 SQL_VIA_BOLLI_VEICOLI=select B.ID AS ID_DWH, \
                 B.INDIRIZZO AS INDIRIZZO, \
                 b.TARGA FIELD1, \
@@ -1882,6 +1898,22 @@ SQL_OGG_CENED=SELECT B.ID AS ID_DWH, \
 	       WHERE B.BELFIORE in (select codent from sit_ente)  \
 	       AND NOT exists ( select 1 from sit_oggetto_totale where id_dwh = B.ID and fk_ente_sorgente =? and prog_es =? )
                      
+SQL_OGG_CURIT=SELECT B.ID AS ID_DWH, B.CATASTO_SEZIONE as SEZIONE, \
+           b.CATASTO_FOGLIO as FOGLIO, \
+           b.CATASTO_PARTICELLA AS PARTICELLA, \
+           B.CATASTO_SUBALTERNO AS SUB, \
+           B.IDENTIFICATIVO_IMPIANTO AS FIELD1, \
+           B.UBICAZIONE_TOPONIMO AS FIELD2, \
+           B.UBICAZIONE_INDIRIZZO AS FIELD3, \
+           B.UBICAZIONE_CIVICO AS FIELD4, \
+           B.UBICAZIONE_COMUNE AS FIELD5, \
+           B.UBICAZIONE_PROVINCIA AS FIELD6, \
+           B.UBICAZIONE_CAP AS FIELD7, \
+           B.UBICAZIONE_CODICE_ISTAT AS FIELD8 \
+           FROM SIT_CURIT B \
+           WHERE 1=1 \
+           AND NOT exists ( select 1 from sit_oggetto_totale where id_dwh = B.ID and fk_ente_sorgente =? and prog_es =? )
+           
 /*#############################################################################################################################################################################################################*/
 /*########################################      Query CIVICI    #############################################################################################################################################*/
 /*#############################################################################################################################################################################################################*/
@@ -2268,6 +2300,21 @@ SQL_CIV_CENED=SELECT b.ID AS ID_DWH, \
         * -- fk_ente_sorgente = 45 PER CENED
         * -- prog_es = AM_FONTE_TIPOINFO 1= CERTIFICAZIONE, 2= PROPRIETARIO, 3= CERTIFICATORE
         * */
+       
+SQL_CIV_CURIT=SELECT b.ID AS ID_DWH, B.UBICAZIONE_INDIRIZZO as INDIRIZZO, \
+       B.IDENTIFICATIVO_IMPIANTO AS FIELD1, \
+       B.UBICAZIONE_TOPONIMO AS FIELD2, \
+        B.UBICAZIONE_INDIRIZZO AS FIELD3, \
+        B.UBICAZIONE_CIVICO AS FIELD4, \
+        B.UBICAZIONE_COMUNE AS FIELD5, \
+        B.UBICAZIONE_PROVINCIA AS FIELD6, \
+        B.UBICAZIONE_CAP AS FIELD7, \
+        B.UBICAZIONE_CODICE_ISTAT AS FIELD8 \
+       FROM SIT_CURIT B \
+       WHERE 1=1 \
+       AND NOT exists ( select 1 from sit_civico_totale where id_dwh = b.ID and fk_ente_sorgente =? and prog_es =? )
+       
+       
                     
        /*
         * CORRISPONDENZA CON IL NOME CAMPI DI SIT_CIVICO_TOTALE
@@ -2464,4 +2511,22 @@ SQL_FABB_CENED=SELECT B.ID AS ID_DWH, \
 	       FROM DATI_TEC_FABBR_CERT_ENER B \
 	       WHERE (B.BELFIORE in (select codent from sit_ente) ) \
 	       AND NOT exists ( select 1 from sit_fabbricato_totale where id_dwh = b.ID and fk_ente_sorgente =? and prog_es =? )
+	       
+SQL_FABB_CURIT=SELECT B.ID AS ID_DWH, B.CATASTO_SEZIONE as SEZIONE, b.CATASTO_FOGLIO as FOGLIO, \
+           b.CATASTO_PARTICELLA AS PARTICELLA, \
+           B.CATASTO_SUBALTERNO AS FIELD1, \
+           B.UBICAZIONE_TOPONIMO AS FIELD2, \
+           B.UBICAZIONE_INDIRIZZO AS FIELD3, \
+            B.UBICAZIONE_CIVICO AS FIELD4, \
+            B.UBICAZIONE_COMUNE AS FIELD5, \
+            B.UBICAZIONE_PROVINCIA AS FIELD6, \
+            B.UBICAZIONE_CAP AS FIELD7, \
+            B.UBICAZIONE_CODICE_ISTAT AS FIELD8, \
+           B.IDENTIFICATIVO_IMPIANTO AS FIELD9 \
+           FROM SIT_CURIT B \
+           WHERE 1=1 \
+           AND NOT exists ( select 1 from sit_fabbricato_totale where id_dwh = b.ID and fk_ente_sorgente =? and prog_es =? )
+           
+           
+	       
 	       

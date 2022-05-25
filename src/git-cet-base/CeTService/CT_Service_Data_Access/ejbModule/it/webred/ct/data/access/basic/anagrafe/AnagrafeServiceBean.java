@@ -1,11 +1,13 @@
 package it.webred.ct.data.access.basic.anagrafe;
  
 import it.webred.ct.config.luoghi.LuoghiService;
+
 import it.webred.ct.config.model.AmTabComuni;
 import it.webred.ct.config.model.AmTabNazioni;
 import it.webred.ct.data.access.basic.BaseGenericDTO;
 import it.webred.ct.data.access.basic.CTServiceBaseBean;
 import it.webred.ct.data.access.basic.anagrafe.dao.AnagrafeDAO;
+import it.webred.ct.data.access.basic.anagrafe.dto.AnagrafeCoordCatDTO;
 import it.webred.ct.data.access.basic.anagrafe.dto.AnagraficaDTO;
 import it.webred.ct.data.access.basic.anagrafe.dto.AttrPersonaDTO;
 import it.webred.ct.data.access.basic.anagrafe.dto.ComponenteFamigliaDTO;
@@ -19,12 +21,15 @@ import it.webred.ct.data.access.basic.anagrafe.dto.RicercaLuogoDTO;
 import it.webred.ct.data.access.basic.anagrafe.dto.RicercaSoggettoAnagrafeDTO;
 import it.webred.ct.data.access.basic.anagrafe.dto.SoggettoAnagrafeDTO;
 import it.webred.ct.data.access.basic.anagrafe.dto.StatoCivile;
+import it.webred.ct.data.access.basic.catasto.dto.CatastoSearchCriteria;
+import it.webred.ct.data.access.basic.catasto.dto.RicercaOggettoCatDTO;
 import it.webred.ct.data.access.basic.common.CommonDataIn;
 import it.webred.ct.data.access.basic.common.dto.RicercaCivicoDTO;
 import it.webred.ct.data.access.basic.common.dto.RicercaSoggettoDTO;
 import it.webred.ct.data.access.basic.common.utils.StringUtils;
 import it.webred.ct.data.model.anagrafe.SitComune;
 import it.webred.ct.data.model.anagrafe.SitDCivicoV;
+import it.webred.ct.data.model.anagrafe.SitDPersCoordCatV;
 import it.webred.ct.data.model.anagrafe.SitDPersona;
 import it.webred.ct.data.model.anagrafe.SitDPersonaCivico;
 import it.webred.ct.data.model.anagrafe.SitDStaciv;
@@ -36,11 +41,13 @@ import it.webred.ct.support.validation.annotation.AuditConsentiAccessoAnonimo;
 import it.webred.ct.support.validation.annotation.AuditSaltaValidazioneSessionID;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
  
 /**
@@ -56,6 +63,7 @@ public class AnagrafeServiceBean extends CTServiceBaseBean implements AnagrafeSe
 	
 	
 	private static final long serialVersionUID = 1L;
+	
 	@Override
 	public List<SitDPersona> getListaPersoneByCF(RicercaSoggettoAnagrafeDTO rs) {
 		List<SitDPersona> lista =null;
@@ -64,7 +72,7 @@ public class AnagrafeServiceBean extends CTServiceBaseBean implements AnagrafeSe
 		else
 			lista = anagrafeDAO.getListaPersoneByCFAllaData(rs);
 		return lista;
-	}
+	}//-------------------------------------------------------------------------
 	
 /*	//SISO-1297
 	@Override
@@ -80,6 +88,28 @@ public class AnagrafeServiceBean extends CTServiceBaseBean implements AnagrafeSe
 	}*/
 	
 	@Override
+	public List<AnagrafeCoordCatDTO> getListaPersoneByCoordCat( CatastoSearchCriteria rs ) {
+		List<AnagrafeCoordCatDTO> listaDTO = new ArrayList<AnagrafeCoordCatDTO>();
+		
+		List<SitDPersCoordCatV> lista = anagrafeDAO.getListaPersoneByCoordCat(rs);
+		if ( lista != null && lista.size()>0){
+			
+			Iterator<SitDPersCoordCatV> it = lista.iterator();
+			while(it.hasNext()){
+				SitDPersCoordCatV sorgente = it.next();
+				AnagrafeCoordCatDTO destinazione = new AnagrafeCoordCatDTO();
+				
+				BeanUtils.copyProperties(sorgente, destinazione);
+				
+				listaDTO.add(destinazione);
+
+			}
+		}
+		
+		return listaDTO;
+	}//-------------------------------------------------------------------------
+
+	@Override
 	public List<SitDPersona> getListaPersoneByDatiAna(RicercaSoggettoAnagrafeDTO rs) {
 		List<SitDPersona> lista =null;
 		if (rs.getDtRif()== null) 
@@ -87,13 +117,13 @@ public class AnagrafeServiceBean extends CTServiceBaseBean implements AnagrafeSe
 		else
 			lista = anagrafeDAO.getListaPersoneByDatiAnaAllaData(rs);
 		return lista;
-	}
-	
+	}//-------------------------------------------------------------------------
+
 	@Override
 	public List<SitDPersona> getListaPersoneByDenominazione(RicercaSoggettoAnagrafeDTO rs) {
 		return anagrafeDAO.getListaPersoneByDenominazione(rs);
 	}
-	
+
 	@Override
     @AuditConsentiAccessoAnonimo
     @AuditSaltaValidazioneSessionID
