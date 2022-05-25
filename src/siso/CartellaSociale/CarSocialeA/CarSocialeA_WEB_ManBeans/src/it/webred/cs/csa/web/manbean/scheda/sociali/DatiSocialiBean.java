@@ -197,7 +197,7 @@ public class DatiSocialiBean extends SchedaValiditaBaseBean implements IDatiVali
 		if(ssScheda!=null) modificheNonSalvate=true;
 		
 		if(ssScheda.getAccesso()!=null) {
-			comp.setIdInviante(ssScheda.getAccesso().getInviato_da()!=null ? new BigDecimal(ssScheda.getAccesso().getInviato_da()) : null);
+			comp.setIdInviante(ssScheda.getAccesso().getInviatoDa()!=null ? BigDecimal.valueOf(ssScheda.getAccesso().getInviatoDa()) : null);
 			if(ssScheda.getAccesso().getData()!=null) comp.setDataInizio(ssScheda.getAccesso().getData());
 		}
 		
@@ -434,12 +434,14 @@ public class DatiSocialiBean extends SchedaValiditaBaseBean implements IDatiVali
 				ok=false;
 			
 			if(CsUiCompBaseBean.isVisPanelStranieri()){
+				disComp.getStranieriMan().setValidaProfugoMigrante(disComp.getFamConviventiMan().isGVulnerabileProfugoMigrante());
 				if(disComp.isStranieriRequired() &&  !disComp.getStranieriMan().validaData())
 					ok=false;
 				
 				if(!disComp.getAbitazioneMan().validaData())
 					ok=false;
 				
+				disComp.getFamConviventiMan().setValidaGVulnerabileMigrante(disComp.getStranieriMan().isArrivoInItaliaMigrante());
 				if(!disComp.getFamConviventiMan().validaData())
 					ok=false;
 			}

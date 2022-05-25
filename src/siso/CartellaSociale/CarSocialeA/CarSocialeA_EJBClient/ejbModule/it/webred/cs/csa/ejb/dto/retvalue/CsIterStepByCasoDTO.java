@@ -1,6 +1,7 @@
 package it.webred.cs.csa.ejb.dto.retvalue;
 
 import it.webred.cs.csa.ejb.dto.KeyValueDTO;
+import it.webred.cs.csa.ejb.dto.OperatoreDTO;
 import it.webred.cs.csa.ejb.dto.OrganizzazioneDTO;
 import it.webred.cs.csa.ejb.dto.SettoreDTO;
 import it.webred.cs.data.model.CsDDiarioBASIC;
@@ -26,11 +27,11 @@ public class CsIterStepByCasoDTO implements Serializable {
 	
 	private OrganizzazioneDTO enteSegnalante;
 	private SettoreDTO settoreSegnalante;
-	private String operatoreSegnalante;
+	private KeyValueDTO operatoreSegnalante;
 	
 	private OrganizzazioneDTO enteSegnalato;
 	private SettoreDTO settoreSegnalato;
-	private String operatoreSegnalato;
+	private KeyValueDTO operatoreSegnalato;
 
 	private String nota;
 	private String cssClassStato;
@@ -78,7 +79,8 @@ public class CsIterStepByCasoDTO implements Serializable {
 				setSettoreSegnalante(settoreSegnalante);
 			}
 			
-			setOperatoreSegnalante(csItStep.getCsOOperatore1()!=null ? csItStep.getCsOOperatore1().getDenominazione() : null);
+			if(csItStep.getCsOOperatore1()!=null)
+				setOperatoreSegnalante(new KeyValueDTO(csItStep.getCsOOperatore1().getId(), csItStep.getCsOOperatore1().getDenominazione()));
 			
 			/*Dati segnalato*/
 			OrganizzazioneDTO enteSegnalato = null;
@@ -97,7 +99,8 @@ public class CsIterStepByCasoDTO implements Serializable {
 				setSettoreSegnalato(settoreSegnalato);
 			}
 			
-			setOperatoreSegnalato(csItStep.getCsOOperatore2()!=null ? csItStep.getCsOOperatore2().getDenominazione() : null);
+			if(csItStep.getCsOOperatore2()!=null)
+				setOperatoreSegnalato(new KeyValueDTO(csItStep.getCsOOperatore2().getId(), csItStep.getCsOOperatore2().getDenominazione()));
 			
 			setNota(csItStep.getNota());
 			setCssClassStato(csItStep.getCsCfgItStato().getCssClassStato());
@@ -160,12 +163,6 @@ public class CsIterStepByCasoDTO implements Serializable {
 	public void setSettoreSegnalante(SettoreDTO settoreSegnalante) {
 		this.settoreSegnalante = settoreSegnalante;
 	}
-	public String getOperatoreSegnalante() {
-		return operatoreSegnalante;
-	}
-	public void setOperatoreSegnalante(String operatoreSegnalante) {
-		this.operatoreSegnalante = operatoreSegnalante;
-	}
 	public OrganizzazioneDTO getEnteSegnalato() {
 		return enteSegnalato;
 	}
@@ -178,12 +175,22 @@ public class CsIterStepByCasoDTO implements Serializable {
 	public void setSettoreSegnalato(SettoreDTO settoreSegnalato) {
 		this.settoreSegnalato = settoreSegnalato;
 	}
-	public String getOperatoreSegnalato() {
+	public KeyValueDTO getOperatoreSegnalante() {
+		return operatoreSegnalante;
+	}
+
+	public void setOperatoreSegnalante(KeyValueDTO operatoreSegnalante) {
+		this.operatoreSegnalante = operatoreSegnalante;
+	}
+
+	public KeyValueDTO getOperatoreSegnalato() {
 		return operatoreSegnalato;
 	}
-	public void setOperatoreSegnalato(String operatoreSegnalato) {
+
+	public void setOperatoreSegnalato(KeyValueDTO operatoreSegnalato) {
 		this.operatoreSegnalato = operatoreSegnalato;
 	}
+
 	public String getNota() {
 		return nota;
 	}

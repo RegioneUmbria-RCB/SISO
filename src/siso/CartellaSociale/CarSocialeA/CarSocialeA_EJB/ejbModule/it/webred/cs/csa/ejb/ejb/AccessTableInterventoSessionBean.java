@@ -422,12 +422,10 @@ public class AccessTableInterventoSessionBean extends CarSocialeBaseSessionBean 
 		
 		if(sinas != null){
 			for(CsDSina sina: sinas){
-				sina.setCsIInterventoEsegMast(null);
+				sina.setIntEsegMastId(null);
 				sinaDao.sinaSetNullMastId(sina.getId());
 			}
-			
 		}
-		
 		
 		if(master !=null){
 			master.setDiarioPaiId(null);

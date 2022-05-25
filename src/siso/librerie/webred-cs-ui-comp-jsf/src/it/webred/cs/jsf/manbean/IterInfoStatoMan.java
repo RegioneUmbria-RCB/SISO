@@ -191,12 +191,12 @@ public class IterInfoStatoMan extends CsUiCompBaseBean implements IIterInfoStato
 					this.codEnteSegnalante = itStepDTO.getEnteSegnalante().getCodRouting();
 					this.enteSegnalante = itStepDTO.getEnteSegnalante().getNome();
 				}
-				this.ufficioSegnalante= itStepDTO.getSettoreSegnalante().getNome();
-				this.operatoreSegnalante = itStepDTO.getOperatoreSegnalante();
+				this.ufficioSegnalante= itStepDTO.getSettoreSegnalante()!=null ? itStepDTO.getSettoreSegnalante().getNome() : null;
+				this.operatoreSegnalante = itStepDTO.getOperatoreSegnalante()!=null ? itStepDTO.getOperatoreSegnalante().getDescrizione() : null;
 				
 				this.enteSegnalato = itStepDTO.getEnteSegnalato() != null ? itStepDTO.getEnteSegnalato().getNome() : null;
 				this.ufficioSegnalato = itStepDTO.getSettoreSegnalato()!=null? itStepDTO.getSettoreSegnalato().getNome():null;
-				this.operatoreSegnalato = itStepDTO.getOperatoreSegnalato();
+				this.operatoreSegnalato = itStepDTO.getOperatoreSegnalato()!=null ? itStepDTO.getOperatoreSegnalato().getDescrizione() : null;
 				
 				this.nota = itStepDTO.getNota();
 				this.cssClassStato = itStepDTO.getCssClassStato();

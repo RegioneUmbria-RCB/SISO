@@ -48,68 +48,70 @@
 		
 	} catch (NamingException e) {}
 	
-	//RicercaAnagraficaClient rc = new RicercaAnagraficaClient("C:\\Load\\SISO\\certificati\\anan_san\\cacerts.jks","changeit"); 
-	//RicercaAnagraficaResult rpr = AnagrafeEsternaService.ricercaPerDatiAnagrafici(ricAnagDTO);
 	RicercaAnagraficaResult rpr = ricercaSoggettoBean.ricercaPerDatiAnagrafici(ricAnagDTO);
 	
 	out.println("Codice operazione " + rpr.getCodice());
 	out.print("<br/>");
 	out.println("Messaggio " + rpr.getMessaggio());
 	out.print("<br/>");
+	
 	Integer i = 1;
-	List<PersonaDettaglio> ListaPersoneResult  = rpr.getElencoAssisiti();
+	List<PersonaDettaglio> ListaPersoneResult  = rpr.getElencoAssistiti();
+	
 	if(ListaPersoneResult != null){
-			for(PersonaDettaglio pr : ListaPersoneResult){
-				out.println("*************** PERSONA (" + i + ")");
-				out.print("<br/>");
-				out.println("*************** assistito ID (" + pr.getIdentificativo() + ")");
-				out.print("<br/>");
-				out.println("*************** CF (" + pr.getCodfisc() + ")");
-				out.print("<br/>");
-				out.println("*************** Stato Civile (" + (pr.getStatoCivile() != null ?  pr.getStatoCivile() : "ASSENTE ") + ")");
-				out.print("<br/>");
-				out.println("*************** Documento Sanitario N° (" + (pr.getDocumentoSanitario() != null ?  pr.getDocumentoSanitario() : "ASSENTE ") + ")");
-				out.print("<br/>");
-				out.println("*************** Documento Sanitario Scadenza (" + (pr.getDocumentoSanitarioScadenza() != null ?  pr.getDocumentoSanitarioScadenza() : "ASSENTE ") + ")");
-				out.print("<br/>");
-				out.println("*************** nome (" + pr.getNome()  + ")");
-				out.print("<br/>");
-				out.println("*************** cognome (" + pr.getCognome() + ")");
-				out.print("<br/>");
-				out.println("*************** recapito telefonico 1 (" + (pr.getTelefono() != null ? pr.getTelefono() : "ASSENTE") + ")");
-				out.print("<br/>");
-				out.println("*************** recapito telefonico 2 (" + (pr.getRecaptelefonicoSecondario() != null ? pr.getRecaptelefonicoSecondario() : "ASSENTE")  + ")");
-				out.print("<br/>");
-				out.println("*************** indirizzo residenza (" + (pr.getIndirizzoResidenza() != null ? pr.getIndirizzoResidenza() : " ASSENTE ") + ")");
-				out.print("<br/>");
-				out.println("*************** CAP residenza (" + (pr.getComuneResidenza()  != null ? pr.getComuneResidenza().getCap() : " ASSENTE ") + ")");
-				out.print("<br/>");
-				out.println("*************** sigla prov residenza (" + (pr.getComuneResidenza()  != null ? pr.getComuneResidenza().getSiglaProv() : "ASSENTE") + ")");
-				out.print("<br/>");
-				out.println("*************** sigla prov nascita (" + (pr.getComuneNascita()  != null ? pr.getComuneNascita().getSiglaProv() : "ASSENTE") + ")");
-				out.print("<br/>");
-				out.println("*************** sigla prov domicilio (" + (pr.getComuneDomicilio()  != null ? pr.getComuneDomicilio().getSiglaProv() : "ASSENTE") + ")");
-				
-				out.print("<br/>");
-				out.println("*************** indirizzo domicilio (" + (pr.getIndirizzoDomicilio() != null ? pr.getIndirizzoDomicilio() : "ASSENTE") + ")");
-				out.print("<br/>");
-				out.println("*************** data nascita (" + ( pr.getDataNascita() != null ? pr.getDataNascita().toString() : "ASSENTE") + ")");
-				out.print("<br/>");
-				out.println("*************** data MORTE (" + ( pr.getDataMorte()  != null ? pr.getDataMorte().toString() : "ASSENTE") + ")");
-				out.print("<br/>");
-				out.println("*************** sesso (" + (pr.getSesso() != null ? pr.getSesso() : "ASSENTE") + ")");
-				out.print("<br/>");
-				
-				out.println("*************** MEDICO CF (" + (pr.getMedicoCodiceFiscale() != null ? pr.getMedicoCodiceFiscale() : "ASSENTE") + ")");
-				out.print("<br/>");
-				out.println("*************** MEDICO COGNOME NOME (" + (pr.getMedicoCognomeNome() != null ? pr.getMedicoCognomeNome() : "ASSENTE") + ")");
-				out.print("<br/>");
-				out.println("*************** MEDICO DATA SCELTA (" + (pr.getMedicoDataScelta() != null ? pr.getMedicoDataScelta().toString() : "ASSENTE") + ")");
-				out.print("<br/>");
-				out.print("----------------------------------------------------------------------------------------------------------------------------------");
-				out.print("<br/>");
-				i++;
-			}
+		out.println("Numero risultati "+ ListaPersoneResult.size());
+		out.print("<br/>");
+		for(PersonaDettaglio pr : ListaPersoneResult){
+			out.println("*************** PERSONA (" + i + ")");
+			out.print("<br/>");
+			out.println("*************** assistito ID (" + pr.getIdentificativo() + ")");
+			out.print("<br/>");
+			out.println("*************** CF (" + pr.getCodfisc() + ")");
+			out.print("<br/>");
+			out.println("*************** Stato Civile (" + (pr.getStatoCivile() != null ?  pr.getStatoCivile() : "ASSENTE ") + ")");
+			out.print("<br/>");
+			out.println("*************** Documento Sanitario N° (" + (pr.getDocumentoSanitario() != null ?  pr.getDocumentoSanitario() : "ASSENTE ") + ")");
+			out.print("<br/>");
+			out.println("*************** Documento Sanitario Scadenza (" + (pr.getDocumentoSanitarioScadenza() != null ?  pr.getDocumentoSanitarioScadenza() : "ASSENTE ") + ")");
+			out.print("<br/>");
+			out.println("*************** nome (" + pr.getNome()  + ")");
+			out.print("<br/>");
+			out.println("*************** cognome (" + pr.getCognome() + ")");
+			out.print("<br/>");
+			out.println("*************** recapito telefonico 1 (" + (pr.getTelefono() != null ? pr.getTelefono() : "ASSENTE") + ")");
+			out.print("<br/>");
+			out.println("*************** recapito telefonico 2 (" + (pr.getRecaptelefonicoSecondario() != null ? pr.getRecaptelefonicoSecondario() : "ASSENTE")  + ")");
+			out.print("<br/>");
+			out.println("*************** indirizzo residenza (" + (pr.getIndirizzoResidenza() != null ? pr.getIndirizzoResidenza() : " ASSENTE ") + ")");
+			out.print("<br/>");
+			out.println("*************** CAP residenza (" + (pr.getComuneResidenza()  != null ? pr.getComuneResidenza().getCap() : " ASSENTE ") + ")");
+			out.print("<br/>");
+			out.println("*************** sigla prov residenza (" + (pr.getComuneResidenza()  != null ? pr.getComuneResidenza().getSiglaProv() : "ASSENTE") + ")");
+			out.print("<br/>");
+			out.println("*************** sigla prov nascita (" + (pr.getComuneNascita()  != null ? pr.getComuneNascita().getSiglaProv() : "ASSENTE") + ")");
+			out.print("<br/>");
+			out.println("*************** sigla prov domicilio (" + (pr.getComuneDomicilio()  != null ? pr.getComuneDomicilio().getSiglaProv() : "ASSENTE") + ")");
+			
+			out.print("<br/>");
+			out.println("*************** indirizzo domicilio (" + (pr.getIndirizzoDomicilio() != null ? pr.getIndirizzoDomicilio() : "ASSENTE") + ")");
+			out.print("<br/>");
+			out.println("*************** data nascita (" + ( pr.getDataNascita() != null ? pr.getDataNascita().toString() : "ASSENTE") + ")");
+			out.print("<br/>");
+			out.println("*************** data MORTE (" + ( pr.getDataMorte()  != null ? pr.getDataMorte().toString() : "ASSENTE") + ")");
+			out.print("<br/>");
+			out.println("*************** sesso (" + (pr.getSesso() != null ? pr.getSesso() : "ASSENTE") + ")");
+			out.print("<br/>");
+			
+			out.println("*************** MEDICO CF (" + (pr.getMedicoCodiceFiscale() != null ? pr.getMedicoCodiceFiscale() : "ASSENTE") + ")");
+			out.print("<br/>");
+			out.println("*************** MEDICO COGNOME NOME (" + (pr.getMedicoCognome() != null ? pr.getMedicoCognome() + " "+ pr.getMedicoNome() : "ASSENTE") + ")");
+			out.print("<br/>");
+			out.println("*************** MEDICO DATA SCELTA (" + (pr.getMedicoDataScelta() != null ? pr.getMedicoDataScelta().toString() : "ASSENTE") + ")");
+			out.print("<br/>");
+			out.print("----------------------------------------------------------------------------------------------------------------------------------");
+			out.print("<br/>");
+			i++;
+		}
 	}
 	%>
 </body>

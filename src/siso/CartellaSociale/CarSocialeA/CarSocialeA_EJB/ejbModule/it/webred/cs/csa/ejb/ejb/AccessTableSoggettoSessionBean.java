@@ -1025,9 +1025,10 @@ public class AccessTableSoggettoSessionBean extends CarSocialeBaseSessionBean im
 		
 		//iterstep
 		if(nuovoInserimento) {
-			itDto.setNomeOperatore(username);			
+			//itDto.setNomeOperatore(username);			
 			CsOOperatoreSettore opSettore = casoDTO.getCurrentOpSettore();
 			itDto.setIdSettore(opSettore.getCsOSettore().getId());
+			itDto.setIdOperatore(opSettore.getCsOOperatore().getId());
 			itDto.setAlertUrl("");
 			itDto.setNotificaSettoreSegnalante(true);
 			itDto.setDataInserimento(new Date());

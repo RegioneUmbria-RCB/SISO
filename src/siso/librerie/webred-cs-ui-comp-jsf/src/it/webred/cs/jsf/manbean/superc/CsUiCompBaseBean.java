@@ -270,6 +270,11 @@ public class CsUiCompBaseBean {
 		if(descrizione!=null && !descrizione.isEmpty())
 			addWarning(summary, StringUtils.join(descrizione,"<br/>"));
 	}
+	
+	protected void addError(String summary, List<String> descrizione) {
+		if(descrizione!=null && !descrizione.isEmpty())
+			addError(summary, StringUtils.join(descrizione,"<br/>"));
+	}
 
 	protected void addInfo(String summary, String descrizione) {
 		addMessage(summary, descrizione, FacesMessage.SEVERITY_INFO);

@@ -2,6 +2,7 @@ package it.webred.cs.sociosan.ejb.ejb;
 
 
 import it.webred.cs.csa.ejb.client.domini.AccessTableDominiAmKeySessionBeanRemote;
+import it.webred.cs.data.DataModelCostanti;
 import it.webred.cs.sociosan.ejb.client.CTConfigClientSessionBeanRemote;
 import it.webred.cs.sociosan.ejb.exception.SocioSanitarioException;
 import it.webred.ct.config.model.AmKeyValueExt;
@@ -78,5 +79,10 @@ public class CTConfigClientSessionBean extends BaseSessionBean implements CTConf
 		return null;
 	}
 
+	@Override
+	public boolean isJksCustomAbilitato() {
+		String val = getGlobalParameter(DataModelCostanti.AmParameterKey.WS_RICERCA_JKS_CUSTOM);
+		return "1".equalsIgnoreCase(val);
+	}
 	
 }

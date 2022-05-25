@@ -628,12 +628,15 @@ public class PaiBean extends FascicoloCompSecondoLivello implements IPai, Serial
 		// SISO-1257
 		if (isClasseProgetto(PaiProgettiEnum.SAL)) {
 			// devo verificare se ci sono le attività salvate in funzione della fase
-			String valida = "";
-			valida = paiSalBean.validaSALPai(idSoggetto, selectedPai.getCsDDiario().getDtAttivazioneDa(), picklistRelazioni);
+			List<String> valida = paiSalBean.validaSALPai(idSoggetto, selectedPai.getCsDDiario().getDtAttivazioneDa(), picklistRelazioni);
 
-			if (valida != null) {
-				addError("Errore", valida);
+			if (valida != null && !valida.isEmpty()) {
+				this.addWarning("Errore validazione SAL", valida);
 				return;
+			}
+			
+			if (!StringUtils.isBlank(paiSalBean.getWarnigSalvataggio())) {
+				addWarning("Suggerimento validazione SAL", paiSalBean.getWarnigSalvataggio());
 			}
 		}
 
@@ -682,14 +685,12 @@ public class PaiBean extends FascicoloCompSecondoLivello implements IPai, Serial
 
 				Set<CsPaiMastSogg> soggSet = new HashSet<CsPaiMastSogg>();
 				soggSet.add(toEntity(soggRiferimentoPai));
-//				selectedPai.addBeneficiario(toEntity(soggRiferimentoPai));
 
 				if (altriSoggetti != null && altriSoggetti.size() > 0) {
 					for (CsPaiMastSoggDTO soggAltro : altriSoggetti) {
 
 						soggAltro.setDiarioId(selectedPai.getDiarioId());
 						soggSet.add(toEntity(soggAltro));
-//						selectedPai.addBeneficiario(toEntity(soggAltro));
 					}
 				}
 				selectedPai.setCsPaiBeneficiari(soggSet);
@@ -724,19 +725,12 @@ public class PaiBean extends FascicoloCompSecondoLivello implements IPai, Serial
 
 				// SISO 1280: Aggiungo i beneficiari all'entita CsDPai
 				List<CsPaiMastSogg> lstBeneficiari = new ArrayList<CsPaiMastSogg>();
-
 				soggRiferimentoPai.setDiarioId(selectedPai.getDiarioId());
-//				
+				
 				if (this.comuneNazioneResidenzaMan != null
 						&& this.comuneNazioneResidenzaMan.getComuneResidenzaMan().getComune() != null) {
 					soggRiferimentoPai.setNazioneResidenzaNonDefinita(false);
-					ObjectMapper mapper = new ObjectMapper();
-					try {
-						soggRiferimentoPai.setComuneResidenza(mapper
-								.writeValueAsString(comuneNazioneResidenzaMan.getComuneResidenzaMan().getComune()));
-					} catch (Exception e) {
-						logger.error(e);
-					}
+					soggRiferimentoPai.setComuneResidenza(comuneNazioneResidenzaMan.getComuneResidenzaMan().getComuneAsJson());
 				}
 
 				if (fromFascicoloCartellaUtente) {
@@ -757,12 +751,10 @@ public class PaiBean extends FascicoloCompSecondoLivello implements IPai, Serial
 						soggAltro.setCasoId(idCasoSoggAltro);
 
 						lstBeneficiari.add(toEntity(soggAltro));
-
 					}
 				}
 				dtoBeneficiari.setObj(lstBeneficiari);
 				diarioService.saveBeneficiariPai(dtoBeneficiari);
-
 			}
 
 			/*
@@ -779,14 +771,12 @@ public class PaiBean extends FascicoloCompSecondoLivello implements IPai, Serial
 			} else if (isClasseProgetto(PaiProgettiEnum.SAL)) {
 				paiSalBean.salva(selectedPai.getDiarioId());
 			} else if (isClasseProgetto(PaiProgettiEnum.PTI)) {
-//				paiPTIBean.salva(selectedPai.getDiarioId(), soggRiferimentoPai);
 				// Recupero le date del Diario
 				Date da = this.selectedPai.getCsDDiario().getDtAttivazioneDa();
 				Date a = this.selectedPai.getCsDDiario().getDtChiusuraDa();
 
 				if (ptiRevisione != null) {
-					ptiRevisione.setMotivoRevisione(
-							PaiPTIMotivoRevisioneEnum.getDescrizioneFromValore(this.motivoRevisione));
+					ptiRevisione.setMotivoRevisione(PaiPTIMotivoRevisioneEnum.getDescrizioneFromValore(this.motivoRevisione));
 					if (this.tipoProroga != null)
 						ptiRevisione.setProroga(PaiPTITipoProrogaEnum.getDescrizioneFromValore(this.tipoProroga));
 				}
@@ -794,12 +784,7 @@ public class PaiBean extends FascicoloCompSecondoLivello implements IPai, Serial
 						this.picklistErogazioni, da, a, ptiRevisione, isClosed());
 
 			}
-
-			if (paiSalBean.getWarnigSalvataggio() != null && !paiSalBean.getWarnigSalvataggio().isEmpty()) {
-				addWarning("Salvataggio", paiSalBean.getWarnigSalvataggio());
-
-			}
-
+			
 			this.updateInterventi();
 			this.updateRelazioni();
 			this.updateErogazioni(); // SISO-748

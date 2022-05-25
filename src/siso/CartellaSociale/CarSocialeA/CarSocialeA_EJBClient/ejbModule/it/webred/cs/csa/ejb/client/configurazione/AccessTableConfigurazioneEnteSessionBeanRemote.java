@@ -88,7 +88,7 @@ public interface AccessTableConfigurazioneEnteSessionBeanRemote {
 	
 	public CsOOperatore findOperatoreByUsername(OperatoreDTO dto) throws Exception;
 
-	public CsOOperatoreSettore findOperatoreSettoreById(OperatoreDTO dto) throws Exception;
+	public CsOOperatoreSettore findOperatoreSettoreById(OperatoreDTO dto);
 	
 	public List<CsOOperatoreSettore> findOperatoreSettoreByOperatore(OperatoreDTO dto) throws Exception;
 	

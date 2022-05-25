@@ -69,7 +69,7 @@ public class AccessTableConfigurazioneEnteSessionBean extends CarSocialeBaseSess
 	@Override
 	@AuditConsentiAccessoAnonimo
 	@AuditSaltaValidazioneSessionID
-	public CsOOperatoreSettore findOperatoreSettoreById(OperatoreDTO dto) throws Exception {
+	public CsOOperatoreSettore findOperatoreSettoreById(OperatoreDTO dto) {
 		if(dto.getIdOperatoreSettore()!=null)
 			return operatoreDao.findOperatoreSettoreById(dto.getIdOperatoreSettore());
 		else

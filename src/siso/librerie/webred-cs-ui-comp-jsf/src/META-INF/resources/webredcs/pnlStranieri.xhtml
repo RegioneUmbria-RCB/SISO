@@ -25,7 +25,7 @@
 		   		    <h:outputText value="Paese di Origine Nucleo Familiare " for="paese_origine"  style="display: block; width: 150px;"/>  
 	                <p:selectOneMenu label="Paese di Origine Nucleo Familiare"  id="paese_origine" value="#{cc.attrs.iStranieri.jsonCurrent.nazioneOrigine.codice}" 
 	                       effect="fold" editable="false" filter="true" filterMatchMode="startsWith"  disabled="#{cc.attrs.soloLettura}">  
-	           			<f:selectItem itemLabel="- seleziona -" itemValue="" />  
+	           			<f:selectItem itemLabel="- seleziona -" noSelectionOption="true" />  
 	           			<f:selectItems value="#{cc.attrs.iStranieri.listaNazioni}" />
 	           			<p:ajax event="change" process="@this" listener="#{cc.attrs.iStranieri.changeNazioneOrigine}"/>    
 	       			</p:selectOneMenu>
@@ -102,7 +102,7 @@
 						  <h:outputText value="Status * " for="status_segnalato" />
 	                  	  <p:selectOneMenu label="Status" id="status_straniero" value="#{cc.attrs.iStranieri.jsonCurrent.status.codice}" disabled="#{cc.attrs.soloLettura}"
 	                  	                   effect="fold" editable="false" >  
-	     					<f:selectItem itemLabel="- seleziona -" itemValue=""/>  
+	     					<f:selectItem itemLabel="- seleziona -" noSelectionOption="true" />  
 	            			<f:selectItems value="#{cc.attrs.iStranieri.listaStatus}" />
 	            			<p:ajax event="change" process="@this" listener="#{cc.attrs.iStranieri.changeStatus}"  update="pnlCondGiuridica"/>  
 	        			 </p:selectOneMenu>
@@ -128,7 +128,7 @@
 	                                     style="width:300px"  panelStyleClass="selectOneMenuGrouped"
 	                                     disabled="#{cc.attrs.soloLettura or cc.attrs.iStranieri.disableTipoPermesso}" 
 	                                     effect="fold" editable="false" filter="true" filterMatchMode="contains">
-	     					<f:selectItem itemLabel="- seleziona -" itemValue=""/>  
+	     					<f:selectItem itemLabel="- seleziona -" noSelectionOption="true" />  
 	            			<f:selectItems value="#{cc.attrs.iStranieri.listaPermessi}" />
 	            			<p:ajax global="false" event="change" process="@this" listener="#{cc.attrs.iStranieri.changePermesso}" partialSubmit="true"/>    
 	        			</p:selectOneMenu> 
@@ -139,7 +139,7 @@
 	                                     style="width:300px"  
 	                                     disabled="#{cc.attrs.soloLettura or cc.attrs.iStranieri.disableSenzaPermessoSoggiorno}" 
 	                                     effect="fold" editable="false" filter="true" filterMatchMode="contains"> 
-	     					<f:selectItem itemLabel="- seleziona -" itemValue=""/>  
+	     					<f:selectItem itemLabel="- seleziona -" noSelectionOption="true" />    
  	            			<f:selectItems value="#{cc.attrs.iStranieri.listaPermessiSenzaSoggiorno}" /> 
 	            			<p:ajax global="false" event="change" process="@this" listener="#{cc.attrs.iStranieri.changeSenzaPermessoSoggiorno}" partialSubmit="true"/>    
 	        			</p:selectOneMenu> 
@@ -165,9 +165,7 @@
 					</p:tab>    			    
     				<p:tab  id="tabIta" title="Arrivo in Italia" titletip="Arrivo in Italia" >
 						<p:selectOneRadio value="#{cc.attrs.iStranieri.jsonCurrent.arrivoItalia}"  disabled="#{cc.attrs.soloLettura}" >
-				            <f:selectItem itemLabel="dalla Nascita" itemValue="dalla nascita" />
-				            <f:selectItem itemLabel="Migrante" itemValue="migrante" />
-				            <f:selectItem itemLabel="Comunitario" itemValue="comunitario" />
+							<f:selectItems value="#{cc.attrs.iStranieri.lstArrivoItalia}"/>
 				        </p:selectOneRadio>
 				        <p:spacer height="10px"/>
 				        <h:panelGrid columns="2">
@@ -176,8 +174,8 @@
 				        	<h:outputText value="Anno primo arrivo " for="anno_primo_arrivo_ita" />
 				        	<h:panelGroup>
 					        	<p:selectOneMenu id="anno_primo_arrivo_ita" value="#{cc.attrs.iStranieri.jsonCurrent.annoPrimoArrivoITA}" disabled="#{cc.attrs.soloLettura}" 
-					        	                 editable="false" style="width:80px;"   >  
-		            				<f:selectItem itemLabel=" " itemValue="" />  
+					        	                 editable="false">  
+		            				<f:selectItem itemLabel="- seleziona -" noSelectionOption="true" />  
 		            				<f:selectItems value="#{cc.attrs.iStranieri.listaAnni}" />  
 		        				</p:selectOneMenu>
 		        				 <p:spacer width="10px"/> 
@@ -185,8 +183,8 @@
 					        </h:panelGroup> 
 					        <h:outputText value="Anno primo permesso di soggiorno " for="anno_permesso" />
 				        	<p:selectOneMenu id="anno_permesso" value="#{cc.attrs.iStranieri.jsonCurrent.annoPrimoPermSogg}" 
-					        	                 editable="false" style="width:80px;" disabled="#{cc.attrs.soloLettura}"  >  
-		            				<f:selectItem itemLabel=" " itemValue="" />  
+					        	                 editable="false" disabled="#{cc.attrs.soloLettura}"  >  
+		            				<f:selectItem itemLabel="- seleziona -" noSelectionOption="true" />  
 		            				<f:selectItems value="#{cc.attrs.iStranieri.listaAnni}" />  
 		        			</p:selectOneMenu>
 				        
@@ -196,7 +194,7 @@
 	            			<h:outputText value="Ultimo paese di provenienza " for="ultimo_paese" />
 	            			<p:selectOneMenu label="Ultimo paese di provenienza"  id="ultimo_paese" value="#{cc.attrs.iStranieri.jsonCurrent.ultimaNazioneProvenienza.codice}" 
 		                        effect="fold" editable="false"  filter="true" filterMatchMode="startsWith" disabled="#{cc.attrs.soloLettura}" >  
-		            			<f:selectItem itemLabel="- seleziona -" itemValue="" />  
+		            			<f:selectItem itemLabel="- seleziona -" noSelectionOption="true" />  
 		            			<f:selectItems value="#{cc.attrs.iStranieri.listaNazioni}" />
 		            			<p:ajax event="change" process="@this" listener="#{cc.attrs.iStranieri.changeNazioneProvenienza}"/>    
 	        				</p:selectOneMenu>
@@ -213,8 +211,8 @@
 						   <h:outputText value="Anno  primo arrivo " for="anno_first_arrivo_reg" />
 						 
 						   	<p:selectOneMenu id="anno_first_arrivo_reg" value="#{cc.attrs.iStranieri.jsonCurrent.annoPrimoArrivoREG}" disabled="#{cc.attrs.soloLettura}" 
-						   	                 editable="false" style="width:80px;"   >  
-	            				<f:selectItem itemLabel=" " itemValue="" />  
+						   	                 editable="false">  
+	            				<f:selectItem itemLabel="- seleziona -" noSelectionOption="true" />  
 	            				<f:selectItems value="#{cc.attrs.iStranieri.listaAnni}" />  
 	        				</p:selectOneMenu> 
 		        				

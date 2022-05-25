@@ -33,18 +33,6 @@ public class SsCCategoriaSociale implements Serializable {
 	@Column(name="N_ORD")
 	private Integer nOrd;
 
-/*	@OneToOne(fetch = FetchType.EAGER) 
-	 @JoinTable
-	  (
-	      name="SS_REL_SCHEDA_CAT_SOC",
-	      joinColumns={ @JoinColumn(name="CATEGORIA_SOCIALE_ID", referencedColumnName="ID" ,  unique = true ,updatable= true) 
-	       },
-	      inverseJoinColumns={ @JoinColumn(name="SCHEDA_ID", referencedColumnName="ID", insertable=true, unique=true ,updatable= true )
-//	    		  joinColumns={ @JoinColumn(name="SCHEDA_ID" ) },
-//	    	      inverseJoinColumns={ @JoinColumn(name="CATEGORIA_SOCIALE_ID")
-	      }
-	  )
-    private SsScheda scheda;*/
 	@Override
 	public boolean equals(Object other) {
 		if (this == other) {

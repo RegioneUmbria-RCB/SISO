@@ -1461,12 +1461,12 @@ public class SegretariatoSocBaseBean {
     	return arg;
     }
 
-	public CsOSettoreBASIC getSettore(String idSettore) {
-		if(idSettore!=null && !idSettore.isEmpty()){
+	public CsOSettoreBASIC getSettore(Long idSettore) {
+		if(idSettore!=null && idSettore>0){
 			try {
 				OperatoreDTO dto = new OperatoreDTO();
 				this.fillUserData(dto);
-				dto.setIdSettore(new Long(idSettore));
+				dto.setIdSettore(idSettore);
 				return configurationCsEnteBean.findSettoreBASICById(dto);
 				
 			} catch (Exception e) {

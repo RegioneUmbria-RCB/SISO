@@ -43,7 +43,34 @@ public abstract class StranieriManBaseBean extends SchedaValutazioneManBean impl
 	protected boolean disablePnlStatoPermesso = false;
 	protected boolean validaConoscenzaLingua = true;
 	protected boolean validaDatiImmigrazione=true;
+	protected boolean validaProfugoMigrante=false;
 	protected boolean disableSenzaPermessoSoggiorno=true; //SISO_792
+	
+
+	public enum ARRIVO_IN_ITALIA {
+		DALLA_NASCITA("dalla nascita","dalla Nascita"),
+		MIGRANTE("migrante","Migrante"),
+		COMUNITARIO("comunitario","Comunitario");
+		
+		private String codice;
+		private String descrizione;
+		private ARRIVO_IN_ITALIA(String codice, String descrizione) {
+			this.codice = codice;
+			this.descrizione = descrizione;
+		}
+		public String getCodice() {
+			return codice;
+		}
+		public void setCodice(String codice) {
+			this.codice = codice;
+		}
+		public String getDescrizione() {
+			return descrizione;
+		}
+		public void setDescrizione(String descrizione) {
+			this.descrizione = descrizione;
+		}	
+	}
 	
 	
 	public static class ListaStatus
@@ -351,6 +378,11 @@ public abstract class StranieriManBaseBean extends SchedaValutazioneManBean impl
 	public void setValidaCampiImmigrazione(boolean valida) {
 		this.validaDatiImmigrazione=valida;
 	}
+	
+	@Override
+	public void setValidaProfugoMigrante(boolean valida) {
+		this.validaProfugoMigrante=valida;
+	}
 
 	public abstract String getStatusSelected();
 	public abstract String getPermessoSelected();
@@ -363,7 +395,13 @@ public abstract class StranieriManBaseBean extends SchedaValutazioneManBean impl
 			boolean disableSenzaPermessoSoggiorno) {
 		this.disableSenzaPermessoSoggiorno = disableSenzaPermessoSoggiorno;
 	}
-
 	
+	@Override
+	public List<SelectItem> getLstArrivoItalia() {
+		List<SelectItem> si = new ArrayList<SelectItem>();
+		for(ARRIVO_IN_ITALIA k : ARRIVO_IN_ITALIA.values())
+			si.add(new SelectItem(k.codice, k.descrizione));
+		return si;
+	}
 
 }

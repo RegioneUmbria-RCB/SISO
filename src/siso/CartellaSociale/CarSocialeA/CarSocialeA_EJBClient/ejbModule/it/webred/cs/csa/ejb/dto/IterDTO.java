@@ -16,7 +16,6 @@ public class IterDTO extends CeTBaseObject {
 	private Long idStato;
 	private String opRuolo;
 	private Long idOperatore;
-	private String nomeOperatore;
 	private Long idSettore;
 	private Long idOrganizzazione;
 	private Long idOpSettoreTo;
@@ -45,12 +44,6 @@ public class IterDTO extends CeTBaseObject {
 	}
 	public void setIdAlertList(List<Long> idAlertList) {
 		this.idAlertList = idAlertList;
-	}
-	public String getNomeOperatore() {
-		return nomeOperatore;
-	}
-	public void setNomeOperatore(String nomeOperatore) {
-		this.nomeOperatore = nomeOperatore;
 	}
 	public Long getIdSettore() {
 		return idSettore;

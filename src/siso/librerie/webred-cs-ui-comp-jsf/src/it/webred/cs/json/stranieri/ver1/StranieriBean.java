@@ -1,17 +1,19 @@
 package it.webred.cs.json.stranieri.ver1;
 
-import it.webred.cs.json.dto.JsonBaseBean;
-import it.webred.cs.json.dto.KeyValueDTO;
-import it.webred.jsf.bean.ComuneBean;
-
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import it.webred.cs.json.dto.JsonBaseBean;
+import it.webred.cs.json.dto.KeyValueDTO;
+import it.webred.cs.json.stranieri.StranieriManBaseBean.ARRIVO_IN_ITALIA;
+import it.webred.jsf.bean.ComuneBean;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class StranieriBean extends JsonBaseBean {
@@ -60,6 +62,9 @@ public class StranieriBean extends JsonBaseBean {
 	
 	@JsonIgnore
 	private boolean validaDatiImmigrazione=true;
+	
+	@JsonIgnore
+	private boolean validaProfugoMigrante=false;
 	
 	public StranieriBean(){
 		nazioneOrigine = new KeyValueDTO();
@@ -190,6 +195,15 @@ public class StranieriBean extends JsonBaseBean {
 						messages.add("Autovalutare la capacità di scrivere in lingua italiana");
 				}
 			}
+		}
+		
+		if(this.validaProfugoMigrante) {
+			String cond = "per il gruppo vulnerabile selezionato";
+			if(this.ultimaNazioneProvenienza == null || StringUtils.isBlank(ultimaNazioneProvenienza.getCodice()))
+			   messages.add("'Ultimo paese di provenienza' è un campo obbligatorio "+cond);
+			
+			if(ARRIVO_IN_ITALIA.DALLA_NASCITA.getCodice().equals(arrivoItalia))
+				messages.add("Arrivo in Italia '"+ ARRIVO_IN_ITALIA.DALLA_NASCITA.getDescrizione() +"' non ammesso "+cond);
 		}
 		
 		return messages;
@@ -378,6 +392,10 @@ public class StranieriBean extends JsonBaseBean {
 
 	public void setValidaDatiImmigrazione(boolean validaDatiImmigrazione) {
 		this.validaDatiImmigrazione=validaDatiImmigrazione;
+	}
+	
+	public void setValidaProfugoMigrante(boolean valida) {
+		this.validaProfugoMigrante = valida;
 	}
 
 	public KeyValueDTO getAssenzaPermessoSoggiorno() {

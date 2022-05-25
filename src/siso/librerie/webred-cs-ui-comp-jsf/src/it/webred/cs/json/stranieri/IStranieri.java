@@ -41,5 +41,11 @@ public interface IStranieri extends ISchedaValutazione {
 	public void setValidaConoscenzaLingua(boolean valida);
 
 	public void setValidaCampiImmigrazione(boolean valida);
+
+	public void setValidaProfugoMigrante(boolean valida);
+
+	public List<SelectItem> getLstArrivoItalia();
+
+	public boolean isArrivoInItaliaMigrante();
 	
 }

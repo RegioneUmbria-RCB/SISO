@@ -2,6 +2,7 @@ package it.webred.ss.web.bean.report;
 
 import it.webred.cs.data.model.CsOSettoreBASIC;
 import it.webred.ss.data.model.SsSchedaAccesso;
+import it.webred.ss.data.model.tb.CsOSettoreLIGHT;
 import it.webred.ss.web.bean.SegretariatoSocBaseBean;
 
 import java.io.File;
@@ -223,7 +224,7 @@ public class ReportBaseBean extends SegretariatoSocBaseBean{
   }	 
   
   protected String getMotivoDesc(SsSchedaAccesso accesso){
-		CsOSettoreBASIC settore = getSettore(accesso.getInviato_da());
+		CsOSettoreLIGHT settore = accesso.getSettoreInviante();
 		String inviante = settore!=null ? format(settore.getNome()) : "";
 		
 		String motivo = accesso.getMotivo();

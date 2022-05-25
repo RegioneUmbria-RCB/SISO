@@ -302,11 +302,11 @@ public class ResidenzaCsaMan extends ResidenzaMan implements Serializable {
 		}
 		if(!residenza){
 			ok = false;
-			addError("Inserire almeno un indirizzo tipo RESIDENZA", null);
+			addError("Inserire almeno un indirizzo tipo RESIDENZA", (String)null);
 		}
 		if(countResidenza > 1){
 			ok = false;
-			addError("Non può esistere più di un indirizzo di residenza ATTIVO: Annullare od Eliminare gli indirizzi non necessari", null);
+			addError("Non può esistere più di un indirizzo di residenza ATTIVO: Annullare od Eliminare gli indirizzi non necessari", (String)null);
 		}
 		
 		//salvataggio
@@ -515,16 +515,16 @@ public class ResidenzaCsaMan extends ResidenzaMan implements Serializable {
 		String ti = getTipoIndirizzo();
 		if (StringUtils.isBlank(ti)) {
 			err = true;
-			addError("Tipo Indirizzo è un campo obbligatorio", null);
+			addError("Tipo Indirizzo è un campo obbligatorio", (String)null);
 		}
 		if (TIPO_LUOGO.COMUNE.getCodice().equals(tipoComune)) {
 			if(StringUtils.isBlank(indirizzoMan.getSelectedIndirizzo())){
 				err = true;
-				addError("Indirizzo è un campo obbligatorio", null);
+				addError("Indirizzo è un campo obbligatorio", (String)null);
 			}
 			if(StringUtils.isBlank(enteCorrente)){
 				err= true;
-				addError("Impossibile recuperare il Comune di Residenza: l'ente corrente non ha un codice catastale.", null);
+				addError("Impossibile recuperare il Comune di Residenza: l'ente corrente non ha un codice catastale.", (String)null);
 			}
 		} else if(TIPO_LUOGO.SENZA_FISSA_DIMORA.getCodice().equals(tipoComune)){
 			//Niente da validare
@@ -533,23 +533,23 @@ public class ResidenzaCsaMan extends ResidenzaMan implements Serializable {
 			if (getComuneNazioneResidenzaMan().isComuneRendered()) {
 				if (getComuneNazioneResidenzaMan().getComuneResidenzaMan().getComune() == null) {
 					err = true;
-					addError("Comune di residenza è un campo obbligatorio", null);
+					addError("Comune di residenza è un campo obbligatorio", (String)null);
 				}
 			} else {
 				if (getComuneNazioneResidenzaMan().getNazioneResidenzaMan().getNazione() == null) {
 					err = true;
-					addError("Stato estero di residenza è un campo obbligatorio", null);
+					addError("Stato estero di residenza è un campo obbligatorio", (String)null);
 				}
 			}
 			String citta = getCitta();
 			if (!getComuneNazioneResidenzaMan().isComuneRendered() && StringUtils.isBlank(citta)) {
 				err = true;
-				addError("Città è un campo obbligatorio", null);
+				addError("Città è un campo obbligatorio", (String)null);
 			}
 			String ind = getIndirizzo();
 			if (StringUtils.isBlank(ind)) {
 				err = true;
-				addError("Indirizzo è un campo obbligatorio", null);
+				addError("Indirizzo è un campo obbligatorio", (String)null);
 			}	
 			
 		}

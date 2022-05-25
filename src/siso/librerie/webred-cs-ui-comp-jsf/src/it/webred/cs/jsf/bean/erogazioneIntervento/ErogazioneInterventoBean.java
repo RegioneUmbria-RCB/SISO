@@ -1536,11 +1536,11 @@ public class ErogazioneInterventoBean extends CsUiCompBaseBean implements Serial
 	}
 
 	// ** mod. SISO-886 **//
-	public boolean erogazioneEsportata(CsIInterventoEsegMast csIInterventoEsegMast) {
+	public boolean erogazioneEsportata(Long intEsegMastId) {
 
 		BaseDTO dto = new BaseDTO();
 		fillEnte(dto);		
-		dto.setObj(csIInterventoEsegMast.getId());
+		dto.setObj(intEsegMastId);
 		return psExportService.findCsIPsExportByCsIInterventoMastIdExported(dto).size() > 0;
 
 	}

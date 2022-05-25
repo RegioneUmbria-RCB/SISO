@@ -1264,6 +1264,13 @@ public class AccessTableConfigurazioneSessionBean extends CarSocialeBaseSessionB
 	}
 
 	@Override
+	public boolean existsTransizioneTraStati(BaseDTO dto){
+		List<?> lst =  configurazioneDAO.findTransizionesByStatoDaA((Long)dto.getObj(), (Long)dto.getObj2());
+		return !lst.isEmpty();
+	}
+
+	
+	@Override
 	public List<KeyValueDTO> getListaIterStati(CeTBaseObject cet){
 		return configurazioneDAO.getListaIterStati();
 	}
@@ -1442,6 +1449,11 @@ public class AccessTableConfigurazioneSessionBean extends CarSocialeBaseSessionB
 	public List<CsCfgIntEsegStato> getListaIntEsegStatoByTipiStato(BaseDTO bDto) {
 		List<String> obj = (List<String>) bDto.getObj();
 		return configurazioneDAO.getListaIntEsegStatoByTipiStato(obj, (Long) bDto.getObj2());
+	}
+
+	@Override
+	public CsTbSinaRisposta findSinaRisposta(BaseDTO dto) {
+		return configurazioneDAO.findSinaRisposta((Long)dto.getObj());
 	}
 
 

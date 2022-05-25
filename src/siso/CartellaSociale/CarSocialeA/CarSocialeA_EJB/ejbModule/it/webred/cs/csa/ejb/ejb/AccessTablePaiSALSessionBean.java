@@ -1,6 +1,5 @@
 package it.webred.cs.csa.ejb.ejb;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -35,7 +34,7 @@ public class AccessTablePaiSALSessionBean  extends CarSocialeBaseSessionBean imp
 	private PaiSalDAO salDAO;
 
 	@Override
-	public CsPaiSalDTO saveSAL(BaseDTO dto) throws Exception {
+	public CsPaiSalDTO saveSAL(BaseDTO dto) {
 		CsPaiSalDTO sal = (CsPaiSalDTO) dto.getObj();
 		
     	//gestione fase
@@ -61,8 +60,7 @@ public class AccessTablePaiSALSessionBean  extends CarSocialeBaseSessionBean imp
 			
 			sal.getFasiSAL().add(nuovaFase);
 			
-			}
-		else{
+		}else{
 			for(CsPaiSALFaseDTO fase : sal.getFasiSAL()){
 				if(fase.getDataA() == null){
 					fase.setDataFaseSal(dataFaseSal);
@@ -110,7 +108,7 @@ public class AccessTablePaiSALSessionBean  extends CarSocialeBaseSessionBean imp
 	}
 	
 	/*CODEC ENTITY*/
-	public static CsPaiSAL toEntity(CsPaiSalDTO source) throws IllegalAccessException, InvocationTargetException{
+	public static CsPaiSAL toEntity(CsPaiSalDTO source){
 		CsPaiSAL target = new CsPaiSAL();
 		String[] ignore = {"fasiSAL","storicoSAL", "lstStoricoTutor", "lstStoricoMansioni"};
 		BeanUtils.copyProperties(source, target, ignore);
@@ -132,10 +130,9 @@ public class AccessTablePaiSALSessionBean  extends CarSocialeBaseSessionBean imp
 			}
 		}
 		
-		
 		return target;
 	}
-	public static CsPaiSALFase toEntity(CsPaiSALFaseDTO source, CsPaiSAL sal) throws IllegalAccessException, InvocationTargetException{
+	public static CsPaiSALFase toEntity(CsPaiSALFaseDTO source, CsPaiSAL sal){
 		CsPaiSALFase target = new CsPaiSALFase();
         String[] ignore = {"sal","paiSal"};
 		BeanUtils.copyProperties(source, target, ignore);
@@ -144,7 +141,7 @@ public class AccessTablePaiSALSessionBean  extends CarSocialeBaseSessionBean imp
 		return target;
 	}
 	
-	public static CsPaiSalStorico toEntity(CsPaiSALStoricoDTO source, CsPaiSAL sal) throws IllegalAccessException, InvocationTargetException{
+	public static CsPaiSalStorico toEntity(CsPaiSALStoricoDTO source, CsPaiSAL sal){
 		CsPaiSalStorico target = new CsPaiSalStorico();
 		String[] ignore = {"sal"};
 		BeanUtils.copyProperties(source, target, ignore);
@@ -156,7 +153,7 @@ public class AccessTablePaiSALSessionBean  extends CarSocialeBaseSessionBean imp
 	
 
 	/*CODEC DTO*/
-	public static CsPaiSalDTO toDTO(CsPaiSAL source) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException{
+	public static CsPaiSalDTO toDTO(CsPaiSAL source){
 		
 		if(source == null){
 			return null;
@@ -205,7 +202,7 @@ public class AccessTablePaiSALSessionBean  extends CarSocialeBaseSessionBean imp
 		
 		return target;
 	}
-	public static CsPaiSALFaseDTO toDTO(CsPaiSALFase source, CsPaiSalDTO sal) throws IllegalAccessException, InvocationTargetException{
+	public static CsPaiSALFaseDTO toDTO(CsPaiSALFase source, CsPaiSalDTO sal){
 		CsPaiSALFaseDTO target = new CsPaiSALFaseDTO();
 		BeanUtils.copyProperties(source, target, new String[]{"paiSal", "sal"});
 		target.setSal(sal);
@@ -213,18 +210,18 @@ public class AccessTablePaiSALSessionBean  extends CarSocialeBaseSessionBean imp
 		return target;
 	}
 	
-	public static CsPaiSALStoricoDTO toDTO(CsPaiSalStorico source) throws IllegalAccessException, InvocationTargetException{
+	public static CsPaiSALStoricoDTO toDTO(CsPaiSalStorico source){
 		CsPaiSALStoricoDTO target = new CsPaiSALStoricoDTO();
 		BeanUtils.copyProperties(source, target);
 		return target;
 	}
 
 	@Override
-	public CsPaiSalDTO findSalByDiarioPaiId(BaseDTO dto) throws Exception {
+	public CsPaiSalDTO findSalByDiarioPaiId(BaseDTO dto) {
 		CsPaiSAL res = salDAO.findSalByDiarioPaiId((Long)dto.getObj());
 		CsPaiSalDTO toReturn = toDTO(res);
 		
-		if(!toReturn.getStoricoSAL().isEmpty()){
+		if(toReturn!=null && !toReturn.getStoricoSAL().isEmpty()){
 			for(CsPaiSALStoricoDTO pas : toReturn.getStoricoSAL()){
 //				BaseDTO bdto = new BaseDTO();
 //				bdto.setObj(PaiAffidoDominiEnum.RUOLO_SOGGETTO.name());

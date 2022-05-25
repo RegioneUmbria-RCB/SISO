@@ -95,7 +95,7 @@ public abstract class DatiValGestioneMan extends CsUiCompBaseBean implements IDa
 				addWarning("Seleziona un elemento", "");
 			
 		} catch (Exception e) {
-			addError("Errore durante l'inserimento dell'elemento selezionato", null);
+			addError("Errore durante l'inserimento dell'elemento selezionato", (String)null);
 			logger.error(e.getMessage(),e);
 		}
 	}
@@ -128,7 +128,7 @@ public abstract class DatiValGestioneMan extends CsUiCompBaseBean implements IDa
 		
 		boolean ok = true;
 		if(lstTempActive.size() > maxActiveComponents) {
-			addError("Superato il numero di elementi attivi, massimo: " + maxActiveComponents, null);
+			addError("Superato il numero di elementi attivi, massimo: " + maxActiveComponents, (String)null);
 			ok = false;
 		}
 		

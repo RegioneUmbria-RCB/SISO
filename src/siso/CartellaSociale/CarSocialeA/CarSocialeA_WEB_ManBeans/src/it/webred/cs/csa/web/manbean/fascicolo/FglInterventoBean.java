@@ -386,7 +386,8 @@ public class FglInterventoBean extends FascicoloCompSecondoLivello implements ID
 			cmbSettoreOnChange();
 			
 			loadDatiPai(master != null && master.getDiarioPaiId() != null ? master.getDiarioPaiId().longValue() : null);
-			initDatiSina(catSocId, master);
+			String cf = erogazioneInterventoBean.getSoggettoErogazione().getCodiceFiscale();
+			initDatiSina(catSocId, master!=null ? master.getId() : null, cf);
 			initStrutturaDisponibilita(struttDispo);
 			initConsuntivazione(consuntivazione);
 			
@@ -448,16 +449,14 @@ public class FglInterventoBean extends FascicoloCompSecondoLivello implements ID
 		}
 	}
 	
-	private void initDatiSina(Long catSocId, CsIInterventoEsegMast master){
+	private void initDatiSina(Long catSocId, Long masterId, String cf){
 		//SISO-783
 		//la tab sina è visualizzabile solo se cat sociale è anziani(4) o disabili(2)
 		visualizzaSinaTab = (TipiCategoriaSociale.ANZIANI_ID.equals(catSocId) || TipiCategoriaSociale.DISABILI_ID.equals(catSocId));
 		
 		if(visualizzaSinaTab){
 			Boolean esportata = false;
-			String cf ="";
-			if (master != null) {
-				cf = master.getBeneficiarioRiferimento().getCf();
+			if (masterId != null) {
 				// ordinamento decrescente per data erogazione
 				Collections.sort(erogazioneInterventoBean.getStoricoOperazioni(), new Comparator<InterventoErogazHistoryRowBean>() {
 
@@ -488,10 +487,10 @@ public class FglInterventoBean extends FascicoloCompSecondoLivello implements ID
 					esportata = erogazioneInterventoBean.erogazioneEsportata(ultimaErogE);
 				}
 
-				sinaMan = new SinaMan(idCaso, master.getId(), cf, esportata);
+				sinaMan = new SinaMan(idCaso, masterId, cf, esportata, true);
 				
 			}else{
-				sinaMan = new SinaMan(idCaso, new Long(0), cf, esportata);
+				sinaMan = new SinaMan(idCaso, new Long(0), cf, esportata, true);
 			}
 		}	
 	}

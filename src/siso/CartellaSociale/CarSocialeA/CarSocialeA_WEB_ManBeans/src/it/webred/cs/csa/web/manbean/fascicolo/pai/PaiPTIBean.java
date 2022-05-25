@@ -4,6 +4,7 @@ import it.webred.cs.csa.ejb.client.AccessTableAlertSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.AccessTableInterventoSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.AccessTablePaiPTISessionBeanRemote;
 import it.webred.cs.csa.ejb.client.AccessTableSinbaSessionBeanRemote;
+import it.webred.cs.csa.ejb.client.CarSocialeServiceException;
 import it.webred.cs.csa.ejb.dto.BaseDTO;
 import it.webred.cs.csa.ejb.dto.KeyValueDTO;
 import it.webred.cs.csa.ejb.dto.OperatoreDTO;
@@ -600,8 +601,8 @@ public class PaiPTIBean extends CsUiCompBaseBean implements Serializable {
 			addInfo("Salvataggio PTI", "PTI Salvato correttamente");
 			logger.debug("PTI Salvato correttamente");
 		} catch (Exception e) {
-			addError("Salvataggio PTI", "Errore salvataggio PTI");
 			logger.error("Errore salvataggio PTI", e);
+			throw new CarSocialeServiceException("Errore salvataggio PTI");
 		}
 	}
 

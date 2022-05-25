@@ -2,13 +2,15 @@ package it.webred.cs.jsf.interfaces;
 
 import java.util.List;
 
-public interface IUserSearchExt extends IUserSearch {
+import it.webred.cs.jsf.bean.DatiUserSearchBean;
 
-	
+public interface IUserSearchExt {
+
 	public List<?> getLstSoggetti() ;
 	
-	void loadListaSoggetti();
+	public void loadListaSoggetti();
 
-	void clearParameters();
-
+	public void clearParameters();
+	
+	public DatiUserSearchBean getSelSoggetto();
 }

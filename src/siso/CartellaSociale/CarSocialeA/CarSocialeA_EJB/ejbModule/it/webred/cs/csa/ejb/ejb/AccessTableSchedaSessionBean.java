@@ -6,6 +6,7 @@ import it.webred.cs.csa.ejb.client.AccessTableSchedaSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.CarSocialeServiceException;
 import it.webred.cs.csa.ejb.dao.ConfigurazioneDAO;
 import it.webred.cs.csa.ejb.dao.DatiPorDAO;
+import it.webred.cs.csa.ejb.dao.DiarioDAO;
 import it.webred.cs.csa.ejb.dao.IndirizzoDAO;
 import it.webred.cs.csa.ejb.dao.ParentiDAO;
 import it.webred.cs.csa.ejb.dao.SchedaDAO;
@@ -71,6 +72,9 @@ public class AccessTableSchedaSessionBean extends CarSocialeBaseSessionBean impl
 	
 	@Autowired
 	private IndirizzoDAO indirizzoDao;
+	
+	@Autowired
+	private DiarioDAO diarioDao;
 	
 	@EJB
 	private AccessTableAlertSessionBeanRemote alertService;
@@ -447,7 +451,9 @@ public class AccessTableSchedaSessionBean extends CarSocialeBaseSessionBean impl
 
 	@Override
 	public void verificaAllineamentoDatiInvalidita(BaseDTO dto) {
-		CsDDiario diario = (CsDDiario)dto.getObj();
+		Long diarioId = (Long)dto.getObj();
+		CsDDiario diario = diarioDao.findDiarioById(diarioId);
+		
 		List<String> lstSinaParamInvalidita = (List<String>)dto.getObj2();
 		
 		List<Long> lstCsInvalidita = new ArrayList<Long>();

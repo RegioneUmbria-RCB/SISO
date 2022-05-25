@@ -1,8 +1,12 @@
 package it.webred.cs.csa.ejb.dao;
 
 import it.webred.cs.csa.ejb.CarSocialeBaseDAO;
+import it.webred.cs.csa.ejb.client.CarSocialeServiceException;
 import it.webred.cs.data.model.CsDSina;
+import it.webred.cs.data.model.CsDSinaEseg;
 import it.webred.cs.data.model.CsDSinaLIGHT;
+import it.webred.cs.data.model.CsDSinaPresInps;
+import it.webred.cs.data.model.CsDSinaPresInpsPK;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -16,11 +20,6 @@ import javax.persistence.Query;
 public class SinaDAO extends CarSocialeBaseDAO implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	public CsDSina newSina(CsDSina sina) {
-		em.persist(sina);
-		return sina;
-	}
-
 	public CsDSina updateSina(CsDSina sina) {
 		try {
 
@@ -28,27 +27,48 @@ public class SinaDAO extends CarSocialeBaseDAO implements Serializable {
 
 		} catch (Exception e) {
 			logger.error("updateSina " + e.getMessage(), e);
+			throw new CarSocialeServiceException(e);
 		}
 		return sina;
+	}
+	
+	public CsDSinaEseg updateSinaEseg(CsDSinaEseg se) {
+		try {
+
+			return em.merge(se);
+
+		} catch (Exception e) {
+			logger.error("updateSinaEseg " + e.getMessage(), e);
+			throw new CarSocialeServiceException(e);
+		}
 	}
 
 	@SuppressWarnings("unchecked")
 	public CsDSina getSinaById(Long idSina) {
-		List<CsDSina> resultList; // = new ArrayList<CsDPai>();
 		CsDSina result = null;
-
 		try {
-			if (idSina != null) {
-				Query q = em.createNamedQuery("CsDSina.getSinaById");
-				q.setParameter("idSina", idSina);
-				resultList = q.getResultList();
-
-				result = (!resultList.isEmpty()) ? resultList.get(0) : null;
-			}
+			if (idSina != null)
+				result = em.find(CsDSina.class, idSina);
 		} catch (Exception e) {
 			logger.error("getSinaById " + e.getMessage(), e);
+			throw new CarSocialeServiceException(e);
 		}
 		return result;
+	}
+	
+	public List<CsDSinaEseg> getSinaEsegBySinaId(Long idSina) {
+		List<CsDSinaEseg> resultList = new ArrayList<CsDSinaEseg>(); 
+		try {
+			if (idSina != null) {
+				Query q = em.createNamedQuery("CsDSinaEseg.getBySinaId");
+				q.setParameter("idSina", idSina);
+				resultList = q.getResultList();
+			}
+		} catch (Exception e) {
+			logger.error("getSinaEsegBySinaId " + e.getMessage(), e);
+			throw new CarSocialeServiceException(e);
+		}
+		return resultList;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -63,28 +83,23 @@ public class SinaDAO extends CarSocialeBaseDAO implements Serializable {
 				resultList = q.getResultList();
 
 				result = (!resultList.isEmpty()) ? resultList.get(0) : null;
-
-				// if(result.getCsDSinaEseg() != null &&
-				// result.getCsDSinaEseg().size() > 0){
-				// //eseguire la query
-				// List<CsDSinaEseg> resultEsegList;
-				// Query q1 =
-				// em.createNamedQuery("CsDSina.getSinaEsegBySinaId");
-				// q1.setParameter("idSina", result.getId());
-				// resultEsegList = q1.getResultList();
-				//
-				// result.setCsDSinaEseg(resultEsegList);
-				// //fine query
-				// }
 			}
 		} catch (Exception e) {
 			logger.error("getSinaById " + e.getMessage(), e);
+			throw new CarSocialeServiceException(e);
 		}
 		return result;
 	}
 
 	public void deleteSinaEsegById(Long idSina) {
-		Query q = em.createNamedQuery("CsDSina.deleteSinaEsegById");
+		Query q = em.createNamedQuery("CsDSinaEseg.deleteBySinaId");
+		q.setParameter("idSina", idSina);
+		q.executeUpdate();
+	}
+	
+	public void deleteSinaById(Long idSina) {
+		this.deleteSinaEsegById(idSina);
+		Query q = em.createNamedQuery("CsDSina.deleteById");
 		q.setParameter("idSina", idSina);
 		q.executeUpdate();
 	}
@@ -121,6 +136,7 @@ public class SinaDAO extends CarSocialeBaseDAO implements Serializable {
 			result = q.getResultList();
 		} catch (Exception e) {
 			logger.error("findDiarioFromSinaMastId " + e.getMessage(), e);
+			throw new CarSocialeServiceException(e);
 		}
 		return result;
 	}
@@ -136,6 +152,7 @@ public class SinaDAO extends CarSocialeBaseDAO implements Serializable {
 			logger.error("getSinaByMastId result["+resultList.size()+"]");
 		} catch (Exception e) {
 			logger.error("getSinaById " + e.getMessage(), e);
+			throw new CarSocialeServiceException(e);
 		}
 		return resultList;
 	}
@@ -151,6 +168,7 @@ public class SinaDAO extends CarSocialeBaseDAO implements Serializable {
 			result = q.getResultList();
 		} catch (Exception e) {
 			logger.error("findSinaByCaso " + e.getMessage(), e);
+			throw new CarSocialeServiceException(e);
 		}
 		return result;
 	}
@@ -167,23 +185,61 @@ public class SinaDAO extends CarSocialeBaseDAO implements Serializable {
 			result = (!resultList.isEmpty()) ? resultList.get(0) : null;
 		} catch (Exception e) {
 			logger.error("findMinDateCollegatiByMastId " + e.getMessage(), e);
+			throw new CarSocialeServiceException(e);
 		}
 		return result;
 	}
 	
 	// SISO-928
-		public List<CsDSina> findSinaCollegabiliByCf(String cf, Long mastId) {
+	public List<CsDSina> findSinaCollegabiliByCf(String cf, Long mastId) {
 
-			List<CsDSina> result = new ArrayList<CsDSina>();
+		List<CsDSina> result = new ArrayList<CsDSina>();
 
-			try {
-				Query q = em.createNamedQuery("CsDSina.findSinaCollegabiliByCF");
-				q.setParameter("cf", cf);
-				q.setParameter("mastId", mastId);
-				result = q.getResultList();
-			} catch (Exception e) {
-				logger.error("findSinaCollegabiliByCf " + e.getMessage(), e);
-			}
-			return result;
+		try {
+			Query q = em.createNamedQuery("CsDSina.findSinaCollegabiliByCF");
+			q.setParameter("cf", cf);
+			q.setParameter("mastId", mastId);
+			result = q.getResultList();
+		} catch (Exception e) {
+			logger.error("findSinaCollegabiliByCf " + e.getMessage(), e);
+			throw new CarSocialeServiceException(e);
 		}
+		return result;
+	}
+
+	public void savePrestazioneInpsSina(Long idSina, List<String> lstPrestazioniInpsScelte) {
+		try {
+			Query q1 = em.createNamedQuery("CsDSinaPresInps.deleteBySinaId");
+			q1.setParameter("idSina", idSina);
+			q1.executeUpdate();
+			
+			for(String p : lstPrestazioniInpsScelte) {
+				CsDSinaPresInps pres = new CsDSinaPresInps();
+				CsDSinaPresInpsPK pk = new CsDSinaPresInpsPK();
+				pk.setSinaId(idSina);
+				pk.setPrestazioneInpsId(p);
+				pres.setId(pk);
+				em.merge(pres);
+			}
+			
+		} catch (Exception e) {
+			logger.error("savePrestazioneInpsSina " + e.getMessage(), e);
+			throw new CarSocialeServiceException(e);
+		}
+	}
+
+	public List<String> getSinaPrestazioniInpsBySinaId(Long idSina) {
+		List<String> lst = new ArrayList<String>();
+		try {
+			String sel = "SELECT PRESTAZIONE_INPS_ID FROM CS_D_SINA_PRES_INPS WHERE SINA_ID = :sinaId";
+			Query q1 = em.createNativeQuery(sel);
+			q1.setParameter("sinaId", idSina);
+			lst = q1.getResultList();
+		
+		} catch (Exception e) {
+			logger.error("getSinaPrestazioniInpsBySinaId " + e.getMessage(), e);
+			throw new CarSocialeServiceException(e);
+		}
+		return lst;
+	}
 }

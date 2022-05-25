@@ -84,16 +84,9 @@ public class CsDRelazione implements ICsDDiarioChild {
 	
 	//bi-directional many-to-many association to CsCTipoIntervento	
 	@ManyToMany(fetch = FetchType.EAGER, cascade={})
-	@JoinTable(
-		name="CS_REL_RELAZIONE_TIPOINT"
-		, joinColumns={
-			@JoinColumn(name="RELAZIONE_DIARIO_ID", insertable=false, updatable=false)
-			}
-		, inverseJoinColumns={
-			@JoinColumn(name="TIPO_INTERVENTO_ID", insertable=false, updatable=false)
-			}
-		)
-
+	@JoinTable(name="CS_REL_RELAZIONE_TIPOINT", 
+		joinColumns={@JoinColumn(name="RELAZIONE_DIARIO_ID", insertable=false, updatable=false)}, 
+		inverseJoinColumns={@JoinColumn(name="TIPO_INTERVENTO_ID", insertable=false, updatable=false)})
 	@JsonIgnore
 	private Set<CsCTipoIntervento> csCTipoInterventos;		
 		

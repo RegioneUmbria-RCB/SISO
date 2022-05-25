@@ -15,6 +15,7 @@
 		<project>SegretariatoSoc_EJBClient</project>
 		<project>SegretariatoSoc_DataModel</project>
 		<project>ISEERegioneMarcheClient</project>
+		<project>AnagrafeRegionaleMarcheClient</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

@@ -5,6 +5,7 @@ import it.webred.ct.config.model.AmTabNazioni;
 import it.webred.ct.data.access.basic.CTServiceBaseDAO;
 import it.webred.ct.data.access.basic.anagrafe.AnagGenQueryBuilder;
 import it.webred.ct.data.access.basic.anagrafe.AnagrafeException;
+import it.webred.ct.data.access.basic.anagrafe.dto.AnagrafeCoordCatDTO;
 import it.webred.ct.data.access.basic.anagrafe.dto.AnagraficaDTO;
 import it.webred.ct.data.access.basic.anagrafe.dto.AttrPersonaDTO;
 import it.webred.ct.data.access.basic.anagrafe.dto.ComponenteFamigliaDTO;
@@ -16,11 +17,14 @@ import it.webred.ct.data.access.basic.anagrafe.dto.RicercaIndirizzoAnagrafeDTO;
 import it.webred.ct.data.access.basic.anagrafe.dto.RicercaLuogoDTO;
 import it.webred.ct.data.access.basic.anagrafe.dto.RicercaSoggettoAnagrafeDTO;
 import it.webred.ct.data.access.basic.anagrafe.dto.SoggettoAnagrafeDTO;
+import it.webred.ct.data.access.basic.catasto.dto.CatastoSearchCriteria;
+import it.webred.ct.data.access.basic.catasto.dto.RicercaOggettoCatDTO;
 import it.webred.ct.data.access.basic.common.dto.RicercaCivicoDTO;
 import it.webred.ct.data.access.basic.common.dto.RicercaSoggettoDTO;
 import it.webred.ct.data.access.basic.common.dto.StringheVie;
 import it.webred.ct.data.model.anagrafe.SitComune;
 import it.webred.ct.data.model.anagrafe.SitDCivicoV;
+import it.webred.ct.data.model.anagrafe.SitDPersCoordCatV;
 import it.webred.ct.data.model.anagrafe.SitDPersona;
 import it.webred.ct.data.model.anagrafe.SitDPersonaCivico;
 import it.webred.ct.data.model.anagrafe.SitDStaciv;
@@ -41,6 +45,8 @@ import javax.persistence.Query;
    
 public class AnagrafeJPAImpl extends CTServiceBaseDAO implements AnagrafeDAO  {
 	
+	private static final long serialVersionUID = 5148556627124993095L;
+
 	@EJB(mappedName = "java:global/CT_Service/CT_Config_Manager/LuoghiServiceBean")
 	protected LuoghiService luoghiService;
 	
@@ -63,6 +69,33 @@ public class AnagrafeJPAImpl extends CTServiceBaseDAO implements AnagrafeDAO  {
 		}
 		return sogg;
 	}
+	
+	@Override
+	public List<SitDPersCoordCatV> getListaPersoneByCoordCat(CatastoSearchCriteria rs) throws AnagrafeException{
+		List<SitDPersCoordCatV> listaPersone= new ArrayList<SitDPersCoordCatV>();
+		
+		String sql = "SELECT p FROM SitDPersCoordCatV p WHERE ";
+		String sqlCriteria = " 1=1 ";
+		sqlCriteria = (rs.getFoglio() == null  || rs.getFoglio().trim().equals("") ? sqlCriteria : sqlCriteria + " AND LPAD(p.foglio, 4, '0') = LPAD('" + rs.getFoglio().trim().toUpperCase() + "', 4, '0') ");
+		sqlCriteria = (rs.getParticella() == null  || rs.getParticella().trim().equals("") ? sqlCriteria : sqlCriteria + " AND LPAD(p.mappale, 5, '0') = LPAD('" + rs.getParticella().trim().replace("'","''").toUpperCase() + "', 5, '0') ");
+
+		logger.debug("AnagrafeJPAImpl.getListaPersoneByCoordCat()" + "[FOGLIO: " + rs.getFoglio()!=null?rs.getFoglio():"" + "];[MAPPALE: " + rs.getParticella()!=null?rs.getParticella():"" );
+		sql+= sqlCriteria + " ORDER BY p.cognome, p.nome, p.dataNascita ";
+		logger.debug("searchSoggetto. SQL: " + sql);
+
+		try {
+			
+			Query q = manager_diogene.createQuery(sql);
+			
+			listaPersone =(List<SitDPersCoordCatV>) q.getResultList();
+			logger.warn("AnagrafeJPAImpl.getListaPersoneByCoordCat() - TROVATO. N.ELE: "+ listaPersone.size());
+		
+		} catch (Throwable t) {
+			logger.error("", t);
+			throw new AnagrafeException(t);
+		}
+		return listaPersone;
+	}//-------------------------------------------------------------------------
 	
 	@Override
 	public List<SitDPersona> getListaPersoneByCF(RicercaSoggettoAnagrafeDTO rs) throws AnagrafeException{

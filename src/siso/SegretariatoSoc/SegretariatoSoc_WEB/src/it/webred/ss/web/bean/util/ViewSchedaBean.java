@@ -23,6 +23,7 @@ import it.webred.ss.data.model.SsSchedaRiferimento;
 import it.webred.ss.data.model.SsSchedaSegnalante;
 import it.webred.ss.data.model.SsSchedaSegnalato;
 import it.webred.ss.data.model.SsTipoScheda;
+import it.webred.ss.data.model.tb.CsOSettoreLIGHT;
 import it.webred.ss.ejb.client.SsSchedaSessionBeanRemote;
 import it.webred.ss.ejb.dto.BaseDTO;
 import it.webred.ss.web.bean.SegretariatoSocBaseBean;
@@ -158,7 +159,7 @@ public class ViewSchedaBean extends SegretariatoSocBaseBean {
 			interlocutore += (a.getUtenteAccompagnato()!=null && a.getUtenteAccompagnato()) ? " (accompagnato da: "+accompagnatore+" )" : "";
 			interlocutore += (a.getUtentePresenteInformato()!=null && a.getUtentePresenteInformato()) ? " (utente presente o informato)" :"";
 	
-			CsOSettoreBASIC settore = getSettore(a.getInviato_da());
+			CsOSettoreLIGHT settore = a.getSettoreInviante();
 			String inviante = settore!=null ? format(settore.getNome()) : "";
 			
 			motivo = a.getMotivo();

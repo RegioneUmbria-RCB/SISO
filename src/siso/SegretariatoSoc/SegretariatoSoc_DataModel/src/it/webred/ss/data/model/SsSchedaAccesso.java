@@ -1,8 +1,5 @@
 package it.webred.ss.data.model;
 
-import it.webred.ss.data.model.tb.CsOSettoreLIGHT;
-import it.webred.ss.data.model.tb.SsOperatoreAnagrafica;
-
 import java.io.Serializable;
 import java.util.Date;
 
@@ -20,7 +17,8 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import org.apache.commons.lang3.StringUtils;
+import it.webred.ss.data.model.tb.CsOSettoreLIGHT;
+import it.webred.ss.data.model.tb.SsOperatoreAnagrafica;
 
 
 /**
@@ -62,7 +60,8 @@ public class SsSchedaAccesso implements Serializable {
 	@Column(name="UTENTE_PRESENTE_INFORMATO")
 	private Boolean utentePresenteInformato;;	//SISO-346
 
-	private String inviato_da; //SISO-346
+	@Column(name="INVIATO_DA")
+	private Long inviatoDa; //SISO-346
 	private String accompagnatore; //SISO-346
 	
 
@@ -186,12 +185,12 @@ public class SsSchedaAccesso implements Serializable {
 		this.utentePresenteInformato = utentePresenteInformato;
 	}
 
-	public String getInviato_da() {
-		return inviato_da;
+	public Long getInviatoDa() {
+		return inviatoDa;
 	}
 
-	public void setInviato_da(String inviato_da) {
-		this.inviato_da = inviato_da;
+	public void setInviatoDa(Long inviatoDa) {
+		this.inviatoDa = inviatoDa;
 	}
 
 	public String getAccompagnatore() {

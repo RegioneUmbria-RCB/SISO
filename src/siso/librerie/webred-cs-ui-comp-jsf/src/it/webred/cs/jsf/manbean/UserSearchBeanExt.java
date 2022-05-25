@@ -1,33 +1,37 @@
 package it.webred.cs.jsf.manbean;
 
-import it.webred.siso.ws.ricerca.dto.*;
-import it.webred.cs.data.DataModelCostanti;
-import it.webred.cs.jsf.bean.DatiUserSearchBean;
-import it.webred.cs.jsf.bean.UserSearchExtInput;
-import it.webred.cs.jsf.interfaces.IUserSearchExt;
-import it.webred.cs.jsf.manbean.superc.CsUiCompBaseBean;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.TreeMap;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
-import javax.faces.event.AjaxBehaviorEvent;
 
 import org.apache.commons.lang3.StringUtils;
 import org.primefaces.context.RequestContext;
 
+import it.webred.cs.data.DataModelCostanti;
+import it.webred.cs.jsf.bean.DatiUserSearchBean;
+import it.webred.cs.jsf.bean.UserSearchExtInput;
+import it.webred.cs.jsf.interfaces.IUserSearchExt;
+import it.webred.cs.jsf.manbean.superc.CsUiCompBaseBean;
+import it.webred.siso.ws.ricerca.dto.PersonaDettaglio;
+import it.webred.siso.ws.ricerca.dto.RicercaAnagraficaParams;
+import it.webred.siso.ws.ricerca.dto.RicercaAnagraficaResult;
+
 @ManagedBean
 @ViewScoped
-public class UserSearchBeanExt extends UserSearchBean implements IUserSearchExt{
+public class UserSearchBeanExt extends CsUiCompBaseBean implements IUserSearchExt{
 
 	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy"); 
 	private UserSearchExtInput params=new UserSearchExtInput();
 	private List<DatiUserSearchBean> lstSoggetti;
 	protected Integer maxResult = 60;
     public boolean searchButtonPressed;
+    protected DatiUserSearchBean selSoggetto;
 	
 	@Override
 	public void clearParameters(){
@@ -85,6 +89,8 @@ public class UserSearchBeanExt extends UserSearchBean implements IUserSearchExt{
 				DatiUserSearchBean s = mappaSoggetti.get(key);
 				lstSoggetti.add(s);
 			}
+			
+			Collections.sort(lstSoggetti);
 			
 			this.searchButtonPressed=true;
 	}
@@ -148,21 +154,6 @@ public class UserSearchBeanExt extends UserSearchBean implements IUserSearchExt{
 			}
 		}
 	}
-
-	@Override
-	public void handleChangeUser(AjaxBehaviorEvent event) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public String getWidgetVar() {
-		return widgetVar;
-	}
-
-	public void setWidgetVar(String widgetVar) {
-		this.widgetVar = widgetVar;
-	}
 	
 	public boolean isCorrectType(Object userVar)
 	{
@@ -207,6 +198,13 @@ public class UserSearchBeanExt extends UserSearchBean implements IUserSearchExt{
 		this.searchButtonPressed = searchButtonPressed;
 	}
 	
+	@Override
+	public DatiUserSearchBean getSelSoggetto(){
+		return this.selSoggetto;
+	}
 	
+	public void setSelSoggetto(DatiUserSearchBean selSoggetto) {
+		this.selSoggetto = selSoggetto;
+	}
 	
 }

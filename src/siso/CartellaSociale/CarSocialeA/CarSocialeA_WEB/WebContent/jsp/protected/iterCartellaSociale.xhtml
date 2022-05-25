@@ -22,7 +22,7 @@
 					<h:panelGrid columns="4">
 						<h:outputLabel for="inputTXA_CF" value="Codici fiscali:" />
 						<p:inputTextarea id="inputTXA_CF" title="inserisci i codici fiscali separati da ';' " 
-										 value="#{iterBean.inputCFTA}" rows="2" cols="2000" style="width:250px;" autoResize="true"/>
+										 value="#{iterBean.inputCFTA}" rows="2" cols="10000" style="width:500px;" autoResize="true"/>
        
 						<p:commandButton name="validaCFDialog" value="Verifica Codici Fiscali"                  
 										 actionListener="#{iterBean.onClickValidaCF}"
@@ -62,27 +62,16 @@
 							<p:column headerText="Data di nascita">
 								<h:outputText value="#{iterSoggettoLAZY.dataNascita}" />
 							</p:column>
-							
-							<p:column headerText="Responsabile">
-								<h:outputText value="#{iterSoggettoLAZY.operatore}" />
-							</p:column>
-
-							<p:column headerText="Stato">
-								<h:outputText value="#{iterSoggettoLAZY.nomeStatoIter}" />
-							</p:column>
 						
 							<p:column headerText="Categorie">
 						 	 	<h:outputText value="#{iterSoggettoLAZY.categoriaPrevalente}"/>
 						 	 	<h:outputText value=", #{iterSoggettoLAZY.categorieSecondarie}"  rendered="#{iterSoggettoLAZY.categorieSecondarie!=null}"/>
 			    			 </p:column>
-						
-							<p:column headerText="Settore">
-								<h:outputText value="#{iterSoggettoLAZY.settore}"  style="font-style: italic;" rendered="#{iterSoggettoLAZY.settore!=null}"/>
-			    			</p:column>
 					
-							<p:column headerText="Organizzazione">
-							    <h:outputText value="#{iterSoggettoLAZY.organizzazione}"  style="font-style: italic;" rendered="#{iterSoggettoLAZY.organizzazione!=null}"/>
-			    		 	 </p:column>
+							<p:column>
+								<webredcs:pnlIterInfoStato iIterInfoStato="#{iterSoggettoLAZY.itStepInfo}" widgetDialog="dlg" showOpenDialogButton="false" />
+				          	</p:column>
+					
 					 </p:dataTable>
 					<p:spacer height="20px"/>
 					 <h:panelGrid columns="4">
@@ -107,7 +96,7 @@
 					        </p:selectOneMenu>
 							
 							<p:outputLabel for="selectOOPERATORE" value="Operatore" />
-							<p:selectOneMenu id="selectOOPERATORE" value="#{iterBean.operatore}"  lazy="true" style="width:250px">
+							<p:selectOneMenu id="selectOOPERATORE" value="#{iterBean.opSettore}"  lazy="true" style="width:250px">
 					           <p:ajax process="@this" listener="#{iterBean.onOperatoreChange}" event="change" update="selectOOPERATORE" />
 				              	<f:selectItem noSelectionOption="true" itemLabel="- seleziona -"/>
 					            <f:selectItems value="#{iterBean.listaOperatoreSettore}" var="c" itemValue="#{c.id}" itemLabel="#{(empty c.csOOperatore.csOOperatoreAnagrafica.cognome ? '' :c.csOOperatore.csOOperatoreAnagrafica.cognome.concat(' ')).concat( empty c.csOOperatore.csOOperatoreAnagrafica.nome ? '' : c.csOOperatore.csOOperatoreAnagrafica.nome.concat(' ')).concat( empty c.csOOperatore.csOOperatoreAnagrafica.codiceFiscale ? c.csOOperatore.csOOperatoreAnagrafica.username :  ' CF: '.concat(c.csOOperatore.csOOperatoreAnagrafica.codiceFiscale))}" />

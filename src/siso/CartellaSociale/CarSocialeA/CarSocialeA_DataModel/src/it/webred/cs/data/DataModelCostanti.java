@@ -58,13 +58,14 @@ public class DataModelCostanti {
 	}
 	
 	public static class GrVulnerabile{
+		public static final String MIGRANTE = "05";
 		public static final String ALTRO = "07";
 		public static final String VITTIMA_VIOLENZA = "13";
 		public static final String NON_COMUNICA_VULNERABILITA = "00";
 		
 		public static final String[] stampaAltro = {"01","02","03","04","14","17","18","19","20"};
 		public static final String[] stampaVittimaViolenza = {"13","15","16"};
-		
+		public static final String[] stampaMigrante = {"05","21"};
 	}
 	
 	public static class CampiFse
@@ -985,6 +986,7 @@ public class DataModelCostanti {
 		
 		public static String WS_RICERCA_JKS_PATH="smartwelfare.ricercaSoggetto.jks.path"; //Anagrafe regionale SIRPS
 		public static String WS_RICERCA_JKS_PWD="smartwelfare.ricercaSoggetto.jks.pwd";   //Anagrafe regionale SIRPS
+		public static String WS_RICERCA_JKS_CUSTOM="smartwelfare.ricercaSoggetto.jks.custom.abilita";   //Anagrafe regionale SIRPS
 		
 		public static String WS_MEDICI_URL = "smartwelfare.mediciws.url";
 		

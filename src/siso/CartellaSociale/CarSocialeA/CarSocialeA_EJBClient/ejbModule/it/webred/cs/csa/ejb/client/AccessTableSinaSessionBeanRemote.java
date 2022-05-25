@@ -19,11 +19,9 @@ public interface AccessTableSinaSessionBeanRemote {
 	
 	public SinaEsegDTO getSinaByDiarioId(BaseDTO dto);
 
-	public SinaEsegDTO saveSina(SinaEsegDTO dto);
-
+	public Long saveSina(SinaEsegDTO dto);
+	
 	public void deleteSina(BaseDTO dto);
-
-	public SinaEsegDTO saveNewSina(SinaEsegDTO dto);
 
 	public List<CsDSina> findDiarioSinaByMastId(BaseDTO dto); //SISO-783
 	
@@ -36,5 +34,7 @@ public interface AccessTableSinaSessionBeanRemote {
 	public List<ArTbPrestazioniInps> getPrestazioniInpsSina(BaseDTO dto); //Sottoinsieme della lista prestazioni INPS (per il SINA)
 	
 	public List<CsDSina> findSinaCollegabiliByCf(BaseDTO dto); //SISO-783
+
+	public SinaEsegDTO clonaSinaById(BaseDTO dto);
 
 }

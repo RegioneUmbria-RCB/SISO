@@ -8,13 +8,13 @@ public class CsDSinaEsegPK implements Serializable {
 	// default serial version id, required for serializable classes.
 	private static final long serialVersionUID = 1L;
 
-	@Column(name = "SINA_ID", insertable = false, updatable = false)
+	@Column(name = "SINA_ID")
 	private long sinaId;
 
-	@Column(name = "DOMANDA_ID", insertable = false, updatable = false)
+	@Column(name = "DOMANDA_ID")
 	private long domandaId;
 
-	@Column(name = "RISPOSTA_ID", insertable = false, updatable = false)
+	@Column(name = "RISPOSTA_ID")
 	private long rispostaId;
 
 	public CsDSinaEsegPK() {

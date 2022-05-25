@@ -1,12 +1,16 @@
 package it.webred.cs.json.familiariConviventi.ver1;
 
+import it.webred.cs.data.DataModelCostanti.GrVulnerabile;
 import it.webred.cs.json.dto.JsonBaseBean;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
 import javax.faces.model.SelectItem;
+
+import org.apache.commons.lang.StringUtils;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -36,6 +40,9 @@ public class FamConviventiBean extends JsonBaseBean {
 	private int conStranieriNum=0;
 	private int conItalianiNum=0;
 	
+	@JsonIgnore
+	private boolean validaGVulnerabileMigrante;
+	
 	public void initPnlFigli(){
 		minoriIta = new FigliBean();
 		maggioriIta= new FigliBean();
@@ -64,9 +71,25 @@ public class FamConviventiBean extends JsonBaseBean {
 		//SISO-794
 		if(gruppoVulnerabile.isEmpty())
 			messages.add("Gruppo vulnerabile principale è un campo obbligatorio");
+		
+		if(this.validaGVulnerabileMigrante){
+			//Almeno uno dei gruppi vulnerabili deve essere migrante
+			if(!existsProfugoMigrante())
+				messages.add("Almeno un gruppo vulnerabile deve essere 'Migrante' o 'Profugo (migrante forzato, sfollato o in transito)'");	
+		}
+		
 		return messages;
 	}
 
+	private boolean isMigrante(String val) {
+		return !StringUtils.isBlank(val) && Arrays.asList(GrVulnerabile.stampaMigrante).contains(val);
+	}
+	
+	public boolean existsProfugoMigrante() {
+		boolean isMigrante = this.isMigrante(gruppoVulnerabile) || this.isMigrante(gruppoVulnerabile2) || this.isMigrante(gruppoVulnerabile3);
+		return isMigrante;
+	}
+	
 	public FigliBean getMinoriIta() {
 		return minoriIta;
 	}
@@ -206,6 +229,7 @@ public class FamConviventiBean extends JsonBaseBean {
 		this.gruppoVulnerabile3 = gruppoVulnerabile3;
 	}
 	//fine SISO-794
-
-	
+	public void setValidaGVulnerabileMigrante(boolean valida) {
+		this.validaGVulnerabileMigrante = valida;
+	}	
 }

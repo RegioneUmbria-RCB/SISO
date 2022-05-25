@@ -102,13 +102,8 @@ public class SsScheda implements Serializable {
 	@ManyToMany(fetch = FetchType.EAGER )
 	@Fetch(FetchMode.SELECT)
     @JoinTable(name = "SS_REL_SCHEDA_CAT_SOC",
-            joinColumns = {
-                    @JoinColumn(name = "SCHEDA_ID", referencedColumnName = "id" )
-            },
-            inverseJoinColumns = {
-                    @JoinColumn(name = "CATEGORIA_SOCIALE_ID" ,referencedColumnName = "id" )
-            }  
-    )	
+            joinColumns = {@JoinColumn(name = "SCHEDA_ID", referencedColumnName = "id" )},
+            inverseJoinColumns = {@JoinColumn(name = "CATEGORIA_SOCIALE_ID" ,referencedColumnName = "id" )})	
 	private List<SsCCategoriaSociale>  lstCategorieSociali = null;
 	
 	public List<SsCCategoriaSociale> getLstCategorieSociali() {

@@ -12,17 +12,16 @@ import org.primefaces.model.DualListModel;
 
 import it.webred.cs.csa.ejb.client.AccessTablePaiSALSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.AccessTableSchedaSessionBeanRemote;
+import it.webred.cs.csa.ejb.client.CarSocialeServiceException;
 import it.webred.cs.csa.ejb.client.domini.AccessTableDominiPaiSessionBeanRemote;
 import it.webred.cs.csa.ejb.dto.BaseDTO;
 import it.webred.cs.csa.ejb.dto.KeyValueDTO;
-import it.webred.cs.csa.ejb.dto.RelazioneDTO;
 import it.webred.cs.csa.ejb.dto.pai.sal.CsPaiSALStoricoDTO;
 import it.webred.cs.csa.ejb.dto.pai.sal.CsPaiSalDTO;
 import it.webred.cs.csa.ejb.dto.pai.sal.CsPaiSalDominioDTO;
 import it.webred.cs.csa.ejb.dto.pai.sal.PaiSALDominiEnum;
 import it.webred.cs.csa.ejb.dto.pai.sal.PaiSALFaseEnum;
 import it.webred.cs.csa.ejb.dto.relazione.RelazioneSintesiDTO;
-import it.webred.cs.data.model.CsTbTitoloStudio;
 import it.webred.cs.jsf.manbean.superc.CsUiCompBaseBean;
 import it.webred.ct.support.datarouter.CeTBaseObject;
 
@@ -163,13 +162,11 @@ public class PaiSalBean extends CsUiCompBaseBean {
 		
 		if(lstTitoliStudio == null){
 			lstTitoliStudio = new ArrayList<SelectItem>();
-			lstTitoliStudio.add(new SelectItem(null, "- seleziona -"));
 			CeTBaseObject bo = new CeTBaseObject();
 			fillEnte(bo);
 			List<KeyValueDTO> lst = confService.getTitoliStudio(bo);
 			lstTitoliStudio = convertiLista(lst);
 		}
-		
 		return lstTitoliStudio;
 	}
     
@@ -186,24 +183,21 @@ public class PaiSalBean extends CsUiCompBaseBean {
  	}
      
      public void salva(Long diarioPaiId) {
- 		sal.setDiarioPaiId(diarioPaiId);
+    	sal.setDiarioPaiId(diarioPaiId);
  		BaseDTO bdto = new BaseDTO();
  		bdto.setObj(sal);
  		bdto.setObj2(faseSal);
  		bdto.setObj3(dataFaseSal);
  		fillEnte(bdto);
-
  		try {
- 			this.paiSALService.saveSAL(bdto);
- 			// reset
- 			this.sal = null;
-
-// 			addInfo("Salvataggio SAL", "SAL Salvato correttamente");
- 			logger.debug("SAL Salvato correttamente");
+			this.paiSALService.saveSAL(bdto);
+			// reset
+			this.sal = null;
+			logger.debug("SAL Salvato correttamente");
  		} catch (Exception e) {
- 			addError("Salvataggio SAL", "Errore salvataggio SAL");
- 			logger.error("Errore salvataggio SAL", e);
- 		}
+			logger.error("Errore salvataggio SAL", e);
+			throw new CarSocialeServiceException("Errore salvataggio dati SAL");
+		}
  	} 
      
      public void findSALByPai(Long diarioPaiId, Long idSoggetto) {
@@ -248,12 +242,20 @@ public class PaiSalBean extends CsUiCompBaseBean {
  			logger.error("Errore inizializzazione SAL", e);
  		}
  	}
+     
+     private boolean isCodiceFase(Integer codiceFase) {
+    	 return codiceFase == sal.getCodiceFaseAttuale();
+     }
 
-     public String validaSALPai(Long idSoggetto, Date dataPaiInizio, DualListModel<RelazioneSintesiDTO> picklistRelazioni) {
- 		boolean esisteMicro4=false;
+     public List<String> validaSALPai(Long idSoggetto, Date dataPaiInizio, DualListModel<RelazioneSintesiDTO> picklistRelazioni) {
+ 		List<String> error = new ArrayList<String>();
+    	boolean esisteMicro4=false;
  		boolean esisteMicro5=false;
  		boolean esisteMicro6=false;
-    	 
+    	
+ 		String obbligatorio = " è obbligatorio collegare un'attività di tipo ";
+ 		String consigliato 	= " è consigliato collegare un'attività di tipo ";
+ 		
  		//Devo controllare che siano associate o stanno per essere associate le relazionial SAL secondo l'excel
     		for (RelazioneSintesiDTO r: picklistRelazioni.getTarget())
 			{
@@ -262,39 +264,37 @@ public class PaiSalBean extends CsUiCompBaseBean {
     			esisteMicro6=r.getTipoFormMicroAttivita().equals("6");
 			}
     		
-    		if(sal.getCodiceFaseAttuale()==10 && !esisteMicro4) {
- 			  this.setWarnigSalvataggio("In fase " + PaiSALFaseEnum.FASE_PRELIMINARE.getDescrizione() + " è consigliato collegare un'attività di tipo Valutazione con servizio inviante\r\n");
- 			}
+		if(isCodiceFase(PaiSALFaseEnum.FASE_PRELIMINARE.getValore()) && !esisteMicro4) {
+			this.setWarnigSalvataggio("In fase " + PaiSALFaseEnum.FASE_PRELIMINARE.getDescrizione() + consigliato +"Valutazione con servizio inviante\r\n");
+		}
 
-    		if(sal.getCodiceFaseAttuale()==20 && !esisteMicro5) {
-    			this.setWarnigSalvataggio("In fase " + PaiSALFaseEnum.ORIENTAMENTO.getDescrizione() + " è consigliato collegare un'attività di tipo Orientamento\r\n");
-  			}
-    		if(sal.getCodiceFaseAttuale()==20 && !esisteMicro4) {
-    			return "In fase " + PaiSALFaseEnum.ORIENTAMENTO.getDescrizione() + " è obbligatorio collegare un'attività di tipo Valutazione con servizio inviante\r\n";
-  			}
+		if(isCodiceFase(PaiSALFaseEnum.ORIENTAMENTO.getValore()) && !esisteMicro5) {
+			this.setWarnigSalvataggio("In fase " + PaiSALFaseEnum.ORIENTAMENTO.getDescrizione() + consigliato + "Orientamento\r\n");
+		}
+		
+		if(isCodiceFase(PaiSALFaseEnum.ATTIVAZIONE_STRUMENTI.getValore()) && !esisteMicro6) {
+			this.setWarnigSalvataggio("In fase " + PaiSALFaseEnum.ATTIVAZIONE_STRUMENTI.getDescrizione() + consigliato + "Mediazione\r\n"); 
+		}
+		
+		if(isCodiceFase(PaiSALFaseEnum.ORIENTAMENTO.getValore()) && !esisteMicro4) {
+			error.add("In fase " + PaiSALFaseEnum.ORIENTAMENTO.getDescrizione() + obbligatorio + "Valutazione con servizio inviante\r\n");
+		}
 
-    		if(sal.getCodiceFaseAttuale()==30 && !esisteMicro5) {
-    			return  "In fase " + PaiSALFaseEnum.PROGETTAZIONE.getDescrizione() + " è obbligatorio collegare un'attività di tipo Orientamento\r\n" ;
-    		}
-    		
-    		if(sal.getCodiceFaseAttuale()==40 && !esisteMicro6) {
-    			this.setWarnigSalvataggio("In fase " + PaiSALFaseEnum.ATTIVAZIONE_STRUMENTI.getDescrizione() + " è consigliato collegare un'attività di tipo Mediazione\r\n"); 
- 			}
-
-    		if(sal.getCodiceFaseAttuale()==50 && !esisteMicro6) {
-    			return  "In fase " + PaiSALFaseEnum.ACCOMPAGNAMENTO.getDescrizione() + " è obbligatorio collegare un'attività di tipo Mediazione\r\n\"" ;
- 			}
-
+		if(isCodiceFase(PaiSALFaseEnum.PROGETTAZIONE.getValore()) && !esisteMicro5) {
+			error.add("In fase " + PaiSALFaseEnum.PROGETTAZIONE.getDescrizione() + obbligatorio + "Orientamento\r\n") ;
+		}
+		
+		if(isCodiceFase(PaiSALFaseEnum.ACCOMPAGNAMENTO.getValore())  && !esisteMicro6) {
+			error.add("In fase " + PaiSALFaseEnum.ACCOMPAGNAMENTO.getDescrizione() + obbligatorio + "Mediazione\r\n\"") ;
+		}
 
  		// Controllo sulla data
  		if (dataFaseSal != null && dataFaseSal.before(dataPaiInizio)) {
- 			return "La data della fase non può essere antecedente a quella del progetto";
+ 			error.add("La data della fase non può essere antecedente a quella del progetto");
  		}
 
- 		
- 	
- 		
- 		return null;		
+
+ 		return error;		
  	}
      
    	public CsPaiSalDTO getSal() {

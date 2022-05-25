@@ -66,6 +66,9 @@
 		
 		<class>it.webred.cs.data.model.CsDSinaEsegPK</class>
 		
+		<class>it.webred.cs.data.model.CsDSinaPresInps</class>
+		<class>it.webred.cs.data.model.CsDSinaPresInpsPK</class>
+		
 		<class>it.webred.cs.data.model.CsCfgAttr</class>
 		<class>it.webred.cs.data.model.CsCfgAttrOption</class>
 		<class>it.webred.cs.data.model.CsCfgItRuoloTransizione</class>

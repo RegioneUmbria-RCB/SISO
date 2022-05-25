@@ -1,18 +1,9 @@
 package it.webred.siso.ws.client.anag.marche.client;
 
-import it.finmatica.www.sa4hl7.Sa4Hl7ServiceStub;
-import it.finmatica.www.schema.hl7.RequestDocument;
-import it.finmatica.www.schema.hl7.RequestDocument.Request;
-import it.finmatica.www.schema.hl7.ResponseDocument;
-import it.finmatica.www.schema.hl7.ResponseDocument.Response;
-import it.webred.siso.ws.client.agag.marche.dto.RicercaAnagraficaDTO;
-import it.webred.siso.ws.client.anag.marche.xml.XmlAssistitiTransform;
-
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.security.KeyStore;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.net.ssl.SSLContext;
@@ -26,6 +17,14 @@ import org.apache.commons.httpclient.protocol.ProtocolSocketFactory;
 import org.apache.xmlbeans.XmlOptions;
 import org.apache.xmlbeans.XmlString;
 
+import it.finmatica.www.sa4hl7.Sa4Hl7ServiceStub;
+import it.finmatica.www.schema.hl7.RequestDocument;
+import it.finmatica.www.schema.hl7.RequestDocument.Request;
+import it.finmatica.www.schema.hl7.ResponseDocument;
+import it.finmatica.www.schema.hl7.ResponseDocument.Response;
+import it.webred.siso.ws.client.agag.marche.dto.RicercaAnagraficaDTO;
+import it.webred.siso.ws.client.anag.marche.xml.XmlAssistitiTransform;
+
 public class RicercaAnagraficaClient {
 
 	private  String msg = null;
@@ -33,9 +32,12 @@ public class RicercaAnagraficaClient {
 	private Exception eccezione;
 	private String percorsoJks;
 	private String passwordJks;
-	public RicercaAnagraficaClient(String percorsoJks, String passwordJks){
+	private boolean customJks;
+	
+	public RicercaAnagraficaClient(String percorsoJks, String passwordJks, boolean customJks){
 		this.percorsoJks = percorsoJks;
 		this.passwordJks = passwordJks;
+		this.customJks = customJks;
 	}
 	
 	private void configureServiceClient(Sa4Hl7ServiceStub stub) {
@@ -44,24 +46,23 @@ public class RicercaAnagraficaClient {
 	    SSLContext ctx;
 	    try {
 	      KeyStore truststore = KeyStore.getInstance("JKS");
-
-	      FileInputStream in = new FileInputStream(percorsoJks);
-	      truststore.load(in,passwordJks.toCharArray());
-	      
-	      ctx = SSLContext.getInstance("SSL");
-	      TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
-	      tmf.init(truststore);
-	      ctx.init(null, tmf.getTrustManagers(), null);
-	    
-
-	     SSLProtocolSocketFactory sslFactory = new SSLProtocolSocketFactory(ctx);
- 
-	    Protocol prot = new  Protocol("https",(ProtocolSocketFactory)sslFactory, 443);
-		  client.getOptions().setProperty(HTTPConstants.CUSTOM_PROTOCOL_HANDLER,
-	        prot);
+	      if(this.customJks) {
+	    	FileInputStream in = new FileInputStream(percorsoJks);
+	      	truststore.load(in,passwordJks.toCharArray());
+	     
+		    ctx = SSLContext.getInstance("SSL");
+		    TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+		    tmf.init(truststore);
+		    ctx.init(null, tmf.getTrustManagers(), null);
+		    
+	
+		    SSLProtocolSocketFactory sslFactory = new SSLProtocolSocketFactory(ctx);
+	 
+		    Protocol prot = new  Protocol("https",(ProtocolSocketFactory)sslFactory, 443);
+			client.getOptions().setProperty(HTTPConstants.CUSTOM_PROTOCOL_HANDLER,prot);
+	      }
 	    } catch (Exception e) {
-		      e.printStackTrace();
-		      
+		   e.printStackTrace();   
 	    }
 	}	
 	
@@ -114,7 +115,7 @@ public class RicercaAnagraficaClient {
 			 sb.append("<Nome>" +xmlSingleQuotedEscape( nome) + "</Nome>");
 		 if(annoNascita != null && !annoNascita.equals(""))
 			 sb.append("<NascitaAnno>" + annoNascita + "</NascitaAnno>");
-		
+		 /*Modalità di ricerca non funzionante*/
 		 if(sesso != null && !sesso.equals(""))
 			 sb.append("<Sesso>" + sesso + "</Sesso>");
 		 sb.append("</AssistitiElencoRequest>");
@@ -157,7 +158,7 @@ public class RicercaAnagraficaClient {
 	 while (!done && MAX_ITERATOR > -1) {
 		     try {
 		    	 Sa4Hl7ServiceStub stub = new  Sa4Hl7ServiceStub();
-		      	this.configureServiceClient(stub);
+		    	 this.configureServiceClient(stub);
 		 		RequestDocument request0 =   RequestDocument.Factory.newInstance();
 		 		Request re = request0.addNewRequest();
 		 	 	re.xsetMessage(message);
