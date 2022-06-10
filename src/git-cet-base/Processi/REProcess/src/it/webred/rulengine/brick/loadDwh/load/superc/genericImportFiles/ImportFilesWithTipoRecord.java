@@ -54,7 +54,7 @@ public abstract class ImportFilesWithTipoRecord<T extends EnvImportFilesWithTipo
 		for (String key : tabs.keySet())
 		{
 				String tr = tabs.get(key);
-				log.info("CARICO " + file + "TipoRecord:" + (tr!=null?tr:""));
+				log.info("CARICO " + file + " TipoRecord:" + (tr!=null?tr:""));
 				try {
 					boolean lettoqualcosa = leggiFile(file, cartellaDati, key, tr, getDataExport());
 					if (lettoqualcosa && !tabeleREValorizzate.contains(key))
@@ -99,7 +99,6 @@ public abstract class ImportFilesWithTipoRecord<T extends EnvImportFilesWithTipo
 					throw new RulEngineException(e.getMessage(), e);
 				}
 			}
-	
 			
 			
 			// dopo la normalizzazione setto ad elaborati tutti i record che 

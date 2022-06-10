@@ -19,6 +19,7 @@ public class ComuneTestMan extends CsUiCompBaseBean implements IComune {
 	public ComuneBean comune;
 	private String widgetVar;
 	private String tipoComune;
+	private String warningMessage;
 	
 	public String getWidgetVar() {
 		return widgetVar;
@@ -81,5 +82,12 @@ public class ComuneTestMan extends CsUiCompBaseBean implements IComune {
 	public void setTipoComune(String tipoComune) {
 		this.tipoComune = tipoComune;
 	}
-	
+
+	public String getWarningMessage() {
+		return warningMessage;
+	}
+
+	public void setWarningMessage(String warningMessage) {
+		this.warningMessage = warningMessage;
+	}
 }

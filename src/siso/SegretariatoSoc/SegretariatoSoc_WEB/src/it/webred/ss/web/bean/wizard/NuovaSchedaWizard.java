@@ -831,7 +831,7 @@ public class NuovaSchedaWizard extends SegretariatoSocBaseBean {
 	private boolean loadSegnalato(PersonaDettaglio p, String cfRif) throws IOException, NamingException{
 		boolean trovato = false;
 		if (p != null) {
-			if (p.isDefunto()) {
+			if (p.isDefunto() && CsUiCompBaseBean.isBloccaUtentiDefunti()) {
 				String msg = "Il soggetto selezionato è deceduto";
 				msg += p.getDataMorte() != null ? " il " + ddMMyyyy.format(p.getDataMorte()) : "";
 				addWarning("policy.error", msg);
@@ -933,8 +933,7 @@ public class NuovaSchedaWizard extends SegretariatoSocBaseBean {
 			segnalato.getFormLavoroMan().setIdTitoloStudio(BigDecimal.valueOf(p.getIdTitoloDiStudio()));
 		}
 		if (p.getComuneNascita() != null) {
-			ComuneBean comuneBeanNascita = new ComuneBean(p.getComuneNascita().getCodIstatComune(),
-					p.getComuneNascita().getDenominazione(), p.getComuneNascita().getSiglaProv());
+			ComuneBean comuneBeanNascita = new ComuneBean(p.getComuneNascita());
 			segnalato.getAnagrafica().getComuneNazioneNascitaMan().getComuneNascitaMan().setComune(comuneBeanNascita);
 		} else if (p.getNazioneNascita() != null && p.getNazioneNascita().getCodIstatNazione() != null) {
 			AmTabNazioni amTabNazioni = CsUiCompBaseBean.getNazioneByIstat(p.getNazioneNascita().getCodIstatNazione(),
@@ -944,8 +943,7 @@ public class NuovaSchedaWizard extends SegretariatoSocBaseBean {
 
 		}
 		if (p.getComuneResidenza() != null) {
-			ComuneBean comuneBeanResidenza = new ComuneBean(p.getComuneResidenza().getCodIstatComune(),
-					p.getComuneResidenza().getDenominazione(), p.getComuneResidenza().getSiglaProv());
+			ComuneBean comuneBeanResidenza = new ComuneBean(p.getComuneResidenza());
 			segnalato.getResidenza().getComuneNazioneMan().getComuneMan().setComune(comuneBeanResidenza);
 		} else if (p.getNazioneResidenza() != null && p.getNazioneResidenza().getCodIstatNazione() != null) {
 ////		     }else if(riferimento.getStatoNascitaCod()!=null){

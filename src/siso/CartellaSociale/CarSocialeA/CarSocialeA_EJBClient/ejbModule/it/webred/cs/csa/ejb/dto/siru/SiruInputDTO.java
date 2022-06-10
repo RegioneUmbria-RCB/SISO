@@ -113,10 +113,6 @@ public class SiruInputDTO implements Serializable{
 	public String getFlagResDom() {
 		return flagResDom;
 	}
-	
-	public String getGrVulnerabilita() {
-		return grpVulnerabilita;
-	}
 	public String getCittadinanza() {
 		return cittadinanza;
 	}

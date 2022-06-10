@@ -21,6 +21,7 @@ import javax.naming.NamingException;
 public class TestComuneBean extends SegretariatoSocBaseBean implements IComune{
 
 	public ComuneBean comune;
+	public String warningMessage;
 	
 	@Override
 	public ArrayList<ComuneBean> getLstComuni(String query) {
@@ -74,6 +75,14 @@ public class TestComuneBean extends SegretariatoSocBaseBean implements IComune{
 	@Override
 	public String getWidgetVar() {
 		return "wdgTestComune";
+	}
+
+	public String getWarningMessage() {
+		return warningMessage;
+	}
+
+	public void setWarningMessage(String warningMessage) {
+		this.warningMessage = warningMessage;
 	}
 	
 }

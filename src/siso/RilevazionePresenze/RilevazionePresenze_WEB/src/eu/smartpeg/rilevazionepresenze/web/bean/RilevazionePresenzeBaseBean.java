@@ -329,7 +329,7 @@ public void loadListaOrganizzazioni(boolean load){
 			try {
 				CeTBaseObject opDto = new CeTBaseObject();
 				this.fillUserData(opDto);
-				List<CsOOrganizzazione> lstOrg = configurationCsEnteBean.getOrganizzazioniAccesso(opDto);
+				List<CsOOrganizzazione> lstOrg = getConfigurationCsEnteBean().getOrganizzazioniAccesso(opDto);
 				return lstOrg;
 			} catch (Exception e) {
 				logger.error(e.getMessage(), e);

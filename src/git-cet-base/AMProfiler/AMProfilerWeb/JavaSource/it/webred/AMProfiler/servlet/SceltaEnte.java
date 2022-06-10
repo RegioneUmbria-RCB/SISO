@@ -111,7 +111,6 @@ public class SceltaEnte extends AccessoBase {
 			String doneInsPratica = request.getParameter("doneInsPratica");
 			if (doOnlyAMInsPratica != null && new Boolean(doOnlyAMInsPratica).booleanValue()) {
 					/*
-					 * 
 					 * recuperare la modalita di accesso selezionata in precedenza e:
 					 * se STANDARD fare nulla e selezionare il primo radio
 					 * se LAST recuperare da AM_TRACCIA_ACCESSI la ragione e la pratica dell'ultimo accesso e proporlo nella schermata di inserimento pratica

@@ -38,6 +38,10 @@ public class CsAAnagraficaLog implements Serializable {
 	@Column(name="DATA_NASCITA")
 	private Date dataNascita;
 	
+	@Temporal(TemporalType.DATE)
+	@Column(name="DATA_DECESSO")
+	private Date dataDecesso;
+	
 	@Column(name="PROV_NASCITA_COD")
 	private String provNascitaCod; 
 	
@@ -189,6 +193,14 @@ public class CsAAnagraficaLog implements Serializable {
 		this.csAAnagrafica = csAAnagrafica;
 	}
 	
+	public Date getDataDecesso() {
+		return dataDecesso;
+	}
+
+	public void setDataDecesso(Date dataDecesso) {
+		this.dataDecesso = dataDecesso;
+	}
+
 	public String getLuogoNascita(){
 		String luogo = !StringUtils.isBlank(this.statoNascitaDes) ? statoNascitaDes : "";
 		luogo+= !StringUtils.isBlank(this.comuneNascitaDes) ? comuneNascitaDes : "";

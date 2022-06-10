@@ -279,8 +279,8 @@ public class SinaMan extends CsUiCompBaseBean implements Serializable, ISina {
 		// ** che precedentemente veniva eseguita dal "required" del panel sina, ovvero:
 		// **//
 		// ** - tutte le risposte sono obbligatorie tranne la 3 e la 5 **//
-		if (this.sinaDTO != null && !this.sinaDTO.getFlagValutaDopo()
-				&& FLAG_IN_CARICO.SI.getCodice() == pic) {
+		boolean valutaDopo = this.sinaDTO.getFlagValutaDopo()!=null && this.sinaDTO.getFlagValutaDopo().booleanValue();
+		if (this.sinaDTO != null && FLAG_IN_CARICO.SI.getCodice() == pic && !valutaDopo) {
 			msg = this.valida();
 
 			if (rows != null && sinaDTO.getData() != null) {

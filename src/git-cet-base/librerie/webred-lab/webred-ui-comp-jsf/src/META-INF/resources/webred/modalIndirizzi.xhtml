@@ -213,6 +213,12 @@
 			</p:outputPanel>
 			<p:spacer height="5px;" width="100%" />
 			<p:outputPanel id="pnlTableIndirizzi">
+				<h:panelGroup rendered="#{empty cc.attrs.residenzaManBean.indirizzoDomicilioAttivo}">
+					<p:outputLabel value=" #{cc.attrs.residenzaManBean.domicilioMessage}" style="color:green;"/>
+					<p:graphicImage value="/webred/img/info.png" height="15px" 
+								    title="#{cc.attrs.residenzaManBean.domicilioTooltip}"/>								
+				</h:panelGroup> 
+				
 				<p:dataTable id="tblIndirizzi" var="indirizzo" value="#{cc.attrs.residenzaManBean.lstIndirizzi}" rowKey="#{indirizzo.id}"
 					rendered="#{not cc.attrs.residenzaManBean.indirizziEmpty}"
 					rowStyleClass="#{indirizzo.dataFineApp != null and indirizzo.dataFineApp.time != cc.attrs.residenzaManBean.nullDateTime ? 'inattivo' : null}">

@@ -225,7 +225,9 @@
 			        </p:outputPanel>
 					
 					<h:outputLabel value="Tipo *"/>
-					<p:selectOneMenu value="#{cc.attrs.iDocIndividuali.idSottocartella}" disabled="#{cc.attrs.iDocIndividuali.solaLettura}">
+					<p:selectOneMenu value="#{cc.attrs.iDocIndividuali.idSottocartella}" 
+						disabled="#{cc.attrs.iDocIndividuali.solaLettura}"
+						filter="true" filterMatchMode="contains">
 						<f:selectItem noSelectionOption="true" itemLabel="- seleziona -" />
 						<f:selectItems value="#{cc.attrs.iDocIndividuali.listaSottocartelleItem}"  />
 						<!-- #ROMACAPITALE -->

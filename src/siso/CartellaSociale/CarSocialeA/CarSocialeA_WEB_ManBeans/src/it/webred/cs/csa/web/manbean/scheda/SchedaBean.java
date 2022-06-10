@@ -307,7 +307,7 @@ public class SchedaBean extends CsUiCompBaseBean {
 				
 				String titleBlocco = "Non è possibile creare una nuova scheda di accesso";
 				String msgBlocco = "Il soggetto selezionato è";
-				if (p.isDefunto()) {
+				if (p.isDefunto() && CsUiCompBaseBean.isBloccaUtentiDefunti()) {
 					addWarning(titleBlocco,msgBlocco +" deceduto" + (p.getDataMorte()!=null ? "il "+ddMMyyyy.format(p.getDataMorte()) : ""));
 					disableHead = false;
 					return;
@@ -326,6 +326,7 @@ public class SchedaBean extends CsUiCompBaseBean {
 				anaBean.setCognome(p.getCognome());
 				anaBean.setNome(p.getNome());
 				anaBean.setDataNascita(p.getDataNascita());
+				anaBean.setDataDecesso(p.getDataMorte());
 				SessoBean sb = new SessoBean(p.getSesso());
 				anaBean.setDatiSesso(sb);
 
@@ -365,7 +366,7 @@ public class SchedaBean extends CsUiCompBaseBean {
 				if(!StringUtils.isBlank(p.getIndirizzoDomicilio())){
 					CsAIndirizzo indirizzoDom = new CsAIndirizzo();
 					CsAAnaIndirizzo indirizzoAnaDom = new CsAAnaIndirizzo();
-					indirizzoAnaDom.setIndirizzo(p.getIndirizzoResidenza());
+					indirizzoAnaDom.setIndirizzo(p.getIndirizzoDomicilio());
 					indirizzoAnaDom.setCivicoNumero(p.getCivicoDomicilio());
 					indirizzoAnaDom.setCivicoAltro(null);
 					if(p.getComuneDomicilio()!=null){
@@ -577,6 +578,7 @@ public class SchedaBean extends CsUiCompBaseBean {
 				anaBean.setCognome(ana.getCognome());
 				anaBean.setNome(ana.getNome());
 				anaBean.setDataNascita(ana.getData_nascita());
+				anaBean.setDataDecesso(ana.getDataDecesso());
 				SessoBean sb = new SessoBean(ana.getSesso());
 				anaBean.setDatiSesso(sb);
 				anaBean.setCittadinanza(ana.getCittadinanza());
@@ -598,10 +600,11 @@ public class SchedaBean extends CsUiCompBaseBean {
 				if (ana.getComuneNascitaCod() != null || ana.getStatoNascitaCod() != null) {
 
 					if (ana.getComuneNascitaCod() != null) {
+						boolean attivo = CsUiCompBaseBean.isComuneItaAttivoByIstat(ana.getComuneNascitaCod());
 						ComuneBean comuneBean = new ComuneBean(
 								ana.getComuneNascitaCod(),
 								ana.getComuneNascitaDes(),
-								ana.getProvNascitaCod());
+								ana.getProvNascitaCod(), attivo);
 						anagraficaBean.getComuneNazioneNascitaMan().getComuneNascitaMan().setComune(comuneBean);
 					}
 					if (ana.getStatoNascitaCod() != null) {

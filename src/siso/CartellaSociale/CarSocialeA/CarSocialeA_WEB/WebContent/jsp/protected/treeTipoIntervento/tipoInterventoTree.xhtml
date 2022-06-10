@@ -38,7 +38,7 @@
             </p:tree>
           </td>
           <td style="vertical-align: top;">
-              <h:panelGrid columns="2" id="comboBox">
+              <h:panelGrid columns="2" id="comboBox" styleClass="#{'updateOnRecentChange'}">
                 <p:outputLabel for="tipoInterventoCustom" value="Tipo Intervento: " />
                 <p:selectOneMenu id="tipoInterventoCustom" value="#{tipoIntTreeView.selTipoInterventoCustom.codice}"   filter="true" filterMatchMode="contains" 
                 	styleClass="#{'updateOnTreeChange'}" style="width:250px;">

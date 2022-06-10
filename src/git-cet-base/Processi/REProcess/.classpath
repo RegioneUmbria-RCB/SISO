@@ -80,5 +80,6 @@
 	<classpathentry kind="lib" path="/CT-LIBS/ojdbc/ojdbc6.jar"/>
 	<classpathentry kind="lib" path="lib/htmlunit-2.13.jar"/>
 	<classpathentry kind="lib" path="/CT-LIBS/wsToponomastica/WsSITClient_v3.jar"/>
+	<classpathentry kind="lib" path="/CT-LIBS/cet-lib/gestionePermessi.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>

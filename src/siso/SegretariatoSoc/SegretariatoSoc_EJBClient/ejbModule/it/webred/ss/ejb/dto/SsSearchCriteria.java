@@ -42,6 +42,7 @@ public class SsSearchCriteria extends CeTBaseObject{
 	private Date dataNascitaA;
 	private String sesso;
 	private String alias;
+	private String residenza;
 	
 	public String getCognome() {
 		return cognome;
@@ -183,6 +184,12 @@ public class SsSearchCriteria extends CeTBaseObject{
 	}
 	public void setAlias(String alias) {
 		this.alias = alias;
+	}
+	public String getResidenza() {
+		return residenza;
+	}
+	public void setResidenza(String residenza) {
+		this.residenza = residenza;
 	}
 	
 }

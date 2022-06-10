@@ -1,6 +1,7 @@
 package it.webred.cs.csa.ejb.dao;
 
 import it.webred.cs.csa.ejb.CarSocialeBaseDAO;
+import it.webred.cs.csa.ejb.client.CarSocialeServiceException;
 import it.webred.cs.csa.ejb.dto.ParametriDatiEsterniSoggettoDTO;
 import it.webred.cs.data.model.CsADatiEsterni;
 import it.webred.cs.data.model.CsADatiEsterniSoggetto;
@@ -24,16 +25,24 @@ public class DatiEsterniSoggettoDAO extends CarSocialeBaseDAO implements Seriali
 	private static final long serialVersionUID = -8939731743055501929L;
 
 	public List<CsADatiEsterni> getDatiEsterniByCfSoggetto(String cf, String codiceEnte) {
-		String jpql = "SELECT des.datiEsterni FROM CsADatiEsterniSoggetto des WHERE des.codiceEnte like :ente AND des.soggetto.cf = :cf";
-		TypedQuery<CsADatiEsterni> qde = em.createQuery(jpql, CsADatiEsterni.class);
-		qde.setParameter("ente", "%" + codiceEnte + "%");
-		qde.setParameter("cf", cf);
-		List<CsADatiEsterni> resultList = qde.getResultList();
 		Set<CsADatiEsterni> uniqueItems = new HashSet<CsADatiEsterni>();
-		for (CsADatiEsterni de : resultList) {
-			uniqueItems.add(de);
+		List<CsADatiEsterni> resultList;
+		try {
+			String jpql = "SELECT des.datiEsterni FROM CsADatiEsterniSoggetto des WHERE des.codiceEnte like :ente AND des.soggetto.cf = :cf";
+			TypedQuery<CsADatiEsterni> qde = em.createQuery(jpql, CsADatiEsterni.class);
+			qde.setParameter("ente", "%" + codiceEnte + "%");
+			qde.setParameter("cf", cf);
+			resultList = qde.getResultList();
+			for (CsADatiEsterni de : resultList) {
+				uniqueItems.add(de);
+			}
+		}catch(Exception e) {
+			logger.error("getDatiEsterniByCfSoggetto cf["+cf+"] ente["+codiceEnte+"] " + e.getMessage(), e);
+			throw new CarSocialeServiceException(e);
+		}finally{
+			resultList = new ArrayList<CsADatiEsterni>(uniqueItems);
 		}
-		resultList = new ArrayList<CsADatiEsterni>(uniqueItems);
+		
 		return resultList;
 	}
 

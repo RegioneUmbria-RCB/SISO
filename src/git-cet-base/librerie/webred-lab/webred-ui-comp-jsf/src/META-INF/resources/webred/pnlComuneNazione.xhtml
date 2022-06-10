@@ -28,7 +28,7 @@
 					
 					<f:param name="pnlToUpdateId" value="#{cc.attrs.pnlToUpdate}" />
 				</p:selectOneButton>
-			    <h:panelGroup id="pnlDettaglio">   				
+			    <h:panelGroup id="pnlDettaglio" columns="2">   				
 					<h:outputText value="#{cc.attrs.comuneNazioneManBean.getExtraLabel(cc.attrs.extraLabelRequired)}" />					
 				
 					<webred:pnlComune comuneManBean="#{cc.attrs.comuneNazioneManBean.comuneMan}" rendered="#{cc.attrs.comuneNazioneManBean.comuneRendered}"  disabled="#{cc.attrs.disabled}"/>

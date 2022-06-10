@@ -1537,13 +1537,12 @@ public class AccessTableDiarioSessionBean extends CarSocialeBaseSessionBean impl
 	   
 	   private List<RelazioneDTO> findRelazioniCollegate(Long idAnagrafica, CeTBaseObject cet) {
 		   List<RelazioneDTO> lst = new ArrayList<RelazioneDTO>();
-		   List<Long> casoIds =  diarioDao.findDiarioAnaCasoIdsByAnagraficaId(idAnagrafica, DataModelCostanti.TipoDiario.RELAZIONE_ID); //6 = ATTIVITA PROFESSIONALI
-		   for (Long id : casoIds){ 
-			   BaseDTO dto = new BaseDTO();
-			   this.copiaCsTBaseObject(cet, dto);
-			   dto.setObj(id);
-			   lst.addAll(findRelazioniByCaso(dto));
-			}
+		   List<Long> diarioIds =  diarioDao.findDiarioIdsByAnagraficaId(idAnagrafica, DataModelCostanti.TipoDiario.RELAZIONE_ID); //6 = ATTIVITA PROFESSIONALI
+		  
+		   BaseDTO dto = new BaseDTO();
+		   this.copiaCsTBaseObject(cet, dto);
+		   dto.setObj(diarioIds);
+		   lst.addAll(findRelazioniByIds(dto));
 		   return lst;
 	  }
 	   

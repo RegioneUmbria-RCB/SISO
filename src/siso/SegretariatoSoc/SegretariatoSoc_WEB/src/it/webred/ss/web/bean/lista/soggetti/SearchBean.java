@@ -745,7 +745,7 @@ public class SearchBean extends SegretariatoSocBaseBean{
     	if(selectedSoggetto == null){
     		addError("seleziona.soggetto.error");
     	}else{
-            if(selectedSoggetto.getDataMorte()!=null){
+            if(selectedSoggetto.getDataMorte()!=null && CsUiCompBaseBean.isBloccaUtentiDefunti()){
             	addWarning("policy.error","Il soggetto selezionato è deceduto il "+ddMMyyyy.format(selectedSoggetto.getDataMorte()));
 				return;
             }

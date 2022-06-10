@@ -50,6 +50,7 @@ public class Segnalante implements IComune, CommonDatiAnaBean {
 	private Long codRelazione;
 	private Long settoreId;		//SISO-346
 	private boolean affidatario = false;;		//SISO-906
+	private String warningMessage;
 	
 	public SsSchedaSegnalante fillModel(){
 		SsSchedaSegnalante model=null;
@@ -175,7 +176,8 @@ public class Segnalante implements IComune, CommonDatiAnaBean {
 			datiSesso.setSesso(segnalante.getSesso());
 			
 			if(segnalante.getComuneNascitaCod()!=null){
-		    	ComuneBean comuneBean = new ComuneBean(segnalante.getComuneNascitaCod(), segnalante.getComuneNascitaDes(), segnalante.getProvNascitaCod());
+				boolean attivo = CsUiCompBaseBean.isComuneItaAttivoByIstat(segnalante.getComuneNascitaCod());
+		    	ComuneBean comuneBean = new ComuneBean(segnalante.getComuneNascitaCod(), segnalante.getComuneNascitaDes(), segnalante.getProvNascitaCod(), attivo);
 		    	this.comuneNazioneNascitaMan.getComuneNascitaMan().setComune(comuneBean);
 		    }else if(segnalante.getStatoNascitaCod()!=null){
 		    	AmTabNazioni amTabNazioni = CsUiCompBaseBean.getNazioneByIstat(segnalante.getStatoNascitaCod(), segnalante.getStatoNascitaDes());
@@ -211,7 +213,7 @@ public class Segnalante implements IComune, CommonDatiAnaBean {
 			LuoghiService luoghiService = (LuoghiService) ClientUtility.getEjbInterface("CT_Service","CT_Config_Manager","LuoghiServiceBean");
 			AmTabComuni comune = luoghiService.getComuneItaByIstat(id);
 			if(comune!=null)
-				return new ComuneBean(comune.getCodIstatComune(),comune.getDenominazione(), comune.getSiglaProv());
+				return new ComuneBean(comune);
 			
 		} catch (NamingException e) {
 			logger.error(e);
@@ -368,5 +370,12 @@ public class Segnalante implements IComune, CommonDatiAnaBean {
 				this.comune.getDenominazione() + " (" + this.comune.getSiglaProv() + ")" : "";
 	}
 
-	
+	public String getWarningMessage() {
+		return warningMessage;
+	}
+
+	public void setWarningMessage(String warningMessage) {
+		this.warningMessage = warningMessage;
+	}
+
 }

@@ -53,7 +53,7 @@ public class AccessTableDominiSiruSessionBean extends CarSocialeBaseSessionBean 
 		cache.put(SiruEnum.IT_COMUNE.name(), dominioDAO.loadSiruItComune());
 		//cache.put(SiruEnum.IT_NAZIONE.name(), dominioDAO.loadSiruItNazione());
 		cache.put(SiruEnum.IT_NAZIONE_VIEW.name(), dominioDAO.loadSiruNazioneIstatAgEntrate());
-		cache.put(SiruEnum.LOCALIZZAZIONE_GEOG.name(), dominioDAO.loadSiruLocalizzazioneGeog());
+		cache.put(SiruEnum.LOC_GEOG_ATTUALE.name(), dominioDAO.loadSiruLocalizzazioneGeog());
 		cache.put(SiruEnum.STATO_PARTECIPANTE.name(), dominioDAO.loadSiruStatoPartecipante());
 		cache.put(SiruEnum.TIPO_ORARIO_LAVORO.name(), dominioDAO.loadSiruTipoOrarioLavoro());
 		cache.put(SiruEnum.TIPOLOGIA_LAVORO.name(), dominioDAO.loadSiruTipologiaLavoro());

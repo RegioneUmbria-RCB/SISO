@@ -9,7 +9,7 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name="CS_TB_SOTTOCARTELLA_DOC")
-@NamedQuery(name="CsTbSottocartellaDoc.findAll", query="SELECT c FROM CsTbSottocartellaDoc c")
+@NamedQuery(name="CsTbSottocartellaDoc.findAll", query="SELECT c FROM CsTbSottocartellaDoc c order by descrizione")
 public class CsTbSottocartellaDoc implements Serializable {
 	private static final long serialVersionUID = 1L;
 

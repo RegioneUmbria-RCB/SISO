@@ -125,7 +125,8 @@ public class Indirizzo extends SegretariatoSocBaseBean{
 		
 		if(DataModelCostanti.STATO_ITA.equals(model.getStatoDes()) || StringUtils.isBlank(model.getStatoCod())) {
 			if(!StringUtils.isBlank(model.getComuneCod())){
-				ComuneBean comuneBean = new ComuneBean(model.getComuneCod(), model.getComuneDes(), model.getProvCod());
+				Boolean attivo = CsUiCompBaseBean.isComuneItaAttivoByIstat(model.getComuneCod());
+				ComuneBean comuneBean = new ComuneBean(model.getComuneCod(), model.getComuneDes(), model.getProvCod(), attivo);
 				this.comuneNazioneMan.setComuneValue();
 				this.comuneNazioneMan.getComuneGenericMan().setComune(comuneBean);
 			}

@@ -48,10 +48,12 @@ TabView.switchTab = function(TabViewIdx, option){
 	var TabIdx = option.selectedIndex;
 	var value = option.options[TabIdx].value;
 	var url = window.location.href;
+	var protocol = window.location.protocol;
 	var nohttp = url.split('//')[1];
 	var hostPort = nohttp.split('/')[0];
+	var urlDestinazione = protocol + '//'+hostPort+'/AMProfiler/SceltaEnte?provenienza=menu&enteScelto=' + value;
 	var xhr = new XMLHttpRequest();
-	xhr.open('GET', 'http://'+hostPort+'/AMProfiler/SceltaEnte?provenienza=menu&enteScelto=' + value, true);
+	xhr.open('GET', urlDestinazione, true);
 	xhr.send(null);
     TabView.arTabView[TabViewIdx].TabView.switchTab(TabIdx);
 }

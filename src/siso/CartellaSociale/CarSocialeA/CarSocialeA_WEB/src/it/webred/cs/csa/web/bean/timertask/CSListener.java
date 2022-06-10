@@ -1,11 +1,5 @@
 package it.webred.cs.csa.web.bean.timertask;
 
-import it.webred.cs.csa.ejb.client.configurazione.AccessTableConfigurazioneEnteSessionBeanRemote;
-import it.webred.cs.data.model.CsOOrganizzazione;
-import it.webred.ct.support.datarouter.CeTBaseObject;
-import it.webred.ejb.utility.ClientUtility;
-import it.webred.ss.ejb.dto.BaseDTO;
-
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -20,6 +14,11 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
 import org.jboss.logging.Logger;
+
+import it.webred.cs.csa.ejb.client.configurazione.AccessTableConfigurazioneEnteSessionBeanRemote;
+import it.webred.cs.data.model.CsOOrganizzazione;
+import it.webred.ct.support.datarouter.CeTBaseObject;
+import it.webred.ejb.utility.ClientUtility;
 
 public class CSListener implements ServletContextListener {
 	

@@ -77,12 +77,18 @@
 					    </f:facet>   
 			            <h:outputText value="#{scheda.cf}" style="text-transform: uppercase" />
 			        </p:column>
-			         <p:column filterBy="alias" filterMatchMode="contains"  >
+			        <p:column filterBy="alias" filterMatchMode="contains"  >
 			         	<f:facet name="header">
 					        <h:outputText value="Alias"/> 
 					    </f:facet>       
 			            <h:outputText value="#{scheda.alias}" style="text-transform: uppercase" />
-			         </p:column>
+			        </p:column>
+			        <p:column filterBy="residenza" filterMatchMode="contains"  >
+			         	<f:facet name="header">
+					        <h:outputText value="Residenza"/> 
+					    </f:facet>       
+			            <h:outputText value="#{scheda.residenza}" style="text-transform: uppercase" />
+			         </p:column> 
 			   		<p:column  rendered="#{schedeTableBean.renderUfficio}">
 			   			<f:facet name="header">
 					        <h:outputText value="Ufficio"/> 

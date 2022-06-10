@@ -48,6 +48,9 @@ public class SsAnagrafica implements Serializable {
 	private String cf;
 	
 	private Date data_nascita;
+	
+	@Column(name="DATA_DECESSO")
+	private Date dataDecesso;
 		
 	private String sesso;
 	
@@ -280,6 +283,14 @@ public class SsAnagrafica implements Serializable {
 
 	public void setTbCittadinanzaAcq(CsTbCittadinanzaAcq tbCittadinanzaAcq) {
 		this.tbCittadinanzaAcq = tbCittadinanzaAcq;
+	}
+
+	public Date getDataDecesso() {
+		return dataDecesso;
+	}
+
+	public void setDataDecesso(Date dataDecesso) {
+		this.dataDecesso = dataDecesso;
 	}
 
 }

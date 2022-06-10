@@ -503,8 +503,7 @@ public class IterDialogCambioStatoBean extends IterBaseBean implements Serializa
 				opDto.setIdSettore(settoreId);
 				operatores = new LinkedList<SelectItem>();
 				List<KeyValueDTO> result = confEnteService.findListaOperatoreSettoreBySettore(opDto);
-				for (KeyValueDTO it : result)
-					operatores.add(new SelectItem( it.getCodice(), it.getDescrizione()));
+				operatores = convertiLista(result);
 			}
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);

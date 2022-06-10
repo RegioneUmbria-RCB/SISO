@@ -161,8 +161,8 @@ public class AccessTableDatiPorSessionBean extends CarSocialeBaseSessionBean imp
 			}
 	
 			// gruppo vulnerabile
-			if (!StringUtils.isBlank(spd.getGrVulnerabilita())) {
-				SiruDominioDTO sd = dominiSiruService.findByIdSiso(SiruEnum.GRUPPO_VUL_PART.name(), spd.getGrVulnerabilita());
+			if (!StringUtils.isBlank(spd.getGrpVulnerabilita())) {
+				SiruDominioDTO sd = dominiSiruService.findByIdSiso(SiruEnum.GRUPPO_VUL_PART.name(), spd.getGrpVulnerabilita());
 				if (sd == null) msg.add("Gruppo vulnerabile"+msgSiru);
 				else siru.setCodVulnerabilePa(sd.getCodiceSiru());
 			}
@@ -230,8 +230,8 @@ public class AccessTableDatiPorSessionBean extends CarSocialeBaseSessionBean imp
 			// comune di nascita - stato di nascita
 	
 			if (!StringUtils.isBlank(spd.getComuneNascitaCod())) {
-				// ITALIANO
-				SiruDominioDTO sd = dominiSiruService.findById(SiruEnum.LOCALIZZAZIONE_GEOG.name(), spd.getComuneNascitaCod());
+				// ITALIANO --> IT_COMUNE contiene anche i comuni soppressi, altrimenti la validazione andrebbe in errore
+				SiruDominioDTO sd = dominiSiruService.findById(SiruEnum.IT_COMUNE.name(), spd.getComuneNascitaCod());
 				if (sd != null) siru.setComuneNascitaId(sd.getCodiceSiru());
 				else msg.add("Comune di nascita"+msgSiru);
 	
@@ -248,7 +248,7 @@ public class AccessTableDatiPorSessionBean extends CarSocialeBaseSessionBean imp
 			// comune azienda
 			if(mappaConf.getAzComune().isAbilitato()){
 				if (!StringUtils.isBlank(spd.getAzComuneCod())) { // !regMarche &&
-					SiruDominioDTO sd = dominiSiruService.findById(SiruEnum.LOCALIZZAZIONE_GEOG.name(), spd.getAzComuneCod());
+					SiruDominioDTO sd = dominiSiruService.findById(SiruEnum.LOC_GEOG_ATTUALE.name(), spd.getAzComuneCod());
 					if (sd != null) siru.setComuneAziendaId(sd.getCodiceSiru());
 					else msg.add("Comune azienda"+msgSiru);
 				} else if (occupato && mappaConf.getAzComune().isObbligatorio() && StringUtils.isBlank(spd.getAzComuneCod())) {
@@ -266,7 +266,7 @@ public class AccessTableDatiPorSessionBean extends CarSocialeBaseSessionBean imp
 	
 			// SISO-962 Inizio
 			if (!StringUtils.isBlank(spd.getCodIstatComuneResidenza())) {
-				SiruDominioDTO sd = dominiSiruService.findById(SiruEnum.LOCALIZZAZIONE_GEOG.name(),spd.getCodIstatComuneResidenza());
+				SiruDominioDTO sd = dominiSiruService.findById(SiruEnum.LOC_GEOG_ATTUALE.name(),spd.getCodIstatComuneResidenza());
 				if (sd != null)
 					siru.setComuneResId(sd.getCodiceSiru());
 				else
@@ -274,7 +274,7 @@ public class AccessTableDatiPorSessionBean extends CarSocialeBaseSessionBean imp
 				
 			}
 			if (!StringUtils.isBlank(spd.getCodIstatComuneDomicilio())) {
-				SiruDominioDTO sd = dominiSiruService.findById(SiruEnum.LOCALIZZAZIONE_GEOG.name(),spd.getCodIstatComuneDomicilio());
+				SiruDominioDTO sd = dominiSiruService.findById(SiruEnum.LOC_GEOG_ATTUALE.name(),spd.getCodIstatComuneDomicilio());
 				if (sd != null)
 					siru.setComuneDomId(sd.getCodiceSiru());
 				else

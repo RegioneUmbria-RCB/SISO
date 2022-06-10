@@ -132,14 +132,16 @@ public class ParentiBean extends SchedaValiditaBaseBean implements IDatiValidita
 			nuovoParente.setCittadinanza(compGit.getCittadinanza());
 			nuovoParente.setCognome(compGit.getCognome());
 			if (compGit.getComResCod() != null) {
-				ComuneBean comuneRes = new ComuneBean(compGit.getComResCod(),compGit.getComResDes(), compGit.getProvResCod());
+				boolean attivo = CsUiCompBaseBean.isComuneItaAttivoByIstat(compGit.getComResCod());
+				ComuneBean comuneRes = new ComuneBean(compGit.getComResCod(),compGit.getComResDes(), compGit.getProvResCod(), attivo);
 				nuovoParente.getComuneNazioneResidenzaBean().getComuneMan().setComune(comuneRes);
 			}
 			if (compGit.getComuneNascitaCod() != null) {
+				boolean attivo = CsUiCompBaseBean.isComuneItaAttivoByIstat(compGit.getComuneNascitaCod());
 				ComuneBean comuneNas = new ComuneBean(
 						compGit.getComuneNascitaCod(),
 						compGit.getComuneNascitaDes(),
-						compGit.getProvNascitaCod());
+						compGit.getProvNascitaCod(), attivo);
 				nuovoParente.getComuneNazioneNascitaBean().getComuneMan().setComune(comuneNas);
 			}
 			if (compGit.getStatoNascitaCod() != null) {
@@ -334,10 +336,11 @@ public class ParentiBean extends SchedaValiditaBaseBean implements IDatiValidita
 				nuovoParente.setDataNascita(anagraficaRecuperata.getDataNascita());
 				
 				if (anagraficaRecuperata.getComuneNascitaCod() != null) {
+					boolean attivo = CsUiCompBaseBean.isComuneItaAttivoByIstat(anagraficaRecuperata.getComuneNascitaCod());
 					ComuneBean comuneNas = new ComuneBean(
 							anagraficaRecuperata.getComuneNascitaCod(),
 							anagraficaRecuperata.getComuneNascitaDes(),
-							anagraficaRecuperata.getProvNascitaCod());
+							anagraficaRecuperata.getProvNascitaCod(), attivo);
 					nuovoParente.getComuneNazioneNascitaBean().getComuneMan().setComune(comuneNas);
 					nuovoParente.getComuneNazioneNascitaBean().setComuneValue();
 				}else
@@ -424,10 +427,11 @@ public class ParentiBean extends SchedaValiditaBaseBean implements IDatiValidita
 				nuovo.setCognome(anagraficaRecuperata.getCognome());
 
 				if (anagraficaRecuperata.getComuneNascitaCod() != null) {
+					boolean attivo = CsUiCompBaseBean.isComuneItaAttivoByIstat(anagraficaRecuperata.getComuneNascitaCod());
 					ComuneBean comuneNas = new ComuneBean(
 							anagraficaRecuperata.getComuneNascitaCod(),
 							anagraficaRecuperata.getComuneNascitaDes(),
-							anagraficaRecuperata.getProvNascitaCod());
+							anagraficaRecuperata.getProvNascitaCod(), attivo);
 					nuovo.getComuneNazioneNascitaBean().setComuneValue();
 					nuovo.getComuneNazioneNascitaBean().getComuneMan().setComune(comuneNas);
 				}else
@@ -943,7 +947,8 @@ public class ParentiBean extends SchedaValiditaBaseBean implements IDatiValidita
 		if(c.getComResCod()!=null && !c.getComResCod().isEmpty()){
 			p.setIndirizzo(c.getIndirizzoRes());
 			p.setCivico(c.getNumCivRes());
-			ComuneBean comuneRes = new ComuneBean(c.getComResCod(),c.getComResDes(), c.getProvResCod());
+			boolean attivo = CsUiCompBaseBean.isComuneItaAttivoByIstat(c.getComResCod());
+			ComuneBean comuneRes = new ComuneBean(c.getComResCod(),c.getComResDes(), c.getProvResCod(), attivo);
 			p.getComuneNazioneResidenzaBean().setComuneValue();
 			p.getComuneNazioneResidenzaBean().getComuneMan().setComune(comuneRes);
 		}else{
@@ -970,7 +975,8 @@ public class ParentiBean extends SchedaValiditaBaseBean implements IDatiValidita
 				
 				if (i.getResComune().getCodice() != null && 
 						(p.getComuneNazioneResidenzaBean().getComuneMan().getComune()==null || p.getComuneNazioneResidenzaBean().getComuneMan().getComune().getCodIstatComune()==null)) {
-					ComuneBean comuneRes = new ComuneBean((String)i.getResComune().getCodice(),i.getResComune().getDescrizione(), i.getResProv());
+					boolean attivo = CsUiCompBaseBean.isComuneItaAttivoByIstat((String)i.getResComune().getCodice());
+					ComuneBean comuneRes = new ComuneBean((String)i.getResComune().getCodice(),i.getResComune().getDescrizione(), i.getResProv(), attivo);
 					p.getComuneNazioneResidenzaBean().setComuneValue();
 					p.getComuneNazioneResidenzaBean().getComuneMan().setComune(comuneRes);
 				}

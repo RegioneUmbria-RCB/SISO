@@ -415,7 +415,7 @@ public class SoggettoDAO extends CarSocialeBaseDAO implements Serializable {
 	
 	public CsASoggettoStatoCivile getSoggettoStatoCivileAllaDataBySoggetto(long idSoggetto, Date dtRif) {
 
-		Query q = em.createNamedQuery("CsASoggettoStatoCivile.findAttualeBySoggetto");
+		Query q = em.createNamedQuery("CsASoggettoStatoCivile.findAllaDataBySoggetto");
 		q.setParameter("idSoggetto", idSoggetto);
 		q.setParameter("dtRif", dtRif);
 		List<CsASoggettoStatoCivile> lst =  q.getResultList();

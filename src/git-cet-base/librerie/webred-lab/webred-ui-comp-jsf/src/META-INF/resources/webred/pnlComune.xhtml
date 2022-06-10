@@ -37,8 +37,13 @@
 			                <p:ajax event="itemSelect" process="@this" update="out2" listener="#{cc.attrs.comuneManBean.handleChangeComune}"/> 	                
 			                 
            			</p:autoComplete>
-           			<p:spacer width="10px"/>
-					<h:outputText id="out2" value="#{cc.attrs.comuneManBean.comune.siglaProv}" />
+           			<h:panelGroup id="out2">
+           				<p:spacer width="10px"/>
+						<h:outputText value="#{cc.attrs.comuneManBean.comune.siglaProv}" />
+						<p:spacer width="20px"/>
+						<p:graphicImage value="/webred/img/warning.png" height="20px" title="#{cc.attrs.comuneManBean.warningMessage}"
+							rendered="#{cc.attrs.comuneManBean.warningMessage != null and cc.attrs.comuneManBean.warningMessage ne ''}"/>
+					</h:panelGroup>
 			</span>
 					
 		</composite:implementation>

@@ -705,7 +705,7 @@ public class ErogazioneInterventoBean extends CsUiCompBaseBean implements Serial
 //				valido = false;
 //				addWarning("Erogazioni", "Ente gestore della spesa non selezionato");
 //			}
-			if (selSettoreEroganteId.equals(0)) {
+			if (selSettoreEroganteId == null || selSettoreEroganteId.equals(0)) {
 				valido = false;
 				this.addErrorCampiObbligatori("Erogazioni", "Settore erogante");
 			}
@@ -1284,13 +1284,7 @@ public class ErogazioneInterventoBean extends CsUiCompBaseBean implements Serial
 				fillEnte(oDto);
 				oDto.setIdSettore(settoreId);
 				List<KeyValueDTO> lstOpSettAnagrafica = confEnteService.findListaOperatoreSettoreBySettore(oDto);
-				
-				for (KeyValueDTO c : lstOpSettAnagrafica){
-					SelectItem si = new SelectItem(c.getCodice(), c.getDescrizione());
-					si.setDisabled(!c.isAbilitato());
-					listaOperAnagrafica.add(si);
-				}
-				
+				listaOperAnagrafica.addAll(convertiLista(lstOpSettAnagrafica));
 			}
 
 		} catch (Exception e) {
@@ -2258,7 +2252,7 @@ public class ErogazioneInterventoBean extends CsUiCompBaseBean implements Serial
 			if(anaSearch){
 				PersonaDettaglio p = (PersonaDettaglio)s.getSoggetto();
 				
-				if(p.isDefunto()){
+				if(p.isDefunto() && isBloccaUtentiDefunti()){
 					addWarning("Non è possibile inserire il soggetto come beneficiario","Il soggetto selezionato è deceduto il "+ddMMyyyy.format(p.getDataMorte()));
 					return;
 				}
@@ -2702,7 +2696,8 @@ public class ErogazioneInterventoBean extends CsUiCompBaseBean implements Serial
 				this.setLabelCodicePrestazione(this.isCodiceInpsObbligatorio == true ? this.getLabelCodicePrestazione().concat(" *") : this.getLabelCodicePrestazione());
 				
 				for (ArRelClassememoPresInps a : listaArRelClassememoPresInp) {
-					SelectItem si = new SelectItem(a.getArTbPrestazioniInp().getCodice(), a.getArTbPrestazioniInp().getDenominazione());
+					String codice = a.getArTbPrestazioniInp().getCodice();
+					SelectItem si = new SelectItem(codice, codice + " " + a.getArTbPrestazioniInp().getDenominazione());
 					if(a.getArTbPrestazioniInp().getFlagNonEsportare())
 						si1.add(si);
 					else

@@ -1,6 +1,7 @@
 package it.webred.permessi;
 
 import java.sql.PreparedStatement;
+
 import java.sql.ResultSet;
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -11,6 +12,9 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
+
+import org.josso.gateway.identity.service.ws.impl.SSONameValuePair;
+import org.josso.gateway.identity.service.ws.impl.SSOUser;
 
 import java.security.Principal;
 import java.sql.Connection;
@@ -223,6 +227,7 @@ public final class GestionePermessi
 
 	}
 	
+//------------------------------------------------------------------------------
 	/**
 	 * Questo metodo si occupa di controllare se un utente è autorizzato <br>
 	 * ad eseguire una determinata operazione.<br>
@@ -236,6 +241,62 @@ public final class GestionePermessi
 	 * @param refresh ricarica i diritti dal DB se impostato a true.
 	 * @return true se è autorizzato, altrimenti false
 	 */
+	public static synchronized boolean autorizzato(Object user, String application, String item, String permesso) {
+	    return autorizzato(user, application, item, permesso, false);
+	  }
+	
+	public static synchronized boolean autorizzato(Object user, String application, String item, String permesso, boolean refresh) {
+	    if (!isCastableUser(user))
+	      return true; 
+	    SSOUser ssoUser = (SSOUser)user;
+	    String userName = ssoUser.getName();
+	    PermessirBean perBean = mappa.get(userName);
+	    if (perBean == null || refresh)
+	      perBean = riempiMappa(ssoUser); 
+	    return perBean.getPermissions(application, item, permesso);
+	  }
+	
+	public static synchronized boolean isCastableUser(Object user) {
+	    try {
+	      Class.forName("org.josso.gateway.identity.SSOUser");
+	      SSOUser ssoUser = (SSOUser)user;
+	    } catch (ClassNotFoundException e) {
+	      return false;
+	    } catch (ClassCastException e) {
+	      return false;
+	    } 
+	    return true;
+	  }
+	
+	 private static synchronized PermessirBean riempiMappa(SSOUser ssoUser) {
+		    PermessirBean perm = new PermessirBean();
+		    String userName = ssoUser.getName();
+		    perm.setUser(userName);
+		    HashMap<Object, Object> ListaPermessi = new HashMap<Object, Object>();
+		    NameValuePair[] listaProperties = new NameValuePair[ssoUser.getProperties().length];
+		    SSONameValuePair[] arrayOfSSONameValuePair = ssoUser.getProperties(); 
+		    for (int z=0; z<arrayOfSSONameValuePair.length; z++) {
+		    	NameValuePair nv = new NameValuePair(arrayOfSSONameValuePair[z].getName(), arrayOfSSONameValuePair[z].getValue());
+		    	listaProperties[z] = nv;
+		    }
+		    perm.setListaProperties(listaProperties);
+		    for (int i = 0; i < (ssoUser.getProperties()).length; i++) {
+		      String p = ssoUser.getProperties()[i].getName();
+		      if (p.indexOf("permission@-@") == 0) {
+		        String[] tok = p.replace("permission@-@", "").split("@-@");
+		        String application = tok[0];
+		        String item = tok[1];
+		        String permesso = tok[2];
+		        perm.setPermissions(application, item, permesso);
+		        ListaPermessi.put(permesso, ssoUser.getProperties()[i].getValue());
+		      } 
+		    } 
+		    mappa.put(userName, perm);
+		    return perm;
+		  }
+	
+//------------------------------------------------------------------------------
+	 
 	public synchronized static boolean autorizzato(AuthContext authContext, String permesso, boolean refresh)
 	{
 		String userName = authContext.getUser().getName();

@@ -439,10 +439,10 @@ public class InterventoErogazioneDAO extends CarSocialeBaseDAO implements Serial
 			
 			String sql = qb.createQueryListaSoggettiErogazioni();
 			if(sql!=null){
-				logger.info("LISTA SOGGETTI EROGAZIONI SQL["+sql+"]");
+				logger.debug("LISTA SOGGETTI EROGAZIONI SQL["+sql+"]");
 				Query q = em.createNativeQuery(sql);
 				String params = qb.setParamsListaSoggettiErogazioni(q);
-				logger.info("searchListaMasterIdBySoggetto PARAMS LISTA SOGGETTI EROGAZIONI " + params );
+				logger.debug("searchListaMasterIdBySoggetto PARAMS LISTA SOGGETTI EROGAZIONI " + params );
 				return  (List<BigDecimal>)q.getResultList();
 			}
 		}catch(Throwable e){

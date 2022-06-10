@@ -1,10 +1,9 @@
 package it.webred.rulengine.brick.loadDwh.load.superc.genericImportFiles;
 
 import it.webred.rulengine.brick.loadDwh.load.superc.concrete.ConcreteImport;
+
 import it.webred.rulengine.brick.loadDwh.load.superc.concrete.ConcreteImportFactory;
-import it.webred.rulengine.brick.loadDwh.load.superc.genericImportFiles.bean.Testata;
 import it.webred.rulengine.brick.loadDwh.load.superc.genericImportFiles.env.EnvImport;
-import it.webred.rulengine.brick.loadDwh.load.superc.genericImportFiles.env.EnvImportFilesWithTipoRecord;
 import it.webred.rulengine.brick.loadDwh.load.util.Util;
 import it.webred.rulengine.exception.RulEngineException;
 
@@ -105,7 +104,6 @@ public abstract class ImportFilesFlat<T extends EnvImport> extends ImportFiles<T
 					log.error("ERRORE IN TRUNCATE TABELLA " + key );
 					throw new RulEngineException("ERRORE IN TRUNCATE TABELLA " + key , e);
 				}
-
 				}
 			}
 		}

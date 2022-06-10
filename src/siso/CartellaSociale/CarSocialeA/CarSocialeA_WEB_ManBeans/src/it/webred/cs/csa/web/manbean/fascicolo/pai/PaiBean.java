@@ -230,7 +230,7 @@ public class PaiBean extends FascicoloCompSecondoLivello implements IPai, Serial
 		
 		if (isClasseProgetto(PaiProgettiEnum.SAL)) {
 			paiSalBean.nuovo();
-		} else if (isClasseProgetto(PaiProgettiEnum.AFFIDO)) {
+		} else if(isClasseProgetto(PaiProgettiEnum.AFFIDO)) {
 			if (fromFascicoloCartellaUtente) {
 				paiAffidoBean.nuovo(idSoggetto);
 			} else {
@@ -521,7 +521,7 @@ public class PaiBean extends FascicoloCompSecondoLivello implements IPai, Serial
 				paiAffidoBean.findAffidoByPai(selectedPai.getDiarioId(), idSoggetto);
 			} else if (isClasseProgetto(PaiProgettiEnum.SAL)) {
 				paiSalBean.findSALByPai(selectedPai.getDiarioId(), idSoggetto);
-			} else if (isClasseProgetto(PaiProgettiEnum.PTI)) {
+			}else if (isClasseProgetto(PaiProgettiEnum.PTI)) {
 				this.ptiRevisione = null;
 				paiPTIBean.caricaPTI(selectedPai.getDiarioId(), soggRiferimentoPai);
 				this.setStrutturaAccettataDaEnte(paiPTIBean.getStrutturaSelezionata());
@@ -2425,7 +2425,7 @@ public class PaiBean extends FascicoloCompSecondoLivello implements IPai, Serial
 
 	public List<SelectItem> getLstArFfProgetti() {
 		if (this.lstArFfProgetti == null)
-			lstArFfProgetti = this.loadLstArFfProgetti();
+			lstArFfProgetti = this.loadLstArFfProgetti(this.selectedPai.getTipoProgettoId());
 		return lstArFfProgetti;
 	}
 

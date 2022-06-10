@@ -1,6 +1,9 @@
 package it.webred.permessi;
 import java.util.ArrayList;
+
 import java.util.HashMap;
+
+import org.josso.gateway.identity.service.ws.impl.SSONameValuePair;
 
 class PermessirBean
 {
@@ -170,9 +173,6 @@ class PermessirBean
 	{
 		this.listaProperties = listaProperties;
 	}
-	
-	
-	
 	
 	
 

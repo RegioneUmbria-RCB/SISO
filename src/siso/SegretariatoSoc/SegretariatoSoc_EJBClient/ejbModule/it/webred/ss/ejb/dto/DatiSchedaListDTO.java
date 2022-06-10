@@ -27,7 +27,7 @@ public class DatiSchedaListDTO extends CeTBaseObject {
 	private Date dataRicezione;
 	private String statoCS;
 	private String enteSegnalazionePIC;
-	
+	private String residenza;
 	
 	
 	private Date dataPrivacy;
@@ -175,4 +175,11 @@ public class DatiSchedaListDTO extends CeTBaseObject {
 	public void setEnteSegnalazionePIC(String enteSegnalazionePIC) {
 		this.enteSegnalazionePIC = enteSegnalazionePIC;
 	}
+	public String getResidenza() {
+		return residenza;
+	}
+	public void setResidenza(String residenza) {
+		this.residenza = residenza;
+	}
+	
 }

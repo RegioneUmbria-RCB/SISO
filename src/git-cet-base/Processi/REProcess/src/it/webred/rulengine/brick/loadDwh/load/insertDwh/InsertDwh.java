@@ -60,7 +60,6 @@ public class InsertDwh {
 					
 				}
 			}
-			
 		}
     	
     	for (RigaToInsert rti : rows) {
@@ -81,8 +80,7 @@ public class InsertDwh {
 										params, connectionName, ctx, con);
     				
     				env.executeSqlPostInsertRecord(con, params);
-    		                        
-    				
+
     				
     		} 
     		catch (FatalCommandException e) {
@@ -115,7 +113,7 @@ public class InsertDwh {
      		} 
 
     		// non posso settare flag elaborato se non ci sono chiavi
-    		if (nomeCampiChiave!=null) {
+    		if (nomeCampiChiave!=null && nomeCampiChiave[0] != "" ) {
         	try {
             		Object[] valoriChiavi = new Object[nomeCampiChiave.length];
         			boolean chiaviNulle=false;

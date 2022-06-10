@@ -137,6 +137,11 @@
 							<f:selectItem itemLabel="- seleziona -" itemValue="" />
 							<f:selectItems value="#{nuovaSchedaWizard.cittadinanze}" />
 						</p:selectOneMenu>
+						
+						<h:outputText value="Data decesso" />
+						<webred:pnlData dataValue="#{nuovaSchedaWizard.segnalato.anagrafica.dataDecesso}" dataPattern="dd/MM/yyyy" dataReq="false"
+							dataValMes="Data decesso non valida" dataConMes="Data decesso non valida"
+							dataPatternLabel="gg/mm/aaaa" yearRange="c-100:c+0"/>
 	 	           
 					</h:panelGrid>
 			   		<h:panelGrid  rendered="#{nuovaSchedaWizard.segnalato.anagrafica.disableAnagrafica}" 

@@ -28,6 +28,6 @@ public interface IComune {
 	
 	public String getWidgetVar();
 	
-
+	public String getWarningMessage();
 	
 }

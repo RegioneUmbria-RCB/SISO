@@ -47,4 +47,6 @@ public interface LuoghiService {
 	public List<AmTabNazioni> getNazioniByDenominazioneContains(String nazione);
 
 	public AmTabNazioni getNazioneByNazionalita(String nazionalita); //MOD-RL
+	
+	public Boolean isComuneAttivoByIstat(String codIstat);
 }

@@ -145,15 +145,15 @@ public class AlertDAO extends CarSocialeBaseDAO implements Serializable {
 			em.merge(alert);
 	}
 
-	public void setAlertVisibile(Long idAlert) throws Exception {
-			CsAlert alert = em.find(CsAlert.class, idAlert);
-			alert.setVisibile(false);
-			em.merge(alert);
-	}
-
 	public void setAlertPulisciLista(List<Long> idAlertList) throws Exception {
-			for(Long id : idAlertList )
-				setAlertVisibile(id);		
+		try {
+			Query q = em.createNamedQuery("CsAlert.updateVisibile");
+			q.setParameter("listaIds", idAlertList);
+			q.setParameter("visibile", false);
+			q.executeUpdate();
+		}catch(Exception e) {
+			logger.error(e.getMessage(),e);
+		}
 	}
 
 	public void setAlertLeggiAll(List<Long> idAlertList, String username) throws Exception {

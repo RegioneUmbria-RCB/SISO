@@ -55,6 +55,8 @@ public class ResidenzaCsaMan extends ResidenzaMan implements Serializable {
 	
 	private String warningMessage;
 	private String addressMessage;
+	private final String domicilioMessage="Inserire il domicilio, se diverso dalla residenza";
+	private final String domicilioTooltip="Non è stato inserito l'indirizzo di domicilio: se non diversamente specificato, il sistema effettuerà le elaborazioni dei dati assumendo che coincida quello di residenza ";
 	
 	private ComuneNazioneResidenzaMan comuneNazioneResidenzaMan = new ComuneNazioneResidenzaMan();
 	private IndirizzoMan indirizzoMan = new IndirizzoMan();
@@ -665,5 +667,13 @@ public class ResidenzaCsaMan extends ResidenzaMan implements Serializable {
 		this.tipoRicercaSoggetto = tipoRicercaSoggetto;
 	}
 
+	public String getDomicilioMessage() {
+		return domicilioMessage;
+	}
+
+	public String getDomicilioTooltip() {
+		return domicilioTooltip;
+	}
+	
 }
 
