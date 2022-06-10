@@ -3,6 +3,7 @@
 	<classpathentry kind="src" path="ejbModule"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
 		<attributes>
+			<attribute name="module" value="true"/>
 			<attribute name="owner.project.facets" value="java"/>
 		</attributes>
 	</classpathentry>
@@ -14,6 +15,5 @@
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/RilevazionePresenze_DataModel"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/CT_Config_Data_Model"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/webred-cs-ui-comp-jsf"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

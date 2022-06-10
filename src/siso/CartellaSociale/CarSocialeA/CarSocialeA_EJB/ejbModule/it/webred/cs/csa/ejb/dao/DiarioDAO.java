@@ -716,17 +716,18 @@ public class DiarioDAO extends CarSocialeBaseDAO implements Serializable {
 		query.executeUpdate();
 	}
 	
-	public List<Long> findDiarioAnaCasoIdsByAnagraficaId(Long anagraficaId, int tipoDiario) {
+	public List<Long> findDiarioIdsByAnagraficaId(Long anagraficaId, int tipoDiario) {
 		List<Long> lst = new ArrayList<Long>();
 		try{
-			String sql = "SELECT d.csACaso.id FROM CsDDiario d "
-					+ "WHERE d.id in "
-					+ "(SELECT da.diarioId FROM CsDDiarioAna da "
-					+ "	 WHERE da.anagraficaId = :anagraficaId AND d.csTbTipoDiario.id = :tipoDiario)";
-			Query query = em.createQuery(sql);
+			String sql = "SELECT distinct d.id FROM CS_D_DIARIO_ANA da, CS_D_DIARIO d "
+					+ " where D.ID = DA.DIARIO_ID AND D.TIPO_DIARIO_ID= :tipoDiario "
+					+ " AND DA.ANAGRAFICA_ID= :anagraficaId ";
+			Query query = em.createNativeQuery(sql);
 			query.setParameter("anagraficaId", anagraficaId);
 			query.setParameter("tipoDiario", new Long(tipoDiario));
-			lst =  (List<Long>) query.getResultList();
+			List<BigDecimal> lst1 =  query.getResultList();
+			for(BigDecimal d : lst1)
+				lst.add(d.longValue());
 		}catch(Throwable t){
 			logger.error(t.getMessage(), t);
 			throw new CarSocialeServiceException(t);

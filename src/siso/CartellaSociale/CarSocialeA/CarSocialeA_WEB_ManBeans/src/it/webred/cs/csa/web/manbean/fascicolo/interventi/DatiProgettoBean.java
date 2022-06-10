@@ -626,11 +626,10 @@ public class DatiProgettoBean extends CsUiCompBaseBean implements Serializable {
 			listaProgetti = new ArrayList<SelectItem>();
 			if (titolare!=null) {  
 				bdto.setObj(titolare.getCsOOrganizzazione().getCodRouting());
-				List<ArFfProgetto> lstArPr = confService.findProgettiByBelfioreOrganizzazione(bdto);
-				for(ArFfProgetto arp : lstArPr){
-					SelectItem si = new SelectItem(arp.getId(), arp.getDescrizione()+"["+arp.getCodiceMemo()+"]");
-					listaProgetti.add(si);
-				}
+				bdto.setObj3(this.getIdProgettoSel());
+				List<KeyValueDTO> lstArPr = confService.findProgettiByBelfioreOrganizzazione(bdto);
+				listaProgetti = convertiLista(lstArPr);
+				
 				//inizio SISO-790				
 				loadListaSottocorsi();
 				//fine SISO-790
@@ -1234,7 +1233,7 @@ public class DatiProgettoBean extends CsUiCompBaseBean implements Serializable {
 	public ComuneBean getComune(String id){
 		AmTabComuni comune = luoghiService.getComuneItaByIstat(id);
 		if(comune!=null)
-			return new ComuneBean(comune.getCodIstatComune(),comune.getDenominazione(), comune.getSiglaProv());
+			return new ComuneBean(comune);
 		return null;
 	}
 
@@ -1474,6 +1473,12 @@ public class DatiProgettoBean extends CsUiCompBaseBean implements Serializable {
 					}
 				}
 			}
+		}
+		
+		if(!StringUtils.isBlank(csIInterventoPr.getCsIInterventoPrFse().getViaDomicilio()) && 
+				( domicilioComuneMan.getComune()==null || StringUtils.isBlank(domicilioComuneMan.getComune().getCodIstatComune()))){
+			addError("Progetti","Attenzione: è stata inserita la via di domicilio, senza specificare il comune");
+			ret = false;
 		}
 		
 		if(this.csIInterventoPr.getCsTbIngMercato()==null ) {

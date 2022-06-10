@@ -8,6 +8,7 @@ import it.webred.cs.data.model.CsTbPotesta;
 import it.webred.cs.data.model.CsTbTipoRapportoCon;
 import it.webred.cs.jsf.interfaces.INuovoParente;
 import it.webred.cs.jsf.manbean.FormazioneLavoroMan;
+import it.webred.cs.jsf.manbean.superc.CsUiCompBaseBean;
 import it.webred.ct.support.datarouter.CeTBaseObject;
 import it.webred.ejb.utility.ClientUtility;
 import it.webred.jsf.bean.ComuneBean;
@@ -83,9 +84,9 @@ public class NuovoParenteBean extends AnagraficaNucleoBean implements INuovoPare
 		dataDecesso = anagraficaComponenteDaAltraScheda.getDataDecesso();
 		setNote(anagraficaComponenteDaAltraScheda.getNote());
 		cittadinanza = anagraficaComponenteDaAltraScheda.getCittadinanza();
-		getComuneNazioneNascitaBean().getComuneMan().setComune(new ComuneBean(anagraficaComponenteDaAltraScheda.getComuneNascitaCod(), anagraficaComponenteDaAltraScheda.getComuneNascitaDes(), anagraficaComponenteDaAltraScheda.getProvNascitaCod()) );
-		
-		
+		boolean attivo = CsUiCompBaseBean.isComuneItaAttivoByIstat(anagraficaComponenteDaAltraScheda.getComuneNascitaCod());
+		ComuneBean comune = new ComuneBean(anagraficaComponenteDaAltraScheda.getComuneNascitaCod(), anagraficaComponenteDaAltraScheda.getComuneNascitaDes(), anagraficaComponenteDaAltraScheda.getProvNascitaCod(), attivo);
+		getComuneNazioneNascitaBean().getComuneMan().setComune(comune);
 	}
 
 	@Override

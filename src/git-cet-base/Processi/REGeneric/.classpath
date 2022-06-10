@@ -23,7 +23,6 @@
 	<classpathentry kind="lib" path="lib/commons-lang.jar"/>
 	<classpathentry kind="lib" path="lib/commons-logging.jar"/>
 	<classpathentry kind="lib" path="lib/commons-validator.jar"/>
-	<classpathentry kind="lib" path="lib/gestionePermessi.jar"/>
 	<classpathentry kind="lib" path="lib/jdom-1.0.jar"/>
 	<classpathentry kind="lib" path="lib/log4j-1.2.8.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/CT_Config_Data_Model"/>
@@ -38,5 +37,6 @@
 	<classpathentry kind="lib" path="/CT-LIBS/ojdbc/ojdbc6.jar"/>
 	<classpathentry kind="lib" path="/CT-LIBS/apache-commons/main/commons-dbcp-1.2.1.jar"/>
 	<classpathentry kind="lib" path="/CT-LIBS/apache-commons/main/commons-pool-1.2.jar"/>
+	<classpathentry kind="lib" path="/CT-LIBS/cet-lib/gestionePermessi.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>

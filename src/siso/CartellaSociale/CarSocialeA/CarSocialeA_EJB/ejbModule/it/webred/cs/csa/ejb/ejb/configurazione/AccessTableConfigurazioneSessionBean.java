@@ -119,6 +119,7 @@ import it.webred.ct.support.validation.annotation.AuditSaltaValidazioneSessionID
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
 import java.util.TreeMap;
 
@@ -1151,10 +1152,11 @@ public class AccessTableConfigurazioneSessionBean extends CarSocialeBaseSessionB
 	}
 	
 	@Override
-	public List<ArFfProgetto> findProgettiByBelfioreOrganizzazione(BaseDTO dto) {
+	public List<KeyValueDTO> findProgettiByBelfioreOrganizzazione(BaseDTO dto) {
 		String belfiore = (String) dto.getObj();
 		String tipoProgetto = (String) dto.getObj2();
-		return configurazioneDAO.findProgettiByBelfioreOrganizzazione(belfiore, tipoProgetto);
+		Long idProgettoSelected = (Long) dto.getObj3();
+		return configurazioneDAO.findProgettiByBelfioreOrganizzazione(belfiore, tipoProgetto, idProgettoSelected, true);
 	}
 	
 	@Override
@@ -1455,6 +1457,5 @@ public class AccessTableConfigurazioneSessionBean extends CarSocialeBaseSessionB
 	public CsTbSinaRisposta findSinaRisposta(BaseDTO dto) {
 		return configurazioneDAO.findSinaRisposta((Long)dto.getObj());
 	}
-
 
 }

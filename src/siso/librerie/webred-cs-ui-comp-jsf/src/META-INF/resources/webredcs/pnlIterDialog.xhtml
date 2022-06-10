@@ -149,7 +149,7 @@
 									<ui:repeat var="itTrans" value="#{cc.attrs.iIterDialog.cambioStato.statoSuccessivoAziones}">
 											<p:commandButton value="#{itTrans.nome}" disabled="#{cc.attrs.readOnly}"
 											                 actionListener="#{cc.attrs.iIterDialog.inizializzaNuovoStato(itTrans.idStatoA)}" 
-											                 update=":#{p:component(cc.attrs.idModalIterDialog)}" />
+											                 update=":#{p:component('pnlModalIterDialog')}" />
 									</ui:repeat>
 								
 								<p:spacer height="20px"/>

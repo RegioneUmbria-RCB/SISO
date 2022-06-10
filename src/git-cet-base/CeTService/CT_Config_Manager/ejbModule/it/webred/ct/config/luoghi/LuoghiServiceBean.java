@@ -1,10 +1,5 @@
 package it.webred.ct.config.luoghi;
 
-import it.webred.ct.config.luoghi.LuoghiService;
-import it.webred.ct.config.luoghi.LuoghiServiceException;
-import it.webred.ct.config.model.AmTabComuni;
-import it.webred.ct.config.model.AmTabNazioni;
-
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -15,9 +10,11 @@ import javax.persistence.Query;
 
 import org.apache.log4j.Logger;
 
+import it.webred.ct.config.model.AmTabComuni;
+import it.webred.ct.config.model.AmTabNazioni;
+
 @Stateless
-public class LuoghiServiceBean implements
-		LuoghiService {
+public class LuoghiServiceBean implements LuoghiService {
 
 	protected static Logger logger = Logger.getLogger("ctservice.log");
 	
@@ -358,6 +355,12 @@ public class LuoghiServiceBean implements
 			logger.warn("getNazioneByCodiceGenerico - No results per ["+codice+"]");
 		
 		return nazione;
+	}
+
+	@Override
+	public Boolean isComuneAttivoByIstat(String codIstat) {
+		AmTabComuni c = this.getComuneItaByIstat(codIstat);
+		return c!=null && c.getAttivo();
 	}
 
 }

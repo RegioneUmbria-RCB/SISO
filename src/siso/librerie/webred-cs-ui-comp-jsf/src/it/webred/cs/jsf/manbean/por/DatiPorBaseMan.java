@@ -186,14 +186,17 @@ public abstract class DatiPorBaseMan extends CsUiCompBaseBean implements IDatiPo
 
 		if (lstProgetti == null) {
 			lstProgetti = new ArrayList<SelectItem>();
-			List<ArFfProgetto> listaProgetti = this.getListaProgetti();
-			if (listaProgetti != null) {
-				for (ArFfProgetto obj : listaProgetti){
-					SelectItem si = new SelectItem(obj.getId(), obj.getDescrizione());
-					si.setDisabled(obj.getAbilitato()==null || !obj.getAbilitato());
-					lstProgetti.add(si);
-				}
+			BaseDTO bdto = new BaseDTO();
+			fillEnte(bdto);
+			// dal ultimo iterstep del caso prendo organizzazione del titolare
+			List<KeyValueDTO> listaProgetti = new ArrayList<KeyValueDTO>();
+			if (!StringUtils.isBlank(this.belfiore)) {
+				bdto.setObj(this.belfiore);
+				bdto.setObj2(DataModelCostanti.TipoProgetto.FSE);
+				bdto.setObj3(idProgetto);
+				listaProgetti = confService.findProgettiByBelfioreOrganizzazione(bdto);
 			}
+			lstProgetti = convertiLista(listaProgetti);
 		}
 		return lstProgetti;
 	}
@@ -347,7 +350,7 @@ public abstract class DatiPorBaseMan extends CsUiCompBaseBean implements IDatiPo
 	public ComuneBean getComune(String id) {
 		AmTabComuni comune = luoghiService.getComuneItaByIstat(id);
 		if (comune != null)
-			return new ComuneBean(comune.getCodIstatComune(), comune.getDenominazione(), comune.getSiglaProv());
+			return new ComuneBean(comune);
 		return null;
 	}
 
@@ -821,19 +824,6 @@ public abstract class DatiPorBaseMan extends CsUiCompBaseBean implements IDatiPo
 			datiProgettoBean.setDtSottoscrizione(ddMMyyyy.format(dtsottoscrizione));
 	}
 	
-	private List<ArFfProgetto> getListaProgetti() {
-		BaseDTO bdto = new BaseDTO();
-		fillEnte(bdto);
-		// dal ultimo iterstep del caso prendo organizzazione del titolare
-		List<ArFfProgetto> listaProgetti = new ArrayList<ArFfProgetto>();
-		if (!StringUtils.isBlank(this.belfiore)) {
-			bdto.setObj(this.belfiore);
-			bdto.setObj2(DataModelCostanti.TipoProgetto.FSE);
-			listaProgetti = confService.findProgettiByBelfioreOrganizzazione(bdto);
-		}
-		return listaProgetti;
-	}
-
 	public List<ArAttivitaDTO> getSottoCorsi() {
 		return sottoCorsi;
 	}

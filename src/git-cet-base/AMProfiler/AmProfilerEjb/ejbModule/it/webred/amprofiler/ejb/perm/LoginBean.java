@@ -333,7 +333,7 @@ public class LoginBean extends AmProfilerBaseService implements LoginBeanService
 		try{
 			AmTracciaAccessi traccia = (AmTracciaAccessi)dto.getObj1();
 			AmTracciaAccessi tracciaLocal = this.findTracciaAccessiBySessionId(traccia.getSessionId());
-			if(tracciaLocal.getId()!=null){
+			if(tracciaLocal!=null && tracciaLocal.getId()!=null){
 				if (traccia.getEnte() != null && !traccia.getEnte().equals("")) tracciaLocal.setEnte(traccia.getEnte());
 				if (traccia.getPrik() != null && !traccia.getPrik().equals("")) tracciaLocal.setPrik(traccia.getPrik());
 				if (traccia.getPubk() != null && !traccia.getPubk().equals("")) tracciaLocal.setPubk(traccia.getPubk());

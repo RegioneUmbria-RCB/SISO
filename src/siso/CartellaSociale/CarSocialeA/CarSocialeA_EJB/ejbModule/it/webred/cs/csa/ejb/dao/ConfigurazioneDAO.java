@@ -1935,23 +1935,38 @@ public class ConfigurazioneDAO extends CarSocialeBaseDAO implements Serializable
 		return (List<ArFfProgettoAttivita>) q.getResultList();  
 	}*/
 	
-	public List<ArFfProgetto> findProgettiByBelfioreOrganizzazione(String belfiore, String tipoProgetto){			
-		List<ArFfProgetto> lst = new ArrayList<ArFfProgetto>();
-		String sql = "select distinct p.* from ar_ff_progetto p "+
+	public List<KeyValueDTO> findProgettiByBelfioreOrganizzazione(String belfiore, String tipoProgetto, Long idSelected, boolean showCodiceMemo){			
+		List<KeyValueDTO> lst = new ArrayList<KeyValueDTO>();
+		String sql = "select distinct p.id, p.codice_memo,p.descrizione, p.abilitato abip, po.abilitato abipo  "+
+				"from ar_ff_progetto p "+
 				"left join ar_ff_progetto_org po on (p.id = po.progetto_id) "+
 				"left join ar_o_organizzazione o on (po.organizzazione_id = o.id) "+
 				"left join cs_cfg_int_pr_form frm on (FRM.FF_PROGETTO_DESCRIZIONE = p.descrizione) "+
-				"where po.abilitato = 1 and o.belfiore = :belfiore ";
+				"where o.belfiore = :belfiore ";
 		if(!StringUtils.isBlank(tipoProgetto))
 			sql+= "and frm.abilitato = 1 and frm.RIF_FORM_INTERVENTO_PR_DETT = :tipoProgetto ";
 		sql+= "order by descrizione";
 		
 		try{		
-			Query q = em.createNativeQuery(sql, ArFfProgetto.class);
+			Query q = em.createNativeQuery(sql);
 			if(!StringUtils.isBlank(tipoProgetto))
 				q.setParameter("tipoProgetto", tipoProgetto);
 			q.setParameter( "belfiore", belfiore );
-			lst = (List<ArFfProgetto>) q.getResultList();  
+			List<Object[]> lstObj = (List<Object[]>) q.getResultList();
+			for(Object[] o : lstObj) {
+				BigDecimal id = (BigDecimal)o[0];
+				String codiceMemo = (String)o[1];
+				String descrizione = (String)o[2];
+				Character pAbilitato = (Character)o[3];
+				BigDecimal poAbilitato = (BigDecimal)o[4];
+				String d = descrizione + (showCodiceMemo ? " ["+codiceMemo+"]" : "");
+				KeyValueDTO kv = new KeyValueDTO(id, d);
+				boolean confAbilitato = poAbilitato!=null && poAbilitato.intValue()==1 && pAbilitato!=null && pAbilitato=='1';
+				boolean abilitato = confAbilitato || (idSelected!=null && id.longValue()==idSelected.longValue());
+				kv.setAbilitato(abilitato);
+				lst.add(kv);
+			}
+			
 		}catch(Exception e){
 			logger.error(e.getMessage(), e);
 		}
@@ -2590,6 +2605,4 @@ public class ConfigurazioneDAO extends CarSocialeBaseDAO implements Serializable
 	public CsTbSinaRisposta findSinaRisposta(Long rispostaId) {
 		return em.find(CsTbSinaRisposta.class, rispostaId);
 	}
-		
-	
 }

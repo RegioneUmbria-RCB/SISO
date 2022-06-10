@@ -25,5 +25,4 @@ public abstract class BasicManBean implements IManBeanForComponent {
 	public String getWidgetVar() {
 		return getMemoWidgetName()+this.hashCode();
 	}
-
 }

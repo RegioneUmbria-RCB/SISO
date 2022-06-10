@@ -14,6 +14,7 @@ import it.webred.cs.csa.ejb.client.configurazione.AccessTableConfigurazioneEnteS
 import it.webred.cs.csa.ejb.client.configurazione.AccessTableConfigurazioneSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.domini.AccessTableDominiSiruSessionBeanRemote;
 import it.webred.cs.csa.ejb.dto.BaseDTO;
+import it.webred.cs.csa.ejb.dto.KeyValueDTO;
 import it.webred.cs.csa.ejb.dto.rest.InterventoDTO;
 import it.webred.cs.csa.ejb.dto.rest.TabellaDecodificaBaseDTO;
 import it.webred.cs.csa.ejb.dto.rest.TabellaDecodificaDTO;
@@ -238,11 +239,10 @@ public class AccessTableConfigurazioneSessionBeanClient   extends BaseSessionBea
 		BaseDTO dto = new BaseDTO();
 		dto.setEnteId(ente);
 		dto.setObj(ente);
-		//dto.setObj(Long.parseLong("0")); // il find all non legge questo valore
-		List<ArFfProgetto> lst =  sb.findProgettiByBelfioreOrganizzazione(dto);
+		List<KeyValueDTO> lst =  sb.findProgettiByBelfioreOrganizzazione(dto);
 		List<TabellaDecodificaBaseDTO> listTabDecodificaDTO = new ArrayList<TabellaDecodificaBaseDTO>();
-		for(ArFfProgetto s : lst) {
-			if(s.getAbilitato()!=null && s.getAbilitato()){
+		for(KeyValueDTO s : lst) {
+			if(s.isAbilitato()){
 				TabellaDecodificaBaseDTO tabDTO = new TabellaDecodificaBaseDTO();
 				tabDTO.setDescrizione(s.getDescrizione());
 				tabDTO.setTooltip(null);

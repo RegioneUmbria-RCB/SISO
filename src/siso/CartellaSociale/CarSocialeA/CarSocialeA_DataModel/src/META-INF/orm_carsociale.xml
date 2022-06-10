@@ -1051,7 +1051,7 @@
 		</query>
   </named-query>
 
-  <named-query name="CsASoggettoStatoCivileAttuale.findBySoggetto">
+  <named-query name="CsASoggettoStatoCivile.findAllaDataBySoggetto">
     <query>
 			<![CDATA[
 				select cs 
@@ -1059,7 +1059,7 @@
 				  	inner join fetch  cs.csTbStatoCivile sc
 				where cs.csTbStatoCivile.abilitato = '1'
 				and cs.id.soggettoAnagraficaId = :idSoggetto
-				and sysdate between cs.dataInizioApp and cs.id.dataFineApp
+				and :dtRif between cs.dataInizioApp and cs.id.dataFineApp
 			]]>
 		</query>
   </named-query>
@@ -1170,7 +1170,7 @@
 				SELECT DISTINCT ind.csAAnaIndirizzo.comCod, ind.csAAnaIndirizzo.comDes  
 				FROM CsAIndirizzo ind
 				WHERE ind.csTbTipoIndirizzo.id= :tipo 
-				AND NVL(IND.dataFineApp, TO_DATE('31/12/9999','dd/MM/yyyy')) > SYSDATE
+				AND NVL(ind.dataFineApp, TO_DATE('31/12/9999','dd/MM/yyyy')) > SYSDATE
 				AND ind.csAAnaIndirizzo.comCod IS NOT NULL 
 				ORDER BY ind.csAAnaIndirizzo.comDes
 			]]>
@@ -1183,7 +1183,7 @@
 				SELECT DISTINCT ind.csAAnaIndirizzo.statoCod, ind.csAAnaIndirizzo.statoDes  
 				FROM CsAIndirizzo ind
 				WHERE ind.csTbTipoIndirizzo.id= :tipo 
-				AND NVL(IND.dataFineApp, TO_DATE('31/12/9999','dd/MM/yyyy')) > SYSDATE
+				AND NVL(ind.dataFineApp, TO_DATE('31/12/9999','dd/MM/yyyy')) > SYSDATE
 				AND ind.csAAnaIndirizzo.statoCod IS NOT NULL and ind.csAAnaIndirizzo.statoCod <> '1'
 				ORDER BY ind.csAAnaIndirizzo.statoDes
 			]]>
@@ -1350,7 +1350,14 @@
 			]]>
 		</query>
   </named-query>
-
+  <named-query name="CsAlert.updateVisibile">
+    <query>
+			<![CDATA[
+				update CsAlert a set a.visibile = :visibile where a.id IN :listaIds
+			]]>
+		</query>
+  </named-query>
+  
   <named-query name="CsAlertConfig.getAlertConfigByTipo">
     <query>
 			<![CDATA[
@@ -1359,6 +1366,7 @@
 			]]>
 		</query>
   </named-query>
+  
   
   <named-query name="CsOOpsettoreAlertConfig.find">
     <query>

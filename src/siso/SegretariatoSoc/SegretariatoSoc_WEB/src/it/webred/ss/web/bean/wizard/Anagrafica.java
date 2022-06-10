@@ -26,6 +26,7 @@ public class Anagrafica implements CommonDatiAnaBean {
 	private String cognome;
 	private String nome;
 	private Date dataNascita;
+	private Date dataDecesso;
 	private ComuneNazioneNascitaMan comuneNazioneNascitaMan=new ComuneNazioneNascitaMan();
 	private boolean comNascNonValido;
 	private String comuneOld; //Utilizzato solo per la lettura di casi precedenti alla modifica, per cui non ha funzionato lo script di bonifica
@@ -119,6 +120,7 @@ public class Anagrafica implements CommonDatiAnaBean {
 		anagrafica.setNome(nome);
 		anagrafica.setCf(codiceFiscale!=null ? codiceFiscale.toUpperCase() : null);
 		anagrafica.setData_nascita(dataNascita);
+		anagrafica.setDataDecesso(dataDecesso);
 		anagrafica.setSesso(datiSesso.getSesso());
 		anagrafica.setCittadinanza(cittadinanza);
 		anagrafica.setCittadinanzaAcq(cittadinanzaAcq!=null && cittadinanzaAcq>0 ? cittadinanzaAcq : null);
@@ -152,13 +154,15 @@ public class Anagrafica implements CommonDatiAnaBean {
 		idOrigWs = anagrafica.getIdOrigWs();
 		codiceFiscale = anagrafica.getCf();
 		dataNascita = anagrafica.getData_nascita();
+		dataDecesso = anagrafica.getDataDecesso();
 		datiSesso.setSesso(anagrafica.getSesso());
 		comuneOld = anagrafica.getComune_nascita();
 		alias = anagrafica.getAlias();
 		
 		//cittaNascita = anagrafica.getComune_nascita();
 	    if(anagrafica.getComuneNascitaCod()!=null){
-	    	ComuneBean comuneBean = new ComuneBean(anagrafica.getComuneNascitaCod(),anagrafica.getComuneNascitaDes(), anagrafica.getProvNascitaCod());
+	    	Boolean attivo = CsUiCompBaseBean.isComuneItaAttivoByIstat(anagrafica.getComuneNascitaCod());
+	    	ComuneBean comuneBean = new ComuneBean(anagrafica.getComuneNascitaCod(),anagrafica.getComuneNascitaDes(), anagrafica.getProvNascitaCod(), attivo);
 	    	this.comuneNazioneNascitaMan.getComuneNascitaMan().setComune(comuneBean);
 	    }else if(anagrafica.getStatoNascitaCod()!=null){
 	    	AmTabNazioni amTabNazioni = CsUiCompBaseBean.getNazioneByIstat(anagrafica.getStatoNascitaCod(), anagrafica.getStatoNascitaDes());
@@ -183,6 +187,7 @@ public class Anagrafica implements CommonDatiAnaBean {
 		idOrigWs = p.getProvenienzaRicerca()+"@"+ (p.getIdentificativo()!=null ? p.getIdentificativo() : "");
 		codiceFiscale = p.getCodfisc();
 		dataNascita = p.getDataNascita();
+		dataDecesso = p.getDataMorte();
 		datiSesso.setSesso(p.getSesso());
 		
 		//Cittadinanza
@@ -256,5 +261,10 @@ public class Anagrafica implements CommonDatiAnaBean {
 				SEGNALATO_CF_ANONIMO.equalsIgnoreCase(this.cognome) ||
 				SEGNALATO_CF_ANONIMO.equalsIgnoreCase(this.nome);
 	}
-	
+	public Date getDataDecesso() {
+		return dataDecesso;
+	}
+	public void setDataDecesso(Date dataDecesso) {
+		this.dataDecesso = dataDecesso;
+	}
 }

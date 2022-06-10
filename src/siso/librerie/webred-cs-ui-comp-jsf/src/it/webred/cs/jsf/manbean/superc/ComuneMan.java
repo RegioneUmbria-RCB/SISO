@@ -19,13 +19,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public abstract class ComuneMan extends BasicManBean implements IComune  {
 
-	/**
-	 * 
-	 */
 	public ComuneBean comune;
 
 	public ComuneMan() {
 		
+	}
+	
+	@Override
+	public String getWarningMessage() {
+		return comune!=null && !comune.isAttivo() ? "Il comune selezionato risulta soppresso" : null;
 	}
 	
 	public ArrayList<ComuneBean> getLstComuni(String query) {

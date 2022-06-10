@@ -25,7 +25,6 @@ import it.webred.cs.data.model.CsASoggettoLAZY;
 import it.webred.cs.data.model.CsASoggettoMedico;
 import it.webred.cs.data.model.CsCMedico;
 import it.webred.cs.data.model.CsSchedeAltraProvenienza;
-import it.webred.cs.data.model.CsTbCittadinanzaAcq;
 import it.webred.cs.data.model.CsTbStatoCivile;
 import it.webred.cs.jsf.bean.DatiAnaBean;
 import it.webred.cs.jsf.bean.ValiditaCompBaseBean;
@@ -147,10 +146,12 @@ public class AnagraficaBean extends SchedaUtils implements IDatiAna {
 			datiAnaBean.setCognome(csAna.getCognome());
 			datiAnaBean.setNome(csAna.getNome());
 			datiAnaBean.setDataNascita(csAna.getDataNascita());
+			datiAnaBean.setDataDecesso(csAna.getDataDecesso());
 			datiAnaBean.setCodiceFiscale(csAna.getCf());
 			datiAnaBean.setIdOrigWs(csAna.getIdOrigWs());
 			if(csAna.getComuneNascitaCod() != null) {
-				ComuneBean comuneBean = new ComuneBean(csAna.getComuneNascitaCod(), csAna.getComuneNascitaDes(), csAna.getProvNascitaCod());
+				Boolean attivo = CsUiCompBaseBean.isComuneItaAttivoByIstat(csAna.getComuneNascitaCod());
+				ComuneBean comuneBean = new ComuneBean(csAna.getComuneNascitaCod(), csAna.getComuneNascitaDes(), csAna.getProvNascitaCod(), attivo);
 				comuneNazioneNascitaMan.getComuneNascitaMan().setComune(comuneBean);
 			}
 			if(csAna.getStatoNascitaCod() != null) {
@@ -435,6 +436,7 @@ public class AnagraficaBean extends SchedaUtils implements IDatiAna {
 			csAna.setNome(datiAnaBean.getNome());
 			csAna.setCognome(datiAnaBean.getCognome());
 			csAna.setDataNascita(datiAnaBean.getDataNascita());
+			csAna.setDataDecesso(datiAnaBean.getDataDecesso());
 			csAna.setCf(datiAnaBean.getCodiceFiscale());
 			csAna.setIdOrigWs(datiAnaBean.getIdOrigWs());
 			
@@ -569,7 +571,8 @@ public class AnagraficaBean extends SchedaUtils implements IDatiAna {
 				datiAnaBean.setNome(csAna.getNome());
 				datiAnaBean.setDataNascita(csAna.getDataNascita());
 				if(csAna.getComuneNascitaCod() != null) {
-					ComuneBean comuneBean = new ComuneBean(csAna.getComuneNascitaCod(), csAna.getComuneNascitaDes(), csAna.getProvNascitaCod());
+					Boolean attivo = CsUiCompBaseBean.isComuneItaAttivoByIstat(csAna.getComuneNascitaCod());
+					ComuneBean comuneBean = new ComuneBean(csAna.getComuneNascitaCod(), csAna.getComuneNascitaDes(), csAna.getProvNascitaCod(), attivo);
 					comuneNazioneNascitaMan.getComuneNascitaMan().setComune(comuneBean);
 				}
 				if(csAna.getStatoNascitaCod() != null) {
@@ -639,6 +642,7 @@ public class AnagraficaBean extends SchedaUtils implements IDatiAna {
 				anagraficaLog.setDataModifica(new Date());
 				anagraficaLog.setOperatore(username);
 			    anagraficaLog.setTipoAzione(getAccessoModifica());
+			    anagraficaLog.setDataDecesso(datiAnaBean.getDataDecesso());
 						
 			BaseDTO dto2 = new BaseDTO();
 			fillEnte(dto2);	
@@ -694,8 +698,7 @@ public class AnagraficaBean extends SchedaUtils implements IDatiAna {
 							datiAnaBean.setCognome(datoAggiornato.getElementiVariati().get(key));
 						}
 						if(TipoAggiornamentoAnagrafica.ANAGRAFICA_DATA_DECESSO.indexOf(key) > -1) {
-//							datiAnaBean.setDataDecesso(stringToDate(datoAggiornato.getElementiVariati().get(key)));
-							//Al momento non viene effettuata alcuna operazione!
+							datiAnaBean.setDataDecesso(stringToDate(datoAggiornato.getElementiVariati().get(key)));
 						}
 						if(TipoAggiornamentoAnagrafica.ANAGRAFICA_NOME.indexOf(key) > -1) {
 							datiAnaBean.setNome(datoAggiornato.getElementiVariati().get(key));
@@ -777,8 +780,7 @@ public class AnagraficaBean extends SchedaUtils implements IDatiAna {
 					
 					 residenzaCsaMan.setTipoComune(TIPO_LUOGO.ALTRO.getCodice());
 					 
-					 ComuneBean comuneResidenza = new ComuneBean(indirizzoAna.getComCod(), indirizzoAna.getComDes(), indirizzoAna.getProv());  
-					 comuneResidenza.setAttivo(true);
+					 ComuneBean comuneResidenza = new ComuneBean(indirizzoAna.getComCod(), indirizzoAna.getComDes(), indirizzoAna.getProv(), true);  
 					
 					 residenzaCsaMan.getComuneNazioneResidenzaMan().setComuneValue(); 
 					 residenzaCsaMan.getComuneNazioneResidenzaMan().getComuneResidenzaMan().setComune(comuneResidenza);
@@ -824,7 +826,7 @@ public class AnagraficaBean extends SchedaUtils implements IDatiAna {
 						 }
 					 }				
 					
-					//Se indirizzo non ha provincia, significa che non � variata e recupero la precedente per non � veriata!!!
+					//Se indirizzo non ha provincia, significa che non è variata e recupero la precedente per non è variata!!!
 					//Stesso controllo anche per il comune/nazione.
 					if(indirizzoAnaDom.getProv() == null || 
 					   indirizzoAnaDom.getComDes() == null || indirizzoAnaDom.getComCod() == null || 
@@ -834,8 +836,7 @@ public class AnagraficaBean extends SchedaUtils implements IDatiAna {
 					
 					 residenzaCsaMan.setTipoComune(TIPO_LUOGO.ALTRO.getCodice());
 
-					 ComuneBean comuneDomicilio = new ComuneBean(indirizzoAnaDom.getComCod(), indirizzoAnaDom.getComDes(), indirizzoAnaDom.getProv());  
-					 comuneDomicilio.setAttivo(true);
+					 ComuneBean comuneDomicilio = new ComuneBean(indirizzoAnaDom.getComCod(), indirizzoAnaDom.getComDes(), indirizzoAnaDom.getProv(), true);  
 					
 					 residenzaCsaMan.getComuneNazioneResidenzaMan().setComuneValue(); 
 					 residenzaCsaMan.getComuneNazioneResidenzaMan().getComuneResidenzaMan().setComune(comuneDomicilio);
@@ -1250,7 +1251,7 @@ public class AnagraficaBean extends SchedaUtils implements IDatiAna {
 		Date parsed;
 		try {
 		    SimpleDateFormat format =
-		        new SimpleDateFormat("dd-MM-yyyy");
+		        new SimpleDateFormat("dd/MM/yyyy");
 		    parsed = format.parse(dateValue);
 		}
 		catch(ParseException pe) {

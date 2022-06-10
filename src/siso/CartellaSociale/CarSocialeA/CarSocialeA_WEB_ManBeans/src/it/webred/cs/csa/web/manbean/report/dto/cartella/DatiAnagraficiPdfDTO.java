@@ -7,6 +7,7 @@ public class DatiAnagraficiPdfDTO extends BasePdfDTO {
 	private String cognome = EMPTY_VALUE;
 	private String nome = EMPTY_VALUE;
 	private String dataNascita = EMPTY_VALUE;
+	private String dataMorte = EMPTY_VALUE;
 	private	String luogoNascita = EMPTY_VALUE;
 	private String sesso = EMPTY_VALUE;
 	private String codFiscale = EMPTY_VALUE;
@@ -82,6 +83,12 @@ public class DatiAnagraficiPdfDTO extends BasePdfDTO {
 	}
 	public void setEmail(String email) {
 		this.email = email;
+	}
+	public String getDataMorte() {
+		return dataMorte;
+	}
+	public void setDataMorte(String dataMorte) {
+		this.dataMorte = dataMorte;
 	}
 	
 }

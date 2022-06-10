@@ -648,7 +648,7 @@ public class DatiInterventoBean extends CsUiCompBaseBean implements Serializable
 				String citta = this.affido.getFamCitta().substring(0,index);
 				String prov = this.affido.getFamCitta().substring(index+1);
 			    AmTabComuni amComune = luoghiService.getComuneItaByDenominazioneProvincia(citta, prov);
-				ComuneBean comune = new ComuneBean(amComune.getCodIstatComune(),amComune.getDenominazione(),amComune.getSiglaProv());
+				ComuneBean comune = new ComuneBean(amComune);
 				this.affComuneFamiglia.setComune(comune);
 			}
 		}catch(Exception e){}

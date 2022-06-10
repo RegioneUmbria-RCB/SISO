@@ -227,7 +227,7 @@ public class SchedaPaiMan extends CsUiCompBaseBean implements ISchedaPAI {
 	
 	public List<SelectItem> getLstArFfProgetti() {
 		if(this.lstArFfProgetti==null)
-			lstArFfProgetti = this.loadLstArFfProgetti();
+			lstArFfProgetti = this.loadLstArFfProgetti(pai.getTipoProgettoId());
 		return lstArFfProgetti;
 	}
 

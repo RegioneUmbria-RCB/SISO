@@ -37,6 +37,7 @@ public abstract class LazySchedeUdcDataModel extends LazyDataModel<Scheda> imple
 		String fOperatore = (String)  filters.get("operatore");
 		String fPuntoContatto = (String)  filters.get("puntoContatto");
 		String fAlias = (String)  filters.get("alias"); 
+		String residenza = (String) filters.get("residenza");
 		
 		if(fIntervento!=null)
 			ss.setTipoScheda(new Integer(fIntervento));
@@ -58,6 +59,9 @@ public abstract class LazySchedeUdcDataModel extends LazyDataModel<Scheda> imple
 		
 		if(fAlias!=null)
 			ss.setAlias(fAlias);
+		
+		if(residenza!=null)
+			ss.setResidenza(residenza);
 		
 	  return ss;
   }

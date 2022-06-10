@@ -113,6 +113,7 @@ public class ReportCartellaFiller extends CsUiCompBaseBean {
 		ana.setCognome(anaBean.getDatiAnaBean().getCognome());
 		ana.setNome(anaBean.getDatiAnaBean().getNome());
 		ana.setDataNascita(fillData(anaBean.getDatiAnaBean().getDataNascita()));
+		ana.setDataMorte(fillData(anaBean.getDatiAnaBean().getDataDecesso()));
 		if (anaBean.getComuneNazioneNascitaMan().getComuneNascitaMan().getComune() != null) {
 			ComuneBean comune = anaBean.getComuneNazioneNascitaMan().getComuneNascitaMan().getComune();
 			ana.setLuogoNascita(comune.getDenominazione() + " (" + comune.getSiglaProv() + ")");

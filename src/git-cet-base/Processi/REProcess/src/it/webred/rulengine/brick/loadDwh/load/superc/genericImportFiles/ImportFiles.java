@@ -1,6 +1,7 @@
 package it.webred.rulengine.brick.loadDwh.load.superc.genericImportFiles;
 
 import it.webred.rulengine.Context;
+
 import it.webred.rulengine.brick.loadDwh.load.superc.genericImportFiles.env.EnvImport;
 import it.webred.rulengine.brick.loadDwh.load.superc.genericImportFiles.exceptions.ImportFilesException;
 import it.webred.rulengine.brick.loadDwh.load.superc.genericImportFiles.exceptions.TroppiErroriImportFileException;
@@ -426,7 +427,7 @@ public abstract class ImportFiles<T extends EnvImport>  {
                                                 s.append("INSERT INTO ");
                                                 s.append(tempTable);
                                                 s.append(" VALUES(");
-                                                for (int ii = 0; ii < campi.size(); ii++)       {
+                                                for (int ii = 0; ii < campi.size(); ii++) {
                                                                 s.append("?,");
                                                 }
                                                 s.append("?,"); // processid

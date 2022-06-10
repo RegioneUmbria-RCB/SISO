@@ -15,7 +15,6 @@ import it.webred.cs.csa.ejb.dto.OperatoreDTO;
 import it.webred.cs.csa.ejb.dto.OrganizzazioneDTO;
 import it.webred.cs.csa.ejb.dto.alert.AlertDTO;
 import it.webred.cs.csa.ejb.dto.erogazioni.SoggettoErogazioneBean;
-import it.webred.cs.csa.ejb.dto.retvalue.CsIterStepByCasoDTO;
 import it.webred.cs.csa.web.manbean.fascicolo.provvedimentiMinori.IProvvedimentiMinori;
 import it.webred.cs.csa.web.manbean.fascicolo.provvedimentiMinori.ver1.ProvvedimentiMinoriManBean;
 import it.webred.cs.data.DataModelCostanti;

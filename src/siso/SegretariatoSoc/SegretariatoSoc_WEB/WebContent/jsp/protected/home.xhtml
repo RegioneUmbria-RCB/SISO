@@ -464,6 +464,12 @@
 				       <p:column headerText="Cod.fiscale" filterBy="cf" filterMatchMode="contains">  
 				            <h:outputText value="#{scheda.cf}" style="text-transform: uppercase" />
 				        </p:column>
+				        <p:column headerText="Alias" filterBy="alias" filterMatchMode="contains"  >
+				      			<h:outputText value="#{scheda.alias}" style="text-transform: uppercase" />
+			        	</p:column>
+				        <p:column headerText="Residenza" filterBy="residenza" filterMatchMode="contains"  > 
+			           		 <h:outputText value="#{scheda.residenza}" style="text-transform: uppercase" />
+			         	</p:column> 
 				        
 				        <p:column headerText="Punto di Contatto" filterBy="puntoContatto" filterOptions="#{schedeIncompleteBean.ptoContt}" > 
 				            #{scheda.puntoContatto}  

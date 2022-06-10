@@ -1,12 +1,12 @@
 package it.webred.jsf.bean;
 
-import it.webred.ct.config.model.AmTabComuni;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import it.webred.ct.config.model.AmTabComuni;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ComuneBean {
-
+	
 	private String codIstatComune;
 	private String denominazione;
 	private String denominazione2;
@@ -16,10 +16,11 @@ public class ComuneBean {
 	
 	public ComuneBean(){}
 	
-	public ComuneBean(String codIstatComune, String denominazione, String siglaPov) {
+	public ComuneBean(String codIstatComune, String denominazione, String siglaProv, Boolean attivo) {
 		this.codIstatComune = codIstatComune;
 		this.denominazione = denominazione;
-		this.siglaProv = siglaPov;
+		this.siglaProv = siglaProv;
+		this.attivo = attivo;
 	}
 	
 	public ComuneBean(AmTabComuni comune){

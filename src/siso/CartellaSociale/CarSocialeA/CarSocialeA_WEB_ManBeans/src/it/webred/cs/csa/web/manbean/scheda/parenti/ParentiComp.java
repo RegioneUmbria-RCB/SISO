@@ -13,6 +13,7 @@ import it.webred.cs.data.model.CsTbPotesta;
 import it.webred.cs.data.model.CsTbTipoRapportoCon;
 import it.webred.cs.jsf.bean.ValiditaCompBaseBean;
 import it.webred.cs.jsf.interfaces.IParenti;
+import it.webred.cs.jsf.manbean.superc.CsUiCompBaseBean;
 import it.webred.ct.config.model.AmTabNazioni;
 import it.webred.jsf.bean.ComuneBean;
 import it.webred.jsf.bean.SessoBean;
@@ -283,7 +284,8 @@ public class ParentiComp extends ValiditaCompBaseBean implements IParenti {
 		to.setIndirizzo(from.getIndirizzoRes());
 		to.setCivico(from.getNumCivRes());
 		
-		ComuneBean comuneRes = new ComuneBean(from.getComResCod(),from.getComResDes(), from.getProvResCod());
+		boolean attivoRes = CsUiCompBaseBean.isComuneItaAttivoByIstat(from.getComResCod());
+		ComuneBean comuneRes = new ComuneBean(from.getComResCod(),from.getComResDes(), from.getProvResCod(), attivoRes);
 		to.getComuneNazioneResidenzaBean().getComuneMan().setComune(comuneRes);
 		to.getComuneNazioneResidenzaBean().setComuneValue();
 		if (from.getComAltroCod() != null) {
@@ -296,10 +298,11 @@ public class ParentiComp extends ValiditaCompBaseBean implements IParenti {
 		
 		to.setNote(from.getCsAAnagrafica().getNote());
 		
+		boolean attivoNas = CsUiCompBaseBean.isComuneItaAttivoByIstat(from.getCsAAnagrafica().getComuneNascitaCod());
 		ComuneBean comuneNas = new ComuneBean(from.getCsAAnagrafica()
 				.getComuneNascitaCod(), from.getCsAAnagrafica()
 				.getComuneNascitaDes(), from.getCsAAnagrafica()
-				.getProvNascitaCod());
+				.getProvNascitaCod(), attivoNas);
 		to.getComuneNazioneNascitaBean().setComuneValue();
 		to.getComuneNazioneNascitaBean().getComuneMan().setComune(comuneNas);
 		if (from.getCsAAnagrafica().getStatoNascitaCod() != null) {

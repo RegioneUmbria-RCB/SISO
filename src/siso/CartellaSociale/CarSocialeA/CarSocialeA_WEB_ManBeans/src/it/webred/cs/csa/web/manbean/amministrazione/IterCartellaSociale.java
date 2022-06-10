@@ -8,15 +8,8 @@ import javax.faces.model.SelectItem;
 import it.umbriadigitale.interscambio.data.wrapper.MessageDataWrapper;
 import it.webred.cs.csa.ejb.client.AccessTableIterStepSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.AccessTableSoggettoSessionBeanRemote;
-import it.webred.cs.csa.ejb.dto.BaseDTO;
 import it.webred.cs.csa.ejb.dto.KeyValueDTO;
 import it.webred.cs.csa.ejb.dto.OperatoreDTO;
-import it.webred.cs.data.model.CsASoggettoCategoriaSoc;
-import it.webred.cs.data.model.CsASoggettoLAZY;
-import it.webred.cs.data.model.CsOOperatore;
-import it.webred.cs.data.model.CsOOperatoreSettore;
-import it.webred.cs.data.model.CsOOrganizzazione;
-import it.webred.cs.data.model.CsOSettoreBASIC;
 import it.webred.cs.jsf.manbean.superc.CsUiCompBaseBean;
 import it.webred.ct.support.datarouter.CeTBaseObject;
 import it.webred.utilities.DateTimeUtils;
@@ -56,8 +49,7 @@ public class IterCartellaSociale extends CsUiCompBaseBean {
 		List<SelectItem> operatores = new ArrayList<SelectItem>();
 		try{
 			List<KeyValueDTO> result = confEnteService.findListaOperatoreSettoreBySettore(dto);
-			for (KeyValueDTO it : result)
-				operatores.add(new SelectItem( it.getCodice(), it.getDescrizione()));	
+			operatores.addAll(convertiLista(result));
 		}catch(Exception ex){
 			logger.error(ex.getMessage());
 		}	

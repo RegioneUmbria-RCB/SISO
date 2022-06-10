@@ -631,20 +631,25 @@ public void updateCompletamentoScheda(SsScheda  scheda)throws Exception{
 	}*/
 	
 	public Long countSchedeUDC(SsSearchCriteria criteria){
-		String sql = new SsQueryBuilder(criteria).createQueryLista(true);
+		SsQueryBuilder qb = new SsQueryBuilder(criteria);
+		String sql = qb.createQueryLista(true);
 		logger.debug("count SQL LISTA SCHEDE UDC[" + sql+"]");
 		
 		Query q = em.createNativeQuery(sql);
+		qb.setFilterParameters(q);
 		BigDecimal bd = (BigDecimal)q.getSingleResult();
 		return bd.longValue();
 	}
 	
 	public List<DatiSchedaListDTO> searchSchedeUDC(SsSearchCriteria criteria){
 		List<DatiSchedaListDTO> lstout = new ArrayList<DatiSchedaListDTO>();
-		String sql = new SsQueryBuilder(criteria).createQueryLista(false);
+		SsQueryBuilder qb = new SsQueryBuilder(criteria);
+		String sql = qb.createQueryLista(false);
 		logger.debug("SQL LISTA SCHEDE UDC[" + sql+"]");
 		
 		Query q = em.createNativeQuery(sql);
+		qb.setFilterParameters(q);
+		
 		if(criteria.getFirst() != null)
 			q.setFirstResult(criteria.getFirst());
 		if(criteria.getPageSize() != null)
@@ -672,6 +677,7 @@ public void updateCompletamentoScheda(SsScheda  scheda)throws Exception{
 			dto.setEnteSegnalazionePIC((String)o[15]);
 			dto.setCfUtente((String)o[16]);
 			dto.setAlias((String)o[17]);
+			dto.setResidenza((String)o[18]);
 			
 			lstout.add(dto);
 		}
@@ -683,10 +689,12 @@ public void updateCompletamentoScheda(SsScheda  scheda)throws Exception{
 	
 	public List<DatiSchedaListDTO> searchSchedeInviateUDC(SsSearchCriteria criteria) {
 		List<DatiSchedaListDTO> lstout = new ArrayList<DatiSchedaListDTO>();
-		String sql = new SsQueryBuilder(criteria).createQueryListaInviate(false);
+		SsQueryBuilder qb = new SsQueryBuilder(criteria);
+		String sql = qb.createQueryListaInviate(false);
 		logger.debug("SQL LISTA SCHEDE UDC[" + sql + "]");
 
 		Query q = em.createNativeQuery(sql);
+		qb.setFilterParameters(q);
 		if (criteria.getFirst() != null)
 			q.setFirstResult(criteria.getFirst());
 		if (criteria.getPageSize() != null)
@@ -868,9 +876,11 @@ public void updateCompletamentoScheda(SsScheda  scheda)throws Exception{
 	}
 
 	public List<SsSchedaSegnalato> searchSchedeBySoggetto(SsSearchCriteria criteria) {
-		String sql = new SsQueryBuilder(criteria).createQueryListaSoggetti();
+		SsQueryBuilder qb = new SsQueryBuilder(criteria);
+		String sql = qb.createQueryListaSoggetti();
 		logger.debug("SQL LISTA SCHEDE UDC[" + sql + "]");
 		Query q = em.createQuery(sql);
+		qb.setFilterParameters(q);
 		return q.getResultList();
 	}
 	//SISO-948

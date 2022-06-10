@@ -1195,7 +1195,7 @@ public class AccessTableInterventoSessionBean extends CarSocialeBaseSessionBean 
 		pds.setCsTbIngMercato(progetto.getCsTbIngMercato());
 		
 		if(fse.getComunicaVul()) {
-			pds.setGrpVulnerabilita(fse.getCsTbGrVulnerabile()!=null ? fse.getCsTbGrVulnerabile().getId() : null);
+			pds.setGrpVulnerabilita(fse.getCsTbGrVulnerabile()!=null && ! "0".equals(fse.getCsTbGrVulnerabile().getId()) ? fse.getCsTbGrVulnerabile().getId() : null);
 		}else{
 			boolean regMarche = false;
 			String modelloPor = this.getGlobalParameter(DataModelCostanti.AmParameterKey.POR_MODELLO_STAMPA);

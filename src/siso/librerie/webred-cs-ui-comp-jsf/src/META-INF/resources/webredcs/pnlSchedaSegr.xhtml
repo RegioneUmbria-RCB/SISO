@@ -364,8 +364,8 @@
 					<h:outputText value="#{cc.attrs.iSchedaSegr.ssScheda.interventi.altro}" />
 				</h:panelGrid>
 
-				<p:outputPanel rendered="#{cc.attrs.iSchedaSegr.scheda.listaInterventiEcon != null }">
-					<p:dataTable emptyMessage="Nessun elemento trovato" var="econ" value="#{cc.attrs.iSchedaSegr.scheda.listaInterventiEcon}">
+				<p:outputPanel rendered="#{cc.attrs.iSchedaSegr.scheda.listaInterventiEconomici != null }">
+					<p:dataTable emptyMessage="Nessun elemento trovato" var="econ" value="#{cc.attrs.iSchedaSegr.scheda.listaInterventiEconomici}">
 						<f:facet name="header"> Interventi economici </f:facet>
 
 						<p:column headerText="Data">

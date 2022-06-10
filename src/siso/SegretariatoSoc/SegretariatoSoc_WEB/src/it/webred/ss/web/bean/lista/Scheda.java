@@ -36,6 +36,7 @@ public class Scheda extends SegretariatoSocBaseBean {
 	private String cf;
 	private String descOrganizzazione;
 	private String alias;
+	private String residenza;
 	
 	/*public Scheda(Date dataAccesso, String cognome, String nome,
 			Date dataNascita, String tipo, String stato, String operatore) {
@@ -74,6 +75,7 @@ public class Scheda extends SegretariatoSocBaseBean {
 		this.descOrganizzazione = dto.getDescOrganizzazione();
 		this.alias = dto.getAlias();
 		this.enteSegnalazionePIC = dto.getEnteSegnalazionePIC();
+		this.residenza = dto.getResidenza();
 		
 		if(dto.getDataPrivacy()!=null) {
 			String sdata = new SimpleDateFormat("dd/MM/yyyy").format(dto.getDataPrivacy());
@@ -305,5 +307,13 @@ public class Scheda extends SegretariatoSocBaseBean {
 		boolean val = this.getDenominazione().contains(Anagrafica.SEGNALATO_CF_ANONIMO) 
 				   || this.getCf().contains(Anagrafica.SEGNALATO_CF_ANONIMO);
 		return val;
+	}
+
+	public String getResidenza() {
+		return residenza;
+	}
+
+	public void setResidenza(String residenza) {
+		this.residenza = residenza;
 	}
 }

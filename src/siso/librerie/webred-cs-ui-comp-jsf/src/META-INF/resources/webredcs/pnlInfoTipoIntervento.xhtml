@@ -24,6 +24,9 @@
 					             var="inps" style="font-size: 0.8em;">
 						<f:facet name="header">Codifiche Inps</f:facet>
 					
+						<p:column headerText="Codice" width="20" >
+							<p:outputLabel value="#{inps.codice}" />
+						</p:column>
 						<p:column headerText="PSA" width="20" >
 							<p:outputLabel value="#{inps.psa ? 'Si' : 'No'}" />
 						</p:column>

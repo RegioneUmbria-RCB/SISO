@@ -1,18 +1,14 @@
 package it.webred.cs.jsf.bean;
 
-import it.webred.cs.csa.utils.StringUtils;
-import it.webred.cs.data.model.CsTbCittadinanzaAcq;
-import it.webred.cs.jsf.manbean.common.CommonDatiAnaBean;
-import it.webred.cs.jsf.manbean.superc.CsUiCompBaseBean;
-import it.webred.jsf.bean.SessoBean;
-
 import java.io.Serializable;
 import java.util.Date;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.NoneScoped;
-import javax.faces.bean.SessionScoped;
-import javax.persistence.Column;
+
+import it.webred.cs.csa.utils.StringUtils;
+import it.webred.cs.jsf.manbean.common.CommonDatiAnaBean;
+import it.webred.jsf.bean.SessoBean;
 
 @ManagedBean
 @NoneScoped
@@ -23,6 +19,7 @@ public class DatiAnaBean implements Serializable, CommonDatiAnaBean {
 	private String cognome;
 	private String nome;
 	private Date dataNascita;
+	private Date dataDecesso;
 	private SessoBean datiSesso = new SessoBean();;
 	private String codiceFiscale;
 	private String telefono;
@@ -180,6 +177,14 @@ public class DatiAnaBean implements Serializable, CommonDatiAnaBean {
 				tipo = xx.length>0 ? xx[0] : null;
 			}
 		return tipo;
+	}
+
+	public Date getDataDecesso() {
+		return dataDecesso;
+	}
+
+	public void setDataDecesso(Date dataDecesso) {
+		this.dataDecesso = dataDecesso;
 	}
 
 }

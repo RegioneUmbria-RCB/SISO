@@ -12,9 +12,7 @@ import javax.faces.bean.NoneScoped;
 @NoneScoped
 public class ComuneNascitaMan extends ComuneMan implements   Serializable {
 
-	/**
-	 * 
-	 */
+	
 	private static final long serialVersionUID = 1L; 
 
 	@Override

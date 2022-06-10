@@ -199,7 +199,8 @@ public class PersonaRiferimento {
 			codStatoCivile = riferimento.getCodStatoCivile();
 			datiSesso.setSesso(riferimento.getSesso());
 			if(riferimento.getComuneNascitaCod()!=null){
-		    	ComuneBean comuneBean = new ComuneBean(riferimento.getComuneNascitaCod(), riferimento.getComuneNascitaDes(), riferimento.getProvNascitaCod());
+				boolean attivo = CsUiCompBaseBean.isComuneItaAttivoByIstat(riferimento.getComuneNascitaCod());
+		    	ComuneBean comuneBean = new ComuneBean(riferimento.getComuneNascitaCod(), riferimento.getComuneNascitaDes(), riferimento.getProvNascitaCod(), attivo);
 		    	this.comuneNazioneNascitaMan.getComuneNascitaMan().setComune(comuneBean);
 		    }else if(riferimento.getStatoNascitaCod()!=null){
 		    	AmTabNazioni amTabNazioni = CsUiCompBaseBean.getNazioneByIstat(riferimento.getStatoNascitaCod(), riferimento.getStatoNascitaDes());

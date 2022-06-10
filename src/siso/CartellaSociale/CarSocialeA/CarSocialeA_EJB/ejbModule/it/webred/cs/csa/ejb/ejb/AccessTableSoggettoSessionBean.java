@@ -508,9 +508,7 @@ public class AccessTableSoggettoSessionBean extends CarSocialeBaseSessionBean im
 			if(c.getIndirizzoDom() != null && indirizzoDom != null && indirizzoDom.getId() != 0L) {
 					segnalazione = ( this.compareIndirizzoToIndirizzoDb(c, indirizzoDom,mappaVariazioniAnag, 1) == false ?  segnalazione : true);
 					
-			}
-			else if(c.getIndirizzoDom() != null) {
-	
+			}else if(c.getIndirizzoDom() != null) {
 				if(this.compareIndirizzoToIndirizzoDb(c, indirizzoRes,null, 1)) {
 				   segnalazione = (this.compareIndirizzoToIndirizzoDb(c, indirizzoDom,mappaVariazioniAnag, 1) == false ? segnalazione : true);
 				}
@@ -747,8 +745,7 @@ public class AccessTableSoggettoSessionBean extends CarSocialeBaseSessionBean im
 
 	 
 	private  boolean compareIndirizzoToIndirizzoDb(CsAComponenteAnagCasoGit componenteInput, 
-			CsAAnaIndirizzo indirizzo,LinkedHashMap<String, String> mapVariazioni,
-			int tipoIndirizzoDB ) {
+			CsAAnaIndirizzo indirizzo,LinkedHashMap<String, String> mapVariazioni, int tipoIndirizzoDB ) {
 		boolean diversi = false;
 		 
 		if(indirizzo == null || indirizzo.getId() == 0L)
@@ -879,8 +876,8 @@ public class AccessTableSoggettoSessionBean extends CarSocialeBaseSessionBean im
 	   
 	}
 	/***
-	 * torna TRUE quando STR1 � nulla e lo � anche STR2 oppure quando STR1 � UGUALE a STR2 (che non � nulla)
-	 * torna FALSE quando STR1 � NULL e STR2 � diverso da NULL oppure quando STR1 � DIVERSO da STR2 (che puo' essere nullo)
+	 * torna TRUE quando STR1 è nulla e lo è anche STR2 oppure quando STR1 è UGUALE a STR2 (che non è nulla)
+	 * torna FALSE quando STR1 è NULL e STR2 è diverso da NULL oppure quando STR1 è DIVERSO da STR2 (che puo' essere nullo)
 	 * @param str1
 	 * @param str2
 	 * @return

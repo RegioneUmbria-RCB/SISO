@@ -1,33 +1,5 @@
 package it.webred.cs.csa.web.manbean.fascicolo.erogazioniInterventi;
 
-import it.webred.cs.csa.ejb.client.AccessTableInterventoSessionBeanRemote;
-import it.webred.cs.csa.ejb.client.AccessTablePsExportSessionBeanRemote;
-import it.webred.cs.csa.ejb.client.AccessTableSoggettoSessionBeanRemote;
-import it.webred.cs.csa.ejb.dto.BaseDTO;
-import it.webred.cs.csa.ejb.dto.KeyValueDTO;
-import it.webred.cs.csa.ejb.dto.erogazioni.ErogazioneMasterDTO;
-import it.webred.cs.csa.ejb.dto.erogazioni.SoggettoErogazioneBean;
-import it.webred.cs.csa.ejb.dto.pai.CsPaiMastSoggDTO;
-import it.webred.cs.csa.ejb.dto.pai.pti.InserimentoConsuntivazioneDTO;
-import it.webred.cs.csa.ejb.dto.pai.pti.StrutturaDisponibilitaDTO;
-import it.webred.cs.csa.web.manbean.fascicolo.FglInterventoBean;
-import it.webred.cs.csa.web.manbean.fascicolo.interventiTreeView.TipoInterventoManBean;
-import it.webred.cs.data.DataModelCostanti;
-import it.webred.cs.data.DataModelCostanti.TipoRicercaSoggetto;
-import it.webred.cs.data.model.CsAAnaIndirizzo;
-import it.webred.cs.data.model.CsAAnagrafica;
-import it.webred.cs.data.model.CsASoggettoLAZY;
-import it.webred.cs.data.model.CsIInterventoEsegMast;
-import it.webred.cs.data.model.CsIPsExport;
-import it.webred.cs.data.model.CsOSettore;
-import it.webred.cs.jsf.bean.DatiUserSearchBean;
-import it.webred.cs.jsf.manbean.ComuneNazioneNascitaMan;
-import it.webred.cs.jsf.manbean.UserSearchBeanExt;
-import it.webred.cs.jsf.manbean.superc.CsUiCompBaseBean;
-import it.webred.ct.config.model.AmTabNazioni;
-import it.webred.jsf.bean.ComuneBean;
-import it.webred.siso.ws.ricerca.dto.PersonaDettaglio;
-
 import java.io.IOException;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
@@ -55,6 +27,33 @@ import org.apache.poi.ss.usermodel.Row;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import it.webred.cs.csa.ejb.client.AccessTableInterventoSessionBeanRemote;
+import it.webred.cs.csa.ejb.client.AccessTablePsExportSessionBeanRemote;
+import it.webred.cs.csa.ejb.client.AccessTableSoggettoSessionBeanRemote;
+import it.webred.cs.csa.ejb.dto.BaseDTO;
+import it.webred.cs.csa.ejb.dto.KeyValueDTO;
+import it.webred.cs.csa.ejb.dto.erogazioni.ErogazioneMasterDTO;
+import it.webred.cs.csa.ejb.dto.erogazioni.SoggettoErogazioneBean;
+import it.webred.cs.csa.ejb.dto.pai.CsPaiMastSoggDTO;
+import it.webred.cs.csa.ejb.dto.pai.pti.InserimentoConsuntivazioneDTO;
+import it.webred.cs.csa.ejb.dto.pai.pti.StrutturaDisponibilitaDTO;
+import it.webred.cs.csa.web.manbean.fascicolo.FglInterventoBean;
+import it.webred.cs.csa.web.manbean.fascicolo.interventiTreeView.TipoInterventoManBean;
+import it.webred.cs.data.DataModelCostanti;
+import it.webred.cs.data.DataModelCostanti.TipoRicercaSoggetto;
+import it.webred.cs.data.model.CsAAnaIndirizzo;
+import it.webred.cs.data.model.CsAAnagrafica;
+import it.webred.cs.data.model.CsASoggettoLAZY;
+import it.webred.cs.data.model.CsIInterventoEsegMast;
+import it.webred.cs.data.model.CsIPsExport;
+import it.webred.cs.data.model.CsOSettore;
+import it.webred.cs.jsf.bean.DatiUserSearchBean;
+import it.webred.cs.jsf.manbean.ComuneNazioneNascitaMan;
+import it.webred.cs.jsf.manbean.UserSearchBeanExt;
+import it.webred.cs.jsf.manbean.superc.CsUiCompBaseBean;
+import it.webred.jsf.bean.ComuneBean;
+import it.webred.siso.ws.ricerca.dto.PersonaDettaglio;
 
 @ManagedBean
 @ViewScoped
@@ -156,6 +155,15 @@ public class ErogazioniInterventiBean extends CsUiCompBaseBean {
 		fglInterventoBean.setFromPai(Boolean.TRUE);
 	}
 	public void inizializzaSoggettoDialog(DatiUserSearchBean sbean){
+		PersonaDettaglio p  = sbean.getSoggetto();
+		if(p!=null) {
+			String titleBlocco = "Non è possibile creare una nuova erogazione";
+			String msgBlocco = "Il soggetto selezionato è";
+			if (p.isDefunto() && CsUiCompBaseBean.isBloccaUtentiDefunti()) {
+				addWarning(titleBlocco,msgBlocco +" deceduto" + (p.getDataMorte()!=null ? "il "+ddMMyyyy.format(p.getDataMorte()) : ""));
+				return;
+			}
+		}
 		this.nuovoSoggetto=sbean;
 		this.inizializzaDialogo(null);
 	}
@@ -176,7 +184,7 @@ public class ErogazioniInterventiBean extends CsUiCompBaseBean {
 				if(sbean.isAnagrafeSigess())
 					p = getPersonaDaAnagEsterna(TipoRicercaSoggetto.SIGESS, idPersonaSelezionata.replace(DataModelCostanti.TipoRicercaSoggetto.SIGESS, ""));
 				
-			if (p != null){
+			if (p != null) {
 				comuneNazioneNascitaMan.init(p.getComuneNascita(), p.getNazioneNascita());
 				
 				String jsonResidenza=null;

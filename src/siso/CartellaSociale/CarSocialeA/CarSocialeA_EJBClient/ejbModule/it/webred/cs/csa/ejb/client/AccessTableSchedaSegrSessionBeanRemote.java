@@ -5,7 +5,6 @@ import java.util.List;
 import it.webred.cs.csa.ejb.dto.BaseDTO;
 import it.webred.cs.csa.ejb.dto.SchedaSegrDTO;
 import it.webred.cs.csa.ejb.dto.SegnalazioneDTO;
-import it.webred.cs.csa.ejb.dto.udc.DatiSchedaAccessoDTO;
 import it.webred.cs.csa.ejb.dto.udc.ListaDatiSchedaUdC;
 import it.webred.cs.data.model.CsSsSchedaSegr;
 import it.webred.cs.data.model.CsSchedeAltraProvenienza;

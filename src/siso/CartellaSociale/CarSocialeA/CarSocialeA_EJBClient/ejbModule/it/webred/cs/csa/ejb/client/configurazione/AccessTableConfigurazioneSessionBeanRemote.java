@@ -317,8 +317,7 @@ public interface AccessTableConfigurazioneSessionBeanRemote {
 
 	public Boolean esisteAlmenoUnMotivoChiusura(BaseDTO dto);
 
-	/* PROGETTI e SOTTOCORSI */
-	public List<ArFfProgetto> findProgettiByBelfioreOrganizzazione(BaseDTO dto); // SISO-522 - modificato SISO-575
+	public List<KeyValueDTO> findProgettiByBelfioreOrganizzazione(BaseDTO dto); // SISO-522 - modificato SISO-575
 	
 	public ArFfProgetto getProgettiById(BaseDTO dto);
 
@@ -408,6 +407,5 @@ public interface AccessTableConfigurazioneSessionBeanRemote {
 
 	public boolean existsTransizioneTraStati(BaseDTO dto);
 
-	public CsTbSinaRisposta findSinaRisposta(BaseDTO dto);
-	
+	public CsTbSinaRisposta findSinaRisposta(BaseDTO dto);	
 }

@@ -45,6 +45,11 @@
 						<p:column headerText="Luogo di Nascita" style="text-align:center;"><h:outputText value="#{inte.luogoNascita}" /></p:column>
 						<p:column headerText="Sesso" style="text-align:center;"><h:outputText value="#{inte.sesso}" /></p:column>
 						<p:column headerText="Cittadinanza" style="text-align:center;"><h:outputText value="#{inte.cittadinanza}" /></p:column>
+						<p:column headerText="Data Decesso" style="text-align:center;">
+							<h:outputText value="#{inte.dataDecesso}" >
+								<f:convertDateTime pattern="dd/MM/yyyy" />
+							</h:outputText>
+						</p:column>
 					</p:dataTable>
            		</p:tooltip>	
 		</h:panelGrid>
@@ -161,14 +166,15 @@
 				filterMatchMode="startsWith" disabled="#{cc.attrs.iDatiAna.disabilitaForm}">
 				<f:selectItems value="#{cc.attrs.iDatiAna.lstCittadinanze}" />
 			</p:selectOneMenu>
+			
 			<h:outputText value="Residenza *" />
 			<webred:pnlResidenza id="residenza" residenzaManBean="#{cc.attrs.iDatiAna.residenzaCsaMan}" labelStyle="display:block;width: 162px;"
 				panelStyleClass="#{cc.attrs.panelStyleClass}" 
 				codiceFiscale="#{cc.attrs.iDatiAna.datiAnaBean.codiceFiscale}"
 				tipoRicercaSoggetto="#{cc.attrs.iDatiAna.datiAnaBean.tipoRicercaSoggetto}"
 				disableModifica="#{cc.attrs.disableModifica or cc.attrs.iDatiAna.disabilitaForm}" 
-				attivaSalvataggio="#{!cc.attrs.iDatiAna.disabilitaForm}"/>
-			
+				attivaSalvataggio="#{not cc.attrs.iDatiAna.disabilitaForm}"/>
+				
 			<h:outputText value="Stato civile" />
 			<webredcs:pnlDataValiditaGestione var="SC" textDialogHeader="Gestione Stato Civile" iDatiValGestione="#{cc.attrs.iDatiAna.statoCivileGestBean}"
 				disableModifica="#{cc.attrs.disableModifica or cc.attrs.iDatiAna.disabilitaForm}"/>
@@ -203,6 +209,13 @@
 				rendered="#{cc.attrs.iDatiAna.visDataAperturaFascicoloFam}" dataPattern="dd/MM/yyyy" dataValMes="Data apertura fascicolo familiare non valida"
 				dataConMes="Data apertura fascicolo familiare non valida" dataPatternLabel="gg/mm/aaaa" maxDate="#{commonSessionMan.currentDate}"
 				yearRange="c-50:c+0"  disabled="#{cc.attrs.iDatiAna.disabilitaForm}"/>
+				
+			<h:outputText value="Data decesso" />
+			<webred:pnlData dataValue="#{cc.attrs.iDatiAna.datiAnaBean.dataDecesso}" dataPattern="dd/MM/yyyy" dataReq="false"
+				dataReqMes="Data di nascita è un campo obbligatorio" dataValMes="Data decesso non valida" dataConMes="Data decesso non valida"
+				dataPatternLabel="gg/mm/aaaa"  maxDate="#{commonSessionMan.currentDate}" yearRange="c-100:c+0"
+				disabled="#{cc.attrs.iDatiAna.disabilitaForm}" />
+				
 		</h:panelGrid>
 		</p:outputPanel>
 	</h:panelGroup>

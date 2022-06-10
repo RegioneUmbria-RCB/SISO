@@ -578,6 +578,12 @@ public class CsUiCompBaseBean {
 		return getGlobalParameter("smartwelfare.app.erogazioni");
 	}
 	
+	public static boolean isBloccaUtentiDefunti() {
+		String s = getGlobalParameter("smartwelfare.creazioneUtentiDefunti.abilita");
+		return !(!StringUtils.isBlank(s) && "1".equals(s));
+	}
+
+	
 	protected String getTipoApplicazione() {
 		String paramTipoApplicazione = null;
 		BaseDTO baseDto = new BaseDTO();
@@ -1393,7 +1399,7 @@ public class CsUiCompBaseBean {
 		 	if(comune!=null)
 		 		comuneBean = new ComuneBean(comune);
 		 	else
-		 		comuneBean = new ComuneBean(codice,descrizione,prov);
+		 		comuneBean = new ComuneBean(codice,descrizione,prov, true);
 		}
 		return comuneBean;
 	}
@@ -1559,15 +1565,14 @@ public class CsUiCompBaseBean {
 
 	}
 	
-	protected List<SelectItem> loadLstArFfProgetti(){
+	protected List<SelectItem> loadLstArFfProgetti(Long idProgettoSelected){
 		List<SelectItem> lstArFfProgetti = new ArrayList<SelectItem>();
 		BaseDTO bdto = new BaseDTO();
 		fillEnte(bdto);
 		bdto.setObj(getCurrentOpSettore().getCsOSettore().getCsOOrganizzazione().getCodRouting());
-		List<ArFfProgetto> lst = confService.findProgettiByBelfioreOrganizzazione(bdto);
-		for(ArFfProgetto p : lst)
-			lstArFfProgetti.add(new SelectItem(p.getId(),p.getDescrizione()));
-		
+		bdto.setObj3(idProgettoSelected);
+		List<KeyValueDTO> lst = confService.findProgettiByBelfioreOrganizzazione(bdto);
+		lstArFfProgetti = convertiLista(lst);
 		return lstArFfProgetti;
 	}
 
@@ -2121,6 +2126,10 @@ public class CsUiCompBaseBean {
 			return confEnteService.getSettoreById(dto);
 		}
 		return null;
+	}
+
+	public static Boolean isComuneItaAttivoByIstat(String codIstat) {
+		return luoghiService.isComuneAttivoByIstat(codIstat);
 	}
 	
 }

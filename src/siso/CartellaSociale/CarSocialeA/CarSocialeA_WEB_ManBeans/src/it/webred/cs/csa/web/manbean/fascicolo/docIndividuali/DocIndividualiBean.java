@@ -1,26 +1,5 @@
 package it.webred.cs.csa.web.manbean.fascicolo.docIndividuali;
 
-import it.webred.cs.csa.ejb.client.AccessTableIterStepSessionBeanRemote;
-import it.webred.cs.csa.ejb.dto.BaseDTO;
-import it.webred.cs.csa.ejb.dto.DatiOperatoreDTO;
-import it.webred.cs.csa.ejb.dto.fascicolo.docIndividuali.DocIndividualeBean;
-import it.webred.cs.csa.web.manbean.fascicolo.FascicoloCompSecondoLivello;
-import it.webred.cs.data.DataModelCostanti;
-import it.webred.cs.data.DataModelCostanti.PermessiFascicolo;
-import it.webred.cs.data.DataModelCostanti.TipoVisibilitaDocumento;
-import it.webred.cs.data.model.CsACaso;
-import it.webred.cs.data.model.CsASoggettoLAZY;
-import it.webred.cs.data.model.CsDDiario;
-import it.webred.cs.data.model.CsDDocIndividuale;
-import it.webred.cs.data.model.CsLoadDocumento;
-import it.webred.cs.data.model.CsOOperatoreSettore;
-import it.webred.cs.data.model.CsTbSottocartellaDoc;
-import it.webred.cs.data.model.CsTbTipoDiario;
-import it.webred.cs.jsf.interfaces.IDocIndividuali;
-import it.webred.cs.jsf.manbean.DiarioDocsMan;
-import it.webred.cs.jsf.manbean.TempCodFiscManager;
-import it.webred.cs.jsf.manbean.superc.CsUiCompBaseBean;
-
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -55,6 +34,25 @@ import eu.smartpeg.gedclient.GedRomaClient;
 import eu.smartpeg.gedclient.NominativoGED;
 import eu.smartpeg.gedclient.NumeroProtocolloGED;
 import eu.smartpeg.gedclient.exception.GedRomaException;
+import it.webred.cs.csa.ejb.dto.BaseDTO;
+import it.webred.cs.csa.ejb.dto.DatiOperatoreDTO;
+import it.webred.cs.csa.ejb.dto.fascicolo.docIndividuali.DocIndividualeBean;
+import it.webred.cs.csa.web.manbean.fascicolo.FascicoloCompSecondoLivello;
+import it.webred.cs.data.DataModelCostanti;
+import it.webred.cs.data.DataModelCostanti.PermessiFascicolo;
+import it.webred.cs.data.DataModelCostanti.TipoVisibilitaDocumento;
+import it.webred.cs.data.model.CsACaso;
+import it.webred.cs.data.model.CsASoggettoLAZY;
+import it.webred.cs.data.model.CsDDiario;
+import it.webred.cs.data.model.CsDDocIndividuale;
+import it.webred.cs.data.model.CsLoadDocumento;
+import it.webred.cs.data.model.CsOOperatoreSettore;
+import it.webred.cs.data.model.CsTbSottocartellaDoc;
+import it.webred.cs.data.model.CsTbTipoDiario;
+import it.webred.cs.jsf.interfaces.IDocIndividuali;
+import it.webred.cs.jsf.manbean.DiarioDocsMan;
+import it.webred.cs.jsf.manbean.TempCodFiscManager;
+import it.webred.cs.jsf.manbean.superc.CsUiCompBaseBean;
 
 @ManagedBean
 @ViewScoped
@@ -74,9 +72,6 @@ public class DocIndividualiBean extends FascicoloCompSecondoLivello implements I
 	private static Pattern DATE_YEAR_PATTERN = Pattern.compile("^(19|20)\\d{2}$");
 	private static Pattern LETTER_PATTERN = Pattern.compile("[a-zA-Z]+");
 	
-	AccessTableIterStepSessionBeanRemote iterStepService = (AccessTableIterStepSessionBeanRemote) getCarSocialeEjb(
-			"AccessTableIterStepSessionBean");
-
 	// #ROMACAPITALE inizio
 	private boolean pannelloProtocolloVisibile;
 	private boolean pannelloMessaggioProtocollaDocVisibile;
