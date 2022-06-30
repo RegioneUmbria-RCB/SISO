@@ -225,16 +225,19 @@ class DatiEsterniSoggettoTimerTaskHelper {
 				
 			String fileNameWithOutExt = FilenameUtils.removeExtension(f.getName());
 			String confFile = absPath.concat("\\".concat(fileNameWithOutExt).concat(".properties"));
-			String newpath = "file:///" + confFile.replaceAll("\\\\", "/");
+			String newPath = confFile.replaceAll("\\\\", "/");
+			String protPath = "file:///" + newPath;
 			URL url ;
 			ConfiguratoreDatiEsterniDTO confDatiEsterniDTO = new ConfiguratoreDatiEsterniDTO();
 			String tipoFile = null;
 			InputStream is = null;
 			
-			File properties = new File(newpath);
-			if(properties.exists() && !properties.isDirectory()) { 
+			File properties = new File(newPath);
+			boolean exists = properties.exists();
+			boolean isDir = properties.isDirectory();
+			if(exists && !isDir) { 
 				try{
-					 url= new URL(newpath);
+					 url= new URL(protPath);
 					 Properties props = new Properties();
 					 is = url.openStream();
 					 props.load(is);
@@ -419,7 +422,7 @@ class DatiEsterniSoggettoTimerTaskHelper {
 				}
 				
 				if(confDatiEsterniDTO.getNomeColonnaEntitaServizio() != null && mapsValori.containsKey(confDatiEsterniDTO.getNomeColonnaEntitaServizio())) {
-					int idxForColumnEntitaServizio = mapsValori.get(confDatiEsterniDTO.getNomeColonnaDataChiusura());  
+					int idxForColumnEntitaServizio = mapsValori.get(confDatiEsterniDTO.getNomeColonnaEntitaServizio());  
 					if(idxForColumnEntitaServizio >= 0) {
 					 Cell cell1 = dataRow.getCell(idxForColumnEntitaServizio);  
 					 entitaServizio = (getCellValueAsString(cell1));

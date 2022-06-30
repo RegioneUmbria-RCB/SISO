@@ -33,16 +33,18 @@
 	
 		</h:panelGrid>
 		<p:spacer height="5px" />
-		<p:fieldset legend="Potestà genitoriale" toggleable="false">
+		<p:fieldset legend="Responsabilità genitoriale" toggleable="false">
 		     <h:panelGrid columns="2" width="100%">
-					<p:selectManyCheckbox id="cessazioneGen" value="#{provMinoriTabManBean.jsonCurrent.datiProvvedimenti.selCessazionePotesta}" 
-					                      styleClass="column" layout="grid" columns="3" >
-						<f:selectItems value="#{dataBean.lstCessazionePotesta}"></f:selectItems>
-					</p:selectManyCheckbox>
-				
-					<p:selectOneRadio id="potestaA" value="#{provMinoriTabManBean.jsonCurrent.datiProvvedimenti.selAffidatoA}" layout="grid" columns="3">
-						<f:selectItems value="#{dataBean.lstAffidatoA}"></f:selectItems>
-					</p:selectOneRadio>
+	     		<p:outputLabel value="Padre"/>
+				<p:selectManyCheckbox id="cessazionePadre" value="#{provMinoriTabManBean.jsonCurrent.datiProvvedimenti.selCessazionePotestaPadre}" 
+				                      styleClass="column" layout="grid" columns="3" >
+					<f:selectItems value="#{dataBean.lstCessazionePotesta}"/>
+				</p:selectManyCheckbox>
+				<p:outputLabel value="Madre"/>
+				<p:selectManyCheckbox id="cessazioneMadre" value="#{provMinoriTabManBean.jsonCurrent.datiProvvedimenti.selCessazionePotestaMadre}" 
+				                      styleClass="column" layout="grid" columns="3" >
+					<f:selectItems value="#{dataBean.lstCessazionePotesta}"/>
+				</p:selectManyCheckbox>
 			</h:panelGrid>
 			<p:separator/>
 			<h:panelGrid columns="4" width="100%">

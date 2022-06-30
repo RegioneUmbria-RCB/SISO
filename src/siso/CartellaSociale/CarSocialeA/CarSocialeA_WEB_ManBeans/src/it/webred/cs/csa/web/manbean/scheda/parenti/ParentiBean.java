@@ -817,7 +817,7 @@ public class ParentiBean extends SchedaValiditaBaseBean implements IDatiValidita
 
 			if (cs.getCsTbPotesta() == null || cs.getCsTbPotesta().getId() == null) {
 				ok = false;
-				msg.add("Lista: " + cs.getCsAAnagrafica().getDenominazione()  + " - Potestà è un campo obbligatorio");
+				msg.add("Lista: " + cs.getCsAAnagrafica().getDenominazione()  + " - Responsabilità genitoriale è un campo obbligatorio");
 			}
 		}
 		

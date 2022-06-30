@@ -2648,7 +2648,7 @@
  <named-query name="CsDSina.setNullMastId">
     <query>
 			<![CDATA[
-				UPDATE CsDSina SET csIInterventoEsegMast = null  WHERE id = :id		
+				UPDATE CsDSina s SET s.intEsegMastId = null  WHERE id = :id		
 			]]>
 		</query>
   </named-query>
