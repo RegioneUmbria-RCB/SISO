@@ -14,7 +14,6 @@ public class DatiProvvedimentoMan {
 	private List<String> lstTipoProvvedimento;
 	private List<String> lstNaturaProvvedimento;
 	private List<String> lstTipoAffidamento;
-	private List<String> lstAffidatoA;
 	private List<String> lstIndagine;
 	private List<String> lstAffidamento;
 	private List<String> lstCessazionePotesta;
@@ -82,13 +81,6 @@ public class DatiProvvedimentoMan {
 			this.lstNaturaProvvedimento.add("Non definito");
 		}
 
-		if (this.lstAffidatoA == null) {
-			this.lstAffidatoA = new LinkedList<String>();
-			this.lstAffidatoA.add("Padre");
-			this.lstAffidatoA.add("Madre");
-			this.lstAffidatoA.add("Entrambi");
-
-		}
 		if (this.lstIndagine == null) {
 			this.lstIndagine = new LinkedList<String>();
 			this.lstIndagine.add("Indagine psico-sociale");
@@ -134,10 +126,6 @@ public class DatiProvvedimentoMan {
 
 	public List<String> getLstTipoAffidamento() {
 		return lstTipoAffidamento;
-	}
-
-	public List<String> getLstAffidatoA() {
-		return lstAffidatoA;
 	}
 
 	public List<String> getLstIndagine() {

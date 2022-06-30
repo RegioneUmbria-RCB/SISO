@@ -13,8 +13,9 @@ public class DatiProvvedimentoBean {
 	private String selNaturaProvv;
 	private String[] selTipoAffidamento;
 
-	private String[] selCessazionePotesta;
-	private String selAffidatoA;
+	private String[] selCessazionePotestaPadre;
+	private String[] selCessazionePotestaMadre;
+	//private String selAffidatoA;
 	private String numProvv;
 	private Date dataProvvCancelleria;
 	private Date dataProtocolloProvv;
@@ -35,7 +36,7 @@ public class DatiProvvedimentoBean {
 		this.selDatiProvv = "Tribunale Ordinario";
 		this.selTipoProvv = "Non definito";
 		this.selNaturaProvv = "Penale Attivo";
-		this.selAffidatoA = "Entrambi";
+		//this.selAffidatoA = "Entrambi";
 	}
 
 	public String getSelDatiProvv() {
@@ -68,14 +69,6 @@ public class DatiProvvedimentoBean {
 
 	public void setSelTipoAffidamento(String[] selTipoAffidamento) {
 		this.selTipoAffidamento = selTipoAffidamento;
-	}
-
-	public String getSelAffidatoA() {
-		return selAffidatoA;
-	}
-
-	public void setSelAffidatoA(String selAffidatoA) {
-		this.selAffidatoA = selAffidatoA;
 	}
 
 	public String getNumProvv() {
@@ -166,12 +159,20 @@ public class DatiProvvedimentoBean {
 		this.tutoreTelefono = tutoreTelefono;
 	}
 
-	public String[] getSelCessazionePotesta() {
-		return selCessazionePotesta;
+	public String[] getSelCessazionePotestaPadre() {
+		return selCessazionePotestaPadre;
 	}
 
-	public void setSelCessazionePotesta(String[] selCessazionePotesta) {
-		this.selCessazionePotesta = selCessazionePotesta;
+	public void setSelCessazionePotestaPadre(String[] selCessazionePotestaPadre) {
+		this.selCessazionePotestaPadre = selCessazionePotestaPadre;
+	}
+
+	public String[] getSelCessazionePotestaMadre() {
+		return selCessazionePotestaMadre;
+	}
+
+	public void setSelCessazionePotestaMadre(String[] selCessazionePotestaMadre) {
+		this.selCessazionePotestaMadre = selCessazionePotestaMadre;
 	}
 
 	public String[] getSelIndagine() {
