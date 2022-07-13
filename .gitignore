@@ -10,9 +10,7 @@
 .mtj.tmp/
 
 # Package Files #
-*.war
 *.nar
-*.ear
 *.zip
 *.tar.gz
 *.rar
