@@ -1334,35 +1334,31 @@ public class ConfigurazioneDAO extends CarSocialeBaseDAO implements Serializable
 		return null;
 	}
 	//SISO-1172
-		@SuppressWarnings("unchecked")
-		public List<CsTbMotivoChiusuraPai> getMotiviChiusuraPai(Long idTipoPai) {
-			List<CsTbMotivoChiusuraPai> listaMotiviChiusura = null;
-			if(idTipoPai != null){
-				try{
-					Query q = em.createNamedQuery("CsTbMotivoChiusuraPai.findAll");
-					List<CsTbMotivoChiusuraPai> lista = q.getResultList();
-					if(lista != null)
-						listaMotiviChiusura = new ArrayList<CsTbMotivoChiusuraPai>();
-					
-					for(CsTbMotivoChiusuraPai o: lista){
-						String[] value_split = o.getTipi_pai().split(";");
-						if (Arrays.asList(value_split).contains(idTipoPai.toString()) ) {
-							CsTbMotivoChiusuraPai dto = new CsTbMotivoChiusuraPai();
-							dto.setId((Long) o.getId());
-							dto.setDescrizione((String) o.getDescrizione());
-							listaMotiviChiusura.add(dto);
-						}
+	@SuppressWarnings("unchecked")
+	public List<KeyValueDTO> getMotiviChiusuraPai(Long idTipoPai) {
+		List<KeyValueDTO> listaMotiviChiusura = new ArrayList<KeyValueDTO>();
+		if(idTipoPai != null){
+			try{
+				Query q = em.createNamedQuery("CsTbMotivoChiusuraPai.findAll");
+				List<CsTbMotivoChiusuraPai> lista = q.getResultList();
+				for(CsTbMotivoChiusuraPai o: lista){
+					String[] value_split = o.getTipi_pai().split(";");
+					if (Arrays.asList(value_split).contains(idTipoPai.toString()) ) {
+						KeyValueDTO kv = new KeyValueDTO(o.getId(), o.getDescrizione());
+			    		kv.setAbilitato(o.isAbilitato());
+			    		listaMotiviChiusura.add(kv);
 					}
-					
-			    }catch(Throwable e){
-				logger.error(e.getMessage(), e);
-			}
-			
-			}
-			return listaMotiviChiusura;
+				}
+				
+		    }catch(Throwable e){
+			logger.error(e.getMessage(), e);
 		}
-		//SISO-1172 FINE
 		
+		}
+		return listaMotiviChiusura;
+	}
+	//SISO-1172 FINE
+	
 		
 		public CsTbMotivoChiusuraPai getMotivoChiusuraPaiById(Long id) 
 		{
@@ -2605,4 +2601,5 @@ public class ConfigurazioneDAO extends CarSocialeBaseDAO implements Serializable
 	public CsTbSinaRisposta findSinaRisposta(Long rispostaId) {
 		return em.find(CsTbSinaRisposta.class, rispostaId);
 	}
+	
 }

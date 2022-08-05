@@ -160,20 +160,21 @@ public class IterDAO extends CarSocialeBaseDAO implements Serializable {
 	
 	@SuppressWarnings("rawtypes")
 	public CsItStep getLastIterStepByCaso(long idCaso) {
-		Query q = em.createNamedQuery("CsItStep.getLastIterStepByCaso");
-		q.setParameter("idCaso", idCaso);
-		CsItStep itStep = null;
-		try{
-			itStep = (CsItStep)q.getSingleResult();
-			loadRelatedEntities(itStep);
-			return itStep;
-			
-		}catch(NoResultException nre){
-			logger.warn("Nessun IterStep per "+idCaso);
-		}catch(Exception e){
-			logger.error(e.getMessage(), e);
+		if(idCaso>0) {
+			Query q = em.createNamedQuery("CsItStep.getLastIterStepByCaso");
+			q.setParameter("idCaso", idCaso);
+			CsItStep itStep = null;
+			try{
+				itStep = (CsItStep)q.getSingleResult();
+				loadRelatedEntities(itStep);
+				return itStep;
+				
+			}catch(NoResultException nre){
+				logger.warn("Nessun IterStep per "+idCaso);
+			}catch(Exception e){
+				logger.error(e.getMessage(), e);
+			}
 		}
-
 		return null;
 	}
 	

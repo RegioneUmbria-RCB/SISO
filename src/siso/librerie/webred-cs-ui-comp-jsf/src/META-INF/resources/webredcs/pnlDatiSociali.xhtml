@@ -94,16 +94,17 @@
 			</h:panelGrid>
 
 			<p:outputPanel style="display: inline-block; vertical-align: top;">
-				<p:tabView>
-					<p:tab title="Amm.Sostegno">
-						<webredcs:pnlComponenteOAltro iComponenteOAltro="#{cc.attrs.iDatiSociali.sostegno}" required="false" styleClass="#{cc.attrs.styleClass}" disabled="#{cc.attrs.iDatiSociali.disabilitaForm}" />
-					</p:tab>
-					<p:tab title="Tutela">
-						<webredcs:pnlComponenteOAltro iComponenteOAltro="#{cc.attrs.iDatiSociali.tutela}" required="false" styleClass="#{cc.attrs.styleClass}" disabled="#{cc.attrs.iDatiSociali.disabilitaForm}" />
-					</p:tab>
-					<p:tab title="Curatela">
-						<webredcs:pnlComponenteOAltro iComponenteOAltro="#{cc.attrs.iDatiSociali.curatela}" required="false" styleClass="#{cc.attrs.styleClass}" disabled="#{cc.attrs.iDatiSociali.disabilitaForm}" />
-					</p:tab>
+				<p:tabView var="protezione" value="#{cc.attrs.iDatiSociali.protezioneGiuridica}">
+						<p:tab title="#{protezione.label}">
+							<webredcs:pnlComponenteOAltro iComponenteOAltro="#{protezione.componente}" required="false" styleClass="#{cc.attrs.styleClass}" disabled="#{cc.attrs.iDatiSociali.disabilitaForm}" />
+							<h:panelGrid columns="5">
+								<h:outputLabel value="Decreto"/>
+								<h:outputLabel value="numero"/>
+								<p:inputText value="#{protezione.numDecreto}" disabled="#{cc.attrs.iDatiSociali.disabilitaForm}" />
+								<h:outputLabel value="data"/>
+								<p:calendar value="#{protezione.dataDecreto}" disabled="#{cc.attrs.iDatiSociali.disabilitaForm}" />
+							</h:panelGrid>
+						</p:tab>
 				</p:tabView>
 				<p:selectBooleanCheckbox itemLabel="Affidamento al servizio sociale" value="#{cc.attrs.iDatiSociali.affServSociali}" disabled="#{cc.attrs.iDatiSociali.disabilitaForm}"/>
 			</p:outputPanel>

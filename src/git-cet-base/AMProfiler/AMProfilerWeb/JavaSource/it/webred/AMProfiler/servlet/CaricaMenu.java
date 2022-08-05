@@ -595,7 +595,7 @@ public class CaricaMenu extends AccessoBase{
 	private boolean verificaDatiSoggettoObbligatori(Principal user){
 		
 		boolean anagraficaPresente = true;
-		AmUserUfficio ufficio = userService.getDatiUfficio(user.getName());
+		AmUserUfficio ufficio = userService.getDatiUfficioNoCaseSens(user.getName());
 		AmAnagrafica anagrafica = anagraficaService.findAnagraficaByUserName(user.getName());
 		
 		if(anagrafica==null)

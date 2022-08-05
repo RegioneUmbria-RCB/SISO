@@ -35,16 +35,12 @@
 						 <f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
 					</h:outputText>
 					<ui:repeat var="rigaDatiEsterni" value="#{de.righeDatiEsterni}">
-						<p:dataGrid value="#{rigaDatiEsterni.contenuti}" var="nvp" columns="5">
-							<p:panelGrid columns="1">
-								<f:facet name="header">
-									<h:outputText value="#{nvp.nomeCampo}" />
-								</f:facet>
+						<p:dataGrid value="#{rigaDatiEsterni.contenuti}" var="nvp" columns="2">
+							<h:panelGrid columns="2">
+								<h:outputLabel value="#{nvp.nomeCampo}: " styleClass="bold"/>
 								<h:outputText value="#{nvp.valore}" />
-								<p:spacer height="5" />
-							</p:panelGrid>
+							</h:panelGrid>
 						</p:dataGrid>
-						<p:spacer height="30" />
 					</ui:repeat>
 				</p:tab>
 			</p:accordionPanel>

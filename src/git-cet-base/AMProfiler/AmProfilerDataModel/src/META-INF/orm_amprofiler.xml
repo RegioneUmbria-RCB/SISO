@@ -178,6 +178,15 @@
 		</query>
 	</named-query>
 	
+	<named-query name="AmUserUfficio.getUfficioByUpperUser">
+		<query>
+			<![CDATA[
+				SELECT u FROM AmUserUfficio u
+				WHERE UPPER(u.fkAmUser) = UPPER(:user)
+			]]>
+		</query>
+	</named-query>
+	
 	<named-query name="AmUserGroup.getListaUtenti">
 		<query>
 			<![CDATA[

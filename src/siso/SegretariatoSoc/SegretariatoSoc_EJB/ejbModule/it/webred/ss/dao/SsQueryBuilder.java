@@ -191,13 +191,13 @@ public class SsQueryBuilder {
 				"from SsScheda scheda, SsSchedaSegnalato segnalato "+
 				"where segnalato.id = scheda.segnalato and scheda.eliminata = false ";
 		
-		sql+= criteria.getCognome()!=null && criteria.getCognome().length()>=2 ? 	"and upper(segnalato.anagrafica.cognome) "+concatLikeParam(COGNOME) : ""; 
-		sql+= !StringUtils.isBlank(criteria.getNome()) ?				 			"and upper(segnalato.anagrafica.nome) "+concatLikeParam(NOME) : ""; 
-		sql+= !StringUtils.isBlank(criteria.getCf()) ?								"and upper(segnalato.anagrafica.cf) = :"+COD_FISCALE :"";
-		sql+= !StringUtils.isBlank(criteria.getSesso()) ?					 		"and upper(segnalato.anagrafica.sesso) = :"+SESSO : "";
-		sql+= criteria.getDataNascitaDa()!=null ? 									"and segnalato.anagrafica.data_nascita >= TO_DATE(:"+DATA_NASCITA_DA+",'dd/MM/yyyy')":"";		
-		sql+= criteria.getDataNascitaA()!=null ? 									"and segnalato.anagrafica.data_nascita <= TO_DATE(:"+DATA_NASCITA_A+",'dd/MM/yyyy')":"";	
-		sql+= !StringUtils.isBlank(criteria.getAlias()) ?			 				"and upper(segnalato.anagrafica.alias) "+ concatLikeParam(ALIAS) : ""; 
+		sql+= criteria.getCognome()!=null && criteria.getCognome().length()>=2 ? 	" and upper(segnalato.anagrafica.cognome) "+concatLikeParam(COGNOME) : ""; 
+		sql+= !StringUtils.isBlank(criteria.getNome()) ?				 			" and upper(segnalato.anagrafica.nome) "+concatLikeParam(NOME) : ""; 
+		sql+= !StringUtils.isBlank(criteria.getCf()) ?								" and upper(segnalato.anagrafica.cf) = :"+COD_FISCALE :"";
+		sql+= !StringUtils.isBlank(criteria.getSesso()) ?					 		" and upper(segnalato.anagrafica.sesso) = :"+SESSO : "";
+		sql+= criteria.getDataNascitaDa()!=null ? 									" and segnalato.anagrafica.data_nascita >= TO_DATE(:"+DATA_NASCITA_DA+",'dd/MM/yyyy')":"";		
+		sql+= criteria.getDataNascitaA()!=null ? 									" and segnalato.anagrafica.data_nascita <= TO_DATE(:"+DATA_NASCITA_A+",'dd/MM/yyyy')":"";	
+		sql+= !StringUtils.isBlank(criteria.getAlias()) ?			 				" and upper(segnalato.anagrafica.alias) "+ concatLikeParam(ALIAS) : ""; 
 		
 		return sql;
 	}

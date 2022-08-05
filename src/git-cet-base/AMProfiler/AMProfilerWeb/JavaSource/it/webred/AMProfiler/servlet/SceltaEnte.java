@@ -100,6 +100,19 @@ public class SceltaEnte extends AccessoBase {
 			}
 			
 			String disableCause = getDisableCause(user.getName());
+			
+			//implementato per Comuni con Ldap (es. Milano) dove il nome utente non è case sensitive
+			if (disableCause == null || disableCause.trim().equals("")) {
+				String noCaseSensUser = user.getName();
+				String caseSensUser = BaseAction.getCaseSensUser(noCaseSensUser);
+				if (noCaseSensUser != null && !noCaseSensUser.trim().equals("")
+					&& caseSensUser != null && !caseSensUser.trim().equals("")
+					&& !noCaseSensUser.equals(caseSensUser)) {
+					disableCause = caseSensUser;
+					request.setAttribute("disableCauseCaseSens", "true");
+				}				
+			}
+			
 			if (disableCause != null && !disableCause.trim().equals("")) {
 				//p1.1
 				request.setAttribute("disableCause", disableCause);

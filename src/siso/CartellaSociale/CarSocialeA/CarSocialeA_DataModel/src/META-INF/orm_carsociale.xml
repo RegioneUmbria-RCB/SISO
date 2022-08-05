@@ -1934,9 +1934,10 @@
   <named-query name="CsADatiSociali.getSocialiBySoggettoId">
     <query>
 			<![CDATA[
-				select it from CsADatiSociali it 
+				select distinct it from CsADatiSociali it 
+				left join fetch it.protezioneGiuridica
 				where it.csASoggetto.anagraficaId = :idSoggetto
-				order by it.dataFineApp desc, dataInizioApp desc
+				order by it.dataFineApp desc, it.dataInizioApp desc
 			]]>
 		</query>
   </named-query>
@@ -1944,7 +1945,7 @@
   <named-query name="CsADatiSociali.getSocialiBySoggettoCf">
     <query>
 			<![CDATA[
-				select it from CsADatiSociali it 
+				select distinct it from CsADatiSociali it 
 				where it.csASoggetto.csAAnagrafica.cf = :cfSoggetto
 				order by it.dataFineApp desc, dataInizioApp desc
 			]]>
@@ -1953,7 +1954,7 @@
   <named-query name="CsADatiSociali.getSocialiAttiviBySoggettoCf">
     <query>
 			<![CDATA[
-				select it from CsADatiSociali it 
+				select distinct it from CsADatiSociali it 
 				where it.csASoggetto.csAAnagrafica.cf = :cfSoggetto
 				and sysdate between it.dataInizioApp and it.dataFineApp
 				order by it.dataFineApp desc, dataInizioApp desc
@@ -1961,12 +1962,20 @@
 		</query>
   </named-query>
   
-
   <named-query name="CsADatiSociali.eliminaSocialiById">
     <query>
 			<![CDATA[
 				DELETE FROM CsADatiSociali cs
 				WHERE cs.id = :id
+			]]>
+		</query>
+  </named-query>
+  
+   <named-query name="CsAProtezioneGiuridica.eliminaByIdDatiSociali">
+    <query>
+			<![CDATA[
+				DELETE FROM CsAProtezioneGiuridica cs
+				WHERE cs.csADatiSociali.id = :datiSocialiId
 			]]>
 		</query>
   </named-query>

@@ -423,7 +423,7 @@ public class SchedaBean extends CsUiCompBaseBean {
 	}
 	
 	public void nuovaDaAnagrafeWrapper(DatiUserSearchBean sel) {
-		String id = sel.getId();
+		String id = sel!=null ? sel.getId() : null;
 		if (id != null) {
 			if (id.trim().startsWith(DataModelCostanti.TipoRicercaSoggetto.ANAG_SANITARIA_UMBRIA))
 				nuovaDaAnagrafeEsterna(DataModelCostanti.TipoRicercaSoggetto.ANAG_SANITARIA_UMBRIA, id.replace(DataModelCostanti.TipoRicercaSoggetto.ANAG_SANITARIA_UMBRIA, ""), (PersonaDettaglio)sel.getSoggetto() );

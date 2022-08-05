@@ -124,17 +124,19 @@ public class LazyListaErogazioniModel extends LazyDataModel<ErogInterventoRowBea
     }
     
     protected void elaboraCriteriFiltro( Map filters, ErogazioniSearchCriteria searchCriteria){
-    	String denominazione = (String) filters.get("denominazione");
-    	String cf = (String)filters.get("cf");
-		String statoErogazione = (String) filters.get("statoErogazione");
-		String lineaFinanziamento = (String)filters.get("lineaFinanziamento");
-		String catSociale = (String)filters.get("descCategoriaSociale");
-		
-		searchCriteria.setDenominazione(denominazione!=null ? denominazione : null);
-		searchCriteria.setStatoErogazione(statoErogazione!=null ? statoErogazione : null);
-		searchCriteria.setLineaFinanziamento(lineaFinanziamento!=null ? lineaFinanziamento : null);
-		searchCriteria.setDescCatSociale(catSociale);
-		searchCriteria.setCodiceFiscale(cf);
+    	if(filters!=null) {
+	    	String denominazione = (String) filters.get("denominazione");
+	    	String cf = (String)filters.get("cf");
+			String statoErogazione = (String) filters.get("statoErogazione");
+			String lineaFinanziamento = (String)filters.get("lineaFinanziamento");
+			String catSociale = (String)filters.get("descCategoriaSociale");
+			
+			searchCriteria.setDenominazione(denominazione!=null ? denominazione : null);
+			searchCriteria.setStatoErogazione(statoErogazione!=null ? statoErogazione : null);
+			searchCriteria.setLineaFinanziamento(lineaFinanziamento!=null ? lineaFinanziamento : null);
+			searchCriteria.setDescCatSociale(catSociale);
+			searchCriteria.setCodiceFiscale(cf);
+    	}
     }
 
 	public int getTipoFiltroInterventiSelezionato() {

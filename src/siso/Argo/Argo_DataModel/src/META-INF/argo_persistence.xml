@@ -22,6 +22,7 @@
 		<class>it.umbriadigitale.argo.data.cs.data.ArFfServizioClasse</class>
 		<class>it.umbriadigitale.argo.data.cs.data.ArFfServizio</class>
 		<class>it.umbriadigitale.argo.data.cs.data.ArFfLineafin</class>
+		<class>it.umbriadigitale.argo.data.cs.data.ArFfLineafinOrg</class>
 		<class>it.umbriadigitale.argo.data.cs.data.ArFfFondo</class>
 		<class>it.umbriadigitale.argo.data.cs.data.ArFfProgetto</class>
 		<class>it.umbriadigitale.argo.data.cs.data.ArFfProgettoOrg</class>

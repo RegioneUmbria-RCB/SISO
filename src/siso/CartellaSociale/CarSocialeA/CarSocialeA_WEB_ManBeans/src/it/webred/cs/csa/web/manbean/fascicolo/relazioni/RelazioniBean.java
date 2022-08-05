@@ -42,6 +42,7 @@ import it.webred.cs.csa.web.manbean.fascicolo.pai.ProgettiIndividualiExtBean;
 import it.webred.cs.csa.web.manbean.fascicolo.valMultidimensionale.ListaValMultidimensionaliBean;
 import it.webred.cs.csa.web.manbean.report.ReportBean;
 import it.webred.cs.data.DataModelCostanti;
+import it.webred.cs.data.DataModelCostanti.TipoFormAttivitaProfessionali;
 import it.webred.cs.data.model.CsAComponente;
 import it.webred.cs.data.model.CsCCategoriaSociale;
 import it.webred.cs.data.model.CsCDiarioConchi;
@@ -183,6 +184,14 @@ public class RelazioniBean extends FascicoloCompSecondoLivello implements IRelaz
 
 			SelectItemGroup group = new SelectItemGroup(macro.getDescrizione(), macro.getTooltip(), false,iteml.toArray(new SelectItem[iteml.size()]));
 			catalogoAttivita.add(group);
+		}
+	}
+	
+	@Override
+	public void onSelectCatalogoAttivita(){
+		if(relazioneDTO.isFormUpload()) {
+			this.loadRelazione = true;
+			clearRelazione();
 		}
 	}
 	
@@ -525,8 +534,8 @@ public class RelazioniBean extends FascicoloCompSecondoLivello implements IRelaz
 			fillEnte(dto);
 						
 			//se ho editato la scheda triage
-			if(relazioneDTO.getRelazione().getMicroAttivita().getFlagTipoForm().equals("3")){
-			   dto.setTriage(relazioneDTO.getTriage());	
+			if(TipoFormAttivitaProfessionali.TRIAGE == relazioneDTO.getRelazione().getMicroAttivita().getFlagTipoForm().intValue()){
+				   dto.setTriage(relazioneDTO.getTriage());	
 			}
 			//SISO 1257 - se ho editato la scheda 
 			if(relazioneDTO.isAttivitaSAL()){
@@ -679,9 +688,9 @@ public class RelazioniBean extends FascicoloCompSecondoLivello implements IRelaz
 			addError("Non è stato scelto il tipo di attività", "");
 		}
 				
-		if(!loadRelazione && null!=relazioneDTO.getRelazione().getMicroAttivita() && "1".equalsIgnoreCase(relazioneDTO.getRelazione().getMicroAttivita().getFlagTipoForm()))
+		if(!loadRelazione && null!=relazioneDTO.getRelazione().getMicroAttivita() && TipoFormAttivitaProfessionali.RELAZIONE_DOCUMENTO == relazioneDTO.getRelazione().getMicroAttivita().getFlagTipoForm().intValue())
 		{
-			if((relazioneDTO.getRelazione().getSituazioneAmb() == null || "".equals(relazioneDTO.getRelazione().getSituazioneAmb()))) 
+			if(StringUtils.isBlank(relazioneDTO.getRelazione().getSituazioneAmb())) 
 			{
 				ok = false;
 				addError("Il campo Situazione ambientale è obbligatorio per il tipo di attività scelto", "");
@@ -1039,8 +1048,7 @@ public class RelazioniBean extends FascicoloCompSecondoLivello implements IRelaz
 		return new Converter(){
 
 			@Override
-			public Object getAsObject(FacesContext context,
-					UIComponent component, String value) {				
+			public Object getAsObject(FacesContext context,UIComponent component, String value) {				
 				
 				if(value==null || "NULL".equals(value)) return null;
 				
@@ -1052,8 +1060,7 @@ public class RelazioniBean extends FascicoloCompSecondoLivello implements IRelaz
 			}
 
 			@Override
-			public String getAsString(FacesContext context,
-					UIComponent component, Object value) {
+			public String getAsString(FacesContext context,UIComponent component, Object value) {
 				
 				if(value==null || "NULL".equals(value)) 
 					return "NULL";
@@ -1704,7 +1711,24 @@ public class RelazioniBean extends FascicoloCompSecondoLivello implements IRelaz
 		this.selectedRiunioneConChiToView = selectedRiunioneConChiToView;
 	}
 
+	@Override
+	public boolean isRenderUpload(){
+		boolean val = this.relazioneDTO!=null && (this.relazioneDTO.isFormUpload() || this.relazioneDTO.isFormRelazione());
+		return val;
+	}
 	
+	@Override
+	public boolean isRenderTriage(){
+		return relazioneDTO!=null && this.relazioneDTO.isFormTriage();
+	}
+	
+	@Override
+	public boolean isRenderEditor(){
+		return relazioneDTO!=null && this.relazioneDTO.isFormEditor();
+	}
 
-
+	@Override
+	public boolean isRenderSAL() {
+		return relazioneDTO!=null && this.relazioneDTO.isAttivitaSAL();
+	}
 }

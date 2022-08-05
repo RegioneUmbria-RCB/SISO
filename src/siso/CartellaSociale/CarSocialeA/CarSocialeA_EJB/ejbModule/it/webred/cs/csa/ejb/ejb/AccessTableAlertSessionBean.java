@@ -273,8 +273,16 @@ public class AccessTableAlertSessionBean extends CarSocialeBaseSessionBean imple
 		Long casoId = (Long) dto.getObj2();
 		Long opeId = (Long) dto.getObj3();
 		
+		boolean inserisco = false;
+		
+		//Verifico che il caso non sia in stato CHIUSO
+		boolean validaIter = true;
+		if(casoId!=null) {
+			CsItStep it = iterDao.getLastIterStepByCaso(casoId);
+			validaIter = it!=null && it.getCsCfgItStato().getId() != DataModelCostanti.IterStatoInfo.CHIUSO;
+		}
+		
 		//Cerco se è già presente un alert NON LETTO, altrimenti inserisco.
-		boolean inserisco = true;
 		List<CsAlert> listaAlert = alertDao.findAlertVisibiliByIdCasoTipoOpeTo(casoId, tipo, opeId);
 	    /*Inserisco solo se tutti gli alert sono letti*/
 		boolean tuttiLetti = true; 
@@ -286,8 +294,9 @@ public class AccessTableAlertSessionBean extends CarSocialeBaseSessionBean imple
 		    	alertDao.updateAlert(al);
 	    	}else tuttiLetti = false;
 	    }
-	    
-	    inserisco = tuttiLetti;
+		    
+		inserisco = tuttiLetti && validaIter;
+		    
 	    return inserisco;
 	}
 	
@@ -460,7 +469,7 @@ public class AccessTableAlertSessionBean extends CarSocialeBaseSessionBean imple
 						loggerTimertask.info(cet.getEnteId() + " __ Aggiungo Alert per aggiornamento PAI: [paiId:"+p.getDiarioId()+"][casoId:" + casoId +"]");
 						addAlert(dto.getEnteId(), TipiAlertCod.PAI, caso, titDescrizione, descrizione, null, null, null, orgFrom, opeTo, settTo, orgTo);
 					}else
-						loggerTimertask.info(cet.getEnteId() + " __ Sospeso Inserimento Alert per aggiornamento PAI: già presente [paiId:"+p.getDiarioId()+"][casoId:" + casoId+"]");
+						loggerTimertask.info(cet.getEnteId() + " __ Sospeso Inserimento Alert per aggiornamento PAI: [paiId:"+p.getDiarioId()+"][casoId:" + casoId+"]");
 						
 				}
 			}catch(Exception e){

@@ -260,7 +260,9 @@ public class AccessTableSchedaSessionBean extends CarSocialeBaseSessionBean impl
 	}
 
 	private void eliminaDatiSociali(BaseDTO dto) {
-		schedaDao.eliminaDatiSociali((Long) dto.getObj());
+		Long id = (Long) dto.getObj();
+		schedaDao.eliminaProtezioneGiuridica(id);
+		schedaDao.eliminaDatiSociali(id);
 	}
 
 	@Override

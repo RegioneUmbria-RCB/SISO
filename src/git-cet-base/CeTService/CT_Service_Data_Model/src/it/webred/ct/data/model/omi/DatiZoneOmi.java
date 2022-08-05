@@ -277,7 +277,7 @@ public class DatiZoneOmi implements Serializable {
 	}
 
 	public String getChiave() {
-		return this.getAnno() + "|" + this.getSemestre() + "|" + this.getZona() + "|" + this.getCodTip();
+		return this.getAnno() + "|" + this.getSemestre() + "|" + this.getZona() + "|" + this.getCodTip() + "|" + this.getStato();
 	}
 
 	public void setChiave(String chiave) {

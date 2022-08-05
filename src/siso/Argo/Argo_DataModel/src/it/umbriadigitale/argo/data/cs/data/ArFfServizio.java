@@ -32,12 +32,9 @@ public class ArFfServizio implements java.io.Serializable {
 	private String usrMod;
 	private Date dtMod;
 	private BigDecimal importoDicui;
-	private Set<ArFfServizioClasse> arFfServizioClasses = new HashSet<ArFfServizioClasse>(
-			0);
-	private Set<ArFfServizioAreat> arFfServizioAreats = new HashSet<ArFfServizioAreat>(
-			0);
-	private Set<ArFfServizioTerriotorio> arFfServizioTerriotorios = new HashSet<ArFfServizioTerriotorio>(
-			0);
+	private Set<ArFfServizioClasse> arFfServizioClasses = new HashSet<ArFfServizioClasse>(0);
+	private Set<ArFfServizioAreat> arFfServizioAreats = new HashSet<ArFfServizioAreat>(0);
+	private Set<ArFfServizioTerriotorio> arFfServizioTerriotorios = new HashSet<ArFfServizioTerriotorio>(0);
 
 	public ArFfServizio() {
 	}

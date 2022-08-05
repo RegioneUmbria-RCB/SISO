@@ -1,6 +1,6 @@
 package it.webred.cs.jsf.interfaces;
 
-import it.webred.cs.jsf.manbean.ComponenteAltroMan;
+import it.webred.cs.jsf.bean.ProtezioneGiuridicaBean;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -61,12 +61,8 @@ public interface IDatiSociali {
 	public BigDecimal getIdProblematicaNucleo();
 
 	/*Dati Tutela*/
-	public ComponenteAltroMan getSostegno();
-
-	public ComponenteAltroMan getCuratela();
-
-	public ComponenteAltroMan getTutela();
-
+	public List<ProtezioneGiuridicaBean> getProtezioneGiuridica();
+	
 	boolean isAffServSociali();
 	
 	public void onChangeTitoloStudio();

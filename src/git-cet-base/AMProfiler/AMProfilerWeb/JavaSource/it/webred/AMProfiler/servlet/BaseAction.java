@@ -2296,6 +2296,40 @@ public class BaseAction {
 		
 	}
 	
+	public static String getCaseSensUser(String noCaseSensUser) throws Exception {
+		//implementato per Comuni con Ldap (es. Milano) dove il nome utente non è case sensitive
+		String retVal = noCaseSensUser;
+		if (retVal == null) {
+			return retVal;
+		}
+		
+		Connection con = null;
+		PreparedStatement st = null;
+		try {
+			con = apriConnessione();
+			String sql = "SELECT NAME FROM AM_USER WHERE UPPER(NAME) = UPPER(?) AND DISABLE_CAUSE IS NULL";
+
+			st = con.prepareStatement(sql);
+			st.setString(1, noCaseSensUser.trim());
+			ResultSet rs = st.executeQuery();
+			//è necessario che non ci siano due o più nomi utenti GIT attivi che differiscono solo per maiuscole/minuscole
+			while (rs.next()) {
+				retVal = rs.getString("NAME");
+			}
+			rs.close();
+			st.cancel();
+			return retVal;
+
+		} catch (Exception e) {
+			logger.error("Errore:",e);
+
+			throw e;
+		} finally {
+			chiudiConnessione(con, st);
+		}
+
+	}
+	
 	public static Object getCTConfigEjb(String ejbName) {
 		try {
 			return ClientUtility.getEjbInterface("CT_Service", "CT_Config_Manager", ejbName);

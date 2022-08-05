@@ -1,5 +1,18 @@
 package it.webred.cs.csa.web.manbean.scheda.sociali;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Set;
+
+import javax.faces.model.SelectItem;
+
+import org.primefaces.context.RequestContext;
+
 import it.webred.cs.csa.ejb.dto.BaseDTO;
 import it.webred.cs.csa.ejb.dto.siru.SiruInputDTO;
 import it.webred.cs.csa.ejb.dto.siru.SiruResultDTO;
@@ -8,17 +21,19 @@ import it.webred.cs.csa.web.manbean.report.ReportBean;
 import it.webred.cs.csa.web.manbean.scheda.SchedaBean;
 import it.webred.cs.csa.web.manbean.scheda.SchedaValiditaCompUtils;
 import it.webred.cs.data.DataModelCostanti;
+import it.webred.cs.data.DataModelCostanti.DatiSociali.TIPO_PROTEZIONE_GIURIDICA;
 import it.webred.cs.data.model.ArFfProgetto;
 import it.webred.cs.data.model.ArFfProgettoAttivita;
 import it.webred.cs.data.model.CsAComponente;
 import it.webred.cs.data.model.CsADatiSociali;
 import it.webred.cs.data.model.CsAIndirizzo;
+import it.webred.cs.data.model.CsAProtezioneGiuridica;
 import it.webred.cs.data.model.CsDValutazione;
 import it.webred.cs.data.model.CsExtraFseDatiLavoro;
 import it.webred.cs.data.model.CsTbCondLavoro;
 import it.webred.cs.jsf.bean.DatiAnaBean;
+import it.webred.cs.jsf.bean.ProtezioneGiuridicaBean;
 import it.webred.cs.jsf.interfaces.IDatiSociali;
-import it.webred.cs.jsf.manbean.ComponenteAltroMan;
 import it.webred.cs.jsf.manbean.FormazioneLavoroMan;
 import it.webred.cs.jsf.manbean.por.DatiPorMan;
 import it.webred.cs.jsf.manbean.superc.CsUiCompBaseBean;
@@ -30,15 +45,6 @@ import it.webred.cs.json.stranieri.IStranieri;
 import it.webred.cs.json.stranieri.StranieriManBaseBean;
 import it.webred.ct.config.model.AmTabComuni;
 import it.webred.ss.data.model.SsSchedaSegnalato;
-
-import java.math.BigDecimal;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-
-import javax.faces.model.SelectItem;
-
-import org.primefaces.context.RequestContext;
 
 public class DatiSocialiComp extends SchedaValiditaCompUtils implements IDatiSociali{
 	
@@ -89,9 +95,7 @@ public class DatiSocialiComp extends SchedaValiditaCompUtils implements IDatiSoc
 	
 	/*Dati Tutela*/
 	private List<CsAComponente> listaComponenti;
-	private ComponenteAltroMan sostegno;
-	private ComponenteAltroMan curatela;
-	private ComponenteAltroMan tutela;
+	private Hashtable<String,ProtezioneGiuridicaBean> protezioneGiuridica;
 	private boolean affServSociali=false;  
 	
 	public DatiSocialiComp(Long idSoggetto, Long idCaso){
@@ -132,9 +136,14 @@ public class DatiSocialiComp extends SchedaValiditaCompUtils implements IDatiSoc
 	public void init(Long idSoggetto){
 		stranieriRequired=false;
 		formLavoroMan = new FormazioneLavoroMan();
-		sostegno = new ComponenteAltroMan(idSoggetto, listaComponenti);
-		curatela = new ComponenteAltroMan(idSoggetto, listaComponenti);
-		tutela = new ComponenteAltroMan(idSoggetto, listaComponenti);
+		
+		this.protezioneGiuridica = new Hashtable<String, ProtezioneGiuridicaBean>();
+		ProtezioneGiuridicaBean sostegno = new ProtezioneGiuridicaBean(idSoggetto, TIPO_PROTEZIONE_GIURIDICA.SOSTEGNO.getCodice(), listaComponenti);
+		ProtezioneGiuridicaBean curatela = new ProtezioneGiuridicaBean(idSoggetto, TIPO_PROTEZIONE_GIURIDICA.CURATELA.getCodice(), listaComponenti);
+		ProtezioneGiuridicaBean tutela = new ProtezioneGiuridicaBean(idSoggetto, TIPO_PROTEZIONE_GIURIDICA.TUTELA.getCodice(), listaComponenti);
+		protezioneGiuridica.put(TIPO_PROTEZIONE_GIURIDICA.SOSTEGNO.getCodice(),sostegno);
+		protezioneGiuridica.put(TIPO_PROTEZIONE_GIURIDICA.TUTELA.getCodice(),tutela);
+		protezioneGiuridica.put(TIPO_PROTEZIONE_GIURIDICA.CURATELA.getCodice(),curatela);
 	}
 
 	@Override
@@ -427,35 +436,8 @@ public class DatiSocialiComp extends SchedaValiditaCompUtils implements IDatiSoc
 	}
 
 	@Override
-	public ComponenteAltroMan getSostegno() {
-		return sostegno;
-	}
-
-	@Override
-	public ComponenteAltroMan getCuratela() {
-		return curatela;
-	}
-
-	@Override
-	public ComponenteAltroMan getTutela() {
-		return tutela;
-	}
-
-	@Override
 	public boolean isAffServSociali() {
 		return affServSociali;
-	}
-
-	public void setSostegno(ComponenteAltroMan sostegno) {
-		this.sostegno = sostegno;
-	}
-
-	public void setCuratela(ComponenteAltroMan curatela) {
-		this.curatela = curatela;
-	}
-
-	public void setTutela(ComponenteAltroMan tutela) {
-		this.tutela = tutela;
 	}
 
 	public void setAffServSociali(boolean affServSociali) {
@@ -490,24 +472,38 @@ public class DatiSocialiComp extends SchedaValiditaCompUtils implements IDatiSoc
 		this.listaComponenti = listaComponenti;
 	}
 	
-	public ComponenteAltroMan fillComponente(CsAComponente comp, String denom, String indirizzo, String citta, String tel, Long soggettoId){
+	public void fillProtezioneGiuridica(Set<CsAProtezioneGiuridica> lista, Long soggettoId, boolean copia){
+		if(this.protezioneGiuridica==null) 
+			this.protezioneGiuridica = new Hashtable<String, ProtezioneGiuridicaBean>();
 		
-		ComponenteAltroMan componente = new ComponenteAltroMan(soggettoId, this.listaComponenti);
 		
-		//Valorizzo dati componente familiare
-		componente.setCompIndirizzo(indirizzo);
-		componente.setCompCitta(citta);
-		componente.setCompDenominazione(denom);
-		componente.setCompTelefono(tel);
-		if(citta!=null){
-			int index = citta.lastIndexOf('-');
-			String scitta = citta.substring(0,index);
-			String sprov = citta.substring(index+1);
-			componente.setComuneResidenzaMan(scitta, sprov);
+		if(lista!=null) {
+			for(CsAProtezioneGiuridica jpa : lista) {
+				ProtezioneGiuridicaBean bean = new ProtezioneGiuridicaBean(soggettoId, jpa.getTipo(), this.listaComponenti);
+				String citta = jpa.getCitta();
+				
+				//Valorizzo dati componente familiare
+				bean.getComponente().setCompIndirizzo(jpa.getIndirizzo());
+				bean.getComponente().setCompCitta(citta);
+				bean.getComponente().setCompDenominazione(jpa.getDenominazione());
+				bean.getComponente().setCompTelefono(jpa.getTelefono());
+				if(citta!=null){
+					int index = citta.lastIndexOf('-');
+					String scitta = citta.substring(0,index);
+					String sprov = citta.substring(index+1);
+					bean.getComponente().setComuneResidenzaMan(scitta, sprov);
+				}
+				CsAComponente parente = jpa.getComponente();
+				bean.getComponente().setIdComponente(parente!=null ? parente.getId() : null);
+				bean.getComponente().setDtRif(this.getDataFine()); /*Era impostato a dataInizio, cambiare?!*/
+				
+				if(!copia) bean.setId(jpa.getId());
+				bean.setDataDecreto(jpa.getDataDecreto());
+				bean.setNumDecreto(jpa.getNumDecreto());
+				
+				protezioneGiuridica.put(jpa.getTipo(), bean);
+			}
 		}
-		componente.setIdComponente(comp!=null ? comp.getId() : null);
-		componente.setDtRif(this.getDataFine()); /*Era impostato a dataInizio, cambiare?!*/
-		return componente;
 	}
 	
 	public void initAbitazioneMan(CsDValutazione v, Long casoId){
@@ -805,5 +801,11 @@ public class DatiSocialiComp extends SchedaValiditaCompUtils implements IDatiSoc
 				datiPorMan.getCsCDatiLavoro().getMaster().setSiru(val.getSiruExtra());
 		}
 		return ok;
+	}
+
+	@Override
+	public List<ProtezioneGiuridicaBean> getProtezioneGiuridica() {
+		List<ProtezioneGiuridicaBean> out = new ArrayList<ProtezioneGiuridicaBean>(protezioneGiuridica.values());
+		return out;
 	}
 }

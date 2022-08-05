@@ -47,8 +47,9 @@ public class DatiEsterniSoggettoDAO extends CarSocialeBaseDAO implements Seriali
 	}
 
 	public CsASoggettoDatiEsterni getSoggettoByCf(String cf) {
-		List<CsASoggettoDatiEsterni> result = em.createNamedQuery("CsASoggettoDatiEsterni.byCf", CsASoggettoDatiEsterni.class).setParameter("cf", cf)
-				.getResultList();
+		Query q = em.createNamedQuery("CsASoggettoDatiEsterni.byCf", CsASoggettoDatiEsterni.class);
+		q.setParameter("cf", cf);
+		List<CsASoggettoDatiEsterni> result = q.getResultList();
 		if (result.size() == 0)
 			return null;
 		else
@@ -86,8 +87,8 @@ public class DatiEsterniSoggettoDAO extends CarSocialeBaseDAO implements Seriali
 	public void save(CsASoggettoDatiEsterni soggettoDaDatiEsterni, CsADatiEsterni datiEsterni, String codiceEnte, ParametriDatiEsterniSoggettoDTO parametriEsterni) {
 		CsADatiEsterniSoggetto relazioneDatiEsterniToSoggetto = new CsADatiEsterniSoggetto(soggettoDaDatiEsterni, datiEsterni, codiceEnte);
 		relazioneDatiEsterniToSoggetto.setCodicePrestazione(parametriEsterni.getCodicePrestazione());
+		relazioneDatiEsterniToSoggetto.setTipoPrestazione(parametriEsterni.getTipoPrestazione());
 		relazioneDatiEsterniToSoggetto.setStatoDomanda(parametriEsterni.getStatoDomanda());
-		relazioneDatiEsterniToSoggetto.setCodiceEnte(codiceEnte); 
 		relazioneDatiEsterniToSoggetto.setDtAperturaDomanda(parametriEsterni.getDataApertura());
 		relazioneDatiEsterniToSoggetto.setDtChiusuraDomanda(parametriEsterni.getDataChiusura());
 		relazioneDatiEsterniToSoggetto.setEntitaServizio(parametriEsterni.getEntitaServizio());

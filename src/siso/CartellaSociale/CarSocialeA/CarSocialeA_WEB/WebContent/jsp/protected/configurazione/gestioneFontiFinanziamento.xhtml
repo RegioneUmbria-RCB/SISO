@@ -9,7 +9,146 @@
 
 <ui:fragment>
    <h:form id="frmFontiFinanziamento">
+   	  <p:remoteCommand name="updateDlgFonte" process="@this" update="@(.updateOnFonteChange)" /> 
+      <p:remoteCommand name="updateListaFonti"       process="@this" update="@(.updateListaFonti)" />  
+   	  
+   	  <p:commandButton value="Nuova fonte di finanziamento" icon="ui-icon-plus"  action="#{gestioneArgoFontiBean.nuovo()}" 
+			process="@this"	oncomplete="updateDlgFonte(); PF('wdgFontiModal').show();"/>
    
-   </h:form>
+  	  <p:dataTable id="dtFonti" var="row" lazy="true" widgetVar="dtFonti" width="100%" 
+				 value="#{gestioneArgoFontiBean.fontiTableDataModel}"
+				 rowIndexVar="rowKeyInd" rowKey="#{row.id}" 
+				 selection="#{gestioneArgoFontiBean.fontiSelezionate}"
+				 emptyMessage="Fonti di finanziamento non presenti"
+				 paginator="true" rows="10"  paginatorPosition="bottom"
+    			 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                 rowsPerPageTemplate="10,20,50,100"  filterEvent="enter" styleClass="updateListaFonti">
+			<f:facet name="header">Fonti di finanziamento</f:facet>
+   			<p:column selectionMode="multiple" style="width:16px;text-align:center" />    
+			<p:column headerText="Codice" filterBy="#{row.codiceMemo}" filterMatchMode="contains">
+				<p:outputLabel value="#{row.codiceMemo}"/>
+			</p:column>
+			<p:column headerText="Descrizione" filterBy="#{row.descrizione}" filterMatchMode="contains">
+				<p:outputLabel value="#{row.descrizione}"/>
+			</p:column>
+			<p:column headerText="Organizzazione">
+				<ui:repeat value="#{row.lstOrganizzazioni}" var="o">
+					<p:outputLabel value="#{o.descrizione}"/><br/>
+				</ui:repeat>
+				<p:outputLabel value="Altre organizzazioni esterne alla zona sociale" style="color:orange;" rendered="#{row.altreOrganizzazioni}"/>
+			</p:column>
+			<p:column headerText="Ultima modifica" style="text-align:center;">
+				<p:outputLabel value="#{row.dataUltimaModifica}">
+					<f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+				</p:outputLabel>
+			</p:column>
+			<p:column style="text-align:center" >
+	        <f:facet name="header">
+	        	<h:outputText value="Attivo" /><br/>
+            </f:facet>
+           <webred:pnlImgBoolean value="#{row.abilitato}"/>
+        </p:column>
+        
+		<p:column>
+			<p:commandButton id="cmdFonteModifica" value="Modifica" title="Modifica dati progetto" icon="ui-icon-pencil" 
+					 process="@this" action="#{gestioneArgoFontiBean.initDialog(row)}"  
+					 oncomplete="updateDlgFonte(); PF('wdgFontiModal').show();" />
+		</p:column>	
+		
+		 <f:facet name="footer">
+			<p:commandButton id="btnFonteOn" value="Attiva" icon="ui-icon-check" 
+       	    	title="Abilita i progetti selezionati" 
+        					action="#{gestioneArgoFontiBean.abilitaFonti()}" 
+        					process="@form" update="@form" >
+        					<p:confirm header="Conferma" message="Procedere con l\'attivazione?" icon="ui-icon-alert"/>
+        				</p:commandButton>
+        				<p:commandButton id="btnFonteOff" value="Disattiva" icon="ui-icon-closethick" 
+       	    				title="Disabilita le fonti di finanizamento selezionate" 
+        					action="#{gestioneArgoFontiBean.disabilitaFonti()}" 
+        					process="@form" update="@form" >
+        					<p:confirm header="Conferma" message="Procedere con la disattivazione?" 
+        					icon="ui-icon-alert"/>
+        				</p:commandButton>
+        				<p:commandButton value="Elimina" icon="ui-icon-trash"
+				    actionListener="#{gestioneArgoFontiBean.eliminaFonti}"   
+				    process="@form" update="@form" >
+				<p:confirm header="Conferma" message="Procedere con l\'eliminazione? Se la fonte di finanziamento è stata usata, non sarà possibile eliminarlo." icon="ui-icon-alert"/>
+			</p:commandButton>	
+       </f:facet>
+		
+		</p:dataTable>
+    </h:form>
+    
+    <p:dialog dynamic="true" modal="true" id="dlgFonti"
+			widgetVar="wdgFontiModal" width="700" closable="false" resizable="true" 
+			header="#{gestioneArgoFontiBean.modalHeader}" styleClass="updateOnFonteChange">	
+		<h:form id="frmDlgFonte">
+		<p:remoteCommand name="updateListaDlgFonte" process="@this" update="@(.updateListaFonti)" />  
+		<p:outputPanel id="fontePanel" >	
+			<h:panelGrid columns="2" >  
+				<h:outputLabel value="Fondo * "/>
+				<p:selectOneMenu value="#{gestioneArgoFontiBean.selectedFonte.fondoId}">
+					<f:selectItem noSelectionOption="true" itemLabel="- seleziona -"/>
+					<f:selectItems value="#{gestioneArgoFontiBean.fondi}"/>
+				</p:selectOneMenu>
+				
+           		<h:outputLabel value="Codice * "/>
+           		<p:inputText value="#{gestioneArgoFontiBean.selectedFonte.codiceMemo}" style="width:300px;"/>
+				
+           		<h:outputLabel value="Descrizione * "/>
+           		<p:inputTextarea value="#{gestioneArgoFontiBean.selectedFonte.descrizione}" style="width:300px;"/>
+           		
+           		<h:outputLabel value="Data inizio validità"/>
+           		<p:calendar value="#{gestioneArgoFontiBean.selectedFonte.dtInizioVal}"/>
+           		
+           		<h:outputLabel value="Data fine validità"/>
+           		<p:calendar value="#{gestioneArgoFontiBean.selectedFonte.dtFineVal}"/>
+           		
+           		<h:outputLabel value="Importo"/>
+           		<p:inputText value="#{gestioneArgoFontiBean.selectedFonte.importo}"/>
+           		
+           	</h:panelGrid>			
+			
+            <p:pickList id="pickListOrg" style="width:100%" 
+				value="#{gestioneArgoFontiBean.selectedOrganizzazioni}" var="arOrg"
+				itemLabel="#{arOrg.descrizione}"
+				itemValue="#{arOrg}" 
+				converterMessage="Errore di conversione"
+				converter="#{gestioneArgoFontiBean.pickListOrganizzazioniConverter}"
+				showCheckbox="true">
+				
+				  <p:ajax event="transfer" listener="#{gestioneArgoFontiBean.onOrganizzazioneTransfer}" update="somProgetti"/>
+									
+				<p:column style="text-align:left;">
+					<h:outputText value="#{arOrg.descrizione}" />
+				</p:column>
+			</p:pickList>
+			
+			<h:panelGrid columns="2">  
+				<h:outputLabel value="Progetto predefinito"/>
+				<p:selectOneMenu id="somProgetti" value="#{gestioneArgoFontiBean.selectedFonte.progettoDefaultId}" style="display: block; width: 300px;">
+					<f:selectItem noSelectionOption="true" itemLabel="- seleziona -"/>
+					<f:selectItems value="#{gestioneArgoFontiBean.progetti}"/>
+				</p:selectOneMenu>
+			</h:panelGrid>
+			
+			<p:spacer height="20" width="100%"/>
+			
+			<table border="0" width='100%' >
+					<tr><td><p:spacer height="20"/></td></tr>
+					<tr>
+						<td style="text-align: center;">
+							<p:commandButton id="cmdSalva" value="Salva" 
+								action="#{gestioneArgoFontiBean.salva}" process="fontePanel"		 
+								oncomplete="if (args &amp;&amp; !args.validationFailed &amp;&amp; args.saved){ PF('wdgFontiModal').hide(); updateListaDlgFonte(); } else {}"/>  
+							<p:spacer width="15px;" />
+						    <p:commandButton value="Esci" process="@this" onclick="PF('wdgFontiModal').hide();" />						      
+						</td>
+					</tr>
+			</table>
+		</p:outputPanel>		
+		</h:form>		       
+    </p:dialog>
+ 
 </ui:fragment>
 </html>

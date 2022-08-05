@@ -1,5 +1,6 @@
 package it.webred.cs.csa.ejb.dto;
 
+import it.webred.cs.data.DataModelCostanti.TipoFormAttivitaProfessionali;
 import it.webred.cs.data.model.CsCDiarioConchi;
 import it.webred.cs.data.model.CsDPai;
 import it.webred.cs.data.model.CsDRelSal;
@@ -220,14 +221,39 @@ public class RelazioneDTO extends CeTBaseObject {
 
 	//SISO-1257
 		
-		public boolean isAttivitaSAL() {
-			return (this.getRelazione().getMicroAttivita().getFlagTipoForm().equals("4") ||
-					this.getRelazione().getMicroAttivita().getFlagTipoForm().equals("5")||
-					this.getRelazione().getMicroAttivita().getFlagTipoForm().equals("6"));
-		}
+	public boolean isAttivitaSAL() {
+		return this.isTipoForm(TipoFormAttivitaProfessionali.SAL_MEDIAZIONE)  || 
+			   this.isTipoForm(TipoFormAttivitaProfessionali.SAL_ORIENTAMENTO)||
+			   this.isTipoForm(TipoFormAttivitaProfessionali.SAL_VALUTAZIONE);
+	}
 
-		public void setAttivitaSAL(boolean attivitaSAL) {
-			this.attivitaSAL = attivitaSAL;
+	public void setAttivitaSAL(boolean attivitaSAL) {
+		this.attivitaSAL = attivitaSAL;
+	}
+
+	public boolean isFormEditor() {
+		return this.isTipoForm(TipoFormAttivitaProfessionali.TESTUALE);
+	}
+	
+	public boolean isFormTriage() {
+		return this.isTipoForm(TipoFormAttivitaProfessionali.TRIAGE);
+	}
+	
+	public boolean isFormUpload() {
+		return this.isTipoForm(TipoFormAttivitaProfessionali.UPLOAD_DOCUMENTO);
+	}
+	
+	public boolean isFormRelazione() {
+		return this.isTipoForm(TipoFormAttivitaProfessionali.RELAZIONE_DOCUMENTO);
+	}
+	
+	private boolean isTipoForm(int tipo){
+		boolean val = false;
+		if(this.relazione.getMicroAttivita()!=null) {
+			int tipoForm = this.relazione.getMicroAttivita()!=null ? relazione.getMicroAttivita().getFlagTipoForm().intValue() : -1;
+			val = (tipo == tipoForm);
 		}
+		return val;
+	}
 	
 }

@@ -1,77 +1,5 @@
 package it.webred.cs.csa.web.manbean.fascicolo.pai;
 
-import it.webred.cs.csa.ejb.client.AccessTablePaiPTISessionBeanRemote;
-import it.webred.cs.csa.ejb.client.AccessTableSoggettoSessionBeanRemote;
-import it.webred.cs.csa.ejb.client.configurazione.AccessTableCatSocialeSessionBeanRemote;
-import it.webred.cs.csa.ejb.client.configurazione.AccessTableComuniSessionBeanRemote;
-import it.webred.cs.csa.ejb.client.configurazione.AccessTableNazioniSessionBeanRemote;
-import it.webred.cs.csa.ejb.dto.BaseDTO;
-import it.webred.cs.csa.ejb.dto.ErogazioniSearchCriteria;
-import it.webred.cs.csa.ejb.dto.InterventoDTO;
-import it.webred.cs.csa.ejb.dto.KeyValueDTO;
-import it.webred.cs.csa.ejb.dto.OperatoreDTO;
-import it.webred.cs.csa.ejb.dto.RelazioneDTO;
-import it.webred.cs.csa.ejb.dto.erogazioni.ErogazioneDettaglioDTO;
-import it.webred.cs.csa.ejb.dto.erogazioni.ErogazioneMasterDTO;
-import it.webred.cs.csa.ejb.dto.pai.CsPaiMastSoggDTO;
-import it.webred.cs.csa.ejb.dto.pai.PaiSearchCriteria;
-import it.webred.cs.csa.ejb.dto.pai.PaiSintesiDTO;
-import it.webred.cs.csa.ejb.dto.pai.affido.PaiAffidoStatoEnum;
-import it.webred.cs.csa.ejb.dto.pai.base.CsPaiFaseChiusuraDTO;
-import it.webred.cs.csa.ejb.dto.pai.pti.CsPaiPTIDTO;
-import it.webred.cs.csa.ejb.dto.pai.pti.CsPaiPtiRevisioniDTO;
-import it.webred.cs.csa.ejb.dto.pai.pti.DettaglioMinore;
-import it.webred.cs.csa.ejb.dto.pai.pti.DettaglioPTI;
-import it.webred.cs.csa.ejb.dto.pai.pti.InserimentoConsuntivazioneDTO;
-import it.webred.cs.csa.ejb.dto.pai.pti.PaiPTIFaseEnum;
-import it.webred.cs.csa.ejb.dto.pai.pti.PaiPTIMotivoRevisioneEnum;
-import it.webred.cs.csa.ejb.dto.pai.pti.PaiPTITipoProrogaEnum;
-import it.webred.cs.csa.ejb.dto.pai.pti.RichiestaDisponibilitaPaiPtiDTO;
-import it.webred.cs.csa.ejb.dto.pai.pti.StrutturaDisponibilitaDTO;
-import it.webred.cs.csa.ejb.dto.relazione.RelazioneSintesiDTO;
-import it.webred.cs.csa.web.manbean.fascicolo.FascicoloBean;
-import it.webred.cs.csa.web.manbean.fascicolo.FascicoloCompSecondoLivello;
-import it.webred.cs.csa.web.manbean.fascicolo.FglInterventoBean;
-import it.webred.cs.csa.web.manbean.fascicolo.erogazioniInterventi.ErogInterventoRowBean;
-import it.webred.cs.csa.web.manbean.fascicolo.interventi.InterventiBean;
-import it.webred.cs.csa.web.manbean.fascicolo.interventiTreeView.TipoInterventoManBean;
-import it.webred.cs.data.DataModelCostanti;
-import it.webred.cs.data.DataModelCostanti.Pai.PERIODO_TEMPORALE;
-import it.webred.cs.data.DataModelCostanti.TipoRicercaSoggetto;
-import it.webred.cs.data.model.CsAAnaIndirizzo;
-import it.webred.cs.data.model.CsAAnagrafica;
-import it.webred.cs.data.model.CsAComponente;
-import it.webred.cs.data.model.CsASoggettoLAZY;
-import it.webred.cs.data.model.CsCCategoriaSociale;
-import it.webred.cs.data.model.CsCTipoIntervento;
-import it.webred.cs.data.model.CsDPai;
-import it.webred.cs.data.model.CsFlgIntervento;
-import it.webred.cs.data.model.CsIIntervento;
-import it.webred.cs.data.model.CsOOperatore;
-import it.webred.cs.data.model.CsOOperatoreSettore;
-import it.webred.cs.data.model.CsPaiFaseChiusuraPK;
-import it.webred.cs.data.model.CsPaiMastSogg;
-import it.webred.cs.data.model.CsRelSettoreCatsoc;
-import it.webred.cs.data.model.CsTbMotivoChiusuraPai;
-import it.webred.cs.data.model.CsTbProgettoAltro;
-import it.webred.cs.data.model.CsTbSchedaMultidim;
-import it.webred.cs.data.model.CsTbTipoPai;
-import it.webred.cs.jsf.bean.DatiInterventoBean;
-import it.webred.cs.jsf.bean.DatiUserSearchBean;
-import it.webred.cs.jsf.interfaces.IPai;
-import it.webred.cs.jsf.manbean.ComuneNazioneNascitaMan;
-import it.webred.cs.jsf.manbean.ComuneNazioneResidenzaMan;
-import it.webred.cs.jsf.manbean.RisorsaFamiliareBean;
-import it.webred.cs.jsf.manbean.UserSearchBeanExt;
-import it.webred.cs.jsf.manbean.superc.CsUiCompBaseBean;
-import it.webred.ct.config.model.AmTabComuni;
-import it.webred.ct.config.model.AmTabNazioni;
-import it.webred.ct.support.datarouter.CeTBaseObject;
-import it.webred.ejb.utility.ClientUtility;
-import it.webred.jsf.bean.ComuneBean;
-import it.webred.jsf.bean.SessoBean;
-import it.webred.siso.ws.ricerca.dto.PersonaDettaglio;
-
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.text.ParseException;
@@ -107,11 +35,84 @@ import org.springframework.beans.BeanUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import it.webred.cs.csa.ejb.client.AccessTablePaiPTISessionBeanRemote;
+import it.webred.cs.csa.ejb.client.AccessTableSoggettoSessionBeanRemote;
+import it.webred.cs.csa.ejb.client.configurazione.AccessTableCatSocialeSessionBeanRemote;
+import it.webred.cs.csa.ejb.client.configurazione.AccessTableNazioniSessionBeanRemote;
+import it.webred.cs.csa.ejb.dto.BaseDTO;
+import it.webred.cs.csa.ejb.dto.ErogazioniSearchCriteria;
+import it.webred.cs.csa.ejb.dto.InterventoDTO;
+import it.webred.cs.csa.ejb.dto.KeyValueDTO;
+import it.webred.cs.csa.ejb.dto.OperatoreDTO;
+import it.webred.cs.csa.ejb.dto.RelazioneDTO;
+import it.webred.cs.csa.ejb.dto.erogazioni.ErogazioneDettaglioDTO;
+import it.webred.cs.csa.ejb.dto.erogazioni.ErogazioneMasterDTO;
+import it.webred.cs.csa.ejb.dto.pai.CsPaiMastSoggDTO;
+import it.webred.cs.csa.ejb.dto.pai.PaiSearchCriteria;
+import it.webred.cs.csa.ejb.dto.pai.PaiSintesiDTO;
+import it.webred.cs.csa.ejb.dto.pai.affido.PaiAffidoStatoEnum;
+import it.webred.cs.csa.ejb.dto.pai.base.CsPaiFaseChiusuraDTO;
+import it.webred.cs.csa.ejb.dto.pai.pti.CsPaiPTIDTO;
+import it.webred.cs.csa.ejb.dto.pai.pti.CsPaiPtiRevisioniDTO;
+import it.webred.cs.csa.ejb.dto.pai.pti.DettaglioMinore;
+import it.webred.cs.csa.ejb.dto.pai.pti.DettaglioPTI;
+import it.webred.cs.csa.ejb.dto.pai.pti.InserimentoConsuntivazioneDTO;
+import it.webred.cs.csa.ejb.dto.pai.pti.PaiPTIFaseEnum;
+import it.webred.cs.csa.ejb.dto.pai.pti.PaiPTIMotivoRevisioneEnum;
+import it.webred.cs.csa.ejb.dto.pai.pti.PaiPTITipoProrogaEnum;
+import it.webred.cs.csa.ejb.dto.pai.pti.RichiestaDisponibilitaPaiPtiDTO;
+import it.webred.cs.csa.ejb.dto.pai.pti.StrutturaDisponibilitaDTO;
+import it.webred.cs.csa.ejb.dto.relazione.RelazioneSintesiDTO;
+import it.webred.cs.csa.web.manbean.fascicolo.FascicoloBean;
+import it.webred.cs.csa.web.manbean.fascicolo.FascicoloCompSecondoLivello;
+import it.webred.cs.csa.web.manbean.fascicolo.FglInterventoBean;
+import it.webred.cs.csa.web.manbean.fascicolo.erogazioniInterventi.ErogInterventoRowBean;
+import it.webred.cs.csa.web.manbean.fascicolo.interventi.InterventiBean;
+import it.webred.cs.csa.web.manbean.fascicolo.interventiTreeView.TipoInterventoManBean;
+import it.webred.cs.data.DataModelCostanti;
+import it.webred.cs.data.DataModelCostanti.Pai.PERIODO_TEMPORALE;
+import it.webred.cs.data.DataModelCostanti.TipoRicercaSoggetto;
+import it.webred.cs.data.model.ArFfProgetto;
+import it.webred.cs.data.model.CsAAnaIndirizzo;
+import it.webred.cs.data.model.CsAAnagrafica;
+import it.webred.cs.data.model.CsAComponente;
+import it.webred.cs.data.model.CsASoggettoLAZY;
+import it.webred.cs.data.model.CsCCategoriaSociale;
+import it.webred.cs.data.model.CsCTipoIntervento;
+import it.webred.cs.data.model.CsDPai;
+import it.webred.cs.data.model.CsFlgIntervento;
+import it.webred.cs.data.model.CsIIntervento;
+import it.webred.cs.data.model.CsOOperatore;
+import it.webred.cs.data.model.CsOOperatoreSettore;
+import it.webred.cs.data.model.CsPaiFaseChiusuraPK;
+import it.webred.cs.data.model.CsPaiMastSogg;
+import it.webred.cs.data.model.CsRelSettoreCatsoc;
+import it.webred.cs.data.model.CsTbMotivoChiusuraPai;
+import it.webred.cs.data.model.CsTbProgettoAltro;
+import it.webred.cs.data.model.CsTbSchedaMultidim;
+import it.webred.cs.data.model.CsTbTipoPai;
+import it.webred.cs.jsf.bean.DatiInterventoBean;
+import it.webred.cs.jsf.bean.DatiUserSearchBean;
+import it.webred.cs.jsf.interfaces.IPai;
+import it.webred.cs.jsf.manbean.ComuneNazioneNascitaMan;
+import it.webred.cs.jsf.manbean.ComuneNazioneResidenzaMan;
+import it.webred.cs.jsf.manbean.RisorsaFamiliareBean;
+import it.webred.cs.jsf.manbean.UserSearchBeanExt;
+import it.webred.cs.jsf.manbean.superc.CsUiCompBaseBean;
+import it.webred.ct.config.model.AmTabComuni;
+import it.webred.ct.config.model.AmTabNazioni;
+import it.webred.ct.support.datarouter.CeTBaseObject;
+import it.webred.ejb.utility.ClientUtility;
+import it.webred.jsf.bean.ComuneBean;
+import it.webred.jsf.bean.SessoBean;
+import it.webred.siso.ws.ricerca.dto.PersonaDettaglio;
+
 public class PaiBean extends FascicoloCompSecondoLivello implements IPai, Serializable {
 
 	private static final long serialVersionUID = 6070604949953337370L;
 
 	private static final String MESSAGES_ID = "messagesPai";
+	private static final String PROGETTO_ALTRO = "Altro"; 
 
 	private LazyListaPaiModel lazyListaPaiModel;
 	private List<SelectItem> lstTipoPai;
@@ -155,6 +156,7 @@ public class PaiBean extends FascicoloCompSecondoLivello implements IPai, Serial
 	private PaiAffidoBean paiAffidoBean = new PaiAffidoBean();
 	private PaiSalBean paiSalBean = new PaiSalBean();
 	private PaiPTIBean paiPTIBean = new PaiPTIBean();
+	// SISO-2181 private PaiRedCittadinanzaBean paiRedCittadinanzaBean = new PaiRedCittadinanzaBean();
 	
 	private int tabViewIndex = 0;
 
@@ -230,22 +232,23 @@ public class PaiBean extends FascicoloCompSecondoLivello implements IPai, Serial
 		
 		if (isClasseProgetto(PaiProgettiEnum.SAL)) {
 			paiSalBean.nuovo();
-		} else if(isClasseProgetto(PaiProgettiEnum.AFFIDO)) {
+/* SISO-2181		
+ * 		 } else if(isClasseProgetto(PaiProgettiEnum.RED_CITTADINANZA)) {
+ *			paiRedCittadinanzaBean.nuovo(); */		
+		 } else if(isClasseProgetto(PaiProgettiEnum.AFFIDO)) {
 			if (fromFascicoloCartellaUtente) {
 				paiAffidoBean.nuovo(idSoggetto);
-			} else {
-				if (soggRiferimentoPai != null) {
+			} else if (soggRiferimentoPai != null) {
 					CsASoggettoLAZY sogg = recuperaSoggetto(soggRiferimentoPai.getCf());
-					if (sogg != null)
-						paiAffidoBean.nuovo(sogg.getAnagraficaId());
-				}
+					if (sogg != null) paiAffidoBean.nuovo(sogg.getAnagraficaId());
+					else paiAffidoBean.nuovo(null);
 			}
 
 		} else if (isClasseProgetto(PaiProgettiEnum.PTI)) {
 			if (fromFascicoloCartellaUtente) {
 				paiPTIBean.nuovo(csASoggetto);
 
-			} else {
+			}else{
 				
 				if (soggRiferimentoPai != null) {
 					CsASoggettoLAZY sogg = recuperaSoggetto(soggRiferimentoPai.getCf());
@@ -262,8 +265,8 @@ public class PaiBean extends FascicoloCompSecondoLivello implements IPai, Serial
 						addError("Errore", "Inserire la data di nascita del beneficiario");
 					}
 				}
+			  }
 			}
-		}
 
 		}
 		RequestContext.getCurrentInstance().update("frmProgettiIndividuali:paiExtComponent:paiTabViewContainer");
@@ -521,6 +524,9 @@ public class PaiBean extends FascicoloCompSecondoLivello implements IPai, Serial
 				paiAffidoBean.findAffidoByPai(selectedPai.getDiarioId(), idSoggetto);
 			} else if (isClasseProgetto(PaiProgettiEnum.SAL)) {
 				paiSalBean.findSALByPai(selectedPai.getDiarioId(), idSoggetto);
+/* SISO-2181			
+ * 			}else if(isClasseProgetto(PaiProgettiEnum.RED_CITTADINANZA)){
+ *				paiRedCittadinanzaBean.findByPai(selectedPai.getDiarioId(), idSoggetto);*/
 			}else if (isClasseProgetto(PaiProgettiEnum.PTI)) {
 				this.ptiRevisione = null;
 				paiPTIBean.caricaPTI(selectedPai.getDiarioId(), soggRiferimentoPai);
@@ -649,6 +655,20 @@ public class PaiBean extends FascicoloCompSecondoLivello implements IPai, Serial
 				return;
 			}
 		}
+		
+/*SISO-2181
+ * 		if(isClasseProgetto(PaiProgettiEnum.RED_CITTADINANZA)){
+			List<String> valida = paiRedCittadinanzaBean.valida();
+
+			if (valida != null && !valida.isEmpty()) {
+				this.addWarning("Errore validazione Reddito di Cittadinanza", valida);
+				return;
+			}
+			
+			if (!StringUtils.isBlank(paiRedCittadinanzaBean.getWarnigSalvataggio())) {
+				addWarning("Suggerimento validazione Reddito di Cittadinanza", paiRedCittadinanzaBean.getWarnigSalvataggio());
+			}
+		}*/
 
 		try {
 			// SISO-1131
@@ -770,7 +790,9 @@ public class PaiBean extends FascicoloCompSecondoLivello implements IPai, Serial
 				paiAffidoBean.salva(selectedPai.getDiarioId());
 			} else if (isClasseProgetto(PaiProgettiEnum.SAL)) {
 				paiSalBean.salva(selectedPai.getDiarioId());
-			} else if (isClasseProgetto(PaiProgettiEnum.PTI)) {
+/* SISO-2181			} else if (isClasseProgetto(PaiProgettiEnum.RED_CITTADINANZA)){
+				paiRedCittadinanzaBean.salva(selectedPai.getDiarioId());
+	*/		} else if (isClasseProgetto(PaiProgettiEnum.PTI)) {
 				// Recupero le date del Diario
 				Date da = this.selectedPai.getCsDDiario().getDtAttivazioneDa();
 				Date a = this.selectedPai.getCsDDiario().getDtChiusuraDa();
@@ -1269,6 +1291,21 @@ public class PaiBean extends FascicoloCompSecondoLivello implements IPai, Serial
 		return errors;
 	}
 
+	private boolean isProgettoAltroSel(Long id) {
+		boolean isAltro = false;
+		String progetto = null;
+		ArFfProgetto p = null;
+		if(id!=null && id>0){
+			BaseDTO dto = new BaseDTO();
+			fillEnte(dto);
+			dto.setObj(id);
+			p  = confService.getProgettoById(dto);
+		}
+		progetto = p!=null ? p.getDescrizione() : null;
+		isAltro = !StringUtils.isBlank(progetto) && PROGETTO_ALTRO.equalsIgnoreCase(progetto);
+		return isAltro;
+	}
+	
 	public List<String> valida() {
 		ArrayList<String> errors = new ArrayList<String>();
 
@@ -1292,20 +1329,11 @@ public class PaiBean extends FascicoloCompSecondoLivello implements IPai, Serial
 		// SISO-1131
 		// se ho selezionato il Progetto
 		if (this.selectedPai.getTipoProgettoId() > 0) {
-			String nomeProgettoSelezionato = "";
-			for (SelectItem itm : lstArFfProgetti) {
-				if (itm.getValue().equals(this.selectedPai.getTipoProgettoId())) {
-					nomeProgettoSelezionato = itm.getLabel();
-					break;
-				}
-
-			}
-			if (!nomeProgettoSelezionato.isEmpty() && nomeProgettoSelezionato.equalsIgnoreCase("ALTRO")) {
+			boolean isProgettoAltroSelected = this.isProgettoAltroSel(this.selectedPai.getTipoProgettoId());
+			if (isProgettoAltroSelected) {
 				if (this.selectedProgettoAltro != null) {
-					if (this.selectedProgettoAltro.getDescrizione() == null
-							|| this.selectedProgettoAltro.getDescrizione().isEmpty()) {
+					if (StringUtils.isBlank(selectedProgettoAltro.getDescrizione()))
 						errors.add("Il campo Specificare è obbligatorio");
-					}
 				} else {
 					errors.add("Il campo Specificare è obbligatorio");
 				}
@@ -2521,35 +2549,11 @@ public class PaiBean extends FascicoloCompSecondoLivello implements IPai, Serial
 
 	@Override
 	public boolean isAbilitaMenuProgettiAltro() {
-		String tipoProgettoAltro = "";
-		if (this.selectedPai.getTipoProgettoId() != null) {
-			if (this.selectedPai.getTipoProgettoId() >= 0) {
-
-				for (SelectItem itm : lstArFfProgetti) {
-					if (itm.getValue().equals(this.selectedPai.getTipoProgettoId())) {
-						tipoProgettoAltro = itm.getLabel();
-						this.abilitaMenuProgettiAltro = (!tipoProgettoAltro.isEmpty()
-								&& tipoProgettoAltro.equalsIgnoreCase("ALTRO"));
-						break;
-					}
-				}
-
-			} else {
-				this.abilitaMenuProgettiAltro = false;
-			}
-		} else {
-			this.abilitaMenuProgettiAltro = false;
-		}
-		return this.abilitaMenuProgettiAltro;
+		abilitaMenuProgettiAltro = false;
+		abilitaMenuProgettiAltro = isProgettoAltroSel(this.selectedPai.getTipoProgettoId());
+		return abilitaMenuProgettiAltro;
 	}
 
-	public void setAbilitaMenuProgettiAltro(boolean abilitaMenuProgettiAltro) {
-		this.abilitaMenuProgettiAltro = abilitaMenuProgettiAltro;
-	}
-
-	/**
-	 * @return the selectedProgettoAltro
-	 */
 	public CsTbProgettoAltro getSelectedProgettoAltro() {
 		return selectedProgettoAltro;
 	}
@@ -2565,16 +2569,8 @@ public class PaiBean extends FascicoloCompSecondoLivello implements IPai, Serial
 
 		long tipoProgettoId = (Long) ((javax.faces.component.UIInput) event.getComponent()).getValue();
 
-		String progetto = "";
-
-		for (SelectItem itm : lstArFfProgetti) {
-			if (itm.getValue().equals(this.selectedPai.getTipoProgettoId())) {
-				progetto = itm.getLabel();
-				break;
-			}
-		}
-
-		if (!progetto.isEmpty() && progetto.equalsIgnoreCase("ALTRO")) {
+		boolean isProgettoAltro = this.isProgettoAltroSel(tipoProgettoId);
+		if (isProgettoAltro) {
 			this.setSelectedProgettoAltro(new CsTbProgettoAltro());
 			this.selectedPai.setCsTbProgettoAltro(new CsTbProgettoAltro());
 		}
@@ -2617,9 +2613,7 @@ public class PaiBean extends FascicoloCompSecondoLivello implements IPai, Serial
 	public void setFromFascicoloCartellaUtente(boolean fromFascicoloCartellaUtente) {
 		this.fromFascicoloCartellaUtente = fromFascicoloCartellaUtente;
 	}
-
-	/////// BENEFICIARIIIIIIIIIIIIIIIIII
-
+	
 	public boolean isSoggettoSelectedFromAnagrafe() {
 		return soggettoSelectedFromAnagrafe;
 	}
@@ -3737,4 +3731,14 @@ public class PaiBean extends FascicoloCompSecondoLivello implements IPai, Serial
 	public String getClassePai(){
 		return tipoPai!=null ? tipoPai.getProgetto() : null;
 	}
+
+	/* SISO-2181
+	public PaiRedCittadinanzaBean getPaiRedCittadinanzaBean() {
+		return paiRedCittadinanzaBean;
+	}
+
+	public void setPaiRedCittadinanzaBean(PaiRedCittadinanzaBean paiRedCittadinanzaBean) {
+		this.paiRedCittadinanzaBean = paiRedCittadinanzaBean;
+	}
+	*/
 }

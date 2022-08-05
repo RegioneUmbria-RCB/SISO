@@ -14,7 +14,25 @@
 			]]>
 		</query>
 	</named-query>
-  	
+ 
+  	<named-query name="ArFfLineafinOrg.findByLineafinId">
+		<query>
+			<![CDATA[
+				select a FROM ArFfLineafinOrg a
+				WHERE a.lineaFinId = :lineaFinId
+				ORDER BY a.arOrganizzazione.nome
+			]]>
+		</query>
+	</named-query>
+	
+	 <named-query name="ArFfFondo">
+		<query>
+			<![CDATA[
+				select a FROM ArFfFondo a
+				ORDER BY a.descrizione
+			]]>
+		</query>
+	</named-query>
   
   	<named-query name="ArSpazio.findArSpazioByBELFIORE">
 		<query>
@@ -128,6 +146,16 @@
 			]]>
 		</query>
 	</named-query>
+	<named-query name="ArFfLineafin.findByCodiceMemo">
+		<query>
+			<![CDATA[
+				select a FROM ArFfLineafin a
+				WHERE a.codiceMemo = :codiceMemo
+			]]>
+		</query>
+	</named-query>
+	
+	
 	
 	<named-query name="ArFfProgetto.elimina">
 		<query>
@@ -138,11 +166,40 @@
 		</query>
 	</named-query>
 	
+	<named-query name="ArFfLineafin.elimina">
+		<query>
+			<![CDATA[
+				DELETE FROM ArFfLineafin a
+				WHERE a.id = :id
+			]]>
+		</query>
+	</named-query>
+	
 	<named-query name="ArFfProgettoOrg.eliminaByProgettoId">
 		<query>
 			<![CDATA[
 				DELETE FROM ArFfProgettoOrg a
 				WHERE a.progettoId = :progettoId
+			]]>
+		</query>
+	</named-query>
+	
+	<named-query name="ArFfLineafinOrg.eliminaByLineafinId">
+		<query>
+			<![CDATA[
+				DELETE FROM ArFfLineafinOrg a
+				WHERE a.lineaFinId = :lineaFinId
+			]]>
+		</query>
+	</named-query>
+	
+	
+	
+	<named-query name="ArFfLineafin.gestisciAbilitazione">
+		<query>
+			<![CDATA[
+				UPDATE ArFfLineafin a set a.abilitato = :abilitato
+				WHERE a.id IN ( :listaId )
 			]]>
 		</query>
 	</named-query>
@@ -183,6 +240,15 @@
 		</query>
 	</named-query>
 	
+	<named-query name="ArFfLineafinOrg.eliminaByOrgFonteId">
+		<query>
+			<![CDATA[
+				DELETE FROM ArFfLineafinOrg a
+				WHERE a.lineaFinId = :fonteId
+				and a.organizzazioneId in (:listaOrganizzazioni)
+			]]>
+		</query>
+	</named-query>
 	
     <named-query name="ArOOrganizzazione.listOrganizzazioneFuoriZona">
 		<query>

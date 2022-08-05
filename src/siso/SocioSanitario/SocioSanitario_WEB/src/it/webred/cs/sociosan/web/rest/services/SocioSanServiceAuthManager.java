@@ -1,11 +1,6 @@
 package it.webred.cs.sociosan.web.rest.services;
 
-
-
 import org.jboss.logging.Logger;
-
-import com.sun.org.apache.bcel.internal.generic.ISTORE;
-
 import it.umbriadigitale.rest.dto.BaseRequest;
 import it.umbriadigitale.rest.service.IAuthManager;
 import it.webred.cs.sociosan.web.rest.dto.SocioSanAuthRequest;

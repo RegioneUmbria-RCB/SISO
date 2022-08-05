@@ -12,6 +12,7 @@ import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -22,6 +23,7 @@ import javax.persistence.TemporalType;
  */
 @Entity
 @Table(name = "AR_FF_FONDO")
+@NamedQuery(name="ArFfFondo.findAll", query="SELECT c FROM ArFfFondo c")
 public class ArFfFondo implements java.io.Serializable {
 
 	@Id
@@ -40,24 +42,22 @@ public class ArFfFondo implements java.io.Serializable {
 	
 	private String descrizione;
 	
-	@Column(name = "USR_INS", length = 50)
+	@Column(name = "USER_INS", length = 50)
 	private String userIns;
 	
-
 	@Temporal(TemporalType.DATE)
 	@Column(name = "DT_INS", length = 7)
 	private Date dtIns;
 	
 	@Column(name = "USR_MOD", length = 50)
 	private String usrMod;
-	
 
 	@Temporal(TemporalType.DATE)
 	@Column(name = "DT_MOD", length = 7)
 	private Date dtMod;
 	
 	
-	private Character abilitato;
+	private Boolean abilitato;
 	
 	@Temporal(TemporalType.DATE)
 	@Column(name = "DATA_INIZIO_VAL", nullable = false, length = 7)
@@ -68,9 +68,6 @@ public class ArFfFondo implements java.io.Serializable {
 	private Date dtFineVal;
 	
 	private BigDecimal importo;
-	
-	@Column(name = "FLAG_DIRETTO_ZONA", nullable = false, precision = 1, scale = 0)
-	private boolean flagDirettoZona;
 	
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "arFfFondo")
 	private Set<ArFfLineafin> arFfLineafins = new HashSet<ArFfLineafin>(0);
@@ -92,14 +89,13 @@ public class ArFfFondo implements java.io.Serializable {
 		this.dataInizioVal = dataInizioVal;
 		this.dtFineVal = dtFineVal;
 		this.importo = importo;
-		this.flagDirettoZona = flagDirettoZona;
 	}
 
 	public ArFfFondo(long id, ArFfTbOrigine arFfTbOrigine,
 			ArOOrganizzazione arOOrganizzazione, String codiceMemo,
 			String descrizione, String userIns, Date dtIns, String usrMod,
-			Date dtMod, Character abilitato, Date dataInizioVal,
-			Date dtFineVal, BigDecimal importo, boolean flagDirettoZona,
+			Date dtMod, Boolean abilitato, Date dataInizioVal,
+			Date dtFineVal, BigDecimal importo,
 			Set<ArFfLineafin> arFfLineafins) {
 		this.id = id;
 		this.arFfTbOrigine = arFfTbOrigine;
@@ -114,7 +110,6 @@ public class ArFfFondo implements java.io.Serializable {
 		this.dataInizioVal = dataInizioVal;
 		this.dtFineVal = dtFineVal;
 		this.importo = importo;
-		this.flagDirettoZona = flagDirettoZona;
 		this.arFfLineafins = arFfLineafins;
 	}
 
@@ -193,14 +188,6 @@ public class ArFfFondo implements java.io.Serializable {
 		this.dtMod = dtMod;
 	}
 
-	public Character getAbilitato() {
-		return this.abilitato;
-	}
-
-	public void setAbilitato(Character abilitato) {
-		this.abilitato = abilitato;
-	}
-
 	public Date getDataInizioVal() {
 		return this.dataInizioVal;
 	}
@@ -217,7 +204,6 @@ public class ArFfFondo implements java.io.Serializable {
 		this.dtFineVal = dtFineVal;
 	}
 
-	@Column(name = "IMPORTO", nullable = false, precision = 10)
 	public BigDecimal getImporto() {
 		return this.importo;
 	}
@@ -226,20 +212,20 @@ public class ArFfFondo implements java.io.Serializable {
 		this.importo = importo;
 	}
 
-	public boolean isFlagDirettoZona() {
-		return this.flagDirettoZona;
-	}
-
-	public void setFlagDirettoZona(boolean flagDirettoZona) {
-		this.flagDirettoZona = flagDirettoZona;
-	}
-
 	public Set<ArFfLineafin> getArFfLineafins() {
 		return this.arFfLineafins;
 	}
 
 	public void setArFfLineafins(Set<ArFfLineafin> arFfLineafins) {
 		this.arFfLineafins = arFfLineafins;
+	}
+
+	public Boolean getAbilitato() {
+		return abilitato;
+	}
+
+	public void setAbilitato(Boolean abilitato) {
+		this.abilitato = abilitato;
 	}
 
 }
