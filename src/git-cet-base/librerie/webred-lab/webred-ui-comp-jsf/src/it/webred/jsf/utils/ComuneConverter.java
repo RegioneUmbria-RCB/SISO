@@ -10,7 +10,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.naming.NamingException;
 
-import org.apache.commons.lang3.StringUtils;
+//import org.apache.commons.lang3.StringUtils;
 
 
 public class ComuneConverter implements Converter {
@@ -18,7 +18,8 @@ public class ComuneConverter implements Converter {
 	public Object getAsObject(FacesContext facesContext, UIComponent component, String submittedValue) {  
 		
 		ComuneBean cb = null;
-		if (submittedValue != null && !StringUtils.isBlank(submittedValue)) {
+		//if (submittedValue != null && !StringUtils.isBlank(submittedValue)) {
+		if (submittedValue != null && !submittedValue.equalsIgnoreCase("")) {
 			try {
 				LuoghiService luoghiService = (LuoghiService) ClientUtility.getEjbInterface("CT_Service", "CT_Config_Manager", "LuoghiServiceBean");
 		    	

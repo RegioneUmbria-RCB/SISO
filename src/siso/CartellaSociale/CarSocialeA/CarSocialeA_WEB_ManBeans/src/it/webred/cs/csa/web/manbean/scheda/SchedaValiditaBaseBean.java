@@ -51,7 +51,7 @@ public abstract class SchedaValiditaBaseBean extends SchedaUtils {
 			BaseDTO dto = new BaseDTO();
 			fillEnte(dto);
 			dto.setObj(soggettoId);
-			dto.setObj2(getTypeClass());
+			dto.setObj2(typeClass);
 			
 			listaComponenti = new ArrayList();
 			listaComponentiToRemove = new ArrayList();

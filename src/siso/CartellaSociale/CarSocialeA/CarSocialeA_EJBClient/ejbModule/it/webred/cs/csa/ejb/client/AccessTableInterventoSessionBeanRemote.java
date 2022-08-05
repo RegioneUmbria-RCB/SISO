@@ -156,4 +156,6 @@ public interface AccessTableInterventoSessionBeanRemote {
 	public CsTbProgettoAltro salvaProgettoAltro(BaseDTO dto);
 	
 	public CsIPs getCsIPsByInterventoId(BaseDTO bDto);
+	
+	public boolean verificaUsoArFonte(BaseDTO dto);
 }

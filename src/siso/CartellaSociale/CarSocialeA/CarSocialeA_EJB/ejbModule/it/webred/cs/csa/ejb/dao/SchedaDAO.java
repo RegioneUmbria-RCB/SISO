@@ -1,6 +1,7 @@
 package it.webred.cs.csa.ejb.dao;
 
 import it.webred.cs.csa.ejb.CarSocialeBaseDAO;
+import it.webred.cs.csa.ejb.client.CarSocialeServiceException;
 import it.webred.cs.csa.ejb.dto.cartella.RisorsaCalcDTO;
 import it.webred.cs.data.DataModelCostanti;
 import it.webred.cs.data.model.CsAAnagrafica;
@@ -78,10 +79,14 @@ public class SchedaDAO extends CarSocialeBaseDAO implements Serializable {
 	
 	@SuppressWarnings("unchecked")
 	public List<CsADatiSociali> findDatiSocialiBySoggettoId(long idSoggetto) {
-			
-		Query q = em.createNamedQuery("CsADatiSociali.getSocialiBySoggettoId").setParameter("idSoggetto", idSoggetto);
-		return q.getResultList();
-			
+		try {
+			Query q = em.createNamedQuery("CsADatiSociali.getSocialiBySoggettoId");
+			q.setParameter("idSoggetto", idSoggetto);
+			return q.getResultList();
+		}catch(Exception e) {
+			logger.error(e.getMessage(), e);
+			throw new CarSocialeServiceException(e);
+		}
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -105,9 +110,12 @@ public class SchedaDAO extends CarSocialeBaseDAO implements Serializable {
 	}
 	
 	public void saveDatiSociali(CsADatiSociali newDatiSociali) {
-
-		em.persist(newDatiSociali);
-
+		try {
+			em.persist(newDatiSociali);
+		}catch(Exception e){
+			logger.error(e.getMessage(), e);
+			throw new CarSocialeServiceException(e);
+		}
 	}
 	
 	public void updateDatiSociali(CsADatiSociali datiSociali) {
@@ -116,16 +124,21 @@ public class SchedaDAO extends CarSocialeBaseDAO implements Serializable {
 			em.merge(datiSociali);
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
+			throw new CarSocialeServiceException(e);
 		}
 
 	}
 	
+	public void eliminaProtezioneGiuridica(Long datiSocialiId) {
+		Query q = em.createNamedQuery("CsAProtezioneGiuridica.eliminaByIdDatiSociali");
+		q.setParameter("datiSocialiId", datiSocialiId);
+		q.executeUpdate();
+	}
+	
 	public void eliminaDatiSociali(Long id) {
-		
 		Query q = em.createNamedQuery("CsADatiSociali.eliminaSocialiById");
 		q.setParameter("id", id);
 		q.executeUpdate();
-		
 	}
 		
 	//INVALIDITA

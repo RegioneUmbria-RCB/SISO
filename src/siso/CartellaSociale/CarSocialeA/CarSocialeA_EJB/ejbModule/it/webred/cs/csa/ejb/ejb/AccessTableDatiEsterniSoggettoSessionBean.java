@@ -215,21 +215,23 @@ public class AccessTableDatiEsterniSoggettoSessionBean extends CarSocialeBaseSes
 		return datiEsterni;
 	}
 	private String getCellValueAsString(Cell cell1) {
-		 if( cell1.getCellType() == Cell.CELL_TYPE_NUMERIC) {
-			 if(HSSFDateUtil.isCellDateFormatted(cell1)) {
-				 DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
-			   	 Date date = cell1.getDateCellValue();
-		         return df.format(date);
+		if(cell1!=null) {
+			 if( cell1.getCellType() == Cell.CELL_TYPE_NUMERIC) {
+				 if(HSSFDateUtil.isCellDateFormatted(cell1)) {
+					 DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+				   	 Date date = cell1.getDateCellValue();
+			         return df.format(date);
+				 }
+				 BigDecimal big = new BigDecimal(cell1.getNumericCellValue());
+				 big = big.setScale(0, RoundingMode.HALF_UP);
+				 String rounded = big.toString();
+				 return rounded;
 			 }
-			 BigDecimal big = new BigDecimal(cell1.getNumericCellValue());
-			 big = big.setScale(0, RoundingMode.HALF_UP);
-			 String rounded = big.toString();
-			 return rounded;
-		 }
-		 else if(cell1.getCellType() == Cell.CELL_TYPE_STRING) {
-			 return  cell1.getStringCellValue().trim();
-		 }
-		 return null;
+			 else if(cell1.getCellType() == Cell.CELL_TYPE_STRING) {
+				 return  cell1.getStringCellValue().trim();
+			 }
+		}
+		return null;
 	}
 	private Map<String, Integer> getMapsValues(Sheet sheet1) {
 		
@@ -301,7 +303,6 @@ public class AccessTableDatiEsterniSoggettoSessionBean extends CarSocialeBaseSes
 		viewDto.setTipologia(tipologia);
 	 	if(totalRows > 0 )
 		for(int x = 1; x<=totalRows; x++){
-			 DatiEsterniSoggettoDTO dto = null;
 			 String cfSoggetto = null;
 			 String codiceEnte = null;
 		 	 String codiceEnteNew = "";
@@ -312,14 +313,12 @@ public class AccessTableDatiEsterniSoggettoSessionBean extends CarSocialeBaseSes
 			 boolean corrispondenzaCodiceFiscale = false; //r.getCell(0).getStringCellValue().equalsIgnoreCase(codiceFiscale);
 			 boolean corrispondenzaCodiceEnte = false;
 			 if(colCfNome != null && mapsValori.containsKey(colCfNome)) {
-				  
-				 int idxForColumnPrestazione = mapsValori.get(colCfNome); //get the column index for the column with header name = "Column1"
-					if(idxForColumnPrestazione > 0) {
-					 Cell cell1 = dataRow.getCell(idxForColumnPrestazione); //Get the cells for each of the indexes
-					 cfSoggetto = cell1.getStringCellValue().trim();
-					
+				 int idx = mapsValori.get(colCfNome); //get the column index for the column with header name = "Column1"
+					if(idx > 0) {
+						Cell cell1 = dataRow.getCell(idx); //Get the cells for each of the indexes
+						cfSoggetto = getCellValueAsString(cell1);
 					}
-					 corrispondenzaCodiceFiscale = cfSoggetto.equalsIgnoreCase(codFiscale);
+					corrispondenzaCodiceFiscale = codFiscale.equalsIgnoreCase(cfSoggetto);
 			 }
 			 
 			

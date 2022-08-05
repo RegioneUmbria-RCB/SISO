@@ -26,7 +26,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -279,48 +278,24 @@ class DatiEsterniSoggettoTimerTaskHelper {
 		return dto;
 	}
 
-	@SuppressWarnings("unchecked")
-	private Set<DatiEsterniSoggettoDTO> processWorkbookSheet(Iterator<Row> rowIterator, String tipoPrestazione, String nomeColonnaStato) {
-		if (rowIterator.hasNext()) // salta la prima riga, dovendo contenere le intestazioni
-			rowIterator.next();
-		if (rowIterator.hasNext()) {
-			Set<DatiEsterniSoggettoDTO> resultSet = new HashSet<DatiEsterniSoggettoDTO>();
-			DatiEsterniSoggettoDTO dto;
-			while (rowIterator.hasNext()) {
-				Row r = rowIterator.next();
-				if (r.getLastCellNum() < 1) { // devono esserci almeno due colonne
-					continue;
-				}
-				String cfSoggetto = r.getCell(0).getStringCellValue().trim();
-				String codiceEnte = r.getCell(1).getStringCellValue().trim();
-				dto = new DatiEsterniSoggettoDTO(cfSoggetto, codiceEnte);
-				if(tipoPrestazione != null)
-					dto.setObj3(tipoPrestazione);
-					
-				resultSet.add(dto);
-			}
-			return resultSet;
-		} else {
-			log.warn("problema, sembra che il foglio excel abbia solo una riga");
-			return (Set<DatiEsterniSoggettoDTO>) Collections.EMPTY_SET;
-		}
-	}
 	private String getCellValueAsString(Cell cell1) {
-		 if( cell1.getCellType() == Cell.CELL_TYPE_NUMERIC) {
+		if(cell1!=null) { 
+			if(cell1.getCellType() == Cell.CELL_TYPE_NUMERIC) {
+				 
+				 if(HSSFDateUtil.isCellDateFormatted(cell1)) {
+					 DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+				   	 Date date = cell1.getDateCellValue();
+			         return df.format(date);
+				 }
+				 
+				 BigDecimal big = new BigDecimal(cell1.getNumericCellValue());
+				 big = big.setScale(0, RoundingMode.HALF_UP);
+				 String rounded = big.toString();
+				 return rounded;
 			 
-			 if(HSSFDateUtil.isCellDateFormatted(cell1)) {
-				 DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
-			   	 Date date = cell1.getDateCellValue();
-		         return df.format(date);
+			 }else if(cell1.getCellType() == Cell.CELL_TYPE_STRING) {
+				 return  cell1.getStringCellValue().trim();
 			 }
-			 
-			 BigDecimal big = new BigDecimal(cell1.getNumericCellValue());
-			 big = big.setScale(0, RoundingMode.HALF_UP);
-			 String rounded = big.toString();
-			 return rounded;
-		 }
-		 else if(cell1.getCellType() == Cell.CELL_TYPE_STRING) {
-			 return  cell1.getStringCellValue().trim();
 		 }
 		 return null;
 	}
@@ -335,15 +310,6 @@ class DatiEsterniSoggettoTimerTaskHelper {
 			if(totalRows > 0 )
 			for(int x = 1; x<=totalRows; x++){
 				 DatiEsterniSoggettoDTO dto = null;
-				 String codicePrestazione = null;
-				 String tipoPrestazione = null;
-				 String cfSoggetto = null;
-				 String codiceEnte = null;
-				 String statoDomanda = null;
-				 String indirizzo = null;
-				 String dataApertura = null;
-				 String dataChiusura = null;
-				 String entitaServizio = null;
 				 
 				 Row dataRow = mainSheet.getRow(x); //get row 1 to row n (rows containing data)
 				 	
@@ -353,82 +319,17 @@ class DatiEsterniSoggettoTimerTaskHelper {
 				 if (dataRow.getLastCellNum() < 1) { // devono esserci almeno due colonne
 						continue;
 				 }	
-				 if(confDatiEsterniDTO.getNomeColonnaCodPrestazione() != null && mapsValori.containsKey(confDatiEsterniDTO.getNomeColonnaCodPrestazione())) {
-				 	int idxForColumnPrestazione = mapsValori.get(confDatiEsterniDTO.getNomeColonnaCodPrestazione()); //get the column index for the column with header name = "Column1"
-					if(idxForColumnPrestazione >= 0) {
-					 Cell cell1 = dataRow.getCell(idxForColumnPrestazione); //Get the cells for each of the indexes
-					 codicePrestazione = getCellValueAsString(cell1);
-					}
-					 
-				 }
-				 if(confDatiEsterniDTO.getNomeColonnaTipoPrestazione()  != null && mapsValori.containsKey(confDatiEsterniDTO.getNomeColonnaTipoPrestazione())) {
-					int idxForColumnTipoPrestazione = mapsValori.get(confDatiEsterniDTO.getNomeColonnaTipoPrestazione());  
-					if(idxForColumnTipoPrestazione >= 0) {
-					 Cell cell1 = dataRow.getCell(idxForColumnTipoPrestazione);  
-					 tipoPrestazione = getCellValueAsString(cell1);
-					}
-				}
-				
-				if(confDatiEsterniDTO.getNomeColonnaCF() != null &&  mapsValori.containsKey(confDatiEsterniDTO.getNomeColonnaCF())) {
-					int idxForColumnCF = mapsValori.get(confDatiEsterniDTO.getNomeColonnaCF()); //get the column index for the column with header name = "Column1"
-					if(idxForColumnCF >= 0) {
-					 Cell cell1 = dataRow.getCell(idxForColumnCF); //Get the cells for each of the indexes
-					 cfSoggetto = cell1.getStringCellValue().trim();
-					}
-				}
-				else {
-					cfSoggetto = (dataRow.getCell(0).getStringCellValue().trim());
-				}
-				
-				if(confDatiEsterniDTO.getNomeColonnaEnte() != null && mapsValori.containsKey(confDatiEsterniDTO.getNomeColonnaEnte())) {
-					int idxForColumnEnte = mapsValori.get(confDatiEsterniDTO.getNomeColonnaEnte()); //get the column index for the column with header name = "Column1"
-					if(idxForColumnEnte >= 0) {
-					 Cell cell1 = dataRow.getCell(idxForColumnEnte); //Get the cells for each of the indexes
-					 codiceEnte = (getCellValueAsString(cell1));
-					}
-				}
-				else {
-					codiceEnte = (dataRow.getCell(1).getStringCellValue().trim());
-				}
-				if(confDatiEsterniDTO.getNomeColonnaServizioStato() != null && mapsValori.containsKey(confDatiEsterniDTO.getNomeColonnaServizioStato())) {
-					int idxForColumnStato = mapsValori.get(confDatiEsterniDTO.getNomeColonnaServizioStato());  
-					if(idxForColumnStato >= 0) {
-					 Cell cell1 = dataRow.getCell(idxForColumnStato);  
-					 statoDomanda = ( getCellValueAsString(cell1));
-					}
-				}
-				if(confDatiEsterniDTO.getNomeColonnaIndirizzo() != null && mapsValori.containsKey(confDatiEsterniDTO.getNomeColonnaIndirizzo())) {
-					int idxForColumnIndirizzo = mapsValori.get(confDatiEsterniDTO.getNomeColonnaIndirizzo());  
-					if(idxForColumnIndirizzo >= 0) {
-					 Cell cell1 = dataRow.getCell(idxForColumnIndirizzo);  
-					 indirizzo = (getCellValueAsString(cell1));
-					}
-				}
-				
-				if(confDatiEsterniDTO.getNomeColonnaDataApertura() != null && mapsValori.containsKey(confDatiEsterniDTO.getNomeColonnaDataApertura())) {
-					int idxForColumnDtApertura = mapsValori.get(confDatiEsterniDTO.getNomeColonnaDataApertura());  
-					if(idxForColumnDtApertura >= 0) {
-					 Cell cell1 = dataRow.getCell(idxForColumnDtApertura);  
-					dataApertura = (getCellValueAsString(cell1));
-					}
-				}
-				
-				if(confDatiEsterniDTO.getNomeColonnaDataChiusura() != null && mapsValori.containsKey(confDatiEsterniDTO.getNomeColonnaDataChiusura())) {
-					int idxForColumnDtChiusura = mapsValori.get(confDatiEsterniDTO.getNomeColonnaDataChiusura());  
-					if(idxForColumnDtChiusura >= 0) {
-					 Cell cell1 = dataRow.getCell(idxForColumnDtChiusura);  
-					 dataChiusura = (getCellValueAsString(cell1));
-					}
-				}
-				
-				if(confDatiEsterniDTO.getNomeColonnaEntitaServizio() != null && mapsValori.containsKey(confDatiEsterniDTO.getNomeColonnaEntitaServizio())) {
-					int idxForColumnEntitaServizio = mapsValori.get(confDatiEsterniDTO.getNomeColonnaEntitaServizio());  
-					if(idxForColumnEntitaServizio >= 0) {
-					 Cell cell1 = dataRow.getCell(idxForColumnEntitaServizio);  
-					 entitaServizio = (getCellValueAsString(cell1));
-					}
-				}
-				
+				 
+				 String cfSoggetto = this.getValoreColonna(mapsValori, dataRow, confDatiEsterniDTO.getNomeColonnaCF(), 0);
+				 String codiceEnte = this.getValoreColonna(mapsValori, dataRow, confDatiEsterniDTO.getNomeColonnaEnte(), 1);
+				 String dataApertura = this.getValoreColonna(mapsValori, dataRow, confDatiEsterniDTO.getNomeColonnaDataApertura(), null);
+				 String dataChiusura = this.getValoreColonna(mapsValori, dataRow, confDatiEsterniDTO.getNomeColonnaDataChiusura(), null);
+				 String entitaServizio = this.getValoreColonna(mapsValori, dataRow, confDatiEsterniDTO.getNomeColonnaEntitaServizio(), null);
+				 String indirizzo = this.getValoreColonna(mapsValori, dataRow, confDatiEsterniDTO.getNomeColonnaIndirizzo(), null);
+				 String tipoPrestazione = this.getValoreColonna(mapsValori, dataRow, confDatiEsterniDTO.getNomeColonnaTipoPrestazione(), null);
+				 String codicePrestazione = this.getValoreColonna(mapsValori, dataRow, confDatiEsterniDTO.getNomeColonnaCodPrestazione(), null);
+				 String statoDomanda = this.getValoreColonna(mapsValori, dataRow, confDatiEsterniDTO.getNomeColonnaServizioStato(), null);
+				 
 				 dto = new DatiEsterniSoggettoDTO(cfSoggetto, codiceEnte);	
 				 dto.getParametriEsterni().setDataApertura(dataApertura);
 				 dto.getParametriEsterni().setDataChiusura(dataChiusura);
@@ -437,7 +338,7 @@ class DatiEsterniSoggettoTimerTaskHelper {
 				 dto.getParametriEsterni().setTipoPrestazione(tipoPrestazione);
 				 dto.getParametriEsterni().setCodicePrestazione(codicePrestazione);
 				 dto.getParametriEsterni().setStatoDomanda(statoDomanda);
-	
+
 				 dto.setConfiguratoreDatiEsterni(confDatiEsterniDTO);
 				 resultSet.add(dto);
 	
@@ -454,4 +355,18 @@ class DatiEsterniSoggettoTimerTaskHelper {
 		}
 	}
 
+	private String getValoreColonna(Map<String,Integer> mapsValori,  Row dataRow, String nomeColonna, Integer indexDefault) {
+		String value = null;
+		if(nomeColonna != null && mapsValori.containsKey(nomeColonna)) {
+			int idxForColumn = mapsValori.get(nomeColonna);  
+			if(idxForColumn >= 0) {
+			 Cell cell1 = dataRow.getCell(idxForColumn);  
+			 value = getCellValueAsString(cell1);
+			}
+		}else if(indexDefault!=null) {
+			Cell cell1 = dataRow.getCell(indexDefault);
+			value = getCellValueAsString(cell1);
+		}
+		return value;
+	}
 }

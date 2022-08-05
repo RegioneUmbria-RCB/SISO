@@ -1,15 +1,5 @@
 package it.webred.cs.jsf.bean;
 
-import it.webred.cs.csa.ejb.dto.BaseDTO;
-import it.webred.cs.data.DataModelCostanti;
-import it.webred.cs.data.DataModelCostanti.FoglioAmministrativo;
-import it.webred.cs.data.model.CsDDiario;
-import it.webred.cs.data.model.CsFlgIntervento;
-import it.webred.cs.data.model.CsOOperatoreSettore;
-import it.webred.cs.data.model.CsTbMotivoChiusuraInt;
-import it.webred.cs.jsf.manbean.superc.CsUiCompBaseBean;
-import it.webred.ejb.utility.ClientUtility;
-
 import java.io.Serializable;
 import java.util.Date;
 import java.util.LinkedList;
@@ -18,6 +8,15 @@ import java.util.List;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.NoneScoped;
 import javax.naming.NamingException;
+
+import it.webred.cs.csa.ejb.dto.BaseDTO;
+import it.webred.cs.data.DataModelCostanti;
+import it.webred.cs.data.DataModelCostanti.FoglioAmministrativo;
+import it.webred.cs.data.model.CsDDiario;
+import it.webred.cs.data.model.CsFlgIntervento;
+import it.webred.cs.data.model.CsOOperatoreSettore;
+import it.webred.cs.data.model.CsTbMotivoChiusuraInt;
+import it.webred.cs.jsf.manbean.superc.CsUiCompBaseBean;
 
 @ManagedBean
 @NoneScoped

@@ -16,7 +16,7 @@ public class RelazioneSintesiDTO implements Serializable {
 	private String proposta;
 	private String descMacroAttivita;
 	private String descMicroAttivita;
-	private String tipoFormMicroAttivita;
+	private int tipoFormMicroAttivita;
 	private List<Long> paiCollegati;
 	
 	public Long getDiarioId() {
@@ -73,10 +73,10 @@ public class RelazioneSintesiDTO implements Serializable {
 	public void setDescMicroAttivita(String descMicroAttivita) {
 		this.descMicroAttivita = descMicroAttivita;
 	}
-	public String getTipoFormMicroAttivita() {
+	public int getTipoFormMicroAttivita() {
 		return tipoFormMicroAttivita;
 	}
-	public void setTipoFormMicroAttivita(String tipoFormMicroAttivita) {
+	public void setTipoFormMicroAttivita(int tipoFormMicroAttivita) {
 		this.tipoFormMicroAttivita = tipoFormMicroAttivita;
 	}
 	public String getSituazioneAmbientaleTrunc(){

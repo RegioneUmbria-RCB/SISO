@@ -155,7 +155,7 @@ public class ErogazioniInterventiBean extends CsUiCompBaseBean {
 		fglInterventoBean.setFromPai(Boolean.TRUE);
 	}
 	public void inizializzaSoggettoDialog(DatiUserSearchBean sbean){
-		PersonaDettaglio p  = sbean.getSoggetto();
+		PersonaDettaglio p  = sbean!=null ? sbean.getSoggetto() : null;
 		if(p!=null) {
 			String titleBlocco = "Non è possibile creare una nuova erogazione";
 			String msgBlocco = "Il soggetto selezionato è";
@@ -592,7 +592,9 @@ public class ErogazioniInterventiBean extends CsUiCompBaseBean {
 		FacesContext fc = FacesContext.getCurrentInstance();
 		ExternalContext ec = fc.getExternalContext();
 		
-		String fileName = "erogazioni.xls";
+		String cfCaso = !StringUtils.isBlank(lazyListaErogazioniModel.getSelectedSoggettoErogazioneCF()) ? "_"+this.lazyListaErogazioniModel.getSelectedSoggettoErogazioneCF(): "";
+		
+		String fileName = "erogazioni"+cfCaso+".xls";
 		String contentType = "application/vnd.ms-excel";
 		
 		ec.responseReset();

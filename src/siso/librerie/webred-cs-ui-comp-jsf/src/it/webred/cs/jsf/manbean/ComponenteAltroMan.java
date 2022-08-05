@@ -18,6 +18,8 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.NoneScoped;
 import javax.faces.model.SelectItem;
 
+import org.apache.commons.lang3.StringUtils;
+
 @ManagedBean
 @NoneScoped
 public class ComponenteAltroMan extends CsUiCompBaseBean implements IDatiComponenteOAltro {
@@ -200,6 +202,15 @@ public class ComponenteAltroMan extends CsUiCompBaseBean implements IDatiCompone
 		this.compTelefono=null;
 		this.idComponente = null;
 		this.comuneResidenzaMan = new ComuneResidenzaMan();
+	}
+
+	public boolean isEmpty() {
+		boolean empty = StringUtils.isBlank(compCitta) && 
+				StringUtils.isBlank(compDenominazione) && 
+				StringUtils.isBlank(compIndirizzo) &&
+				StringUtils.isBlank(compTelefono) &&
+				this.componenteSel == null;
+		return empty;
 	}
 
 }

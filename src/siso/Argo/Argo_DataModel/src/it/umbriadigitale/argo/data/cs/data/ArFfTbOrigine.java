@@ -4,7 +4,7 @@ package it.umbriadigitale.argo.data.cs.data;
 
 import java.util.HashSet;
 import java.util.Set;
-import javax.persistence.Column;
+
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
@@ -21,7 +21,6 @@ public class ArFfTbOrigine implements java.io.Serializable {
 	@Id
 	private long id;
 	private String descrizione;
-	@Column(name = "TOOLTIP", length = 4000)
 	private String tooltip;
 	private Character abilitato;
 	

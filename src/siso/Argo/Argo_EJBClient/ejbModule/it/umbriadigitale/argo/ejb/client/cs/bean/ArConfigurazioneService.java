@@ -1,6 +1,8 @@
 package it.umbriadigitale.argo.ejb.client.cs.bean;
 
 import it.umbriadigitale.argo.ejb.client.cs.dto.configurazione.ArAttivitaDTO;
+import it.umbriadigitale.argo.ejb.client.cs.dto.configurazione.ArFondoDTO;
+import it.umbriadigitale.argo.ejb.client.cs.dto.configurazione.ArFonteDTO;
 import it.umbriadigitale.argo.ejb.client.cs.dto.configurazione.ArOrganizzazioneDTO;
 import it.umbriadigitale.argo.ejb.client.cs.dto.configurazione.ArProgettoDTO;
 import it.umbriadigitale.argo.ejb.client.cs.dto.configurazione.ProgettiSearchCriteria;
@@ -12,6 +14,7 @@ import javax.ejb.Remote;
 @Remote
 public interface ArConfigurazioneService {
 
+	public List<ArProgettoDTO> getListaProgetti(List<Long> idOrganizzazioni);
 	public List<ArProgettoDTO> getListaProgetti(ProgettiSearchCriteria sc);
 	public int countProgetti(ProgettiSearchCriteria sc);
 	
@@ -28,5 +31,14 @@ public interface ArConfigurazioneService {
 	public void eliminaProgetto(Long progettoId);
 	public void abilitaProgetti(List<Long> progettiSelezionati);
 	public void disabilitaProgetti(List<Long> progettiSelezionati);
+	
+	public List<ArFonteDTO> getListaFonti(ProgettiSearchCriteria sc);
+	public int countFonti(ProgettiSearchCriteria sc);
+	public boolean existsFonteFinanziamento(ArFonteDTO selectedFonte);
+	public void salvaFonte(ArFonteDTO selectedFonte, List<ArOrganizzazioneDTO> toRemove);
+	public void eliminaFonte(Long id);
+	public void abilitaFonte(List<Long> lstIds);
+	public List<ArFondoDTO> getListaFondiDTO();
+	public void disabilitaFonti(List<Long> lstIds);
 	
 }

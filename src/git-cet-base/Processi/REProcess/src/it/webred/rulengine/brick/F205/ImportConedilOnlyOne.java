@@ -10,6 +10,7 @@ import it.webred.rulengine.brick.bean.ErrorAck;
 import it.webred.rulengine.brick.loadDwh.concessioni.F205.EnvSitCConcIndirizziOnlyOne;
 import it.webred.rulengine.brick.loadDwh.concessioni.F205.EnvSitCConcPersonaOnlyOne;
 import it.webred.rulengine.brick.loadDwh.concessioni.F205.EnvSitCConcessioniCatastoOnlyOne;
+import it.webred.rulengine.brick.loadDwh.concessioni.F205.EnvSitCConcessioniExtra17OnlyOne;
 import it.webred.rulengine.brick.loadDwh.concessioni.F205.EnvSitCConcessioniOnlyOne;
 import it.webred.rulengine.brick.loadDwh.concessioni.F205.EnvSitCPersonaOnlyOne;
 import it.webred.rulengine.brick.superc.InsertDwh.*;
@@ -39,11 +40,14 @@ public class ImportConedilOnlyOne extends ImportFiles implements Rule   {
 
 	private String IMPORTCONEDILONLYONE_ANAGRAFE = getProperty("table1.name");
 	private String IMPORTCONEDILONLYONE_CONEDIL = getProperty("table2.name");
+	private String IMPORTCONEDILONLYONE_CONEDIL17 = getProperty("table17.name");
 	private String IMPORTCONEDILONLYONE_ANAGRAFE_IDX = getProperty("table1.idx");
 	private String IMPORTCONEDILONLYONE_CONEDIL_IDX = getProperty("table2.idx");
+	private String IMPORTCONEDILONLYONE_CONEDIL17_IDX = getProperty("table17.idx");
 	
 	private String createTableAnaSql = getProperty("sql.CREATE_IMPORTCONEDILONLYONE_ANAGRAFE");
 	private String createTableConedilSql = getProperty("sql.CREATE_IMPORTCONEDILONLYONE_CONEDIL");
+	private String createTableConedil17Sql = getProperty("sql.CREATE_IMPORTCONEDILONLYONE_CONEDIL17");
 		
 	
 	private static final org.apache.log4j.Logger log = Logger.getLogger(ImportConedilOnlyOne.class.getName());
@@ -70,6 +74,7 @@ public class ImportConedilOnlyOne extends ImportFiles implements Rule   {
 		String percorsoFilesConedi11 = Utils.getConfigProperty("dir.files",ctx.getBelfiore(),ctx.getIdFonte())+getProperty("dir.fileConedi11");
 		String percorsoFilesConedi12 = Utils.getConfigProperty("dir.files",ctx.getBelfiore(),ctx.getIdFonte())+getProperty("dir.fileConedi12");
 		String percorsoFilesConedi15 = Utils.getConfigProperty("dir.files",ctx.getBelfiore(),ctx.getIdFonte())+getProperty("dir.fileConedi15");
+		String percorsoFilesConedi17 = Utils.getConfigProperty("dir.files",ctx.getBelfiore(),ctx.getIdFonte())+getProperty("dir.fileConedi17");
 		String percorsoFilesConedi19 = Utils.getConfigProperty("dir.files",ctx.getBelfiore(),ctx.getIdFonte())+getProperty("dir.fileConedi19");
 		String percorsoFilesConedi20 = Utils.getConfigProperty("dir.files",ctx.getBelfiore(),ctx.getIdFonte())+getProperty("dir.fileConedi20");
 
@@ -95,7 +100,7 @@ public class ImportConedilOnlyOne extends ImportFiles implements Rule   {
 			ret = this.elabora(conn, ctx, percorsoFilesConedi5, IMPORTCONEDILONLYONE_CONEDIL, true, null);
 			log.info(ret);
 			log.info("ELABORO " + percorsoFilesConedi9);
-			ret = this.elabora(conn, ctx, percorsoFilesConedi9, IMPORTCONEDILONLYONE_CONEDIL, true, null);
+			ret = this.elabora(conn, ctx, percorsoFilesConedi9, IMPORTCONEDILONLYONE_CONEDIL17, true, null);
 			log.info(ret);
 			log.info("ELABORO " + percorsoFilesConedi10);
 			ret = this.elabora(conn, ctx, percorsoFilesConedi10, IMPORTCONEDILONLYONE_CONEDIL, true, null);
@@ -108,7 +113,10 @@ public class ImportConedilOnlyOne extends ImportFiles implements Rule   {
 			log.info(ret);
 			log.info("ELABORO " + percorsoFilesConedi15);
 			ret = this.elabora(conn, ctx, percorsoFilesConedi15, IMPORTCONEDILONLYONE_CONEDIL, true, null);
-			log.info(ret);
+			log.info(ret);			
+			log.info("ELABORO " + percorsoFilesConedi17);
+			ret = this.elabora(conn, ctx, percorsoFilesConedi17, IMPORTCONEDILONLYONE_CONEDIL17, true, null);
+			log.info(ret);			
 			log.info("ELABORO " + percorsoFilesConedi19);
 			ret = this.elabora(conn, ctx, percorsoFilesConedi19, IMPORTCONEDILONLYONE_CONEDIL, true, null);
 			log.info(ret);
@@ -215,8 +223,65 @@ public class ImportConedilOnlyOne extends ImportFiles implements Rule   {
 				ecp.setParametriPerGetRighe(rs.getTimestamp("DT_EXP_DATO"));
 				InsertDwh.launchInserimento(con,ecp,launchSitConcPersona, bcSitConcPersona,(String)ctx.get("connessione"),ctx, rs, abnormals);
 
+				// INSERIMENTO SIT_C_CONCESSIONI_CATASTO	
+				EnvInsertDwh ecc = new EnvSitCConcessioniCatastoOnlyOne (this.IMPORTCONEDILONLYONE_CONEDIL,"A");
+				ecc.setParametriPerGetRighe(rs.getTimestamp("DT_EXP_DATO"));
+				InsertDwh.launchInserimento(con,ecc, launchSitConcessioniCatasto, bcSitConcessioniCatasto,(String)ctx.get("connessione"),ctx, rs, abnormals);
 
-				// INSERIMENTO SIT_C_CONC_CONCESSIONI_CATASTO	
+				// INSERIMENTO SIT_C_CONC_INDIRIZZI	
+				EnvInsertDwh eci = new EnvSitCConcIndirizziOnlyOne (this.IMPORTCONEDILONLYONE_CONEDIL,"A");
+				eci.setParametriPerGetRighe(rs.getTimestamp("DT_EXP_DATO"));
+				InsertDwh.launchInserimento(con,eci, launchSitConcIndirizzi, bcSitConcIndirizzi,(String)ctx.get("connessione"),ctx, rs, abnormals);				
+				
+			}
+			
+			// INSERIMENTO CONCESSIONI CONEDIL - DATI EXTRA
+			ps = con.prepareStatement(getProperty("sql.IMPORTCONEDILONLYONE17_CONEDIL"));
+			rs = ps.executeQuery();
+			
+			launchSitConcPersona = new CommandLauncher(belfiore);
+			cmdSitConcPersona = CommandFactory.getCommand(it.webred.rulengine.brick.loadDwh.base.LoadSitCConcPersona.class.getName(),true);
+			
+			bcSitConcPersona = new BeanCommand();
+			bcSitConcPersona = cmdSitConcPersona.getBeanCommand();
+
+			launchSitConcessioni = new CommandLauncher(belfiore);
+			cmd1 = CommandFactory.getCommand(it.webred.rulengine.brick.loadDwh.base.LoadSitCConcessioni.class.getName(),true);
+			
+			bcSitConcessioni = new BeanCommand();
+			bcSitConcessioni = cmd1.getBeanCommand();
+			
+			launchSitConcessioniCatasto = new CommandLauncher(belfiore);
+			cmd2 = CommandFactory.getCommand(it.webred.rulengine.brick.loadDwh.base.LoadSitCConcessioniCatasto.class.getName(),true);
+			
+			bcSitConcessioniCatasto = new BeanCommand();
+			bcSitConcessioniCatasto = cmd2.getBeanCommand();
+
+			launchSitConcIndirizzi = new CommandLauncher(belfiore);
+			cmd3 = CommandFactory.getCommand(it.webred.rulengine.brick.loadDwh.base.LoadSitCConcIndirizzi.class.getName(),true);
+			
+			bcSitConcIndirizzi = new BeanCommand();
+			bcSitConcIndirizzi = cmd3.getBeanCommand();
+			
+			CommandLauncher launchSitConcessioniExtra17 = new CommandLauncher(belfiore);
+			Command cmd4 = CommandFactory.getCommand(it.webred.rulengine.brick.loadDwh.base.LoadSitCConcessioniExtra17.class.getName(),true);
+			
+			BeanCommand bcSitConcessioniExtra17 = new BeanCommand();
+			bcSitConcessioniExtra17 = cmd4.getBeanCommand();
+
+			while (rs.next()) {
+
+				// INSERIMENTO SIT_C_CONCESSIONI	
+				EnvInsertDwh ec = new EnvSitCConcessioniOnlyOne  (this.IMPORTCONEDILONLYONE_CONEDIL,"A");
+				ec.setParametriPerGetRighe(rs.getTimestamp("DT_EXP_DATO"));
+				InsertDwh.launchInserimento(con,ec, launchSitConcessioni, bcSitConcessioni,(String)ctx.get("connessione"),ctx, rs, abnormals);
+
+				// INSERIMENTO SIT_C_CONC_PERSONA	
+				EnvInsertDwh ecp = new EnvSitCConcPersonaOnlyOne(this.IMPORTCONEDILONLYONE_CONEDIL,"A");
+				ecp.setParametriPerGetRighe(rs.getTimestamp("DT_EXP_DATO"));
+				InsertDwh.launchInserimento(con,ecp,launchSitConcPersona, bcSitConcPersona,(String)ctx.get("connessione"),ctx, rs, abnormals);
+
+				// INSERIMENTO SIT_C_CONCESSIONI_CATASTO	
 				EnvInsertDwh ecc = new EnvSitCConcessioniCatastoOnlyOne (this.IMPORTCONEDILONLYONE_CONEDIL,"A");
 				ecc.setParametriPerGetRighe(rs.getTimestamp("DT_EXP_DATO"));
 				InsertDwh.launchInserimento(con,ecc, launchSitConcessioniCatasto, bcSitConcessioniCatasto,(String)ctx.get("connessione"),ctx, rs, abnormals);
@@ -226,10 +291,12 @@ public class ImportConedilOnlyOne extends ImportFiles implements Rule   {
 				eci.setParametriPerGetRighe(rs.getTimestamp("DT_EXP_DATO"));
 				InsertDwh.launchInserimento(con,eci, launchSitConcIndirizzi, bcSitConcIndirizzi,(String)ctx.get("connessione"),ctx, rs, abnormals);
 				
+				// INSERIMENTO SIT_C_CONCESSIONI_EXTRA17	
+				EnvInsertDwh ece17 = new EnvSitCConcessioniExtra17OnlyOne (this.IMPORTCONEDILONLYONE_CONEDIL17,"A");
+				ecc.setParametriPerGetRighe(rs.getTimestamp("DT_EXP_DATO"));
+				InsertDwh.launchInserimento(con,ecc, launchSitConcessioniExtra17, bcSitConcessioniExtra17,(String)ctx.get("connessione"),ctx, rs, abnormals);				
 				
-			}
-			
-			
+			}		
 			
 			
 			// SE ONLYONE HA INTRODOTTO CONCESSIONI CHE ERANO GIA' IN INFORM 
@@ -292,7 +359,20 @@ public class ImportConedilOnlyOne extends ImportFiles implements Rule   {
 					st.close();
 			} catch (SQLException e1) {
 			}			
+		}		
+		try {
+			st = con.createStatement();
+			st.execute(createTableConedil17Sql);
+		} catch (SQLException e1) {
+			log.warn("Tabella esiste già : OK , BENE");
 		}
+		finally {
+			try {
+				if (st!=null)
+					st.close();
+			} catch (SQLException e1) {
+			}			
+		}		
 		try {
 			st = con.createStatement();
 			st.execute(this.IMPORTCONEDILONLYONE_ANAGRAFE_IDX);
@@ -319,9 +399,19 @@ public class ImportConedilOnlyOne extends ImportFiles implements Rule   {
 			} catch (SQLException e1) {
 			}			
 		}
-
-		
-		
+		try {
+			st = con.createStatement();
+			st.execute(this.IMPORTCONEDILONLYONE_CONEDIL17_IDX);
+		} catch (SQLException e1) {
+			log.warn("indice esiste già : OK , BENE");
+		}
+		finally {
+			try {
+				if (st!=null)
+					st.close();
+			} catch (SQLException e1) {
+			}			
+		}		
 	}
 
 

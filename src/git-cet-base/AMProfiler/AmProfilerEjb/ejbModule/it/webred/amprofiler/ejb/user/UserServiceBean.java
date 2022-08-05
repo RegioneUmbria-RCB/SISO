@@ -294,6 +294,27 @@ public class UserServiceBean extends AmProfilerBaseService implements
 		return uff;
 		
 	}
+	
+	@Override
+//	@AuditConsentiAccessoAnonimo(enabled=true)
+	public AmUserUfficio getDatiUfficioNoCaseSens(String username) {
+		AmUserUfficio uff = new AmUserUfficio();
+		Query q;
+		try{
+			q = em.createNamedQuery("AmUserUfficio.getUfficioByUpperUser");
+			q.setParameter("user", username == null ? null : username.toUpperCase());
+			List<AmUserUfficio> lista = q.getResultList();
+			
+			if(lista.size()>0)
+				uff = lista.get(0);
+			
+		} catch (Throwable t) {
+			throw new UserServiceException(t);
+		}
+		
+		return uff;
+		
+	}
 
 	@Override
 	public boolean saveDatiUfficio(AmUserUfficio dati) {

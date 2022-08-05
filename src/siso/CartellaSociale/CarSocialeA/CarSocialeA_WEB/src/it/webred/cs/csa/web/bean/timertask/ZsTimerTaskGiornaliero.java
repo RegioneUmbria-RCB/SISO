@@ -159,10 +159,10 @@ public class ZsTimerTaskGiornaliero extends TimerTask {
 						
 						if(opeTo!=null || settTo!=null || orgTo!=null){
 							boolean inserisco = this.validaInserimentoNuovoAlert(DataModelCostanti.TipiAlertCod.ANAGRAFICA_CASO_GIT, caso.getId(), opeTo.getId());
+							String nome = componenteGIT.getCsASoggetto().getCsAAnagrafica().getCognome() + " " + componenteGIT.getCsASoggetto().getCsAAnagrafica().getNome();
 							if(inserisco){
 							
 								//nuovo alert
-								String nome = componenteGIT.getCsASoggetto().getCsAAnagrafica().getCognome() + " " + componenteGIT.getCsASoggetto().getCsAAnagrafica().getNome();
 								String cf = componenteGIT.getCsASoggetto().getCsAAnagrafica().getCf();
 								String descrizione = "Dati Anagrafici: sono state rilevate delle variazioni relative al Soggetto  "+ nome +" ("+ cf +") .";
 								String titDescrizione = "Notifica caso "+ nome + ": variazione dati anagrafici";
@@ -170,7 +170,7 @@ public class ZsTimerTaskGiornaliero extends TimerTask {
 								logger.info(enteId + " __ Aggiungo Alert per aggiornamento anagrafica caso: " + componenteGIT.getCsASoggetto().getCsAAnagrafica().getCf());
 								addAlert(TipiAlertCod.ANAGRAFICA_CASO_GIT, caso, titDescrizione, descrizione, null, null,null, orgFrom, opeTo, settTo, orgTo);
 							}else
-								logger.info(" __ Sospeso Inserimento Alert per aggiornamento anagrafica caso: già presente [casoId:" + caso.getId()+"]");
+								logger.info(" __ Sospeso Inserimento Alert per aggiornamento anagrafica caso: "+nome+" [casoId:" + caso.getId()+"]");
 						
 							//creato l alert azzero la segnalazione
 							componenteGIT.setFlgSegnalazione(false);
@@ -754,7 +754,7 @@ public class ZsTimerTaskGiornaliero extends TimerTask {
 								if(inserisco)
 									addAlert(TipiAlertCod.MODUDC, caso, titDescrizione, descrizione, null, null,null, null, opeTo, null, null);
 								else 
-									logger.info(" __ Sospeso Inserimento Alert per segnalaModificheSchedaCompletaUDC: già presente [casoId:" + caso.getId()+"]");
+									logger.info(" __ Sospeso Inserimento Alert per segnalaModificheSchedaCompletaUDC: [casoId:" + caso.getId()+"]");
 					    		
 				    		} else
 				    			logger.error("Attenzione!!! impossibile determinare il CasoID per la segnalazione:"+titDescrizione+" - "+descrizione);
@@ -823,7 +823,7 @@ public class ZsTimerTaskGiornaliero extends TimerTask {
 						logger.info(enteId + " __ Aggiungo Alert per aggiornamento famiglia: " + fam.getCsASoggetto().getCsAAnagrafica().getCf());
 						addAlert(TipiAlertCod.FAMIGLIA_GIT, caso, titDescrizione, descrizione, null, null,null, orgFrom, opeTo, settTo, orgTo);
 					}else
-						logger.info(" __ Sospeso Inserimento Alert per aggiornamento famiglia: già presente [casoId:" + caso.getId()+"]");
+						logger.info(" __ Sospeso Inserimento Alert per aggiornamento famiglia: [casoId:" + caso.getId()+"]");
 				
 					//creato l alert azzero la segnalazione
 					fam.setFlgSegnalazione(false);
@@ -875,9 +875,9 @@ public class ZsTimerTaskGiornaliero extends TimerTask {
 			
 				if(opeTo!=null || settTo!=null || orgTo!=null){
 					boolean inserisco = this.validaInserimentoNuovoAlert(DataModelCostanti.TipiAlertCod.RELAZIONE, caso.getId(), opeTo.getId());
+					String nome = caso.getCsASoggetto().getCsAAnagrafica().getCognome() + " " + caso.getCsASoggetto().getCsAAnagrafica().getNome();
 					if(inserisco){
 						//nuovo alert
-						String nome = caso.getCsASoggetto().getCsAAnagrafica().getCognome() + " " + caso.getCsASoggetto().getCsAAnagrafica().getNome();
 						String cf = caso.getCsASoggetto().getCsAAnagrafica().getCf();
 						String descrizione = "Inserire una nuova attivit&agrave; professionale nel fascicolo di "+ nome +" ("+ cf +"). <br/>";
 						descrizione += rel.getDataProssimaRelazioneDal()!=null ? "Data prevista prossima attivit&agrave; dal:"+CsUiCompBaseBean.ddMMyyyy.format(rel.getDataProssimaRelazioneDal()) : "";
@@ -889,7 +889,7 @@ public class ZsTimerTaskGiornaliero extends TimerTask {
 						logger.info(enteId + " __ Aggiungo Alert per inserimento nuova relazione: [casoId:" + caso.getId()+"]");
 						addAlert(TipiAlertCod.RELAZIONE, caso, titDescrizione, descrizione, null, null, null, orgFrom, opeTo, settTo, orgTo);
 					}else
-						logger.info(enteId + " __ Sospeso Inserimento Alert per richiesta nuova relazione: già presente [casoId:" + caso.getId()+"]");
+						logger.info(enteId + " __ Sospeso Inserimento Alert per richiesta nuova relazione: "+nome+" [casoId:" + caso.getId()+"]");
 						
 				
 				//creato l alert azzero la segnalazione
@@ -940,7 +940,7 @@ public class ZsTimerTaskGiornaliero extends TimerTask {
 				if(scadenzaAd !=null && oggi.compareTo(scadenzaAd)>=0){
 					String scadenzaAdempimento = formatta.format(scadenzaAd);
 					
-					descrizione += "Il provvedimento ha raggiunto la data scadenza adempimento  " + scadenzaAdempimento;
+					descrizione += "Il provvedimento ha raggiunto la data scadenza adempimento " + scadenzaAdempimento;
 					
 				}
 				if(scadenzaAgg !=null && oggi.compareTo(scadenzaAgg)>=0){
@@ -949,7 +949,7 @@ public class ZsTimerTaskGiornaliero extends TimerTask {
 					if(descrizione.isEmpty()){
 						descrizione += "Il provvedimento ha raggiunto la data scadenza aggiornamento " + scadenzaAggiorn;
 					}else{
-						descrizione += "   e la data scadenza aggiornamento " + scadenzaAggiorn;
+						descrizione += " e la data scadenza aggiornamento " + scadenzaAggiorn;
 					}
 					
 				}
@@ -966,17 +966,17 @@ public class ZsTimerTaskGiornaliero extends TimerTask {
 			
 				if((opeTo!=null || settTo!=null || orgTo!=null) && !descrizione.isEmpty()){
 					boolean inserisco = this.validaInserimentoNuovoAlert(DataModelCostanti.TipiAlertCod.PROTRIB, caso.getId(), opeTo.getId());
-					if(inserisco){
 					String nome = caso.getCsASoggetto().getCsAAnagrafica().getCognome() + " " + caso.getCsASoggetto().getCsAAnagrafica().getNome();
-					
-					String titDescrizione = "Promemoria caso "+ nome + ": Scadenza Provvedimenti";
-					
-					CsOOrganizzazione orgFrom = this.findOrganizzazioneDefault(TipiAlertCod.PROTRIB);
-								
-					logger.info(enteId + " __ Aggiungo Alert per Provvedimento Tribunale : [casoId:" + caso.getId()+"]");
-					addAlert(TipiAlertCod.PROTRIB, caso, titDescrizione, descrizione, null, null, null, orgFrom, opeTo, settTo, orgTo);
+					if(inserisco){
+						
+						String titDescrizione = "Promemoria caso "+ nome + ": Scadenza Provvedimenti";
+						
+						CsOOrganizzazione orgFrom = this.findOrganizzazioneDefault(TipiAlertCod.PROTRIB);
+									
+						logger.info(enteId + " __ Aggiungo Alert per Provvedimento Tribunale : [casoId:" + caso.getId()+"]");
+						addAlert(TipiAlertCod.PROTRIB, caso, titDescrizione, descrizione, null, null, null, orgFrom, opeTo, settTo, orgTo);
 					}else
-					logger.info(enteId + " __ Sospeso Inserimento Alert per scadenze provvedimento: già presente [casoId:" + caso.getId()+"]");
+						logger.info(enteId + " __ Sospeso Inserimento Alert per scadenze provvedimento: "+nome+" [casoId:" + caso.getId()+"]");
 				}
 			}
     		logger.debug("__ FINE ZsTimerTaskGiornaliero: aggiornaAlertProvvedimentiTribunale__");

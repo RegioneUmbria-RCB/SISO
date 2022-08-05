@@ -515,7 +515,7 @@ public class PaiAffidoBean extends CsUiCompBaseBean {
 	}
 	
 	public Boolean isStatoDisabilitato(Integer valore) {
-		return (affido.getCodiceStatoAttuale() - valore) > 0;
+		return affido!=null && (affido.getCodiceStatoAttuale() - valore) > 0;
 	}
 
 	public Boolean isAffidoAccoglienza() {
@@ -655,8 +655,8 @@ public class PaiAffidoBean extends CsUiCompBaseBean {
 	}
 
 	public List<CsPaiAffidoDominioDTO> getListaCarattereInserimentoResidenziale() {
-		if(listaCarattereInserimentoResidenziale == null) //condizione iniziale di nuovo progetto
-				setListaCarattereInserimentoResidenziale(this.getAffido().getCodiceTipoAffido());
+		if(listaCarattereInserimentoResidenziale == null && this.affido!=null) //condizione iniziale di nuovo progetto
+				setListaCarattereInserimentoResidenziale(this.affido.getCodiceTipoAffido());
 		return listaCarattereInserimentoResidenziale;
 	}
 

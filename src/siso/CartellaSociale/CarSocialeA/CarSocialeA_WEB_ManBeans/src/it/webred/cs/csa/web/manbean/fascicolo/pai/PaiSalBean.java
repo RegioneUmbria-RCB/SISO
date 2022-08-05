@@ -22,6 +22,7 @@ import it.webred.cs.csa.ejb.dto.pai.sal.CsPaiSalDominioDTO;
 import it.webred.cs.csa.ejb.dto.pai.sal.PaiSALDominiEnum;
 import it.webred.cs.csa.ejb.dto.pai.sal.PaiSALFaseEnum;
 import it.webred.cs.csa.ejb.dto.relazione.RelazioneSintesiDTO;
+import it.webred.cs.data.DataModelCostanti.TipoFormAttivitaProfessionali;
 import it.webred.cs.jsf.manbean.superc.CsUiCompBaseBean;
 import it.webred.ct.support.datarouter.CeTBaseObject;
 
@@ -257,12 +258,12 @@ public class PaiSalBean extends CsUiCompBaseBean {
  		String consigliato 	= " è consigliato collegare un'attività di tipo ";
  		
  		//Devo controllare che siano associate o stanno per essere associate le relazionial SAL secondo l'excel
-    		for (RelazioneSintesiDTO r: picklistRelazioni.getTarget())
-			{
-    			esisteMicro4=r.getTipoFormMicroAttivita().equals("4"); //valutaz servizioInviante
-    			esisteMicro5=r.getTipoFormMicroAttivita().equals("5");
-    			esisteMicro6=r.getTipoFormMicroAttivita().equals("6");
-			}
+ 		for (RelazioneSintesiDTO r: picklistRelazioni.getTarget())
+		{
+			esisteMicro4=r.getTipoFormMicroAttivita()==TipoFormAttivitaProfessionali.SAL_VALUTAZIONE; //valutaz servizioInviante
+			esisteMicro5=r.getTipoFormMicroAttivita()==TipoFormAttivitaProfessionali.SAL_ORIENTAMENTO;
+			esisteMicro6=r.getTipoFormMicroAttivita()==TipoFormAttivitaProfessionali.SAL_MEDIAZIONE;
+		}
     		
 		if(isCodiceFase(PaiSALFaseEnum.FASE_PRELIMINARE.getValore()) && !esisteMicro4) {
 			this.setWarnigSalvataggio("In fase " + PaiSALFaseEnum.FASE_PRELIMINARE.getDescrizione() + consigliato +"Valutazione con servizio inviante\r\n");

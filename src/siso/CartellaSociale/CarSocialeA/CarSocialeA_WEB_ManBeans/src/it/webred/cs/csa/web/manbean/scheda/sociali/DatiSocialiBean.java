@@ -1,5 +1,23 @@
 package it.webred.cs.csa.web.manbean.scheda.sociali;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Set;
+
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
+import javax.faces.model.SelectItem;
+import javax.faces.model.SelectItemGroup;
+import javax.naming.NamingException;
+
+import org.primefaces.context.RequestContext;
+import org.springframework.beans.BeanUtils;
+
 import it.webred.cs.csa.ejb.client.AccessTableSchedaSegrSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.AccessTableSchedaSessionBeanRemote;
 import it.webred.cs.csa.ejb.dto.BaseDTO;
@@ -9,14 +27,15 @@ import it.webred.cs.csa.web.manbean.scheda.SchedaValiditaBaseBean;
 import it.webred.cs.csa.web.manbean.scheda.anagrafica.AnagraficaBean;
 import it.webred.cs.data.DataModelCostanti;
 import it.webred.cs.data.model.CsADatiSociali;
+import it.webred.cs.data.model.CsAProtezioneGiuridica;
 import it.webred.cs.data.model.CsASoggettoLAZY;
 import it.webred.cs.data.model.CsDValutazione;
 import it.webred.cs.data.model.CsExtraFseDatiLavoro;
 import it.webred.cs.data.model.CsOSettore;
 import it.webred.cs.data.model.CsSsSchedaSegr;
+import it.webred.cs.jsf.bean.ProtezioneGiuridicaBean;
 import it.webred.cs.jsf.bean.ValiditaCompBaseBean;
 import it.webred.cs.jsf.interfaces.IDatiValiditaList;
-import it.webred.cs.jsf.manbean.ComponenteAltroMan;
 import it.webred.cs.jsf.manbean.superc.CsUiCompBaseBean;
 import it.webred.cs.json.abitazione.AbitazioneManBaseBean;
 import it.webred.cs.json.abitazione.IAbitazione;
@@ -30,22 +49,6 @@ import it.webred.ss.data.model.SsScheda;
 import it.webred.ss.data.model.SsSchedaSegnalato;
 import it.webred.ss.ejb.client.SsSchedaSessionBeanRemote;
 import it.webred.ss.ejb.dto.SchedaUdcBaseDTO;
-
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
-import javax.faces.model.SelectItem;
-import javax.faces.model.SelectItemGroup;
-import javax.naming.NamingException;
-
-import org.primefaces.context.RequestContext;
-import org.springframework.beans.BeanUtils;
 
 @ManagedBean
 @SessionScoped
@@ -298,29 +301,6 @@ public class DatiSocialiBean extends SchedaValiditaBaseBean implements IDatiVali
 		cs.setPermesso(comp.getCodPermesso());*/
 		/*end stranieri*/
 		
-		
-		/*Dati Tutela*/
-		ComponenteAltroMan sostegno = comp.getSostegno();
-		cs.setSostegnoDenominazione(sostegno.getCompDenominazione());
-		cs.setSostegnoCitta(sostegno.getCompCitta());
-		cs.setSostegnoTel(sostegno.getCompTelefono());	
-		cs.setSostegnoIndirizzo(sostegno.getCompIndirizzo());
-		cs.setSostegnoComponente(sostegno.getComponenteSel());
-		
-		ComponenteAltroMan curatela = comp.getCuratela();
-		cs.setCuratelaDenominazione(curatela.getCompDenominazione());
-		cs.setCuratelaCitta(curatela.getCompCitta());
-		cs.setCuratelaTel(curatela.getCompTelefono());	
-		cs.setCuratelaIndirizzo(curatela.getCompIndirizzo());
-		cs.setCuratelaComponente(curatela.getComponenteSel());
-		
-		ComponenteAltroMan tutela = comp.getTutela();
-		cs.setTutelaDenominazione(tutela.getCompDenominazione());
-		cs.setTutelaCitta(tutela.getCompCitta());
-		cs.setTutelaTel(tutela.getCompTelefono());	
-		cs.setTutelaIndirizzo(tutela.getCompIndirizzo());
-		cs.setTutelaComponente(tutela.getComponenteSel());
-		
 		cs.setAffidamento(comp.isAffServSociali());
 		
 		cs.setDataInizioApp(comp.getDataInizio());
@@ -334,8 +314,32 @@ public class DatiSocialiBean extends SchedaValiditaBaseBean implements IDatiVali
 		if (this.isVisualizzaModuloPorCs() && comp.getDatiPorMan() != null)
 			cs.setDatiFse(comp.getDatiPorMan().getCsCDatiLavoro());
 		
+		cs.setProtezioneGiuridica(fillJpaProtezioneGiuridica(comp.getProtezioneGiuridica(), cs));
+		
 		return cs;
 		
+	}
+	
+	private Set<CsAProtezioneGiuridica> fillJpaProtezioneGiuridica(List<ProtezioneGiuridicaBean> listaProtGiuridica, CsADatiSociali cs) {
+		Set<CsAProtezioneGiuridica> out = new HashSet<CsAProtezioneGiuridica>();
+		for(ProtezioneGiuridicaBean bean : listaProtGiuridica) {
+			if(!bean.isEmpty()) {
+				CsAProtezioneGiuridica jpa = new CsAProtezioneGiuridica();
+				jpa.setDenominazione(bean.getComponente().getCompDenominazione());
+				jpa.setCitta(bean.getComponente().getCompCitta());
+				jpa.setTelefono(bean.getComponente().getCompTelefono());
+				jpa.setIndirizzo(bean.getComponente().getCompTelefono());
+				jpa.setComponente(bean.getComponente().getComponenteSel());
+				
+				jpa.setId(bean.getId());
+				jpa.setDataDecreto(bean.getDataDecreto());
+				jpa.setNumDecreto(bean.getNumDecreto());
+				jpa.setTipo(bean.getTipo());
+				jpa.setCsADatiSociali(cs);
+				out.add(jpa);
+			}
+		}
+		return out;
 	}
 	
 	@Override
@@ -343,6 +347,8 @@ public class DatiSocialiBean extends SchedaValiditaBaseBean implements IDatiVali
 		CsADatiSociali cs = (CsADatiSociali) obj;
 		DatiSocialiComp comp = new DatiSocialiComp(cs.getCsASoggetto().getAnagraficaId(), casoId, new Date(), null);
 		this.copiaDatiComuni(cs, comp);
+		
+		comp.fillProtezioneGiuridica(cs.getProtezioneGiuridica(), this.soggettoId, true);
 		
 		if(this.isVisualizzaModuloPorCs()){
 			CsExtraFseDatiLavoro dl = duplicaDatiPor(cs.getDatiFse());		
@@ -376,6 +382,8 @@ public class DatiSocialiBean extends SchedaValiditaBaseBean implements IDatiVali
 		
 		DatiSocialiComp comp = new DatiSocialiComp(cs.getCsASoggetto().getAnagraficaId(), casoId, cs.getDataInizioApp(), cs.getDataFineApp());
 		this.copiaDatiComuni(cs, comp);
+		comp.fillProtezioneGiuridica(cs.getProtezioneGiuridica(), this.soggettoId, false);
+		
 		comp.initDatiPorMan(cs.getDatiFse(), casoId, cs.getId());
 		return comp;
 	}
@@ -390,13 +398,6 @@ public class DatiSocialiBean extends SchedaValiditaBaseBean implements IDatiVali
 		comp.setIdProblematica(cs.getProblematicaId());
 		comp.setIdProblematicaNucleo(cs.getProblematicaNucleoId());
 		comp.valorizzaFormazioneLavoroDaCS(cs);
-		
-		ComponenteAltroMan sostegno = comp.fillComponente(cs.getSostegnoComponente(), cs.getSostegnoDenominazione(), cs.getSostegnoIndirizzo(), cs.getSostegnoCitta(), cs.getSostegnoTel(),this.soggettoId);
-		ComponenteAltroMan curatela = comp.fillComponente(cs.getCuratelaComponente(), cs.getCuratelaDenominazione(), cs.getCuratelaIndirizzo(), cs.getCuratelaCitta(), cs.getCuratelaTel(),this.soggettoId);
-		ComponenteAltroMan tutela = comp.fillComponente(cs.getTutelaComponente(), cs.getTutelaDenominazione(), cs.getTutelaIndirizzo(), cs.getTutelaCitta(), cs.getTutelaTel(),this.soggettoId);
-		comp.setSostegno(sostegno);
-		comp.setCuratela(curatela);
-		comp.setTutela(tutela);
 		
 		comp.setAffServSociali(cs.getAffidamento()!=null ? cs.getAffidamento() : false);
 		comp.setAutosufficienza(cs.getAutosufficienza());

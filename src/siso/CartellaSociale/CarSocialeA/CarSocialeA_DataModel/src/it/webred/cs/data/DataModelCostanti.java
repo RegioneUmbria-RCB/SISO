@@ -57,6 +57,18 @@ public class DataModelCostanti {
 		
 	}
 	
+	public static class TipoFormAttivitaProfessionali
+	{
+		public static final int RELAZIONE_DOCUMENTO = 1;
+		public static final int TESTUALE = 2;
+		public static final int TRIAGE = 3;
+		public static final int SAL_VALUTAZIONE = 4;
+		public static final int SAL_ORIENTAMENTO = 5;
+		public static final int SAL_MEDIAZIONE = 6;
+		public static final int UPLOAD_DOCUMENTO = 7;
+		
+	}
+	
 	public static class GrVulnerabile{
 		public static final String MIGRANTE = "05";
 		public static final String ALTRO = "07";
@@ -1148,5 +1160,26 @@ public class DataModelCostanti {
 			
 		}
 		
+	}
+
+	public static class DatiSociali { 
+		public enum TIPO_PROTEZIONE_GIURIDICA {
+			CURATELA("Curatela", "C"),
+			TUTELA("Tutela", "T"),
+			SOSTEGNO("Amm.Sostegno","S");
+			
+			String descrizione;
+	        String codice;
+			
+	        private TIPO_PROTEZIONE_GIURIDICA (String descrizione, String codice) {
+				this.descrizione = descrizione;
+				this.codice = codice;
+			}
+	
+			public String getDescrizione() {return descrizione;}
+			public void setDescrizione(String descrizione) {this.descrizione = descrizione;}
+			public String getCodice() {return codice;}
+			public void setCodice(String codice) {this.codice = codice;}
+		}
 	}
 }

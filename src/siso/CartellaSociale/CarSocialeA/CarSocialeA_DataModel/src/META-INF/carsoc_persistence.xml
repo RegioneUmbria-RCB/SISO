@@ -30,6 +30,7 @@
 		<class>it.webred.cs.data.model.CsAComponente</class>
 		<class>it.webred.cs.data.model.CsAComponenteGit</class>
 		<class>it.webred.cs.data.model.CsADatiSociali</class>
+		<class>it.webred.cs.data.model.CsAProtezioneGiuridica</class>
 		<class>it.webred.cs.data.model.CsADatiInvalidita</class>
 		<class>it.webred.cs.data.model.CsADisabilita</class>
 		<class>it.webred.cs.data.model.CsAFamigliaGruppo</class>

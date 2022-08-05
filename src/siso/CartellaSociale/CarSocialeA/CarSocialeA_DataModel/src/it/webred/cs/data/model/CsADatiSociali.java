@@ -6,6 +6,7 @@ import java.math.BigDecimal;
 import javax.persistence.*;
 
 import java.util.Date;
+import java.util.Set;
 
 
 /**
@@ -72,14 +73,7 @@ public class CsADatiSociali implements Serializable {
 	private BigDecimal tipologiaFamiliareId;
 	
 	*/
-	
-/*	Rimosso in SISO-48
- * @Column(name="TUTELA_ID")
-	private BigDecimal tutelaId;
-	
-	@Column(name="TUTELANTE_ID")
-	private BigDecimal tutelanteId;*/
-	
+
 	@Column(name="INVIANTE_ID")
 	private BigDecimal invianteId;
 	
@@ -148,57 +142,10 @@ public class CsADatiSociali implements Serializable {
 	@JoinColumn(name="DIARIO_FAM_CONV_ID")
 	private CsDValutazione familiariConviventi;
 	
-	/*SOSTEGNO*/
-	@ManyToOne
-	@JoinColumn(name="SOSTEGNO_COMPONENTE_ID")
-	private CsAComponente sostegnoComponente;
-	
-	@Column(name="SOSTEGNO_CITTA")
-	private String sostegnoCitta;
-
-	@Column(name="SOSTEGNO_DENOM")
-	private String sostegnoDenominazione;
-
-	@Column(name="SOSTEGNO_INDIRIZZO")
-	private String sostegnoIndirizzo;
-
-	@Column(name="SOSTEGNO_TELEFONO")
-	private String sostegnoTel;
-	
-	/*CURATELA*/
-	@ManyToOne
-	@JoinColumn(name="CURATELA_COMPONENTE_ID")
-	private CsAComponente curatelaComponente;
-	
-	@Column(name="CURATELA_CITTA")
-	private String curatelaCitta;
-
-	@Column(name="CURATELA_DENOM")
-	private String curatelaDenominazione;
-
-	@Column(name="CURATELA_INDIRIZZO")
-	private String curatelaIndirizzo;
-
-	@Column(name="CURATELA_TELEFONO")
-	private String curatelaTel;
-	
-	/*TUTELA*/
-	@ManyToOne
-	@JoinColumn(name="TUTELA_COMPONENTE_ID")
-	private CsAComponente tutelaComponente;
-	
-	@Column(name="TUTELA_CITTA")
-	private String tutelaCitta;
-
-	@Column(name="TUTELA_DENOM")
-	private String tutelaDenominazione;
-
-	@Column(name="TUTELA_INDIRIZZO")
-	private String tutelaIndirizzo;
-
-	@Column(name="TUTELA_TELEFONO")
-	private String tutelaTel;
-	
+	//bi-directional many-to-one association to CsIInterventoEseg
+	@OneToMany(mappedBy="csADatiSociali", fetch = FetchType.LAZY,cascade = CascadeType.ALL, orphanRemoval=true)
+	private Set<CsAProtezioneGiuridica> protezioneGiuridica;
+		
 	/*AFFIDAMENTO SERV.SOCIALE*/
 	private Boolean affidamento;
 	
@@ -435,132 +382,12 @@ public class CsADatiSociali implements Serializable {
 		this.familiariConviventi = familiariConviventi;
 	}
 
-	public CsAComponente getSostegnoComponente() {
-		return sostegnoComponente;
-	}
-
-	public String getSostegnoCitta() {
-		return sostegnoCitta;
-	}
-
-	public String getSostegnoDenominazione() {
-		return sostegnoDenominazione;
-	}
-
-	public String getSostegnoIndirizzo() {
-		return sostegnoIndirizzo;
-	}
-
-	public String getSostegnoTel() {
-		return sostegnoTel;
-	}
-
-	public String getCuratelaCitta() {
-		return curatelaCitta;
-	}
-
-	public String getCuratelaDenominazione() {
-		return curatelaDenominazione;
-	}
-
-	public String getCuratelaIndirizzo() {
-		return curatelaIndirizzo;
-	}
-
-	public String getCuratelaTel() {
-		return curatelaTel;
-	}
-
-	public CsAComponente getTutelaComponente() {
-		return tutelaComponente;
-	}
-
-	public String getTutelaCitta() {
-		return tutelaCitta;
-	}
-
-	public String getTutelaDenominazione() {
-		return tutelaDenominazione;
-	}
-
-	public String getTutelaIndirizzo() {
-		return tutelaIndirizzo;
-	}
-
-	public String getTutelaTel() {
-		return tutelaTel;
-	}
-
 	public Boolean getAffidamento() {
 		return affidamento;
 	}
 
-	public void setSostegnoComponente(CsAComponente sostegnoComponente) {
-		this.sostegnoComponente = sostegnoComponente;
-	}
-
-	public void setSostegnoCitta(String sostegnoCitta) {
-		this.sostegnoCitta = sostegnoCitta;
-	}
-
-	public void setSostegnoDenominazione(String sostegnoDenominazione) {
-		this.sostegnoDenominazione = sostegnoDenominazione;
-	}
-
-	public void setSostegnoIndirizzo(String sostegnoIndirizzo) {
-		this.sostegnoIndirizzo = sostegnoIndirizzo;
-	}
-
-	public void setSostegnoTel(String sostegnoTel) {
-		this.sostegnoTel = sostegnoTel;
-	}
-
-	public void setCuratelaCitta(String curatelaCitta) {
-		this.curatelaCitta = curatelaCitta;
-	}
-
-	public void setCuratelaDenominazione(String curatelaDenominazione) {
-		this.curatelaDenominazione = curatelaDenominazione;
-	}
-
-	public void setCuratelaIndirizzo(String curatelaIndirizzo) {
-		this.curatelaIndirizzo = curatelaIndirizzo;
-	}
-
-	public void setCuratelaTel(String curatelaTel) {
-		this.curatelaTel = curatelaTel;
-	}
-
-	public void setTutelaComponente(CsAComponente tutelaComponente) {
-		this.tutelaComponente = tutelaComponente;
-	}
-
-	public void setTutelaCitta(String tutelaCitta) {
-		this.tutelaCitta = tutelaCitta;
-	}
-
-	public void setTutelaDenominazione(String tutelaDenominazione) {
-		this.tutelaDenominazione = tutelaDenominazione;
-	}
-
-	public void setTutelaIndirizzo(String tutelaIndirizzo) {
-		this.tutelaIndirizzo = tutelaIndirizzo;
-	}
-
-	public void setTutelaTel(String tutelaTel) {
-		this.tutelaTel = tutelaTel;
-	}
-
 	public void setAffidamento(Boolean affidamento) {
 		this.affidamento = affidamento;
-	}
-
-	public CsAComponente getCuratelaComponente() {
-		return curatelaComponente;
-	}
-
-	public void setCuratelaComponente(CsAComponente curatelaComponente) {
-		this.curatelaComponente = curatelaComponente;
 	}
 
 	public CsExtraFseDatiLavoro getDatiFse() {
@@ -569,5 +396,13 @@ public class CsADatiSociali implements Serializable {
 
 	public void setDatiFse(CsExtraFseDatiLavoro datiFse) {
 		this.datiFse = datiFse;
+	}
+
+	public Set<CsAProtezioneGiuridica> getProtezioneGiuridica() {
+		return protezioneGiuridica;
+	}
+
+	public void setProtezioneGiuridica(Set<CsAProtezioneGiuridica> protezioneGiuridica) {
+		this.protezioneGiuridica = protezioneGiuridica;
 	}
 }

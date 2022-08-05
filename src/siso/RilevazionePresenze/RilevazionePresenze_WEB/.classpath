@@ -15,7 +15,6 @@
 			<attribute name="owner.project.facets" value="java"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry combineaccessrules="false" kind="src" path="/RilevazionePresenze_EJB"/>
 	<classpathentry exported="true" kind="src" path="/CarSocialeA_EJBClient"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/CarSocialeA_DataModel"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/CT_Config_Data_Model"/>

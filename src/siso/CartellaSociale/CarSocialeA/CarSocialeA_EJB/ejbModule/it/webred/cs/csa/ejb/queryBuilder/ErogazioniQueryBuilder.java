@@ -385,7 +385,7 @@ public class ErogazioniQueryBuilder extends QueryBuilderBase {
 				" and opSett.id=MASTER.OPERATORE_SETTORE_ID "+
 //				"where INTESEG.INTERVENTO_ID is null and opSett.id=INTESEG.OPERATORE_SETTORE_ID "+
 				
-				"and (ana.id is null or ana.id = (select max(anagrafica_id) from cs_a_anagrafica, cs_a_soggetto where anagrafica_id=id and cf=MASTERSOGG.cf)) "+
+				"and (soggetto.anagrafica_id is null or soggetto.anagrafica_id = (select max(anagrafica_id) from cs_a_anagrafica, cs_a_soggetto where anagrafica_id=id and cf=MASTERSOGG.cf)) "+
 				"and (itStep.id is null or itStep.id=(select max(its2.id) from Cs_It_Step its2 where itStep.caso_id=its2.caso_id)) "+
 				"and (itStep.settore_id=:settoreId OR "
 				    + "OPSETT.ID = :settoreId OR " //Necessaria anche questa condizione per permettere a chi inserito il master di vedere l'erogazione se il settore titolare/erogante/gestore è diverso dal suo.

@@ -27,27 +27,49 @@
 	 		</tr>
 	    </table>
 	    
-	    <div align="center" style="margin-top: 50px">
-	      <font size='4' color='red'>
-	        	ATTENZIONE!
-	      </font>
-	      <br/><br/>
-	       <font size='4'>
-	        	L'utente <span style="color: red"><%=request.getUserPrincipal().getName()%></span> è disabilitato.
-	      </font>
-	      <br/><br/>
-	       <font size='4'>
-	        	Motivo: <span style="color: red"><%=request.getAttribute("disableCause").toString().toUpperCase()%></span>
-	      </font>
-	      <br/><br/>
-	       <font size='4'>
-	        	Contattare l'Amministratore del sistema.
-	      </font>
-	      <br/><br/><br/><br/>
-	      <font size='4' color='red'>
-	      		<a href='<%=request.getContextPath()%>/Logout'>Cambia utente</a>
-	      </font>	      
-	    </div>
+	    <% if (request.getAttribute("disableCauseCaseSens") != null && new Boolean(request.getAttribute("disableCauseCaseSens").toString()).booleanValue()) {%>
+	    	<div align="center" style="margin-top: 50px">
+		      <font size='4' color='red'>
+		        	ATTENZIONE!
+		      </font>
+		      <br/><br/>
+		      <font size='4'>
+		        	Il nome utente da utilizzare per l'accesso deve rispettare la distinzione tra lettere minuscole e maiuscole.
+		      </font>
+		      <!--
+		      <br/><br/>
+		       <font size='4'>
+		        	Quindi, sarà necessario digitare come utente: <span style="color: red"--><!--%=request.getAttribute("disableCause").toString()%></span>
+		      </font>
+		       -->
+		      <br/><br/><br/><br/>
+		      <font size='4' color='red'>
+		      		<a href='<%=request.getContextPath()%>/Logout'>Cambia utente</a>
+		      </font>	      
+		    </div>
+	    <% } else {%>	    
+		    <div align="center" style="margin-top: 50px">
+		      <font size='4' color='red'>
+		        	ATTENZIONE!
+		      </font>
+		      <br/><br/>
+		       <font size='4'>
+		        	L'utente <span style="color: red"><%=request.getUserPrincipal().getName()%></span> è disabilitato.
+		      </font>
+		      <br/><br/>
+		       <font size='4'>
+		        	Motivo: <span style="color: red"><%=request.getAttribute("disableCause").toString().toUpperCase()%></span>
+		      </font>
+		      <br/><br/>
+		       <font size='4'>
+		        	Contattare l'Amministratore del sistema.
+		      </font>
+		      <br/><br/><br/><br/>
+		      <font size='4' color='red'>
+		      		<a href='<%=request.getContextPath()%>/Logout'>Cambia utente</a>
+		      </font>	      
+		    </div>
+		 <% } %>
     	
 	</body>
 </html>

@@ -227,7 +227,7 @@ public class AccessoBase extends javax.servlet.http.HttpServlet implements javax
 	protected boolean verificaDatiSoggettoObbligatori(String user){
 		
 		boolean anagraficaPresente = true;
-		AmUserUfficio ufficio = userService.getDatiUfficio(user);
+		AmUserUfficio ufficio = userService.getDatiUfficioNoCaseSens(user);
 		anagrafica = anagraficaService.findAnagraficaByUserName(user);
 		
 		if(anagrafica==null)

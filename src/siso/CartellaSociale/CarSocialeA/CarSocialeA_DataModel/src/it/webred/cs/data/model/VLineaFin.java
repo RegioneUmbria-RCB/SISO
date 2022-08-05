@@ -46,14 +46,6 @@ public class VLineaFin implements Serializable{
 	
 	private Boolean abilitato;		
 	
-	@Temporal(TemporalType.DATE)
-	@Column(name="DATA_INIZIO_VAL")
-	private Date dtInizioVal;
-	
-	@Temporal(TemporalType.DATE)
-	@Column(name="DT_FINE_VAL")
-	private Date dtFineVal;
-	
 	@Column(name="FONDO_ID") 
 	private int fondoId;
 	
@@ -143,22 +135,6 @@ public class VLineaFin implements Serializable{
 
 	public void setAbilitato(Boolean abilitato) {
 		this.abilitato = abilitato;
-	}
-
-	public Date getDtInizioVal() {
-		return dtInizioVal;
-	}
-
-	public void setDtInizioVal(Date dtInizioVal) {
-		this.dtInizioVal = dtInizioVal;
-	}
-
-	public Date getDtFineVal() {
-		return dtFineVal;
-	}
-
-	public void setDtFineVal(Date dtFineVal) {
-		this.dtFineVal = dtFineVal;
 	}
 
 	public int getFondoId() {

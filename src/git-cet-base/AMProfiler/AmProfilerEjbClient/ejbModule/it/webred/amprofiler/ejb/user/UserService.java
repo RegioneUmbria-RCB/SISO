@@ -32,7 +32,8 @@ public interface UserService {
 			int fromIndex, int maxResults);
 	
 	//Gestione dati relativi all'ufficio dell'utente connesso
-	AmUserUfficio getDatiUfficio(String username);
+	AmUserUfficio getDatiUfficio(String username);	
+	AmUserUfficio getDatiUfficioNoCaseSens(String username);
 	
 	boolean saveDatiUfficio(AmUserUfficio dati);
 	

@@ -3,6 +3,7 @@ package it.escsolution.escwebgis.anagrafe.bean;
 import it.escsolution.escwebgis.common.EscObject;
 
 import java.io.Serializable;
+import java.util.LinkedHashMap;
 
 public class Anagrafe extends EscObject implements Serializable {
 	
@@ -39,25 +40,7 @@ public class Anagrafe extends EscObject implements Serializable {
 	private String indirizzoEmi;
 	private String residenzaFormat;
 	//private String residenzaLink;
-	
-	//coordinate catastali e altri dati nuovo tracciato Milano
-	private boolean datiCC;
-	private String descrizioneVia;
-	private String tipoCivico;
-	private String lotto;
-	private String isolato;
-	private String scala;
-	private String numInt;
-	private String piano;
-	private String cap;
-	private String cittadinanza;
-	private String titoloStudio;
-	private String flgIntestatarioScheda;
-	private String codEventoVariazione;
-	private String foglio;
-	private String mappale;
-	private String subalterno;
-	private String nomeFile;
+
 	
 	public String getPosizioneAnagrafica() {
 		return posizioneAnagrafica;
@@ -491,176 +474,6 @@ public class Anagrafe extends EscObject implements Serializable {
 		this.residenzaFormat = residenzaFormat;
 	}
 
-
-	public boolean isDatiCC() {
-		return datiCC;
-	}
-
-
-	public void setDatiCC(boolean datiCC) {
-		this.datiCC = datiCC;
-	}
-
-
-	public String getDescrizioneVia() {
-		return descrizioneVia;
-	}
-
-
-	public void setDescrizioneVia(String descrizioneVia) {
-		this.descrizioneVia = descrizioneVia;
-	}
-
-
-	public String getTipoCivico() {
-		return tipoCivico;
-	}
-
-
-	public void setTipoCivico(String tipoCivico) {
-		this.tipoCivico = tipoCivico;
-	}
-
-
-	public String getLotto() {
-		return lotto;
-	}
-
-
-	public void setLotto(String lotto) {
-		this.lotto = lotto;
-	}
-
-
-	public String getIsolato() {
-		return isolato;
-	}
-
-
-	public void setIsolato(String isolato) {
-		this.isolato = isolato;
-	}
-
-
-	public String getScala() {
-		return scala;
-	}
-
-
-	public void setScala(String scala) {
-		this.scala = scala;
-	}
-
-
-	public String getNumInt() {
-		return numInt;
-	}
-
-
-	public void setNumInt(String numInt) {
-		this.numInt = numInt;
-	}
-
-
-	public String getPiano() {
-		return piano;
-	}
-
-
-	public void setPiano(String piano) {
-		this.piano = piano;
-	}
-
-
-	public String getCap() {
-		return cap;
-	}
-
-
-	public void setCap(String cap) {
-		this.cap = cap;
-	}
-
-
-	public String getCittadinanza() {
-		return cittadinanza;
-	}
-
-
-	public void setCittadinanza(String cittadinanza) {
-		this.cittadinanza = cittadinanza;
-	}
-
-
-	public String getTitoloStudio() {
-		return titoloStudio;
-	}
-
-
-	public void setTitoloStudio(String titoloStudio) {
-		this.titoloStudio = titoloStudio;
-	}
-
-	public String getFlgIntestatarioScheda() {
-		return flgIntestatarioScheda;
-	}
-
-
-	public void setFlgIntestatarioScheda(String flgIntestatarioScheda) {
-		this.flgIntestatarioScheda = flgIntestatarioScheda;
-	}
-
-
-	public String getCodEventoVariazione() {
-		return codEventoVariazione;
-	}
-
-
-	public void setCodEventoVariazione(String codEventoVariazione) {
-		this.codEventoVariazione = codEventoVariazione;
-	}
-
-
-	public String getFoglio() {
-		return foglio;
-	}
-
-
-	public void setFoglio(String foglio) {
-		this.foglio = foglio;
-	}
-
-
-	public String getMappale() {
-		return mappale;
-	}
-
-
-	public void setMappale(String mappale) {
-		this.mappale = mappale;
-	}
-
-
-	public String getSubalterno() {
-		return subalterno;
-	}
-
-
-	public void setSubalterno(String subalterno) {
-		this.subalterno = subalterno;
-	}
-
-
-	public String getNomeFile() {
-		return nomeFile;
-	}
-
-
-	public void setNomeFile(String nomeFile) {
-		this.nomeFile = nomeFile;
-	}
-
-
 	
 //	public String getResidenzaLink() {
 //		return residenzaLink;
@@ -670,5 +483,227 @@ public class Anagrafe extends EscObject implements Serializable {
 //	public void setResidenzaLink(String residenzaLink) {
 //		this.residenzaLink = residenzaLink;
 //	}
+	
+	//coordinate catastali e altri dati nuovo tracciato Milano
+	
+	private LinkedHashMap<String, AnagrafeCoordCat> datiCC;
+	
+	public class AnagrafeCoordCat {
+		
+		private String descrizioneVia;
+		private String tipoCivico;
+		private String lotto;
+		private String isolato;
+		private String scala;
+		private String numInt;
+		private String piano;
+		private String cap;
+		private String cittadinanza;
+		private String titoloStudio;
+		private String statoCivile;
+		private String flgIntestatarioScheda;
+		private String codEventoVariazione;
+		private String foglio;
+		private String mappale;
+		private String subalterno;
+		private String nomeFile;
+		private String numeroCivico;
+		private String barrato;
+		
+		public AnagrafeCoordCat() {
+			super();
+		}
+		
+		public AnagrafeCoordCat(String descrizioneVia,
+				String tipoCivico,
+				String lotto,
+				String isolato,
+				String scala,
+				String numInt,
+				String piano,
+				String cap,
+				String cittadinanza,
+				String titoloStudio,
+				String statoCivile,
+				String flgIntestatarioScheda,
+				String codEventoVariazione,
+				String foglio,
+				String mappale,
+				String subalterno,
+				String nomeFile,
+				String numeroCivico,
+				String barrato) {			
+					super();
+					
+					this.descrizioneVia = descrizioneVia;
+					this.tipoCivico = tipoCivico;
+					this.lotto = lotto;
+					this.isolato = isolato;
+					this.scala = scala;
+					this.numInt = numInt;
+					this.piano = piano;
+					this.cap = cap;
+					this.cittadinanza = cittadinanza;
+					this.titoloStudio = titoloStudio;
+					this.statoCivile = statoCivile;
+					this.flgIntestatarioScheda = flgIntestatarioScheda;
+					this.codEventoVariazione = codEventoVariazione;
+					this.foglio = foglio;
+					this.mappale = mappale;
+					this.subalterno = subalterno;
+					this.nomeFile = nomeFile;
+					this.numeroCivico = numeroCivico;
+					this.barrato = barrato;
+		}
+		
+
+		public String getDescrizioneVia() {
+			return descrizioneVia;
+		}
+
+
+		public String getTipoCivico() {
+			return tipoCivico;
+		}
+
+
+		public String getLotto() {
+			return lotto;
+		}
+
+
+		public String getIsolato() {
+			return isolato;
+		}
+
+
+		public String getScala() {
+			return scala;
+		}
+
+
+		public String getNumInt() {
+			return numInt;
+		}
+
+
+		public String getPiano() {
+			return piano;
+		}
+
+
+		public String getCap() {
+			return cap;
+		}
+
+
+		public String getCittadinanza() {
+			return cittadinanza;
+		}
+
+
+		public String getTitoloStudio() {
+			return titoloStudio;
+		}
+
+
+		public String getStatoCivile() {
+			return statoCivile;
+		}
+		
+
+		public String getFlgIntestatarioScheda() {
+			return flgIntestatarioScheda;
+		}
+
+
+		public String getCodEventoVariazione() {
+			return codEventoVariazione;
+		}
+
+
+		public String getFoglio() {
+			return foglio;
+		}
+
+
+		public String getMappale() {
+			return mappale;
+		}
+
+
+		public String getSubalterno() {
+			return subalterno;
+		}
+
+
+		public String getNomeFile() {
+			return nomeFile;
+		}
+
+
+		public String getNumeroCivico() {
+			return numeroCivico;
+		}
+
+
+		public String getBarrato() {
+			return barrato;
+		}
+
+	}	
+	
+	public LinkedHashMap<String, AnagrafeCoordCat> getDatiCC() {
+		return datiCC;
+	}
+
+	public AnagrafeCoordCat getDatoCC(String key) {
+		return datiCC == null ? null : datiCC.get(key);
+	}
+	
+	public void addDatoCC(String descrizioneVia,
+			String tipoCivico,
+			String lotto,
+			String isolato,
+			String scala,
+			String numInt,
+			String piano,
+			String cap,
+			String cittadinanza,
+			String titoloStudio,
+			String statoCivile,
+			String flgIntestatarioScheda,
+			String codEventoVariazione,
+			String foglio,
+			String mappale,
+			String subalterno,
+			String nomeFile,
+			String numeroCivico,
+			String barrato) {
+		if (datiCC == null) {
+			datiCC = new LinkedHashMap<String, AnagrafeCoordCat>();
+		}
+		datiCC.put(nomeFile, new AnagrafeCoordCat(descrizioneVia,
+					tipoCivico,
+					lotto,
+					isolato,
+					scala,
+					numInt,
+					piano,
+					cap,
+					cittadinanza,
+					titoloStudio,
+					statoCivile,
+					flgIntestatarioScheda,
+					codEventoVariazione,
+					foglio,
+					mappale,
+					subalterno,
+					nomeFile,
+					numeroCivico,
+					barrato
+				)
+		);
+	}
 	
 }

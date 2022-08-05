@@ -632,7 +632,7 @@ public class CatastoServiceBean extends CTServiceBaseBean implements CatastoServ
 	public List<SoggettoDTO> getListaSoggettiAttualiTerreno(RicercaOggettoCatDTO ro) {
 		List<SoggettoDTO> lista = new ArrayList<SoggettoDTO>();
 		lista = catastoDAO.getListaTitolariAttualiTerreno(ro);
-		if(ro.getAltriSoggetti()){
+		if(ro.getAltriSoggetti() != null && ro.getAltriSoggetti()){
 			lista.addAll(catastoDAO.getListaAltriSoggAttualiTerreno(ro));
 		}
 		
@@ -643,7 +643,7 @@ public class CatastoServiceBean extends CTServiceBaseBean implements CatastoServ
 	public List<SoggettoDTO> getListaSoggettiStoriciTerreno(RicercaOggettoCatDTO ro) {
 		List<SoggettoDTO> lista = new ArrayList<SoggettoDTO>();
 		lista = catastoDAO.getListaTitolariStoriciTerreno(ro);
-		if(ro.getAltriSoggetti()){
+		if(ro.getAltriSoggetti() != null && ro.getAltriSoggetti()){
 			lista.addAll(catastoDAO.getListaAltriSoggStoriciTerreno(ro));
 		}
 		return lista;

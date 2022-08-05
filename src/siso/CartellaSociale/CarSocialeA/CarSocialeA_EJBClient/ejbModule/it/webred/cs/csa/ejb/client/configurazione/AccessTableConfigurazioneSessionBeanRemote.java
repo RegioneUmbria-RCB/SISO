@@ -319,7 +319,7 @@ public interface AccessTableConfigurazioneSessionBeanRemote {
 
 	public List<KeyValueDTO> findProgettiByBelfioreOrganizzazione(BaseDTO dto); // SISO-522 - modificato SISO-575
 	
-	public ArFfProgetto getProgettiById(BaseDTO dto);
+	public ArFfProgetto getProgettoById(BaseDTO dto);
 
 	public ArFfProgettoAttivita getProgettoAttivitaById(BaseDTO dto);
 	

@@ -917,14 +917,7 @@ public class AccessTableConfigurazioneSessionBean extends CarSocialeBaseSessionB
 
 	//SISO-1172
 	public List<KeyValueDTO> getLstMotivoChiusuraPai(BaseDTO dto) {
-		List<KeyValueDTO> lstItems = new ArrayList<KeyValueDTO>();
-		List<CsTbMotivoChiusuraPai> lst = configurazioneDAO.getMotiviChiusuraPai((Long) dto.getObj());
-    	for(CsTbMotivoChiusuraPai v : lst){
-    		KeyValueDTO kv = new KeyValueDTO(v.getId(), v.getDescrizione());
-    		kv.setAbilitato(v.isAbilitato());
-    		lstItems.add(kv);
-    	}
-    	return lstItems;
+		return configurazioneDAO.getMotiviChiusuraPai((Long) dto.getObj());
 	}
 	//SISO-1172 FINE
 	public List<ArTbPrestazioniInps> getPrestazioniInpsSinBa(BaseDTO dto) {
@@ -1160,7 +1153,7 @@ public class AccessTableConfigurazioneSessionBean extends CarSocialeBaseSessionB
 	}
 	
 	@Override
-	public ArFfProgetto getProgettiById(BaseDTO dto) {				
+	public ArFfProgetto getProgettoById(BaseDTO dto) {				
 		return configurazioneDAO.getProgettoById((Long)dto.getObj());
 	}
 	

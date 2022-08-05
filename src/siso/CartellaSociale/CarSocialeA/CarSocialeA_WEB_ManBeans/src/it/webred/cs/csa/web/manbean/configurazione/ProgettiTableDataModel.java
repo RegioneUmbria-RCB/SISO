@@ -1,12 +1,5 @@
 package it.webred.cs.csa.web.manbean.configurazione;
 
-import it.umbriadigitale.argo.ejb.client.cs.bean.ArConfigurazioneService;
-import it.umbriadigitale.argo.ejb.client.cs.dto.configurazione.ArProgettoDTO;
-import it.umbriadigitale.argo.ejb.client.cs.dto.configurazione.ProgettiSearchCriteria;
-import it.webred.cs.csa.ejb.dto.PaginationDTO;
-import it.webred.cs.jsf.bean.DatiOperatore;
-import it.webred.cs.jsf.manbean.superc.CsUiCompBaseBean;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +7,11 @@ import java.util.Map;
 import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SelectableDataModel;
 import org.primefaces.model.SortOrder;
+
+import it.umbriadigitale.argo.ejb.client.cs.bean.ArConfigurazioneService;
+import it.umbriadigitale.argo.ejb.client.cs.dto.configurazione.ArProgettoDTO;
+import it.umbriadigitale.argo.ejb.client.cs.dto.configurazione.ProgettiSearchCriteria;
+import it.webred.cs.jsf.manbean.superc.CsUiCompBaseBean;
 
 public class ProgettiTableDataModel extends LazyDataModel<ArProgettoDTO> implements SelectableDataModel<ArProgettoDTO>{
 	

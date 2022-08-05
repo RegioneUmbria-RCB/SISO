@@ -32,7 +32,7 @@ public class CsTbMicroAttivita implements Serializable {
 	private CsTbMacroAttivita macroAttivita;
 
 	@Column(name="FLAG_TIPO_FORM")
-	private String flagTipoForm;
+	private Integer flagTipoForm;
 	
 	public CsTbMicroAttivita() {
 	}
@@ -77,17 +77,12 @@ public class CsTbMicroAttivita implements Serializable {
 		this.macroAttivita = macroAttivita;
 	}
 
-	/**
-	 * @return the flagTipoForm
-	 */
-	public String getFlagTipoForm() {
+	
+	public Integer getFlagTipoForm() {
 		return flagTipoForm;
 	}
 
-	/**
-	 * @param flagTipoForm the flagTipoForm to set
-	 */
-	public void setFlagTipoForm(String flagTipoForm) {
+	public void setFlagTipoForm(Integer flagTipoForm) {
 		this.flagTipoForm = flagTipoForm;
 	}
 

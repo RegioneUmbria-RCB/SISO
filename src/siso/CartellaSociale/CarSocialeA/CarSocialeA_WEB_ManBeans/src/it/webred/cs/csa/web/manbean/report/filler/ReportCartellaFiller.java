@@ -52,6 +52,7 @@ import it.webred.cs.csa.web.manbean.scheda.sociali.DatiSocialiComp;
 import it.webred.cs.csa.web.manbean.scheda.tribunale.DatiTribunaleComp;
 import it.webred.cs.data.DataModelCostanti.GrVulnerabile;
 import it.webred.cs.data.DataModelCostanti.Pai;
+import it.webred.cs.data.DataModelCostanti.TipoFormAttivitaProfessionali;
 import it.webred.cs.data.model.CsAComponente;
 import it.webred.cs.data.model.CsASoggettoCategoriaSoc;
 import it.webred.cs.data.model.CsASoggettoLAZY;
@@ -795,15 +796,15 @@ public class ReportCartellaFiller extends CsUiCompBaseBean {
 			  	pdf.setEseguitaRichiestaIndagine(rel.getRelazione().getRichiestaIndagine() != null ? rel.getRelazione().getRichiestaIndagine() : "");
 			  	pdf.setOreImpiegateTot(rel.getRelazione().getOreImpiegate() != null ?  new SimpleDateFormat("HH:mm").format(rel.getRelazione().getOreImpiegate()) : "");
 			  	pdf.setAnalisiPro(fillBoolean(rel.getRelazione().getFlagRilevazioneProblematiche()));
-			  	if(rel.getRelazione().getMicroAttivita().getFlagTipoForm().equals("1")){
+			  	if(TipoFormAttivitaProfessionali.RELAZIONE_DOCUMENTO == rel.getRelazione().getMicroAttivita().getFlagTipoForm().intValue()){
 					pdf.setTipoAttivita_1(new JRBeanCollectionDataSource(Arrays.asList(filltipoUno(rel))));
 					pdf.setSUBREPORT_DIR(subPath);
 			  	}
-				if(rel.getRelazione().getMicroAttivita().getFlagTipoForm().equals("2")){
+				if(TipoFormAttivitaProfessionali.TESTUALE == rel.getRelazione().getMicroAttivita().getFlagTipoForm().intValue()){
 					pdf.setTipoAttivita_2(new JRBeanCollectionDataSource(Arrays.asList(filltipoDue(rel))));
 					pdf.setSUBREPORT_DIR(subPath);
 				}
-				if(rel.getRelazione().getMicroAttivita().getFlagTipoForm().equals("3")){
+				if(TipoFormAttivitaProfessionali.TRIAGE == rel.getRelazione().getMicroAttivita().getFlagTipoForm().intValue()){
 					pdf.setTipoAttivita_3(new JRBeanCollectionDataSource(Arrays.asList(filltipoTre(rel))));
 					pdf.setSUBREPORT_DIR(subPath);
 				}

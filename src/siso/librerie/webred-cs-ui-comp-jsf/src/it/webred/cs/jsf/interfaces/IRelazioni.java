@@ -32,4 +32,9 @@ public interface IRelazioni{
 	public void stampaTriage();
 	public List<SelectItem> getListaRichiestaIndagine();
 	public boolean isSelectedProblematicaVerificata();
+	public void onSelectCatalogoAttivita();
+	public boolean isRenderUpload();
+	public boolean isRenderTriage();
+	public boolean isRenderEditor();
+	public boolean isRenderSAL();
 }

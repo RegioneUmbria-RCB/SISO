@@ -220,7 +220,7 @@ public abstract class DatiPorBaseMan extends CsUiCompBaseBean implements IDatiPo
 		fillEnte(d);
 		if (idProgetto != null) {
 			d.setObj(idProgetto.longValue());
-			ArFfProgetto cl = confService.getProgettiById(d);
+			ArFfProgetto cl = confService.getProgettoById(d);
 			progetto = cl != null ? cl.getDescrizione() : null;
 		}
 		progetto = format(progetto);
@@ -492,7 +492,7 @@ public abstract class DatiPorBaseMan extends CsUiCompBaseBean implements IDatiPo
 			BaseDTO dto = new BaseDTO();
 			fillEnte(dto);
 			dto.setObj(idProgetto);
-			ArFfProgetto p = confService.getProgettiById(dto);
+			ArFfProgetto p = confService.getProgettoById(dto);
 			this.progetto = p!=null ? p.getDescrizione() : null;
 			this.csCDatiLavoro.setProgetto(p);
 		}

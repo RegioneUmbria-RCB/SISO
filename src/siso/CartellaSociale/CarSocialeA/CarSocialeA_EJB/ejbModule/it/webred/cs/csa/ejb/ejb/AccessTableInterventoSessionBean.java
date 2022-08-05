@@ -1367,4 +1367,13 @@ public class AccessTableInterventoSessionBean extends CarSocialeBaseSessionBean 
 		Long masterId = (Long)dto.getObj();
 		return interventoErogazioneDao.getSintesiErogazioniByInterventoId(masterId);
 	}
+	
+	@Override
+	public boolean verificaUsoArFonte(BaseDTO dto) {
+		Long idOrg = (Long)dto.getObj();
+		Long idFonte = (Long)dto.getObj2();
+		
+		return interventoErogazioneDao.verificaUsoArFonte(idOrg, idFonte);
+	}
+
 }

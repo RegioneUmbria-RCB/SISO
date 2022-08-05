@@ -741,5 +741,32 @@ public class InterventoErogazioneDAO extends CarSocialeBaseDAO implements Serial
 			return out;
 		}
 
+		public boolean verificaUsoArFonte(Long idOrg, Long idFonte) {
+			boolean exists = false;
+			String sql = 
+					"select aro.id organizzazione_id, pr.ff_origine_id "+
+			        " from cs_i_intervento_pr pr, cs_o_settore s, cs_o_organizzazione o, ar_o_organizzazione aro "+
+			        " where PR.SETTORE_TITOLARE_ID = s.id and s.organizzazione_id = o.id and o.cod_routing = aro.belfiore"; 
+			
+			logger.debug("verificaUsoArFonte organizzazioneId["+idOrg+"] fonteId["+idFonte+"]");
+			if(idOrg!=null && idOrg>0)
+				sql+= " and organizzazione_Id = :organizzazioneId";
+			if(idFonte!=null)
+				sql+= " and ff_origine_Id = :fonteId ";
+			
+			Query q = em.createNativeQuery(sql);
+			
+			if(idOrg!=null && idOrg>0)
+				q.setParameter("organizzazioneId", idOrg);
+			if(idFonte!=null)
+				q.setParameter("fonteId", idFonte);
+			
+			List<Object[]> lst = q.getResultList();
+			exists = !lst.isEmpty();
+			logger.debug("verificaUsoArFonte organizzazioneId["+idOrg+"] fonteId["+idFonte+"] RES["+exists+"]");
+			
+			return exists;
+		}
+
 	}
 

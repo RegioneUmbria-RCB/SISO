@@ -12,7 +12,6 @@ import it.webred.cs.csa.ejb.dto.pai.PaiSintesiDTO;
 import it.webred.cs.csa.ejb.dto.relazione.RelazioneSintesiDTO;
 import it.webred.cs.csa.ejb.queryBuilder.PaiQueryBuilder;
 import it.webred.cs.data.DataModelCostanti.TipoDiario;
-import it.webred.cs.data.model.CsCDiarioConchi;
 import it.webred.cs.data.model.CsDClob;
 import it.webred.cs.data.model.CsDColloquio;
 import it.webred.cs.data.model.CsDColloquioBASIC;
@@ -37,10 +36,7 @@ import it.webred.cs.data.model.CsRelDiarioDiariorifPK;
 import it.webred.cs.data.model.CsRelRelazioneProbl;
 import it.webred.cs.data.model.CsRelRelazioneTipoint;
 import it.webred.cs.data.model.CsRelSettCatsocEsclusiva;
-import it.webred.cs.data.model.CsTbMacroAttivita;
-import it.webred.cs.data.model.CsTbMicroAttivita;
 import it.webred.cs.data.model.CsTbScuola;
-import it.webred.cs.data.model.CsTbTipoDiario;
 import it.webred.cs.data.model.view.CsVistaPai;
 
 import java.io.Serializable;
@@ -167,7 +163,7 @@ public class DiarioDAO extends CarSocialeBaseDAO implements Serializable {
 	    	out.setProposta((String)o[5]);
 	    	out.setDescMacroAttivita((String)o[6]);
 	    	out.setDescMicroAttivita((String)o[7]);
-	    	out.setTipoFormMicroAttivita((String)o[8]);
+	    	out.setTipoFormMicroAttivita((Integer)o[8]);
 	    	
 	    	List<Long> paisId = findPadriCollegatiByFiglio(TipoDiario.PAI_ID, TipoDiario.RELAZIONE_ID, out.getDiarioId());
 	    	out.setPaiCollegati(paisId);

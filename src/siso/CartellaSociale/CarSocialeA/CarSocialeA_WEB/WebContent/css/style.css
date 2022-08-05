@@ -203,11 +203,10 @@ body {
 	/*float: left;*/
 }
 
-.leftAlignGrid
-	  {
-	  	    text-align: left;
-     			float: left;
-	  }
+.leftAlignGrid{
+	 text-align: left;
+     float: left;
+}
 
 .rightAlign {
 	text-align: right;

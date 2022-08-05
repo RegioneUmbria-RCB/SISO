@@ -74,6 +74,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class DatiProgettoBean extends CsUiCompBaseBean implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
+	private static final String PROGETTO_ALTRO = "Altro";
+	
 	protected AccessTableInterventoSessionBeanRemote interventoService = (AccessTableInterventoSessionBeanRemote) getCarSocialeEjb ("AccessTableInterventoSessionBean");
 	protected AccessTableSchedaSessionBeanRemote schedaService = (AccessTableSchedaSessionBeanRemote) getCarSocialeEjb("AccessTableSchedaSessionBean");
 	protected AccessTableDominiSiruSessionBeanRemote  dominiSiruService= (AccessTableDominiSiruSessionBeanRemote)getCarSocialeEjb("AccessTableDominiSiruSessionBean");
@@ -589,13 +591,10 @@ public class DatiProgettoBean extends CsUiCompBaseBean implements Serializable {
 	
 	
 	public boolean isAbilitaMenuProgettiAltro() {
-//		return abilitaMenuProgettiAltro
+		this.abilitaMenuProgettiAltro = false;
 		if (csIInterventoPr!=null && csIInterventoPr.getProgetto()!=null){
 			String progDescrizione = csIInterventoPr.getProgetto().getDescrizione();
-			this.abilitaMenuProgettiAltro = (!StringUtils.isBlank(progDescrizione) &&  progDescrizione.equalsIgnoreCase("ALTRO"));
-		}
-		else{
-			this.abilitaMenuProgettiAltro = false;
+			this.abilitaMenuProgettiAltro = (PROGETTO_ALTRO.equalsIgnoreCase(progDescrizione));
 		}
 		return this.abilitaMenuProgettiAltro;
 	}
@@ -1904,7 +1903,7 @@ public class DatiProgettoBean extends CsUiCompBaseBean implements Serializable {
 			BaseDTO dto = new BaseDTO();
 			fillEnte(dto);
 			dto.setObj(id);
-			p  = confService.getProgettiById(dto);
+			p  = confService.getProgettoById(dto);
 		}
 		return p;
 	}

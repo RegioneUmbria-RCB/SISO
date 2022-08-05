@@ -9,10 +9,13 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -24,19 +27,52 @@ import javax.persistence.TemporalType;
 @Table(name = "AR_FF_LINEAFIN")
 public class ArFfLineafin implements java.io.Serializable {
 
-	private long id;
+	@Id
+	@SequenceGenerator(name="AR_LINEA_FIN_ID_GENERATOR", sequenceName="SQ_ID",allocationSize=1)
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="AR_LINEA_FIN_ID_GENERATOR")
+	private Long id;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "PROGETTO_ID")
 	private ArFfProgetto arFfProgetto;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "FONDO_ID", nullable = false)
 	private ArFfFondo arFfFondo;
+	
+	@Column(name = "CODICE_MEMO", nullable = false, length = 20)
 	private String codiceMemo;
+	
+	@Column(name = "DESCRIZIONE", nullable = false)
 	private String descrizione;
+	
+	@Column(name = "USER_INS", nullable = false, length = 50)
 	private String userIns;
+	
+	@Temporal(TemporalType.DATE)
+	@Column(name = "DT_INS", nullable = false, length = 7)
 	private Date dtIns;
+	
+	@Column(name = "USR_MOD", length = 50)
 	private String usrMod;
+	
+	@Temporal(TemporalType.DATE)
+	@Column(name = "DT_MOD", length = 7)
 	private Date dtMod;
-	private Character abilitato;
+	
+	@Temporal(TemporalType.DATE)
+	@Column(name = "DATA_INIZIO_VAL", nullable = false, length = 7)
 	private Date dataInizioVal;
+	
+	@Temporal(TemporalType.DATE)
+	@Column(name = "DT_FINE_VAL", nullable = false, length = 7)
 	private Date dtFineVal;
+	
 	private BigDecimal importo;
+	
+	private Boolean abilitato;
+	
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "arFfLineafin")
 	private Set<ArFfServizio> arFfServizios = new HashSet<ArFfServizio>(0);
 
 	public ArFfLineafin() {
@@ -59,7 +95,7 @@ public class ArFfLineafin implements java.io.Serializable {
 	public ArFfLineafin(long id, ArFfProgetto arFfProgetto,
 			ArFfFondo arFfFondo, String codiceMemo, String descrizione,
 			String userIns, Date dtIns, String usrMod, Date dtMod,
-			Character abilitato, Date dataInizioVal, Date dtFineVal,
+			Boolean abilitato, Date dataInizioVal, Date dtFineVal,
 			BigDecimal importo, Set<ArFfServizio> arFfServizios) {
 		this.id = id;
 		this.arFfProgetto = arFfProgetto;
@@ -77,18 +113,14 @@ public class ArFfLineafin implements java.io.Serializable {
 		this.arFfServizios = arFfServizios;
 	}
 
-	@Id
-	@Column(name = "ID", unique = true, nullable = false, precision = 10, scale = 0)
-	public long getId() {
-		return this.id;
+	public Long getId() {
+		return id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "PROGETTO_ID")
 	public ArFfProgetto getArFfProgetto() {
 		return this.arFfProgetto;
 	}
@@ -97,8 +129,6 @@ public class ArFfLineafin implements java.io.Serializable {
 		this.arFfProgetto = arFfProgetto;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "FONDO_ID", nullable = false)
 	public ArFfFondo getArFfFondo() {
 		return this.arFfFondo;
 	}
@@ -107,7 +137,6 @@ public class ArFfLineafin implements java.io.Serializable {
 		this.arFfFondo = arFfFondo;
 	}
 
-	@Column(name = "CODICE_MEMO", nullable = false, length = 20)
 	public String getCodiceMemo() {
 		return this.codiceMemo;
 	}
@@ -116,7 +145,6 @@ public class ArFfLineafin implements java.io.Serializable {
 		this.codiceMemo = codiceMemo;
 	}
 
-	@Column(name = "DESCRIZIONE", nullable = false)
 	public String getDescrizione() {
 		return this.descrizione;
 	}
@@ -125,7 +153,6 @@ public class ArFfLineafin implements java.io.Serializable {
 		this.descrizione = descrizione;
 	}
 
-	@Column(name = "USER_INS", nullable = false, length = 50)
 	public String getUserIns() {
 		return this.userIns;
 	}
@@ -134,8 +161,6 @@ public class ArFfLineafin implements java.io.Serializable {
 		this.userIns = userIns;
 	}
 
-	@Temporal(TemporalType.DATE)
-	@Column(name = "DT_INS", nullable = false, length = 7)
 	public Date getDtIns() {
 		return this.dtIns;
 	}
@@ -144,7 +169,6 @@ public class ArFfLineafin implements java.io.Serializable {
 		this.dtIns = dtIns;
 	}
 
-	@Column(name = "USR_MOD", length = 50)
 	public String getUsrMod() {
 		return this.usrMod;
 	}
@@ -153,8 +177,6 @@ public class ArFfLineafin implements java.io.Serializable {
 		this.usrMod = usrMod;
 	}
 
-	@Temporal(TemporalType.DATE)
-	@Column(name = "DT_MOD", length = 7)
 	public Date getDtMod() {
 		return this.dtMod;
 	}
@@ -163,17 +185,6 @@ public class ArFfLineafin implements java.io.Serializable {
 		this.dtMod = dtMod;
 	}
 
-	@Column(name = "ABILITATO", length = 1)
-	public Character getAbilitato() {
-		return this.abilitato;
-	}
-
-	public void setAbilitato(Character abilitato) {
-		this.abilitato = abilitato;
-	}
-
-	@Temporal(TemporalType.DATE)
-	@Column(name = "DATA_INIZIO_VAL", nullable = false, length = 7)
 	public Date getDataInizioVal() {
 		return this.dataInizioVal;
 	}
@@ -182,8 +193,6 @@ public class ArFfLineafin implements java.io.Serializable {
 		this.dataInizioVal = dataInizioVal;
 	}
 
-	@Temporal(TemporalType.DATE)
-	@Column(name = "DT_FINE_VAL", nullable = false, length = 7)
 	public Date getDtFineVal() {
 		return this.dtFineVal;
 	}
@@ -201,13 +210,20 @@ public class ArFfLineafin implements java.io.Serializable {
 		this.importo = importo;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "arFfLineafin")
 	public Set<ArFfServizio> getArFfServizios() {
 		return this.arFfServizios;
 	}
 
 	public void setArFfServizios(Set<ArFfServizio> arFfServizios) {
 		this.arFfServizios = arFfServizios;
+	}
+
+	public Boolean getAbilitato() {
+		return abilitato;
+	}
+
+	public void setAbilitato(Boolean abilitato) {
+		this.abilitato = abilitato;
 	}
 
 }

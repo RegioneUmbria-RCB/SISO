@@ -44,6 +44,7 @@ import it.webred.cs.data.DataModelCostanti;
 import it.webred.cs.data.DataModelCostanti.PermessiErogazioneInterventi;
 import it.webred.cs.data.DataModelCostanti.TipoDatoMobile;
 import it.webred.cs.data.DataModelCostanti.TipoDocumentoMobile;
+import it.webred.cs.data.DataModelCostanti.TipoFormAttivitaProfessionali;
 import it.webred.cs.data.DataModelCostanti.TipoStatoErogazione;
 import it.webred.cs.data.model.CsACaso;
 import it.webred.cs.data.model.CsASoggettoLAZY;
@@ -1351,9 +1352,9 @@ protected VmobiCasiDTO findCasiByOperatoreBySoggetto(FindInterventoErogazioneByI
         sdto.setRelazione(relazioneDTO.getRelazione());
         
 		//se ho editato la scheda triage
-		if(relazioneDTO.getRelazione().getMicroAttivita().getFlagTipoForm().equals("3")){
-		   sdto.setTriage(relazioneDTO.getTriage());	
-		}
+    	if(TipoFormAttivitaProfessionali.TRIAGE==relazioneDTO.getRelazione().getMicroAttivita().getFlagTipoForm().intValue()){
+ 		   sdto.setTriage(relazioneDTO.getTriage());	
+ 		}
 		//SISO 1257 - se ho editato la scheda 
 		if(relazioneDTO.isAttivitaSAL()){
 		   sdto.setSal(relazioneDTO.getSal());	
