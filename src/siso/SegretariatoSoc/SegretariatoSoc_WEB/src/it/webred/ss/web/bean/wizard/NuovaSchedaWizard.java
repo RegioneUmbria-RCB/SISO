@@ -705,11 +705,7 @@ public class NuovaSchedaWizard extends SegretariatoSocBaseBean {
 
 					if (selectedSoggetto != null)
 						initFromSelectedSoggetto(new Long(selectedSoggetto), true); // EFFETTUO UNA COPIA
-					else if (tipo != null && (TipoRicercaSoggetto.ANAG_SANITARIA_UMBRIA.equalsIgnoreCase(tipo)
-							|| TipoRicercaSoggetto.ANAG_SANITARIA_MARCHE.equalsIgnoreCase(tipo)
-							|| TipoRicercaSoggetto.SIGESS.equalsIgnoreCase(tipo)
-							|| TipoRicercaSoggetto.DEFAULT.equalsIgnoreCase(tipo))) {
-
+					else if (tipo != null && Arrays.asList(TipoRicercaSoggetto.LISTA_TIPI).contains(tipo)) {
 						String id = (String)getRequestParameter(ANAG_WS_KEY);
 						PersonaDettaglio p = null;
 						if (id != null)
@@ -766,10 +762,7 @@ public class NuovaSchedaWizard extends SegretariatoSocBaseBean {
 				if (idTipo != null) {
 					String idWs = ssSchedaSegnalato.getAnagrafica().getIdOrigWsId();
 
-					if (!trovato && (TipoRicercaSoggetto.DEFAULT.equalsIgnoreCase(idTipo)
-							||TipoRicercaSoggetto.ANAG_SANITARIA_UMBRIA.equalsIgnoreCase(idTipo)
-							|| TipoRicercaSoggetto.ANAG_SANITARIA_MARCHE.equalsIgnoreCase(idTipo)
-							|| TipoRicercaSoggetto.SIGESS.equalsIgnoreCase(idTipo))) {
+					if (!trovato && Arrays.asList(TipoRicercaSoggetto.LISTA_TIPI).contains(idTipo)) {
 
 						if (idWs != null)
 							p = CsUiCompBaseBean.getPersonaDaAnagEsterna(idTipo, idWs);
@@ -6072,19 +6065,12 @@ public class NuovaSchedaWizard extends SegretariatoSocBaseBean {
 			addWarning("Scegliere un soggetto", "");
 			return;
 		}
-
-		if (se.isAnagrafeSanitariaUmbria()) {
-			loadInterlocutoreDaAnaEsterna(TipoRicercaSoggetto.ANAG_SANITARIA_UMBRIA,
-					id.replace(TipoRicercaSoggetto.ANAG_SANITARIA_UMBRIA, ""), (PersonaDettaglio) se.getSoggetto());
-		} else if (id.trim().startsWith(TipoRicercaSoggetto.ANAG_SANITARIA_MARCHE)) {
-			loadInterlocutoreDaAnaEsterna(TipoRicercaSoggetto.ANAG_SANITARIA_MARCHE,
-					id.replace(TipoRicercaSoggetto.ANAG_SANITARIA_MARCHE, ""), (PersonaDettaglio) se.getSoggetto());
-		} else if (se.isAnagrafeSigess()) {
-			loadInterlocutoreDaAnaEsterna(TipoRicercaSoggetto.SIGESS, id.replace(TipoRicercaSoggetto.SIGESS, ""),
-					(PersonaDettaglio) se.getSoggetto());
-		} else {
-			loadInterlocutoreDaAnaEsterna(TipoRicercaSoggetto.DEFAULT, id.replace(TipoRicercaSoggetto.DEFAULT, ""),
-					(PersonaDettaglio) se.getSoggetto());
+		
+		for(String tipoRicerca : TipoRicercaSoggetto.LISTA_TIPI){
+			if(id.trim().startsWith(tipoRicerca)) {
+				loadInterlocutoreDaAnaEsterna(tipoRicerca, id.replace(tipoRicerca, ""), (PersonaDettaglio) se.getSoggetto());
+				break;
+			}
 		}
 
 		UserSearchBeanExt ubean = (UserSearchBeanExt) CsUiCompBaseBean.getReferencedBean("userSearchBeanExt");

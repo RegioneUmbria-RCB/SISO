@@ -57,6 +57,8 @@ public class UserSearchBeanExt extends CsUiCompBaseBean implements IUserSearchEx
 			if(isAnagrafeSigessAbilitata()) validaTipo = DataModelCostanti.TipoRicercaSoggetto.SIGESS;
 			else if (isAnagrafeSanitariaUmbriaAbilitata()) validaTipo = DataModelCostanti.TipoRicercaSoggetto.ANAG_SANITARIA_UMBRIA;
 			else if (isAnagrafeSanitariaMarcheAbilitata()) validaTipo = DataModelCostanti.TipoRicercaSoggetto.ANAG_SANITARIA_MARCHE;
+			else if (isAnagrafeValleSavioAbilitata()) validaTipo = DataModelCostanti.TipoRicercaSoggetto.ANAG_VALLE_SAVIO;
+
 
 			msg.addAll(params.validaAnnoNascita(validaTipo));
 			msg.addAll(params.validaCognome());
@@ -82,6 +84,9 @@ public class UserSearchBeanExt extends CsUiCompBaseBean implements IUserSearchEx
 			
 			if(lstSoggetti.size() <maxResult)
 				this.ricercaInAnagrafeEsterna(mappaSoggetti, DataModelCostanti.TipoRicercaSoggetto.SIGESS);
+			
+			if(lstSoggetti.size() <maxResult)
+				this.ricercaInAnagrafeEsterna(mappaSoggetti, DataModelCostanti.TipoRicercaSoggetto.ANAG_VALLE_SAVIO);
 			
 			Iterator<String> iter = mappaSoggetti.keySet().iterator();
 			while(iter.hasNext()){

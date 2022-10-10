@@ -1,6 +1,7 @@
 package it.webred.cs.jsf.converter;
 
 import it.webred.cs.data.DataModelCostanti;
+import it.webred.cs.data.DataModelCostanti.TipoRicercaSoggetto;
 import it.webred.cs.jsf.bean.DatiUserSearchBean;
 import it.webred.cs.jsf.manbean.superc.CsUiCompBaseBean;
 import it.webred.siso.ws.ricerca.dto.PersonaDettaglio;
@@ -24,18 +25,12 @@ public class UserSearchConverter extends CsUiCompBaseBean implements Converter {
  
             		String codIndividuale = null;
             		String tipoRicerca = null;
-            		if(value.startsWith(DataModelCostanti.TipoRicercaSoggetto.ANAG_SANITARIA_UMBRIA)){
-            			tipoRicerca = DataModelCostanti.TipoRicercaSoggetto.ANAG_SANITARIA_UMBRIA;
-            			codIndividuale = value.replace(tipoRicerca, "");
-            		}else if(value.startsWith(DataModelCostanti.TipoRicercaSoggetto.ANAG_SANITARIA_MARCHE)){
-            			tipoRicerca = DataModelCostanti.TipoRicercaSoggetto.ANAG_SANITARIA_MARCHE;
-            			codIndividuale = value.replace(tipoRicerca, "");
-            		}else if(value.startsWith(DataModelCostanti.TipoRicercaSoggetto.SIGESS)){
-            			tipoRicerca = DataModelCostanti.TipoRicercaSoggetto.SIGESS;
-            			codIndividuale = value.replace(tipoRicerca, "");
-            		}else if(value.startsWith(DataModelCostanti.TipoRicercaSoggetto.DEFAULT)){
-            			tipoRicerca = DataModelCostanti.TipoRicercaSoggetto.DEFAULT;
-            			codIndividuale = value.replace(tipoRicerca, "");
+            		for(String tipo : TipoRicercaSoggetto.LISTA_TIPI){
+            			if(value.startsWith(tipoRicerca)){
+                			tipoRicerca = tipo;
+                			codIndividuale = value.replace(tipo, "");
+                			break;
+            			}
             		}
             		
             		PersonaDettaglio s = null;

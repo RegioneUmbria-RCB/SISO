@@ -20,6 +20,7 @@ import it.webred.cs.csa.web.manbean.fascicolo.provvedimentiMinori.ver1.Provvedim
 import it.webred.cs.data.DataModelCostanti;
 import it.webred.cs.data.DataModelCostanti.TipiAlertCod;
 import it.webred.cs.data.DataModelCostanti.TipoDiario;
+import it.webred.cs.data.DataModelCostanti.TipoRicercaSoggetto;
 import it.webred.cs.data.model.CsAAnaIndirizzo;
 import it.webred.cs.data.model.CsACaso;
 import it.webred.cs.data.model.CsAComponenteAnagCasoGit;
@@ -46,6 +47,7 @@ import it.webred.siso.ws.ricerca.dto.PersonaDettaglio;
 import it.webred.siso.ws.ricerca.dto.RicercaAnagraficaParams;
 import it.webred.siso.ws.ricerca.dto.RicercaAnagraficaResult;
 
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -119,8 +121,9 @@ public class ZsTimerTaskGiornaliero extends TimerTask {
 		
     	//SISO-1127
 		this.aggiornaAnagraficaCasoSIGESS();
-		this.aggiornaAnagraficaCasoSIRPS();
-		this.aggiornaAnagraficaCasoAnagrafeSanitariaUmbria();
+		aggiornaAnagraficaCaso(TipoRicercaSoggetto.ANAG_SANITARIA_MARCHE);
+		aggiornaAnagraficaCaso(TipoRicercaSoggetto.ANAG_SANITARIA_UMBRIA);
+		aggiornaAnagraficaCaso(TipoRicercaSoggetto.ANAG_VALLE_SAVIO);
 		this.aggiornaAnagraficaInterna();
 		
 		// SISO-1266
@@ -364,36 +367,10 @@ public class ZsTimerTaskGiornaliero extends TimerTask {
 				  	}
 				}
 				
-				if((res == null || res.getElencoAssistiti().size() ==0) && CsUiCompBaseBean.isAnagrafeSanitariaUmbriaAbilitata()) {
-					try{
-						RicercaAnagraficaParams params = new RicercaAnagraficaParams( DataModelCostanti.TipoRicercaSoggetto.ANAG_SANITARIA_UMBRIA, true);
-						params.setEnteId(enteId);
-						params.setCf(cf);
-						params.setCaricaMedico(true);
-						res = CsUiCompBaseBean.getDettaglioPersona(params);
-						
-						if(res.getElencoAssistiti().size() > 0) {
-							tipoRicerca = DataModelCostanti.TipoRicercaSoggetto.ANAG_SANITARIA_UMBRIA;
-						}
-					}catch(Exception ex) {
-				  		logger.error("aggiornaAnagraficaCasoSenzaIdProvenienza - Attenzione si è verificato un errore durante la ricerca del soggetto in ANASAN UMBRIA [ID CS_A_COMPONENTE_ANAG_CASO_GIT:"+ anagraficaCaso.getId() +"]", ex );
-				  	}
-				}
-			
-				if((res == null || res.getElencoAssistiti().size() ==0) && CsUiCompBaseBean.isAnagrafeSanitariaMarcheAbilitata()){
-					try{
-						RicercaAnagraficaParams params = new RicercaAnagraficaParams( DataModelCostanti.TipoRicercaSoggetto.ANAG_SANITARIA_MARCHE, true);
-						params.setEnteId(enteId);
-						params.setCf(cf);
-						res = CsUiCompBaseBean.getDettaglioPersona(params);
-						if(res.getElencoAssistiti().size() > 0) {
-							tipoRicerca = DataModelCostanti.TipoRicercaSoggetto.ANAG_SANITARIA_MARCHE;
-						}
-					}catch(Exception ex) {
-				  		logger.error("aggiornaAnagraficaCasoSenzaIdProvenienza - Attenzione si è verificato un errore durante la ricerca del soggetto in ANASAN MARCHE [ID CS_A_COMPONENTE_ANAG_CASO_GIT:"+ anagraficaCaso.getId() +"]", ex );
-				  	}
-				}
-			
+				loadAnagraficaCasoSenzaIdProvenienza(TipoRicercaSoggetto.ANAG_SANITARIA_UMBRIA, tipoRicerca, res, anagraficaCaso.getId(), cf);
+				loadAnagraficaCasoSenzaIdProvenienza(TipoRicercaSoggetto.ANAG_SANITARIA_MARCHE, tipoRicerca, res, anagraficaCaso.getId(), cf);
+				loadAnagraficaCasoSenzaIdProvenienza(TipoRicercaSoggetto.ANAG_VALLE_SAVIO, tipoRicerca, res, anagraficaCaso.getId(), cf);
+				
 				try{
 					if(res!=null && !res.getElencoAssistiti().isEmpty()){
 						if(res.getMessaggio()==null)
@@ -406,6 +383,22 @@ public class ZsTimerTaskGiornaliero extends TimerTask {
 			  	}
 		    }
 		    logger.debug("__ FINE ZsTimerTaskGiornaliero: aggiornaAnagraficaCasoSenzaIdProvenienza");
+		 }
+		 
+		 private void loadAnagraficaCasoSenzaIdProvenienza(String tipoRicercaIn, String tipoRicercaOut, RicercaAnagraficaResult res, BigDecimal idAnagCaso, String cf) {
+			if((res == null || res.getElencoAssistiti().size() ==0) && CsUiCompBaseBean.isAnagrafeAbilitata(tipoRicercaIn)){
+				try{
+					RicercaAnagraficaParams params = new RicercaAnagraficaParams(tipoRicercaIn, true);
+					params.setEnteId(enteId);
+					params.setCf(cf);
+					res = CsUiCompBaseBean.getDettaglioPersona(params);
+					if(res.getElencoAssistiti().size() > 0) {
+						tipoRicercaOut = tipoRicercaIn ;
+					}
+				}catch(Exception ex) {
+			  		logger.error("aggiornaAnagraficaCasoSenzaIdProvenienza - Attenzione si è verificato un errore durante la ricerca del soggetto in "+tipoRicercaIn+" [ID CS_A_COMPONENTE_ANAG_CASO_GIT:"+ idAnagCaso +"]", ex );
+			  	}
+			}
 		 }
 		 
 		 private void aggiornaAnagraficaCasoGIT(RicercaAnagraficaResult ricercaAnagraficaResult, CsAComponenteAnagCasoGit anagraficaCaso, String tipoRicerca) {
@@ -435,11 +428,10 @@ public class ZsTimerTaskGiornaliero extends TimerTask {
 			}
 		 }
 		 
-		 private void aggiornaAnagraficaCasoSIRPS(){	
-				
-				if(CsUiCompBaseBean.isAnagrafeSanitariaMarcheAbilitata()){
-					logger.debug("__ INIZIO ZsTimerTaskGiornaliero: aggiornaAnagraficaCasoSIRPS");
-				    String tipoRicerca = DataModelCostanti.TipoRicercaSoggetto.ANAG_SANITARIA_MARCHE;
+		 private void aggiornaAnagraficaCaso(String tipoRicerca){
+			 String msg = "ZsTimerTaskGiornaliero: aggiornaAnagraficaCaso "+tipoRicerca;
+				if(CsUiCompBaseBean.isAnagrafeAbilitata(tipoRicerca)){
+					logger.debug("__ INIZIO " + msg);
 				    List<CsAComponenteAnagCasoGit>  listaCasiSIRPS =	this.getAnagraficheByTipoRicerca(tipoRicerca);
 			    	try {
 			    		
@@ -447,65 +439,30 @@ public class ZsTimerTaskGiornaliero extends TimerTask {
 							try {
 								if(maxVarAnagraficheElaborate()) break;
 			    	 		    String cf = anagraficaCaso.getCsASoggetto().getCsAAnagrafica().getCf();
-								String idSirps = anagraficaCaso.getCsASoggetto().getCsAAnagrafica().getIdOrigWsId();
+								String idOrig = anagraficaCaso.getCsASoggetto().getCsAAnagrafica().getIdOrigWsId();
 								
 								RicercaAnagraficaParams params = new RicercaAnagraficaParams(tipoRicerca, true);
 								params.setEnteId(enteId);
-								params.setIdentificativo(idSirps);
+								params.setIdentificativo(idOrig);
 								params.setCf(cf);
 								RicercaAnagraficaResult res = CsUiCompBaseBean.getDettaglioPersona(params);
 								
 								this.aggiornaAnagraficaCasoGIT(res, anagraficaCaso, tipoRicerca);
 							}catch(Exception ex) {
 								
-								logger.error("__ERRORE ZsTimerTaskGiornaliero: aggiornaAnagraficaCasoSIRPS  per anagraficaCaso ID [" + anagraficaCaso.getId() + "]"  + ex.getMessage(), ex);
+								logger.error("__ERRORE "+msg+" per anagraficaCaso ID [" + anagraficaCaso.getId() + "]"  + ex.getMessage(), ex);
 							}
 						}
 					
-						logger.debug("__ FINE ZsTimerTaskGiornaliero: aggiornaAnagraficaCasoSIRPS");
+						logger.debug("__ FINE "+msg);
 						
 			    	} catch (Exception e2) {
-						logger.error("__ERRORE ZsTimerTaskGiornaliero: aggiornaAnagraficaCasoSIRPS : " + e2.getMessage(), e2);
+						logger.error("__ERRORE " + msg +" : " + e2.getMessage(), e2);
 					}
 			    	
 				}
 			}
-		 private void aggiornaAnagraficaCasoAnagrafeSanitariaUmbria(){	
-				
-				if(CsUiCompBaseBean.isAnagrafeSanitariaUmbriaAbilitata()){
-					logger.debug("__ INIZIO ZsTimerTaskGiornaliero: aggiornaAnagraficaCasoAnagrafeSanitariaUmbria");
-				   	String tipoRicerca = DataModelCostanti.TipoRicercaSoggetto.ANAG_SANITARIA_UMBRIA;
-				    List<CsAComponenteAnagCasoGit>  listaCasiSANITA_UMBRIA = this.getAnagraficheByTipoRicerca(tipoRicerca);
-			    	try {
-			    		
-			    	    for(CsAComponenteAnagCasoGit anagraficaCaso: listaCasiSANITA_UMBRIA) {
-							try {
-								if(maxVarAnagraficheElaborate()) break;
-				    	    	String cf = anagraficaCaso.getCsASoggetto().getCsAAnagrafica().getCf();
-								String idSirps = anagraficaCaso.getCsASoggetto().getCsAAnagrafica().getIdOrigWsId();
-								
-								RicercaAnagraficaParams params = new RicercaAnagraficaParams(tipoRicerca, true);
-								params.setEnteId(enteId);
-								params.setIdentificativo(idSirps);
-								params.setCf(cf);
-								RicercaAnagraficaResult res = CsUiCompBaseBean.getDettaglioPersona(params);
-								
-								this.aggiornaAnagraficaCasoGIT(res, anagraficaCaso, tipoRicerca);
-								
-							   }
-								catch(Exception ex) {
-									logger.error("__ERRORE ZsTimerTaskGiornaliero: aggiornaAnagraficaCasoAnagrafeSanitariaUmbria  per anagraficaCaso ID [" + anagraficaCaso.getId() + "] " + ex.getMessage(), ex);
-								}
-							}
-					
-						logger.debug("__ FINE ZsTimerTaskGiornaliero: aggiornaAnagraficaCasoAnagrafeSanitariaUmbria");
-						
-			    	} catch (Exception e2) {
-						logger.error("__ERRORE ZsTimerTaskGiornaliero: aggiornaAnagraficaCasoAnagrafeSanitariaUmbria : " + e2.getMessage(), e2);
-					}
-			    	
-				}
-			}
+		
 		 private void aggiornaAnagraficaInterna(){	
 				
 				if(CsUiCompBaseBean.isAnagrafeComunaleInternaAbilitata()) {

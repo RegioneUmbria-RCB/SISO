@@ -1,5 +1,25 @@
 package it.webred.cs.sociosan.ejb.ejb;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.ejb.EJB;
+import javax.ejb.Stateless;
+import javax.interceptor.Interceptors;
+
+import org.apache.commons.lang3.StringUtils;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import it.webred.cs.base.CsBaseSessionBean;
 import it.webred.cs.csa.ejb.client.configurazione.AccessTableConfigurazioneSessionBeanRemote;
 import it.webred.cs.csa.ejb.dto.BaseDTO;
@@ -31,18 +51,6 @@ import it.webred.siso.ws.ricerca.dto.FamiliareDettaglio;
 import it.webred.siso.ws.ricerca.dto.PersonaDettaglio;
 import it.webred.siso.ws.ricerca.dto.RicercaAnagraficaParams;
 import it.webred.siso.ws.ricerca.dto.RicercaAnagraficaResult;
-
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-
-import javax.ejb.EJB;
-import javax.ejb.Stateless;
-import javax.interceptor.Interceptors;
-
-import org.apache.commons.lang3.StringUtils;
 
 
 @Stateless
@@ -78,6 +86,8 @@ public class RicercaSoggettoSessionBean extends CsBaseSessionBean implements Ric
 			return this.ricercaAnaSanRegionaleUmbria(params);
 		//else if(DataModelCostanti.TipoRicercaSoggetto.SIGESS.equalsIgnoreCase(params.getProvenienza()))
 		//	return this.ricercaAnaSigess(params);
+		else if(DataModelCostanti.TipoRicercaSoggetto.ANAG_VALLE_SAVIO.equalsIgnoreCase(params.getProvenienza()))
+			return this.ricercaAnaVallesavio(params, false);
 		else return null;
 	}
 	
@@ -92,6 +102,8 @@ public class RicercaSoggettoSessionBean extends CsBaseSessionBean implements Ric
 			return this.getPersonaAnaSanRegionaleUmbria(params);
 		//else if(DataModelCostanti.TipoRicercaSoggetto.SIGESS.equalsIgnoreCase(params.getProvenienza()))
 		//	return this.getPersonaDaAnagSigess(params);
+		else if(DataModelCostanti.TipoRicercaSoggetto.ANAG_VALLE_SAVIO.equalsIgnoreCase(params.getProvenienza()))
+			return this.ricercaAnaVallesavio(params, false);
 		else return null;
 	}
 	
@@ -103,6 +115,8 @@ public class RicercaSoggettoSessionBean extends CsBaseSessionBean implements Ric
 			return loadFamigliaSIRPS(params);
 		//else if(DataModelCostanti.TipoRicercaSoggetto.SIGESS.equalsIgnoreCase(params.getProvenienza()))
 		//	return loadFamigliaSIGESS(params);
+		else if(DataModelCostanti.TipoRicercaSoggetto.ANAG_VALLE_SAVIO.equalsIgnoreCase(params.getProvenienza()))
+			return ricercaAnaVallesavio(params, true);
 		else return null;
 	}
 		
@@ -169,6 +183,123 @@ public class RicercaSoggettoSessionBean extends CsBaseSessionBean implements Ric
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 			result.setEccezione(e);
+			result.setMessaggio(e.getMessage());
+		}
+		return result;
+	}
+	
+	private RicercaAnagraficaResult ricercaAnaVallesavio(RicercaAnagraficaParams params, boolean nucleoFamiliare){	
+		RicercaAnagraficaResult result = new RicercaAnagraficaResult();
+		List<FamiliareDettaglio> lstout = new ArrayList<FamiliareDettaglio>();
+		
+		ObjectMapper mapper = new ObjectMapper();
+		ObjectNode parNode = mapper.createObjectNode();
+		
+		if (nucleoFamiliare) { parNode.put("nucleoFamiliare", true); }
+		if (!StringUtils.isBlank(params.getIdentificativo())) { parNode.put("identificativo", params.getIdentificativo()); }
+		if (!StringUtils.isBlank(params.getCognome())) { parNode.put("cognome", params.getCognome()); }
+		if (!StringUtils.isBlank(params.getNome())) { parNode.put("nome", params.getNome()); }
+		if (!StringUtils.isBlank(params.getSesso())) { parNode.put("sesso", params.getSesso()); }
+		if (!StringUtils.isBlank(params.getCf())) { parNode.put("cf", params.getCf()); }
+		if (params.getAnnoNascitaDa() != null && params.getAnnoNascitaDa() > 0) { parNode.put("annoNascitaDa", params.getAnnoNascitaDa()); }
+		if (params.getAnnoNascitaA() != null && params.getAnnoNascitaA() > 0) { parNode.put("annoNascitaA", params.getAnnoNascitaA()); }
+		
+		try {	
+			String token = getGlobalParameter(DataModelCostanti.AmParameterKey.WS_RICERCA_PWD);
+			String sUrl = getAnagrafeWSDLLocation();
+			
+			if(StringUtils.isNotBlank(token) && StringUtils.isNotBlank(sUrl)) {
+				URL url = new URL (sUrl);
+				HttpURLConnection con = (HttpURLConnection)url.openConnection();
+				con.setRequestMethod("POST");
+				con.setRequestProperty("Content-Type", "application/json");
+				con.setRequestProperty("Accept", "application/json");
+				con.setRequestProperty("Authorization", "Bearer " + token);
+				con.setDoOutput(true);
+	
+				java.io.OutputStream os = con.getOutputStream();
+				byte[] input = parNode.toString().getBytes("utf-8");
+				os.write(input, 0, input.length);			
+				os.close();
+	
+				BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream(), "utf-8"));
+				StringBuilder response = new StringBuilder();
+				String responseLine = null;
+				while ((responseLine = br.readLine()) != null) {
+					response.append(responseLine.trim());
+				}
+				br.close();	
+				con.disconnect();
+	
+				Map<String, Object> map = mapper.readValue(response.toString(), Map.class);
+				ArrayList<? extends Map<String, String>> soggetti = (ArrayList<? extends Map<String, String>>)map.get("elencoSoggetti");
+				
+				SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+				
+				BaseDTO bo = new BaseDTO();
+				bo.setEnteId(params.getEnteId()); 
+				bo.setUserId(params.getUserId());
+				bo.setSessionId(params.getSessionId());
+				
+				boolean parentelaValida = false;
+				for (Map<String, String> soggetto : soggetti) {
+					if (
+						soggetto.get("codfisc") != null && soggetto.get("codfisc").equals(params.getCf()) 
+						&& soggetto.get("descrizioneRapportoParentela") != null && soggetto.get("descrizioneRapportoParentela").toUpperCase().startsWith("INTESTATARI")
+					) { 
+						parentelaValida = true; 
+						break;
+					}
+				}
+				
+				for (Map<String, String> soggetto : soggetti) {
+					//if (nucleoFamiliare && soggetto.get("codfisc") != null && soggetto.get("codfisc").equals(params.getCf())) { continue; }
+					
+					FamiliareDettaglio pd = new FamiliareDettaglio();
+					lstout.add(pd);
+					
+					pd.setIdentificativo(soggetto.get("identificativo"));
+					pd.setCognome(soggetto.get("cognome"));
+					pd.setNome(soggetto.get("nome"));
+					pd.setDataMorte(soggetto.get("dataDecesso") != null ? df.parse(soggetto.get("dataDecesso")) : null);
+					pd.setDataNascita(soggetto.get("dataNascita") != null ? df.parse(soggetto.get("dataNascita")) : null);
+					pd.setDefunto(soggetto.get("dataDecesso") != null);
+					pd.setProvenienzaRicerca(DataModelCostanti.TipoRicercaSoggetto.ANAG_VALLE_SAVIO);
+					
+					if (params.isDettaglio() || nucleoFamiliare) {
+						pd.setCittadinanza(this.getCittadinanzaByCodice(soggetto.get("codiceISTATCittadinanza")));
+						pd.setCivicoResidenza(soggetto.get("numeroCivicoResidenza"));
+						pd.setCodfisc(soggetto.get("codfisc"));
+						pd.setComuneNascita(soggetto.get("codiceISTATComuneNascita") != null ? this.findComune(soggetto.get("codiceISTATComuneNascita")) : null);
+						pd.setComuneResidenza(soggetto.get("codiceISTATComuneResidenza") != null ? this.findComune(soggetto.get("codiceISTATComuneResidenza")) : null);
+						pd.setIndirizzoResidenza(soggetto.get("indirizzoResidenza"));
+						pd.setNazioneNascita(this.findNazione(soggetto.get("codiceISTATStatoNascita"), null));
+						pd.setNazioneResidenza(this.findNazione("100", null));
+						pd.setSesso(soggetto.get("sesso"));
+						
+						if (soggetto.get("descrizioneRapportoParentela") != null) {
+							bo.setObj(soggetto.get("descrizioneRapportoParentela").toUpperCase());
+							pd.setParentela(configurazioneService.mappaRelazioneParentale(bo));
+							pd.setParentelaValida(parentelaValida);
+						}
+						
+						if (soggetto.get("descrizioneStatoCivile") != null) {
+							pd.setStatoCivile(soggetto.get("descrizioneStatoCivile").toUpperCase()); 
+						}
+					}
+				}
+				
+				if (!nucleoFamiliare) { 
+					List<PersonaDettaglio> persone = new ArrayList<PersonaDettaglio>(lstout);
+					result.setElencoAssistiti(persone); 
+				}else
+					result.setElencoFamiliari(lstout); 
+			}else
+				result.setMessaggio("Non è stato possibile effettuare la ricerca in anagrafe Valle del Savio: parametri di connessione non impostati");
+			
+		}catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			result.setEccezione(new SocioSanitarioException(e));
 			result.setMessaggio(e.getMessage());
 		}
 		return result;
