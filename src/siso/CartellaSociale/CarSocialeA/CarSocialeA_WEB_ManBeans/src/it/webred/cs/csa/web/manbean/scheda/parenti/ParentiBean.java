@@ -6,6 +6,7 @@ import it.webred.cs.csa.ejb.dto.ComponenteDTO;
 import it.webred.cs.csa.ejb.dto.InfoRecapitiDTO;
 import it.webred.cs.csa.web.manbean.scheda.SchedaValiditaBaseBean;
 import it.webred.cs.data.DataModelCostanti;
+import it.webred.cs.data.DataModelCostanti.TipoRicercaSoggetto;
 import it.webred.cs.data.model.CsAAnagrafica;
 import it.webred.cs.data.model.CsAComponente;
 import it.webred.cs.data.model.CsAComponenteGit;
@@ -190,14 +191,12 @@ public class ParentiBean extends SchedaValiditaBaseBean implements IDatiValidita
 	public CsAComponente recuperaAnagraficaParenteTrovatoWrapper(DatiUserSearchBean sel) {
 		CsAComponente result = null;
 		String id = sel.getId();
-		if (id.trim().startsWith(DataModelCostanti.TipoRicercaSoggetto.ANAG_SANITARIA_UMBRIA)) 
-			result = recuperaAnagraficaDaAnagrafeEsterna(DataModelCostanti.TipoRicercaSoggetto.ANAG_SANITARIA_UMBRIA, id.replace(DataModelCostanti.TipoRicercaSoggetto.ANAG_SANITARIA_UMBRIA, ""), (PersonaDettaglio)sel.getSoggetto());
-		else if(id.trim().startsWith(DataModelCostanti.TipoRicercaSoggetto.ANAG_SANITARIA_MARCHE))
-			result = this.recuperaAnagraficaDaAnagrafeEsterna(DataModelCostanti.TipoRicercaSoggetto.ANAG_SANITARIA_MARCHE, id.replace(DataModelCostanti.TipoRicercaSoggetto.ANAG_SANITARIA_MARCHE, ""),(PersonaDettaglio)sel.getSoggetto());
-		else if(id.trim().startsWith(DataModelCostanti.TipoRicercaSoggetto.SIGESS)){
-			result = this.recuperaAnagraficaDaAnagrafeEsterna(DataModelCostanti.TipoRicercaSoggetto.SIGESS, id.replace(DataModelCostanti.TipoRicercaSoggetto.SIGESS, ""),(PersonaDettaglio)sel.getSoggetto());
-		}else
-			result = this.recuperaAnagraficaDaAnagrafeEsterna(DataModelCostanti.TipoRicercaSoggetto.DEFAULT, id.replace(DataModelCostanti.TipoRicercaSoggetto.DEFAULT, ""),(PersonaDettaglio)sel.getSoggetto());
+		for(String tipoRicerca : TipoRicercaSoggetto.LISTA_TIPI){
+			if(id.trim().startsWith(tipoRicerca)){
+				result = recuperaAnagraficaDaAnagrafeEsterna(tipoRicerca, id.replace(tipoRicerca, ""), (PersonaDettaglio)sel.getSoggetto());
+				break;
+			}
+		}
 		
 		UserSearchBeanExt fbean = (UserSearchBeanExt) getReferencedBean("userSearchBeanExt");
 		fbean.clearParameters();

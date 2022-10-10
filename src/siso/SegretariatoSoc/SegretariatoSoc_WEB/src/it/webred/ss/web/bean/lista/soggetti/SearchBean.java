@@ -175,6 +175,7 @@ public class SearchBean extends SegretariatoSocBaseBean{
 			if(isAnagrafeSigessAbilitata()) validaTipo = DataModelCostanti.TipoRicercaSoggetto.SIGESS;
 			else if (isAnagrafeSanitariaUmbriaAbilitata()) validaTipo = DataModelCostanti.TipoRicercaSoggetto.ANAG_SANITARIA_UMBRIA;
 			else if (this.isAnagrafeSanitariaMarcheAbilitata()) validaTipo = DataModelCostanti.TipoRicercaSoggetto.ANAG_SANITARIA_MARCHE;
+			else if (this.isAnagrafeValleSavioAbilitata()) validaTipo = DataModelCostanti.TipoRicercaSoggetto.ANAG_VALLE_SAVIO;
 
 			msg.addAll(params.validaAnnoNascita(validaTipo));
 			msg.addAll(params.validaCognome());					
@@ -249,6 +250,15 @@ public class SearchBean extends SegretariatoSocBaseBean{
 			}
 			
 			//FINE #ROMACAPITALE
+			
+			if(this.isAnagrafeValleSavioAbilitata() && !params.isRicercaAlias()){
+				List<Soggetto> lstAnagMarche = ricercaInAnagrafeEsterna(DataModelCostanti.TipoRicercaSoggetto.ANAG_VALLE_SAVIO);
+				for(Soggetto s : lstAnagMarche){
+					String key = s.getSoggettoKey();
+					if(!results.containsKey(key))
+						results.put(key, s);
+				}
+			}
 						
 			//RICERCO I SOGGETTI PRESENTI IN UDC - LI FILTRO IN SEGUITO IN BASE AI RISULTATI TROVATI NELLA BANCHE DATI AGGIORNATE
 			List<SsAnagrafica> schedeSegr = this.searchFromSchedaAnagrafica();
@@ -291,7 +301,7 @@ public class SearchBean extends SegretariatoSocBaseBean{
 			soggettiDataModel = new SoggettiTableDataModel(soggetti);
 		}
 	}
-		
+
 	private List<Soggetto> ricercaInAnagrafeEsterna(String tipoRicerca){
 		List<Soggetto> listAutocomplete = new ArrayList<Soggetto>();
 		

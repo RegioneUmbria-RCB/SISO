@@ -130,46 +130,46 @@
 							<p:spacer/>		
 							<p:spacer/>		
 							
-			<h:outputText value="Interlocutore *" for="interlocutore" />
-			<p:selectOneMenu label="Interlocutore" id="interlocutore" required="true" value="#{nuovaSchedaWizard.accesso.interlocutore}" effect="fold" editable="false">
-				<f:selectItem itemLabel="- seleziona -" noSelectionOption="true"/>
-				<f:selectItems value="#{nuovaSchedaWizard.interlocutori}" />
-				<p:ajax event="change"  process="@this" listener="#{nuovaSchedaWizard.interlocutoriChanged}" update="@(.updateInterlocutoriChanged)" />
-			</p:selectOneMenu> 
-			<p:spacer/>		
-			<p:outputPanel styleClass="#{'utenteAccompagnatoOk utentePresenteInformatoChanged'}">
-					<p:selectBooleanCheckbox  itemLabel="Utente accompagnato"
-					                          value="#{nuovaSchedaWizard.accesso.utenteAccompagnato}" 
-					                          rendered="#{nuovaSchedaWizard.utenteAccompagnatoRendered}" > 
-							<p:ajax event="change"  process="@this" listener="#{nuovaSchedaWizard.onChangeUtenteAccompagnato}"  update="@(.updateUtenteAccompagnatoChanged)" />
-		 			</p:selectBooleanCheckbox>	
-		 			<p:selectBooleanCheckbox  itemLabel="Utente presente o informato"  
-		 									  value="#{nuovaSchedaWizard.accesso.utentePresenteInformato}"
-											  rendered="#{nuovaSchedaWizard.utentePresenteInformatoRendered}" > 
-							<p:ajax event="change"  process="@this"   update="@(.updatePresenteChanged)" />
-		 			</p:selectBooleanCheckbox>
-				<h:outputText value=" " rendered="#{!nuovaSchedaWizard.utenteAccompagnatoRendered and !nuovaSchedaWizard.utentePresenteInformatoRendered}"/>
-			</p:outputPanel>
-
-		 	
-			<p:outputPanel styleClass="#{'utenteAccompagnatoOk utentePresenteInformatoChanged updateUtenteAccompagnatoChanged'}">
-				<h:outputText value="Accompagnatore" rendered="#{nuovaSchedaWizard.utenteAccompagnatoRendered}"  /> 
-				<h:outputText value=" " rendered="#{nuovaSchedaWizard.utentePresenteInformatoRendered}"/>
-				<h:outputText value=" " rendered="#{!nuovaSchedaWizard.utenteAccompagnatoRendered and !nuovaSchedaWizard.utentePresenteInformatoRendered}"/>
-			</p:outputPanel>
-			
-			
-			<p:outputPanel styleClass="#{'utenteAccompagnatoOk utentePresenteInformatoChanged updateUtenteAccompagnatoChanged'}">
-					<p:inputText  id="inpTextAccompagnatore" value="#{nuovaSchedaWizard.accesso.accompagnatore}"   
-						rendered="#{nuovaSchedaWizard.utenteAccompagnatoRendered}" 
-						disabled="#{nuovaSchedaWizard.utenteAccompagnatoreDisabled}"
-						styleClass="#{'updateUtenteAccompagnatoChanged'}" /> 
-					<h:outputText value=" " rendered="#{nuovaSchedaWizard.utentePresenteInformatoRendered}"/>	
-					<h:outputText value=" " rendered="#{!nuovaSchedaWizard.utenteAccompagnatoRendered and !nuovaSchedaWizard.utentePresenteInformatoRendered}"/>
-			</p:outputPanel>
-								 
-							 
-<!-- riga motivo accesso interlocutore -->
+							<h:outputText value="Interlocutore *" for="interlocutore" />
+							<p:selectOneMenu label="Interlocutore" id="interlocutore" required="true" value="#{nuovaSchedaWizard.accesso.interlocutore}" effect="fold" editable="false">
+								<f:selectItem itemLabel="- seleziona -" noSelectionOption="true"/>
+								<f:selectItems value="#{nuovaSchedaWizard.interlocutori}" />
+								<p:ajax event="change"  process="@this" listener="#{nuovaSchedaWizard.interlocutoriChanged}" update="@(.updateInterlocutoriChanged)" />
+							</p:selectOneMenu> 
+							<p:spacer/>		
+							<p:outputPanel styleClass="#{'utenteAccompagnatoOk utentePresenteInformatoChanged'}">
+									<p:selectBooleanCheckbox  itemLabel="Utente accompagnato"
+									                          value="#{nuovaSchedaWizard.accesso.utenteAccompagnato}" 
+									                          rendered="#{nuovaSchedaWizard.utenteAccompagnatoRendered}" > 
+											<p:ajax event="change"  process="@this" listener="#{nuovaSchedaWizard.onChangeUtenteAccompagnato}"  update="@(.updateUtenteAccompagnatoChanged)" />
+						 			</p:selectBooleanCheckbox>	
+						 			<p:selectBooleanCheckbox  itemLabel="Utente presente o informato"  
+						 									  value="#{nuovaSchedaWizard.accesso.utentePresenteInformato}"
+															  rendered="#{nuovaSchedaWizard.utentePresenteInformatoRendered}" > 
+											<p:ajax event="change"  process="@this"   update="@(.updatePresenteChanged)" />
+						 			</p:selectBooleanCheckbox>
+								<h:outputText value=" " rendered="#{!nuovaSchedaWizard.utenteAccompagnatoRendered and !nuovaSchedaWizard.utentePresenteInformatoRendered}"/>
+							</p:outputPanel>
+				
+						 	
+							<p:outputPanel styleClass="#{'utenteAccompagnatoOk utentePresenteInformatoChanged updateUtenteAccompagnatoChanged'}">
+								<h:outputText value="Accompagnatore" rendered="#{nuovaSchedaWizard.utenteAccompagnatoRendered}"  /> 
+								<h:outputText value=" " rendered="#{nuovaSchedaWizard.utentePresenteInformatoRendered}"/>
+								<h:outputText value=" " rendered="#{!nuovaSchedaWizard.utenteAccompagnatoRendered and !nuovaSchedaWizard.utentePresenteInformatoRendered}"/>
+							</p:outputPanel>
+							
+							
+							<p:outputPanel styleClass="#{'utenteAccompagnatoOk utentePresenteInformatoChanged updateUtenteAccompagnatoChanged'}">
+									<p:inputText  id="inpTextAccompagnatore" value="#{nuovaSchedaWizard.accesso.accompagnatore}"   
+										rendered="#{nuovaSchedaWizard.utenteAccompagnatoRendered}" 
+										disabled="#{nuovaSchedaWizard.utenteAccompagnatoreDisabled}"
+										styleClass="#{'updateUtenteAccompagnatoChanged'}" /> 
+									<h:outputText value=" " rendered="#{nuovaSchedaWizard.utentePresenteInformatoRendered}"/>	
+									<h:outputText value=" " rendered="#{!nuovaSchedaWizard.utenteAccompagnatoRendered and !nuovaSchedaWizard.utentePresenteInformatoRendered}"/>
+							</p:outputPanel>
+												 
+											 
+							<!-- riga motivo accesso interlocutore -->
 							<h:outputText value="Motivo accesso Interlocutore *" for="motivo_accesso" />
 							<p:selectOneMenu label="Motivo Accesso" id="motivo_accesso" required="true" 
 											 value="#{nuovaSchedaWizard.accesso.motivo}" effect="fold" editable="false">
@@ -178,23 +178,22 @@
 								<p:ajax event="change" update="@(.updateOnMotivoAccessoChanged)" process="@this" 
 										listener="#{nuovaSchedaWizard.motivoAccessoChanged}"/>
 							</p:selectOneMenu>
-
+				
 							<p:outputPanel styleClass=" #{'updateOnMotivoAccessoChanged'}">
-								 <h:outputText value="scegli inviante"   rendered="#{nuovaSchedaWizard.invianteRendered}"   />
-								 <h:outputText value=" "  rendered="#{!nuovaSchedaWizard.invianteRendered}" />
+								 <h:outputText value="#{nuovaSchedaWizard.invianteRendered ? 'scegli inviante' : ''}"  />
 							</p:outputPanel>
 							
-
 							<p:outputPanel styleClass=" #{'updateOnMotivoAccessoChanged'}">						
-								<p:selectOneMenu 	label="Inviato da" id="inviante_segnalante" value="#{nuovaSchedaWizard.accesso.inviante}" 
+								<p:selectOneMenu 	label="scegli inviante" id="inviante_segnalante" value="#{nuovaSchedaWizard.accesso.inviante}" 
 													effect="fold" editable="false"
-													rendered="#{nuovaSchedaWizard.invianteRendered}" >
+													rendered="#{nuovaSchedaWizard.invianteRendered}"
+													required="true" >
 									<f:selectItem itemLabel="- seleziona -" noSelectionOption="true" />
 									<f:selectItems value="#{nuovaSchedaWizard.inviatiDa}" />
 								</p:selectOneMenu>
 								<h:outputText value=" " rendered="#{!nuovaSchedaWizard.invianteRendered}"/>
 							</p:outputPanel>
-	
+				
 							
 							<p:outputPanel styleClass=" #{'updateOnMotivoAccessoChanged'}"> 
 								<h:outputText value="#{nuovaSchedaWizard.specificareMotivoLabel} " for="specificare_motivo" />
@@ -205,7 +204,7 @@
 								             value="#{nuovaSchedaWizard.accesso.motivoDesc}" maxlength="50"
 											  required="#{nuovaSchedaWizard.motivoRequired}"/>
 							</p:outputPanel>
-					<!-- SISO -->		
+									<!-- SISO -->		
 							
 							
 							

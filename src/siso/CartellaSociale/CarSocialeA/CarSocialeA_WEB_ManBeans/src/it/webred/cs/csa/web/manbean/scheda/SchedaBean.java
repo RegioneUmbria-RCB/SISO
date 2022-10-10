@@ -291,10 +291,10 @@ public class SchedaBean extends CsUiCompBaseBean {
     		String codFiscale = !StringUtils.isBlank(idSearch) &&  idSearch.startsWith("@") ? idSearch.replace("@","") : null;
     		
     		PersonaDettaglio p = pIn;
-    		if(!DataModelCostanti.TipoRicercaSoggetto.DEFAULT.equals(tipoRicerca)){
+    		if(!TipoRicercaSoggetto.DEFAULT.equals(tipoRicerca)){
 				if(!StringUtils.isBlank(id)) 
 					p = getPersonaDaAnagEsterna(tipoRicerca, id);
-				else if(!DataModelCostanti.TipoRicercaSoggetto.ANAG_SANITARIA_MARCHE.equals(tipoRicerca))
+				else if(!TipoRicercaSoggetto.ANAG_SANITARIA_MARCHE.equals(tipoRicerca))
 					p = CsUiCompBaseBean.getPersonaDaAnagEsterna(tipoRicerca, null, null, codFiscale);
     		}
 
@@ -425,14 +425,12 @@ public class SchedaBean extends CsUiCompBaseBean {
 	public void nuovaDaAnagrafeWrapper(DatiUserSearchBean sel) {
 		String id = sel!=null ? sel.getId() : null;
 		if (id != null) {
-			if (id.trim().startsWith(DataModelCostanti.TipoRicercaSoggetto.ANAG_SANITARIA_UMBRIA))
-				nuovaDaAnagrafeEsterna(DataModelCostanti.TipoRicercaSoggetto.ANAG_SANITARIA_UMBRIA, id.replace(DataModelCostanti.TipoRicercaSoggetto.ANAG_SANITARIA_UMBRIA, ""), (PersonaDettaglio)sel.getSoggetto() );
-			else if(id.trim().startsWith(DataModelCostanti.TipoRicercaSoggetto.ANAG_SANITARIA_MARCHE))
-				nuovaDaAnagrafeEsterna(DataModelCostanti.TipoRicercaSoggetto.ANAG_SANITARIA_MARCHE, id.replace(DataModelCostanti.TipoRicercaSoggetto.ANAG_SANITARIA_MARCHE, ""), (PersonaDettaglio)sel.getSoggetto());
-			else if(id.trim().startsWith(DataModelCostanti.TipoRicercaSoggetto.SIGESS))
-				nuovaDaAnagrafeEsterna(DataModelCostanti.TipoRicercaSoggetto.SIGESS, id.replace(DataModelCostanti.TipoRicercaSoggetto.SIGESS, ""), (PersonaDettaglio)sel.getSoggetto());
-			else
-				nuovaDaAnagrafeEsterna(DataModelCostanti.TipoRicercaSoggetto.DEFAULT, id.replace(DataModelCostanti.TipoRicercaSoggetto.DEFAULT, ""), (PersonaDettaglio)sel.getSoggetto());
+			for(String tipoRicerca : DataModelCostanti.TipoRicercaSoggetto.LISTA_TIPI){
+				if (id.trim().startsWith(tipoRicerca)) {
+					nuovaDaAnagrafeEsterna(tipoRicerca, id.replace(tipoRicerca, ""), (PersonaDettaglio)sel.getSoggetto());
+					break;
+				}
+			}
 		} else {
 			this.addWarning("Attenzione","Selezionare un soggetto per poter creare una nuova cartella");
 		}

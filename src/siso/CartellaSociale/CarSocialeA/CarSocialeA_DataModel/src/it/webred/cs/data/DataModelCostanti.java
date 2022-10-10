@@ -1,6 +1,7 @@
 package it.webred.cs.data;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.regex.Pattern;
@@ -957,11 +958,15 @@ public class DataModelCostanti {
 	}	
 	public static class TipoRicercaSoggetto implements Serializable{
 		public static String ANAG_SANITARIA_PREFIX = "ANASAN"; 
-		public static String SIGESS = "SIGESS";
 		public static String ANAG_RILEVAZIONE_PRESENZE = "ANA_RP";
+		
 		public static String ANAG_SANITARIA_UMBRIA = ANAG_SANITARIA_PREFIX+"_UMBRIA";
 		public static String ANAG_SANITARIA_MARCHE = ANAG_SANITARIA_PREFIX+"_MARCHE";
+		public static String ANAG_VALLE_SAVIO = "VALLE_SAVIO";
+		public static String SIGESS = "SIGESS";
 		public static String DEFAULT = "DIOGENE";
+		
+		public static String[] LISTA_TIPI = {ANAG_SANITARIA_UMBRIA, ANAG_SANITARIA_MARCHE, ANAG_VALLE_SAVIO, SIGESS, DEFAULT};
 		
 		public static String CF = "CF";
 		public static String DATI_ANAGRAFICI="ANAG";

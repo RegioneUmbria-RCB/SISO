@@ -1035,6 +1035,10 @@ public class CsUiCompBaseBean {
 		return isAnagrafeAbilitata(DataModelCostanti.TipoRicercaSoggetto.ANAG_SANITARIA_MARCHE);
 	}
 	
+	public static boolean isAnagrafeValleSavioAbilitata(){
+		return isAnagrafeAbilitata(DataModelCostanti.TipoRicercaSoggetto.ANAG_VALLE_SAVIO);
+	}
+	
 	public static boolean isAnagrafeSigessAbilitata(){
 		return isAnagrafeAbilitata(DataModelCostanti.TipoRicercaSoggetto.SIGESS);
 	}

@@ -18,6 +18,7 @@ import it.webred.cs.data.DataModelCostanti.ListaBeneficiari;
 import it.webred.cs.data.DataModelCostanti.TariffeErogazioni.TIPO_FREQUENZA_SERVIZIO;
 import it.webred.cs.data.DataModelCostanti.TariffeErogazioni.TIPO_FREQUENZA_SERVIZIO_CADENZA;
 import it.webred.cs.data.DataModelCostanti.TariffeErogazioni.TIPO_RENDICONTO;
+import it.webred.cs.data.DataModelCostanti.TipoRicercaSoggetto;
 import it.webred.cs.data.DataModelCostanti.TipoStatoErogazione;
 import it.webred.cs.data.model.ArRelClassememoPresInps;
 import it.webred.cs.data.model.ArTbPrestazioniInps;
@@ -2243,11 +2244,13 @@ public class ErogazioneInterventoBean extends CsUiCompBaseBean implements Serial
 		SoggettoErogazioneBean sero = null;
 		if(s!=null){
 			
-			boolean anaSearch = 
-					s.getId().trim().startsWith(DataModelCostanti.TipoRicercaSoggetto.DEFAULT) ||
-					s.getId().trim().startsWith(DataModelCostanti.TipoRicercaSoggetto.ANAG_SANITARIA_UMBRIA) ||
-					s.getId().trim().startsWith(DataModelCostanti.TipoRicercaSoggetto.ANAG_SANITARIA_MARCHE) ||
-					s.getId().trim().startsWith(DataModelCostanti.TipoRicercaSoggetto.SIGESS);
+			boolean anaSearch = false;
+			for(String tipoRicerca : TipoRicercaSoggetto.LISTA_TIPI){
+				if(s.getId().trim().startsWith(tipoRicerca)){
+					anaSearch = true;
+					break;
+				}
+			}
 			
 			if(anaSearch){
 				PersonaDettaglio p = (PersonaDettaglio)s.getSoggetto();

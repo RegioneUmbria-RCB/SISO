@@ -1042,6 +1042,10 @@ public class SegretariatoSocBaseBean {
 		return CsUiCompBaseBean.isAnagrafeSigessAbilitata();
 	}
 	
+	protected boolean isAnagrafeValleSavioAbilitata(){
+		return CsUiCompBaseBean.isAnagrafeValleSavioAbilitata();
+	}
+	
 	protected boolean isAnagrafeComunaleInternaAbilitata(){
 		return CsUiCompBaseBean.isAnagrafeComunaleInternaAbilitata();
 	}

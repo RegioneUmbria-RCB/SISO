@@ -106,7 +106,7 @@ public class Accesso {
 		accessoModel.setUtentePresenteInformato(!isUtente ? this.utentePresenteInformato : null);
 				
 
-		accessoModel.setInviatoDa(inviante);	
+		accessoModel.setInviatoDa(inviante!=null && inviante>0 ? inviante : null);	
 		if (accessoModel.getUtenteAccompagnato()!=null && accessoModel.getUtenteAccompagnato()==true) {
 			accessoModel.setAccompagnatore(accompagnatore);	 
 		}
