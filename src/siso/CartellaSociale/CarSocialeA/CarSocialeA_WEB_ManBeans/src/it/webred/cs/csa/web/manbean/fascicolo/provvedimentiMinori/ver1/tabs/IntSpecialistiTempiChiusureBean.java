@@ -16,6 +16,8 @@ public class IntSpecialistiTempiChiusureBean extends JsonBaseBean{
 	private boolean consultorio;
 	private boolean privatiIndDecreto;
 	private boolean ctu;
+	private boolean psichiatria;
+	private boolean ussm;
 	private boolean altro;
 	private String altroDescrizione;
 
@@ -225,4 +227,21 @@ public class IntSpecialistiTempiChiusureBean extends JsonBaseBean{
 	public void setConsultorio(boolean consultorio) {
 		this.consultorio = consultorio;
 	}
+
+	public boolean isPsichiatria() {
+		return psichiatria;
+	}
+
+	public void setPsichiatria(boolean psichiatria) {
+		this.psichiatria = psichiatria;
+	}
+
+	public boolean isUssm() {
+		return ussm;
+	}
+
+	public void setUssm(boolean ussm) {
+		this.ussm = ussm;
+	}
+	
 }

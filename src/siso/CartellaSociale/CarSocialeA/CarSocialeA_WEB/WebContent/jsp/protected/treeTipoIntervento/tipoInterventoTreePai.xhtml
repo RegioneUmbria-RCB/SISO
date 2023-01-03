@@ -69,8 +69,9 @@
             <center>
               <h:panelGrid columns="2" id="Bottoni"> 
                 <p:commandButton id="btmConferma" value="Conferma" oncomplete="PF('dlgTipoIntervento_#{id}').hide();"
-                  update=":#{p:component(id)}, :#{p:component('interventoTree')}" process="@this" action="#{tipoIntTreeView.EsciAction}" />
-                <p:commandButton id="btmCustomBtm" value="Esci" oncomplete="PF('dlgTipoIntervento_#{id}').hide();" process="@this"/>
+                  process="@this" action="#{tipoIntTreeView.EsciAction}" update=":#{p:component(id)}, :#{p:component('panelTree')}" />
+                <p:commandButton id="btmCustomBtm" value="Esci" oncomplete="PF('dlgTipoIntervento_#{id}').hide();" 
+                	process="@this" action="#{tipoIntTreeView.reset}" update=":#{p:component(id)}, :#{p:component('panelTree')}"/>
               </h:panelGrid>
             </center>
           </td>

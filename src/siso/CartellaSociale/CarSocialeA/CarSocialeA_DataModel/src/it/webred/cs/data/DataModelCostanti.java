@@ -1041,6 +1041,10 @@ public class DataModelCostanti {
 		public static String GESTIONE_CAPOFILA_PIC = "smartwelfare.udc.gestionePicCapofila.abilita";
 		public static String DOC_INDIVIDUALI_PROTOCOLLO_VIS = "smartwelfare.docIndividuali.colonnaProtocollo.visibile";
 		
+		public static String LINK_APP_ESTERNA_URL =   "smartwelfare.appCartellaEsternaSoggetto.url";
+		public static String LINK_APP_ESTERNA_LABEL = "smartwelfare.appCartellaEsternaSoggetto.label";
+		public static String LINK_APP_ESTERNA_TOKEN = "smartwelfare.appCartellaEsternaSoggetto.token";
+		
 	/*	public static String KEY_AUTHENTICATION = "smartwelfare.umbria.api.authentication";
 		public static String KEY_URL_TOKEN = "smartwelfare.umbria.api.token.url";
 		public static String KEY_URL_SSOCIALI = "smartwelfare.umbria.api.serviziSociali.url";

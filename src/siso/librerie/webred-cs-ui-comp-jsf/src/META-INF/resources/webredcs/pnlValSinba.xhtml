@@ -41,7 +41,7 @@
 						
 							<p:panelGrid cellpadding="10" width="100%" styleClass="tableNoBg" columns="4">
 								<h:panelGroup>
-									<h:outputText value="Data di inserimento della valutazione: *" style="font-weight: bold;" />
+									<h:outputText value="Data di inserimento della valutazione *" />
 									<p:inputText id="iTxtHidden" style="visibility:hidden;" />	
 								</h:panelGroup>
 								<p:calendar value="#{cc.attrs.sinbaManBean.jsonCurrent.datiGenerali.dataRiferimentoValutazione}" pattern="dd/MM/yyyy" size="10"
@@ -49,11 +49,11 @@
 							          <p:ajax  event="dateSelect" process="@this" listener="#{cc.attrs.sinbaManBean.initCalendar}" update="@this :#{p:component('dtPrestazioni')}  :#{p:component('panelSegnalazioni')}  :#{p:component('affidamentoPAI')} :#{p:component('affidamentoForma')} :#{p:component('affidamentoCarattere')}"/>
 							          <f:ajax  event="change" process="@this" listener="#{cc.attrs.sinbaManBean.initCalendar}" update="@this :#{p:component('dtPrestazioni')} :#{p:component('panelSegnalazioni')}  :#{p:component('affidamentoPAI')} :#{p:component('affidamentoForma')} :#{p:component('affidamentoCarattere')}" />
 							     </p:calendar>
-								<h:outputText value="Codice anonimo beneficiario: *" style="font-weight: bold;" />
+								<h:outputText value="Codice anonimo beneficiario *"/>
 								<p:inputText id="codBeneficiarioaVal" disabled="true"
 									required="false"
 									value="#{cc.attrs.sinbaManBean.jsonCurrent.datiGenerali.codiceAnonimoBeneficiario}" />
-								<h:outputText value="Anno di nascita: *" style="font-weight: bold;" />
+								<h:outputText value="Anno di nascita *"/>
 								<p:inputText id="annoNascitaVal" disabled="true"
 									required="false"
 									value="#{cc.attrs.sinbaManBean.jsonCurrent.datiGenerali.annoNascita}" />
@@ -64,8 +64,8 @@
 <!-- 									<f:selectItems value="#{cc.attrs.sinbaManBean.datiGen.lstAnni}" /> -->
 <!-- 								</p:selectOneMenu> -->
 								
-								<h:outputText value="Nazione di residenza del beneficiario: *" style="font-weight: bold;" />
-								<p:selectOneMenu id="nazioneVal" required="false"
+								<h:outputText value="Nazione di residenza del beneficiario *"   />
+								<p:selectOneMenu id="nazioneVal" required="false" filter="true" filterMatchMode="contains"
 									value="#{cc.attrs.sinbaManBean.jsonCurrent.datiGenerali.nazioneResidenzaBeneficiario}"
 									style="width:200px">
 									<f:selectItem noSelectionOption="true" itemLabel="- seleziona -" />
@@ -75,8 +75,7 @@
 										itemValue="#{nazione.iso3166}" />
 								</p:selectOneMenu>
 								
-								<h:outputText value="Scuola frequentata: *"
-									style="font-weight: bold;" />
+								<h:outputText value="Scuola frequentata *"/>
 								<p:selectOneMenu id="scuolaVal" required="false"
 									value="#{cc.attrs.sinbaManBean.jsonCurrent.datiGenerali.scuolaFrequentata}"
 									style="width:200px">
@@ -91,8 +90,7 @@
 									<f:selectItem itemLabel="Corso formazione professionale" itemValue="8" />
 								</p:selectOneMenu>
 								
-								<h:outputText value="Condizione lavoro: *"
-									style="font-weight: bold;" />
+								<h:outputText value="Condizione lavoro *"/>
 								<p:selectOneMenu id="condizioneLavoroVal" required="false"
 									value="#{cc.attrs.sinbaManBean.jsonCurrent.datiGenerali.condizioneLavoro}" style="width:200px">
 									<f:selectItem noSelectionOption="true" itemLabel="- seleziona -" />
@@ -116,7 +114,7 @@
 								style="font-weight: bold;background-color: red;color: white" />
 							<p:panelGrid cellpadding="10" width="100%" styleClass="tableNoBg" columns="4">
 								 
-									<h:outputText value="Numero componenti ISEE" style="font-weight: bold;" />
+									<h:outputText value="Numero componenti ISEE"   />
 									<p:selectOneMenu id="componentiIseeVal"
 										value="#{cc.attrs.sinbaManBean.jsonCurrent.datiGenerali.numeroComponentiISEE}"
 										style="width:200px">
@@ -133,8 +131,7 @@
 										<f:selectItem itemLabel="9" itemValue="9" />
 									</p:selectOneMenu>
 									 
-									<h:outputText value="Fascia di età del beneficiario"
-										style="font-weight: bold;" />
+									<h:outputText value="Fascia di età del beneficiario"/>
 									<p:selectOneMenu id="fasciaEtaVal"
 										value="#{cc.attrs.sinbaManBean.jsonCurrent.datiGenerali.fasciaEtaBeneficiario}"
 										style="width:200px">
@@ -147,7 +144,7 @@
 										<f:selectItem itemLabel="15-18 anni" itemValue="6" />
 									</p:selectOneMenu>
 									 
-									<h:outputText value="Fascia ISEE del beneficiario" style="font-weight: bold;" />
+									<h:outputText value="Fascia ISEE del beneficiario"   />
 									<p:selectOneMenu id="fasciaIseeVal"
 										value="#{cc.attrs.sinbaManBean.jsonCurrent.datiGenerali.fasciaISEEBeneficiario}"
 										style="width:200px">
@@ -179,7 +176,7 @@
 		<!-- 									styleClass="tableNoBg" columns="2"> -->
 		<!-- 									<p:outputPanel> -->
 		<!-- 										<h:outputText value="Codice della Prestazione: *" -->
-		<!-- 											style="font-weight: bold;" /> -->
+		<!-- 											  /> -->
 		<!-- 										<p:selectOneMenu id="codicePrestazioneVal" -->
 		<!-- 											value="#{cc.attrs.sinbaManBean.jsonCurrent.datiGenerali.codicePrestazione}" -->
 		<!-- 											style="width:200px; display:block;" -->
@@ -235,7 +232,7 @@
 						<p:outputPanel>
 							<p:panelGrid cellpadding="10" width="100%" styleClass="tableNoBg" columns="4">
 								
-									<h:outputText value="Condizione Minore: *" style="font-weight: bold;" />
+									<h:outputText value="Condizione Minore *"   />
 									<p:selectOneMenu id="condizioneMinoreVal" required="false"
 										value="#{cc.attrs.sinbaManBean.jsonCurrent.datiFamiglia.condizioneMinore}"
 										style="width:200px">
@@ -247,15 +244,15 @@
 										<f:selectItem itemLabel="Genitori ignoti" itemValue="5" />
 									</p:selectOneMenu>
 									
-									<h:outputText value="Minore Straniero Accompagnato: *" style="font-weight: bold;" />
+									<h:outputText value="Minore straniero non accompagnato *"   />
 									<p:selectOneButton id="minStranieroAccVal" required="false"
-										value="#{cc.attrs.sinbaManBean.jsonCurrent.datiFamiglia.minoreStranieroAccompagnato}"
+										value="#{cc.attrs.sinbaManBean.jsonCurrent.datiFamiglia.minoreStranieroNonAccompagnato}"
 										style="width:200px">
 										<f:selectItem itemLabel="SI" itemValue="1" />
 										<f:selectItem itemLabel="NO" itemValue="2" />
 									</p:selectOneButton>
 									
-									<h:outputText value="Luogo di vita: *" style="font-weight: bold;" />
+									<h:outputText value="Luogo di vita *"   />
 									<p:selectOneMenu id="luogoVitaVal" required="false"
 										value="#{cc.attrs.sinbaManBean.jsonCurrent.datiFamiglia.luogoVita}"
 										style="width:200px">
@@ -270,8 +267,8 @@
 										<f:selectItem itemLabel="Senza dimora" itemValue="8" />
 									</p:selectOneMenu>
 									
-									<h:outputText value="Nazione di residenza: *" style="font-weight: bold;" />
-									<p:selectOneMenu id="nazioneRedidenzaVal" required="false"
+									<h:outputText value="Nazione di residenza *"   />
+									<p:selectOneMenu id="nazioneRedidenzaVal" required="false" filter="true" filterMatchMode="contains"
 										value="#{cc.attrs.sinbaManBean.jsonCurrent.datiFamiglia.nazioneResidenza}"
 										style="width:200px">
 										<f:selectItem noSelectionOption="true" itemLabel="- seleziona -" />
@@ -280,7 +277,7 @@
 											itemValue="#{nazione.iso3166}" />
 									</p:selectOneMenu>
 								
-									<h:outputText value="Regione: *" style="font-weight: bold;" />
+									<h:outputText value="Regione *"   />
 									<p:selectOneMenu id="regioneVal" required="false"
 										value="#{cc.attrs.sinbaManBean.jsonCurrent.datiFamiglia.regione}" style="width:200px">
 										<f:selectItem noSelectionOption="true" itemLabel="- seleziona -" />
@@ -291,7 +288,7 @@
 							
 								<p:fieldset id="panelFamiglia" legend="Dati relativi alla composizione familiare">
 									<p:panelGrid id="panelComboFamiglia" cellpadding="10" width="100%" styleClass="tableNoBg" columns="4">
-											<h:outputText value="Composizione Famiglia: *" style="font-weight: bold;" />
+											<h:outputText value="Composizione Famiglia *"   />
 											<p:selectOneMenu id="composizioneFamigliaVal" required="false"
 												value="#{cc.attrs.sinbaManBean.jsonCurrent.datiFamiglia.composizioneFamiglia}"
 												style="width:200px">
@@ -300,9 +297,8 @@
 												<p:ajax event="change" update="panelFamiglia"/>
 											</p:selectOneMenu>
 										
-											<h:outputText value="Cittadinanza: #{cc.attrs.sinbaManBean.jsonCurrent.datiFamiglia.genitoreSelected ? '*' : ''}" 
-														  style="font-weight: bold;" />
-											<p:selectOneMenu id="cittadinanzaVal" required="false"
+											<h:outputText value="Cittadinanza #{cc.attrs.sinbaManBean.jsonCurrent.datiFamiglia.genitoreSelected ? '*' : ''}" />
+											<p:selectOneMenu id="cittadinanzaVal" required="false" filter="true" filterMatchMode="contains"
 												value="#{cc.attrs.sinbaManBean.jsonCurrent.datiFamiglia.cittadinanza}" style="width:200px">
 												<f:selectItem noSelectionOption="true" itemLabel="- seleziona -" />
 												<f:selectItems value="#{cc.attrs.sinbaManBean.datiFam.lstCittadinanza}"
@@ -311,8 +307,7 @@
 													itemValue="#{nazione.iso3166}-#{nazione.nazione}" />
 											</p:selectOneMenu>
 										
-											<h:outputText value="Regione: #{cc.attrs.sinbaManBean.jsonCurrent.datiFamiglia.genitoreSelected ? '*' : ''}" 
-														  style="font-weight: bold;" />
+											<h:outputText value="Regione #{cc.attrs.sinbaManBean.jsonCurrent.datiFamiglia.genitoreSelected ? '*' : ''}" />
 											<p:selectOneMenu id="regioneFamVal" required="false"
 												value="#{cc.attrs.sinbaManBean.jsonCurrent.datiFamiglia.regioneFam}"
 												style="width:200px">
@@ -320,8 +315,7 @@
 												<f:selectItems value="#{cc.attrs.sinbaManBean.datiFam.lstRegioni}"/>
 											</p:selectOneMenu>
 										
-											<h:outputText value="Titolo di studio: #{cc.attrs.sinbaManBean.jsonCurrent.datiFamiglia.genitoreSelected ? '*' : ''}" 
-														  style="font-weight: bold;" />
+											<h:outputText value="Titolo di studio #{cc.attrs.sinbaManBean.jsonCurrent.datiFamiglia.genitoreSelected ? '*' : ''}" />
 											<p:selectOneMenu id="titStudioVal" required="false"
 												value="#{cc.attrs.sinbaManBean.jsonCurrent.datiFamiglia.titoloStudio}"
 												style="width:200px">
@@ -329,7 +323,7 @@
 												<f:selectItems value="#{cc.attrs.sinbaManBean.datiFam.lstTitoliStudio}" />
 											</p:selectOneMenu>
 										
-											<h:outputText value="Occupazione: #{cc.attrs.sinbaManBean.jsonCurrent.datiFamiglia.genitoreSelected ? '*' : ''}" style="font-weight: bold;" />
+											<h:outputText value="Occupazione #{cc.attrs.sinbaManBean.jsonCurrent.datiFamiglia.genitoreSelected ? '*' : ''}"/>
 											<p:selectOneMenu id="occupazioneVal" required="false"
 												value="#{cc.attrs.sinbaManBean.jsonCurrent.datiFamiglia.occupazione}"
 												style="width:200px">
@@ -345,7 +339,9 @@
 									</p:panelGrid>
 		
 									<p:outputPanel id="dtFamigliariGrid" width="100%">
-										<p:dataTable id="dtFamigliari" var="componente" value="#{cc.attrs.sinbaManBean.jsonCurrent.datiFamiglia.lstComponentiFamiglia}">
+										<p:dataTable id="dtFamigliari" var="componente" 
+													 value="#{cc.attrs.sinbaManBean.jsonCurrent.datiFamiglia.lstComponentiFamiglia}"
+													 emptyMessage="Dati non presenti">
 											<p:column headerText="Composizione Famiglia">
 												<h:outputText value="#{componente.tipo}" />
 											</p:column>
@@ -380,14 +376,14 @@
 						<p:outputPanel>
 							<p:panelGrid cellpadding="10" width="100%" styleClass="tableNoBg" columns="2">
 								
-								<h:outputText value="Disabile: *" style="font-weight: bold;" />
+								<h:outputText value="Disabile *" />
 								<p:selectOneButton id="disabileaVal" required="false"
 									value="#{cc.attrs.sinbaManBean.jsonCurrent.datiDisabilita.disabile}" style="width:200px">
 									<f:selectItem itemLabel="SI" itemValue="1" />
 									<f:selectItem itemLabel="NO" itemValue="2" />
 								</p:selectOneButton>
 	
-								<h:outputText value="Tipo disabilità: " style="font-weight: bold;" />
+								<h:outputText value="Tipo disabilità "  />
 								<p:selectOneMenu id="tipoDisabilitaVal" required="false"
 									value="#{cc.attrs.sinbaManBean.jsonCurrent.datiDisabilita.tipoDisabilita}"
 									style="width:200px">
@@ -398,7 +394,7 @@
 									<f:selectItem itemLabel="Plurima" itemValue="4" />
 								</p:selectOneMenu>
 	
-								<h:outputText value="Certificazione invalidità Civile: " style="font-weight: bold;" />
+								<h:outputText value="Certificazione invalidità Civile "   />
 								<p:selectOneMenu id="certInvaliditaCivileVal" required="false"
 									value="#{cc.attrs.sinbaManBean.jsonCurrent.datiDisabilita.certificazioneInvCivile}"
 									style="width:200px">
@@ -427,7 +423,7 @@
 						<p:outputPanel id="panelSegnalazioni">
 							<p:panelGrid  cellpadding="10" width="100%" styleClass="tableNoBg" columns="4">
 							
-									<h:outputText value="Fonte della segnalazione: *" style="font-weight: bold;" />
+									<h:outputText value="Fonte della segnalazione *"   />
 									<p:selectOneMenu id="fonteSegnalazioneVal" required="false"
 										value="#{cc.attrs.sinbaManBean.jsonCurrent.datiSegnalazioni.fonte}"
 										style="width:200px">
@@ -459,24 +455,21 @@
 										<f:selectItem itemLabel="Vicinato o conoscenti" itemValue="14" />
 									</p:selectOneMenu>
 									
-									<h:outputText value="Data segnalazione: *"
-										style="font-weight: bold;" />
+									<h:outputText value="Data segnalazione *"/>
 									<!-- formato voluto da INPS in export "MM/yyyy" dataPatternLabel="mm/aaaa" -->
 									<webred:pnlData dataReq="false"
 										dataValue="#{cc.attrs.sinbaManBean.jsonCurrent.datiSegnalazioni.dataSegnalazione}"
 										dataReqMes="Immettere una data" dataPattern="dd/MM/yyyy"
 										dataPatternLabel="gg/mm/aaaa" />
 									
-									<h:outputText value="Segnalazione autorità giudiziaria: *"
-										style="font-weight: bold;" />
+									<h:outputText value="Segnalazione autorità giudiziaria *"/>
 									<p:selectOneButton id="segnAutoritaGuidVal" required="false"
 										value="#{cc.attrs.sinbaManBean.jsonCurrent.datiSegnalazioni.autoritaGiudiziaria}">
 										<f:selectItem itemLabel="SI" itemValue="1" />
 										<f:selectItem itemLabel="NO" itemValue="2" />
 									</p:selectOneButton>
 		
-									<h:outputText value="Provvedimento giudiziario: *"
-										style="font-weight: bold;" />
+									<h:outputText value="Provvedimento giudiziario *"/>
 									<p:selectOneButton id="provvGiudVal" required="false"
 										value="#{cc.attrs.sinbaManBean.jsonCurrent.datiSegnalazioni.provvedimentoGiudiziario}">
 										<f:selectItem itemLabel="SI" itemValue="1" />
@@ -484,7 +477,7 @@
 									</p:selectOneButton>
 		
 		
-									<h:outputText value="Valutazione del minore: *" style="font-weight: bold;" />
+									<h:outputText value="Valutazione del minore *"   />
 									<p:selectOneMenu id="valutazioneMinoreVal" required="false"
 										value="#{cc.attrs.sinbaManBean.jsonCurrent.datiSegnalazioni.valutazioneMinore}"
 										style="width:200px">
@@ -516,7 +509,7 @@
 										<f:selectItem itemLabel="Abbandono scolastico" itemValue="13" />
 									</p:selectOneMenu>
 		
-									<h:outputText value="Valutazione famiglia del minore: *" style="font-weight: bold;" />
+									<h:outputText value="Valutazione famiglia del minore *"   />
 									<p:selectOneMenu id="valutazioneFamigliaMinoreVal"
 										required="false"
 										value="#{cc.attrs.sinbaManBean.jsonCurrent.datiSegnalazioni.valutazioneFamiglia}"
@@ -550,7 +543,7 @@
 							<p:spacer height="30px"/>
 							<p:panelGrid cellpadding="10" width="100%" styleClass="tableNoBg" columns="4">
 								
-									<h:outputText value="Autorità del provvedimento giudiziario: " style="font-weight: bold;" />
+									<h:outputText value="Autorità del provvedimento giudiziario "   />
 									<p:selectOneMenu id="autoritaProvvGiudVal" required="false"
 										value="#{cc.attrs.sinbaManBean.jsonCurrent.datiSegnalazioni.autoritaProvvedimento}"
 										style="width:200px">
@@ -561,16 +554,14 @@
 										<f:selectItem itemLabel="Tribunale ordinario" itemValue="4" />
 									</p:selectOneMenu>
 
-									<h:outputText value="Data del provvedimento giudiziario: "
-										style="font-weight: bold;" />
+									<h:outputText value="Data del provvedimento giudiziario "/>
 									<!--  formato voluto da INPS in export "MM/yyyy" dataPatternLabel="mm/aaaa" -->
 									<webred:pnlData dataReq="false"
 										dataValue="#{cc.attrs.sinbaManBean.jsonCurrent.datiSegnalazioni.dataProvvedimento}"
 										dataReqMes="Immettere una data" dataPattern="dd/MM/yyyy"
 										dataPatternLabel="gg/mm/aaaa" />									
 
-									<h:outputText value="Tipo del provvedimento: "
-										style="font-weight: bold;" />
+									<h:outputText value="Tipo del provvedimento "/>
 									<p:selectOneMenu id="tipoProvvGiudVal" required="false"
 										value="#{cc.attrs.sinbaManBean.jsonCurrent.datiSegnalazioni.tipoProvvedimento}"
 										style="width:200px">
@@ -590,7 +581,7 @@
 											itemValue="8" />
 									</p:selectOneMenu>
 									
-									<h:outputText value="Responsabilità tutela: " style="font-weight: bold;" />
+									<h:outputText value="Responsabilità tutela "   />
 									<p:selectOneMenu id="potestaTutelaVal" required="false"
 										value="#{cc.attrs.sinbaManBean.jsonCurrent.datiSegnalazioni.potestaTutela}"
 										style="width:200px">
@@ -633,8 +624,7 @@
 									 
 								  
 								
-										<h:outputText value="Forme di intervento" style="font-weight: bold;" />
-									   
+											<h:outputText value="Forme di intervento"   />
 											<p:selectOneButton id="formeInterventoVal"
 												value="#{cc.attrs.sinbaManBean.jsonCurrent.datiAffidamento.formaIntervento}"
 												style="width:200px">
@@ -642,7 +632,7 @@
 												<f:selectItem itemLabel="Giudiziario" itemValue="2" />
 											</p:selectOneButton>
 									 
-											<h:outputText value="Esito" style="font-weight: bold;" />
+											<h:outputText value="Esito"   />
 									 	 	<p:selectOneMenu id="esitoVal"
 												value="#{cc.attrs.sinbaManBean.jsonCurrent.datiAffidamento.esito}"
 												style="width:200px">
@@ -678,7 +668,7 @@
 												<f:selectItem itemLabel="Tempo parziale" itemValue="2" />
 											</p:selectOneButton>
 									 
-										<h:outputText value="Carattere" style="font-weight: bold;" />
+										<h:outputText value="Carattere"  />
 									 	 
 										<p:selectOneButton id="carattereVal" value="#{cc.attrs.sinbaManBean.jsonCurrent.datiAffidamento.carattere}">
 											<f:selectItem itemLabel="Residenziale" itemValue="1" />
@@ -690,7 +680,7 @@
 							<p:fieldset legend="Dati relativi all'inserimento residenziale">
 							<p:panelGrid id="affidamentoCarattere" cellpadding="10" width="100%" styleClass="tableNoBg" columns="4">
 						
-									<h:outputText value="Carattere inserimento" style="font-weight: bold;" />
+									<h:outputText value="Carattere inserimento"  />
 									<p:selectOneMenu id="carattereInserimentoVal"
 										value="#{cc.attrs.sinbaManBean.jsonCurrent.datiAffidamento.carattereInserimento}"
 										style="width:200px">
@@ -723,7 +713,7 @@
 											itemValue="10" />
 									</p:selectOneMenu>
 									
-									<h:outputText value="Forma inserimento" style="font-weight: bold;" />
+									<h:outputText value="Forma inserimento"  />
 									<p:selectOneButton id="formaInsVal"
 										value="#{cc.attrs.sinbaManBean.jsonCurrent.datiAffidamento.formaInserimento}"
 										style="width:200px">
@@ -731,14 +721,14 @@
 										<f:selectItem itemLabel="Giudiziaria" itemValue="2" />
 									</p:selectOneButton>
 									
-									<h:outputText value="Tipo inserimento" style="font-weight: bold;" />
+									<h:outputText value="Tipo inserimento"  />
 									<p:selectOneButton id="tipoInsVal"
 										value="#{cc.attrs.sinbaManBean.jsonCurrent.datiAffidamento.tipoInserimento}">
 										<f:selectItem itemLabel="Con genitore" itemValue="1" />
 										<f:selectItem itemLabel="Senza genitore" itemValue="2" />
 									</p:selectOneButton>
 		
-									<h:outputText value="Esito inserimento struttura" style="font-weight: bold;" />
+									<h:outputText value="Esito inserimento struttura"  />
 									<p:selectOneMenu id="esitoInserimentoStrutturaVal"
 										value="#{cc.attrs.sinbaManBean.jsonCurrent.datiAffidamento.esitoInserimentoStruttura}"
 										style="width:200px">
@@ -759,7 +749,7 @@
 										<f:selectItem itemLabel="Altro" itemValue="9" />
 									</p:selectOneMenu>
 									
-									<h:outputText value="Motivazione chiusura carico" style="font-weight: bold;" />
+									<h:outputText value="Motivazione chiusura carico"  />
 									<p:selectOneMenu id="motChiusuraCaricoVal"
 										value="#{cc.attrs.sinbaManBean.jsonCurrent.datiAffidamento.motivazioneChiusuraCarico}"
 										style="width:200px">
@@ -784,7 +774,7 @@
 										<f:selectItem itemLabel="Altro" itemValue="9" />
 									</p:selectOneMenu>
 									
-									<h:outputText value="Situazione chiusura carico" style="font-weight: bold;" />
+									<h:outputText value="Situazione chiusura carico"  />
 									<p:selectOneMenu id="sitChiusuraCaricoVal"
 										value="#{cc.attrs.sinbaManBean.jsonCurrent.datiAffidamento.situazioneChiusuraCarico}"
 										style="width:200px">
@@ -809,7 +799,7 @@
 										<f:selectItem itemLabel="Destinazione ignota" itemValue="8" />
 									</p:selectOneMenu>
 		
-									<h:outputText value="Collaborazione interventi" style="font-weight: bold;" />
+									<h:outputText value="Collaborazione interventi"  />
 									<p:selectOneMenu id="collInterventiVal"
 										value="#{cc.attrs.sinbaManBean.jsonCurrent.datiAffidamento.collaborazioneInterventi}"
 										style="width:200px">

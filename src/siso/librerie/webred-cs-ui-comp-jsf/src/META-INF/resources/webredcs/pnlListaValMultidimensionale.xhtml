@@ -91,65 +91,6 @@
 			</p:dialog>
 			<!-- FINE SCHEDA VALUTAZIONE DIALOG -->
 			
-			<!-- INIZIO ANAGRAFICA CORRENTE DIALOG -->
-			<p:dialog id="famAnaCorrDialog" widgetVar="famAnaCorrDialog" styleClass="anagCorrente" header="Anagrafica Corrente" 
-	   			modal="false" maximizable="true" draggable="true" resizable="true">
-	   			
-	   			<p:outputPanel>
-				   	<p:dataTable id="famAnaCorr" rendered="#{cc.attrs.iDatiLista.currSchedaMultidimManBean.versionLowerCase eq '1' or cc.attrs.iDatiLista.currSchedaMultidimManBean.versionLowerCase eq '2'}"
-			    		styleClass="tableNoBg" value="#{cc.attrs.iDatiLista.currSchedaMultidimManBean.famComponentes}" 
-			    		selection="#{cc.attrs.iDatiLista.currSchedaMultidimManBean.selectedFamComponentes}" 
-			    		rowKey="#{famComponente.csAAnagrafica.id}" var="famComponente">
-						<p:ajax event="rowSelectCheckbox" listener="#{cc.attrs.iDatiLista.currSchedaMultidimManBean.onRowSelectFamAnaCorr}" update=":#{p:component('famAnaCorr')}" />
-						<p:ajax event="rowUnselectCheckbox" listener="#{cc.attrs.iDatiLista.currSchedaMultidimManBean.onRowUnselectFamAnaCorr}" update=":#{p:component('famAnaCorr')}" />
-						<p:ajax event="rowSelect" listener="#{cc.attrs.iDatiLista.currSchedaMultidimManBean.onRowSelectFamAnaCorr}" update=":#{p:component('famAnaCorr')}" />
-						<p:ajax event="rowUnselect" listener="#{cc.attrs.iDatiLista.currSchedaMultidimManBean.onRowUnselectFamAnaCorr}" update=":#{p:component('famAnaCorr')}" />
-							        
-				        <p:column selectionMode="multiple" style="width:2%;text-align:center"/>
-				        
-				        <p:column headerText="Cognome">
-				            <h:outputText value="#{famComponente.csAAnagrafica.cognome}" />
-				        </p:column>
-				 
-				        <p:column headerText="Nome">
-				            <h:outputText value="#{famComponente.csAAnagrafica.nome}" />
-				        </p:column>
-				 
-				        <p:column headerText="Indirizzo">
-				            <h:outputText value="#{famComponente.indirizzoRes}" />
-				        </p:column>
-				 
-				        <p:column headerText="Città">
-				            <h:outputText value="#{famComponente.comResDes}" />
-				        </p:column>
-				        
-				        <p:column headerText="Parentela">
-				            <h:outputText value="#{famComponente.csTbTipoRapportoCon.descrizione}" />
-				        </p:column>
-				        
-				        <p:column headerText="Telefono">
-				            <h:outputText value="#{famComponente.csAAnagrafica.tel}" />
-				        </p:column>
-				        
-				        <p:column headerText="Disponibilità">
-				            <h:outputText value="#{famComponente.csTbDisponibilita.descrizione}" />
-				        </p:column>
-				        
-						<f:facet name="footer">
-							<p:commandButton value="Aggiungi" action="#{cc.attrs.iDatiLista.currSchedaMultidimManBean.addAnaCorr}" 
-							disabled="#{cc.attrs.iDatiLista.currSchedaMultidimManBean.addAnaCorrButton}" 
-							update=":#{p:component('famAnaConv')}, :#{p:component('famAnaNonConv')}, :#{p:component('famAnaAltri')}" 
-							oncomplete="PF('famAnaCorrDialog').hide()" />
-						</f:facet>
-				    </p:dataTable>
-	   				
-	   			</p:outputPanel>
-	   				
-		    </p:dialog>
-		    <!-- FINE ANAGRAFICA CORRENTE DIALOG -->
-			
-
-			
 		</composite:implementation>
 	</h:body>
 		

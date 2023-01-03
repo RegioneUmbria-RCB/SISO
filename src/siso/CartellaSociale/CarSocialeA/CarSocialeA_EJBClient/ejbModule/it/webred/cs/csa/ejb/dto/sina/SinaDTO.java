@@ -1,5 +1,6 @@
-package it.webred.cs.csa.ejb.dto;
+package it.webred.cs.csa.ejb.dto.sina;
 
+import it.webred.cs.csa.ejb.dto.BaseDTO;
 import it.webred.cs.data.model.CsTbSinaDomanda;
 
 import java.util.HashMap;

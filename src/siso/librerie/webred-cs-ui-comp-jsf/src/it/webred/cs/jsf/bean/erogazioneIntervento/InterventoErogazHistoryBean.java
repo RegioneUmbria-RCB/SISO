@@ -1,6 +1,7 @@
 package it.webred.cs.jsf.bean.erogazioneIntervento;
 
 import it.webred.cs.csa.ejb.client.AccessTableInterventoSessionBeanRemote;
+import it.webred.cs.csa.ejb.client.AccessTablePsExportSessionBeanRemote;
 import it.webred.cs.csa.ejb.dto.BaseDTO;
 import it.webred.cs.csa.ejb.dto.erogazioni.IntEsegAttrBean;
 import it.webred.cs.csa.ejb.dto.erogazioni.configurazione.ErogStatoCfgDTO;
@@ -30,6 +31,9 @@ public class InterventoErogazHistoryBean extends CsUiCompBaseBean implements Ser
 
 	protected AccessTableInterventoSessionBeanRemote interventoService = (AccessTableInterventoSessionBeanRemote) getEjb("CarSocialeA", "CarSocialeA_EJB", "AccessTableInterventoSessionBean");
 
+	protected AccessTablePsExportSessionBeanRemote psExportService = (AccessTablePsExportSessionBeanRemote) getCarSocialeEjb("AccessTablePsExportSessionBean");
+
+	
 	private HashMap<Long,List<InterventoErogazAttrBean>> mappaAttrsErog;
 	//private  List<InterventoErogazAttrBean> attrsErog;
 	private InterventoErogazHistoryHeaderBean header;
@@ -185,6 +189,11 @@ public class InterventoErogazHistoryBean extends CsUiCompBaseBean implements Ser
 			CsIQuota quota = csIInterventoEseg.getCsIInterventoEsegMast().getCsIQuota();
 			String um = quota!=null ? quota.getCsTbUnitaMisura().getValore() : null;
 			InterventoErogazHistoryRowBean curHistoryRow = new InterventoErogazHistoryRowBean(header, csIInterventoEseg, mappa, um);
+			
+			bDto.setObj(csIInterventoEseg.getId());
+			boolean esportata = psExportService.verificaErogazioneEsportataByEsegId(bDto);
+			curHistoryRow.setEsportata(esportata);
+			
 			this.rows.add(curHistoryRow);
 		}
 

@@ -1,21 +1,9 @@
 package it.webred.cs.jsf.bean.erogazioneIntervento;
 
-import it.webred.cs.csa.ejb.dto.erogazioni.IntEsegAttrBean;
-import it.webred.cs.csa.ejb.dto.erogazioni.configurazione.ErogStatoCfgDTO;
-import it.webred.cs.data.DataModelCostanti.TipoAttributo;
-import it.webred.cs.data.model.CsCfgAttrUnitaMisura;
-import it.webred.cs.data.model.CsCfgIntEsegStato;
-import it.webred.cs.data.model.CsIInterventoEseg;
-import it.webred.cs.data.model.CsIInterventoEsegValore;
-import it.webred.cs.data.model.CsOSettore;
-import it.webred.cs.jsf.manbean.superc.CsUiCompBaseBean;
-
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
@@ -26,6 +14,16 @@ import javax.faces.model.SelectItem;
 
 import org.apache.commons.lang.StringUtils;
 
+import it.webred.cs.csa.ejb.dto.erogazioni.IntEsegAttrBean;
+import it.webred.cs.csa.ejb.dto.erogazioni.configurazione.ErogStatoCfgDTO;
+import it.webred.cs.data.DataModelCostanti.TipoAttributo;
+import it.webred.cs.data.model.CsCfgAttrUnitaMisura;
+import it.webred.cs.data.model.CsCfgIntEsegStato;
+import it.webred.cs.data.model.CsIInterventoEseg;
+import it.webred.cs.data.model.CsIInterventoEsegValore;
+import it.webred.cs.data.model.CsOSettore;
+import it.webred.cs.jsf.manbean.superc.CsUiCompBaseBean;
+
 public class InterventoErogazHistoryRowBean implements Serializable {
 
 	private static final long serialVersionUID = 1L;	
@@ -35,6 +33,7 @@ public class InterventoErogazHistoryRowBean implements Serializable {
 	private Date dataErogazioneA;
 	private CsOSettore settore;
 	private CsCfgIntEsegStato stato;
+	private Boolean esportata = false;
 	protected boolean nuovaErogazione = false;
 	private List<InterventoErogazAttrBean> cells;
 	private List<InterventoErogazAttrBean> fixedCells;
@@ -362,5 +361,16 @@ public class InterventoErogazHistoryRowBean implements Serializable {
 	public void setListaInformazioni(List<SelectItem> listaInformazioni) {
 		this.listaInformazioni = listaInformazioni;
 	}
+
+	public Boolean getEsportata() {
+		return esportata;
+	}
+
+	public void setEsportata(Boolean esportata) {
+		this.esportata = esportata;
+	}
 	
+	public boolean isEsportata() {
+		return this.esportata!=null && this.esportata.booleanValue();
+	}
 }

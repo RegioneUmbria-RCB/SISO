@@ -3,19 +3,20 @@ package it.webred.rulengine.dwh.table;
 import it.webred.rulengine.dwh.def.ChiaveEsterna;
 import it.webred.rulengine.dwh.def.Relazione;
 import it.webred.rulengine.dwh.def.RelazioneToMasterTable;
+import oracle.sql.CLOB;
 
 public class SitCConcessioniExtra17 extends TabellaDwhMultiProv
 {
 
 	private RelazioneToMasterTable idExtCConcessioni = new RelazioneToMasterTable(SitCConcessioni.class,new ChiaveEsterna());
-	private String altriNumeroPg;
-	private String altriAnnoPg;
-	private String altriSubPg;
-	private String altriDataPg;
-	private String altriOggettoPg;
-	private String npgAttoPratRif;
-	private String annoPgAttoPratRif;
-	private String praticheCollegate;
+	private CLOB altriNumeroPg;
+	private CLOB altriAnnoPg;
+	private CLOB altriSubPg;
+	private CLOB altriDataPg;
+	private CLOB altriOggettoPg;
+	private CLOB npgAttoPratRif;
+	private CLOB annoPgAttoPratRif;
+	private CLOB praticheCollegate;
 
 	public Relazione getIdExtCConcessioni()
 	{
@@ -41,67 +42,67 @@ public class SitCConcessioniExtra17 extends TabellaDwhMultiProv
 				getProvenienza();
 	}
 
-	public String getAltriNumeroPg() {
+	public CLOB getAltriNumeroPg() {
 		return altriNumeroPg;
 	}
 
-	public void setAltriNumeroPg(String altriNumeroPg) {
+	public void setAltriNumeroPg(CLOB altriNumeroPg) {
 		this.altriNumeroPg = altriNumeroPg;
 	}
 
-	public String getAltriAnnoPg() {
+	public CLOB getAltriAnnoPg() {
 		return altriAnnoPg;
 	}
 
-	public void setAltriAnnoPg(String altriAnnoPg) {
+	public void setAltriAnnoPg(CLOB altriAnnoPg) {
 		this.altriAnnoPg = altriAnnoPg;
 	}
 
-	public String getAltriSubPg() {
+	public CLOB getAltriSubPg() {
 		return altriSubPg;
 	}
 
-	public void setAltriSubPg(String altriSubPg) {
+	public void setAltriSubPg(CLOB altriSubPg) {
 		this.altriSubPg = altriSubPg;
 	}
 
-	public String getAltriDataPg() {
+	public CLOB getAltriDataPg() {
 		return altriDataPg;
 	}
 
-	public void setAltriDataPg(String altriDataPg) {
+	public void setAltriDataPg(CLOB altriDataPg) {
 		this.altriDataPg = altriDataPg;
 	}
 
-	public String getAltriOggettoPg() {
+	public CLOB getAltriOggettoPg() {
 		return altriOggettoPg;
 	}
 
-	public void setAltriOggettoPg(String altriOggettoPg) {
+	public void setAltriOggettoPg(CLOB altriOggettoPg) {
 		this.altriOggettoPg = altriOggettoPg;
 	}
 
-	public String getNpgAttoPratRif() {
+	public CLOB getNpgAttoPratRif() {
 		return npgAttoPratRif;
 	}
 
-	public void setNpgAttoPratRif(String npgAttoPratRif) {
+	public void setNpgAttoPratRif(CLOB npgAttoPratRif) {
 		this.npgAttoPratRif = npgAttoPratRif;
 	}
 
-	public String getAnnoPgAttoPratRif() {
+	public CLOB getAnnoPgAttoPratRif() {
 		return annoPgAttoPratRif;
 	}
 
-	public void setAnnoPgAttoPratRif(String annoPgAttoPratRif) {
+	public void setAnnoPgAttoPratRif(CLOB annoPgAttoPratRif) {
 		this.annoPgAttoPratRif = annoPgAttoPratRif;
 	}
 
-	public String getPraticheCollegate() {
+	public CLOB getPraticheCollegate() {
 		return praticheCollegate;
 	}
 
-	public void setPraticheCollegate(String praticheCollegate) {
+	public void setPraticheCollegate(CLOB praticheCollegate) {
 		this.praticheCollegate = praticheCollegate;
 	}
 

@@ -482,15 +482,9 @@ public class SsSchedaSessionBean implements SsSchedaSessionBeanRemote {
 
 	@Override
 	public List<SsIntervento> readInterventi(BaseDTO dto) {
-		return dao.readInterventi();
+		return confdao.readInterventi();
 	}
 	
-	@Override
-	@AuditConsentiAccessoAnonimo
-	@AuditSaltaValidazioneSessionID
-	public List<String>  readInterventiTrascodifiche(BaseDTO dto) {
-		return dao.readInterventiTrascodifiche() ;
-	}
 
 	@Override
 	public SsMotivazione readMotivazione(BaseDTO dto) {

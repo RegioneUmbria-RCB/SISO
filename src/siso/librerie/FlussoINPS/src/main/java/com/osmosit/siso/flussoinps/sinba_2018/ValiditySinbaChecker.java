@@ -36,7 +36,7 @@ class ValiditySinbaChecker {
 			//response.check(!u.isNullOrEmpty(u.getString(datiBeneficiario, Cost.RESIDENZA_REGIONE)), "RESIDENZA_REGIONE");
 			response.check(!u.isNullOrEmpty(u.getString(datiBeneficiario, Cost.NAZIONE_RESIDENZA)), "RESIDENZA_NAZIONE");
 			//response.check(u.getInteger(datiBeneficiario, Cost.COMPOSIZIONE_FAMIGLIA) != 0, "COMPOSIZIONE_FAMIGLIA");
-			response.check(!"0".equals(u.getString(datiBeneficiario, Cost.MINORE_STRANIERO_ACCOMPAGNATO)), "MINORE_STRANIERO_ACCOMPAGNATO");
+			response.check(!"0".equals(u.getString(datiBeneficiario, Cost.MINORE_STRANIERO_NON_ACCOMPAGNATO)), "MINORE_STRANIERO_NON_ACCOMPAGNATO");
 			response.check(!"0".equals(u.getString(datiBeneficiario, Cost.CONDIZIONE_MINORE)), "CONDIZIONE_MINORE");
 			response.check(!"0".equals(u.getString(datiBeneficiario, Cost.LUOGO_VITA)), "LUOGO_VITA");
 			response.check(!"0".equals(u.getString(datiBeneficiario, Cost.SCUOLA_FREQUENTATA)), "SCUOLA_FREQUENTATA");

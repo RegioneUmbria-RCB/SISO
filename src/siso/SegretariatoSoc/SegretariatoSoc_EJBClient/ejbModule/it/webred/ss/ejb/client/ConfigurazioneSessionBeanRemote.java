@@ -71,7 +71,7 @@ public interface ConfigurazioneSessionBeanRemote {
 	public List<SsTipoScheda> readTipiScheda(BaseDTO dto);
 	public SsTipoScheda readTipoSchedaByTipo(BaseDTO dto);
 	public SsTipoScheda readTipoSchedaById(BaseDTO dto);
+
+	public List<String> readInterventiTrascodifiche(BaseDTO dto);
 	
-
-
 }

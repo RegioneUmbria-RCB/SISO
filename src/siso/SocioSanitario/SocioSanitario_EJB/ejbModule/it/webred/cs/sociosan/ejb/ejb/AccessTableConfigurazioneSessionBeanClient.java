@@ -9,7 +9,8 @@ import java.util.Properties;
 import javax.ejb.Stateless;
 import javax.naming.NamingException;
 
-import it.webred.cs.csa.ejb.client.AccessTableInterventoSessionBeanRemote;
+import org.apache.commons.lang3.StringUtils;
+
 import it.webred.cs.csa.ejb.client.configurazione.AccessTableConfigurazioneEnteSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.configurazione.AccessTableConfigurazioneSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.domini.AccessTableDominiSiruSessionBeanRemote;
@@ -23,7 +24,7 @@ import it.webred.cs.csa.ejb.dto.rest.TrascodificheResponseDTO;
 import it.webred.cs.csa.ejb.dto.siru.SiruDominioDTO;
 import it.webred.cs.csa.ejb.enumeratori.SiruEnum;
 import it.webred.cs.data.model.ArBiInviante;
-import it.webred.cs.data.model.ArFfProgetto;
+import it.webred.cs.data.model.ArTClasse;
 import it.webred.cs.data.model.CsOOrganizzazione;
 import it.webred.cs.data.model.CsTbCondLavoro;
 import it.webred.cs.data.model.CsTbGVulnerabile;
@@ -35,14 +36,13 @@ import it.webred.cs.sociosan.ejb.client.AccessTableConfigurazioneSessionBeanClie
 import it.webred.cs.sociosan.ejb.utils.TableConfigurazioniCostanti;
 import it.webred.ct.support.datarouter.CeTBaseObject;
 import it.webred.ejb.utility.ClientUtility;
-import it.webred.ss.ejb.client.SsSchedaSessionBeanRemote;
+import it.webred.ss.ejb.client.ConfigurazioneSessionBeanRemote;
 
 @Stateless
 public class AccessTableConfigurazioneSessionBeanClient   extends BaseSessionBean implements AccessTableConfigurazioneSessionBeanClientRemote {
 
 	protected AccessTableConfigurazioneSessionBeanRemote sb;
-	protected AccessTableInterventoSessionBeanRemote sb2;
-	protected SsSchedaSessionBeanRemote sb3;
+	protected ConfigurazioneSessionBeanRemote sb3;
 	protected AccessTableConfigurazioneEnteSessionBeanRemote sb4;
 	protected AccessTableDominiSiruSessionBeanRemote sbArFse;
 	protected String ente = "";
@@ -55,8 +55,7 @@ public class AccessTableConfigurazioneSessionBeanClient   extends BaseSessionBea
 		this.msg = messaggio;
 	}
 	
-	private void verificaInviante(String nomeInviante,
-			Long idInviante) {
+	private ArBiInviante verificaInviante(String nomeInviante, Long idInviante) {
 		
 	 	BaseDTO dto = new BaseDTO();
 		dto.setEnteId(ente);
@@ -72,81 +71,87 @@ public class AccessTableConfigurazioneSessionBeanClient   extends BaseSessionBea
 		}
 			
 		setEsitoOperazione(0, "Utente abilitato.");
-		 
+		return invianteResult;
 	}
 	
-	private List<String> estraiInterventiSS(){
+	private boolean isRicercaDecodifica(String tabella, String key){
+		String[] lst = !StringUtils.isBlank(tabella) ? tabella.split(",") : new String[0];
+		List<String> lista = new ArrayList<String>();
+		for(String s : lst)
+			lista.add(s.trim());
+		
+		return lista.isEmpty() || lista.contains(key);
+	}
+	
+	private List<String> estraiInterventiSS() throws Throwable{
 		try{
 			it.webred.ss.ejb.dto.BaseDTO dto = new it.webred.ss.ejb.dto.BaseDTO();
 			dto.setEnteId(ente);
 			 
 		return sb3.readInterventiTrascodifiche(dto );
-		}catch(Exception ex){
-			logger.error(ex.getMessage(), ex);
-			setEsitoOperazione(-12, "Eccezione reperimento interventi della scheda sociale.");
-			return null;
+		}catch(Throwable ex){
+			setEsitoOperazione(-12, "Eccezione reperimento interventi della scheda sociale:"+ TableConfigurazioniCostanti.CS_TB_SERVIZI);
+			throw ex;
 		}
 	}
 	 
-	private List<InterventoDTO> estraiInterventiCustom(){
+	private List<InterventoDTO> estraiInterventiCustom() throws Throwable{
 		try{
-		BaseDTO dto = new BaseDTO();
-		dto.setEnteId(ente);
-		dto.setObj(Long.parseLong("0")); // il find all non legge questo valore
-		List<InterventoDTO> listInterventoDTO =  sb.findTipiIntCustomConfigurazione(dto);
-		return listInterventoDTO;
+			BaseDTO dto = new BaseDTO();
+			dto.setEnteId(ente);
+			dto.setObj(Long.parseLong("0")); // il find all non legge questo valore
+			List<InterventoDTO> listInterventoDTO =  sb.findTipiIntCustomConfigurazione(dto);
+			return listInterventoDTO;
+		}catch(Throwable ex){
+			setEsitoOperazione(-13, "Eccezione reperimento "+TableConfigurazioniCostanti.CS_TB_PRESTAZIONI);
+			throw ex;
 		}
-		catch(Exception ex){
-			setEsitoOperazione(-13, "Eccezione reperimento interventi custom.");
-		}
-		return null;
 	}
-	private List<TabellaDecodificaBaseDTO> estraiTbTitoloStudio(){
+	private List<TabellaDecodificaBaseDTO> estraiTbTitoloStudio() throws Throwable{
 		try{
-		BaseDTO dto = new BaseDTO();
-		dto.setEnteId(ente);
-		dto.setObj(Long.parseLong("0")); // il find all non legge questo valore
-		List<CsTbTitoloStudio> listTitoloStudio =  sb.getTbTitoloStudioAbilitato(dto);
-		List<TabellaDecodificaBaseDTO> listTabDecodificaDTO = new ArrayList<TabellaDecodificaBaseDTO>();
-		for(CsTbTitoloStudio csTbTs : listTitoloStudio) {
-			TabellaDecodificaBaseDTO  tabDTO = new TabellaDecodificaBaseDTO();
-			tabDTO.setDescrizione(csTbTs.getDescrizione());
-			//tabDTO.setId(csTbTs.getId());
-			tabDTO.setTooltip(csTbTs.getTooltip());
-			listTabDecodificaDTO.add(tabDTO);
-		}
+			BaseDTO dto = new BaseDTO();
+			dto.setEnteId(ente);
+			dto.setObj(Long.parseLong("0")); // il find all non legge questo valore
+			List<CsTbTitoloStudio> listTitoloStudio =  sb.getTbTitoloStudioAbilitato(dto);
+			List<TabellaDecodificaBaseDTO> listTabDecodificaDTO = new ArrayList<TabellaDecodificaBaseDTO>();
+			for(CsTbTitoloStudio csTbTs : listTitoloStudio) {
+				TabellaDecodificaDTO  tabDTO = new TabellaDecodificaDTO();
+				tabDTO.setDescrizione(csTbTs.getDescrizione());
+				tabDTO.setTooltip(csTbTs.getTooltip());
+				tabDTO.setId(String.valueOf(csTbTs.getId()));
+				listTabDecodificaDTO.add(tabDTO);
+			}
 		return listTabDecodificaDTO;
+		}catch(Throwable ex){
+			setEsitoOperazione(-13, "Eccezione reperimento "+TableConfigurazioniCostanti.CS_TB_TITOLO_STUDIO);
+			throw ex;
 		}
-		catch(Exception ex){
-			setEsitoOperazione(-13, "Eccezione reperimento titolo di studio.");
-		}
-		return null;
 	}
-	private List<TabellaDecodificaBaseDTO> estraiTipologieFamiliari(){
+	private List<TabellaDecodificaBaseDTO> estraiTipologieFamiliari() throws Throwable{
 		try{
-//		BaseDTO dto = new BaseDTO();
-//		dto.setEnteId(ente);
-//		dto.setObj(Long.parseLong("0")); // il find all non legge questo valore
-		CeTBaseObject cetBase = new CeTBaseObject();
-		cetBase.setEnteId(ente);
-		  
-		List<CsTbTipologiaFamiliare> listTipologiaFamiliare =  sb.getTipologieFamiliari(cetBase);
-		List<TabellaDecodificaBaseDTO> listTabDecodificaDTO = new ArrayList<TabellaDecodificaBaseDTO>();
-		for(CsTbTipologiaFamiliare csTbTf : listTipologiaFamiliare) {
-			TabellaDecodificaBaseDTO tabDTO = new TabellaDecodificaBaseDTO();
-			tabDTO.setDescrizione(csTbTf.getDescrizione());
-			tabDTO.setTooltip(csTbTf.getTooltip());
-			listTabDecodificaDTO.add(tabDTO);
+	//		BaseDTO dto = new BaseDTO();
+	//		dto.setEnteId(ente);
+	//		dto.setObj(Long.parseLong("0")); // il find all non legge questo valore
+			CeTBaseObject cetBase = new CeTBaseObject();
+			cetBase.setEnteId(ente);
+			  
+			List<CsTbTipologiaFamiliare> listTipologiaFamiliare =  sb.getTipologieFamiliari(cetBase);
+			List<TabellaDecodificaBaseDTO> listTabDecodificaDTO = new ArrayList<TabellaDecodificaBaseDTO>();
+			for(CsTbTipologiaFamiliare csTbTf : listTipologiaFamiliare) {
+				TabellaDecodificaDTO tabDTO = new TabellaDecodificaDTO();
+				tabDTO.setDescrizione(csTbTf.getDescrizione());
+				tabDTO.setTooltip(csTbTf.getTooltip());
+				tabDTO.setId(String.valueOf(csTbTf.getId()));
+				listTabDecodificaDTO.add(tabDTO);
+			}
+			return listTabDecodificaDTO;
+		}catch(Throwable ex){
+			setEsitoOperazione(-13, "Eccezione reperimento "+TableConfigurazioniCostanti.CS_TB_TIPOLOGIA_FAMILIARE);
+			throw ex;
 		}
-		return listTabDecodificaDTO;
-		}
-		catch(Exception ex){
-			setEsitoOperazione(-13, "Eccezione reperimento tipologie familiari.");
-		}
-		return null;
 	}
 	//getGrVulnerabilita
-	private List<TabellaDecodificaDTO> estraiGrVulnerabilita(){
+	private List<TabellaDecodificaDTO> estraiGrVulnerabilita() throws Throwable{
 		try{
 		BaseDTO dto = new BaseDTO();
 		dto.setEnteId(ente);
@@ -161,14 +166,13 @@ public class AccessTableConfigurazioneSessionBeanClient   extends BaseSessionBea
 			listTabDecodificaDTO.add(tabDTO);
 		}
 		return listTabDecodificaDTO;
+		}catch(Throwable ex){
+			setEsitoOperazione(-13, "Eccezione reperimento "+TableConfigurazioniCostanti.CS_TB_GRUPPO_VULNERABILE);
+			throw ex;
 		}
-		catch(Exception ex){
-			setEsitoOperazione(-13, "Eccezione reperimento gruppo vulnerabilità.");
-		}
-		return null;
 	}
 	
-	private List<TabellaDecodificaExtDTO> estraiStatoCivile(){
+	private List<TabellaDecodificaExtDTO> estraiStatoCivile() throws Throwable{
 		try{
 		BaseDTO dto = new BaseDTO();
 		dto.setEnteId(ente);
@@ -183,14 +187,33 @@ public class AccessTableConfigurazioneSessionBeanClient   extends BaseSessionBea
 			listTabDecodificaDTO.add(tabDTO);
 		}
 		return listTabDecodificaDTO;
+		}catch(Throwable ex){
+			setEsitoOperazione(-13, "Eccezione reperimento "+TableConfigurazioniCostanti.CS_TB_STATO_CIVILE);
+			throw ex;
 		}
-		catch(Exception ex){
-			setEsitoOperazione(-13, "Eccezione reperimento stato Civile.");
-		}
-		return null;
 	}
 	
-	private List<TabellaDecodificaBaseDTO> estraiCondLavoro(){
+	private List<TabellaDecodificaExtDTO> estraiPrestazioniIstat() throws Throwable{
+		try{
+		BaseDTO dto = new BaseDTO();
+		dto.setEnteId(ente);
+		List<ArTClasse> lst =  sb.findArTClasseAll(dto);
+		List<TabellaDecodificaExtDTO> listTabDecodificaDTO = new ArrayList<TabellaDecodificaExtDTO>();
+		for(ArTClasse csTbSC : lst) {
+			TabellaDecodificaExtDTO tabDTO = new TabellaDecodificaExtDTO();
+			tabDTO.setDescrizione(csTbSC.getDescrizione());
+			tabDTO.setCod(csTbSC.getCodiceMemo());
+			tabDTO.setTooltip(csTbSC.getDescrizione2());
+			listTabDecodificaDTO.add(tabDTO);
+		}
+		return listTabDecodificaDTO;
+		}catch(Throwable ex){
+			setEsitoOperazione(-13, "Eccezione reperimento "+TableConfigurazioniCostanti.CS_TB_TI_COD_ISTAT);
+			throw ex;
+		}
+	}
+	
+	private List<TabellaDecodificaBaseDTO> estraiCondLavoro() throws Throwable{
 		try{
 		BaseDTO dto = new BaseDTO();
 		dto.setEnteId(ente);
@@ -198,178 +221,155 @@ public class AccessTableConfigurazioneSessionBeanClient   extends BaseSessionBea
 		List<CsTbCondLavoro> lst =  sb.getCondLavoro(dto);
 		List<TabellaDecodificaBaseDTO> listTabDecodificaDTO = new ArrayList<TabellaDecodificaBaseDTO>();
 		for(CsTbCondLavoro csTbCL : lst) {
-			TabellaDecodificaBaseDTO tabDTO = new TabellaDecodificaBaseDTO();
+			TabellaDecodificaDTO tabDTO = new TabellaDecodificaDTO();
 			tabDTO.setDescrizione(csTbCL.getDescrizione());
 			tabDTO.setTooltip(csTbCL.getTooltip());
+			tabDTO.setId(String.valueOf(csTbCL.getId()));
 			listTabDecodificaDTO.add(tabDTO);
 		}
 		return listTabDecodificaDTO;
+		}catch(Throwable ex){
+			setEsitoOperazione(-13, "Eccezione reperimento "+TableConfigurazioniCostanti.CS_TB_COND_LAVORO);
+			throw ex;
 		}
-		catch(Exception ex){
-			setEsitoOperazione(-13, "Eccezione reperimento condizione lavorativa");
-		}
-		return null;
+
 	}
 	
-	private List<TabellaDecodificaBaseDTO> estraiFonteFinanziamento(){
+	private List<TabellaDecodificaBaseDTO> estraiFonteFinanziamento() throws Throwable{
 		try{
-		BaseDTO dto = new BaseDTO();
-		dto.setEnteId(ente);
-		//dto.setObj(Long.parseLong("0")); // il find all non legge questo valore
-		List<VLineaFin> lst =  sb.findAllOrigineFinanziamenti(dto);
-		List<TabellaDecodificaBaseDTO> listTabDecodificaDTO = new ArrayList<TabellaDecodificaBaseDTO>();
-		for(VLineaFin s : lst) {
-			if(s.getAbilitato()!=null && s.getAbilitato()){
-				TabellaDecodificaBaseDTO tabDTO = new TabellaDecodificaBaseDTO();
-				tabDTO.setDescrizione(s.getDescrizione());
-				tabDTO.setTooltip(null);
-				listTabDecodificaDTO.add(tabDTO);
+			BaseDTO dto = new BaseDTO();
+			dto.setEnteId(ente);
+			List<VLineaFin> lst =  sb.findAllOrigineFinanziamenti(dto);
+			List<TabellaDecodificaBaseDTO> listTabDecodificaDTO = new ArrayList<TabellaDecodificaBaseDTO>();
+			for(VLineaFin s : lst) {
+				if(s.getAbilitato()!=null && s.getAbilitato()){
+					TabellaDecodificaBaseDTO tabDTO = new TabellaDecodificaBaseDTO();
+					tabDTO.setDescrizione(s.getDescrizione());
+					listTabDecodificaDTO.add(tabDTO);
+				}
 			}
+			return listTabDecodificaDTO;
+		}catch(Throwable ex){
+			setEsitoOperazione(-13, "Eccezione reperimento "+TableConfigurazioniCostanti.AR_FONTE_FINANZIAMENTO);
+			throw ex;
 		}
-		return listTabDecodificaDTO;
-		}
-		catch(Exception ex){
-			setEsitoOperazione(-13, "Eccezione reperimento Fonte di Finanziamento");
-		}
-		return null;
 	}
 	
-	private List<TabellaDecodificaBaseDTO> estraiProgetti(){
+	private List<TabellaDecodificaBaseDTO> estraiProgetti(String enteInviante) throws Throwable{
 		try{
 		BaseDTO dto = new BaseDTO();
 		dto.setEnteId(ente);
-		dto.setObj(ente);
+		dto.setObj(enteInviante);
 		List<KeyValueDTO> lst =  sb.findProgettiByBelfioreOrganizzazione(dto);
 		List<TabellaDecodificaBaseDTO> listTabDecodificaDTO = new ArrayList<TabellaDecodificaBaseDTO>();
 		for(KeyValueDTO s : lst) {
 			if(s.isAbilitato()){
 				TabellaDecodificaBaseDTO tabDTO = new TabellaDecodificaBaseDTO();
 				tabDTO.setDescrizione(s.getDescrizione());
-				tabDTO.setTooltip(null);
 				listTabDecodificaDTO.add(tabDTO);
 			}
 		}
 		return listTabDecodificaDTO;
+		}catch(Throwable ex){
+			setEsitoOperazione(-13, "Eccezione reperimento "+TableConfigurazioniCostanti.AR_FF_PROGETTO);
+			throw ex;
 		}
-		catch(Exception ex){
-			setEsitoOperazione(-13, "Eccezione reperimento Progetti");
-		}
-		return null;
 	}
 	
-	private List<TabellaDecodificaBaseDTO> estraiArFseChk(String tabella){
+	private List<TabellaDecodificaBaseDTO> estraiArFseChk(String tabella, String key) throws Throwable{
 		try{
 			BaseDTO dto = new BaseDTO();
 			dto.setEnteId(ente);
 			dto.setObj(Long.parseLong("0")); // il find all non legge questo valore
-			List<SiruDominioDTO> lista =  sbArFse.findAll(tabella);
+			List<SiruDominioDTO> lista =  sbArFse.findAll(key);
 			List<TabellaDecodificaBaseDTO> listTabDecodificaDTO = new ArrayList<TabellaDecodificaBaseDTO>();
 			for(SiruDominioDTO s : lista) {
-				TabellaDecodificaBaseDTO tabDTO = new TabellaDecodificaBaseDTO();
+				TabellaDecodificaDTO tabDTO = new TabellaDecodificaDTO();
 				tabDTO.setDescrizione(s.getDescrizione());
+				tabDTO.setId(s.getCodiceSiru());
 				listTabDecodificaDTO.add(tabDTO);
 			}
 			return listTabDecodificaDTO;
+		}catch(Throwable ex){
+			setEsitoOperazione(-13, "Eccezione reperimento:"+tabella);
+			throw ex;
 		}
-		catch(Exception ex){
-			setEsitoOperazione(-13, "Eccezione reperimento ArFseChk:"+tabella);
-		}
-		return null;
 	}
 	
 	public TrascodificheResponseDTO estraiTabellaConfigurazione( it.webred.cs.csa.ejb.dto.rest.TrascodificheRequestDTO input){
-		 
-		 
-		Long idInviante = input.getIdInviante();
-		String nomeInviante = input.getNomeInviante();
-		String nomeTabella = input.getNomeTabella();
-		
-		getEnteCapofila();
-		
-		this.verificaInviante(nomeInviante, idInviante);
 		
 		TrascodificheResponseDTO responseDTO = new TrascodificheResponseDTO();
 		
-
-		responseDTO.setEsito(  this.esito);
-		responseDTO.setDescrizione(this.msg);
-		if(esito == 0){
-			if(nomeTabella == null || nomeTabella.equals("") || nomeTabella.equals("TUTTE")) {
-				responseDTO.setInterventoCustom(estraiInterventiCustom());
-				responseDTO.setIntervento(estraiInterventiSS());
-				responseDTO.setTitoloStudio(estraiTbTitoloStudio());
-				responseDTO.setTipologiaFamiglia(estraiTipologieFamiliari());
-				responseDTO.setGruppoVulnerabile(estraiGrVulnerabilita());
-				responseDTO.setStatoCivile(estraiStatoCivile());
-				responseDTO.setCondLavoro(estraiCondLavoro());
-				
-				/* Per estrarre queste informazioni serve l'ente TITOLARE, non è sufficiente il capofila*/
-				//responseDTO.setFonteFinanziamento(estraiFonteFinanziamento());
-				//responseDTO.setProgetto(estraiProgetti());
-				//responseDTO.setSottocorsoAttivita(estraiSottocorsoAttivita());
-				
-				responseDTO.setFseCondIngMercatoLavoro(estraiArFseChk(SiruEnum.CONDIZIONE_MERCATO.name()));
-				responseDTO.setFseAzDimensione(estraiArFseChk(SiruEnum.DIMENSIONE_AZIENDA.name()));
-				responseDTO.setFseDurataRicercaLavoro(estraiArFseChk(SiruEnum.DURATA_RICERCA.name()));
-				responseDTO.setFseGruppoVulnerabile(estraiArFseChk(SiruEnum.GRUPPO_VUL_PART.name()));
-				responseDTO.setFseOrarioLavoro(estraiArFseChk(SiruEnum.TIPO_ORARIO_LAVORO.name()));
-				responseDTO.setFseTipologiaLavoro(estraiArFseChk(SiruEnum.TIPOLOGIA_LAVORO.name()));
-				responseDTO.setFseTitoloStudio(estraiArFseChk(SiruEnum.TITOLO_STUDIO.name()));	
-				
-			}else {
-				if(nomeTabella.equalsIgnoreCase(TableConfigurazioniCostanti.CS_TB_SERVIZI)) 
-					responseDTO.setIntervento(estraiInterventiSS());
-				
-				else if(nomeTabella.equalsIgnoreCase(TableConfigurazioniCostanti.CS_TB_PRESTAZIONI)) 
-					responseDTO.setInterventoCustom(estraiInterventiCustom());
-				
-				else if(nomeTabella.equalsIgnoreCase(TableConfigurazioniCostanti.CS_TB_TITOLO_STUDIO)) 
-					responseDTO.setTitoloStudio(estraiTbTitoloStudio());
-				
-				else if(nomeTabella.equalsIgnoreCase(TableConfigurazioniCostanti.CS_TB_TIPOLOGIA_FAMILIARE)) 
-					responseDTO.setTitoloStudio(estraiTipologieFamiliari());
-				
-				else if(nomeTabella.equalsIgnoreCase(TableConfigurazioniCostanti.CS_TB_GRUPPO_VULNERABILE)) 
-					responseDTO.setGruppoVulnerabile(estraiGrVulnerabilita());
-				
-				else if(nomeTabella.equalsIgnoreCase(TableConfigurazioniCostanti.CS_TB_STATO_CIVILE)) 
-					responseDTO.setStatoCivile(estraiStatoCivile());
-				
-				else if(nomeTabella.equalsIgnoreCase(TableConfigurazioniCostanti.CS_TB_COND_LAVORO)) 
-					responseDTO.setCondLavoro(estraiCondLavoro());
-				
-				else if(nomeTabella.equalsIgnoreCase(TableConfigurazioniCostanti.AR_FSE_COND_ING_MERCATO_LAVORO))
-					responseDTO.setFseCondIngMercatoLavoro(estraiArFseChk(SiruEnum.CONDIZIONE_MERCATO.name()));
-				
-				else if(nomeTabella.equalsIgnoreCase(TableConfigurazioniCostanti.AR_FSE_AZ_DIMENSIONE))
-					responseDTO.setFseAzDimensione(estraiArFseChk(SiruEnum.DIMENSIONE_AZIENDA.name()));
-				
-				else if(nomeTabella.equalsIgnoreCase(TableConfigurazioniCostanti.AR_FSE_DURATA_RICERCA_LAVORO))
-					responseDTO.setFseDurataRicercaLavoro(estraiArFseChk(SiruEnum.DURATA_RICERCA.name()));
-				
-				else if(nomeTabella.equalsIgnoreCase(TableConfigurazioniCostanti.AR_FSE_GRUPPO_VULNERABILE))
-					responseDTO.setFseGruppoVulnerabile(estraiArFseChk(SiruEnum.GRUPPO_VUL_PART.name()));
-				
-				else if(nomeTabella.equalsIgnoreCase(TableConfigurazioniCostanti.AR_FSE_ORARIO_LAVORO))
-					responseDTO.setFseOrarioLavoro(estraiArFseChk(SiruEnum.TIPO_ORARIO_LAVORO.name()));
-				
-				else if(nomeTabella.equalsIgnoreCase(TableConfigurazioniCostanti.AR_FSE_TIPOLOGIA_LAVORO))
-					responseDTO.setFseTipologiaLavoro(estraiArFseChk(SiruEnum.TIPOLOGIA_LAVORO.name()));
-				
-				else if(nomeTabella.equalsIgnoreCase(TableConfigurazioniCostanti.AR_FSE_TITOLO_STUDIO))
-					responseDTO.setFseTitoloStudio(estraiArFseChk(SiruEnum.TITOLO_STUDIO.name()));
-				
-/*				else if(nomeTabella.equalsIgnoreCase(TableConfigurazioniCostanti.AR_FONTE_FINANZIAMENTO)) 
-					responseDTO.setFonteFinanziamento(estraiFonteFinanziamento());
-				
-				else if(nomeTabella.equalsIgnoreCase(TableConfigurazioniCostanti.AR_FF_PROGETTO)) 
-					responseDTO.setProgetto(estraiProgetti());
-				
-				else if(nomeTabella.equalsIgnoreCase(TableConfigurazioniCostanti.AR_FF_SOTTOCORSO_ATTIVITA)) 
-					responseDTO.setSottocorsoAttivita(estraiSottocorsoAttivita());*/
-				
+		try {
+		 	
+			Long idInviante = input.getIdInviante();
+			String nomeInviante = input.getNomeInviante();
+			String nomeTabella = input.getNomeTabella();
+			
+			getEnteCapofila();
+			
+			ArBiInviante inviante = this.verificaInviante(nomeInviante, idInviante);
+			
+			if(esito == 0){	
+					if(isRicercaDecodifica(nomeTabella, TableConfigurazioniCostanti.CS_TB_SERVIZI)) 
+						responseDTO.setTbServizi(estraiInterventiSS());
+					
+					if(isRicercaDecodifica(nomeTabella, TableConfigurazioniCostanti.CS_TB_PRESTAZIONI)) 
+						responseDTO.setTbPrestazioni(estraiInterventiCustom());
+					
+					if(isRicercaDecodifica(nomeTabella, TableConfigurazioniCostanti.CS_TB_TITOLO_STUDIO)) 
+						responseDTO.setTbTitoloStudio(estraiTbTitoloStudio());
+					
+					if(isRicercaDecodifica(nomeTabella, TableConfigurazioniCostanti.CS_TB_TIPOLOGIA_FAMILIARE)) 
+						responseDTO.setTbTipologiaFamiliare(estraiTipologieFamiliari());
+					
+					if(isRicercaDecodifica(nomeTabella, TableConfigurazioniCostanti.CS_TB_GRUPPO_VULNERABILE)) 
+						responseDTO.setTbGruppoVulnerabile(estraiGrVulnerabilita());
+					
+					if(isRicercaDecodifica(nomeTabella, TableConfigurazioniCostanti.CS_TB_STATO_CIVILE)) 
+						responseDTO.setTbStatoCivile(estraiStatoCivile());
+					
+					if(isRicercaDecodifica(nomeTabella, TableConfigurazioniCostanti.CS_TB_COND_LAVORO)) 
+						responseDTO.setTbCondLavoro(estraiCondLavoro());
+					
+					if(isRicercaDecodifica(nomeTabella, TableConfigurazioniCostanti.CS_TB_TI_COD_ISTAT))
+						responseDTO.setTbTiCodIstat(estraiPrestazioniIstat());
+					
+				 /* Per estrarre queste informazioni serve l'ente TITOLARE, non è sufficiente il capofila*/
+					if(isRicercaDecodifica(nomeTabella, TableConfigurazioniCostanti.AR_FONTE_FINANZIAMENTO)) 
+						responseDTO.setTbFonteFinanziamento(estraiFonteFinanziamento());
+					
+					if(isRicercaDecodifica(nomeTabella, TableConfigurazioniCostanti.AR_FF_PROGETTO)) 
+						responseDTO.setTbProgetto(estraiProgetti(inviante.getCodRouting()));
+						
+					if(this.isRicercaDecodifica(nomeTabella, TableConfigurazioniCostanti.AR_FSE_COND_ING_MERCATO_LAVORO))
+						responseDTO.setTbFseCondIngMercatoLavoro(estraiArFseChk(TableConfigurazioniCostanti.AR_FSE_COND_ING_MERCATO_LAVORO, SiruEnum.CONDIZIONE_MERCATO.name()));
+					
+					if(this.isRicercaDecodifica(nomeTabella, TableConfigurazioniCostanti.AR_FSE_AZ_DIMENSIONE))
+						responseDTO.setTbFseAzDimensione(estraiArFseChk(TableConfigurazioniCostanti.AR_FSE_AZ_DIMENSIONE, SiruEnum.DIMENSIONE_AZIENDA.name()));
+					
+					if(this.isRicercaDecodifica(nomeTabella, TableConfigurazioniCostanti.AR_FSE_DURATA_RICERCA_LAVORO))
+						responseDTO.setTbFseDurataRicercaLavoro(estraiArFseChk(TableConfigurazioniCostanti.AR_FSE_DURATA_RICERCA_LAVORO, SiruEnum.DURATA_RICERCA.name()));
+					
+					if(this.isRicercaDecodifica(nomeTabella, TableConfigurazioniCostanti.AR_FSE_GRUPPO_VULNERABILE))
+						responseDTO.setTbFseGruppoVulnerabile(estraiArFseChk(TableConfigurazioniCostanti.AR_FSE_GRUPPO_VULNERABILE, SiruEnum.GRUPPO_VUL_PART.name()));
+					
+					if(this.isRicercaDecodifica(nomeTabella, TableConfigurazioniCostanti.AR_FSE_ORARIO_LAVORO))
+						responseDTO.setTbFseOrarioLavoro(estraiArFseChk(TableConfigurazioniCostanti.AR_FSE_ORARIO_LAVORO, SiruEnum.TIPO_ORARIO_LAVORO.name()));
+					
+					if(this.isRicercaDecodifica(nomeTabella, TableConfigurazioniCostanti.AR_FSE_TIPOLOGIA_LAVORO))
+						responseDTO.setTbFseTipologiaLavoro(estraiArFseChk(TableConfigurazioniCostanti.AR_FSE_TIPOLOGIA_LAVORO, SiruEnum.TIPOLOGIA_LAVORO.name()));
+					
+					if(this.isRicercaDecodifica(nomeTabella, TableConfigurazioniCostanti.AR_FSE_TITOLO_STUDIO))
+						responseDTO.setTbFseTitoloStudio(estraiArFseChk(TableConfigurazioniCostanti.AR_FSE_TITOLO_STUDIO, SiruEnum.TITOLO_STUDIO.name()));					
 			}
 			
+
+		}catch(Throwable e){
+			logger.error(e.getMessage(), e);
+		}finally{
+			responseDTO.setEsito(this.esito);
+			responseDTO.setDescrizione(this.msg);
 		}
 		
 		return responseDTO;
@@ -379,9 +379,9 @@ public class AccessTableConfigurazioneSessionBeanClient   extends BaseSessionBea
 	public AccessTableConfigurazioneSessionBeanClient() throws NamingException {
 		super();
 		sb = (AccessTableConfigurazioneSessionBeanRemote) ClientUtility.getEjbInterface("CarSocialeA", "CarSocialeA_EJB", "AccessTableConfigurazioneSessionBean");
-		sb2 =  (AccessTableInterventoSessionBeanRemote) ClientUtility.getEjbInterface("CarSocialeA", "CarSocialeA_EJB", "AccessTableInterventoSessionBean");	
-		sb3 =  (SsSchedaSessionBeanRemote) ClientUtility.getEjbInterface("SegretariatoSoc", "SegretariatoSoc_EJB", "SsSchedaSessionBean");	
+		sb3 =  (ConfigurazioneSessionBeanRemote) ClientUtility.getEjbInterface("SegretariatoSoc", "SegretariatoSoc_EJB", "ConfigurazioneSessionBean");	
 		sb4 = (AccessTableConfigurazioneEnteSessionBeanRemote) ClientUtility.getEjbInterface("CarSocialeA", "CarSocialeA_EJB", "AccessTableConfigurazioneEnteSessionBean");
+		sbArFse = (AccessTableDominiSiruSessionBeanRemote)ClientUtility.getEjbInterface("CarSocialeA", "CarSocialeA_EJB","AccessTableDominiSiruSessionBean");
 		
 	}
 

@@ -2634,8 +2634,8 @@
     <query>
 			<![CDATA[
 				select sinaEsegs from CsDSinaEseg sinaEsegs
-				LEFT JOIN sinaEsegs.csTbSinaDomanda domanda
-				LEFT JOIN sinaEsegs.csTbSinaRisposta risposta
+				LEFT JOIN FETCH sinaEsegs.csTbSinaDomanda domanda
+				LEFT JOIN FETCH sinaEsegs.csTbSinaRisposta risposta
 				where sinaEsegs.id.sinaId  = :idSina
 				ORDER BY domanda.id asc
 			]]>
@@ -3234,7 +3234,8 @@
 		<query>
 			<![CDATA[			 
 				select psex from CsIPsExport psex 
-				where psex.csIInterventoEsegMast.id = :csIInterventoMastId and psex.flagEsportato = 1		
+				where psex.csIInterventoEsegMast.id = :csIInterventoMastId and psex.flagEsportato = 1
+				order by psex.dtExport desc
 				]]>
 		</query>
 	</named-query>

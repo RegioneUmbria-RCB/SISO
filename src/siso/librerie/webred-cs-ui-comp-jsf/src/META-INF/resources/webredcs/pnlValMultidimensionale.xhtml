@@ -146,20 +146,20 @@
 								<p:spacer height="10"/>
 							</h:panelGrid>
 							<h:panelGrid columns="1" cellpadding="0" cellspacing="0">
-								<p:commandButton value="Apri Anagrafica Corrente" disabled="#{!cc.attrs.iSchedaMultidimAnz.apriAnaConvButton}" action="#{cc.attrs.iSchedaMultidimAnz.loadAnagConv}"  
-									oncomplete="PF('famAnaCorrDialog').show()" onstart="famAnaConv.unselectAllRows();" update=":#{p:component('famAnaCorrDialog')}" />
+								<p:commandButton value="Aggiungi da anagrafica corrente" 
+												 disabled="#{empty cc.attrs.iSchedaMultidimAnz.famConvComponentes}" 
+												 action="#{cc.attrs.iSchedaMultidimAnz.loadAnagConv}"  
+												 oncomplete="PF('famAnaCorrenteDialog').show()" process="@this"
+												 onstart="famAnaConv.unselectAllRows();" update="@(.famAnaCorrenteDialogUpdate)" />
 								<p:spacer height="5"/>									
 							</h:panelGrid>	
 													
-							<p:dataTable id="famAnaConv" widgetVar="famAnaConv" styleClass="tableNoBg" 
+							<p:dataTable id="famAnaConv"  widgetVar="famAnaConv" styleClass="#{'tableNoBg updateOnAggiungiFam'}" 
 										 value="#{cc.attrs.iSchedaMultidimAnz.jsonCurrent.famAnaConvs}" 
 										 selection="#{cc.attrs.iSchedaMultidimAnz.selectedfamAnaConvs}"
-										 emptyMessage="-" rowKey="#{famAnaConv.id}" var="famAnaConv">
-						        <p:ajax event="rowSelectCheckbox" listener="#{cc.attrs.iSchedaMultidimAnz.onRowSelectFamAnaConv}" update=":#{p:component('famAnaConv')}" />
-								<p:ajax event="rowUnselectCheckbox" listener="#{cc.attrs.iSchedaMultidimAnz.onRowUnselectFamAnaConv}" update=":#{p:component('famAnaConv')}" />
-						        <p:ajax event="rowSelect" listener="#{cc.attrs.iSchedaMultidimAnz.onRowSelectFamAnaConv}" update=":#{p:component('famAnaConv')}" />
-								<p:ajax event="rowUnselect" listener="#{cc.attrs.iSchedaMultidimAnz.onRowUnselectFamAnaConv}" update=":#{p:component('famAnaConv')}" />
-						        
+										 emptyMessage="Nessun familiare convivente inserito" 
+										 rowKey="#{famAnaConv.id}" var="famAnaConv">
+						     
 						        <p:column selectionMode="multiple" style="width:2%;text-align:center"/>
 					    
 						        <p:column headerText="Cognome">
@@ -191,7 +191,8 @@
 						        </p:column>
 						        
 						        <f:facet name="footer">
-									<p:commandButton action="#{cc.attrs.iSchedaMultidimAnz.removeAnaConv}" disabled="#{cc.attrs.iSchedaMultidimAnz.removeAnaConvButton}" update=":#{p:component('famAnaConv')}" value="Rimuovi" />
+									<p:commandButton action="#{cc.attrs.iSchedaMultidimAnz.removeAnaConv}" 
+													 update="@parent" value="Rimuovi" />
 								</f:facet>
 						    </p:dataTable>
 						
@@ -223,30 +224,19 @@
 							</p:panelGrid>
 							
 							<h:panelGrid columns="1" cellpadding="0" cellspacing="0">
-								<p:commandButton value="Apri Anagrafica Corrente" action="#{cc.attrs.iSchedaMultidimAnz.loadAnagNonConv}" 
-									oncomplete="PF('famAnaCorrDialog').show()"
-									disabled="#{!cc.attrs.iSchedaMultidimAnz.apriAnaNonConvButton}" 
-									onstart="famAnaNonConv.unselectAllRows();" update=":#{p:component('famAnaCorrDialog')}" />
+								<p:commandButton value="Aggiungi da anagrafica corrente" 
+									action="#{cc.attrs.iSchedaMultidimAnz.loadAnagNonConv}" process="@this"
+									oncomplete="PF('famAnaCorrenteDialog').show()"
+									disabled="#{empty cc.attrs.iSchedaMultidimAnz.famNonConvComponentes}" 
+									onstart="famAnaNonConv.unselectAllRows();" update="@(.famAnaCorrenteDialogUpdate)" />
 								<p:spacer height="5"/>
 							</h:panelGrid>
 					
-							<p:dataTable id="famAnaNonConv" widgetVar="famAnaNonConv" styleClass="tableNoBg"
+							<p:dataTable id="famAnaNonConv" widgetVar="famAnaNonConv" styleClass="#{'tableNoBg updateOnAggiungiFam'}"
 								value="#{cc.attrs.iSchedaMultidimAnz.jsonCurrent.famAnaNonConvs}"
 								selection="#{cc.attrs.iSchedaMultidimAnz.selectedfamAnaNonConvs}" 
-								emptyMessage="-"
+								emptyMessage="Nessun familiare non convivente inserito"
 								rowKey="#{famAnaNonConv.id}" var="famAnaNonConv">
-								<p:ajax event="rowSelectCheckbox"
-									listener="#{cc.attrs.iSchedaMultidimAnz.onRowSelectFamAnaNonConv}"
-									update=":#{p:component('famAnaNonConv')}" />
-								<p:ajax event="rowUnselectCheckbox"
-									listener="#{cc.attrs.iSchedaMultidimAnz.onRowUnselectFamAnaNonConv}"
-									update=":#{p:component('famAnaNonConv')}" />
-								<p:ajax event="rowSelect"
-									listener="#{cc.attrs.iSchedaMultidimAnz.onRowSelectFamAnaNonConv}"
-									update=":#{p:component('famAnaNonConv')}" />
-								<p:ajax event="rowUnselect"
-									listener="#{cc.attrs.iSchedaMultidimAnz.onRowUnselectFamAnaNonConv}"
-									update=":#{p:component('famAnaNonConv')}" />
 					
 								<p:column selectionMode="multiple"
 									style="width:2%;text-align:center" />
@@ -282,8 +272,7 @@
 								<f:facet name="footer">
 									<p:commandButton
 										action="#{cc.attrs.iSchedaMultidimAnz.removeAnaNonConv}"
-										disabled="#{cc.attrs.iSchedaMultidimAnz.removeAnaNonConvButton}"
-										update=":#{p:component('famAnaNonConv')}" value="Rimuovi" />
+										update="@parent" value="Rimuovi" />
 								</f:facet>
 							</p:dataTable>
 							<p:spacer height="20"/>
@@ -336,17 +325,17 @@
 								<p:spacer height="15" />
 								<p:row>
 									<p:column colspan="2">
-										<h:panelGrid columns="1" cellpadding="0" cellspacing="0">
-											<p:commandButton value="Apri Anagrafica Corrente" disabled="#{!cc.attrs.iSchedaMultidimAnz.apriAltrifamButton}" action="#{cc.attrs.iSchedaMultidimAnz.loadAnagAltri}"  
-												oncomplete="PF('famAnaCorrDialog').show()" onstart="famAnaAltri.unselectAllRows();" update=":#{p:component('famAnaCorrDialog')}" />				
-											<p:spacer height="5"/>
-										</h:panelGrid>
+										<p:commandButton value="Aggiungi da anagrafica corrente" 
+															disabled="#{empty cc.attrs.iSchedaMultidimAnz.famAltriComponentes}" 
+															action="#{cc.attrs.iSchedaMultidimAnz.loadAnagAltri}"  process="@this"
+															oncomplete="PF('famAnaCorrenteDialog').show()" onstart="famAnaAltri.unselectAllRows();" 
+															update="@(.famAnaCorrenteDialogUpdate)" />				
 																
-										<p:dataTable id="famAnaAltri" widgetVar="famAnaAltri" styleClass="tableNoBg" value="#{cc.attrs.iSchedaMultidimAnz.jsonCurrent.famAnaAltris}" selection="#{cc.attrs.iSchedaMultidimAnz.selectedfamAnaAltris}" rowKey="#{famAnaAltri.id}" var="famAnaAltri">
-									        <p:ajax event="rowSelectCheckbox" listener="#{cc.attrs.iSchedaMultidimAnz.onRowSelectFamAnaAltri}" update=":#{p:component('famAnaAltri')}" />
-											<p:ajax event="rowUnselectCheckbox" listener="#{cc.attrs.iSchedaMultidimAnz.onRowUnselectFamAnaAltri}" update=":#{p:component('famAnaAltri')}" />
-									        <p:ajax event="rowSelect" listener="#{cc.attrs.iSchedaMultidimAnz.onRowSelectFamAnaAltri}" update=":#{p:component('famAnaAltri')}" />
-											<p:ajax event="rowUnselect" listener="#{cc.attrs.iSchedaMultidimAnz.onRowUnselectFamAnaAltri}" update=":#{p:component('famAnaAltri')}" />
+										<p:dataTable id="famAnaAltri" widgetVar="famAnaAltri" styleClass="#{'tableNoBg updateOnAggiungiFam'}" 
+													 value="#{cc.attrs.iSchedaMultidimAnz.jsonCurrent.famAnaAltris}" 
+													 selection="#{cc.attrs.iSchedaMultidimAnz.selectedfamAnaAltris}" 
+													 rowKey="#{famAnaAltri.id}" var="famAnaAltri"
+													 emptyMessage="Nessun soggetto inserito">
 									        
 									        <p:column selectionMode="multiple" style="width:2%;text-align:center"/>
 						      
@@ -379,7 +368,8 @@
 									        </p:column>
 									        
 									        <f:facet name="footer">
-												<p:commandButton action="#{cc.attrs.iSchedaMultidimAnz.removeAnaAltri}" disabled="#{cc.attrs.iSchedaMultidimAnz.removeAnaAltriButton}" update=":#{p:component('famAnaAltri')}" value="Rimuovi" />
+												<p:commandButton action="#{cc.attrs.iSchedaMultidimAnz.removeAnaAltri}" process="@parent" partialSubmit="true"
+																 update="@parent" value="Rimuovi" />
 											</f:facet>
 									    </p:dataTable>
 								    </p:column>
@@ -940,19 +930,18 @@
 							<p:spacer height="10"/>
 						</h:panelGrid>
 						<h:panelGrid columns="1" cellpadding="0" cellspacing="0">
-							<p:commandButton value="Apri Anagrafica Corrente" disabled="#{!cc.attrs.iSchedaMultidimAnz.apriAnaConvButton}" action="#{cc.attrs.iSchedaMultidimAnz.loadAnagConv}"  
-								oncomplete="PF('famAnaCorrDialog').show()" onstart="famAnaConv.unselectAllRows();" update=":#{p:component('famAnaCorrDialog')}" />
+							<p:commandButton value="Aggiungi da anagrafica corrente" 
+											disabled="#{empty cc.attrs.iSchedaMultidimAnz.famConvComponentes}" 
+											action="#{cc.attrs.iSchedaMultidimAnz.loadAnagConv}" process="@this" 
+											oncomplete="PF('famAnaCorrenteDialog').show()" onstart="famAnaConv.unselectAllRows();" 
+											update="@(.famAnaCorrenteDialogUpdate)" />
 							<p:spacer height="5"/>									
 						</h:panelGrid>	
 												
-						<p:dataTable id="famAnaConv" widgetVar="famAnaConv" styleClass="tableNoBg" 
+						<p:dataTable id="famAnaConv" widgetVar="famAnaConv" styleClass="#{'tableNoBg updateOnAggiungiFam'}" 
 									 value="#{cc.attrs.iSchedaMultidimAnz.jsonCurrent.famAnaConvs}" 
 									 selection="#{cc.attrs.iSchedaMultidimAnz.selectedfamAnaConvs}"
-									 emptyMessage="-" rowKey="#{famAnaConv.id}" var="famAnaConv">
-					        <p:ajax event="rowSelectCheckbox" listener="#{cc.attrs.iSchedaMultidimAnz.onRowSelectFamAnaConv}" update=":#{p:component('famAnaConv')}" />
-							<p:ajax event="rowUnselectCheckbox" listener="#{cc.attrs.iSchedaMultidimAnz.onRowUnselectFamAnaConv}" update=":#{p:component('famAnaConv')}" />
-					        <p:ajax event="rowSelect" listener="#{cc.attrs.iSchedaMultidimAnz.onRowSelectFamAnaConv}" update=":#{p:component('famAnaConv')}" />
-							<p:ajax event="rowUnselect" listener="#{cc.attrs.iSchedaMultidimAnz.onRowUnselectFamAnaConv}" update=":#{p:component('famAnaConv')}" />
+									 emptyMessage="Nessun familiare convivente inserito" rowKey="#{famAnaConv.id}" var="famAnaConv">
 					        
 					        <p:column selectionMode="multiple" style="width:2%;text-align:center"/>
 				    
@@ -985,7 +974,9 @@
 					        </p:column>
 					        
 					        <f:facet name="footer">
-								<p:commandButton action="#{cc.attrs.iSchedaMultidimAnz.removeAnaConv}" disabled="#{cc.attrs.iSchedaMultidimAnz.removeAnaConvButton}" update=":#{p:component('famAnaConv')}" value="Rimuovi" />
+								<p:commandButton action="#{cc.attrs.iSchedaMultidimAnz.removeAnaConv}"  
+												 process="@parent" partialSubmit="true"
+												 update="@parent" value="Rimuovi" />
 							</f:facet>
 					    </p:dataTable>
 					
@@ -1017,33 +1008,22 @@
 						</p:panelGrid>
 						
 						<h:panelGrid columns="1" cellpadding="0" cellspacing="0">
-							<p:commandButton value="Apri Anagrafica Corrente" action="#{cc.attrs.iSchedaMultidimAnz.loadAnagNonConv}" 
-								oncomplete="PF('famAnaCorrDialog').show()"
-								disabled="#{!cc.attrs.iSchedaMultidimAnz.apriAnaNonConvButton}" 
-								onstart="famAnaNonConv.unselectAllRows();" update=":#{p:component('famAnaCorrDialog')}" />
+							<p:commandButton value="Aggiungi da anagrafica corrente" 
+								action="#{cc.attrs.iSchedaMultidimAnz.loadAnagNonConv}" process="@this"
+								oncomplete="PF('famAnaCorrenteDialog').show()"
+								disabled="#{empty cc.attrs.iSchedaMultidimAnz.famNonConvComponentes}" 
+								onstart="famAnaNonConv.unselectAllRows();" 
+								update="@(.famAnaCorrenteDialogUpdate)" />
 							<p:spacer height="5"/>
 						</h:panelGrid>
 				
-						<p:dataTable id="famAnaNonConv" widgetVar="famAnaNonConv" styleClass="tableNoBg"
+						<p:dataTable id="famAnaNonConv" widgetVar="famAnaNonConv" styleClass="#{'tableNoBg updateOnAggiungiFam'}"
 							value="#{cc.attrs.iSchedaMultidimAnz.jsonCurrent.famAnaNonConvs}"
 							selection="#{cc.attrs.iSchedaMultidimAnz.selectedfamAnaNonConvs}" 
-							emptyMessage="-"
+							emptyMessage="Nessun familiare non convivente inserito"
 							rowKey="#{famAnaNonConv.id}" var="famAnaNonConv">
-							<p:ajax event="rowSelectCheckbox"
-								listener="#{cc.attrs.iSchedaMultidimAnz.onRowSelectFamAnaNonConv}"
-								update=":#{p:component('famAnaNonConv')}" />
-							<p:ajax event="rowUnselectCheckbox"
-								listener="#{cc.attrs.iSchedaMultidimAnz.onRowUnselectFamAnaNonConv}"
-								update=":#{p:component('famAnaNonConv')}" />
-							<p:ajax event="rowSelect"
-								listener="#{cc.attrs.iSchedaMultidimAnz.onRowSelectFamAnaNonConv}"
-								update=":#{p:component('famAnaNonConv')}" />
-							<p:ajax event="rowUnselect"
-								listener="#{cc.attrs.iSchedaMultidimAnz.onRowUnselectFamAnaNonConv}"
-								update=":#{p:component('famAnaNonConv')}" />
-				
-							<p:column selectionMode="multiple"
-								style="width:2%;text-align:center" />
+							
+							<p:column selectionMode="multiple" style="width:2%;text-align:center" />
 				
 							<p:column headerText="Cognome">
 								<h:outputText value="#{famAnaNonConv.cognome}" />
@@ -1075,9 +1055,8 @@
 				
 							<f:facet name="footer">
 								<p:commandButton
-									action="#{cc.attrs.iSchedaMultidimAnz.removeAnaNonConv}"
-									disabled="#{cc.attrs.iSchedaMultidimAnz.removeAnaNonConvButton}"
-									update=":#{p:component('famAnaNonConv')}" value="Rimuovi" />
+									action="#{cc.attrs.iSchedaMultidimAnz.removeAnaNonConv}" process="@parent" partialSubmit="true"
+									update="@parent" value="Rimuovi" />
 							</f:facet>
 						</p:dataTable>
 						
@@ -1121,17 +1100,15 @@
 							<p:spacer height="15" />
 							<p:row>
 								<p:column colspan="2">
-									<h:panelGrid columns="1" cellpadding="0" cellspacing="0">
-										<p:commandButton value="Apri Anagrafica Corrente" disabled="#{!cc.attrs.iSchedaMultidimAnz.apriAltrifamButton}" action="#{cc.attrs.iSchedaMultidimAnz.loadAnagAltri}"  
-											oncomplete="PF('famAnaCorrDialog').show()" onstart="famAnaAltri.unselectAllRows();" update=":#{p:component('famAnaCorrDialog')}" />				
-										<p:spacer height="5"/>
-									</h:panelGrid>
+									<p:commandButton value="Aggiungi da anagrafica corrente" 
+														 disabled="#{empty cc.attrs.iSchedaMultidimAnz.famAltriComponentes}" 
+														 action="#{cc.attrs.iSchedaMultidimAnz.loadAnagAltri}"  process="@this"
+														 oncomplete="PF('famAnaCorrenteDialog').show()" onstart="famAnaAltri.unselectAllRows();" update="@(.famAnaCorrenteDialogUpdate)" />				
 															
-									<p:dataTable id="famAnaAltri" widgetVar="famAnaAltri" styleClass="tableNoBg" value="#{cc.attrs.iSchedaMultidimAnz.jsonCurrent.famAnaAltris}" selection="#{cc.attrs.iSchedaMultidimAnz.selectedfamAnaAltris}" rowKey="#{famAnaAltri.id}" var="famAnaAltri">
-								        <p:ajax event="rowSelectCheckbox" listener="#{cc.attrs.iSchedaMultidimAnz.onRowSelectFamAnaAltri}" update=":#{p:component('famAnaAltri')}" />
-										<p:ajax event="rowUnselectCheckbox" listener="#{cc.attrs.iSchedaMultidimAnz.onRowUnselectFamAnaAltri}" update=":#{p:component('famAnaAltri')}" />
-								        <p:ajax event="rowSelect" listener="#{cc.attrs.iSchedaMultidimAnz.onRowSelectFamAnaAltri}" update=":#{p:component('famAnaAltri')}" />
-										<p:ajax event="rowUnselect" listener="#{cc.attrs.iSchedaMultidimAnz.onRowUnselectFamAnaAltri}" update=":#{p:component('famAnaAltri')}" />
+									<p:dataTable id="famAnaAltri" widgetVar="famAnaAltri" styleClass="#{'tableNoBg updateOnAggiungiFam'}" 
+												 value="#{cc.attrs.iSchedaMultidimAnz.jsonCurrent.famAnaAltris}" 
+												 emptyMessage="Nessun soggetto inserito"
+												 selection="#{cc.attrs.iSchedaMultidimAnz.selectedfamAnaAltris}" rowKey="#{famAnaAltri.id}" var="famAnaAltri">
 								        
 								        <p:column selectionMode="multiple" style="width:2%;text-align:center"/>
 					      
@@ -1164,7 +1141,8 @@
 								        </p:column>
 								        
 								        <f:facet name="footer">
-											<p:commandButton action="#{cc.attrs.iSchedaMultidimAnz.removeAnaAltri}" disabled="#{cc.attrs.iSchedaMultidimAnz.removeAnaAltriButton}" update=":#{p:component('famAnaAltri')}" value="Rimuovi" />
+											<p:commandButton action="#{cc.attrs.iSchedaMultidimAnz.removeAnaAltri}" process="@parent" partialSubmit="true"
+															 update="@parent" value="Rimuovi" />
 										</f:facet>
 								    </p:dataTable>
 							    </p:column>
@@ -1512,6 +1490,60 @@
 				</p:tab>
 			</p:tabView>
 			
+						<!-- INIZIO ANAGRAFICA CORRENTE DIALOG -->
+			<p:dialog id="famAnaCorrenteDialog" widgetVar="famAnaCorrenteDialog" 
+					  styleClass="anagCorrente" header="Anagrafica Corrente" 
+	   				  modal="false" maximizable="true" draggable="true" resizable="true">
+	   			
+	   			<p:outputPanel>
+				   	<p:dataTable id="famAnaCorr" styleClass="#{'tableNoBg famAnaCorrenteDialogUpdate'}" 
+				   		value="#{cc.attrs.iSchedaMultidimAnz.dialogFamComponentes}"
+			    		selection="#{cc.attrs.iSchedaMultidimAnz.dialogSelectedFamComponentes}" 
+			    		rowKey="#{famComponente.csAAnagrafica.id}" var="famComponente"
+			    		emptyMessage="Tutti i soggetti disponibili sono già stati aggiunti">
+						   
+				        <p:column selectionMode="multiple" style="width:2%;text-align:center"/>
+				        
+				        <p:column headerText="Cognome">
+				            <h:outputText value="#{famComponente.csAAnagrafica.cognome}" />
+				        </p:column>
+				 
+				        <p:column headerText="Nome">
+				            <h:outputText value="#{famComponente.csAAnagrafica.nome}" />
+				        </p:column>
+				 
+				        <p:column headerText="Indirizzo">
+				            <h:outputText value="#{famComponente.indirizzoRes}" />
+				        </p:column>
+				 
+				        <p:column headerText="Città">
+				            <h:outputText value="#{famComponente.comResDes}" />
+				        </p:column>
+				        
+				        <p:column headerText="Parentela">
+				            <h:outputText value="#{famComponente.csTbTipoRapportoCon.descrizione}" />
+				        </p:column>
+				        
+				        <p:column headerText="Telefono">
+				            <h:outputText value="#{famComponente.csAAnagrafica.tel}" />
+				        </p:column>
+				        
+				        <p:column headerText="Disponibilità">
+				            <h:outputText value="#{famComponente.csTbDisponibilita.descrizione}" />
+				        </p:column>
+				        
+						<f:facet name="footer">
+							<p:commandButton value="Aggiungi" 
+							action="#{cc.attrs.iSchedaMultidimAnz.addAnaCorr}" process="famAnaCorr"  
+							update="@(.updateOnAggiungiFam)" 
+							oncomplete="PF('famAnaCorrenteDialog').hide()" />
+						</f:facet>
+				    </p:dataTable>
+	   				
+	   			</p:outputPanel>
+	   				
+		    </p:dialog>
+		    <!-- FINE ANAGRAFICA CORRENTE DIALOG -->
 		</composite:implementation>
 	</h:body>
 		

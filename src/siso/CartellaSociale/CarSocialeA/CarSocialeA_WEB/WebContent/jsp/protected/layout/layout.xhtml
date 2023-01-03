@@ -280,6 +280,10 @@
 										action="#{datiCasoBean.loadDatiCaso}" update=":frmDatiCaso"
 										oncomplete="wdgDatiCasoModal.show()"
 										disabled="#{schedaBean.disableHead}" />
+									<p:menuitem value="#{userBean.labelAppCartellaEsterna}" icon="ui-icon-link"
+										rendered="#{userBean.renderUrlAppCartellaEsterna}"
+										target="cartella_esterna"
+                                		url="#{userBean.getUrlAppCartellaEsterna(soggetto != null? soggetto.csAAnagrafica.cf : '')}"/>
 									<p:menuitem value="Inform. Governative" icon="ui-icon-suitcase"
 										title="Informazioni integrative sul soggetto, provenienti dagli archivi comunali e catastali"
 										action="#{soggettoGitBean.loadDatiSoggettoGit}"

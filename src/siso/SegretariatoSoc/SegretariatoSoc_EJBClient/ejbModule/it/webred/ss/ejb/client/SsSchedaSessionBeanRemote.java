@@ -137,8 +137,6 @@ public interface SsSchedaSessionBeanRemote {
 	public List<SsAnagrafica> readAnagraficheByAlias(BaseDTO dto);
 	public SsAnagraficaLog findAnagraficaLogById(BaseDTO dto);
 	public List<BigDecimal> findUfficioNota(BaseDTO dto);
-	//SISO-1160
-	public List<String> readInterventiTrascodifiche (BaseDTO dto);
 	
 	public DatiPrivacyPdfDTO getDatiReportPrivacy(BaseDTO dto);
 	public DatiSchedaPdfDTO getDatiReportScheda(BaseDTO dto);

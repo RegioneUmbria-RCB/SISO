@@ -1,5 +1,13 @@
 package it.webred.rulengine.diagnostics.superclass;
 
+import java.lang.reflect.Constructor;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.util.List;
+import java.util.Properties;
+
+import org.apache.log4j.Logger;
+
 import it.webred.rulengine.Command;
 import it.webred.rulengine.Context;
 import it.webred.rulengine.brick.bean.ApplicationAck;
@@ -11,15 +19,6 @@ import it.webred.rulengine.diagnostics.ElaboraDiagnosticsNonStandard;
 import it.webred.rulengine.diagnostics.ElaboraDiagnosticsSql;
 import it.webred.rulengine.exception.CommandException;
 import it.webred.rulengine.impl.bean.BeanCommand;
-
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.util.List;
-import java.util.Properties;
-
-import org.apache.log4j.Logger;
 
 public abstract class AbstractDiagnostics extends Command {
 	

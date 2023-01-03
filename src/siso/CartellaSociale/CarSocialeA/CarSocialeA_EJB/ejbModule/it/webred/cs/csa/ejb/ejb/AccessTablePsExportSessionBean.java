@@ -139,6 +139,14 @@ public class AccessTablePsExportSessionBean extends CarSocialeBaseSessionBean im
 		return exportCasellarioDao.verificaErogazioniEsportateByEsegIds(ids);
 	}
 	
+	@Override
+	public Boolean verificaErogazioneEsportataByEsegId(BaseDTO dto) {
+		Long id = (Long)dto.getObj();
+		List<Long> lst = new ArrayList<Long>();
+		lst.add(id);
+		return exportCasellarioDao.verificaErogazioniEsportateByEsegIds(lst);
+	}
+	
 	/*
 	 * @Override public List<CsIPsExport>
 	 * findCsIPsExportByCsIInterventoMastId(BaseDTO dto) { Long id = (Long)

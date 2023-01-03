@@ -1,11 +1,8 @@
 package it.escsolution.escwebgis.acqua.bean;
 
-import it.escsolution.escwebgis.common.EscObject;
-import it.escsolution.escwebgis.cosapNew.bean.CosapTassa;
-
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Date;
+
+import it.escsolution.escwebgis.common.EscObject;
 
 public class AcquaCatasto extends EscObject implements Serializable {
 

@@ -5,7 +5,8 @@ import java.io.Serializable;
 public class TabellaDecodificaExtDTO extends TabellaDecodificaBaseDTO implements Serializable{
 
 	private String cod;
-
+	private String tooltip;
+	
 	public String getCod() {
 		return cod;
 	}
@@ -13,6 +14,13 @@ public class TabellaDecodificaExtDTO extends TabellaDecodificaBaseDTO implements
 	public void setCod(String cod) {
 		this.cod = cod;
 	}
-	
+
+	public String getTooltip() {
+		return tooltip;
+	}
+
+	public void setTooltip(String tooltip) {
+		this.tooltip = tooltip;
+	}
 	
 }

@@ -9,8 +9,8 @@ import javax.faces.component.UINamingContainer;
 import javax.faces.context.FacesContext;
 
 
-@FacesComponent(value="pnlSchedaMultidimAnz")
-public class pnlSchedaMultidimAnz extends UINamingContainer implements Serializable  {
+@FacesComponent(value="pnlValSinaRiepilogo")
+public class pnlValSinaRiepilogo extends UINamingContainer implements Serializable  {
 
 	/**
 	 * 

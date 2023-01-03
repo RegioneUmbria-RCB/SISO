@@ -20,7 +20,7 @@ public class DatiFamigliaBean {
 	private String nazioneResidenza;
 	private SelectItem nazioneResidenzaItem;
 	private int regione;
-	private int minoreStranieroAccompagnato;
+	private int minoreStranieroNonAccompagnato;
 	
 	@JsonIgnore private int composizioneFamiglia;
 	@JsonIgnore private String cittadinanza;
@@ -158,12 +158,12 @@ public class DatiFamigliaBean {
 		this.regione = regione;
 	}
 
-	public int getMinoreStranieroAccompagnato() {
-		return minoreStranieroAccompagnato;
+	public int getMinoreStranieroNonAccompagnato() {
+		return minoreStranieroNonAccompagnato;
 	}
 
-	public void setMinoreStranieroAccompagnato(int minoreStranieroAccompagnato) {
-		this.minoreStranieroAccompagnato = minoreStranieroAccompagnato;
+	public void setMinoreStranieroNonAccompagnato(int minoreStranieroNonAccompagnato) {
+		this.minoreStranieroNonAccompagnato = minoreStranieroNonAccompagnato;
 	}
 
 	public int getComposizioneFamiglia() {

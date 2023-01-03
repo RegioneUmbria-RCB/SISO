@@ -2136,4 +2136,19 @@ public class CsUiCompBaseBean {
 		return luoghiService.isComuneAttivoByIstat(codIstat);
 	}
 	
+	public static String getLinkAppEsternaLabel() {
+		String val = getGlobalParameter(DataModelCostanti.AmParameterKey.LINK_APP_ESTERNA_LABEL);
+		return val;
+	}
+	
+	public static String getLinkAppEsternaUrl() {
+		String val = "";
+		val = getGlobalParameter(DataModelCostanti.AmParameterKey.LINK_APP_ESTERNA_URL);
+		return val;
+	}
+	
+	public static String getLinkAppEsternaToken() {
+		String val = getGlobalParameter(DataModelCostanti.AmParameterKey.LINK_APP_ESTERNA_TOKEN);
+		return val;
+	}
 }

@@ -1,6 +1,5 @@
 package it.webred.rulengine.brick.reperimento.executor.timertask;
 
-
 import it.webred.rulengine.Utils;
 import it.webred.rulengine.brick.reperimento.executor.logic.BasicLogic;
 import it.webred.rulengine.brick.reperimento.executor.logic.ListapProcessoLogic;
@@ -34,7 +33,12 @@ public class VerificaEsitoDaContextListenerTimerTask extends TimerTask {
 			//HashMap<String, Object> configurazione = bl.getConfigurazione();
 			
 			//cerco in C_EXEC_PROCESSO i record con ESITO null
-			String sql = "SELECT * FROM C_EXEC_PROCESSO A, C_PROCESSO B WHERE A.STATO = '" + ListapProcessoLogic.STATO_IN_ESECUZIONE +"' AND A.ESITO IS NULL AND A.FK_COD_LISTA = B.FK_COD_LISTA AND A.FK_COD_PROCESSO = B.COD_PROCESSO";
+			String sql = "SELECT C.* FROM (" + 
+						"SELECT A.*, B.TIPO_PROCESSO, B.COD_PROCESSO, B.NUM_ORDINE, B.TIMEOUT " +
+						"FROM C_EXEC_PROCESSO A, C_PROCESSO B " +
+						"WHERE A.STATO = '" + ListapProcessoLogic.STATO_IN_ESECUZIONE +"' AND A.ESITO IS NULL " +
+						"AND A.FK_COD_LISTA = B.FK_COD_LISTA AND A.FK_COD_PROCESSO = B.COD_PROCESSO" +
+						") C";
 			Statement st = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 			ResultSet rs = st.executeQuery(sql);
 			while (rs.next()) {

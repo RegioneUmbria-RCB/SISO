@@ -86,6 +86,10 @@ public class DatiProvvedimentoMan {
 			this.lstIndagine.add("Indagine psico-sociale");
 			this.lstIndagine.add("Indagine sociale");
 			this.lstIndagine.add("Altra Indagine");
+			this.lstIndagine.add("Affido al SS");
+			this.lstIndagine.add("Valutazione");
+			this.lstIndagine.add("Interventi psico-edu");
+			
 		}
 		if (this.lstAffidamento == null)
 		{

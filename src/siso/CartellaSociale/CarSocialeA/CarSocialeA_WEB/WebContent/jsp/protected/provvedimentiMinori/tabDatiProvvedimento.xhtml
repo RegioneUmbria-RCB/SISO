@@ -76,7 +76,8 @@
 		</p:fieldset>
 		<p:spacer height="10px" />
 		<p:fieldset id="legnetContProvv" legend="Contenuto Provvedimento" toggleable="false">
-				<p:selectManyCheckbox id="indaginePsiSoc" value="#{provMinoriTabManBean.jsonCurrent.datiProvvedimenti.selIndagine}" >
+				<p:selectManyCheckbox id="indaginePsiSoc" layout="grid" columns="3"
+									  value="#{provMinoriTabManBean.jsonCurrent.datiProvvedimenti.selIndagine}" >
 					<f:selectItems value="#{dataBean.lstIndagine}"/>
 				</p:selectManyCheckbox>
 			

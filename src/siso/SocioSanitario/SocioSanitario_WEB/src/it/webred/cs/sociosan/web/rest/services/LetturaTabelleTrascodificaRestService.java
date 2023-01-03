@@ -43,13 +43,13 @@ public class LetturaTabelleTrascodificaRestService  extends BaseAuthService<Tras
 	        	String	json = objectMapper.writeValueAsString(resp);
 				
 				
-			} catch (SocioSanitarioException e1) {
+	        	logger.debug("LetturaTabelleTrascodificaRestService - response "+ json);
+	        	
+			}catch (SocioSanitarioException e1) {
 				logger.error(e1);
 
-			}
-			catch (Exception e2) {
+			}catch (Exception e2) {
 				logger.error(e2);
-
 			}
 			return resp;
 		}

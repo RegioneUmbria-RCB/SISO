@@ -33,8 +33,15 @@ public class ConcessioneDTO extends CeTBaseObject {
 	
 	private String progAnno;
 	private String progNumero;
+	private String numProt;
 
 	
+	public String getNumProt() {
+		return numProt;
+	}
+	public void setNumProt(String numProt) {
+		this.numProt = numProt;
+	}
 	public String getProgNumero() {
 		return progNumero;
 	}
@@ -178,7 +185,9 @@ public class ConcessioneDTO extends CeTBaseObject {
 		
 		provenienza = conc.getProvenienza()!= null ? conc.getProvenienza() : "";
 		
-	}
+		setNumProt( conc.getProtocolloNumero());
+		
+		}
 	
 	public void valorizzaDatiConc(SitCConcessioni conc, List<SoggettoConcessioneDTO> listaSogg, String strImm, List<IndirizzoConcessioneDTO> listaIndirizzi ) {
 		valorizzaDatiConc(conc);

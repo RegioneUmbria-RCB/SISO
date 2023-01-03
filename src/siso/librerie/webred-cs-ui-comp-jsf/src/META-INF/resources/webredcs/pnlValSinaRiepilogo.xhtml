@@ -1,0 +1,35 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:composite="http://java.sun.com/jsf/composite">
+
+<h:head>
+	<title>Riepilogo valutazione Sina</title>
+</h:head>
+<h:body>
+	<composite:interface componentType="pnlValSinaRiepilogo">
+		<composite:attribute name="riepilogo" required="true" />
+		<composite:attribute name="valutaDopo" />
+	</composite:interface>
+	<composite:implementation
+		xmlns:webred="http://java.sun.com/jsf/composite/webred"
+		xmlns:webredcs="http://java.sun.com/jsf/composite/webredcs">
+			
+		<p:graphicImage id="imgTooltipSina" value="#{resource['webredcs/img/info.png']}"  styleClass="info" height="15px"/>	
+		<p:tooltip for="imgTooltipSina" styleClass="tooltip">
+			<ui:repeat value="#{cc.attrs.riepilogo}" var="domanda" rendered="#{!empty cc.attrs.riepilogo}">
+			   		<p:outputLabel value="#{domanda.descrizione} " />
+			   		<p:graphicImage value="#{resource['webredcs/img/check.png']}" width="10px" rendered="#{domanda.abilitato}"/>
+			   		<p:graphicImage value="#{resource['webredcs/img/cross.png']}" width="10px" rendered="#{!domanda.abilitato}"/>
+			   		<br/>
+			 </ui:repeat>
+		 </p:tooltip>
+	</composite:implementation>
+</h:body>
+
+</html>

@@ -15,6 +15,7 @@ public class ConfiguratoreDatiEsterniDTO implements Serializable {
 	private String nomeColonnaDataChiusura = null;
 	private String nomeColonnaServizioStato = null;
 	private String nomeColonnaEntitaServizio = null;
+	private String nomeColonnaEntitaServizioUnitaMisura = null;
 	
 	public String getNomeColonnaEntitaServizio() {
 		return nomeColonnaEntitaServizio;
@@ -70,7 +71,10 @@ public class ConfiguratoreDatiEsterniDTO implements Serializable {
 	public void setNomeColonnaIndirizzo(String nomeColonnaIndirizzo) {
 		this.nomeColonnaIndirizzo = nomeColonnaIndirizzo;
 	}
-
-	
-	
+	public String getNomeColonnaEntitaServizioUnitaMisura() {
+		return nomeColonnaEntitaServizioUnitaMisura;
+	}
+	public void setNomeColonnaEntitaServizioUnitaMisura(String nomeColonnaEntitaServizioUnitaMisura) {
+		this.nomeColonnaEntitaServizioUnitaMisura = nomeColonnaEntitaServizioUnitaMisura;
+	}
 }

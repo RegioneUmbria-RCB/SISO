@@ -5,11 +5,8 @@ import java.io.Serializable;
 public class TabellaDecodificaDTO extends TabellaDecodificaBaseDTO implements Serializable {
 	
 	private String id;
-	
-	 
-	private String note;
-	
-	 
+	private String tooltip;
+ 
 	public String getId() {
 		return id;
 	}
@@ -18,17 +15,12 @@ public class TabellaDecodificaDTO extends TabellaDecodificaBaseDTO implements Se
 		this.id = id;
 	}
 
-	 
-
-	public String getNote() {
-		return note;
+	public String getTooltip() {
+		return tooltip;
 	}
 
-	public void setNote(String note) {
-		this.note = note;
+	public void setTooltip(String tooltip) {
+		this.tooltip = tooltip;
 	}
-
-	 
-	
 
 }

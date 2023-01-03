@@ -1,37 +1,19 @@
 package it.webred.ct.rulengine.web.bean.abcomandi;
 
-import it.webred.ct.config.model.AmComune;
-import it.webred.ct.config.model.AmFonteComune;
-import it.webred.ct.config.model.AmKeyValueExt;
-import it.webred.ct.config.parameters.dto.ParameterSearchCriteria;
-import it.webred.ct.rulengine.controller.model.RAnagStati;
-import it.webred.ct.rulengine.controller.model.RCommand;
-import it.webred.ct.rulengine.controller.model.RCommandLaunch;
-import it.webred.ct.rulengine.controller.model.RCommandType;
-import it.webred.ct.rulengine.controller.model.REnteEsclusioni;
-import it.webred.ct.rulengine.controller.model.RProcessMonitor;
-import it.webred.ct.rulengine.controller.model.RProcessMonitorPK;
-import it.webred.ct.rulengine.controller.model.RTracciaStati;
-import it.webred.ct.rulengine.dto.AbComandiDTO;
-import it.webred.ct.rulengine.dto.EnteEsclusioniDTO;
-import it.webred.ct.rulengine.dto.LogDTO;
-import it.webred.ct.rulengine.dto.MonitorDTO;
-import it.webred.ct.rulengine.dto.Task;
-import it.webred.ct.rulengine.web.bean.scheduler.SMonitorBean;
-import it.webred.ct.rulengine.web.bean.util.UploadBean;
-
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Properties;
 
 import javax.annotation.PostConstruct;
 import javax.faces.model.SelectItem;
 
 import org.apache.log4j.Logger;
+
+import it.webred.ct.config.model.AmComune;
+import it.webred.ct.rulengine.controller.model.RCommandType;
+import it.webred.ct.rulengine.controller.model.REnteEsclusioni;
+import it.webred.ct.rulengine.dto.AbComandiDTO;
+import it.webred.ct.rulengine.dto.EnteEsclusioniDTO;
 
 public class AbComandiBean extends AbComandiBaseBean implements Serializable {
 

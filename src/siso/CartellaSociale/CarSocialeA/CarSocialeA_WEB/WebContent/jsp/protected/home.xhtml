@@ -11,54 +11,63 @@
 	<ui:define name="content">
 		<h:form id="frmNuovaCartella">
 			<p:panel id="palel1" header="">		
-				<h:panelGrid id="panelG1" columns="10">
 					<p:commandButton id="listacb" value="Lista casi"  
 					    rendered="#{navigationBean.renderListaCasi}" 
-					    action="#{navigationBean.goListaCasi(true)}"/>
+					    action="#{navigationBean.goListaCasi(true)}"
+					    style="display: inline-block; vertical-align: top;"/>
 					
 					<!-- SISO-812 -->
 					<p:commandButton id="listacba" value="Lista casi assegnati"  
 					    rendered="#{navigationBean.renderListaCasi}" 
-					    action="#{navigationBean.goListaCasiAssegnati(true)}"/>
+					    action="#{navigationBean.goListaCasiAssegnati(true)}"
+					    style="display: inline-block; vertical-align: top;"/>
 					    
 					<p:commandButton id="schedesegrb" value="Schede #{navigationBean.labelSegrSociale}" 
 					    rendered="#{listaSchedeSegrBean.renderListaSchedeSegr}"
-						action="#{navigationBean.goSchedeSegretariato}"/>
+						action="#{navigationBean.goSchedeSegretariato}"
+						style="display: inline-block; vertical-align: top;"/>
 						
 					<p:commandButton id="schedeRdC" value="Reddito di Cittadinanza" 
 					    rendered="#{listaReddCittadinanzaBean.accessoDatiRdC}"
-						action="#{navigationBean.goRedditoCittadinanza}"/>	
+						action="#{navigationBean.goRedditoCittadinanza}"
+						style="display: inline-block; vertical-align: top;"/>	
 					
 					<p:commandButton id="exportdatiFSE" value="Prestazioni POR-FSE" 
 				    	rendered="#{listaFseBean.renderListaFse}" 
-						action="#{navigationBean.goListaFse}"/>
+						action="#{navigationBean.goListaFse}"
+						style="display: inline-block; vertical-align: top;"/>
 					
 					<!-- SISO-1280, Inizio -->
 					<p:commandButton id="progettiIndividuali" value="Progetti Individuali" 
 						rendered="#{navigationBean.abilitaProgettiIndividuali}" 
-						action="#{navigationBean.goProgettiIndividuali}"/>
+						action="#{navigationBean.goProgettiIndividuali}"
+						style="display: inline-block; vertical-align: top;"/>
 					<!-- SISO-1280, Fine -->
 					
 					<p:commandButton id="erogazionib" value="Erogazioni Interventi" 
 					    rendered="#{navigationBean.abilitaErogazioneInterventi}" 
-					    action="#{navigationBean.goErogazioniInterventi}" />
+					    action="#{navigationBean.goErogazioniInterventi}"
+					    style="display: inline-block; vertical-align: top;" />
 				
 					<p:commandButton id="exportcasellb" value="Esporta SIUSS" 
 					    rendered="#{navigationBean.esportaCasellario}" 
-						action="#{navigationBean.goEsportaCasellario}" icon = "ui-icon-arrowthickstop-1-n"/>
+						action="#{navigationBean.goEsportaCasellario}" icon = "ui-icon-arrowthickstop-1-n"
+						style="display: inline-block; vertical-align: top;"/>
 						
 					<p:commandButton id="exportdatisinbab" value="Esporta SINBA" 
 				    	rendered="#{navigationBean.esportaDatiSinba}" 
-						action="#{navigationBean.goEsportaDatiSinba}"/>
+						action="#{navigationBean.goEsportaDatiSinba}"
+						style="display: inline-block; vertical-align: top;"/>
 						
 					<p:commandButton id="interscambioCartellaSociale" value="Interscambio cartella sociale" 
 					    rendered="#{navigationBean.interscambioCartellaSociale}" 
-						action="#{navigationBean.goInterscambioCartellaSociale}" icon="ui-icon-transfer-e-w" />
+						action="#{navigationBean.goInterscambioCartellaSociale}" icon="ui-icon-transfer-e-w"
+						style="display: inline-block; vertical-align: top;" />
 					
 					<p:commandButton id="iterCartellaSociale" value="Gestione Iter" 
 					    rendered="#{navigationBean.iterCartellaSociale}" 
-						action="#{navigationBean.goIterCartellaSociale}" icon="ui-icon-transfer-e-w" />
-				</h:panelGrid>			
+						action="#{navigationBean.goIterCartellaSociale}" icon="ui-icon-transfer-e-w"
+						style="display: inline-block; vertical-align: top;" />	
 			</p:panel>
 			
 			<p:spacer id="spacer1" width="15px"/>

@@ -10,13 +10,14 @@ public class ParametriDatiEsterniSoggettoDTO  implements Serializable{
 
 	 
 	private static final long serialVersionUID = 1L;
-	private String  dataApertura = null;
-	private String	dataChiusura = null;
-	private String	indirizzo = null;
-	private String	tipoPrestazione = null;
-	private String	entitaServizio = null;
-	private String  codicePrestazione = null;
-	private String  codiceFiscale = null;
+	private String dataApertura = null;
+	private String dataChiusura = null;
+	private String indirizzo = null;
+	private String tipoPrestazione = null;
+	private String entitaServizio = null;
+	private String entitaServizioUnitaMisura = null;
+	private String codicePrestazione = null;
+	private String codiceFiscale = null;
 	private String statoDomanda = null;
 	
 	
@@ -112,8 +113,17 @@ public class ParametriDatiEsterniSoggettoDTO  implements Serializable{
 	public void setEntitaServizio(String entitaServizio) {
 		this.entitaServizio = entitaServizio;
 	}
-
 	
+	public String getEntitaServizioUnitaMisura() {
+		return entitaServizioUnitaMisura;
+	}
+
+
+	public void setEntitaServizioUnitaMisura(String entitaServizioUnitaMisura) {
+		this.entitaServizioUnitaMisura = entitaServizioUnitaMisura;
+	}
+
+
 	public ParametriDatiEsterniSoggettoDTO() {
 	}
 

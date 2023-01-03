@@ -1,15 +1,4 @@
 package it.webred.cs.csa.web.bean.timertask;
-import org.apache.commons.io.FilenameUtils;
-
-import it.webred.cs.csa.ejb.client.AccessTableDatiEsterniSoggettoSessionBeanRemote;
-import it.webred.cs.csa.ejb.dto.BaseDTO;
-import it.webred.cs.csa.ejb.dto.ConfiguratoreDatiEsterniDTO;
-import it.webred.cs.csa.ejb.dto.DatiEsterniSoggettoDTO;
-import it.webred.ct.config.model.AmKeyValueExt;
-import it.webred.ct.config.parameters.ParameterService;
-import it.webred.ct.config.parameters.dto.ParameterSearchCriteria;
-import it.webred.ejb.utility.ClientUtility;
-
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
@@ -28,20 +17,27 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
-import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
-import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
+import it.webred.cs.csa.ejb.client.AccessTableDatiEsterniSoggettoSessionBeanRemote;
+import it.webred.cs.csa.ejb.dto.BaseDTO;
+import it.webred.cs.csa.ejb.dto.ConfiguratoreDatiEsterniDTO;
+import it.webred.cs.csa.ejb.dto.DatiEsterniSoggettoDTO;
+import it.webred.ct.config.model.AmKeyValueExt;
+import it.webred.ct.config.parameters.ParameterService;
+import it.webred.ct.config.parameters.dto.ParameterSearchCriteria;
+import it.webred.ejb.utility.ClientUtility;
 
 class DatiEsterniSoggettoTimerTaskHelper {
 
@@ -251,6 +247,7 @@ class DatiEsterniSoggettoTimerTaskHelper {
 					 confDatiEsterniDTO.setNomeColonnaDataChiusura(props.getProperty("nome.colonna.data.chiusura"));
 					 confDatiEsterniDTO.setNomeColonnaServizioStato(props.getProperty("nome.colonna.servizio.stato"));
 					 confDatiEsterniDTO.setNomeColonnaEntitaServizio(props.getProperty("nome.colonna.servizio.entita"));
+					 confDatiEsterniDTO.setNomeColonnaEntitaServizioUnitaMisura(props.getProperty("nome.colonna.servizio.entita.unitaMisura"));
 					 
 					 tipoFile = props.getProperty("tipo.file");
 				} catch (Exception e) {
@@ -325,6 +322,7 @@ class DatiEsterniSoggettoTimerTaskHelper {
 				 String dataApertura = this.getValoreColonna(mapsValori, dataRow, confDatiEsterniDTO.getNomeColonnaDataApertura(), null);
 				 String dataChiusura = this.getValoreColonna(mapsValori, dataRow, confDatiEsterniDTO.getNomeColonnaDataChiusura(), null);
 				 String entitaServizio = this.getValoreColonna(mapsValori, dataRow, confDatiEsterniDTO.getNomeColonnaEntitaServizio(), null);
+				 String entitaServizioUM = this.getValoreColonna(mapsValori, dataRow, confDatiEsterniDTO.getNomeColonnaEntitaServizioUnitaMisura(), null);
 				 String indirizzo = this.getValoreColonna(mapsValori, dataRow, confDatiEsterniDTO.getNomeColonnaIndirizzo(), null);
 				 String tipoPrestazione = this.getValoreColonna(mapsValori, dataRow, confDatiEsterniDTO.getNomeColonnaTipoPrestazione(), null);
 				 String codicePrestazione = this.getValoreColonna(mapsValori, dataRow, confDatiEsterniDTO.getNomeColonnaCodPrestazione(), null);
@@ -334,6 +332,7 @@ class DatiEsterniSoggettoTimerTaskHelper {
 				 dto.getParametriEsterni().setDataApertura(dataApertura);
 				 dto.getParametriEsterni().setDataChiusura(dataChiusura);
 				 dto.getParametriEsterni().setEntitaServizio(entitaServizio);
+				 dto.getParametriEsterni().setEntitaServizioUnitaMisura(entitaServizioUM);
 				 dto.getParametriEsterni().setIndirizzo(indirizzo);
 				 dto.getParametriEsterni().setTipoPrestazione(tipoPrestazione);
 				 dto.getParametriEsterni().setCodicePrestazione(codicePrestazione);

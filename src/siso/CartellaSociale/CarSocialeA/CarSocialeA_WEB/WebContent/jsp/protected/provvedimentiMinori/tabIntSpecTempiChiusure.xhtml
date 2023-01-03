@@ -7,12 +7,14 @@
 					<h:panelGrid columns="1">
 					<p:selectBooleanCheckbox itemLabel="Servizi sociali comunali" id="servSocCom" value="#{provMinoriTabManBean.jsonCurrent.interventiTempiChiusure.servSocialiComunali}" />
 					
-					<p:selectBooleanCheckbox id="cps" itemLabel="CPS" value="#{provMinoriTabManBean.jsonCurrent.interventiTempiChiusure.cps}" />
-					<p:selectBooleanCheckbox id="uonpia" itemLabel="UONPA" value="#{provMinoriTabManBean.jsonCurrent.interventiTempiChiusure.uonpia}" />
 					<p:selectBooleanCheckbox id="consultorio" itemLabel="Consultorio" value="#{provMinoriTabManBean.jsonCurrent.interventiTempiChiusure.consultorio}" />
-					<p:selectBooleanCheckbox itemLabel="Ser. D." id="serD" value="#{provMinoriTabManBean.jsonCurrent.interventiTempiChiusure.serD}" />
-					<p:selectBooleanCheckbox itemLabel="Privati indicati dal decreto" id="privatiIndDecreto" value="#{provMinoriTabManBean.jsonCurrent.interventiTempiChiusure.privatiIndDecreto}" />
-					<p:selectBooleanCheckbox itemLabel="CTU" id="ctu" value="#{provMinoriTabManBean.jsonCurrent.interventiTempiChiusure.ctu}" />
+					<p:selectBooleanCheckbox id="cps" itemLabel="CPS" value="#{provMinoriTabManBean.jsonCurrent.interventiTempiChiusure.cps}" />
+					<p:selectBooleanCheckbox id="ctu" itemLabel="CTU"  value="#{provMinoriTabManBean.jsonCurrent.interventiTempiChiusure.ctu}" />
+					<p:selectBooleanCheckbox id="privatiIndDecreto" itemLabel="Privati indicati dal decreto" value="#{provMinoriTabManBean.jsonCurrent.interventiTempiChiusure.privatiIndDecreto}" />
+					<p:selectBooleanCheckbox id="psichiatria" itemLabel="Psichiatria"  value="#{provMinoriTabManBean.jsonCurrent.interventiTempiChiusure.psichiatria}" />
+					<p:selectBooleanCheckbox id="serD" itemLabel="Ser. D."  value="#{provMinoriTabManBean.jsonCurrent.interventiTempiChiusure.serD}" />
+					<p:selectBooleanCheckbox id="uonpia" itemLabel="UONPA" value="#{provMinoriTabManBean.jsonCurrent.interventiTempiChiusure.uonpia}" />
+					<p:selectBooleanCheckbox id="ussm" itemLabel="USSM" value="#{provMinoriTabManBean.jsonCurrent.interventiTempiChiusure.ussm}" />
 					
 					<h:panelGroup>
 						<p:selectBooleanCheckbox itemLabel="Altro" id="altro" value="#{provMinoriTabManBean.jsonCurrent.interventiTempiChiusure.altro}" />
@@ -21,7 +23,7 @@
 					</h:panelGroup>
 					
 				    <p:separator />
-					<h:outputLabel id="noteProvv" escape="false" value="#{dataBean.noteprovv}" styleClass="h5"></h:outputLabel>
+					<h:outputLabel id="noteProvv" escape="false" value="#{dataBean.noteprovv}" styleClass="h5"/>
 					</h:panelGrid>
 				</p:fieldset>
 				

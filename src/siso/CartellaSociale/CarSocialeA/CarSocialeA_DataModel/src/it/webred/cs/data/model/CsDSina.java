@@ -1,21 +1,16 @@
 package it.webred.cs.data.model;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import javax.persistence.Cacheable;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -48,8 +43,19 @@ public class CsDSina implements Serializable {
 	 //** Mod. SISO - 886 **//
 	 @Column(name="FLAG_VALUTA_DOPO")
 	 private Boolean flagValutaDopo;
-	
-	
+	 
+	 @Column(name="DT_INS")
+	 private Date dtIns;
+	 
+	 @Column(name="USER_INS")
+	 private String userIns;
+	 
+	 @Column(name="DT_MOD")
+	 private Date dtMod;
+	 
+	 @Column(name="USER_MOD")
+	 private String userMod;
+	 
 	/*
 	  // bi-directional many-to-many association to ArTbPrestazioniInps
 	  
@@ -68,12 +74,6 @@ public class CsDSina implements Serializable {
 		//arTbPrestazioniInps = new ArrayList<ArTbPrestazioniInps>();
 	}
 
-	 //** Mod. SISO - 886 **//
-	public List<CsDSina> InitListCsDSina()
-	{
-		return new ArrayList<CsDSina>();
-	}
-	
 	public Long getId() {
 		return id;
 	}
@@ -137,6 +137,38 @@ public class CsDSina implements Serializable {
 
 	public void setCsDDiario(CsDDiario csDDiario) {
 		this.csDDiario = csDDiario;
+	}
+
+	public Date getDtIns() {
+		return dtIns;
+	}
+
+	public void setDtIns(Date dtIns) {
+		this.dtIns = dtIns;
+	}
+
+	public String getUserIns() {
+		return userIns;
+	}
+
+	public void setUserIns(String userIns) {
+		this.userIns = userIns;
+	}
+
+	public Date getDtMod() {
+		return dtMod;
+	}
+
+	public void setDtMod(Date dtMod) {
+		this.dtMod = dtMod;
+	}
+
+	public String getUserMod() {
+		return userMod;
+	}
+
+	public void setUserMod(String userMod) {
+		this.userMod = userMod;
 	}
 	
 }

@@ -11,19 +11,15 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.primefaces.event.SelectEvent;
 
-import it.webred.cs.csa.ejb.client.AccessTableAlertSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.AccessTableSchedaSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.AccessTableSinaSessionBeanRemote;
 import it.webred.cs.csa.ejb.dto.BaseDTO;
-import it.webred.cs.csa.ejb.dto.SinaEsegDTO;
+import it.webred.cs.csa.ejb.dto.sina.SinaEsegDTO;
 import it.webred.cs.data.DataModelCostanti;
 import it.webred.cs.data.DataModelCostanti.CSIPs.FLAG_IN_CARICO;
 import it.webred.cs.data.DataModelCostanti.PermessiFascicolo;
 import it.webred.cs.data.DataModelCostanti.TipoSinaDomanda;
 import it.webred.cs.data.model.ArTbPrestazioniInps;
-import it.webred.cs.data.model.CsDSina;
-import it.webred.cs.data.model.CsDSinaEseg;
-import it.webred.cs.data.model.CsIInterventoEsegMast;
 import it.webred.cs.data.model.CsTbSinaDomanda;
 import it.webred.cs.jsf.bean.erogazioneIntervento.InterventoErogazHistoryRowBean;
 import it.webred.cs.jsf.interfaces.ISina;
@@ -37,25 +33,24 @@ public class SinaMan extends CsUiCompBaseBean implements Serializable, ISina {
 	protected AccessTableSinaSessionBeanRemote sinaService = (AccessTableSinaSessionBeanRemote) getEjb("CarSocialeA",
 			"CarSocialeA_EJB", "AccessTableSinaSessionBean");
 
-	protected AccessTableAlertSessionBeanRemote alertService = (AccessTableAlertSessionBeanRemote) getEjb("CarSocialeA",
-			"CarSocialeA_EJB", "AccessTableAlertSessionBean");
-
 	protected AccessTableSchedaSessionBeanRemote schedaService = (AccessTableSchedaSessionBeanRemote) getEjb(
 			"CarSocialeA", "CarSocialeA_EJB", "AccessTableSchedaSessionBean");
 
+	private boolean sovrascriviSinaCorrente = false;
+	
 	// DIARIO ID
 	private Long diarioSinaId;
 	private ValMultidimensionaleBean jsonCurrent = null;
 	private Long casoId;
-	private List<CsDSina> sinaCollegati = new ArrayList<CsDSina>();
-	private List<CsDSina> sinaCollegabili = new ArrayList<CsDSina>();
-	private List<CsDSina> sinaCollegabiliDaErogazioni = new ArrayList<CsDSina>();
+	private List<SinaEsegDTO> sinaCollegati = new ArrayList<SinaEsegDTO>();
+	private List<SinaEsegDTO> sinaCollegabili = new ArrayList<SinaEsegDTO>();
+	private List<SinaEsegDTO> sinaCollegabiliDaErogazioni = new ArrayList<SinaEsegDTO>();
 	private Boolean ultimaErogExp = false;
 
 	private List<CsTbSinaDomanda> lstSinaParams;
 	private List<CsTbSinaDomanda> lstSinaParamInvalidita;
 
-	private SinaEsegDTO sinaDTO = new SinaEsegDTO();
+	private SinaEsegDTO sinaDTO;
 	private List<ArTbPrestazioniInps> lstPrestazioniInps = new ArrayList<ArTbPrestazioniInps>();
 
 	private Boolean renderValutaDopo = true;
@@ -85,10 +80,10 @@ public class SinaMan extends CsUiCompBaseBean implements Serializable, ISina {
 	}
 
 	// foglio intervento
-	public SinaMan(Long casoId, Long mastId, String cf, Boolean uexp, Boolean renderValutaDopo) {
+	public SinaMan(Long casoId, Long mastId, String cf, Boolean ultimaErogazioneEsportata, Boolean renderValutaDopo) {
 
 		this.casoId = casoId;
-		this.ultimaErogExp = uexp;
+		this.ultimaErogExp = ultimaErogazioneEsportata;
 
 		BaseDTO bdto = new BaseDTO();
 		// carico i collegabili
@@ -112,36 +107,39 @@ public class SinaMan extends CsUiCompBaseBean implements Serializable, ISina {
 				fillEnte(bdto);
 				sinaCollegabiliDaErogazioni = sinaService.findSinaCollegabiliByCf(bdto);
 			}
-			
-			if (mastId.longValue() != 0) {
-				BaseDTO bsina = new BaseDTO();
-				fillEnte(bsina);
-				bsina.setObj(mastId);
-				sinaCollegati = sinaService.findDiarioSinaByMastId(bsina);
-			}
+			this.loadSinaCollegati(mastId);
 		}
-		Long idSina = null;
+		
+		loadLastSinaCollegato();
+
+		renderValutaDopo(renderValutaDopo);
+	}
+	
+	private void loadSinaCollegati(Long mastId){
+		if (mastId.longValue() != 0) {
+			BaseDTO bsina = new BaseDTO();
+			fillEnte(bsina);
+			bsina.setObj(mastId);
+			sinaCollegati = sinaService.findDiarioSinaByMastId(bsina);
+		}
+	}
+	
+	private void loadLastSinaCollegato(){
+		SinaEsegDTO sina = null;
 		if (sinaCollegati.size() > 0) {
 			// i collegati sono ordinati per data desc, prendo l'ultimo salvato
-			idSina = sinaCollegati.get(0).getId();
+			sina = sinaCollegati.get(0);
 
 			// controllo se l'ultimo sina ha una erogazione con data superiore non estratta,
 			// in tal caso è possibile la modifica
 		}
 		
-		collegaSina(idSina);
-
-		if (sinaDTO.getData() == null) {
-			// SISO-985: un nuovo SINA non deve avere la data odierna come data di default
-			// sinaDTO.getCsDSina().setData(new Date());
-		}
-		this.renderValutaDopo(renderValutaDopo);
+		collegaSina(sina);
 	}
 
 	private void loadSinaSI() {
 		BaseDTO dto = new BaseDTO();
 		fillEnte(dto);
-
 		lstSinaParams = confService.getListaDomandaSina(dto);
 		lstPrestazioniInps = sinaService.getPrestazioniInpsSina(dto); // Sottoinsieme delle prestazioni INPS
 	}
@@ -155,18 +153,9 @@ public class SinaMan extends CsUiCompBaseBean implements Serializable, ISina {
 		SinaEsegDTO sinaEseg = sinaService.getSinaByDiarioId(dto);
 		caricaPrestazioni(sinaEseg);
 	}
-
-	private void loadSinaById(Long idSina) {
-		SinaEsegDTO sinaEseg = null;
-		if(idSina!=null) {
-			BaseDTO dto = new BaseDTO();
-			CsUiCompBaseBean.fillEnte(dto);
-			dto.setObj(idSina);
-			dto.setObj2(lstSinaParams);
-			sinaEseg = sinaService.getSinaById(dto);
-		}
+	
+	private void loadSinaSelected(SinaEsegDTO sinaEseg) {
 		caricaPrestazioni(sinaEseg);
-		
 	}
 	
 	private void clonaSinaById(Long idSina) {
@@ -175,6 +164,9 @@ public class SinaMan extends CsUiCompBaseBean implements Serializable, ISina {
 		dto.setObj(idSina);
 		dto.setObj2(lstSinaParams);
 		SinaEsegDTO sinaEseg = sinaService.clonaSinaById(dto);
+		if(this.sovrascriviSinaCorrente) {
+			sinaEseg.setSinaId(sinaDTO.getSinaId());
+		}
 		caricaPrestazioni(sinaEseg);
 	}
 
@@ -194,17 +186,6 @@ public class SinaMan extends CsUiCompBaseBean implements Serializable, ISina {
 				lstSinaParamInvalidita.add(dom);
 				lstSinaParams.remove(dom);
 			}
-		}
-	}
-
-	// TODO: verificare il corretto funzionamento
-	public CsTbSinaDomanda getCurrentSina(long id) {
-		try {
-			return sinaDTO.getDomandaEsegById(id);
-		} catch (Exception e) {
-			CsTbSinaDomanda domanda = new CsTbSinaDomanda();
-			domanda.setTesto("prova");
-			return domanda;
 		}
 	}
 
@@ -274,10 +255,8 @@ public class SinaMan extends CsUiCompBaseBean implements Serializable, ISina {
 	public List<String> validaSinaErogazione(Integer pic, List<InterventoErogazHistoryRowBean> rows) {
 		List<String> msg = null;
 
-		// ** se il flag valuta dopo non è stato selezionato, sarà necessaria la
-		// verifica **//
+		// ** se il flag valuta dopo non è stato selezionato, sarà necessaria la verifica **//
 		// ** che precedentemente veniva eseguita dal "required" del panel sina, ovvero:
-		// **//
 		// ** - tutte le risposte sono obbligatorie tranne la 3 e la 5 **//
 		boolean valutaDopo = this.sinaDTO.getFlagValutaDopo()!=null && this.sinaDTO.getFlagValutaDopo().booleanValue();
 		if (this.sinaDTO != null && FLAG_IN_CARICO.SI.getCodice() == pic && !valutaDopo) {
@@ -286,10 +265,9 @@ public class SinaMan extends CsUiCompBaseBean implements Serializable, ISina {
 			if (rows != null && sinaDTO.getData() != null) {
 				for (InterventoErogazHistoryRowBean row : rows) {
 					if (row.getStato().getTipo().equals(DataModelCostanti.TipoStatoErogazione.EROGATIVO)) {
-						// se esiste una data di un erogazione antecedente a TUTTI i sina collegati
-						// ritorna errore
-						if (!erogDataPrecedente(row.getDataErogazione())) {
-							msg.add("Erogazioni con data precedente a scheda SINA");
+						// se esiste una data di un erogazione (non esportata) antecedente al sina collegato ritorna errore
+						if (!row.isEsportata() && !erogDataPrecedente(row.getDataErogazione())) {
+							msg.add("Erogazioni non esportate con data precedente a scheda SINA: "+ddMMyyyy.format(row.getDataErogazione()));
 							break;
 						}
 					}
@@ -301,10 +279,10 @@ public class SinaMan extends CsUiCompBaseBean implements Serializable, ISina {
 		return msg;
 	}
 
-	public Boolean salvaDaFglIntervento(CsIInterventoEsegMast mast) {
+	public Boolean salvaDaFglIntervento(Long mastId) {
 
 		// skip se disabilitato
-		if (isDisabled() || mast.getId() <= 0)
+		if (isDisabled() || mastId <= 0)
 			return true;
 
 		CsUiCompBaseBean.fillEnte(sinaDTO);
@@ -313,15 +291,13 @@ public class SinaMan extends CsUiCompBaseBean implements Serializable, ISina {
 		// salvataggio
 		try {
 
-			// se ho l'eseg mast valorizzato ed è uguale a quello di caricamento aggiorno
-			// dati SINA
-			if (sinaDTO.getInterventoEsegMastId() == null || mast.getId() != sinaDTO.getInterventoEsegMastId()) {
+			// se ho l'eseg mast valorizzato ed è uguale a quello di caricamento aggiorno dati SINA
+			if (sinaDTO.getInterventoEsegMastId() == null || mastId.longValue() != sinaDTO.getInterventoEsegMastId().longValue()) {
 
-				sinaDTO.setInterventoEsegMastId(mast.getId());
+				sinaDTO.setInterventoEsegMastId(mastId);
 				sinaDTO.setDiarioMultidimId(null);
 				// copia valori
-				sinaDTO.setSinaId(null);
-				//sinaDTO = sinaService.saveSina(sinaDTO);
+				//sinaDTO.setSinaId(null);
 			}
 		
 			sinaService.saveSina(sinaDTO);
@@ -334,26 +310,29 @@ public class SinaMan extends CsUiCompBaseBean implements Serializable, ISina {
 	}
 
 	@Override
-	public void copiaSina(Long id) {
+	public void copiaSina(Long idSina) {
 		loadSinaSI();
-		clonaSinaById(id);
+		clonaSinaById(idSina);
 	}
 
-	public void collegaSina(Long id) {
-		loadSinaSI();
-		loadSinaById(id);
+	/*
+	 * public void collegaSina(Long id) { loadSinaSI(); loadSinaById(id); }
+	 */
+	
+	public void collegaSina(SinaEsegDTO sina) { 
+		loadSinaSI(); 
+		loadSinaSelected(sina); 
 	}
 	
-	public void caricaSina(Long id) {
-		loadSinaSI();
-		loadSinaById(id);
-		if (sinaDTO.getInterventoEsegMastId() != null)
-			sinaDTO.setInterventoEsegMastId(null);
-	}
+	/*
+	 * public void caricaSina(Long id) { loadSinaSI(); loadSinaById(id); if
+	 * (sinaDTO.getInterventoEsegMastId() != null)
+	 * sinaDTO.setInterventoEsegMastId(null); }
+	 */
 
 	public void onRowSelect(SelectEvent event) {
-		CsDSina sina = (CsDSina) event.getObject();
-		collegaSina(sina.getId());
+		SinaEsegDTO sina = (SinaEsegDTO) event.getObject();
+		collegaSina(sina);
 	}
 
 	public void nuovaValutazione() {
@@ -374,8 +353,8 @@ public class SinaMan extends CsUiCompBaseBean implements Serializable, ISina {
 		}
 
 		// controlla collegati, solo del piu vecchio dato che sono ordinati.
-		CsDSina sinaLast = sinaCollegati.size() > 0 ? sinaCollegati.get(indexLast - 1) : null;
-		if (sinaLast != null && !sinaLast.getId().equals(sinaDTO.getSinaId())) {
+		SinaEsegDTO sinaLast = sinaCollegati.size() > 0 ? sinaCollegati.get(indexLast - 1) : null;
+		if (sinaLast != null && !sinaLast.getSinaId().equals(sinaDTO.getSinaId())) {
 			if (sinaLast.getData()!=null && dataErogazione.before(sinaLast.getData()))
 				verifica = false;
 		}
@@ -400,7 +379,7 @@ public class SinaMan extends CsUiCompBaseBean implements Serializable, ISina {
 		
 		disabilitato = !nuovoSina; 
 		if (sinaCollegati.size() > 0) {
-			disabilitato &= !sinaCollegati.get(0).getId().equals(sinaDTO.getSinaId()); }
+			disabilitato &= !sinaCollegati.get(0).getSinaId().equals(sinaDTO.getSinaId()); }
 		 
 		return disabilitato;
 	}
@@ -418,6 +397,11 @@ public class SinaMan extends CsUiCompBaseBean implements Serializable, ISina {
 		return sinaDTO.getData();
 	}
 
+	@Override
+	public Boolean isSinaSelected(SinaEsegDTO coll) {
+		return coll.getSinaId().equals(sinaDTO.getSinaId());
+	}
+	
 	public List<CsTbSinaDomanda> getLstSinaParams() {
 		return lstSinaParams;
 	}
@@ -449,28 +433,36 @@ public class SinaMan extends CsUiCompBaseBean implements Serializable, ISina {
 	public void setCasoId(Long casoId) {
 		this.casoId = casoId;
 	}
+	
+	public boolean isSovrascriviSinaCorrente() {
+		return sovrascriviSinaCorrente;
+	}
 
-	public List<CsDSina> getSinaCollegati() {
+	public void setSovrascriviSinaCorrente(boolean sovrascriviSinaCorrente) {
+		this.sovrascriviSinaCorrente = sovrascriviSinaCorrente;
+	}
+
+	public List<SinaEsegDTO> getSinaCollegati() {
 		return sinaCollegati;
 	}
 
-	public void setSinaCollegati(List<CsDSina> sinaCollegati) {
+	public void setSinaCollegati(List<SinaEsegDTO> sinaCollegati) {
 		this.sinaCollegati = sinaCollegati;
 	}
 
-	public List<CsDSina> getSinaCollegabili() {
+	public List<SinaEsegDTO> getSinaCollegabili() {
 		return sinaCollegabili;
 	}
 
-	public void setSinaCollegabili(List<CsDSina> sinaCollegabili) {
+	public void setSinaCollegabili(List<SinaEsegDTO> sinaCollegabili) {
 		this.sinaCollegabili = sinaCollegabili;
 	}
 
-	public List<CsDSina> getSinaCollegabiliDaErogazioni() {
+	public List<SinaEsegDTO> getSinaCollegabiliDaErogazioni() {
 		return sinaCollegabiliDaErogazioni;
 	}
 
-	public void setSinaCollegabiliDaErogazioni(List<CsDSina> sinaCollegabiliDaErogazioni) {
+	public void setSinaCollegabiliDaErogazioni(List<SinaEsegDTO> sinaCollegabiliDaErogazioni) {
 		this.sinaCollegabiliDaErogazioni = sinaCollegabiliDaErogazioni;
 	}
 
@@ -497,4 +489,32 @@ public class SinaMan extends CsUiCompBaseBean implements Serializable, ISina {
 	public void setRenderValutaDopo(Boolean renderValutaDopo) {
 		this.renderValutaDopo = renderValutaDopo;
 	}
+	
+	@Override
+	public String getLabelPanelCorrente() {
+		if(sinaDTO!=null && sinaDTO.getSinaId()!=null)
+			return "SINA num. "+sinaDTO.getSinaId();
+		else
+			return "Nuovo SINA";
+		
+	}
+	
+	@Override
+	public void elimina(SinaEsegDTO sina) {
+		if(sina!=null) {
+			BaseDTO dto = new BaseDTO();
+			fillEnte(dto);
+			dto.setObj(sina);
+			if(sinaService.canDeleteSina(dto)) {
+				sinaService.deleteSina(dto);
+				loadSinaCollegati(sina.getInterventoEsegMastId());
+				if(sina.getSinaId().equals(sinaDTO.getSinaId())) {
+					//Quello correntemente selezionato è stato eliminato, quindi ricarico l'ultimo presente
+					loadLastSinaCollegato();
+				}
+			}else
+				this.addWarning("Eliminazione SINA", "Non è possibile elimnare il SINA selezionato: se l'erogazione è stata esportata, la data della valutazione da eliminare deve essere successiva a quella dell'esportazione");
+		}
+	}
+	
 }

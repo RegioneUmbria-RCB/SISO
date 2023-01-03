@@ -13,6 +13,7 @@ import it.webred.cs.csa.ejb.dto.EsportazioneDTOView;
 import it.webred.cs.csa.ejb.dto.EsportazioneTestataDTO;
 import it.webred.cs.csa.ejb.dto.KeyValueDTO;
 import it.webred.cs.csa.ejb.dto.erogazioni.SoggettoErogazioneBean;
+import it.webred.cs.csa.ejb.dto.sina.SinaEsegDTO;
 import it.webred.cs.csa.web.manbean.fascicolo.FglInterventoBean;
 import it.webred.cs.data.DataModelCostanti;
 import it.webred.cs.data.DataModelCostanti.CSIPs;
@@ -23,7 +24,6 @@ import it.webred.cs.data.DataModelCostanti.EsportazioneSIUSS.STATO;
 import it.webred.cs.data.DataModelCostanti.ListaBeneficiari;
 import it.webred.cs.data.model.CsASoggettoLAZY;
 import it.webred.cs.data.model.CsCCategoriaSociale;
-import it.webred.cs.data.model.CsDSina;
 import it.webred.cs.data.model.CsDSinaLIGHT;
 import it.webred.cs.data.model.CsIIntervento;
 import it.webred.cs.data.model.CsIInterventoEseg;
@@ -961,9 +961,11 @@ public class EsportaCasellarioBean extends CsUiCompBaseBean {
 		fglInterventoBean.setVisualizzaSinaTab(isVisualizzaSinaTab(dettaglioDaGestire.getCategoriaSocialeId()));
 		
 		CsASoggettoLAZY s = soggettoErogazioneSelezionato.getCsASoggetto();
+		Long casoId = s != null ? s.getCsACaso().getId() : null;
 		
-		String cf = (soggettoErogazioneSelezionato.getCodiceFiscale()!=null ? soggettoErogazioneSelezionato.getCodiceFiscale() : ""); //SISO-928		
-		fglInterventoBean.setSinaMan(GetSinaMan(s != null ? s.getCsACaso().getId() : null, getDettaglioDaGestire().getInterventoEsegMastId(), cf, false));
+		String cf = soggettoErogazioneSelezionato.getCodiceFiscale()!=null ? soggettoErogazioneSelezionato.getCodiceFiscale() : ""; //SISO-928		
+		
+		fglInterventoBean.setSinaMan(buildSinaMan(casoId, getDettaglioDaGestire().getInterventoEsegMastId(), cf));
 
 	}
 	
@@ -977,19 +979,19 @@ public class EsportaCasellarioBean extends CsUiCompBaseBean {
 	// ** estraggo il più recente SINA eventualmente presente **//
 	// ** se non presente o presente ma già esportato, l'utente ne dovrà creare
 	// uno nuovo da esportare **//
-	private SinaMan GetSinaMan(Long casoId, Long mastId, String cf,  Boolean uexp) {
-		// SinaMan result = new SinaMan();
-		List<CsDSina> sinaList = null;
-
-		SinaMan sinaMan = new SinaMan(casoId, mastId,cf, uexp, false);
-
+	private SinaMan buildSinaMan(Long casoId, Long mastId, String cf) {
+		List<SinaEsegDTO> sinaList = null;
+		Boolean lastErogEsportata = false;
+		Boolean renderValutaDopo = false;
+		
+		SinaMan sinaMan = new SinaMan(casoId, mastId,cf, lastErogEsportata, renderValutaDopo);
 		if (sinaMan != null && sinaMan.getSinaCollegati().size() > 0) {
 			sinaList = sinaMan.getSinaCollegati();
 			
 			// ** ordino i sina per data descending **//
-			Collections.sort(sinaList, new Comparator<CsDSina>() {
+			Collections.sort(sinaList, new Comparator<SinaEsegDTO>() {
 				@Override
-				public int compare(CsDSina left, CsDSina right) {
+				public int compare(SinaEsegDTO left, SinaEsegDTO right) {
 					Date oggi = new Date();
 					Date rightData = right.getData()!=null ? right.getData() : oggi;
 					Date leftData = left.getData()!=null ? left.getData() : oggi;
@@ -998,28 +1000,41 @@ public class EsportaCasellarioBean extends CsUiCompBaseBean {
 			});
 			
 			// ** prendo il sina più recente (non esportato) **//
+			CsIPsExport lastExp = getLastErogazioneEsportata(mastId);
 			boolean trovato = false;
-			for (CsDSina s : sinaList) {
-				if (!erogazioneInterventoBean.erogazioneEsportata(s.getIntEsegMastId())) {
-					List<CsDSina> listOut = new CsDSina().InitListCsDSina();
-					listOut.add(sinaList.get(0));
-					sinaMan.setSinaCollegati(listOut);
-
+			List<SinaEsegDTO> listOut = new ArrayList<SinaEsegDTO>();
+			int i = 0;
+			while(!trovato && i<sinaList.size()){
+				SinaEsegDTO s = sinaList.get(i);
+				if (lastExp==null || s.getData().after(lastExp.getDtExport())) {
+					listOut.add(s);
 					trovato = true;
-					break;
 				}
+				i++;
 			}
-
+			
 			if (!trovato) {
 				// ** creo nuovo sina **//
-				sinaMan = new SinaMan(casoId, new Long(0), cf, false, false);
+				sinaMan = new SinaMan(casoId, new Long(0), cf, lastErogEsportata, renderValutaDopo);
+			}else {
+				sinaMan.setSinaCollegati(listOut);
+				sinaMan.setSovrascriviSinaCorrente(true);
 			}
 		} else {
 			// ** creo nuovo sina **//
-			sinaMan = new SinaMan(casoId, new Long(0), cf, false, false);
+			sinaMan = new SinaMan(casoId, new Long(0), cf, lastErogEsportata, renderValutaDopo);
 		}
 
 		return sinaMan;
+	}
+	
+	public CsIPsExport getLastErogazioneEsportata(Long intEsegMastId) {
+		BaseDTO dto = new BaseDTO();
+		fillEnte(dto);		
+		dto.setObj(intEsegMastId);
+		List<CsIPsExport> exps = psExportService.findCsIPsExportByCsIInterventoMastIdExported(dto);
+		return exps!=null && exps.size()> 0 ? exps.get(0) : null;
+
 	}
 
 	public List<String> updateDatiMancanti(EsportazioneDTOView dettaglio) {
@@ -1054,12 +1069,17 @@ public class EsportaCasellarioBean extends CsUiCompBaseBean {
 					row.setStato(eseg.getStato());
 					row.setDataErogazione(eseg.getDataEsecuzione());
 					row.setDataErogazioneA(eseg.getDataEsecuzioneA());
+					
+					dto.setObj(eseg.getId());
+					boolean esportata = psExportService.verificaErogazioneEsportataByEsegId(dto);
+					row.setEsportata(esportata);
+					
 					lstRows.add(row);
 				}
 				
 				msg = sina.validaSinaErogazione(getDettaglioDaGestire().getPresaInCarico().intValue(), lstRows);
 				if (msg.isEmpty()){
-					boolean saved = sina.salvaDaFglIntervento(interventoEsegMast);
+					boolean saved = sina.salvaDaFglIntervento(interventoEsegMast.getId());
 					if(!saved) msg.add("Errore salvataggio SINA");
 				}
 			}else msg.add("Compilare dati");

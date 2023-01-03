@@ -1,14 +1,28 @@
 package it.webred.rulengine.brick.loadDwh.base;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.Reader;
+import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.math.BigDecimal;
+import java.sql.Connection;
+import java.sql.Timestamp;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Properties;
+
+import org.apache.log4j.Logger;
+
 import it.webred.rulengine.Context;
 import it.webred.rulengine.DbCommand;
 import it.webred.rulengine.Rule;
-import it.webred.rulengine.brick.bean.ApplicationAck;
 import it.webred.rulengine.brick.bean.CommandAck;
 import it.webred.rulengine.brick.bean.RejectAck;
 import it.webred.rulengine.db.model.RRuleParamIn;
 import it.webred.rulengine.dwh.DwhUtils;
-import it.webred.rulengine.dwh.Dao.AbstractTabellaDwhDao;
 import it.webred.rulengine.dwh.Dao.DaoException;
 import it.webred.rulengine.dwh.Dao.DaoFactory;
 import it.webred.rulengine.dwh.Dao.TabellaDwhDao;
@@ -21,44 +35,13 @@ import it.webred.rulengine.dwh.def.Identificativo;
 import it.webred.rulengine.dwh.def.ProcessId;
 import it.webred.rulengine.dwh.def.Relazione;
 import it.webred.rulengine.dwh.def.RelazioneFkEnteSorgente;
-import it.webred.rulengine.dwh.def.RelazioneToMasterTable;
-import it.webred.rulengine.dwh.def.TipoXml;
 import it.webred.rulengine.dwh.table.SitEnteSorgente;
 import it.webred.rulengine.dwh.table.TabellaDwh;
 import it.webred.rulengine.exception.CommandException;
 import it.webred.rulengine.exception.RulEngineException;
-import it.webred.rulengine.impl.CommandUtil;
 import it.webred.rulengine.impl.bean.BeanCommand;
 import it.webred.rulengine.type.impl.TypeFactory;
 import it.webred.utils.StringUtils;
-import it.webred.utils.GenericTuples.T2;
-
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.Reader;
-import java.lang.reflect.AccessibleObject;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.math.BigDecimal;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.Timestamp;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-import java.util.Map.Entry;
-
-import org.apache.commons.beanutils.DynaBean;
-import org.apache.commons.dbutils.DbUtils;
-import org.apache.commons.dbutils.QueryRunner;
-import org.apache.commons.dbutils.ResultSetHandler;
-import org.apache.commons.dbutils.handlers.MapHandler;
-import org.apache.log4j.Logger;
 
 
 public abstract class AbstractLoaderCommand extends DbCommand implements Rule {

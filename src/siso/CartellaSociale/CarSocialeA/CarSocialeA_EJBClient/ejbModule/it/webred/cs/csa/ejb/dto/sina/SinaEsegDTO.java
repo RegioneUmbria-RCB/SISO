@@ -1,4 +1,4 @@
-package it.webred.cs.csa.ejb.dto;
+package it.webred.cs.csa.ejb.dto.sina;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -6,8 +6,10 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+
+import it.webred.cs.csa.ejb.dto.KeyValueDTO;
 import it.webred.cs.data.DataModelCostanti.TipoSinaDomanda;
-import it.webred.cs.data.model.CsDDiario;
 import it.webred.cs.data.model.CsDSina;
 import it.webred.cs.data.model.CsDSinaEseg;
 import it.webred.cs.data.model.CsTbSinaDomanda;
@@ -22,12 +24,15 @@ public class SinaEsegDTO extends CeTBaseObject {
 	private Boolean flagValutaDopo;
 	private Date data;
 	
-	protected HashMap<Long, CsTbSinaDomanda> domandas = new HashMap<Long, CsTbSinaDomanda>();
-	protected HashMap<Long, String> rispostas = new HashMap<Long, String>();
+	protected HashMap<Long, CsTbSinaDomanda> domandas;
+	protected HashMap<Long, String> rispostas;
 
 	private List<CsTbSinaDomanda> lstSinaParams;
 	private List<Long> lstSinaParamInvalidita = new ArrayList<Long>();
 	private List<String> lstPrestazioniInpsScelte = new ArrayList<String>();	
+	private List<KeyValueDTO> riepilogo;
+	private Date dataUltimaModifica;
+	private String operatoreUltimaModifica;
 	
 	public SinaEsegDTO() {
 		lstPrestazioniInpsScelte = new ArrayList<String>();	
@@ -68,7 +73,10 @@ public class SinaEsegDTO extends CeTBaseObject {
 	
 	protected SinaEsegDTO init(CsDSina csDSina, List<CsTbSinaDomanda> params, List<CsDSinaEseg> lstSinaEseg, List<String> prestazioniInps) {
 		lstSinaParams = new ArrayList<CsTbSinaDomanda>();
-		lstSinaParams=params;
+		lstSinaParams.addAll(params);
+		
+		domandas = new HashMap<Long, CsTbSinaDomanda>();
+		rispostas = new HashMap<Long, String>();
 		
 		if(csDSina!=null) {
 			sinaId = csDSina.getId();
@@ -95,6 +103,11 @@ public class SinaEsegDTO extends CeTBaseObject {
 				this.rispostas.put(d.getId(), null);
 		}
 
+		this.loadRiepilogo();
+		
+		this.dataUltimaModifica = csDSina.getDtMod()!=null ? csDSina.getDtMod() : csDSina.getDtIns();
+		this.operatoreUltimaModifica  = !StringUtils.isBlank(csDSina.getUserMod()) ? csDSina.getUserMod() : csDSina.getUserIns();
+		
 		return this;
 	}
 	
@@ -116,18 +129,9 @@ public class SinaEsegDTO extends CeTBaseObject {
 	 * 
 	 * //this.csDSina.setArTbPrestazioniInps(prest); }
 	 */
-
-	
-	public CsTbSinaDomanda getDomandaEsegById(Long id) {
-		return this.domandas.get(id);
-	}
 	
 	public HashMap<Long, CsTbSinaDomanda> getDomandas() {
 		return domandas;
-	}
-
-	public void setDomandas(HashMap<Long, CsTbSinaDomanda> domandas) {
-		this.domandas = domandas;
 	}
 
 	public HashMap<Long, String> getRispostas() {
@@ -218,4 +222,50 @@ public class SinaEsegDTO extends CeTBaseObject {
 	public void setDiarioMultidimId(Long diarioMultidimId) {
 		this.diarioMultidimId = diarioMultidimId;
 	}
+	
+	public List<KeyValueDTO> getRiepilogo(){
+		return riepilogo;
+	}
+	
+	public void loadRiepilogo() {
+		riepilogo = new ArrayList<KeyValueDTO>();
+		for(CsTbSinaDomanda dom : lstSinaParams){
+			Long domId = dom.getId();
+			KeyValueDTO kv = new KeyValueDTO();
+			kv.setCodice(domId);
+			kv.setDescrizione(dom.getTesto());
+			if(domId == TipoSinaDomanda.INVALIDITA_CIVILE)
+				kv.setAbilitato(!this.lstSinaParamInvalidita.isEmpty());
+			else {
+				String ris = this.rispostas.get(domId);
+				kv.setAbilitato(StringUtils.isNotBlank(ris));
+			}
+			
+			riepilogo.add(kv);
+		}
+		
+		KeyValueDTO kvinps = new KeyValueDTO();
+		kvinps.setDescrizione("Necessità di prestazioni (opzionale)");
+		kvinps.setAbilitato(!this.lstPrestazioniInpsScelte.isEmpty());
+		riepilogo.add(kvinps);
+	}
+
+	public Date getDataUltimaModifica() {
+		return dataUltimaModifica;
+	}
+
+	public void setDataUltimaModifica(Date dataUltimaModifica) {
+		this.dataUltimaModifica = dataUltimaModifica;
+	}
+
+	public String getOperatoreUltimaModifica() {
+		return operatoreUltimaModifica;
+	}
+
+	public void setOperatoreUltimaModifica(String operatoreUltimaModifica) {
+		this.operatoreUltimaModifica = operatoreUltimaModifica;
+	}
+	
+	
+	
 }

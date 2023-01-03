@@ -3,23 +3,24 @@ package it.webred.cs.csa.ejb.ejb;
 import it.webred.cs.csa.ejb.CarSocialeBaseSessionBean;
 import it.webred.cs.csa.ejb.client.AccessTableSinaSessionBeanRemote;
 import it.webred.cs.csa.ejb.dao.ConfigurazioneDAO;
+import it.webred.cs.csa.ejb.dao.ExportCasellarioDAO;
 import it.webred.cs.csa.ejb.dao.SinaDAO;
 import it.webred.cs.csa.ejb.dto.BaseDTO;
-import it.webred.cs.csa.ejb.dto.SinaEsegDTO;
+import it.webred.cs.csa.ejb.dto.sina.SinaEsegDTO;
 import it.webred.cs.data.DataModelCostanti;
 import it.webred.cs.data.DataModelCostanti.TipoSinaDomanda;
 import it.webred.cs.data.model.ArTbPrestazioniInps;
 import it.webred.cs.data.model.CsDSina;
 import it.webred.cs.data.model.CsDSinaEseg;
-import it.webred.cs.data.model.CsDSinaEsegPK;
 import it.webred.cs.data.model.CsDSinaLIGHT;
+import it.webred.cs.data.model.CsIPsExport;
 import it.webred.cs.data.model.CsTbSinaDomanda;
 import it.webred.ct.support.validation.ValidationStateless;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
 
@@ -38,6 +39,8 @@ public class AccessTableSinaSessionBean extends CarSocialeBaseSessionBean implem
 	@Autowired
 	private ConfigurazioneDAO configurazioneDao;
 
+	@Autowired
+	private ExportCasellarioDAO exportDAO;
 
 	@Override
 	public SinaEsegDTO getSinaById(BaseDTO dto) {
@@ -66,37 +69,43 @@ public class AccessTableSinaSessionBean extends CarSocialeBaseSessionBean implem
 		Long id = (Long)dto.getObj();
 		List<CsTbSinaDomanda> lstParams = (List<CsTbSinaDomanda>)dto.getObj2();
 		
-			try{		
-				CsDSina csDSina = null;
-				if(id!=null){
-					csDSina = sinaDao.getSinaByDiarioId(id);
-					if(csDSina!=null){
-						List<CsDSinaEseg> lstSinaEseg = sinaDao.getSinaEsegBySinaId(csDSina.getId());
-						List<String> prestazioniInps = sinaDao.getSinaPrestazioniInpsBySinaId(csDSina.getId());
-						if(lstParams==null) lstParams = configurazioneDao.getListaDomandaSina();
-						return SinaEsegDTO.create(csDSina, lstParams, lstSinaEseg, prestazioniInps);
-					}
-				}
-			}catch(Exception e){
-				logger.error(e.getMessage(), e);
+		try{		
+			CsDSina csDSina = null;
+			if(id!=null){
+				csDSina = sinaDao.getSinaByDiarioId(id);
+				return this.loadSinaDTO(csDSina, lstParams);
 			}
-			return null;
+		}catch(Exception e){
+			logger.error(e.getMessage(), e);
+		}
+		return null;
 	}
 	
 	private SinaEsegDTO getSinaById(Long id, List<CsTbSinaDomanda> lstParams){
 		try{
 			if(id!=null) {
-				if(lstParams==null) lstParams = configurazioneDao.getListaDomandaSina();
 				CsDSina csDSina = sinaDao.getSinaById(id);
-				List<CsDSinaEseg> lstSinaEseg = sinaDao.getSinaEsegBySinaId(id);
-				List<String> prestazioniInps = sinaDao.getSinaPrestazioniInpsBySinaId(id);
+				return this.loadSinaDTO(csDSina, lstParams);
+			}
+		}catch(Throwable e){
+			logger.error(e.getMessage(), e);
+		}
+		return null; 
+	}
+	
+	private SinaEsegDTO loadSinaDTO(CsDSina csDSina, List<CsTbSinaDomanda> lstParams){
+		try {
+			if(lstParams==null) lstParams = configurazioneDao.getListaDomandaSina();
+			if(csDSina!=null) {
+				List<CsDSinaEseg> lstSinaEseg = sinaDao.getSinaEsegBySinaId(csDSina.getId());
+				List<String> prestazioniInps = sinaDao.getSinaPrestazioniInpsBySinaId(csDSina.getId());
 				if(csDSina!=null)
 					return SinaEsegDTO.create(csDSina, lstParams, lstSinaEseg, prestazioniInps);
 			}
 		}catch(Throwable e){
 			logger.error(e.getMessage(), e);
 		}
-		return null; 
+		return null;
 	}
 	
 	@Override
@@ -113,6 +122,14 @@ public class AccessTableSinaSessionBean extends CarSocialeBaseSessionBean implem
 		s.setFlagValutaDopo(e.getFlagValutaDopo());
 		s.setIntEsegMastId(e.getInterventoEsegMastId());
 		s.setDiarioId(e.getDiarioMultidimId());
+		
+		if(s.getId() ==null){
+			s.setDtIns(new Date());
+			s.setUserIns(e.getUserId());
+		}else {
+			s.setDtMod(new Date());
+			s.setUserMod(e.getUserId());
+		}
 		//s.setArTbPrestazioniInps(e.getPrestazioniSina());
 		
 		s = sinaDao.updateSina(s);
@@ -122,7 +139,7 @@ public class AccessTableSinaSessionBean extends CarSocialeBaseSessionBean implem
 		sinaDao.savePrestazioneInpsSina(idSina, e.getLstPrestazioniInpsScelte());
 		
 		if(e.getRispostas() != null && !esegs.isEmpty()){
-			sinaDao.deleteSinaEsegById(s.getId());
+			sinaDao.deleteSinaEsegBySinaId(s.getId());
 		}
 		
 		for (Entry<Long, String> entry:  e.getRispostas().entrySet()) { //in rispostas non ci dovrebbe più essere la domanda 10 ! e salva le altre 
@@ -133,42 +150,15 @@ public class AccessTableSinaSessionBean extends CarSocialeBaseSessionBean implem
 			   }
 			   
 			   if(idRisposta!=null){
-				    CsDSinaEseg eseg = new CsDSinaEseg();
-				    CsDSinaEsegPK esegPK = new CsDSinaEsegPK();
-				    esegPK.setDomandaId(idDomanda);
-				    esegPK.setRispostaId(idRisposta);
-				    esegPK.setSinaId(idSina);
-				    eseg.setId(esegPK);
-				    eseg.setUserIns(e.getUserId());
-				    Timestamp actual = new Timestamp(System.currentTimeMillis());
-				    eseg.setDtIns(actual);
-					
-					sinaDao.updateSinaEseg(eseg);
-					logger.debug(idDomanda+" "+idRisposta+" "+s.getId());
-					
+					sinaDao.updateSinaEseg(idDomanda, idRisposta, idSina, e.getUserId());
 				}else{
 					//Delete?
 				}
 			}
 			if(!e.getLstSinaParamInvalidita().isEmpty()){
 				long idDomanda = TipoSinaDomanda.INVALIDITA_CIVILE;
-				for(Long l : e.getLstSinaParamInvalidita()){
-					
-					CsDSinaEseg eseg = new CsDSinaEseg();
-					CsDSinaEsegPK esegPK = new CsDSinaEsegPK();
-			    
-					esegPK.setDomandaId(idDomanda);
-					esegPK.setRispostaId(l);
-					esegPK.setSinaId(idSina);
-			    
-					eseg.setId(esegPK);
-					eseg.setUserIns(e.getUserId());
-					Timestamp actual = new Timestamp(System.currentTimeMillis());
-					eseg.setDtIns(actual);
-					
-					sinaDao.updateSinaEseg(eseg);
-					
-				}
+				for(Long l : e.getLstSinaParamInvalidita())
+					sinaDao.updateSinaEseg(idDomanda, l, idSina, e.getUserId());
 			}
 			
 			return idSina;
@@ -176,15 +166,41 @@ public class AccessTableSinaSessionBean extends CarSocialeBaseSessionBean implem
 	}
 
 	@Override
+	public boolean canDeleteSina(BaseDTO dto){
+		SinaEsegDTO sina = (SinaEsegDTO) dto.getObj();
+		
+		boolean canDelete = true;
+		if(!sina.getFlagValutaDopo()) {
+			if(sina.getInterventoEsegMastId()!=null && sina.getData()!=null){
+				List<CsIPsExport> exps =  exportDAO.findCsIPsExportByCsIInterventoMastIdExported(sina.getInterventoEsegMastId());
+				//Verifico la data della valutazione SINA se è successiva all'esportazione la posso eliminare
+				Iterator<CsIPsExport> iexps = exps.iterator();
+				while(iexps.hasNext() && canDelete){
+					CsIPsExport exp = iexps.next();
+					canDelete = sina.getData().after(exp.getDtExport());
+				}
+			}
+		}
+		return canDelete;
+	}
+	
+	@Override
 	public void deleteSina(BaseDTO dto) {
-		sinaDao.deleteSinaById((Long) dto.getObj());
+		if(this.canDeleteSina(dto)) {
+			SinaEsegDTO sina = (SinaEsegDTO) dto.getObj();
+			Long id = sina.getSinaId();
+		   sinaDao.deleteSinaEsegBySinaId(id);
+		   sinaDao.deletePrestazioniSinaById(id);
+		   sinaDao.deleteSinaById(id);
+		}
 	}
 	
 	//SISO-783
 	@Override
-	public List<CsDSina> findDiarioSinaByMastId(BaseDTO dto){
+	public List<SinaEsegDTO> findDiarioSinaByMastId(BaseDTO dto){
 		Long mastId = (Long)dto.getObj();
-		return sinaDao.findSinaByMastId(mastId);
+		List<CsDSina> lista = sinaDao.findSinaByMastId(mastId);
+		return this.loadListaSinaDTO(lista);
 	}
 	
 	@Override
@@ -230,9 +246,10 @@ public class AccessTableSinaSessionBean extends CarSocialeBaseSessionBean implem
 	
 	//SISO-783
 	@Override
-	public List<CsDSina> findSinaByCaso(BaseDTO dto){
+	public List<SinaEsegDTO> findSinaByCaso(BaseDTO dto){
 		Long casoId = (Long) dto.getObj();
-		return sinaDao.findSinaByCaso(casoId);
+		List<CsDSina> lista =  sinaDao.findSinaByCaso(casoId);
+		return this.loadListaSinaDTO(lista);
 	}
 	
 	//SISO-783
@@ -251,10 +268,21 @@ public class AccessTableSinaSessionBean extends CarSocialeBaseSessionBean implem
 	
 	//SISO-928
 	@Override
-	public List<CsDSina> findSinaCollegabiliByCf(BaseDTO dto){
+	public List<SinaEsegDTO> findSinaCollegabiliByCf(BaseDTO dto){
 		Long mastId = (Long) dto.getObj();
 		String cf =  (String)dto.getObj2();		
-		return sinaDao.findSinaCollegabiliByCf(cf,mastId);
+		List<CsDSina> lista = sinaDao.findSinaCollegabiliByCf(cf,mastId);
+		return this.loadListaSinaDTO(lista);
+	}
+	
+	private List<SinaEsegDTO> loadListaSinaDTO(List<CsDSina> lista){
+		List<SinaEsegDTO> lstOut = new ArrayList<SinaEsegDTO>();
+		if(!lista.isEmpty()){
+		   List<CsTbSinaDomanda> lstParams = configurazioneDao.getListaDomandaSina();
+		   for(CsDSina sina : lista)
+			   lstOut.add(this.loadSinaDTO(sina, lstParams));
+		}
+		return lstOut;
 	}
 
 }

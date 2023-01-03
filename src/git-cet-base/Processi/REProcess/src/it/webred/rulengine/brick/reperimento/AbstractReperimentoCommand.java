@@ -6,10 +6,8 @@ import org.apache.log4j.Logger;
 
 import it.webred.rulengine.Command;
 import it.webred.rulengine.Context;
-import it.webred.rulengine.brick.bean.ApplicationAck;
 import it.webred.rulengine.brick.bean.CommandAck;
 import it.webred.rulengine.brick.bean.ErrorAck;
-import it.webred.rulengine.brick.bean.RunningAck;
 import it.webred.rulengine.exception.CommandException;
 import it.webred.rulengine.impl.bean.BeanCommand;
 

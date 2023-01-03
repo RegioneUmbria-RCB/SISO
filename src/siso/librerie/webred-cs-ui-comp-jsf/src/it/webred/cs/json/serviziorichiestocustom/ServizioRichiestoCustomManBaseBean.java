@@ -1,5 +1,15 @@
 package it.webred.cs.json.serviziorichiestocustom;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.faces.model.SelectItemGroup;
+
+import org.primefaces.event.FileUploadEvent;
+import org.primefaces.model.UploadedFile;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import it.webred.classfactory.WebredClassFactory;
 import it.webred.cs.csa.ejb.client.AccessTableDiarioSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.AccessTableDocumentoSessionBeanRemote;
@@ -10,18 +20,8 @@ import it.webred.cs.data.model.CsDDiario;
 import it.webred.cs.data.model.CsDDocIndividuale;
 import it.webred.cs.data.model.CsDValutazione;
 import it.webred.cs.data.model.CsLoadDocumento;
-import it.webred.cs.data.model.CsOSettore;
 import it.webred.cs.json.SchedaValutazioneManBean;
 import it.webred.ejb.utility.ClientUtility;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.faces.model.SelectItemGroup;
-
-import org.primefaces.model.UploadedFile;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * SISO-438
@@ -36,10 +36,7 @@ public abstract class  ServizioRichiestoCustomManBaseBean extends SchedaValutazi
 	private List<ServizioRichiestoDocumentoAllegato> listaDocumentiDaSalvare;
 	private List<ServizioRichiestoDocumentoAllegato> listaDocumentiSalvati;
 	protected List<SelectItemGroup> listaPDS = new ArrayList<SelectItemGroup>();
-
-//    private StreamedContent fileDownload;
 	
-
 	public abstract ServizioRichiestoCustomBaseBean getJsonCurrent();
 	protected abstract void loadPDSMacro();
 	
@@ -127,7 +124,6 @@ public abstract class  ServizioRichiestoCustomManBaseBean extends SchedaValutazi
 	
 
 	public void saveDocumenti(Long diarioId, Long casoId) throws Exception {
-
 		for (ServizioRichiestoDocumentoAllegato documentoAllegato : listaDocumentiDaSalvare) {
 			if (!listaDocumentiSalvati.contains(documentoAllegato)) {
 				salvaServizioRichiestoDocumentoAllegato(documentoAllegato, diarioId, casoId);
@@ -363,16 +359,13 @@ public abstract class  ServizioRichiestoCustomManBaseBean extends SchedaValutazi
 	public List<SelectItemGroup> getListaPDS() {
 		return this.listaPDS;
 	}
-	
-//	public boolean isLoadToClone() {
-//		return loadToClone;
-//	}
-//
-//
-//	public void setLoadToClone(boolean loadToClone) {
-//		this.loadToClone = loadToClone;
-//	}
-//	
-	
-	
+     
+    public void handleUpload(FileUploadEvent event){
+    	UploadedFile file = event.getFile();
+    	if(file != null) {
+        	logger.debug("Upload documento"+file.getFileName());
+        	this.addInfo("Upload documento", file.getFileName()+": caricamento completato"); 
+            this.addFile(file);
+        }
+    }
 }
