@@ -92,6 +92,7 @@ public class DatiEsterniSoggettoDAO extends CarSocialeBaseDAO implements Seriali
 		relazioneDatiEsterniToSoggetto.setDtAperturaDomanda(parametriEsterni.getDataApertura());
 		relazioneDatiEsterniToSoggetto.setDtChiusuraDomanda(parametriEsterni.getDataChiusura());
 		relazioneDatiEsterniToSoggetto.setEntitaServizio(parametriEsterni.getEntitaServizio());
+		relazioneDatiEsterniToSoggetto.setEntitaServizioUM(parametriEsterni.getEntitaServizioUnitaMisura());
 		relazioneDatiEsterniToSoggetto.setIndirizzo(parametriEsterni.getIndirizzo());
 		
 		em.persist(relazioneDatiEsterniToSoggetto);

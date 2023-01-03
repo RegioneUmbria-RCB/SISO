@@ -300,21 +300,6 @@
 				
 		</h:form>
 
- 		<h:form enctype="multipart/form-data">
-
-
-		<p:dialog id="testDialog" widgetVar="testDialog" closable="true" modal="true" resizable="false" position="center" draggable="true">
-			
-			<p:fileUpload value="#{nuovaSchedaWizard.serviziRichiestiInterventiCustomBean.file}"
-				mode="simple" skinSimple="true" />
-			<p:spacer width="20px"/>
-			<p:commandButton value="Conferma" ajax="false"
-				actionListener="#{nuovaSchedaWizard.serviziRichiestiInterventiCustomBean.upload}"  /> 
-		</p:dialog>
- 
-		</h:form>  
-
-
 	</ui:define>
 
 </ui:composition>

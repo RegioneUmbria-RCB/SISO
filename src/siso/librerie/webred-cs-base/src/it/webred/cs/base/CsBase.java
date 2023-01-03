@@ -8,7 +8,6 @@ import it.webred.ct.config.parameters.dto.ParameterSearchCriteria;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;

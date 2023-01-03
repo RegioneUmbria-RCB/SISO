@@ -251,27 +251,7 @@ public void updateCompletamentoScheda(SsScheda  scheda)throws Exception{
 		scheda.setDtMod(new Date());
 		em.merge(scheda);
 	}
-	@SuppressWarnings("unchecked")
-	@AuditConsentiAccessoAnonimo
-	@AuditSaltaValidazioneSessionID
-	public List<SsIntervento> readInterventi() {
-		Query q = em.createNamedQuery("SsIntervento.findAll");
-		return q.getResultList();
-	}
 
-	
-	//SISO-1160 Inizio
-	@SuppressWarnings("unchecked")
-	@AuditConsentiAccessoAnonimo
-	@AuditSaltaValidazioneSessionID
-	public List<String> readInterventiTrascodifiche() {
-		List<SsIntervento> ssIntervento = readInterventi();
-		List<String> listDescrizioni = new ArrayList<String>();
-		for(SsIntervento ssInter : ssIntervento){
-			listDescrizioni.add(ssInter.getIntervento());
-		}
-		return listDescrizioni;
-	}
 	//SISO-1160 Fine
 	@SuppressWarnings("unchecked")
 	public List<SsMotivazione> readMotivazioni() {

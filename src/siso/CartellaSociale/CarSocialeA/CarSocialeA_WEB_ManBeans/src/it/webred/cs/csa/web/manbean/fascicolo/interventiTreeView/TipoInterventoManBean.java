@@ -957,6 +957,7 @@ public class TipoInterventoManBean extends CsUiCompBaseBean implements Serializa
 		{
 			this.selectedNode = null;
 			this.treeController.loadTree(true);
+			this.tooltip = null;
 		} else {
 			// Inizio SISO-1110
 			this.resetCustomIstat();
@@ -984,40 +985,48 @@ public class TipoInterventoManBean extends CsUiCompBaseBean implements Serializa
 	}
 
 	public void onNodeSelect(NodeSelectEvent event) {
-		this.tipoInterventosCustom = null;
-		this.newTipoIntCustom = null;
-		this.selTipoInterventoCustom = new KeyValueDTO();
-		this.selTipoInterventoName = null;
-		this.selTipoInterventoId = null;
-		this.curSelCsCTipoInterventoCustom = null;
-		this.selCatSocialeId = null;
-		this.tooltip = null;
-		
-		if (event.getTreeNode().isLeaf()) {
-			TreeNodeBean curNode = (TreeNodeBean) event.getTreeNode().getData();
-			TreeNodeBean parentNode = (TreeNodeBean) findRoot(event.getTreeNode()).getData();
-
-			BaseDTO dto = new BaseDTO();
-			fillEnte(dto);
-			dto.setObj(parentNode.getName());
-			CsCCategoriaSociale catSoc = confService.findCatSocialeByDescrizione(dto);
-			selCatSocialeId = catSoc.getId();
+		try {
+			this.tipoInterventosCustom = null;
+			this.newTipoIntCustom = null;
+			this.selTipoInterventoCustom = new KeyValueDTO();
+			this.selTipoInterventoName = null;
+			this.selTipoInterventoId = null;
+			this.curSelCsCTipoInterventoCustom = null;
+			this.selCatSocialeId = null;
+			this.tooltip = null;
 			
-			if (!curNode.isbSelectable()) {
-				this.selTipoInterventoName = curNode.getName();
-				addWarningDialog("Attenzione", "Servizio non abilitato");
-			} else {
-				this.selTipoInterventoId = curNode.getTClasseId();
-				this.selTipoInterventoName = curNode.getName();
-				this.newTipoIntCustom = null;
-				this.selTipoInterventoCustom = new KeyValueDTO();
-				this.recenteString = null;
-				//this.selTipoInterventoCustomName=null;
-				loadTipoInterventoCustom(true);
+			if (event.getTreeNode().isLeaf()) {
+				TreeNodeBean curNode = (TreeNodeBean) event.getTreeNode().getData();
+				TreeNodeBean parentNode = (TreeNodeBean) findRoot(event.getTreeNode()).getData();
+	
+				BaseDTO dto = new BaseDTO();
+				fillEnte(dto);
+				dto.setObj(parentNode.getName());
+				CsCCategoriaSociale catSoc = confService.findCatSocialeByDescrizione(dto);
+				if(catSoc!=null)
+					selCatSocialeId = catSoc.getId();
+				else
+					this.addError("Errore caricamento", "Area target non trovata: "+parentNode.getName());
+					
+				if (!curNode.isbSelectable()) {
+					this.selTipoInterventoName = curNode.getName();
+					addWarningDialog("Attenzione", "Servizio non abilitato");
+				} else {
+					this.selTipoInterventoId = curNode.getTClasseId();
+					this.selTipoInterventoName = curNode.getName();
+					this.newTipoIntCustom = null;
+					this.selTipoInterventoCustom = new KeyValueDTO();
+					this.recenteString = null;
+					//this.selTipoInterventoCustomName=null;
+					loadTipoInterventoCustom(true);
+				}
+				
+				tooltip = this.findTooltip(curNode.getTClasseId().longValue());
+				
 			}
-			
-			tooltip = this.findTooltip(curNode.getTClasseId().longValue());
-			
+		}catch(Exception e){
+			logger.error("onNodeSelect "+e.getMessage(), e);
+			this.addError("Errore caricamento", e.getMessage());
 		}
 	}
 
@@ -1037,13 +1046,11 @@ public class TipoInterventoManBean extends CsUiCompBaseBean implements Serializa
 		this.newTipoIntCustom = null;
 		this.selTipoInterventoId = null;
 		this.selTipoInterventoCustom = new KeyValueDTO();
-		//this.selTipoInterventoCustomName = null;
 		this.selTipoInterventoName = null;
 		this.treeController.loadTree(true);
 		this.root = treeController.getRoot();
 		this.visibleDescrizione = false;
-		
-		
+		this.tooltip = null;
 	}
 	
 	public List<VTipiInterventoUsati> getLstRecenti() {

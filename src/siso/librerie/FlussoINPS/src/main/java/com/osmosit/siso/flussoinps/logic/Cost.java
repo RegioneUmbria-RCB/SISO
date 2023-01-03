@@ -56,7 +56,7 @@ public class Cost {
 	public static String LUOGO_VITA = "luogoVita";
 	public static String NAZIONE_RESIDENZA_FAM = "nazioneResidenzaFam";
 	public static String REGIONE_RESIDENZA_FAM = "regioneResidenzaFam";
-	public static String MINORE_STRANIERO_ACCOMPAGNATO = "minoreStranieroAccompagnato";
+	public static String MINORE_STRANIERO_NON_ACCOMPAGNATO = "minoreStranieroNonAccompagnato";
 	public static String CITTADINANZA_PADRE = "cittadinanzaPadre";
 	public static String CITTADINANZA_MADRE = "cittadinanzaMadre";
 	public static String REGIONE_RESIDENZA_PADRE = "regioneResidenzaPadre";

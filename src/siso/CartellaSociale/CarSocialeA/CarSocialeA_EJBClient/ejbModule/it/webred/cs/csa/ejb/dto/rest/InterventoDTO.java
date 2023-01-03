@@ -4,12 +4,9 @@ import java.io.Serializable;
 
 public class InterventoDTO implements Serializable{
 
-//	public InterventoDTO(Long id, String descrizione){
-//		this.id = id;
-//		this.descrizione = descrizione;
-//	}
 	private String descrizione;
 	private Long id;
+	
 	public String getDescrizione() {
 		return descrizione;
 	}

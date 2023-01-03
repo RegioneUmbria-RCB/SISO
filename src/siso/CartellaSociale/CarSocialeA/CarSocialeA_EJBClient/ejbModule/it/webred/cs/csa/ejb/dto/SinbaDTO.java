@@ -33,7 +33,7 @@ public class SinbaDTO implements Serializable{
 	private String luogoVita;
 	private String codNazioneResidenzaFam;
 	private String codRegioneResidenzaFam;
-	private String minoreStranieroAccompagnato;
+	private String minoreStranieroNonAccompagnato;
 	private String cittadinanzaMadre;
 	private String cittadinanzaPadre;
 	private String regioneResidenzaMadre;
@@ -193,11 +193,11 @@ public class SinbaDTO implements Serializable{
 	public void setCodRegioneResidenzaFam(String codRegioneResidenzaFam) {
 		this.codRegioneResidenzaFam = codRegioneResidenzaFam;
 	}
-	public String getMinoreStranieroAccompagnato() {
-		return minoreStranieroAccompagnato;
+	public String getMinoreStranieroNonAccompagnato() {
+		return minoreStranieroNonAccompagnato;
 	}
-	public void setMinoreStranieroAccompagnato(String minoreStranieroAccompagnato) {
-		this.minoreStranieroAccompagnato = minoreStranieroAccompagnato;
+	public void setMinoreStranieroNonAccompagnato(String minoreStranieroNonAccompagnato) {
+		this.minoreStranieroNonAccompagnato = minoreStranieroNonAccompagnato;
 	}
 	public String getCittadinanzaMadre() {
 		return cittadinanzaMadre;

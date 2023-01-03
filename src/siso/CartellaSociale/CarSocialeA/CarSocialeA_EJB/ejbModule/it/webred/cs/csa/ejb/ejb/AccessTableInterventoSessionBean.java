@@ -503,7 +503,11 @@ public class AccessTableInterventoSessionBean extends CarSocialeBaseSessionBean 
 	public List<ErogazioneMasterDTO> searchListaErogInterventi(ErogazioniSearchCriteria bDto) {
 		
 		//recuperare la lista degli interventi con cognome, nome, cf
-		if(!StringUtils.isBlank(bDto.getCodiceFiscale()) | !StringUtils.isBlank(bDto.getCognome()) | !StringUtils.isBlank(bDto.getNome()) | !StringUtils.isBlank(bDto.getDenominazione())){
+		if(!StringUtils.isBlank(bDto.getCodiceFiscale()) | 
+		   !StringUtils.isBlank(bDto.getCognome()) | 
+		   !StringUtils.isBlank(bDto.getNome()) | 
+		   !StringUtils.isBlank(bDto.getDenominazione()) |
+		   (bDto.isSearchByCaso() && bDto.getCasoId()!=null)){
 			List<BigDecimal> lstMasterId = interventoErogazioneDao.searchListaMasterIdBySoggetto(bDto);
 			bDto.setLstMasterId(lstMasterId);
 			bDto.setSearchByBeneficiario(true);

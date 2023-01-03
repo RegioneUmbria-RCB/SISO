@@ -8,6 +8,8 @@ import org.jboss.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import it.webred.ct.support.datarouter.CeTBaseObject;
+import it.webred.ct.support.validation.annotation.AuditConsentiAccessoAnonimo;
+import it.webred.ct.support.validation.annotation.AuditSaltaValidazioneSessionID;
 import it.webred.ss.dao.ConfigurazioneDAO;
 import it.webred.ss.data.model.SsOOrganizzazione;
 import it.webred.ss.data.model.SsPuntoContatto;
@@ -223,6 +225,13 @@ public class ConfigurazioneSessionBean implements ConfigurazioneSessionBeanRemot
 	public SsTipoScheda readTipoSchedaById(BaseDTO dto) {
 		Long id = (Long)dto.getObj();
 		return dao.readTipoSchedaById(id);
+	}
+	
+	@Override
+	@AuditConsentiAccessoAnonimo
+	@AuditSaltaValidazioneSessionID
+	public List<String>  readInterventiTrascodifiche(BaseDTO dto) {
+		return dao.readInterventiTrascodifiche() ;
 	}
 
 }

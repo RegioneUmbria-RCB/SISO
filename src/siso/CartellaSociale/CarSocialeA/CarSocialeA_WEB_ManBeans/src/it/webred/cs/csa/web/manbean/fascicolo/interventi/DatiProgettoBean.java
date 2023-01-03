@@ -20,7 +20,6 @@ import it.webred.cs.data.DataModelCostanti.ProgettoErogazioni;
 import it.webred.cs.data.DataModelCostanti.ProgettoErogazioni.FLAG_RES_DOM;
 import it.webred.cs.data.model.ArFfProgetto;
 import it.webred.cs.data.model.ArFfProgettoAttivita;
-import it.webred.cs.data.model.CsAAnagrafica;
 import it.webred.cs.data.model.CsCTipoIntervento;
 import it.webred.cs.data.model.CsCTipoInterventoCustom;
 import it.webred.cs.data.model.CsIInterventoEsegMastSogg;

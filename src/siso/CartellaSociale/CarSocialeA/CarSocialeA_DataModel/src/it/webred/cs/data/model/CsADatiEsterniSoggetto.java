@@ -42,6 +42,9 @@ public class CsADatiEsterniSoggetto {
 	@Column(name = "ENTITA_SERVIZIO")
 	private String entitaServizio;
 	
+	@Column(name = "ENTITA_SERVIZIO_UM")
+	private String entitaServizioUM;
+	
 	@Column(name = "DT_APERTURA_DOMANDA")
 	private Date dtAperturaDomanda;
 	
@@ -181,6 +184,14 @@ public class CsADatiEsterniSoggetto {
 
 	public void setDatiEsterni(CsADatiEsterni datiEsterni) {
 		this.datiEsterni = datiEsterni;
+	}
+
+	public String getEntitaServizioUM() {
+		return entitaServizioUM;
+	}
+
+	public void setEntitaServizioUM(String entitaServizioUM) {
+		this.entitaServizioUM = entitaServizioUM;
 	}
 
 	@Override

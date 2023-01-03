@@ -1,5 +1,23 @@
 package it.webred.cs.csa.ejb.dao;
 
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
+import javax.faces.model.SelectItem;
+import javax.faces.model.SelectItemGroup;
+import javax.inject.Named;
+import javax.persistence.NoResultException;
+import javax.persistence.Query;
+import javax.persistence.TypedQuery;
+
+import org.apache.commons.lang3.StringUtils;
+
 import it.webred.cs.csa.ejb.CarSocialeBaseDAO;
 import it.webred.cs.csa.ejb.client.CarSocialeServiceException;
 import it.webred.cs.csa.ejb.dto.CodificaINPS;
@@ -14,26 +32,6 @@ import it.webred.cs.data.DataModelCostanti.CampiFse;
 import it.webred.cs.data.model.*;
 import it.webred.ct.support.validation.annotation.AuditConsentiAccessoAnonimo;
 import it.webred.ct.support.validation.annotation.AuditSaltaValidazioneSessionID;
-
-import java.io.Serializable;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
-import javax.faces.model.SelectItem;
-import javax.faces.model.SelectItemGroup;
-import javax.inject.Named;
-import javax.persistence.NoResultException;
-import javax.persistence.Query;
-import javax.persistence.TypedQuery;
-
-import org.apache.commons.lang3.StringUtils;
 
 @Named
 public class ConfigurazioneDAO extends CarSocialeBaseDAO implements Serializable {
@@ -2368,6 +2366,7 @@ public class ConfigurazioneDAO extends CarSocialeBaseDAO implements Serializable
 	public InformativaDTO findInformativa(Long obj) {
 		InformativaDTO i = null;
 		Query q = null;
+		try {
 		if(obj!=null){
 			String sql = "SELECT C.ID CLASSE_ID , C.CODICE_MEMO , C.DESCRIZIONE CLASSE_DESCRIZIONE , C.DESCRIZIONE2 CLASSE_DESCRIZIONE2 , I.CODICE, i.flag_psa, I.DENOMINAZIONE inps_denominazione , I.DESCRIZIONE inps_descrizione "+
 						"FROM AR_REL_CLASSEMEMO_PRES_INPS R, AR_TB_PRESTAZIONI_INPS I, AR_T_CLASSE C "+
@@ -2401,6 +2400,8 @@ public class ConfigurazioneDAO extends CarSocialeBaseDAO implements Serializable
 			}
 		
 		}
+		}catch(Exception e) {
+			logger.error("findInformativa "+e.getMessage(), e);		}
 		return i;
 	}
 
@@ -2509,6 +2510,26 @@ public class ConfigurazioneDAO extends CarSocialeBaseDAO implements Serializable
 			}
 		}
 		return listaV;
+	}
+	
+	
+	@SuppressWarnings("unchecked")
+	public List<ArTClasse> findArTClasseAll() {
+		try{
+		Query q = em.createNamedQuery("ArTClasse.findAll");  
+
+		List<ArTClasse> lst = q.getResultList();  
+		
+		logger.debug("findArTClasseAll- RESULT["+lst.size()+"]");
+		
+		return lst;
+		}
+		catch(Throwable e){
+			logger.error(e);
+			throw new CarSocialeServiceException(e);
+			
+		}
+	
 	}
 
 	@SuppressWarnings("unchecked")

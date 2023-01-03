@@ -4,11 +4,13 @@ import it.webred.cs.csa.ejb.CarSocialeBaseDAO;
 import it.webred.cs.csa.ejb.client.CarSocialeServiceException;
 import it.webred.cs.data.model.CsDSina;
 import it.webred.cs.data.model.CsDSinaEseg;
+import it.webred.cs.data.model.CsDSinaEsegPK;
 import it.webred.cs.data.model.CsDSinaLIGHT;
 import it.webred.cs.data.model.CsDSinaPresInps;
 import it.webred.cs.data.model.CsDSinaPresInpsPK;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -23,7 +25,7 @@ public class SinaDAO extends CarSocialeBaseDAO implements Serializable {
 	public CsDSina updateSina(CsDSina sina) {
 		try {
 
-			sina = em.merge(sina); // provare sina = em.merge(sina);
+			sina = em.merge(sina);
 
 		} catch (Exception e) {
 			logger.error("updateSina " + e.getMessage(), e);
@@ -32,10 +34,24 @@ public class SinaDAO extends CarSocialeBaseDAO implements Serializable {
 		return sina;
 	}
 	
-	public CsDSinaEseg updateSinaEseg(CsDSinaEseg se) {
+	public CsDSinaEseg updateSinaEseg(Long idDomanda, Long idRisposta, Long idSina, String userId) {
 		try {
 
-			return em.merge(se);
+			logger.debug("updateSinaEseg"+idSina+":"+idDomanda+" "+idRisposta);
+			
+			CsDSinaEseg eseg = new CsDSinaEseg();
+			CsDSinaEsegPK esegPK = new CsDSinaEsegPK();
+	    
+			esegPK.setDomandaId(idDomanda);
+			esegPK.setRispostaId(idRisposta);
+			esegPK.setSinaId(idSina);
+	    
+			eseg.setId(esegPK);
+			eseg.setUserIns(userId);
+			Timestamp actual = new Timestamp(System.currentTimeMillis());
+			eseg.setDtIns(actual);
+			
+			return em.merge(eseg);
 
 		} catch (Exception e) {
 			logger.error("updateSinaEseg " + e.getMessage(), e);
@@ -91,17 +107,37 @@ public class SinaDAO extends CarSocialeBaseDAO implements Serializable {
 		return result;
 	}
 
-	public void deleteSinaEsegById(Long idSina) {
-		Query q = em.createNamedQuery("CsDSinaEseg.deleteBySinaId");
-		q.setParameter("idSina", idSina);
-		q.executeUpdate();
+	public void deleteSinaEsegBySinaId(Long idSina) {
+		try{
+			Query q = em.createNamedQuery("CsDSinaEseg.deleteBySinaId");
+			q.setParameter("idSina", idSina);
+			q.executeUpdate();
+		} catch (Exception e) {
+			logger.error("deleteSinaById " + e.getMessage(), e);
+			throw new CarSocialeServiceException(e);
+		}
+	}	
+	
+	public void deleteSinaById(Long idSina){
+		try {
+			Query q3 = em.createNamedQuery("CsDSina.deleteById");
+			q3.setParameter("idSina", idSina);
+			q3.executeUpdate();
+		}catch(Exception e) {
+			logger.error("deleteSinaEsegById " + e.getMessage(), e);
+			throw new CarSocialeServiceException(e);
+		}
 	}
 	
-	public void deleteSinaById(Long idSina) {
-		this.deleteSinaEsegById(idSina);
-		Query q = em.createNamedQuery("CsDSina.deleteById");
-		q.setParameter("idSina", idSina);
-		q.executeUpdate();
+	public void deletePrestazioniSinaById(Long idSina){
+		try {	
+			Query q2 = em.createNamedQuery("CsDSinaPresInps.deleteBySinaId");
+			q2.setParameter("idSina", idSina);
+			q2.executeUpdate();
+		}catch(Exception e) {
+			logger.error("deletePrestazioniSinaById " + e.getMessage(), e);
+			throw new CarSocialeServiceException(e);
+		}
 	}
 
 	// SISO - 884
@@ -209,9 +245,7 @@ public class SinaDAO extends CarSocialeBaseDAO implements Serializable {
 
 	public void savePrestazioneInpsSina(Long idSina, List<String> lstPrestazioniInpsScelte) {
 		try {
-			Query q1 = em.createNamedQuery("CsDSinaPresInps.deleteBySinaId");
-			q1.setParameter("idSina", idSina);
-			q1.executeUpdate();
+			deletePrestazioniSinaById(idSina);
 			
 			for(String p : lstPrestazioniInpsScelte) {
 				CsDSinaPresInps pres = new CsDSinaPresInps();

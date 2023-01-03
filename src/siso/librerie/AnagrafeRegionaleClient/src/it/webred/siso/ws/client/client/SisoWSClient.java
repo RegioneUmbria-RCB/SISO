@@ -51,14 +51,14 @@ public abstract class SisoWSClient {
 			m.marshal(context.getInput(), sw);
 			String payloadString = sw.toString();
 			logger.debug("ANAGRAFE REGIONALE CLIENT: richiesta ["+payloadString+"]");
-			
+		
 			// Call service
 			SISOServicePortType port = context.getServiceStub().getSISOServiceHttpSoap11Endpoint();
 			String resp = port.doService(payloadString, context.getServiceId());
-			
+					
 			String ritorno = resp.trim();
 			//System.out.println("Result size per "+payloadString+" "+ritorno.length());
-			//logger.debug("ANAGRAFE REGIONALE CLIENT: risposta ["+ritorno+"]");
+//			logger.debug("ANAGRAFE REGIONALE CLIENT: risposta ["+ritorno+"]");
 			
 			XMLFilterImpl filter = context.getNamespaceFilter();
 			if (filter==null) {

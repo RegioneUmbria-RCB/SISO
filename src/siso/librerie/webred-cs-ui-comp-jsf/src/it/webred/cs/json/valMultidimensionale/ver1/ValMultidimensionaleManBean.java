@@ -1,5 +1,16 @@
 package it.webred.cs.json.valMultidimensionale.ver1;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+
+import javax.faces.application.FacesMessage;
+import javax.faces.model.SelectItem;
+
+import org.primefaces.context.RequestContext;
+
 import it.webred.cs.csa.ejb.client.CarSocialeServiceException;
 import it.webred.cs.csa.ejb.dto.BaseDTO;
 import it.webred.cs.csa.utils.bean.report.dto.ReportPdfDTO;
@@ -11,29 +22,13 @@ import it.webred.cs.data.model.CsAComponente;
 import it.webred.cs.data.model.CsDDiario;
 import it.webred.cs.data.model.CsDValutazione;
 import it.webred.cs.data.model.CsTbSchedaMultidim;
-import it.webred.cs.jsf.manbean.superc.CsUiCompBaseBean;
 import it.webred.cs.json.ISchedaValutazione;
 import it.webred.cs.json.barthel.ISchedaBarthel;
 import it.webred.cs.json.dto.JsonBaseBean;
 import it.webred.cs.json.isee.IIseeJson;
 import it.webred.cs.json.valMultidimensionale.ValMultidimensionaleManBaseBean;
 import it.webred.cs.json.valMultidimensionale.ValMultidimensionaleRowBean;
-
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-
-import javax.faces.application.FacesMessage;
-import javax.faces.model.SelectItem;
-
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
-
-import org.apache.commons.lang3.StringUtils;
-import org.primefaces.context.RequestContext;
-import org.primefaces.event.SelectEvent;
-import org.primefaces.event.UnselectEvent;
 
 public class ValMultidimensionaleManBean extends ValMultidimensionaleManBaseBean {
 
@@ -73,28 +68,10 @@ public class ValMultidimensionaleManBean extends ValMultidimensionaleManBaseBean
 	private List<SelectItem> lstItemsAbElettrodomestici=new ArrayList<SelectItem>();;
 	private List<SelectItem> lstItemsAbAltriProblemi=new ArrayList<SelectItem>();;
 	
-	private List<CsAComponente> famConvComponentes;
-	private List<CsAComponente> famNonConvComponentes;
-	private List<CsAComponente> famAltriComponentes;
-	private List<CsAComponente> famComponentes;
-	private List<CsAComponente> selectedFamComponentes;
-	private List<AnagraficaMultidimAnzBean> selectedfamAnaConvs;
-	private List<AnagraficaMultidimAnzBean> selectedfamAnaNonConvs;
-	private List<AnagraficaMultidimAnzBean> selectedfamAnaAltris;
-	
-	private boolean removeAnaConvButton;
-	private boolean addAnaCorrButton;
-	private boolean removeAnaNonConvButton;
-	private boolean addAnaNonCorrButton;
-	private boolean removeAnaAltriButton;
-	private boolean addAnaAltriButton;
-	private boolean apriAnaConvButton;
-	private boolean apriAnaNonConvButton;
-	private boolean apriAltrifamButton;
-	private boolean isConvivente;
-	private boolean isParente;
-	
-	
+	protected List<AnagraficaMultidimAnzBean> selectedfamAnaConvs;
+	protected List<AnagraficaMultidimAnzBean> selectedfamAnaNonConvs;
+	protected List<AnagraficaMultidimAnzBean> selectedfamAnaAltris;
+
 	
 	public ValMultidimensionaleManBean() {
 		controller = new ValMultidimensionaleController();
@@ -147,51 +124,6 @@ public class ValMultidimensionaleManBean extends ValMultidimensionaleManBaseBean
 	    
 	}
 
-	protected void loadCommonList()
-	{
-		if (soggetto != null) {
-			List<CsAComponente> famAllComponentes = CsUiCompBaseBean.caricaParenti(soggetto.getAnagraficaId(), null);
-			if(famAllComponentes != null) {
-				famConvComponentes = new ArrayList<CsAComponente>();
-				famNonConvComponentes = new ArrayList<CsAComponente>();
-				famAltriComponentes = new ArrayList<CsAComponente>();
-				apriAnaConvButton = false;
-				apriAnaNonConvButton = false;
-				apriAltrifamButton = false;
-				for (CsAComponente it : famAllComponentes) {
-					if (it.getCsTbTipoRapportoCon().getParente()) {
-						if (it.getConvivente()) {
-							//famConvComponentes = new ArrayList<CsAComponente>();
-							famConvComponentes.add(it);
-							apriAnaConvButton = apriAnaConvButton || true;
-							apriAnaNonConvButton = apriAnaNonConvButton || false;
-							apriAltrifamButton = apriAltrifamButton || false;
-						} else {
-							//famNonConvComponentes = new ArrayList<CsAComponente>();
-							famNonConvComponentes.add(it);
-							apriAnaConvButton = apriAnaConvButton || false;
-							apriAnaNonConvButton = apriAnaNonConvButton || true;
-							apriAltrifamButton = apriAltrifamButton || false;
-						}
-					} else {
-						//famAltriComponentes = new ArrayList<CsAComponente>();
-						famAltriComponentes.add(it);
-						apriAnaConvButton = apriAnaConvButton || false;
-						apriAnaNonConvButton = apriAnaNonConvButton || false;
-						apriAltrifamButton = apriAltrifamButton || true;
-					}
-				}
-			}
-		}
-		
-		removeAnaConvButton = true;
-		addAnaCorrButton = true;
-		removeAnaNonConvButton = true;
-		addAnaNonCorrButton = true;
-		removeAnaAltriButton = true;
-		addAnaAltriButton = true;
-	}
-	
 	private void loadListeTabAbitazione(BaseDTO dto){
 		
 		loadListaSI(TipoParamSchedaMultidime.ABIT_TIPO, null, lstItemsAbTipo);
@@ -577,161 +509,6 @@ public class ValMultidimensionaleManBean extends ValMultidimensionaleManBaseBean
 		this.lstItemsAbAltriProblemi = lstItemsAbAltriProblemi;
 	}
 
-	public List<CsAComponente> getFamConvComponentes() {
-		return famConvComponentes;
-	}
-
-	public void setFamConvComponentes(List<CsAComponente> famConvComponentes) {
-		this.famConvComponentes = famConvComponentes;
-	}
-
-	public List<CsAComponente> getFamNonConvComponentes() {
-		return famNonConvComponentes;
-	}
-
-	public void setFamNonConvComponentes(List<CsAComponente> famNonConvComponentes) {
-		this.famNonConvComponentes = famNonConvComponentes;
-	}
-
-	public List<CsAComponente> getFamAltriComponentes() {
-		return famAltriComponentes;
-	}
-
-	public void setFamAltriComponentes(List<CsAComponente> famAltriComponentes) {
-		this.famAltriComponentes = famAltriComponentes;
-	}
-
-	public List<CsAComponente> getFamComponentes() {
-		return famComponentes;
-	}
-
-	public void setFamComponentes(List<CsAComponente> famComponentes) {
-		this.famComponentes = famComponentes;
-	}
-
-	public List<CsAComponente> getSelectedFamComponentes() {
-		return selectedFamComponentes;
-	}
-
-	public void setSelectedFamComponentes(List<CsAComponente> selectedFamComponentes) {
-		this.selectedFamComponentes = selectedFamComponentes;
-	}
-
-	public List<AnagraficaMultidimAnzBean> getSelectedfamAnaConvs() {
-		return selectedfamAnaConvs;
-	}
-
-	public void setSelectedfamAnaConvs(
-			List<AnagraficaMultidimAnzBean> selectedfamAnaConvs) {
-		this.selectedfamAnaConvs = selectedfamAnaConvs;
-	}
-
-	public List<AnagraficaMultidimAnzBean> getSelectedfamAnaNonConvs() {
-		return selectedfamAnaNonConvs;
-	}
-
-	public void setSelectedfamAnaNonConvs(
-			List<AnagraficaMultidimAnzBean> selectedfamAnaNonConvs) {
-		this.selectedfamAnaNonConvs = selectedfamAnaNonConvs;
-	}
-
-	public List<AnagraficaMultidimAnzBean> getSelectedfamAnaAltris() {
-		return selectedfamAnaAltris;
-	}
-
-	public void setSelectedfamAnaAltris(
-			List<AnagraficaMultidimAnzBean> selectedfamAnaAltris) {
-		this.selectedfamAnaAltris = selectedfamAnaAltris;
-	}
-
-	public boolean isRemoveAnaConvButton() {
-		return removeAnaConvButton;
-	}
-
-	public void setRemoveAnaConvButton(boolean removeAnaConvButton) {
-		this.removeAnaConvButton = removeAnaConvButton;
-	}
-
-	public boolean isAddAnaCorrButton() {
-		return addAnaCorrButton;
-	}
-
-	public void setAddAnaCorrButton(boolean addAnaCorrButton) {
-		this.addAnaCorrButton = addAnaCorrButton;
-	}
-
-	public boolean isRemoveAnaNonConvButton() {
-		return removeAnaNonConvButton;
-	}
-
-	public void setRemoveAnaNonConvButton(boolean removeAnaNonConvButton) {
-		this.removeAnaNonConvButton = removeAnaNonConvButton;
-	}
-
-	public boolean isAddAnaNonCorrButton() {
-		return addAnaNonCorrButton;
-	}
-
-	public void setAddAnaNonCorrButton(boolean addAnaNonCorrButton) {
-		this.addAnaNonCorrButton = addAnaNonCorrButton;
-	}
-
-	public boolean isRemoveAnaAltriButton() {
-		return removeAnaAltriButton;
-	}
-
-	public void setRemoveAnaAltriButton(boolean removeAnaAltriButton) {
-		this.removeAnaAltriButton = removeAnaAltriButton;
-	}
-
-	public boolean isAddAnaAltriButton() {
-		return addAnaAltriButton;
-	}
-
-	public void setAddAnaAltriButton(boolean addAnaAltriButton) {
-		this.addAnaAltriButton = addAnaAltriButton;
-	}
-
-	public boolean isApriAnaConvButton() {
-		return apriAnaConvButton;
-	}
-
-	public void setApriAnaConvButton(boolean apriAnaConvButton) {
-		this.apriAnaConvButton = apriAnaConvButton;
-	}
-
-	public boolean isApriAnaNonConvButton() {
-		return apriAnaNonConvButton;
-	}
-
-	public void setApriAnaNonConvButton(boolean apriAnaNonConvButton) {
-		this.apriAnaNonConvButton = apriAnaNonConvButton;
-	}
-
-	public boolean isApriAltrifamButton() {
-		return apriAltrifamButton;
-	}
-
-	public void setApriAltrifamButton(boolean apriAltrifamButton) {
-		this.apriAltrifamButton = apriAltrifamButton;
-	}
-
-	public boolean isConvivente() {
-		return isConvivente;
-	}
-
-	public void setConvivente(boolean isConvivente) {
-		this.isConvivente = isConvivente;
-	}
-
-	public boolean isParente() {
-		return isParente;
-	}
-
-	public void setParente(boolean isParente) {
-		this.isParente = isParente;
-	}
-
 	@Override
 	public void valorizzaRowList(ValMultidimensionaleRowBean row) {
 		//TODO: valorizzare eventuali campi aggiuntivi da mostrare in lista
@@ -740,29 +517,31 @@ public class ValMultidimensionaleManBean extends ValMultidimensionaleManBaseBean
 	}
 
 	// Start Methods for Famiglia Anagrafica
+	private void removeCompSelected(List<CsAComponente> attuali, List<AnagraficaMultidimAnzBean> toRemove){
+		for (AnagraficaMultidimAnzBean item : toRemove) {
+			for (CsAComponente it : attuali){
+				if(it.getCsAAnagrafica().getId().equals(item.getId())) {
+					attuali.remove(it);
+					break;
+				}
+			}
+		}	
+	}
 	
 	public void loadAnagConv() {
 		
 		try{
 		
 			// Initialize famComponentes with db data
-			famComponentes = new ArrayList<CsAComponente>();
+			dialogFamComponentes = new ArrayList<CsAComponente>();
+			dialogSelectedFamComponentes = new ArrayList<CsAComponente>();
 			if(famConvComponentes != null) {
-				famComponentes.addAll(famConvComponentes);
-				removeAnaConvButton = true;
-				addAnaCorrButton = true; 
+				dialogFamComponentes.addAll(famConvComponentes);
 				isConvivente = true;
 				isParente = true;
 				
-				if(getJsonCurrent().getFamAnaConvs().size() > 0){
-					for (CsAComponente it : famComponentes) {
-						for (AnagraficaMultidimAnzBean item : getJsonCurrent().getFamAnaConvs()) {
-							if(it.getCsAAnagrafica().getId().equals(item.getId()))
-								famComponentes.remove(it);
-						}
-						break;
-					}
-				}
+				if(getJsonCurrent().getFamAnaConvs().size() > 0)
+					removeCompSelected(dialogFamComponentes, getJsonCurrent().getFamAnaConvs());
 			}
 		
 		} catch (Exception e) {
@@ -776,24 +555,16 @@ public class ValMultidimensionaleManBean extends ValMultidimensionaleManBaseBean
 		
 		try{
 		
-			// Initialize famComponentes with db data
-			famComponentes = new ArrayList<CsAComponente>();
+			// Initialize dialogFamComponentes with db data
+			dialogFamComponentes = new ArrayList<CsAComponente>();
+			dialogSelectedFamComponentes = new ArrayList<CsAComponente>();
 			if(famNonConvComponentes != null) {
-				famComponentes.addAll(famNonConvComponentes);
-				removeAnaNonConvButton = true;
-				addAnaCorrButton = true;
+				dialogFamComponentes.addAll(famNonConvComponentes);
 				isConvivente = false;
 				isParente = true;
 				
-				if(getJsonCurrent().getFamAnaNonConvs().size() > 0){
-					for (CsAComponente it : famComponentes) {
-						for (AnagraficaMultidimAnzBean item : getJsonCurrent().famAnaNonConvs) {
-							if(it.getCsAAnagrafica().getId().equals(item.getId()))
-								famComponentes.remove(it);
-						}
-						break;
-					}
-				}
+				if(getJsonCurrent().getFamAnaNonConvs().size() > 0)
+					removeCompSelected(dialogFamComponentes, getJsonCurrent().getFamAnaNonConvs());
 			}
 		
 		} catch (Exception e) {
@@ -807,23 +578,15 @@ public class ValMultidimensionaleManBean extends ValMultidimensionaleManBaseBean
 		
 		try {
 		
-			// Initialize famComponentes with db data
-			famComponentes = new ArrayList<CsAComponente>();
+			// Initialize dialogFamComponentes with db data
+			dialogFamComponentes = new ArrayList<CsAComponente>();
+			dialogSelectedFamComponentes = new ArrayList<CsAComponente>();
 			if(famAltriComponentes != null) {
-				famComponentes.addAll(famAltriComponentes);
-				addAnaCorrButton = true;
-				removeAnaAltriButton = true;
+				dialogFamComponentes.addAll(famAltriComponentes);
 				isParente = false;
 				
-				if(getJsonCurrent().famAnaAltris.size() > 0){
-					for (CsAComponente it : famComponentes) {
-						for (AnagraficaMultidimAnzBean item : getJsonCurrent().famAnaAltris) {
-							if(it.getCsAAnagrafica().getId().equals(item.getId()))
-								famComponentes.remove(it);
-						}
-						break;
-					}
-				}
+				if(getJsonCurrent().famAnaAltris.size() > 0)
+					removeCompSelected(dialogFamComponentes, getJsonCurrent().getFamAnaAltris());
 			}
 		
 		} catch (Exception e) {
@@ -832,67 +595,48 @@ public class ValMultidimensionaleManBean extends ValMultidimensionaleManBaseBean
 		}
 	}
 	
+	private void removeAnaSelected(List<AnagraficaMultidimAnzBean> attuali, List<AnagraficaMultidimAnzBean> toRemove){
+		for (AnagraficaMultidimAnzBean item : toRemove) {
+			for (AnagraficaMultidimAnzBean it : attuali){
+				if(it.getId().equals(item.getId())) {
+					attuali.remove(it);
+					break;
+				}
+			}
+		}	
+	}
 	
 	public void removeAnaConv() {
 		if(selectedfamAnaConvs.size() > 0){
-			for (AnagraficaMultidimAnzBean it : getJsonCurrent().getFamAnaConvs()){
-				for (AnagraficaMultidimAnzBean item : selectedfamAnaConvs) {
-					if(it.getId().equals(item.getId()))
-						getJsonCurrent().getFamAnaConvs().remove(it);
-				}
-				
-				if(getJsonCurrent().getFamAnaConvs().size() == 0)
-					removeAnaConvButton = true;
-				break;
-			}	
-		}
-		else{
-			removeAnaConvButton = true;
+			this.removeAnaSelected(getJsonCurrent().getFamAnaConvs(), selectedfamAnaConvs);
+		}else{
+			this.addWarning("Rimozione familiari conviventi", "Selezione non effettuata");
 		}
 	}
-
 	
 	public void removeAnaNonConv(){
 		if(selectedfamAnaNonConvs.size() > 0){
-			for (AnagraficaMultidimAnzBean it : getJsonCurrent().getFamAnaNonConvs()){
-				for (AnagraficaMultidimAnzBean item : selectedfamAnaNonConvs) {
-					if(it.getId().equals(item.getId()))
-						getJsonCurrent().getFamAnaNonConvs().remove(it);
-				}
-				if(getJsonCurrent().getFamAnaNonConvs().size() == 0)
-					removeAnaConvButton = true;
-				break;
-			}	
-		}
-		else{
-			removeAnaConvButton = true;
+			this.removeAnaSelected(getJsonCurrent().getFamAnaNonConvs(), selectedfamAnaNonConvs);
+		}else{
+			this.addWarning("Rimozione familiari non conviventi", "Selezione non effettuata");
 		}
 	}
 	
 	
 	public void removeAnaAltri(){
 		if(selectedfamAnaAltris.size() > 0){
-			for (AnagraficaMultidimAnzBean it : getJsonCurrent().getFamAnaAltris()){
-				for (AnagraficaMultidimAnzBean item : selectedfamAnaAltris) {
-					if(it.getId().equals(item.getId()))
-						getJsonCurrent().getFamAnaAltris().remove(it);
-				}
-				if(getJsonCurrent().getFamAnaAltris().size() == 0)
-					removeAnaAltriButton = true;
-				break;
-			}	
-		}
-		else{
-			removeAnaAltriButton = true;
+			this.removeAnaSelected(getJsonCurrent().getFamAnaAltris(), selectedfamAnaAltris);
+		}else{
+			this.addWarning("Rimozione altri soggetti", "Selezione non effettuata");
 		}
 	}
 	
 	
 	public void addAnaCorr(){
-		if(selectedFamComponentes.size() > 0){
+		if(dialogSelectedFamComponentes.size() > 0){
 			ArrayList<AnagraficaMultidimAnzBean> listFamComps = new ArrayList<AnagraficaMultidimAnzBean>();
 			
-			for (CsAComponente item : selectedFamComponentes) {
+			for (CsAComponente item : dialogSelectedFamComponentes) {
 				String disponibilita = null;
 				if(item.getCsTbDisponibilita() != null)
 					disponibilita = item.getCsTbDisponibilita().getDescrizione();
@@ -901,63 +645,15 @@ public class ValMultidimensionaleManBean extends ValMultidimensionaleManBaseBean
 			
 			if (isParente) {
 				if (isConvivente == true)
-					getJsonCurrent().setFamAnaConvs(listFamComps);
+					getJsonCurrent().getFamAnaConvs().addAll(listFamComps);
 				else
-					getJsonCurrent().setFamAnaNonConvs(listFamComps);
+					getJsonCurrent().getFamAnaNonConvs().addAll(listFamComps);
 			} else {
-				getJsonCurrent().setFamAnaAltris(listFamComps);
+				getJsonCurrent().getFamAnaAltris().addAll(listFamComps);
 			}
 		}
 	}
 	
-	public void onRowSelectFamAnaConv(SelectEvent event) {
-		removeAnaConvButton = false;
-    }
- 
-   
-	public void onRowUnselectFamAnaConv(UnselectEvent event) {
-    	removeAnaConvButton = true;
-    }
-	
-   
-	public void onRowSelectFamAnaNonConv(SelectEvent event) {
-		removeAnaNonConvButton = false;
-    }
- 
-   
-	public void onRowUnselectFamAnaNonConv(UnselectEvent event) {
-    	removeAnaNonConvButton = true;
-    }
-    
-   
-	public void onRowSelectFamAnaCorr(SelectEvent event) {
-		addAnaCorrButton = false;
-    }
- 
-   
-	public void onRowUnselectFamAnaCorr(UnselectEvent event) {
-        addAnaCorrButton = true;
-    }
-    
-   
-	public void onRowSelectFamAnaNonCorr(SelectEvent event) { 
-		addAnaNonCorrButton = false;
-    }
- 
-   
-	public void onRowUnselectFamAnaNonCorr(UnselectEvent event) {
-        addAnaNonCorrButton = true;
-    }
-    
-   
-	public void onRowSelectFamAnaAltri(SelectEvent event) { 
-    	removeAnaAltriButton = false;
-    }
- 
-   
-	public void onRowUnselectFamAnaAltri(UnselectEvent event) {
-    	removeAnaAltriButton = true;
-    }
 	// End Methods for Famiglia Anagrafica
 
 	@Override
@@ -1187,5 +883,32 @@ public class ValMultidimensionaleManBean extends ValMultidimensionaleManBaseBean
 	private ValoriPdfDTO getPatologia(String patologia, String descrizione){
 		ValoriPdfDTO v = new ValoriPdfDTO(patologia,(descrizione!=null && !descrizione.isEmpty()) ? descrizione : "" ,null);
 		return v;
+	}
+
+	@Override
+	protected void loadCommonList() {}
+	
+	public List<AnagraficaMultidimAnzBean> getSelectedfamAnaConvs() {
+		return selectedfamAnaConvs;
+	}
+
+	public void setSelectedfamAnaConvs(List<AnagraficaMultidimAnzBean> selectedfamAnaConvs) {
+		this.selectedfamAnaConvs = selectedfamAnaConvs;
+	}
+
+	public List<AnagraficaMultidimAnzBean> getSelectedfamAnaNonConvs() {
+		return selectedfamAnaNonConvs;
+	}
+
+	public void setSelectedfamAnaNonConvs(List<AnagraficaMultidimAnzBean> selectedfamAnaNonConvs) {
+		this.selectedfamAnaNonConvs = selectedfamAnaNonConvs;
+	}
+
+	public List<AnagraficaMultidimAnzBean> getSelectedfamAnaAltris() {
+		return selectedfamAnaAltris;
+	}
+	
+	public void setSelectedfamAnaAltris(List<AnagraficaMultidimAnzBean> selectedfamAnaAltris) {
+		this.selectedfamAnaAltris = selectedfamAnaAltris;
 	}
 }

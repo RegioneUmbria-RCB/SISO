@@ -1409,6 +1409,11 @@ public class AccessTableConfigurazioneSessionBean extends CarSocialeBaseSessionB
    public List<ArTClasse> findInterventoIstatByCodice (BaseDTO dto) { 
 		return configurazioneDAO.findArTClasseByTipoInterventoId((String)dto.getObj());
 	 } 
+   
+   @Override
+   public List<ArTClasse> findArTClasseAll (CeTBaseObject dto) { 
+		return configurazioneDAO.findArTClasseAll();
+	} 
 	
     //SISO-1110
     public List<VServiziCustom> findAreaTInterventoById(BaseDTO bdto){

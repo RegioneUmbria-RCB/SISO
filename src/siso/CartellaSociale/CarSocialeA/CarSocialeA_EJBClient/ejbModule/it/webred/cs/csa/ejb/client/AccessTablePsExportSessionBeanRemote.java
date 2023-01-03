@@ -39,5 +39,7 @@ public interface AccessTablePsExportSessionBeanRemote {
 	public Boolean verificaErogazioniEsportateByEsegIds(BaseDTO dto);  //INIZIO SISO-524 
 	
 	public List<CsIPsExport> findCsIPsExportByCsIInterventoMastIdExported(BaseDTO dto); //SISO-884
+
+	public Boolean verificaErogazioneEsportataByEsegId(BaseDTO dto);
 	
 }

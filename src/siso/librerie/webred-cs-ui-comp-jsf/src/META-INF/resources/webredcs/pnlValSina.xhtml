@@ -29,7 +29,8 @@
 	
 			<p:spacer height="10px;" />
 	   
-			<p:dataList value="#{cc.attrs.scheda.lstSinaParams}" var="domanda" type="definition" >
+			<p:dataList value="#{cc.attrs.scheda.lstSinaParams}" var="domanda" type="definition"
+						emptyMessage="">
 				<h:panelGrid columns="1">
 					<h:panelGroup>
 						<p:outputLabel value="#{domanda.testo.contains('opzionale') ? domanda.testo : domanda.testo.concat(' *')}" style="font-weight: bold;" />
@@ -49,7 +50,8 @@
 					<p:spacer height="10px;" />
 				</h:panelGrid>
 			</p:dataList>
-			<p:dataList value="#{cc.attrs.scheda.lstSinaParamInvalidita}" var="domandaInv" type="definition">
+			<p:dataList value="#{cc.attrs.scheda.lstSinaParamInvalidita}" var="domandaInv" type="definition" 
+						emptyMessage="">
 				<h:panelGrid columns="1">
 					<h:panelGroup>
 						<p:outputLabel value="#{domandaInv.testo}" style="font-weight: bold;"  />
@@ -66,7 +68,7 @@
 					<p:spacer height="10px;" />
 				</h:panelGrid>
 			</p:dataList>
-			<h:panelGrid columns="1">
+			<p:outputPanel columns="1" rendered="#{cc.attrs.scheda.sinaDTO!=null}">
 				<p:outputLabel for="prestazioni" value="Necessità di prestazioni (opzionale)" style="font-weight: bold;" />
 				<p:selectManyCheckbox id="prestazioni" disabled="#{cc.attrs.disabled}"
 					value="#{cc.attrs.scheda.sinaDTO.lstPrestazioniInpsScelte}" layout="pageDirection">
@@ -75,7 +77,7 @@
 						itemValue="#{prest.codice}" />
 				</p:selectManyCheckbox>
 				<p:spacer height="10px;" />
-			</h:panelGrid>
+			</p:outputPanel>
 	</composite:implementation>
 </h:body>
 

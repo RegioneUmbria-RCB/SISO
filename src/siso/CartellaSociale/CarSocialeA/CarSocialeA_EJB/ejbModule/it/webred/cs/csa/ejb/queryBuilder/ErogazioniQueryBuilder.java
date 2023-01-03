@@ -6,7 +6,6 @@ import java.util.Arrays;
 import javax.persistence.Query;
 
 import org.apache.commons.lang3.StringUtils;
-import org.jboss.logging.Logger;
 
 import it.webred.cs.csa.ejb.dto.ErogazioniSearchCriteria;
 import it.webred.cs.csa.ejb.dto.EsportazioneTestataDTO;
@@ -372,7 +371,7 @@ public class ErogazioniQueryBuilder extends QueryBuilderBase {
 				"left join Cs_I_Intervento_Eseg_Mast_sogg mastersogg on (master.id=mastersogg.int_eseg_mast_id) "+
 				"left join Cs_o_Settore sett on (master.settore_erogante_id=sett.id) "+
 				"left join v_lineafin fin on (master.FF_ORIGINE_ID=fin.id) "+
-				"left join Cs_A_Anagrafica ana on (mastersogg.cf=ana.cf) "+
+				"left join (select a.* from Cs_A_Anagrafica a, Cs_A_Soggetto s where a.id=s.anagrafica_id) ana on (upper(mastersogg.cf)=upper(ana.cf)) "+
 				"left join Cs_A_Soggetto soggetto on (ana.id=soggetto.anagrafica_id) "+
 				"left join Cs_It_Step itStep on (soggetto.caso_id=itStep.caso_id) "+
 				"left join CS_C_CATEGORIA_SOCIALE csoc on (csoc.id=master.CATEGORIA_SOCIALE_ID) "+
@@ -385,7 +384,6 @@ public class ErogazioniQueryBuilder extends QueryBuilderBase {
 				" and opSett.id=MASTER.OPERATORE_SETTORE_ID "+
 //				"where INTESEG.INTERVENTO_ID is null and opSett.id=INTESEG.OPERATORE_SETTORE_ID "+
 				
-				"and (soggetto.anagrafica_id is null or soggetto.anagrafica_id = (select max(anagrafica_id) from cs_a_anagrafica, cs_a_soggetto where anagrafica_id=id and cf=MASTERSOGG.cf)) "+
 				"and (itStep.id is null or itStep.id=(select max(its2.id) from Cs_It_Step its2 where itStep.caso_id=its2.caso_id)) "+
 				"and (itStep.settore_id=:settoreId OR "
 				    + "OPSETT.ID = :settoreId OR " //Necessaria anche questa condizione per permettere a chi inserito il master di vedere l'erogazione se il settore titolare/erogante/gestore è diverso dal suo.
@@ -522,6 +520,8 @@ public class ErogazioniQueryBuilder extends QueryBuilderBase {
 		
 		sqlCriteria += StringUtils.isBlank(criteria.getCodiceFiscale()) ? "" : " AND UPPER(CF) "+ concatLikeParam(CF);
 		
+		sqlCriteria += !(criteria.isSearchByCaso() && criteria.getCasoId()!=null) ? "" : " AND CASO_ID = :" + CASO_ID;
+		
 		return sqlCriteria;
 	}
 	
@@ -534,7 +534,10 @@ public class ErogazioniQueryBuilder extends QueryBuilderBase {
 		if(!StringUtils.isBlank(criteria.getNome()))
 			params = setParameter(q, NOME, criteria.getNome().toUpperCase(), params);
 		if(!StringUtils.isBlank(criteria.getCodiceFiscale()))
-			params = setParameter(q, CF, criteria.getCodiceFiscale().toUpperCase(), params);	
+			params = setParameter(q, CF, criteria.getCodiceFiscale().toUpperCase(), params);
+		if(criteria.isSearchByCaso() && criteria.getCasoId()!=null)
+			params = setParameter(q, CASO_ID, criteria.getCasoId(), params);	
+		
 		return params;
 	}
 	
@@ -554,8 +557,6 @@ public class ErogazioniQueryBuilder extends QueryBuilderBase {
 		
 		if(criteria.getDiarioPaiId()!=null)
 			params = setParameter(q, DIARIO_PAI_ID, criteria.getDiarioPaiId(), params);	
-		if(criteria.isSearchByCaso() && criteria.getCasoId()!=null)
-			params = setParameter(q, CASO_ID, criteria.getCasoId(), params);	
 		
 		if(!StringUtils.isBlank(criteria.getDescCatSociale()))
 			params = setParameter(q, CAT_SOCIALE, criteria.getDescCatSociale().toUpperCase(), params);
@@ -586,8 +587,6 @@ public class ErogazioniQueryBuilder extends QueryBuilderBase {
 		sqlCriteria += StringUtils.isBlank(criteria.getLineaFinanziamento()) ? "" : " AND UPPER(linea_finanziamento) "+ concatLikeParam(LINEA_FINANZIAMENTO);
 		
 		sqlCriteria += criteria.getDiarioPaiId()!=null ? " AND DIARIO_PAI_ID = :" + DIARIO_PAI_ID : "";
-		
-		sqlCriteria += criteria.isSearchByCaso() && criteria.getCasoId()!=null ? " and CASO_ID = :" + CASO_ID : "";
 		
 		sqlCriteria += criteria.getDescCatSociale() != null ? " AND UPPER(DESC_CAT_SOCIALE) "+ concatLikeParam(CAT_SOCIALE) : "";
 		

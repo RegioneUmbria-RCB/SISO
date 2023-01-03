@@ -236,7 +236,7 @@ public class ImportConedilOnlyOne extends ImportFiles implements Rule   {
 			}
 			
 			// INSERIMENTO CONCESSIONI CONEDIL - DATI EXTRA
-			ps = con.prepareStatement(getProperty("sql.IMPORTCONEDILONLYONE17_CONEDIL"));
+			ps = con.prepareStatement(getProperty("sql.IMPORTCONEDILONLYONE_CONEDIL17"));
 			rs = ps.executeQuery();
 			
 			launchSitConcPersona = new CommandLauncher(belfiore);
@@ -293,8 +293,8 @@ public class ImportConedilOnlyOne extends ImportFiles implements Rule   {
 				
 				// INSERIMENTO SIT_C_CONCESSIONI_EXTRA17	
 				EnvInsertDwh ece17 = new EnvSitCConcessioniExtra17OnlyOne (this.IMPORTCONEDILONLYONE_CONEDIL17,"A");
-				ecc.setParametriPerGetRighe(rs.getTimestamp("DT_EXP_DATO"));
-				InsertDwh.launchInserimento(con,ecc, launchSitConcessioniExtra17, bcSitConcessioniExtra17,(String)ctx.get("connessione"),ctx, rs, abnormals);				
+				ece17.setParametriPerGetRighe(rs.getTimestamp("DT_EXP_DATO"));
+				InsertDwh.launchInserimento(con,ece17, launchSitConcessioniExtra17, bcSitConcessioniExtra17,(String)ctx.get("connessione"),ctx, rs, abnormals);				
 				
 			}		
 			

@@ -1,11 +1,9 @@
 package it.webred.ct.rulengine.dto;
 
-import it.webred.ct.config.model.AmComune;
-import it.webred.ct.rulengine.controller.model.RCommand;
-import it.webred.ct.rulengine.controller.model.REnteEsclusioni;
-
 import java.io.Serializable;
 import java.util.List;
+
+import it.webred.ct.config.model.AmComune;
 
 public class AbComandiDTO implements Serializable {
 	

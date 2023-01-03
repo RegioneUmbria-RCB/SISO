@@ -243,10 +243,9 @@ public class RicercaSoggettoSessionBean extends CsBaseSessionBean implements Ric
 				
 				boolean parentelaValida = false;
 				for (Map<String, String> soggetto : soggetti) {
-					if (
-						soggetto.get("codfisc") != null && soggetto.get("codfisc").equals(params.getCf()) 
-						&& soggetto.get("descrizioneRapportoParentela") != null && soggetto.get("descrizioneRapportoParentela").toUpperCase().startsWith("INTESTATARI")
-					) { 
+					String parentela = soggetto.get("descrizioneRapportoParentela");
+					String cf = soggetto.get("codfisc"); 
+					if (cf!= null && cf.equals(params.getCf()) && parentela!=null && parentela.toUpperCase().startsWith("INTESTATARI")) { 
 						parentelaValida = true; 
 						break;
 					}
@@ -255,37 +254,56 @@ public class RicercaSoggettoSessionBean extends CsBaseSessionBean implements Ric
 				for (Map<String, String> soggetto : soggetti) {
 					//if (nucleoFamiliare && soggetto.get("codfisc") != null && soggetto.get("codfisc").equals(params.getCf())) { continue; }
 					
+					String cf = soggetto.get("codfisc"); 
+					
 					FamiliareDettaglio pd = new FamiliareDettaglio();
 					lstout.add(pd);
-					
+					pd.setProvenienzaRicerca(params.getProvenienza());
 					pd.setIdentificativo(soggetto.get("identificativo"));
 					pd.setCognome(soggetto.get("cognome"));
 					pd.setNome(soggetto.get("nome"));
-					pd.setDataMorte(soggetto.get("dataDecesso") != null ? df.parse(soggetto.get("dataDecesso")) : null);
-					pd.setDataNascita(soggetto.get("dataNascita") != null ? df.parse(soggetto.get("dataNascita")) : null);
-					pd.setDefunto(soggetto.get("dataDecesso") != null);
-					pd.setProvenienzaRicerca(DataModelCostanti.TipoRicercaSoggetto.ANAG_VALLE_SAVIO);
+					pd.setCodfisc(cf);
+					pd.setSesso(soggetto.get("sesso"));
 					
-					if (params.isDettaglio() || nucleoFamiliare) {
-						pd.setCittadinanza(this.getCittadinanzaByCodice(soggetto.get("codiceISTATCittadinanza")));
-						pd.setCivicoResidenza(soggetto.get("numeroCivicoResidenza"));
-						pd.setCodfisc(soggetto.get("codfisc"));
-						pd.setComuneNascita(soggetto.get("codiceISTATComuneNascita") != null ? this.findComune(soggetto.get("codiceISTATComuneNascita")) : null);
-						pd.setComuneResidenza(soggetto.get("codiceISTATComuneResidenza") != null ? this.findComune(soggetto.get("codiceISTATComuneResidenza")) : null);
-						pd.setIndirizzoResidenza(soggetto.get("indirizzoResidenza"));
-						pd.setNazioneNascita(this.findNazione(soggetto.get("codiceISTATStatoNascita"), null));
-						pd.setNazioneResidenza(this.findNazione("100", null));
-						pd.setSesso(soggetto.get("sesso"));
-						
-						if (soggetto.get("descrizioneRapportoParentela") != null) {
-							bo.setObj(soggetto.get("descrizioneRapportoParentela").toUpperCase());
+					pd.setDataNascita(soggetto.get("dataNascita") != null ? df.parse(soggetto.get("dataNascita")) : null);
+					String istatComuneNascita = soggetto.get("codiceISTATComuneNascita");
+					String istatStatoNascita = soggetto.get("codiceISTATStatoNascita");
+					AmTabComuni comNasc =istatComuneNascita!= null ? this.findComune(istatComuneNascita) : null; 
+					if(comNasc!=null)
+						pd.setComuneNascita(comNasc);
+					else {
+						AmTabNazioni statoNascita = StringUtils.isNotBlank(istatStatoNascita) ? this.findNazione(istatStatoNascita, null) : null;
+						pd.setNazioneNascita(statoNascita);
+					}
+					
+					pd.setDataMorte(soggetto.get("dataDecesso") != null ? df.parse(soggetto.get("dataDecesso")) : null);
+					pd.setDefunto(soggetto.get("dataDecesso") != null);
+					
+					pd.setCittadinanza(this.getCittadinanzaByCodice(soggetto.get("codiceISTATCittadinanza")));
+										
+					pd.setIndirizzoResidenza(soggetto.get("indirizzoResidenza"));
+					pd.setCivicoResidenza(soggetto.get("numeroCivicoResidenza"));
+					
+					String istatComuneResidenza = soggetto.get("codiceISTATComuneResidenza");
+					AmTabComuni comRes = istatComuneResidenza != null ? this.findComune(istatComuneResidenza) : null;
+					if(comRes!=null)
+						pd.setComuneResidenza(comRes);
+					else
+						//TODO: recuperare lo stato estero di residenza dal WS
+						pd.setNazioneResidenza(null);
+					
+					String statoCivile = soggetto.get("descrizioneStatoCivile");
+					if ( statoCivile != null) {
+						pd.setStatoCivile(statoCivile.toUpperCase()); 
+					}
+					
+					if (nucleoFamiliare) {
+						String parentela = soggetto.get("descrizioneRapportoParentela");
+						if (parentela != null) {
+							bo.setObj(parentela.toUpperCase());
 							pd.setParentela(configurazioneService.mappaRelazioneParentale(bo));
 							pd.setParentelaValida(parentelaValida);
-						}
-						
-						if (soggetto.get("descrizioneStatoCivile") != null) {
-							pd.setStatoCivile(soggetto.get("descrizioneStatoCivile").toUpperCase()); 
-						}
+						}	
 					}
 				}
 				

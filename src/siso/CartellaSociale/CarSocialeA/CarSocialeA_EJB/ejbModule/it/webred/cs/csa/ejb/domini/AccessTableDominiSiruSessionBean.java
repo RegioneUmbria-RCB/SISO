@@ -143,12 +143,14 @@ public class AccessTableDominiSiruSessionBean extends CarSocialeBaseSessionBean 
 	@Lock(LockType.READ)
 	public List<SiruDominioDTO>findAll(String chiave) {
 	        List<SiruDominioDTO> sdl = cache.get(chiave);
-	        Iterator<SiruDominioDTO> isdl=sdl.iterator();
-	        while(isdl.hasNext()){
-	        	int count = StringUtils.countMatches(isdl.next().getCodiceSiru(), ".");
-	        	if(count <2){
-	        		isdl.remove();
-	        	}
+	        if(SiruEnum.SISO_ATECO.name().equalsIgnoreCase(chiave)) {
+		        Iterator<SiruDominioDTO> isdl=sdl.iterator();
+		        while(isdl.hasNext()){
+		        	int count = StringUtils.countMatches(isdl.next().getCodiceSiru(), ".");
+		        	if(count <2){
+		        		isdl.remove();
+		        	}
+		        }
 	        }
 			return sdl;
 	}

@@ -128,8 +128,8 @@ final class XmlExport2018ImplSINBA extends SinbaXmlExporter {
 			MappaDatiGenBene.put(Cost.NAZIONE_RESIDENZA_FAM, sinbaDaEsportare.getCodRegioneResidenzaFam());
 		if (sinbaDaEsportare.getCodNazioneResidenzaFam() != null)
 			MappaDatiGenBene.put(Cost.REGIONE_RESIDENZA_FAM, sinbaDaEsportare.getCodNazioneResidenzaFam());
-		if (sinbaDaEsportare.getMinoreStranieroAccompagnato() != null)
-			MappaDatiGenBene.put(Cost.MINORE_STRANIERO_ACCOMPAGNATO, sinbaDaEsportare.getMinoreStranieroAccompagnato());
+		if (sinbaDaEsportare.getMinoreStranieroNonAccompagnato() != null)
+			MappaDatiGenBene.put(Cost.MINORE_STRANIERO_NON_ACCOMPAGNATO, sinbaDaEsportare.getMinoreStranieroNonAccompagnato());
 		if (sinbaDaEsportare.getCittadinanzaMadre() != null)
 			MappaDatiGenBene.put(Cost.CITTADINANZA_MADRE, sinbaDaEsportare.getCittadinanzaMadre());
 		if (sinbaDaEsportare.getCittadinanzaPadre() != null)

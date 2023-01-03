@@ -40,14 +40,14 @@ public class ArBiInviante implements Serializable {
 	@Column(name="ORA_SCHEMA_NAME")
 	private String oraSchemaName;
 
-	@Column(name="CF")
-	private String cf;
-
 	@Column(name="TIPO_INVIANTE")
 	private String tipoInviante;
 
 	@Column(name="CRITERI_ACCETTAZIONE")
 	private String criteriAccettazione;
+	
+	@Column(name="COD_ROUTING")
+	private String codRouting;
 
 
 	public ArBiInviante() {
@@ -123,17 +123,6 @@ public class ArBiInviante implements Serializable {
 		this.oraSchemaName = oraSchemaName;
 	}
 
-
-	public String getCf() {
-		return cf;
-	}
-
-
-	public void setCf(String cf) {
-		this.cf = cf;
-	}
-
-
 	public String getTipoInviante() {
 		return tipoInviante;
 	}
@@ -153,6 +142,14 @@ public class ArBiInviante implements Serializable {
 		this.criteriAccettazione = criteriAccettazione;
 	}
 
-	 
+
+	public String getCodRouting() {
+		return codRouting;
+	}
+
+
+	public void setCodRouting(String codRouting) {
+		this.codRouting = codRouting;
+	}
 
 }

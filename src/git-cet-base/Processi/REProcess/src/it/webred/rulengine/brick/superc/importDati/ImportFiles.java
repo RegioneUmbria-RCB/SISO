@@ -22,6 +22,8 @@ import java.io.FileReader;
 import java.io.FilenameFilter;
 import java.io.PrintWriter;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -187,11 +189,7 @@ public abstract class ImportFiles extends Command {
 	}
 	
 	
-
-	
-	
-	
-	private void leggiFile(String file, String cartellaDati, String tempTable , boolean saltaIntestazione, String tipoRecord) throws Exception {
+	private void leggiFile(String file, String cartellaDati, String tempTable, boolean saltaIntestazione, String tipoRecord) throws Exception {
 		
 		BufferedReader fileIn = null;
 		List<String> errori = new ArrayList<String>();
@@ -208,66 +206,45 @@ public abstract class ImportFiles extends Command {
 			int riga = 1;
 			boolean primaRiga=true;
 			String insertSql = null;
+			
 			while ((currentLine = fileIn.readLine()) != null)
 			{
-				//List<String> campi = Arrays.asList(currentLine.split(("\\|")));
-				//modificato Filippo Mazzini per leggere anche i valori = ""
-				List<String> campi = Arrays.asList(currentLine.split("\\|", -1));
 				
 				if (saltaIntestazione && primaRiga) {
 					primaRiga = false;
 					continue;
 				}
+				
+				List<String> campi = Arrays.asList(currentLine.split("\\|", -1));
+				
 				// se devo leggere un particolare tipo record
-				// allora se nmon è quello salto il record
+				// allora se non è quello salto il record
 				if (tipoRecord!=null && !tipoRecord.equalsIgnoreCase(campi.get(0))) 
 					continue;
-
-				if (tipoRecord!=null)
-					campi = Arrays.asList(currentLine.substring(currentLine.indexOf("|")+1).split("\\|", -1));
-				else
-					campi = Arrays.asList(currentLine.split("\\|", -1));
-						
+				
 				// nome campi sulla riga 1
 				if (riga==1) {
-					StringBuffer s = new StringBuffer();
-					s.append("INSERT INTO ");
-					s.append(tempTable);
-					s.append(" VALUES(");
-					for (int ii = 0; ii < campi.size(); ii++)
-					{
-							s.append("?,");
-							
-					}
-					s.append("?,"); // processid
-					s.append("?,"); // re_flag_elaborato
-					s.append("?)"); // dt_exp_dato 
-					insertSql = s.toString();
-	
+					insertSql = getInsertSql(currentLine, tempTable);
 				}
-				riga++;
 				
-				java.sql.PreparedStatement ps=null;
 				try {
-				ps = con.prepareStatement(insertSql);
-				for (int ii = 0; ii < campi.size(); ii++)
-				{
-					ps.setString(ii+1, campi.get(ii));
-				}
-				ps.setString(campi.size()+1, processId);
-				ps.setString(campi.size()+2, "0"); // re_flag_elaborato
-				ps.setTimestamp(campi.size()+3, this.dataExport); // dt_exp_dato
-				ps.executeUpdate();
+					doInsert(tempTable, tipoRecord, currentLine, insertSql);
 				} catch (Exception e) {
-					log.error(currentLine);
-					log.error("Errore di inserimento record", e);
-					errori.add(currentLine);
-
-					//throw new RulEngineException("Errore di inserimento !", e);
-				}  finally {
-					if (ps!=null)
-						ps.close();
+					log.warn("ERRORE DI INSERIMENTO (SARA' TENTATA UNA CORREZIONE AUTOMATICA DEI DATI) PER LA RIGA: " + currentLine);
+					currentLine = correggiRiga(currentLine);
+					try {
+						if (riga==1) {
+							insertSql = getInsertSql(currentLine, tempTable);
+						}
+						doInsert(tempTable, tipoRecord, currentLine, insertSql);
+					} catch (Exception e1) {
+						log.error(currentLine);
+						log.error("Errore di inserimento record", e1);
+						errori.add(currentLine);
+					}
 				}
+				
+				riga++;
 				primaRiga = false;
 
 			}
@@ -286,7 +263,83 @@ public abstract class ImportFiles extends Command {
 			}
 		}
 		
-	} 
+	}
+	
+	private void doInsert(String tempTable, String tipoRecord, String currentLine, String insertSql) throws Exception {
+		List<String> campi = null;
+		
+		if (tipoRecord!=null)
+			campi = Arrays.asList(currentLine.substring(currentLine.indexOf("|")+1).split("\\|", -1));
+		else
+			campi = Arrays.asList(currentLine.split("\\|", -1));
+		
+		java.sql.PreparedStatement ps=null;
+		try {
+			ps = con.prepareStatement(insertSql);
+			for (int ii = 0; ii < campi.size(); ii++)
+			{
+				ps.setString(ii+1, campi.get(ii));
+			}
+			ps.setString(campi.size()+1, processId);
+			ps.setString(campi.size()+2, "0"); // re_flag_elaborato
+			ps.setTimestamp(campi.size()+3, this.dataExport); // dt_exp_dato
+			ps.executeUpdate();
+		} catch (Exception e) {
+			throw e;
+		}  finally {
+			if (ps!=null)
+				ps.close();
+		}
+	}
+	
+	private String correggiRiga(String currentLine) throws Exception {
+		if (currentLine == null) {
+			return currentLine;
+		}
+		
+		PreparedStatement ps = null;
+		try {
+			String sql = "SELECT * FROM ANAG_BAD_SEPARATORS ORDER BY ORDINAMENTO";
+			ps = con.prepareStatement(sql);
+			ResultSet rs = ps.executeQuery();
+			while (rs.next()) {
+				currentLine = currentLine.replace(rs.getString("FROM_VALUE"), rs.getString("TO_VALUE"));
+			}
+			rs.close();
+		} catch (Exception e) {
+			throw e;
+		}  finally {
+			if (ps!=null)
+				ps.close();
+		}
+		
+		return currentLine;
+	}
+	
+	private String getInsertSql(String currentLine, String tempTable) {		
+		if (currentLine == null) {
+			return null;
+		}
+		
+		List<String> campi = Arrays.asList(currentLine.split("\\|", -1));
+		
+		String insertSql = null;
+		StringBuffer s = new StringBuffer();
+		s.append("INSERT INTO ");
+		s.append(tempTable);
+		s.append(" VALUES(");
+		for (int ii = 0; ii < campi.size(); ii++)
+		{
+				s.append("?,");
+				
+		}
+		s.append("?,"); // processid
+		s.append("?,"); // re_flag_elaborato
+		s.append("?)"); // dt_exp_dato 
+		insertSql = s.toString();
+		
+		return insertSql;
+	}
 	
 	protected String[] cercaFileDaElaborare(String percorsoFiles)
 	throws Exception

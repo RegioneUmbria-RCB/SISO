@@ -58,7 +58,6 @@ import it.webred.cs.jsf.manbean.ComuneNazioneNascitaMan;
 import it.webred.cs.jsf.manbean.ComuneResidenzaMan;
 import it.webred.cs.jsf.manbean.SinaMan;
 import it.webred.cs.jsf.manbean.superc.CsUiCompBaseBean;
-import it.webred.ct.config.model.AmTabNazioni;
 import it.webred.ct.support.datarouter.CeTBaseObject;
 import it.webred.ejb.utility.ClientUtility;
 import it.webred.jsf.bean.ComuneBean;
@@ -1053,7 +1052,7 @@ public class FglInterventoBean extends FascicoloCompSecondoLivello implements ID
 				// SISO-783
 				// ** mod. SISO-886 **//
 				if (sinaMan != null && visualizzaSinaTab && validaSinaErog)
-						bSaved &= sinaMan.salvaDaFglIntervento(this.erogazioneInterventoBean.getNuovoIntEsegMast());
+						bSaved &= sinaMan.salvaDaFglIntervento(this.erogazioneInterventoBean.getNuovoIntEsegMast().getId());
 			} else
 				bSaved = false;
 

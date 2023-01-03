@@ -407,5 +407,7 @@ public interface AccessTableConfigurazioneSessionBeanRemote {
 
 	public boolean existsTransizioneTraStati(BaseDTO dto);
 
-	public CsTbSinaRisposta findSinaRisposta(BaseDTO dto);	
+	public CsTbSinaRisposta findSinaRisposta(BaseDTO dto);
+
+	public List<ArTClasse> findArTClasseAll(CeTBaseObject dto);	
 }

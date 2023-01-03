@@ -27,6 +27,7 @@ import it.webred.rulengine.dwh.def.DtIniDato;
 import it.webred.rulengine.dwh.table.SitCConcessioniExtra17;
 import it.webred.rulengine.exception.CommandException;
 import it.webred.rulengine.impl.bean.BeanCommand;
+import oracle.sql.CLOB;
 
 public class LoadSitCConcessioniExtra17 extends AbstractLoaderCommand implements Rule
 {
@@ -50,15 +51,15 @@ public class LoadSitCConcessioniExtra17 extends AbstractLoaderCommand implements
 			List parametriIn = this.getParametersIn(_jrulecfg);
 			String id_orig = (String) ctx.get(((RRuleParamIn) parametriIn.get(0)).getDescr());
 			Integer fk_ente_sorgente = (Integer) ctx.get(((RRuleParamIn) parametriIn.get(1)).getDescr());	
-			String id_orig_c_concessioni = (String) ctx.get(((RRuleParamIn) parametriIn.get(2)).getDescr());
-			String altriNumeroPg = (String) ctx.get(((RRuleParamIn) parametriIn.get(3)).getDescr());
-			String altriAnnoPg = (String) ctx.get(((RRuleParamIn) parametriIn.get(4)).getDescr());
-			String altriSubPg = (String) ctx.get(((RRuleParamIn) parametriIn.get(5)).getDescr());
-			String altriDataPg = (String) ctx.get(((RRuleParamIn) parametriIn.get(6)).getDescr());
-			String altriOggettoPg = (String) ctx.get(((RRuleParamIn) parametriIn.get(7)).getDescr());
-			String npgAttoPratRif = (String) ctx.get(((RRuleParamIn) parametriIn.get(8)).getDescr());
-			String annoPgAttoPratRif = (String) ctx.get(((RRuleParamIn) parametriIn.get(9)).getDescr());
-			String praticheCollegate = (String) ctx.get(((RRuleParamIn) parametriIn.get(10)).getDescr());			
+			String id_orig_c_concessioni = (String) ctx.get(((RRuleParamIn) parametriIn.get(2)).getDescr());			
+			CLOB altriNumeroPg = (CLOB) ctx.get(((RRuleParamIn) parametriIn.get(3)).getDescr());
+			CLOB altriAnnoPg = (CLOB) ctx.get(((RRuleParamIn) parametriIn.get(4)).getDescr());
+			CLOB altriSubPg = (CLOB) ctx.get(((RRuleParamIn) parametriIn.get(5)).getDescr());
+			CLOB altriDataPg = (CLOB) ctx.get(((RRuleParamIn) parametriIn.get(6)).getDescr());
+			CLOB altriOggettoPg = (CLOB) ctx.get(((RRuleParamIn) parametriIn.get(7)).getDescr());
+			CLOB npgAttoPratRif = (CLOB) ctx.get(((RRuleParamIn) parametriIn.get(8)).getDescr());
+			CLOB annoPgAttoPratRif = (CLOB) ctx.get(((RRuleParamIn) parametriIn.get(9)).getDescr());
+			CLOB praticheCollegate = (CLOB) ctx.get(((RRuleParamIn) parametriIn.get(10)).getDescr());			
 			Timestamp dt_exp_dato = (Timestamp) ctx.get(((RRuleParamIn) parametriIn.get(11)).getDescr());
 			Timestamp dt_ini_val_dato = (Timestamp) ctx.get(((RRuleParamIn) parametriIn.get(12)).getDescr());
 			Timestamp dt_fine_val_dato = (Timestamp) ctx.get(((RRuleParamIn) parametriIn.get(13)).getDescr());

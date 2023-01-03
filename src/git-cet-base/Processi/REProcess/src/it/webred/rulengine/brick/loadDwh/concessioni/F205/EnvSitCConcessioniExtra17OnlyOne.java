@@ -23,15 +23,15 @@ public class EnvSitCConcessioniExtra17OnlyOne extends EnvInsertDwh {
 		
 		params.put("FK_ENTE_SORGENTE", 3);
 		
-		params.put("ID_ORIG_C_CONCESSIONI",rs.getString("A"));		
-		params.put("ALTRI_NUMERO_PG", rs.getString("EXTRA_A"));
-		params.put("ALTRI_ANNO_PG", rs.getString("EXTRA_B"));
-		params.put("ALTRI_SUB_PG", rs.getString("EXTRA_C"));
-		params.put("ALTRI_DATA_PG", rs.getString("EXTRA_D"));
-		params.put("ALTRI_OGGETTO_PG", rs.getString("EXTRA_E"));
-		params.put("NPG_ATTO_PRAT_RIF", rs.getString("EXTRA_F"));
-		params.put("ANNO_PG_ATTO_PRAT_RIF", rs.getString("EXTRA_G"));
-		params.put("PRATICHE_COLLEGATE", rs.getString("EXTRA_H"));
+		params.put("ID_ORIG_C_CONCESSIONI",rs.getString("A"));	
+		params.put("ALTRI_NUMERO_PG", rs.getClob("EXTRA_A"));
+		params.put("ALTRI_ANNO_PG", rs.getClob("EXTRA_B"));
+		params.put("ALTRI_SUB_PG", rs.getClob("EXTRA_C"));
+		params.put("ALTRI_DATA_PG", rs.getClob("EXTRA_D"));
+		params.put("ALTRI_OGGETTO_PG", rs.getClob("EXTRA_E"));
+		params.put("NPG_ATTO_PRAT_RIF", rs.getClob("EXTRA_F"));
+		params.put("ANNO_PG_ATTO_PRAT_RIF", rs.getClob("EXTRA_G"));
+		params.put("PRATICHE_COLLEGATE", rs.getClob("EXTRA_H"));
 
 		params.put("DT_EXP_DATO", (Timestamp) altriParams[0]);
 		params.put("DT_INI_VAL_DATO", null);
@@ -47,7 +47,7 @@ public class EnvSitCConcessioniExtra17OnlyOne extends EnvInsertDwh {
 
 	@Override
 	public String getSqlUpdateFlagElaborato() {
-		return null;		
+		return "UPDATE " + getNomeTabellaOrigine() + " SET RE_FLAG_ELABORATO='1' WHERE A=? AND DT_EXP_DATO=?";
 	}
 
 	@Override

@@ -1,5 +1,34 @@
 package it.webred.cs.csa.web.bean.util;
 
+import java.io.IOException;
+import java.security.SecureRandom;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+
+import javax.annotation.PostConstruct;
+import javax.crypto.Cipher;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
+import javax.faces.context.FacesContext;
+import javax.faces.event.AjaxBehaviorEvent;
+import javax.faces.model.SelectItem;
+
+import org.apache.commons.lang3.StringUtils;
+import org.primefaces.context.RequestContext;
+import org.primefaces.model.DefaultTreeNode;
+import org.primefaces.model.TreeNode;
+import org.primefaces.util.Base64;
+
 import it.webred.amprofiler.model.AmAnagrafica;
 import it.webred.amprofiler.model.AmUser;
 import it.webred.cs.csa.ejb.client.configurazione.AccessTableCatSocialeSessionBeanRemote;
@@ -14,30 +43,6 @@ import it.webred.cs.data.model.CsOSettore;
 import it.webred.cs.jsf.manbean.IterInfoStatoMan;
 import it.webred.cs.jsf.manbean.superc.CsUiCompBaseBean;
 import it.webred.ct.config.model.AmComune;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-
-import javax.annotation.PostConstruct;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
-import javax.faces.context.FacesContext;
-import javax.faces.event.AjaxBehaviorEvent;
-import javax.faces.model.SelectItem;
-
-import org.apache.commons.lang3.StringUtils;
-import org.primefaces.context.RequestContext;
-import org.primefaces.model.DefaultTreeNode;
-import org.primefaces.model.TreeNode;
 
 @ManagedBean
 @SessionScoped
@@ -59,9 +64,20 @@ public class UserBean extends CsUiCompBaseBean {
 	
 	private AccessTableCatSocialeSessionBeanRemote catSocialeService = (AccessTableCatSocialeSessionBeanRemote) getCarSocialeEjb("AccessTableCatSocialeSessionBean");
 	
+	private String linkAppEsternaLabel = null, linkAppEsternaUrl = null, linkAppEsternaToken = null;
+	private SecureRandom secureRandom = null;
+	
 	@PostConstruct
 	public void init() {
 		caricaSettori();
+		
+		linkAppEsternaUrl = getLinkAppEsternaUrl();
+		if (linkAppEsternaUrl != null) {
+			secureRandom = new SecureRandom();
+			
+			linkAppEsternaLabel = getLinkAppEsternaLabel(); 
+			linkAppEsternaToken = getLinkAppEsternaToken();
+		}
 	}
 	
 	public String getUsername() {
@@ -509,5 +525,86 @@ public class UserBean extends CsUiCompBaseBean {
 		this.lastIterStepInfo = lastIterStepInfo;
 	}
 
+	public boolean isRenderUrlAppCartellaEsterna() {
+		return linkAppEsternaUrl != null;
+	}
 	
+	/**
+	 * Restituisce un URL a un'applicazione esterna; a {@link #linkAppEsternaUrl} viene aggiunto un parametro ("authData") criptato (con chiave {@link #linkAppEsternaToken}) e codificato in BASE64 contenente: istante della generazione della pagina, username dell'operatore collegato, codice fiscale passato al metodo.<br>
+	 * un esempio di pagina JSP da richiamare può essere:<br><br>
+	 * 	String token = "??????????";<br>
+		int autMaxDurationSecs = 6 * 60 * 60;<br>
+		<br>
+		try {<br>
+			String encoded = request.getParameter("authData").replace("-", "+").replace("_", "/").replace(".", "=");<br>
+			byte[] sended = Base64.getDecoder().decode(encoded);<br>
+			<br>
+			byte[] iv = new byte[8];<br>
+			System.arraycopy(sended, 0, iv, 0, iv.length);<br>
+			<br>
+			byte[] encrypted = new byte[sended.length - 8];<br>
+			System.arraycopy(sended, iv.length, encrypted, 0, encrypted.length);<br>
+			<br>
+			SecretKeySpec skeyspec = new SecretKeySpec(token.getBytes(), "Blowfish");<br>
+			Cipher cipher = Cipher.getInstance("Blowfish/CBC/PKCS5Padding");<br>
+			cipher.init(Cipher.DECRYPT_MODE, skeyspec, new IvParameterSpec(iv));<br>
+			byte[] decrypted = cipher.doFinal(encrypted);<br>
+			<br>
+			String authData = new String(decrypted, "UTF-8");<br>
+			String[] params = authData.split(Pattern.quote("||"));<br>
+			<br>
+			Date authDate = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").parse(params[0]);<br>
+			if (Math.abs(new Date().getTime() - authDate.getTime()) / 1000 > autMaxDurationSecs) {<br>
+				out.println("<h1>Info autenticazione scadute</h1>");<br>
+				return;<br>
+			}<br>
+			<br>
+			String username = params[1];<br>
+			String cfSoggetto = params[2];<br>
+			<br>
+			Operatore operatore = Ebean.find(Operatore.class).where().eq("usernameSiso", username).findUnique();<br>
+			if (operatore == null) {<br>
+				out.println("<h1>L'operatore SISO " + username + " non è associato ad un corrispondente operatore</h1>");<br>
+				return;<br>
+			}<br>
+			<br>
+			request.getSession().setAttribute(AresUI.OPERATORE_ATTR_NAME, operatore);<br>
+			if (cfSoggetto != null && !cfSoggetto.trim().isEmpty()) { request.getSession().setAttribute(SOGGETTO_CF_ATTR_NAME, cfSoggetto); }<br>
+			<br>
+			response.sendRedirect("./app"); <br>
+		} <br>
+		catch (Exception e) { <br>
+			LoggerFactory.getLogger("fromsSiso.jsp").error("", e);<br>
+			out.println("<h1>Si è verificato un errore durante l'accesso ad Ares: contattare l'amministratore</h1>");<br>
+		}<br>
+	 * @param cfSoggetto
+	 * @return
+	 */
+	public String getUrlAppCartellaEsterna(String cfSoggetto) {
+		String token = linkAppEsternaToken;
+		String authData = String.format("%1$tY-%1$tm-%1$td-%1$tH-%1$tM-%1$tS", new Date()) + "||" + CsUiCompBaseBean.getCurrentUsername() + "||" + cfSoggetto;
+		
+		try {
+			byte[] iv = new byte[8];
+			secureRandom.nextBytes(iv);
+			
+			SecretKeySpec skeyspec = new SecretKeySpec(token.getBytes(), "Blowfish");
+			Cipher cipher = Cipher.getInstance("Blowfish/CBC/PKCS5Padding");
+			if ( cipher == null || skeyspec == null) { throw new Exception("Invalid key or cypher"); }
+			
+			cipher.init(Cipher.ENCRYPT_MODE, skeyspec, new IvParameterSpec(iv));
+			byte[] encrypted = cipher.doFinal(authData.getBytes("UTF-8")); 
+			
+			byte[] toSend = new byte[iv.length + encrypted.length];
+			System.arraycopy(iv, 0, toSend, 0, iv.length);
+			System.arraycopy(encrypted, 0, toSend, iv.length, encrypted.length);
+			
+			return linkAppEsternaUrl + "?authData=" + Base64.encodeToString(toSend, false).replace("+", "-").replace("/", "_").replace("=", ".");
+		} 
+		catch (Exception e) { throw new RuntimeException(e); }
+	}
+	
+	public String getLabelAppCartellaEsterna() {
+		return linkAppEsternaLabel;
+	}
 }

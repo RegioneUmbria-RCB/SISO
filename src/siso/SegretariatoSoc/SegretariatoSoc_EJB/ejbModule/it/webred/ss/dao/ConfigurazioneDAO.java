@@ -12,6 +12,9 @@ import javax.persistence.Query;
 import org.jboss.logging.Logger;
 import org.springframework.transaction.annotation.Transactional;
 
+import it.webred.ct.support.validation.annotation.AuditConsentiAccessoAnonimo;
+import it.webred.ct.support.validation.annotation.AuditSaltaValidazioneSessionID;
+import it.webred.ss.data.model.SsIntervento;
 import it.webred.ss.data.model.SsOOrganizzazione;
 import it.webred.ss.data.model.SsPuntoContatto;
 import it.webred.ss.data.model.SsRelUffPcontOrg;
@@ -251,4 +254,26 @@ public class ConfigurazioneDAO implements Serializable {
 		else
 			return null;
 	}
+	
+	//SISO-1160 Inizio
+	@SuppressWarnings("unchecked")
+	@AuditConsentiAccessoAnonimo
+	@AuditSaltaValidazioneSessionID
+	public List<String> readInterventiTrascodifiche() {
+		List<SsIntervento> ssIntervento = readInterventi();
+		List<String> listDescrizioni = new ArrayList<String>();
+		for(SsIntervento ssInter : ssIntervento){
+			listDescrizioni.add(ssInter.getIntervento());
+		}
+		return listDescrizioni;
+	}
+
+	@SuppressWarnings("unchecked")
+	@AuditConsentiAccessoAnonimo
+	@AuditSaltaValidazioneSessionID
+	public List<SsIntervento> readInterventi() {
+		Query q = em.createNamedQuery("SsIntervento.findAll");
+		return q.getResultList();
+	}
+
 }

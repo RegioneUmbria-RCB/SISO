@@ -2,8 +2,8 @@ package it.webred.cs.csa.web.manbean.fascicolo.valMultidimensionale.sina;
 
 import it.webred.cs.csa.ejb.client.AccessTableSinaSessionBeanRemote;
 import it.webred.cs.csa.ejb.dto.BaseDTO;
-import it.webred.cs.csa.ejb.dto.SinaDTO;
-import it.webred.cs.csa.ejb.dto.SinaEsegDTO;
+import it.webred.cs.csa.ejb.dto.sina.SinaDTO;
+import it.webred.cs.csa.ejb.dto.sina.SinaEsegDTO;
 import it.webred.cs.jsf.manbean.superc.CsUiCompBaseBean;
 import it.webred.ejb.utility.ClientUtility;
 

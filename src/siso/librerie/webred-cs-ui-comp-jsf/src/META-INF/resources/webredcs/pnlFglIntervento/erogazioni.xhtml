@@ -666,8 +666,9 @@
 	 	   				   showEffect="fade" hideEffect="explode"	rendered="#{row.intEseg.userIns != NULL}" />
 	       </h:panelGrid>
 	  </p:column>
-	     <p:column style="text-align:center;" headerText="Info">
-         <webredcs:tooltipInfo selectItemList="#{row.listaInformazioni}"  rendered="#{!empty row.listaInformazioni}"  icona="#{resource['webredcs/img/info.png']}" />
+	  <p:column style="text-align:center;" headerText="Info">
+          <webredcs:tooltipInfo selectItemList="#{row.listaInformazioni}"  rendered="#{!empty row.listaInformazioni}"  icona="#{resource['webredcs/img/info.png']}" />
+          <p:graphicImage title="Esportata in SIUSS" value="#{resource['webredcs/img/exported.png']}" rendered="#{row.isEsportata()}"  styleClass="info" height="15px" />
       </p:column>      
       <p:column style="text-align:center;">
          <p:commandLink ajax="true" rendered="#{fglInterventoBean.erogazioneInterventoBean.erogazionePossibile}"

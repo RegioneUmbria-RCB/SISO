@@ -850,7 +850,7 @@ public class ValSinbaManBean extends ValSinbaManBaseBean {
 				sinbaDTO.setFormaInserimento(String.valueOf(affidamento.getFormaInserimento()));
 				sinbaDTO.setFormaIntervento(String.valueOf(affidamento.getFormaIntervento()));
 				sinbaDTO.setLuogoVita(String.valueOf(famiglia.getLuogoVita()));
-				sinbaDTO.setMinoreStranieroAccompagnato(String.valueOf(famiglia.getMinoreStranieroAccompagnato()));
+				sinbaDTO.setMinoreStranieroNonAccompagnato(String.valueOf(famiglia.getMinoreStranieroNonAccompagnato()));
 				sinbaDTO.setMotivazioneChiusuraCarico(String.valueOf(affidamento.getMotivazioneChiusuraCarico()));
 				sinbaDTO.setNazioneResidenzaBeneficiario(String.valueOf(generali.getNazioneResidenzaBeneficiario()));
 				sinbaDTO.setNumeroCompIsee(String.valueOf(generali.getNumeroComponentiISEE()));

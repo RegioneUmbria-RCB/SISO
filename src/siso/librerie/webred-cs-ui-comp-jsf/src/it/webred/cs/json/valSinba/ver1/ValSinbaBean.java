@@ -164,8 +164,8 @@ public class ValSinbaBean extends JsonBaseBean {
 			if (getDatiFamiglia().getRegione() == 0)
 				messagges.add("Dati Famiglia: Regione è un campo obbligatorio");
 			
-			if (getDatiFamiglia().getMinoreStranieroAccompagnato() == 0)
-				messagges.add("Dati Famiglia: Minore Straniero Accompagnato è un campo obbligatorio");
+			if (getDatiFamiglia().getMinoreStranieroNonAccompagnato() == 0)
+				messagges.add("Dati Famiglia: Minore straniero non accompagnato è un campo obbligatorio");
 			
 			if (getDatiFamiglia().getLstComponentiFamiglia() == null || getDatiFamiglia().getLstComponentiFamiglia().isEmpty())
 				messagges.add("Dati Famiglia: Composizione familiare non è valorizzato");

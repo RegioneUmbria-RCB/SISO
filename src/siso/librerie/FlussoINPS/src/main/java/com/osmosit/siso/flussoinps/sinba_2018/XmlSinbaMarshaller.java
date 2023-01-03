@@ -85,7 +85,7 @@ class XmlSinbaMarshaller {
 			sinbaMinore.setFormaInserimentoResidenziale(u.getStringFromInteger(datiBeneficiario, Cost.FORMA_INSERIMENTO));
 			sinbaMinore.setFormaInterventoAffido(u.getStringFromInteger(datiBeneficiario, Cost.FORMA_INTERVENTO));
 			sinbaMinore.setLuogoVita(u.getStringFromInteger(datiBeneficiario, Cost.LUOGO_VITA));
-			sinbaMinore.setMinoreStranieroNoAcc(u.getStringFromInteger(datiBeneficiario, Cost.MINORE_STRANIERO_ACCOMPAGNATO));
+			sinbaMinore.setMinoreStranieroNoAcc(u.getStringFromInteger(datiBeneficiario, Cost.MINORE_STRANIERO_NON_ACCOMPAGNATO));
 			sinbaMinore.setMotivazioneChiusuraCarico(u.getStringFromInteger(datiBeneficiario, Cost.MOTIVAZIONE_CHIUSURA_CARICO));
 			sinbaMinore.setNumeroComponentiISEE(u.getStringFromInteger(datiBeneficiario, Cost.NUMERO_COMPONENTI_ISEE));
 			sinbaMinore.setOccupazioneMadre(u.getStringFromInteger(datiBeneficiario, Cost.OCCUPAZIONE_MADRE));

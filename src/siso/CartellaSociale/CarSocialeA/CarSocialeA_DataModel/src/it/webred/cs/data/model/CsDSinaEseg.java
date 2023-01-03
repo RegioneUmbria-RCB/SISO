@@ -6,6 +6,7 @@ import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -28,12 +29,12 @@ public class CsDSinaEseg implements Serializable {
 	private String userIns;
 	
 	// bi-directional many-to-one association to CsDSinaDomanda
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "DOMANDA_ID", insertable = false, updatable = false)
 	private CsTbSinaDomanda csTbSinaDomanda;
 
 	// bi-directional many-to-one association to CsDSinaRisposta
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "RISPOSTA_ID", insertable = false, updatable = false)
 	private CsTbSinaRisposta csTbSinaRisposta;
 

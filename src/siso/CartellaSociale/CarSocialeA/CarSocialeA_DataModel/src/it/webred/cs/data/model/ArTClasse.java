@@ -23,7 +23,7 @@ import javax.persistence.TemporalType;
  */
 @Entity
 @Table(name="AR_T_CLASSE")
-@NamedQuery(name="ArTClasse.findAll", query="SELECT a FROM ArTClasse a")
+@NamedQuery(name="ArTClasse.findAll", query="SELECT a FROM ArTClasse a order by a.codiceMemo")
 public class ArTClasse implements Serializable {
 	private static final long serialVersionUID = 1L;
 

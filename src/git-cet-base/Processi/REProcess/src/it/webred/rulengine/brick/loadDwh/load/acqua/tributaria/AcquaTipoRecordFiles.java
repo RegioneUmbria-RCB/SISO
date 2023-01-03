@@ -2,13 +2,10 @@ package it.webred.rulengine.brick.loadDwh.load.acqua.tributaria;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.math.BigDecimal;
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Collections;

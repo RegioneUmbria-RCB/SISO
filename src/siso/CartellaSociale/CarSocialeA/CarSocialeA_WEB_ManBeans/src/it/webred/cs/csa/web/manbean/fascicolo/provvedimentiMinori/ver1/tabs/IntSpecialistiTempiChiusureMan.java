@@ -5,14 +5,14 @@ import it.webred.cs.jsf.manbean.superc.CsUiCompBaseBean;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.faces.model.SelectItem;
-
  public class IntSpecialistiTempiChiusureMan extends CsUiCompBaseBean {
 	public static final String NAME = "Int.Specialisti - Tempi - Chiusure";
-	public static final String NOTEPROVV = "Note al provvedimento </br>  </br> <bold>CPS</bold>= Centro Psicosociale <br/>" +
-									"<bold>UONPIA</bold>= Unita Operativa Neuropsichiatria Infantile <br/>" +
-									"<bold>SER.D</bold>= Servizio Dipendenze<br/>" +
-									"<bold>CTU</bold>= Consulente tecnico d'ufficio<br/>";
+	public static final String NOTEPROVV = "Note al provvedimento </br>  </br> "+
+			"<bold>CPS</bold>= Centro Psicosociale <br/>" +
+			"<bold>CTU</bold>= Consulente tecnico d'ufficio<br/>"+
+			"<bold>UONPIA</bold>= Unita Operativa Neuropsichiatria Infantile <br/>" +
+			"<bold>USSM</bold>= Ufficio Servizio Sociale Minori<br/>"+
+			"<bold>SER.D</bold>= Servizio Dipendenze<br/>"  ;
 	
 	private List<String> lstContenutoRelazione;
 

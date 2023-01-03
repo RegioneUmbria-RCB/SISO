@@ -776,44 +776,7 @@ public class ServiziRichiestiInterventiCustomBean extends SegretariatoSocBaseBea
 		}
 		return false;
 	}
-
-	
-	//------file upload
-    private UploadedFile file;
-	private ServizioRichiestoCustomManBaseBean servizioPopupFileUpload;
-	
-	public void setServizio(ServizioRichiestoCustomManBaseBean s){
-		servizioPopupFileUpload = s;
-	}
-	
-	public ServizioRichiestoCustomManBaseBean getServizioPopupFileUpload() {
-		return servizioPopupFileUpload;
-	}
-
-
-	public void setServizioPopupFileUpload(
-			ServizioRichiestoCustomManBaseBean servizioPopupFileUpload) {
-		this.servizioPopupFileUpload = servizioPopupFileUpload;
-	}
-
-
     
-    public UploadedFile getFile() {
-        return file;
-    }
- 
-    public void setFile(UploadedFile file) {
-        this.file = file;
-    }
-     
-    public void upload() {
-        if(file != null) {
-        	logger.debug(file.getFileName());
-            addInfoMessage("Upload documento", file.getFileName()+": caricamento completato"); 
-            servizioPopupFileUpload.addFile(file);
-        }
-    }
-
 	public Long getSelectedTipoInterventoCustom() {
 		return selectedTipoInterventoCustom;
 	}

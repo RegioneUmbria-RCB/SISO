@@ -4,9 +4,11 @@ import it.webred.classfactory.WebredClassFactory;
 import it.webred.cs.csa.ejb.client.AccessTableDiarioSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.AccessTableSchedaSessionBeanRemote;
 import it.webred.cs.csa.ejb.dto.BaseDTO;
+import it.webred.cs.data.model.CsAComponente;
 import it.webred.cs.data.model.CsASoggettoLAZY;
 import it.webred.cs.data.model.CsDValutazione;
 import it.webred.cs.data.model.CsTbSchedaMultidim;
+import it.webred.cs.jsf.manbean.superc.CsUiCompBaseBean;
 import it.webred.cs.json.SchedaValutazioneManBean;
 
 import java.util.ArrayList;
@@ -25,6 +27,18 @@ public abstract class ValMultidimensionaleManBaseBean extends SchedaValutazioneM
 	protected AccessTableDiarioSessionBeanRemote diarioService = (AccessTableDiarioSessionBeanRemote) getEjb("CarSocialeA", "CarSocialeA_EJB",
 			"AccessTableDiarioSessionBean");
 
+	
+	/*Rete Familiare*/
+	protected List<CsAComponente> famConvComponentes;
+	protected List<CsAComponente> famNonConvComponentes;
+	protected List<CsAComponente> famAltriComponentes;
+	
+	protected List<CsAComponente> dialogFamComponentes;
+	protected List<CsAComponente> dialogSelectedFamComponentes;
+	
+	protected boolean isConvivente;
+	protected boolean isParente;
+	
 
 	public static IValMultidimensionale initISchedaMultidimensionale(String defaultVersion,CsASoggettoLAZY soggetto)
 	{
@@ -32,7 +46,7 @@ public abstract class ValMultidimensionaleManBaseBean extends SchedaValutazioneM
 		try {
 			scheda = (IValMultidimensionale) WebredClassFactory.newInstance("", IValMultidimensionale.class, defaultVersion);
 			scheda.setIdCaso(soggetto.getCsACaso().getId());
-			scheda.setSoggettoFascicolo(soggetto);
+			scheda.setSoggettoFascicolo(soggetto, true);
 			scheda.init(scheda);
 			
 		} catch (Exception e) {
@@ -51,7 +65,7 @@ public abstract class ValMultidimensionaleManBaseBean extends SchedaValutazioneM
 			String defaultVersion = "";
 			interfaccia = (IValMultidimensionale) WebredClassFactory.newInstance(className, IValMultidimensionale.class, defaultVersion);
 			interfaccia.setIdCaso(soggetto.getCsACaso().getId());
-			interfaccia.setSoggettoFascicolo(soggetto);
+			interfaccia.setSoggettoFascicolo(soggetto, true);
 			
 			// Initialize scheda barthel
 			interfaccia.init(null, val);
@@ -69,7 +83,7 @@ public abstract class ValMultidimensionaleManBaseBean extends SchedaValutazioneM
 			String defaultVersion = "";
 			interfaccia = (IValMultidimensionale) WebredClassFactory.newInstance(className, IValMultidimensionale.class, defaultVersion);
 			interfaccia.setIdCaso(soggetto.getCsACaso().getId());
-			interfaccia.setSoggettoFascicolo(soggetto);
+			interfaccia.setSoggettoFascicolo(soggetto, false);
 			// Initialize scheda barthel
 			interfaccia.initRowList(null, val);
 		}
@@ -116,12 +130,76 @@ public abstract class ValMultidimensionaleManBaseBean extends SchedaValutazioneM
 	}
 	
 	@Override
-	public void setSoggettoFascicolo(CsASoggettoLAZY soggetto) {
+	public void setSoggettoFascicolo(CsASoggettoLAZY soggetto, boolean loadDatiComuni) {
 		this.soggetto=soggetto;
 		//setIdCaso(soggetto.getCsACaso().getId());
-		loadCommonList();
+		if(loadDatiComuni) {
+			loadCommonList();
+			loadCommonListaRisorse();
+		}
 	}
 	
 	protected abstract void loadCommonList();
 	
+	private void loadCommonListaRisorse(){
+
+		if (soggetto != null) {
+			List<CsAComponente> famAllComponentes = CsUiCompBaseBean.caricaParenti(soggetto.getAnagraficaId(), null);
+			logger.debug("loadCommonList ValMultidimensionale "+ soggetto.getAnagraficaId());
+			if(famAllComponentes != null) {
+				famNonConvComponentes = new ArrayList<CsAComponente>();
+				famConvComponentes = new ArrayList<CsAComponente>();
+				famAltriComponentes = new ArrayList<CsAComponente>();
+				
+				for (CsAComponente it : famAllComponentes) {
+					if (it.getCsTbTipoRapportoCon().getParente()) {
+						if (it.getConvivente())
+							famConvComponentes.add(it);
+						else 
+							famNonConvComponentes.add(it);
+					} else {
+						famAltriComponentes.add(it);
+					}
+				}
+			}
+		}
+	}
+
+	@Override
+	public List<CsAComponente> getDialogFamComponentes() {
+		return dialogFamComponentes;
+	}
+
+	@Override
+	public List<CsAComponente> getDialogSelectedFamComponentes() {
+		return dialogSelectedFamComponentes;
+	}
+
+	@Override
+	public void setDialogSelectedFamComponentes(List<CsAComponente> dialogSelectedFamComponentes) {
+		this.dialogSelectedFamComponentes = dialogSelectedFamComponentes;
+	}
+
+	@Override
+	public List<CsAComponente> getFamConvComponentes() {
+		return famConvComponentes;
+	}
+
+	@Override
+	public List<CsAComponente> getFamNonConvComponentes() {
+		return famNonConvComponentes;
+	}
+
+	@Override
+	public List<CsAComponente> getFamAltriComponentes() {
+		return famAltriComponentes;
+	}
+	
+	public boolean isConvivente() {
+		return isConvivente;
+	}
+	
+	public boolean isParente() {
+		return isParente;
+	}
 }

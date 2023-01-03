@@ -10,8 +10,6 @@
 
 	<composite:interface componentType="pnlServizioRichiestoCustom">
 		<composite:attribute name="iServizioRichiestoCustom" 	type="it.webred.cs.json.serviziorichiestocustom.IServizioRichiestoCustom" 			required="true" />
-		<composite:attribute name="servizio"					type="managedbean.cartella_sociale.servizirichiesticustom.ServizioRichiestoCustom"	required="true" />
-		<composite:attribute name="serviziBean"					type="it.webred.ss.web.bean.wizard.ServiziRichiestiInterventiCustomBean"			required="false" />
 		<composite:attribute name="soloLettura" default="false"/>	
 	</composite:interface>
 	<composite:implementation
@@ -32,50 +30,51 @@
 			</style>
 
 		<p:outputPanel id="panel_serviziocustom" rendered="#{cc.attrs.iServizioRichiestoCustom.versionLowerCase eq '1'}">
-		
-			<h:panelGrid columns="2" width="100%" >
-				<h:panelGroup>
-					<p:outputLabel value="Data richiesta / servizio " for="dataRichiesta"/>
-					<webred:pnlData id="dataRichiesta" maxDate="#{cc.attrs.iServizioRichiestoCustom.currentDate}"
-									dataValue="#{cc.attrs.iServizioRichiestoCustom.jsonCurrent.dataRichiesta}" 
-						            dataPattern="dd/MM/yyyy"  dataPatternLabel="gg/mm/aaaa" dataReq="true" 
-						            disabled="#{cc.attrs.soloLettura}"/>
-						            
-					<webredcs:tooltipInfo  title="Data richiesta / servizio"  
-						stringDescr="Data di sottoscrizione della richiesta da parte del cittadino ovvero di erogazione del servizio professionale da parte dell’operatore sociale"/>				            
-					
-					<p:selectBooleanCheckbox id="erogabileInAccoglienza" style="padding-left:10px"
-						itemLabel="Erogabile in accoglienza?" 
-						disabled="#{cc.attrs.soloLettura || cc.attrs.iServizioRichiestoCustom.jsonCurrent.consuntivoList.size()>0}"
-						value="#{cc.attrs.iServizioRichiestoCustom.jsonCurrent.erogabileInAccoglienza}"/> 
-					
-					<p:commandButton value="Aggiungi documento"
-						action="#{cc.attrs.serviziBean.setServizio(servizio)}"
-						oncomplete="testDialog.show()" 
-						rendered="#{!cc.attrs.soloLettura}"
-						style="margin-left:80px;"/> 
-				</h:panelGroup>
+			<h:panelGrid columns="4">
+				<p:outputLabel value="Data richiesta / servizio " for="dataRichiesta"/>
+				<webred:pnlData id="dataRichiesta" maxDate="#{cc.attrs.iServizioRichiestoCustom.currentDate}"
+								dataValue="#{cc.attrs.iServizioRichiestoCustom.jsonCurrent.dataRichiesta}" 
+					            dataPattern="dd/MM/yyyy"  dataPatternLabel="gg/mm/aaaa" dataReq="true" 
+					            disabled="#{cc.attrs.soloLettura}"/>
+					            
+				<webredcs:tooltipInfo  title="Data richiesta / servizio"  
+					stringDescr="Data di sottoscrizione della richiesta da parte del cittadino ovvero di erogazione del servizio professionale da parte dell’operatore sociale"/>				            
 				
-				<p:dataTable var="documento" value="#{cc.attrs.iServizioRichiestoCustom.listaDocumentiDaSalvare}" emptyMessage="Nessun documento presente">
-					<p:column headerText="Nome documento">
-						<h:outputText value="#{documento.nome}" />
-					</p:column>
-					<p:column>
-						<p:commandButton title="Elimina" icon="ui-icon-trash"
-							action="#{cc.attrs.iServizioRichiestoCustom.eliminaDocumento(documento)}"
-							update="@form" 
-							rendered="#{!cc.attrs.soloLettura}" 	/>
-	
-					    <p:commandButton id="downloadButton" value="Download" ajax="false" icon="ui-icon-arrowthickstop-1-s" >
-					        <p:fileDownload value="#{documento.streamedContent}" />
-					    </p:commandButton>					     
-					</p:column>	
-				</p:dataTable>
-			
-			</h:panelGrid>
-			
+				<p:selectBooleanCheckbox id="erogabileInAccoglienza" style="padding-left:10px"
+					itemLabel="Erogabile in accoglienza?" 
+					disabled="#{cc.attrs.soloLettura || cc.attrs.iServizioRichiestoCustom.jsonCurrent.consuntivoList.size()>0}"
+					value="#{cc.attrs.iServizioRichiestoCustom.jsonCurrent.erogabileInAccoglienza}"/> 
+				</h:panelGrid>
+				<p:spacer height="10px" />
+				<p:outputPanel id="pnlRichiestaUpload">
+					<p:fileUpload id="uploadDocumento"
+						label="Aggiungi Documento" uploadLabel="Conferma" 
+						rendered="#{!cc.attrs.soloLettura}"
+						invalidSizeMessage="File troppo grande" 
+						mode="advanced" update="@parent" 
+						fileUploadListener="#{cc.attrs.iServizioRichiestoCustom.handleUpload}"
+						multiple="false" />
+				
+					<p:dataTable id="lstDocumenti" var="documento"
+								 value="#{cc.attrs.iServizioRichiestoCustom.listaDocumentiDaSalvare}" 
+								 emptyMessage="Nessun documento presente">
+						<p:column headerText="Nome documento">
+							<h:outputText value="#{documento.nome}" />
+						</p:column>
+						<p:column>
+							<p:commandButton title="Elimina" icon="ui-icon-trash"
+								action="#{cc.attrs.iServizioRichiestoCustom.eliminaDocumento(documento)}"
+								update="@form" 
+								rendered="#{!cc.attrs.soloLettura}" 	/>
+		
+						    <p:commandButton id="downloadButton" value="Download" ajax="false" icon="ui-icon-arrowthickstop-1-s" >
+						        <p:fileDownload value="#{documento.streamedContent}" />
+						    </p:commandButton>					     
+						</p:column>	
+					</p:dataTable>
+			</p:outputPanel>
 			<p:spacer height="10px" />
-			<p:outputLabel value="Macro/micro intervento *"/>
+			<p:outputLabel value="Macro/micro intervento *" rendered="#{not empty cc.attrs.iServizioRichiestoCustom.listaPDS}"/>
    			<p:multiSelectListbox value="#{cc.attrs.iServizioRichiestoCustom.jsonCurrent.selezionePDS}" 
    								 showHeaders="true" header="Macro Intervento" 
    								 required="true" requiredMessage="Il campo macro/micro intervento è obbligatorio"
@@ -101,6 +100,7 @@
 					</h:panelGrid>
 				</p:fieldset>
 			 </p:outputPanel>
+			 
 			<h:panelGrid columns="1">
 				<p:outputLabel value="Note"/>
 				<p:inputTextarea value="#{cc.attrs.iServizioRichiestoCustom.jsonCurrent.note}" cols="200" disabled="#{cc.attrs.soloLettura}"/>
