@@ -1,0 +1,430 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- ===================================================================== -->
+<!--                                                                       -->
+<!--  JBoss Server Configuration                                           -->
+<!--                                                                       -->
+<!-- ===================================================================== -->
+
+<!-- See http://www.jboss.org/community/wiki/Multiple1PC for information about local-tx-datasource -->
+<!-- $Id: oracle-ds.xml 88948 2009-05-15 14:09:08Z jesper.pedersen $ -->
+<!-- ==================================================================== -->
+<!--  Datasource config for Oracle originally from Steven Coy             -->
+<!-- ==================================================================== -->
+
+
+<datasources xmlns="http://www.jboss.org/ironjacamar/schema">
+
+	<xa-datasource jndi-name="java:/jdbc/Virgilio_DS_0" pool-name="VirgilioDS0">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>
+
+
+    <xa-datasource jndi-name="java:/jdbc/Virgilio_DS_1" pool-name="VirgilioDS1">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>
+    
+
+	<xa-datasource jndi-name="java:/jdbc/Virgilio_DS_2" pool-name="VirgilioDS2">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>
+	<xa-datasource jndi-name="java:/jdbc/Virgilio_DS_3" pool-name="VirgilioDS3">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>
+	<xa-datasource jndi-name="java:/jdbc/Virgilio_DS_4" pool-name="VirgilioDS4">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>
+	<xa-datasource jndi-name="java:/jdbc/Virgilio_DS_5" pool-name="VirgilioDS5">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>
+	<xa-datasource jndi-name="java:/jdbc/Virgilio_DS_6" pool-name="VirgilioDS6">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>
+	<xa-datasource jndi-name="java:/jdbc/Virgilio_DS_7" pool-name="VirgilioDS7">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>
+	<xa-datasource jndi-name="java:/jdbc/Virgilio_DS_8" pool-name="VirgilioDS8">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>
+	<xa-datasource jndi-name="java:/jdbc/Virgilio_DS_9" pool-name="VirgilioDS9">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>
+	<xa-datasource jndi-name="java:/jdbc/Virgilio_DS_10" pool-name="VirgilioDS10">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>
+	<xa-datasource jndi-name="java:/jdbc/Virgilio_DS_11" pool-name="VirgilioDS11">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>
+	<xa-datasource jndi-name="java:/jdbc/Virgilio_DS_12" pool-name="VirgilioDS12">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>
+	<xa-datasource jndi-name="java:/jdbc/Virgilio_DS_13" pool-name="VirgilioDS13">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>
+	<xa-datasource jndi-name="java:/jdbc/Virgilio_DS_14" pool-name="VirgilioDS14">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>
+	<xa-datasource jndi-name="java:/jdbc/Virgilio_DS_15" pool-name="VirgilioDS15">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>
+	<xa-datasource jndi-name="java:/jdbc/Virgilio_DS_16" pool-name="VirgilioDS16">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>
+	<xa-datasource jndi-name="java:/jdbc/Virgilio_DS_17" pool-name="VirgilioDS17">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>	
+	<xa-datasource jndi-name="java:/jdbc/Virgilio_DS_18" pool-name="VirgilioDS18">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>	
+	<xa-datasource jndi-name="java:/jdbc/Virgilio_DS_19" pool-name="VirgilioDS19">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>	
+	<xa-datasource jndi-name="java:/jdbc/Virgilio_DS_20" pool-name="VirgilioDS20">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>	
+	<xa-datasource jndi-name="java:/jdbc/Virgilio_DS_21" pool-name="VirgilioDS21">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>	
+	<xa-datasource jndi-name="java:/jdbc/Virgilio_DS_22" pool-name="VirgilioDS22">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>	
+	<xa-datasource jndi-name="java:/jdbc/Virgilio_DS_23" pool-name="VirgilioDS23">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>	
+	<xa-datasource jndi-name="java:/jdbc/Virgilio_DS_24" pool-name="VirgilioDS24">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>	
+	<xa-datasource jndi-name="java:/jdbc/Virgilio_DS_25" pool-name="VirgilioDS25">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>	
+	<xa-datasource jndi-name="java:/jdbc/Virgilio_DS_26" pool-name="VirgilioDS26">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>	
+	<xa-datasource jndi-name="java:/jdbc/Virgilio_DS_27" pool-name="VirgilioDS27">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>	
+	<xa-datasource jndi-name="java:/jdbc/Virgilio_DS_28" pool-name="VirgilioDS28">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>	
+	<xa-datasource jndi-name="java:/jdbc/Virgilio_DS_29" pool-name="VirgilioDS19">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>	
+	<xa-datasource jndi-name="java:/jdbc/Virgilio_DS_30" pool-name="VirgilioD30">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>	
+	<xa-datasource jndi-name="java:/jdbc/Virgilio_DS_31" pool-name="VirgilioDS31">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>	
+	<xa-datasource jndi-name="java:/jdbc/Virgilio_DS_32" pool-name="VirgilioDS32">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>	
+	<xa-datasource jndi-name="java:/jdbc/Virgilio_DS_33" pool-name="VirgilioDS33">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>	
+	<xa-datasource jndi-name="java:/jdbc/Virgilio_DS_34" pool-name="VirgilioDS34">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>	
+	<xa-datasource jndi-name="java:/jdbc/Virgilio_DS_35" pool-name="VirgilioDS35">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>	
+	<xa-datasource jndi-name="java:/jdbc/Virgilio_DS_36" pool-name="VirgilioDS36">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>	
+	<xa-datasource jndi-name="java:/jdbc/Virgilio_DS_37" pool-name="VirgilioDS37">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>	
+	<xa-datasource jndi-name="java:/jdbc/Virgilio_DS_38" pool-name="VirgilioDS38">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>	
+	<xa-datasource jndi-name="java:/jdbc/Virgilio_DS_39" pool-name="VirgilioDS39">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>	
+	<xa-datasource jndi-name="java:/jdbc/Virgilio_DS_40" pool-name="VirgilioDS40">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>	
+	<xa-datasource jndi-name="java:/jdbc/Virgilio_DS_41" pool-name="VirgilioDS41">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>	
+	<xa-datasource jndi-name="java:/jdbc/Virgilio_DS_42" pool-name="VirgilioDS42">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>	
+	<xa-datasource jndi-name="java:/jdbc/Virgilio_DS_43" pool-name="VirgilioDS43">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>	
+	<xa-datasource jndi-name="java:/jdbc/Virgilio_DS_44" pool-name="VirgilioDS44">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>	
+	<xa-datasource jndi-name="java:/jdbc/Virgilio_DS_45" pool-name="VirgilioDS45">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>	
+	<xa-datasource jndi-name="java:/jdbc/Virgilio_DS_46" pool-name="VirgilioDS46">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>	
+	<xa-datasource jndi-name="java:/jdbc/Virgilio_DS_47" pool-name="VirgilioDS47">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>	
+	<xa-datasource jndi-name="java:/jdbc/Virgilio_DS_48" pool-name="VirgilioDS48">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>	
+	<xa-datasource jndi-name="java:/jdbc/Virgilio_DS_49" pool-name="VirgilioDS49">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>	
+	<xa-datasource jndi-name="java:/jdbc/Virgilio_DS_50" pool-name="VirgilioDS50">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>
+</datasources>

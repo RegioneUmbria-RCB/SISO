@@ -1,0 +1,14 @@
+<module xmlns="urn:jboss:module:1.1" name="it.webred.cs">
+    <resources>     
+        <resource-root path="aspects.jar"/>     
+    </resources>
+    <dependencies>      
+        <module name="org.apache.commons.lang" slot="main" export="true"/>
+        <module name="org.apache.commons.beanutils" slot="main" export="true"/>
+        <module name="org.apache.commons.collections" slot="main" export="true"/>                       
+        <module name="org.apache.commons.io" slot="main" export="true"/>
+        <module name="org.apache.commons.lang3" slot="main" export="true"/>
+        <!--Add and export it to work-->
+        <module name="org.springframework" slot="main" export="true"/>                      
+    </dependencies>
+</module>
