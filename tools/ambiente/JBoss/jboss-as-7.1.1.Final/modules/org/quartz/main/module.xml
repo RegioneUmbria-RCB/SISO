@@ -1,0 +1,10 @@
+<module xmlns="urn:jboss:module:1.1" name="org.quartz">
+	<resources>
+		<resource-root path="quartz-all-2.0.2.jar"/>
+		<!-- Insert resources here -->
+	</resources>
+	<dependencies>
+		<module name="org.slf4j"/>
+		<module name="javax.api"/>
+	</dependencies>
+</module>

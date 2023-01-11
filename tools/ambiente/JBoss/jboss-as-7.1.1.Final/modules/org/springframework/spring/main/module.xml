@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module xmlns="urn:jboss:module:1.1" name="org.springframework.spring">
+    <resources>
+        <resource-root path="spring-aop-3.1.4.RELEASE.jar"/>
+        <resource-root path="spring-asm-3.1.4.RELEASE.jar"/>
+        <resource-root path="spring-beans-3.1.4.RELEASE.jar"/>
+        <resource-root path="spring-context-3.1.4.RELEASE.jar"/>
+        <!--<resource-root path="spring-context-support-3.1.4.RELEASE.jar"/>-->
+        <resource-root path="spring-core-3.1.4.RELEASE.jar"/>
+        <resource-root path="spring-expression-3.1.4.RELEASE.jar"/>
+        <resource-root path="spring-jdbc-3.1.4.RELEASE.jar"/>
+        <resource-root path="spring-orm-3.1.4.RELEASE.jar"/>
+       <!-- <resource-root path="spring-oxm-3.1.4.RELEASE.jar"/>-->
+        <resource-root path="spring-tx-3.1.4.RELEASE.jar"/>
+        <resource-root path="spring-web-3.1.4.RELEASE.jar"/>
+    </resources>
+    <dependencies>
+        <module name="javax.api"/>
+        <module name="javax.jms.api"/>
+        <module name="javax.annotation.api"/>
+        <module name="javax.servlet.api"/>
+        <module name="org.apache.commons.logging"/>
+        <module name="org.jboss.vfs"/>
+    </dependencies>
+</module>

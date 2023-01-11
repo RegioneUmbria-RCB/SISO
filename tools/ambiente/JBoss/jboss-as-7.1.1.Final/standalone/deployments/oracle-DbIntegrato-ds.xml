@@ -1,0 +1,429 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- ===================================================================== -->
+<!--                                                                       -->
+<!--  JBoss Server Configuration                                           -->
+<!--                                                                       -->
+<!-- ===================================================================== -->
+
+<!-- See http://www.jboss.org/community/wiki/Multiple1PC for information about local-tx-datasource -->
+<!-- $Id: oracle-ds.xml 88948 2009-05-15 14:09:08Z jesper.pedersen $ -->
+<!-- ==================================================================== -->
+<!--  Datasource config for Oracle originally from Steven Coy             -->
+<!-- ==================================================================== -->
+
+
+<datasources xmlns="http://www.jboss.org/ironjacamar/schema">
+	<xa-datasource jndi-name="java:/jdbc/dbIntegrato_0" pool-name="dbIntegrato0">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>
+
+    
+    <xa-datasource jndi-name="java:/jdbc/dbIntegrato_1" pool-name="dbIntegrato1">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>
+    
+	<xa-datasource jndi-name="java:/jdbc/dbIntegrato_2" pool-name="dbIntegrato2">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>
+	<xa-datasource jndi-name="java:/jdbc/dbIntegrato_3" pool-name="dbIntegrato3">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>
+	<xa-datasource jndi-name="java:/jdbc/dbIntegrato_4" pool-name="dbIntegrato4">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>
+	<xa-datasource jndi-name="java:/jdbc/dbIntegrato_5" pool-name="dbIntegrato5">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>
+	<xa-datasource jndi-name="java:/jdbc/dbIntegrato_6" pool-name="dbIntegrato6">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>
+	<xa-datasource jndi-name="java:/jdbc/dbIntegrato_7" pool-name="dbIntegrato7">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>
+	<xa-datasource jndi-name="java:/jdbc/dbIntegrato_8" pool-name="dbIntegrato8">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>
+	<xa-datasource jndi-name="java:/jdbc/dbIntegrato_9" pool-name="dbIntegrato9">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>
+	<xa-datasource jndi-name="java:/jdbc/dbIntegrato_10" pool-name="dbIntegrato10">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>
+	<xa-datasource jndi-name="java:/jdbc/dbIntegrato_11" pool-name="dbIntegrato11">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>
+	<xa-datasource jndi-name="java:/jdbc/dbIntegrato_12" pool-name="dbIntegrato12">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>
+	<xa-datasource jndi-name="java:/jdbc/dbIntegrato_13" pool-name="dbIntegrato13">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>
+	<xa-datasource jndi-name="java:/jdbc/dbIntegrato_14" pool-name="dbIntegrato14">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>
+	<xa-datasource jndi-name="java:/jdbc/dbIntegrato_15" pool-name="dbIntegrato15">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>
+	<xa-datasource jndi-name="java:/jdbc/dbIntegrato_16" pool-name="dbIntegrato16">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>
+	<xa-datasource jndi-name="java:/jdbc/dbIntegrato_17" pool-name="dbIntegrato17">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>	
+	<xa-datasource jndi-name="java:/jdbc/dbIntegrato_18" pool-name="dbIntegrato18">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>	
+	<xa-datasource jndi-name="java:/jdbc/dbIntegrato_19" pool-name="dbIntegrato19">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>	
+	<xa-datasource jndi-name="java:/jdbc/dbIntegrato_20" pool-name="dbIntegrato20">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>	
+	<xa-datasource jndi-name="java:/jdbc/dbIntegrato_21" pool-name="dbIntegrato21">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>	
+	<xa-datasource jndi-name="java:/jdbc/dbIntegrato_22" pool-name="dbIntegrato22">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>	
+	<xa-datasource jndi-name="java:/jdbc/dbIntegrato_23" pool-name="dbIntegrato23">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>	
+	<xa-datasource jndi-name="java:/jdbc/dbIntegrato_24" pool-name="dbIntegrato24">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>	
+	<xa-datasource jndi-name="java:/jdbc/dbIntegrato_25" pool-name="dbIntegrato25">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>	
+	<xa-datasource jndi-name="java:/jdbc/dbIntegrato_26" pool-name="dbIntegrato26">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>	
+	<xa-datasource jndi-name="java:/jdbc/dbIntegrato_27" pool-name="dbIntegrato27">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>	
+	<xa-datasource jndi-name="java:/jdbc/dbIntegrato_28" pool-name="dbIntegrato28">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>	
+	<xa-datasource jndi-name="java:/jdbc/dbIntegrato_29" pool-name="dbIntegrato29">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>	
+	<xa-datasource jndi-name="java:/jdbc/dbIntegrato_30" pool-name="dbIntegrato30">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>	
+	<xa-datasource jndi-name="java:/jdbc/dbIntegrato_31" pool-name="dbIntegrato31">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>	
+	<xa-datasource jndi-name="java:/jdbc/dbIntegrato_32" pool-name="dbIntegrato32">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>	
+	<xa-datasource jndi-name="java:/jdbc/dbIntegrato_33" pool-name="dbIntegrato33">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>	
+	<xa-datasource jndi-name="java:/jdbc/dbIntegrato_34" pool-name="dbIntegrato34">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>	
+	<xa-datasource jndi-name="java:/jdbc/dbIntegrato_35" pool-name="dbIntegrato35">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>	
+	<xa-datasource jndi-name="java:/jdbc/dbIntegrato_36" pool-name="dbIntegrato36">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>	
+	<xa-datasource jndi-name="java:/jdbc/dbIntegrato_37" pool-name="dbIntegrato37">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>	
+	<xa-datasource jndi-name="java:/jdbc/dbIntegrato_38" pool-name="dbIntegrato38">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>	
+	<xa-datasource jndi-name="java:/jdbc/dbIntegrato_39" pool-name="dbIntegrato39">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>	
+	<xa-datasource jndi-name="java:/jdbc/dbIntegrato_40" pool-name="dbIntegrato40">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>	
+	<xa-datasource jndi-name="java:/jdbc/dbIntegrato_41" pool-name="dbIntegrato41">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>	
+	<xa-datasource jndi-name="java:/jdbc/dbIntegrato_42" pool-name="dbIntegrato42">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>	
+	<xa-datasource jndi-name="java:/jdbc/dbIntegrato_43" pool-name="dbIntegrato43">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>	
+	<xa-datasource jndi-name="java:/jdbc/dbIntegrato_44" pool-name="dbIntegrato44">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>	
+	<xa-datasource jndi-name="java:/jdbc/dbIntegrato_45" pool-name="dbIntegrato45">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>	
+	<xa-datasource jndi-name="java:/jdbc/dbIntegrato_46" pool-name="dbIntegrato46">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>	
+	<xa-datasource jndi-name="java:/jdbc/dbIntegrato_47" pool-name="dbIntegrato47">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>	
+	<xa-datasource jndi-name="java:/jdbc/dbIntegrato_48" pool-name="dbIntegrato48">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>	
+	<xa-datasource jndi-name="java:/jdbc/dbIntegrato_49" pool-name="dbIntegrato49">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>	
+	<xa-datasource jndi-name="java:/jdbc/dbIntegrato_50" pool-name="dbIntegrato50">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>	
+	
+</datasources>

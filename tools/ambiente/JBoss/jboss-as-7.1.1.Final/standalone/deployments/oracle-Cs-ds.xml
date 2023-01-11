@@ -1,0 +1,429 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- ===================================================================== -->
+<!--                                                                       -->
+<!--  JBoss Server Configuration                                           -->
+<!--                                                                       -->
+<!-- ===================================================================== -->
+
+<!-- See http://www.jboss.org/community/wiki/Multiple1PC for information about local-tx-datasource -->
+<!-- $Id: oracle-ds.xml 88948 2009-05-15 14:09:08Z jesper.pedersen $ -->
+<!-- ==================================================================== -->
+<!--  Datasource config for Oracle originally from Steven Coy             -->
+<!-- ==================================================================== -->
+
+
+<datasources>
+    <xa-datasource jndi-name="java:/jdbc/Cs_DS_0" pool-name="csDs0">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>
+
+    <xa-datasource jndi-name="java:/jdbc/Cs_DS_1" pool-name="csDs1">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>
+    
+	<xa-datasource jndi-name="java:/jdbc/Cs_DS_2"  pool-name="csDs2">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>
+	<xa-datasource jndi-name="java:/jdbc/Cs_DS_3"  pool-name="csDs3">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>
+	<xa-datasource jndi-name="java:/jdbc/Cs_DS_4"  pool-name="csDs4">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>
+	<xa-datasource jndi-name="java:/jdbc/Cs_DS_5"  pool-name="csDs5">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>
+	<xa-datasource jndi-name="java:/jdbc/Cs_DS_6"  pool-name="csDs6">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>
+	<xa-datasource jndi-name="java:/jdbc/Cs_DS_7"  pool-name="csDs7">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>
+	<xa-datasource jndi-name="java:/jdbc/Cs_DS_8"  pool-name="csDs8">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>
+	<xa-datasource jndi-name="java:/jdbc/Cs_DS_9"  pool-name="csDs9">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>
+	<xa-datasource jndi-name="java:/jdbc/Cs_DS_10"  pool-name="csDs10">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>
+	<xa-datasource jndi-name="java:/jdbc/Cs_DS_11"  pool-name="csDs11">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>
+	<xa-datasource jndi-name="java:/jdbc/Cs_DS_12"  pool-name="csDs12">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>
+	<xa-datasource jndi-name="java:/jdbc/Cs_DS_13"  pool-name="csDs13">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>
+	<xa-datasource jndi-name="java:/jdbc/Cs_DS_14"  pool-name="csDs14">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>
+	<xa-datasource jndi-name="java:/jdbc/Cs_DS_15"  pool-name="csDs15">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>
+	<xa-datasource jndi-name="java:/jdbc/Cs_DS_16"  pool-name="csDs16">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>
+	<xa-datasource jndi-name="java:/jdbc/Cs_DS_17"  pool-name="csDs17">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>	
+	<xa-datasource jndi-name="java:/jdbc/Cs_DS_18"  pool-name="csDs18">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>	
+	<xa-datasource jndi-name="java:/jdbc/Cs_DS_19"  pool-name="csDs19">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>	
+	<xa-datasource jndi-name="java:/jdbc/Cs_DS_20"  pool-name="csDs20">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>	
+	<xa-datasource jndi-name="java:/jdbc/Cs_DS_21"  pool-name="csDs21">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>	
+	<xa-datasource jndi-name="java:/jdbc/Cs_DS_22"  pool-name="csDs22">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>	
+	<xa-datasource jndi-name="java:/jdbc/Cs_DS_23"  pool-name="csDs23">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>	
+	<xa-datasource jndi-name="java:/jdbc/Cs_DS_24"  pool-name="csDs24">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>	
+	<xa-datasource jndi-name="java:/jdbc/Cs_DS_25"  pool-name="csDs25">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>	
+	<xa-datasource jndi-name="java:/jdbc/Cs_DS_26"  pool-name="csDs26">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>	
+	<xa-datasource jndi-name="java:/jdbc/Cs_DS_27"  pool-name="csDs27">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>	
+	<xa-datasource jndi-name="java:/jdbc/Cs_DS_28"  pool-name="csDs28">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>	
+	<xa-datasource jndi-name="java:/jdbc/Cs_DS_29"  pool-name="csDs29">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>	
+	<xa-datasource jndi-name="java:/jdbc/Cs_DS_30"  pool-name="csDs30">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>	
+	<xa-datasource jndi-name="java:/jdbc/Cs_DS_31"  pool-name="csDs31">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>	
+	<xa-datasource jndi-name="java:/jdbc/Cs_DS_32"  pool-name="csDs32">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>	
+	<xa-datasource jndi-name="java:/jdbc/Cs_DS_33"  pool-name="csDs33">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>	
+	<xa-datasource jndi-name="java:/jdbc/Cs_DS_34"  pool-name="csDs34">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>	
+	<xa-datasource jndi-name="java:/jdbc/Cs_DS_35"  pool-name="csDs35">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>	
+	<xa-datasource jndi-name="java:/jdbc/Cs_DS_36"  pool-name="csDs36">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>	
+	<xa-datasource jndi-name="java:/jdbc/Cs_DS_37"  pool-name="csDs37">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>	
+	<xa-datasource jndi-name="java:/jdbc/Cs_DS_38"  pool-name="csDs38">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>	
+	<xa-datasource jndi-name="java:/jdbc/Cs_DS_39"  pool-name="csDs39">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>	
+	<xa-datasource jndi-name="java:/jdbc/Cs_DS_40"  pool-name="csDs40">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>	
+	<xa-datasource jndi-name="java:/jdbc/Cs_DS_41"  pool-name="csDs41">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>	
+	<xa-datasource jndi-name="java:/jdbc/Cs_DS_42"  pool-name="csDs42">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>	
+	<xa-datasource jndi-name="java:/jdbc/Cs_DS_43"  pool-name="csDs43">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>	
+	<xa-datasource jndi-name="java:/jdbc/Cs_DS_44"  pool-name="csDs44">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>	
+	<xa-datasource jndi-name="java:/jdbc/Cs_DS_45"  pool-name="csDs45">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>	
+	<xa-datasource jndi-name="java:/jdbc/Cs_DS_46"  pool-name="csDs46">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>	
+	<xa-datasource jndi-name="java:/jdbc/Cs_DS_47"  pool-name="csDs47">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>	
+	<xa-datasource jndi-name="java:/jdbc/Cs_DS_48"  pool-name="csDs48">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>	
+	<xa-datasource jndi-name="java:/jdbc/Cs_DS_49"  pool-name="csDs49">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource>	
+	<xa-datasource jndi-name="java:/jdbc/Cs_DS_50"  pool-name="csDs50">
+	   <driver>oracle</driver>
+	   <xa-datasource-property name="URL">jdbc:oracle:thin:@HOST:1521:SERVICENAME</xa-datasource-property>
+	   <security>
+			<user-name>SCOTT</user-name>
+			<password>TIGER</password>
+	   </security>
+    </xa-datasource> 
+
+
+</datasources>

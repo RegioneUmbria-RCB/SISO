@@ -1,0 +1,10 @@
+javax/xml/stream
+
+javax/xml/stream/util
+META-INF/maven/org.apache.geronimo.specs
+META-INF/maven/org.apache.geronimo.specs/geronimo-stax-api_1.0_spec
+javax/xml
+javax
+META-INF/maven
+META-INF
+javax/xml/stream/events
