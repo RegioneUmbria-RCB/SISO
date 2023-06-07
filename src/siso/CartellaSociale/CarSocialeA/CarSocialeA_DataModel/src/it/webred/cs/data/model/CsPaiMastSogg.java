@@ -46,7 +46,7 @@ public class CsPaiMastSogg implements Serializable {
 	private String cittadinanza;
 
 	@Column(name = "FLAG_INTESTATARIO")
-	private Boolean intestatario;
+	private Boolean riferimento;
 
 	@Temporal(TemporalType.DATE)
 	@Column(name = "DT_INS")
@@ -72,7 +72,7 @@ public class CsPaiMastSogg implements Serializable {
 	private String viaResidenza;
 
 	@Column(name = "CITTADINANZA_2")
-	private String secondaCittadinanza;
+	private String cittadinanza2;
 
 	@Column(name = "SESSO")
 	private String sesso;
@@ -80,6 +80,15 @@ public class CsPaiMastSogg implements Serializable {
 	@Column(name="ANNO_NASCITA")
 	private Integer annoNascita;
 	
+	 @Column(name="COMUNE_NASCITA")
+	 private String comuneNascita; //JSON
+	 
+	 @Column(name="NAZIONE_NASCITA")  						
+	 private String nazioneNascita;
+	
+	 @Column(name="FLAG_NAZ_RES_NON_DEFINITA")
+	 private Boolean nazioneResidenzaNonDefinita;
+		
 	@MapsId("diarioId")
 	@ManyToOne(optional = false, fetch = FetchType.LAZY)
 	@JoinColumn(name = "DIARIO_ID", referencedColumnName = "DIARIO_ID")
@@ -128,12 +137,12 @@ public class CsPaiMastSogg implements Serializable {
 		this.cittadinanza = cittadinanza;
 	}
 
-	public Boolean getIntestatario() {
-		return intestatario;
+	public Boolean getRiferimento() {
+		return riferimento;
 	}
 
-	public void setIntestatario(Boolean intestatario) {
-		this.intestatario = intestatario;
+	public void setRiferimento(Boolean riferimento) {
+		this.riferimento = riferimento;
 	}
 
 	public Date getDtIns() {
@@ -192,12 +201,12 @@ public class CsPaiMastSogg implements Serializable {
 		this.viaResidenza = viaResidenza;
 	}
 
-	public String getSecondaCittadinanza() {
-		return secondaCittadinanza;
+	public String getCittadinanza2() {
+		return cittadinanza2;
 	}
 
-	public void setSecondaCittadinanza(String secondaCittadinanza) {
-		this.secondaCittadinanza = secondaCittadinanza;
+	public void setCittadinanza2(String cittadinanza2) {
+		this.cittadinanza2 = cittadinanza2;
 	}
 
 	public String getSesso() {
@@ -262,5 +271,29 @@ public class CsPaiMastSogg implements Serializable {
 			denominazione = cognome + " " + nome;
 		return denominazione.trim();
 	}
-	
+
+	public String getComuneNascita() {
+		return comuneNascita;
+	}
+
+	public void setComuneNascita(String comuneNascita) {
+		this.comuneNascita = comuneNascita;
+	}
+
+	public String getNazioneNascita() {
+		return nazioneNascita;
+	}
+
+	public void setNazioneNascita(String nazioneNascita) {
+		this.nazioneNascita = nazioneNascita;
+	}
+
+	public Boolean getNazioneResidenzaNonDefinita() {
+		return nazioneResidenzaNonDefinita;
+	}
+
+	public void setNazioneResidenzaNonDefinita(Boolean nazioneResidenzaNonDefinita) {
+		this.nazioneResidenzaNonDefinita = nazioneResidenzaNonDefinita;
+	}
+
 }

@@ -68,7 +68,7 @@
       <p:selectOneMenu id="cbxSettErogante" filter="true" filterMatchMode="contains"
          value="#{fglInterventoBean.erogazioneInterventoBean.selSettoreEroganteId}"
          disabled="#{fglInterventoBean.erogazioneInterventoBean.testataDisabled or !fglInterventoBean.richiediInterventi or fglInterventoBean.erogazioneInterventoBean.isStrutturaSelezionata }">
-         <p:ajax event="change" update="lblOrgErogante parentDettaglio @parent:@parent:@parent:pnlDettaglio:pnlOperatoreScegliOrInserisci"
+         <p:ajax event="change" update="lblOrgErogante parentDettaglio @(.updateOnSettEroganteChange)"
             listener="#{fglInterventoBean.erogazioneInterventoBean.onSettEroganteTestaChange}"/>
          <f:selectItem itemLabel="- seleziona -" noSelectionOption="true" />
          <f:selectItems value="#{fglInterventoBean.erogazioneInterventoBean.listaSettoriErGroup}" />
@@ -187,21 +187,28 @@
                			   fglInterventoBean.erogazioneInterventoBean.testataDisabled}">
                <f:selectItem noSelectionOption="true" itemLabel="- seleziona -" />
                <f:selectItems value="#{fglInterventoBean.erogazioneInterventoBean.listaCodiciPrestazione}" />
-               <p:ajax event="change" partialSubmit="true" process="@this" listener="#{fglInterventoBean.erogazioneInterventoBean.onChangeCodPrestazione()}"/>
+               <p:ajax event="change" partialSubmit="true" process="@this"
+               		   listener="#{fglInterventoBean.erogazioneInterventoBean.onChangeCodPrestazione()}" update="@(.updateOnCodPrestazioneChange)"/>
             </p:selectOneMenu>
-
 			<p:outputLabel id="lblPresoInCarico" for="cbxPresoInCarico" value="Durante il servizio il beneficiario è in carico? " />
             <h:panelGrid  id="pnlPresoInCarico" columns="2" > 
                <p:selectOneRadio id="cbxPresoInCarico" value="#{fglInterventoBean.erogazioneInterventoBean.csIPs.flagInCarico}"
                    disabled="#{fglInterventoBean.erogazioneInterventoBean.codPrestazioneDisabled}">
                   <f:selectItems value="#{fglInterventoBean.erogazioneInterventoBean.listaOpzioniPresoInCarico}" />
-                  <p:ajax listener="#{fglInterventoBean.erogazioneInterventoBean.radioClick}"/>
+                  <p:ajax event="change" partialSubmit="true" process="@this" 
+                  		  listener="#{fglInterventoBean.erogazioneInterventoBean.onChangePresaInCarico()}" update="@(.updateOnPicChange)"/>
                </p:selectOneRadio>
                <webredcs:tooltipInfo stringDescr="Se si sceglie 'Non so' verrà rimandata ad una fase successiva la
                  specifica sulla presa in carico o meno necessaria per l'invio della prestazione al SIUSS"/>
              </h:panelGrid>
          </h:panelGrid>
-
+		 <p:outputPanel id="pnlLabelInterventiPIC" styleClass="#{'updateOnCodPrestazioneChange updateOnPicChange'}">
+		     <p:outputLabel value="Gli interventi e i servizi classificati con codice da A2.16 a A2.29 
+		 					      costituiscono informazioni da inserire nel Casellario solo in caso di presa in carico 
+		 					      da parte del servizio sociale professionale" 
+		 					      rendered="#{fglInterventoBean.erogazioneInterventoBean.renderMessaggioPrestazionePic}"
+		 					      style="font-weight:bold;color:red;" />
+		</p:outputPanel>
 		<webredcs:pnlProtocolloDsu iProtocolloDsu="#{fglInterventoBean.erogazioneInterventoBean.protDsuMan}" 
 		                        disabled="#{fglInterventoBean.erogazioneInterventoBean.dataDsuDisabled}"
 		                        visibile="#{fglInterventoBean.erogazioneInterventoBean.situazioneEconomicaVerificata}"
@@ -357,7 +364,9 @@
       rendered="#{fglInterventoBean.erogazioneInterventoBean.pnlDettaglioErogazioniRendered}"
       styleClass="#{'tabDettaglioWhite updateOnFrequenzaDelServizioChange updateFlagAttivazioneChange updateOnTipoBeneficiarioChange updateFlagRespintoChange'}">
       <!-- SISO-556 gli stati variano in funzione della frequenza del servizio -->
-      <h:panelGrid columns="4" style="display: inline-block; vertical-align: top;">
+      <h:panelGrid columns="2" width="100%">
+      <h:panelGrid columns="2" style="display: inline-block; vertical-align: top;">
+         
          <p:outputLabel value="Operazione" for="listaStatiErogValue" />
          <p:selectOneMenu id="listaStatiErogValue" disabled="#{!fglInterventoBean.erogazioneInterventoBean.erogazionePossibile}"
             value="#{fglInterventoBean.erogazioneInterventoBean.statoSelezionatoId}" process="@this" filter="true" filterMatchMode="contains" style="width:200px">
@@ -365,33 +374,38 @@
             <f:selectItem noSelectionOption="true" itemLabel="- seleziona -" />
             <f:selectItems value="#{fglInterventoBean.erogazioneInterventoBean.getLstSelItemStatiErog(fglInterventoBean.datiTariffeInterventoBean.frequenzaAccessoAlServizio)}"/>
          </p:selectOneMenu>
-
+	  
+	  </h:panelGrid>
          <!--  SISO-556 aggiunto metodo visualizzaIntervalloDateErogazione nel bean -->
-         <h:panelGroup id="pnlLblDateErog"
+      <h:panelGrid id="pnlLblDateErog" columns="6"
             styleClass="#{'updateOnFlagPeriodoRipartizChange updateOnFrequenzaDelServizioChange updateOnFlagRendicontoChange updateOnTipoOperazioneChange'}">
-            <p:outputLabel id="lblData" for="dataErogValue" value="Data" />
-            <p:outputLabel id="lblDataDa" value=" da " rendered="#{fglInterventoBean.visualizzaIntervalloDateErogazione}" />
-         </h:panelGroup>
-         <h:panelGroup id="pnlDateErog"
-            styleClass="#{'updateOnFlagPeriodoRipartizChange updateOnFrequenzaDelServizioChange updateOnFlagRendicontoChange updateOnTipoOperazioneChange'}">
+             
+            <p:outputLabel id="lblData" for="dataErogValue"  value="#{fglInterventoBean.dataErogLabel} " style="display: block; width: 120px;"/>
             <webred:pnlData id="dataErogValue" dataReq="true" dataValue="#{fglInterventoBean.erogazioneInterventoBean.dataErog}"
                disabled="#{!fglInterventoBean.erogazioneInterventoBean.erogazionePossibile}"
                mindate="#{fglInterventoBean.datiFglIntBean.dtTipoAttDa}" maxdate="#{fglInterventoBean.datiFglIntBean.dtTipoAttA}"
                dataPattern="dd/MM/yyyy" dataPatternLabel="gg/mm/aaaa"/>
-            <p:spacer width="10px" />
-			<p:outputLabel id="lblDataA" for="dataErogAValue" value=" a "  rendered="#{fglInterventoBean.visualizzaIntervalloDateErogazione}" />
+            
+			<p:outputLabel id="lblDataA" for="dataErogAValue" value=" Data fine erogazione "  
+				rendered="#{fglInterventoBean.visualizzaIntervalloDateErogazione}" />
             <webred:pnlData id="dataErogAValue" rendered="#{fglInterventoBean.visualizzaIntervalloDateErogazione}"
                dataValue="#{fglInterventoBean.erogazioneInterventoBean.dataErogA}"
                disabled="#{!fglInterventoBean.erogazioneInterventoBean.erogazionePossibile}"
                required="#{fglInterventoBean.visualizzaIntervalloDateErogazione}"
                mindate="#{fglInterventoBean.datiFglIntBean.dtTipoAttDa}" maxdate="#{fglInterventoBean.datiFglIntBean.dtTipoAttA}"
                dataPattern="dd/MM/yyyy" dataPatternLabel="gg/mm/aaaa"/>
-         </h:panelGroup>
-      </h:panelGrid>
-
-      <h:panelGrid id="pnlOperatoreScegliOrInserisci" columns="1" style="display: inline-block; vertical-align: top;">
-
-         <p:outputPanel style="margin-bottom:10px">
+          
+			<p:outputLabel id="lblDataEvento" for="dataEvento"  value="#{fglInterventoBean.erogazioneInterventoBean.dataEventoLabel}"
+				rendered="#{fglInterventoBean.erogazioneInterventoBean.isStatoErogativo()}" style="display: block; width: 120px;"  
+				styleClass="#{'updateOnCodPrestazioneChange'}"/>
+            <webred:pnlData id="dataEvento"
+               rendered="#{fglInterventoBean.erogazioneInterventoBean.isStatoErogativo()}"
+               dataValue="#{fglInterventoBean.erogazioneInterventoBean.dataEvento}"
+               disabled="#{!fglInterventoBean.erogazioneInterventoBean.erogazionePossibile}"
+               dataPattern="dd/MM/yyyy" dataPatternLabel="gg/mm/aaaa"/>
+       </h:panelGrid>
+    
+         <p:outputPanel id="pnlOperatoreScegliOrInserisci" style="margin-bottom:10px"  styleClass="#{'updateOnSettEroganteChange'}">
             <p:selectOneRadio id="rdOpErogante" layout="custom"
                value="#{fglInterventoBean.erogazioneInterventoBean.operatoreScegliOrInserisci}"
                disabled="#{!fglInterventoBean.erogazioneInterventoBean.erogazionePossibile}" >
@@ -423,15 +437,13 @@
             </h:panelGrid>
          </p:outputPanel>
 
-      </h:panelGrid>
-
       <h:panelGrid columns="2" style="display: inline-block; vertical-align: top;">
          <p:outputLabel id="lblNote" for="txtNote" value="Note" />
-         <p:inputTextarea rows="1" cols="70" id="txtNote" autoResize="false"
+         <p:inputTextarea rows="3" cols="60" id="txtNote" autoResize="false"
             disabled="#{!fglInterventoBean.erogazioneInterventoBean.erogazionePossibile}"
             value="#{fglInterventoBean.erogazioneInterventoBean.nuovocsIntEseg.note}"/>
       </h:panelGrid>
-
+	  </h:panelGrid>
 
       <p:outputPanel id="panelAttributiErogazione" style="width:100%" styleClass="#{'updateOnTipoOperazioneChange'}"> 
 
@@ -583,7 +595,7 @@
 	                   <p:outputLabel value="Quota a carico dell'Ente" />
 	                     <p:outputPanel id="pnl_detta_spesa_opt">
 	                       
-	                           <p:outputLabel id="lbl_detta_rdbnt_percen"  value="%" />
+	                           <p:outputLabel id="lbl_detta_rdbnt_percen"  value="% " />
 	                           <p:inputText id="detta_txtSpesaPerc" style="width:90px;" maxlength="5"
 	                              disabled="#{!fglInterventoBean.erogazioneInterventoBean.isSpesaValDetta}"
 	                              value="#{fglInterventoBean.erogazioneInterventoBean.nuovocsIntEseg.percGestitaEnte}"
@@ -594,7 +606,7 @@
 	                           <p:tooltip for="detta_txtSpesaPerc,lbl_detta_rdbnt_percen" value="Numero intero tra 0 e 100"
 	                              trackMouse="true"/>
 	
-	                         <h:outputLabel id="lbl_detta_rdbnt_valore"  value="Valore €" />
+	                         <h:outputLabel id="lbl_detta_rdbnt_valore"  value="Valore € " />
 	                           <p:inputText id="detta_txtSpesaVal" style="width:90px;"
 	                              disabled="#{!fglInterventoBean.erogazioneInterventoBean.isSpesaValDetta}"
 	                              value="#{fglInterventoBean.erogazioneInterventoBean.nuovocsIntEseg.valoreGestitaEnte}"

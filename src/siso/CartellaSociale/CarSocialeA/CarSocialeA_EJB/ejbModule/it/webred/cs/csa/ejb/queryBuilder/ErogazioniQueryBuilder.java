@@ -142,16 +142,18 @@ public class ErogazioniQueryBuilder extends QueryBuilderBase {
 			" csIQuota.unita_misura_id unitaMisura, " +																						//54
 			" csIValQuota.val_quota val_quota, " +																                            //55
 			" mast.tipo_beneficiario, "	+																									//56
-			" decode (flag_irregolare, 1, '"+EsportazioneTestataDTO.FREQUENZA_IRREGOLARE+"','')||decode (flag_regolare, 1, '"+EsportazioneTestataDTO.FREQUENZA_REGOLARE+"','')||decode (flag_unatantum, 1, '"+EsportazioneTestataDTO.FREQUENZA_UNATANTUM+"','') frequenza " + //57
+			" decode (flag_irregolare, 1, '"+EsportazioneTestataDTO.FREQUENZA_IRREGOLARE+"','')||decode (flag_regolare, 1, '"+EsportazioneTestataDTO.FREQUENZA_REGOLARE+"','')||decode (flag_unatantum, 1, '"+EsportazioneTestataDTO.FREQUENZA_UNATANTUM+"','') frequenza, " + //57
+			" intervento_eseg.data_evento, " +																								//58   SISO-2384
+			" artab.flag_esporta_se_pic " +																									//59   SISO-2333
 			" FROM   cs_i_ps ps "+
 			" left join AR_TB_PRESTAZIONI_INPS artab ON ps.cod_prestazione=artab.codice "+
 			" left join cs_i_intervento_eseg_mast mast  ON ps.INT_ESEG_MAST_ID = mast.id "+    
 			" left join cs_i_intervento_eseg_mast_sogg mast_sogg  ON mast_sogg.int_eseg_mast_id = mast.id " +
 			" left join cs_i_intervento_pr progetto  ON progetto.id = mast.int_progetto_id " +
 			" left join cs_i_intervento_eseg intervento_eseg ON intervento_eseg.INTERVENTO_ESEG_MAST_ID = mast.id "+
-			" join cs_cfg_int_eseg_stato  eseg_stato ON eseg_stato.id = intervento_eseg.stato_id "+
-			" join cs_o_settore sett ON progetto.settore_titolare_id= sett.id "+
-			" join cs_o_organizzazione  organizzazione ON organizzazione.id = sett.organizzazione_id "+	
+			" LEFT JOIN cs_cfg_int_eseg_stato  eseg_stato ON eseg_stato.id = intervento_eseg.stato_id "+
+			" LEFT JOIN cs_o_settore sett ON progetto.settore_titolare_id= sett.id "+
+			" LEFT JOIN cs_o_organizzazione  organizzazione ON organizzazione.id = sett.organizzazione_id "+	
 			" LEFT JOIN cs_c_tipo_intervento tipoInt on tipoInt.id=mast.tipo_intervento_id "+
 			//SISO-806 
 			" LEFT JOIN cs_i_quota csIQuota on mast.quota_id = csIQuota.id "+
@@ -161,19 +163,19 @@ public class ErogazioniQueryBuilder extends QueryBuilderBase {
 			
 			
 			/* SISO-719 */
-			" join cs_c_categoria_sociale cat_soc ON cat_soc.id = mast.categoria_sociale_id " +
+			" LEFT JOIN cs_c_categoria_sociale cat_soc ON cat_soc.id = mast.categoria_sociale_id " +
 			
 			/* SISO-719
 			 * 
 			 * Con la nuova gestione delle esportazioni e la loro possibile revoca, si è creata una VIEW che indica
 			 * se un INTERVENTO_ESEG_ID può essere esportato */
 //			" left join cs_i_ps_export ps_export ON ps_export.intervento_eseg_id = intervento_eseg.id ";
-			" left join v_erog_export_status export_status ON export_status.intervento_eseg_id = intervento_eseg.id " +
+			" LEFT JOIN v_erog_export_status export_status ON export_status.intervento_eseg_id = intervento_eseg.id " +
 		
 			/* SISO-719
 			 * 
 			 * Nuova VIEW per i dati sulle esportazioni già effettuate */
-			" left join v_erog_export_flusso export_flusso ON export_flusso.intervento_eseg_id = intervento_eseg.id " +
+			" LEFT JOIN v_erog_export_flusso export_flusso ON export_flusso.intervento_eseg_id = intervento_eseg.id " +
 			 
 			/*Velocizzare il caricamento delle informazioni SINA*/
 			" LEFT JOIN (SELECT s1.* FROM CS_D_SINA s1, "+

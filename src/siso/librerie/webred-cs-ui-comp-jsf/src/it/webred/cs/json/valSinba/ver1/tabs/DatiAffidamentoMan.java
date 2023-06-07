@@ -31,11 +31,7 @@ public class DatiAffidamentoMan {
 		
 	}
 	
-	public void aggiungiComponente()
-	{
-		
-	}
-	
+
 	public void valorizzaJson(DatiAffidamentoBean datiAffidamentoBean){
 		//Valorizzo dati componente familiare
 		//datiFamigliaBean.setLstCittadinanze(lstCittadinanza);

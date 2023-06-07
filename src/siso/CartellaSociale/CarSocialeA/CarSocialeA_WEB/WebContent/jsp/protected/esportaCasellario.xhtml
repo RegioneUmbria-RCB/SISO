@@ -9,58 +9,61 @@
 		
 			<p:panel id="pnlEsportaCasellarioid" header="Esporta SIUSS" styleClass="#{'onVerificaSIUSS'}">
 				<h:panelGrid id="pnlVerificaid" columns="6" cellpadding="8">
-					<p:outputLabel value="Da : " />
+					<p:outputLabel value="Da " />
 					<p:calendar id="data-da" value="#{esportaCasellarioBean.dataDA}" pattern="dd/MM/yyyy" required="true" requiredMessage="Data DA non valorizzato"/>
 					
-					<p:outputLabel value="A : " />
+					<p:outputLabel value="a " />
 					<p:calendar value="#{esportaCasellarioBean.dataA}" pattern="dd/MM/yyyy" />
 				</h:panelGrid>
 				
-				<h:panelGrid id="pnlEsportaid" columns="6" cellpadding="8">
-				        <p:outputLabel value="CF: " />
-				        <p:inputText value="#{esportaCasellarioBean.cf}"  />
-				         <p:outputLabel value="Cognome: " />
+				<h:panelGrid id="pnlEsportaid" columns="6" cellpadding="8" width="100%">
+				        <p:outputLabel value="Cognome " />
 				        <p:inputText value="#{esportaCasellarioBean.cognome}"  />
-				        <p:outputLabel value="Nome: " />
+				       
+				        <p:outputLabel value="Nome " />
 				        <p:inputText value="#{esportaCasellarioBean.nome}"  />
-				        <p:outputLabel value="Prestazione: " />
+				        
+				        <p:outputLabel value="Cod.Fiscale " />
+				        <p:inputText value="#{esportaCasellarioBean.cf}"  />
+				        
+				        <p:outputLabel value="Num. Protocollo " />
+				        <p:inputText value="#{esportaCasellarioBean.numeroProtocollo}"  />
+				        
+				        <p:outputLabel value="Denominazione Prestazione  " />
 				        <p:inputText value="#{esportaCasellarioBean.prestazione}"  />
-				        <p:outputLabel value="Area target: " />
+				        
+				        <p:outputLabel value="Area target " />
 				        <p:selectOneMenu id="pnlAreaTarget" value="#{esportaCasellarioBean.areaTarget}" >
 				           <f:selectItem noSelectionOption="true" itemLabel="- seleziona -"/>
 				           <f:selectItems value="#{esportaCasellarioBean.listaCategorieSociali}" />
 				        </p:selectOneMenu>
-				        <p:outputLabel value="Numero Protocollo: " />
-				        <p:inputText value="#{esportaCasellarioBean.numeroProtocollo}"  />
-				         <p:outputLabel value="Tipo intervento: " />
-				         <p:selectOneMenu id="pnlTipoIntervento" value="#{esportaCasellarioBean.tipoIntervento}"  filter="true"  filterMatchMode="contains" >
+				      
+				         <p:outputLabel value="Tipo intervento " />
+				         <p:selectOneMenu id="pnlTipoIntervento" value="#{esportaCasellarioBean.tipoIntervento}"  filter="true"  filterMatchMode="contains" style="width:400px;">
 				           <f:selectItem noSelectionOption="true" itemLabel="- seleziona -"/>
 				           <f:selectItems value="#{esportaCasellarioBean.listaTipoIntervento}" />
 				        </p:selectOneMenu>
 				        
-				        <p:spacer width="10"/>
-				        <p:spacer width="10"/>
-				        <p:spacer width="10"/>
-				        <p:spacer width="10"/>
-				        
-				         <p:outputLabel value="Tipo intervento custom: " />
-				         <p:selectOneMenu value="#{esportaCasellarioBean.tipoInterventoCustom}" filter="true"  filterMatchMode="contains" >
+				         <p:outputLabel value="Tipo intervento custom " />
+				         <p:selectOneMenu value="#{esportaCasellarioBean.tipoInterventoCustom}" filter="true"  filterMatchMode="contains" style="width:400px;" >
 				           <f:selectItem noSelectionOption="true" itemLabel="- seleziona -"/>
 				           <f:selectItems value="#{esportaCasellarioBean.listaTipoInterventoCustom}" />
 				        </p:selectOneMenu>
-				</h:panelGrid>
-				
-				<h:panelGrid columns="4" cellpadding="8">
-					   <p:outputLabel value="Stato: " />
-				        <p:selectOneButton value="#{esportaCasellarioBean.statoEsportazione}">
-				          <f:selectItems value="#{esportaCasellarioBean.listaStatoEsportazione}"/>
-				        </p:selectOneButton>
 				        
-						<p:outputLabel value="Frequenza: " />
+				       	<p:outputLabel value="Frequenza " />
 						<p:selectOneMenu value="#{esportaCasellarioBean.filtroFrequenza}">
 							<f:selectItem noSelectionOption="true" itemLabel="- seleziona -"  />
 				            <f:selectItems value="#{esportaCasellarioBean.listaFrequenza}"/>
 						</p:selectOneMenu>
+				      
+				</h:panelGrid>
+				
+				<h:panelGrid columns="4" cellpadding="8">
+					   <p:outputLabel value="Stato " />
+				        <p:selectOneButton value="#{esportaCasellarioBean.statoEsportazione}">
+				          <f:selectItems value="#{esportaCasellarioBean.listaStatoEsportazione}"/>
+				        </p:selectOneButton>
+				     
 				</h:panelGrid>
 				
 				<p:spacer height="10" />
@@ -132,12 +135,18 @@
 									Vedi commenti al Ticket: http://progetti.asc.webred.it/browse/SISO-719?focusedCommentId=12412&page=com.atlassian.jira.plugin.system.issuetabpanels:comment-tabpanel#comment-12412
 								-->
 								
-								<p:column headerText="Esportata" style="text-align:center;" width="60px;" >
+								<p:column headerText="Esportata" style="text-align:center;" width="40px;" >
 								
 									<p:graphicImage value="#{resource['webredcs/img/check.png']}" width="16px" rendered="#{dettaglioErogazione.inviata}"
 										title="#{dettaglioErogazione.causaleMancatoInvio}" />
  									<p:graphicImage value="#{resource['webredcs/img/warning.png']}" width="16px" rendered="#{!dettaglioErogazione.inviata and !dettaglioErogazione.daInviare}" 
  										title="Non esportabile: #{dettaglioErogazione.causaleMancatoInvio}" />
+								</p:column>
+								
+								<p:column headerText="Data Evento" width="100px;" style="text-align:center;">
+									<h:outputText value="#{dettaglioErogazione.dataEvento}" style="#{dettaglioErogazione.style}">
+										<f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+									</h:outputText>
 								</p:column>
 								
                                 <p:column sortBy="dataEsecuzione" width="150px;" style="text-align:center;">
@@ -154,9 +163,8 @@
 									</h:outputText>
 									</h:panelGrid>
 								</p:column>
-								
-								
-								<p:column headerText="Spesa Dettaglio €" width="150px;">
+							
+								<p:column headerText="Spesa Dettaglio €" width="50px;" style="text-align:center;">
 									<h:outputText value="#{dettaglioErogazione.spesaDettaglio}" style="#{dettaglioErogazione.style}">
 										<f:convertNumber maxFractionDigits="2" maxIntegerDigits="8" type="number" />
 									</h:outputText>
@@ -190,6 +198,11 @@
 							</p:dataTable>
 						</p:rowExpansion>
 						
+						<p:column headerText="ID" 
+								  styleClass="#{esportaCasellarioBean.renderValidator(testata.interventoEsegMastId) ? 'casellarioValidator' :''}" >
+							<h:outputText value="#{testata.interventoEsegMastId}" />
+						</p:column>
+						
 						<p:column headerText="Numero prot." 
 								  styleClass="#{esportaCasellarioBean.renderValidator(testata.interventoEsegMastId) ? 'casellarioValidator' :''}" >
 							<h:outputText value="#{testata.prestazioneProtocolloEnte}" />
@@ -209,6 +222,14 @@
 							<h:outputText value="#{testata.categoriaSocialeDescrizione}" />
 						</p:column>
 
+						<p:column sortBy="codPrestazione"  style="text-align:center;"
+								  styleClass="#{esportaCasellarioBean.renderValidator(testata.interventoEsegMastId) ? 'casellarioValidator' :''}">
+							<f:facet name="header">
+								<h:outputText value="Cod.Prestazione" />
+							</f:facet>
+							
+							<h:outputText value="#{testata.codPrestazione}" />
+						</p:column>
 						<p:column sortBy="denominazionePrestazione" 
 								  styleClass="#{esportaCasellarioBean.renderValidator(testata.interventoEsegMastId) ? 'casellarioValidator' :''}">
 							<f:facet name="header">
@@ -241,11 +262,16 @@
 							<h:outputText value="#{testata.frequenza}" />
 						</p:column>
 
-						<p:column headerText="Spesa Testata €" width="150px;"
+						<p:column headerText="Spesa Testata €" width="100px;" 
 								  styleClass="#{esportaCasellarioBean.renderValidator(testata.interventoEsegMastId) ? 'casellarioValidator' :''}">
 							<h:outputText value="#{testata.spesaTestata}">
 								<f:convertNumber maxFractionDigits="2" maxIntegerDigits="8" type="number" />
 							</h:outputText>
+						</p:column>
+						
+						<p:column headerText="In carico" width="50px;" style="text-align:center;"
+								  styleClass="#{esportaCasellarioBean.renderValidator(testata.interventoEsegMastId) ? 'casellarioValidator' :''}">
+							<h:outputText value="#{testata.inCarico}"/>
 						</p:column>
 									
 						<!-- SISO - 784 -->

@@ -447,6 +447,7 @@ public class EsportaDatiSinbaUtils {
 
 		 esportazioneDTO.setPresenzaProvaMezzi(primaEsportazione.getPresenzaProvaMezzi());
 		 esportazioneDTO.setPresaInCarico(primaEsportazione.getPresaInCarico());
+		 esportazioneDTO.setPicPrestazione(primaEsportazione.getPicPrestazione());
 		 esportazioneDTO.setCategoriaSocialeId(primaEsportazione.getCategoriaSocialeId());
 
 //       <QuotaRichiesta>Dato non presente , riportare TAG VUOTO</QuotaRichiesta>
@@ -530,6 +531,7 @@ public class EsportaDatiSinbaUtils {
 		 
 		 esportazioneDTO.setPresenzaProvaMezzi(primaEsportazione.getPresenzaProvaMezzi());
 		 esportazioneDTO.setPresaInCarico(primaEsportazione.getPresaInCarico());
+		 esportazioneDTO.setPicPrestazione(primaEsportazione.getPicPrestazione());
 		 esportazioneDTO.setCategoriaSocialeId(primaEsportazione.getCategoriaSocialeId());
 		 
 //       <QuotaRichiesta>Dato non presente , riportare TAG VUOTO</QuotaRichiesta>
@@ -610,6 +612,7 @@ public class EsportaDatiSinbaUtils {
 
 		esportazioneDTO.setPresenzaProvaMezzi(esportazioneDTOView.getPresenzaProvaMezzi());
 		esportazioneDTO.setPresaInCarico(esportazioneDTOView.getPresaInCarico()); 
+		esportazioneDTO.setPicPrestazione(esportazioneDTOView.getPicPrestazione());		
 		esportazioneDTO.setCategoriaSocialeId(esportazioneDTOView.getCategoriaSocialeId());
 		
 		//fill dati beneficiario  

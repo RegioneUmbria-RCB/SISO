@@ -197,7 +197,7 @@ public class PaiSalBean extends CsUiCompBaseBean {
 			logger.debug("SAL Salvato correttamente");
  		} catch (Exception e) {
 			logger.error("Errore salvataggio SAL", e);
-			throw new CarSocialeServiceException("Errore salvataggio dati SAL");
+			throw new CarSocialeServiceException("Errore salvataggio dati SAL", e);
 		}
  	} 
      

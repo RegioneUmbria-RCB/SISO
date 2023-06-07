@@ -48,6 +48,10 @@ public interface IValSinba extends ISchedaValutazione {
 
 	boolean isCopia();
 
+	public void onChangeDisabile();
+
+	public void aggiungiComponenteFamiglia();
+
 	
 	
 }

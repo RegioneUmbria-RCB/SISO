@@ -89,7 +89,7 @@ public class ServiziRichiestiInterventiCustomBean extends SegretariatoSocBaseBea
 		serviziRichiestiInterventiCustomSalvati.clear();
 		serviziRichiestiInterventiCustomDaSalvare.clear();
 		
-		List<CsDValutazione> res = this.getSchedeJsonInterventiCustom(scheda);
+		List<CsDValutazione> res = this.getSchedeJsonInterventiCustom(scheda.getId());
 		
 		for(CsDValutazione val : res){
 			
@@ -170,7 +170,7 @@ public class ServiziRichiestiInterventiCustomBean extends SegretariatoSocBaseBea
 								&& ssScheda.getAccesso().getSsRelUffPcontOrg().getId().getOrganizzazioneId().longValue() == pContMan.getPuntoContatto().getOrganizzazione().getId().longValue() 
 								&& canAccessUfficio(idUfficio)) {
 							
-							List<CsDValutazione> res = this.getSchedeJsonInterventiCustom(ssScheda); //Lista ordinata per data amministrativa decrescente
+							List<CsDValutazione> res = this.getSchedeJsonInterventiCustom(ssScheda.getId()); //Lista ordinata per data amministrativa decrescente
 							for(CsDValutazione val : res){
 							
 								if(TipoDiario.INTERMEDIAZIONE_AB_ID==val.getCsDDiario().getCsTbTipoDiario().getId().intValue()){

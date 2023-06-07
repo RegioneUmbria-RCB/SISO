@@ -1,0 +1,68 @@
+package it.webred.cs.json.provvedimentiMinori.ver1.tabs;
+
+import it.webred.cs.jsf.manbean.superc.CsUiCompBaseBean;
+import it.webred.cs.json.provvedimentiMinori.tabs.IIntSpecialistiTempiChiusure;
+
+import java.util.LinkedList;
+import java.util.List;
+
+ public class IntSpecialistiTempiChiusureMan extends CsUiCompBaseBean implements IIntSpecialistiTempiChiusure {
+	public static final String NAME = "Int.Specialisti - Tempi - Chiusure";
+	public static final String NOTEPROVV = "Note al provvedimento </br>  </br> "+
+			"<bold>CPS</bold>= Centro Psicosociale <br/>" +
+			"<bold>CTU</bold>= Consulente tecnico d'ufficio<br/>"+
+			"<bold>UONPIA</bold>= Unita Operativa Neuropsichiatria Infantile <br/>" +
+			"<bold>USSM</bold>= Ufficio Servizio Sociale Minori<br/>"+
+			"<bold>SER.D</bold>= Servizio Dipendenze<br/>"  ;
+	
+	private List<String> lstContenutoRelazione;
+
+	public IntSpecialistiTempiChiusureMan()
+	{
+		loasListe();
+	}
+
+	private void loasListe()
+	{
+
+		if (this.lstContenutoRelazione == null) {
+			this.lstContenutoRelazione= new LinkedList<String>();
+			this.lstContenutoRelazione.add("Aggiornamento");
+			this.lstContenutoRelazione.add("Cambio residenza");
+			this.lstContenutoRelazione.add("In attesa");
+			this.lstContenutoRelazione.add("Modifica decreto");
+			this.lstContenutoRelazione.add("Prescrizione");
+			this.lstContenutoRelazione.add("Proposta chiusura");
+			this.lstContenutoRelazione.add("Relazione psicodiagnostica su genitori");
+			this.lstContenutoRelazione.add("Relazione psicodiagnostica sul minore");
+			this.lstContenutoRelazione.add("Relazione su indagine psicosociale");
+			this.lstContenutoRelazione.add("Relazione su indagine sociale");
+			this.lstContenutoRelazione.add("Revoca collocazione");
+			this.lstContenutoRelazione.add("Richiesta incontro");
+			this.lstContenutoRelazione.add("Risposta CTU");
+			this.lstContenutoRelazione.add("Valutazione");
+
+		}
+	}
+	
+	@Override
+	public String getTabName()
+	{
+		return NAME;
+	}
+
+	@Override
+	public List<String> getLstContenutoRelazione() {
+		return lstContenutoRelazione;
+	}
+
+	public void setLstContenutoRelazione(List<String> lstContenutoRelazione) {
+		this.lstContenutoRelazione = lstContenutoRelazione;
+	}
+
+	@Override
+	public  String getNoteprovv() {
+		return NOTEPROVV;
+	}
+
+}

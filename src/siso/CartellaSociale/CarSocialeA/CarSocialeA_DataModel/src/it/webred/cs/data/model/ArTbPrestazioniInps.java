@@ -27,7 +27,13 @@ public class ArTbPrestazioniInps implements Serializable{
 	
 	@Column(name="FLAG_NON_ESPORTARE")
 	private Boolean flagNonEsportare;
+	
+	@Column(name="FLAG_PSA")
+	private Boolean flagPsa;
 
+	@Column(name="FLAG_ESPORTA_SE_PIC")
+	private Boolean flagEsportaSePic;
+	
 	//bi-directional many-to-one association to ArRelClassememoPresInps
 	@OneToMany(mappedBy="arTbPrestazioniInp")
 	private List<ArRelClassememoPresInps> arRelClassememoPresInps;
@@ -112,4 +118,21 @@ public class ArTbPrestazioniInps implements Serializable{
 	public void setFlagNonEsportare(Boolean flagNonEsportare) {
 		this.flagNonEsportare = flagNonEsportare;
 	}
+
+	public Boolean getFlagPsa() {
+		return flagPsa;
+	}
+
+	public void setFlagPsa(Boolean flagPsa) {
+		this.flagPsa = flagPsa;
+	}
+
+	public Boolean getFlagEsportaSePic() {
+		return flagEsportaSePic;
+	}
+
+	public void setFlagEsportaSePic(Boolean flagEsportaSePic) {
+		this.flagEsportaSePic = flagEsportaSePic;
+	}
+	
 }

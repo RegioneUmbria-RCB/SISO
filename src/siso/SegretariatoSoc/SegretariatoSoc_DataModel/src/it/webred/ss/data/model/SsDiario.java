@@ -23,7 +23,10 @@ public class SsDiario implements Serializable {
 	private Long id;
 	
 	private String nota;
+	
+	@Temporal(TemporalType.TIMESTAMP)
 	private Date data;
+	
 	private String autore;
 	
 	@ManyToOne
@@ -36,7 +39,7 @@ public class SsDiario implements Serializable {
 	@ManyToOne
 	@JoinColumn(name="SOGGETTO")
 	private SsAnagrafica soggetto;
-
+	
 	public Long getId() {
 		return id;
 	}
@@ -92,9 +95,4 @@ public class SsDiario implements Serializable {
 	public void setEnte(SsOOrganizzazione ente) {
 		this.ente = ente;
 	}
-
-	public String getFormattedData(){
-		return new SimpleDateFormat("dd/MM/yyyy HH:mm").format(data);
-	}
-	
 }

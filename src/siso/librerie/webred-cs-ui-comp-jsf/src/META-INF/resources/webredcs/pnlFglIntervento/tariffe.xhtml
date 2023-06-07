@@ -116,13 +116,11 @@
 	         value="#{fglInterventoBean.datiTariffeInterventoBean.csIQuota.csTbUnitaMisura.valore!=null ? fglInterventoBean.datiTariffeInterventoBean.csIQuota.csTbUnitaMisura.valore : '- seleziona unità di misura -' }" />
 	
 	    <p:inputText id="inputQuotaFrequenzaServizio" 
-	                value="#{fglInterventoBean.datiTariffeInterventoBean.csIQuota.csIQuotaRipartiz.valQuotaPeriodo}" 
-		        	styleClass="#{'updateOnFrequenzaDelServizioChange updateOnListaErogazioniChange'}" style="width:90px;" 
-		        		disabled="#{fglInterventoBean.valQuotaPeriodoDisabled}">        
-	        	<f:convertNumber type="number" maxFractionDigits="0"/>
+	        value="#{fglInterventoBean.datiTariffeInterventoBean.csIQuota.csIQuotaRipartiz.valQuotaPeriodo}" 
+		    styleClass="#{'updateOnFrequenzaDelServizioChange updateOnListaErogazioniChange'}" style="width:90px;" 
+		    disabled="#{fglInterventoBean.valQuotaPeriodoDisabled}"
+		    converterMessage="Tariffe: per il campo importo fruizione inserire valore numerico intero o decimale (es.12.34)">        
 	    </p:inputText>
-	
-	
 	
 		<p:outputLabel value="fruizione " for="selectFrequenzaCadenzaDelServizio" 
 					   styleClass="#{'updateOnFrequenzaDelServizioChange updateOnListaErogazioniChange updateOnFlagRendicontoChange'}" />		

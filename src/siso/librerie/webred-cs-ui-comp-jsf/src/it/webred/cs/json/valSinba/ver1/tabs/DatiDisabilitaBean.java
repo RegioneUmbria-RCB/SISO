@@ -44,5 +44,15 @@ public class DatiDisabilitaBean {
 		this.certificazioneInvCivile = certificazioneInvCivile;
 	}
 
+	public void onChangeDisabile() {
+		if(disabile != 1) {
+			this.setTipoDisabilita(0);
+			this.setCertificazioneInvCivile(0);
+		} 
+	}
+	
+	public boolean isDisabileSelected() {
+		return disabile==1;
+	}
 
 }

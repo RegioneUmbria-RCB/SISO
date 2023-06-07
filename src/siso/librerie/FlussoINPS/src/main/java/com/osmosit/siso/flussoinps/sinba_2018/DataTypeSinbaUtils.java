@@ -73,7 +73,7 @@ class DataTypeSinbaUtils {
 	 */
 	String getStringFromInteger(Map<String, Object> m, String key) {
 		String result =  (String) m.get(key);
-		return "0".equals(result) ? "" : result;
+		return "0".equals(result) ? null : result;
 	}
 
 

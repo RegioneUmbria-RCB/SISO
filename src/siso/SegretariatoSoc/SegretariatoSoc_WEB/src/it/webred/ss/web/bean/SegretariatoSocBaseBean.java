@@ -1,5 +1,37 @@
 package it.webred.ss.web.bean;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.ResourceBundle;
+
+import javax.faces.application.Application;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import org.apache.commons.lang3.StringUtils;
+import org.jboss.logging.Logger;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
+
 import it.webred.amprofiler.ejb.anagrafica.AnagraficaService;
 import it.webred.amprofiler.ejb.perm.LoginBeanService;
 import it.webred.amprofiler.ejb.user.UserService;
@@ -58,7 +90,6 @@ import it.webred.ct.support.datarouter.CeTBaseObject;
 import it.webred.ejb.utility.ClientUtility;
 import it.webred.siso.ws.ricerca.dto.PersonaDettaglio;
 import it.webred.siso.ws.ricerca.dto.RicercaAnagraficaParams;
-import it.webred.ss.data.model.SsDiario;
 import it.webred.ss.data.model.SsIndirizzo;
 import it.webred.ss.data.model.SsScheda;
 import it.webred.ss.data.model.SsSchedaAccessoInviante;
@@ -71,39 +102,6 @@ import it.webred.ss.web.bean.util.Organizzazione;
 import it.webred.ss.web.bean.util.PreselPuntoContatto;
 import it.webred.ss.web.bean.util.PuntoContatto;
 import it.webred.ss.web.bean.util.UfficiTableBean;
-import it.webred.ss.web.bean.wizard.Nota;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.math.BigDecimal;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.ResourceBundle;
-
-import javax.faces.application.Application;
-import javax.faces.application.FacesMessage;
-import javax.faces.context.FacesContext;
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
-import org.apache.commons.lang3.StringUtils;
-import org.jboss.logging.Logger;
-import org.primefaces.model.DefaultStreamedContent;
-import org.primefaces.model.StreamedContent;
 
 public class SegretariatoSocBaseBean {
 
@@ -344,8 +342,8 @@ public class SegretariatoSocBaseBean {
 	protected void printSelectError(){
     	addError("seleziona.error");
     }
-	protected void printPolicyError(){
-    	addError("policy.error");
+	protected void printPolicyError(String msg){
+    	addError("policy.error", msg);
     }
 	protected void printPolicyUfficiError(){
     	addError("policy.ufficio.error");
@@ -1115,7 +1113,7 @@ public class SegretariatoSocBaseBean {
 		return stranieriMan;
 	}
 	
-	public List<CsDValutazione> getSchedeJsonInterventiCustom(SsScheda scheda){
+	public List<CsDValutazione> getSchedeJsonInterventiCustom(Long schedaId){
 		List<CsDValutazione> val = new ArrayList<CsDValutazione>();
 		Integer[] tipiDiario = {TipoDiario.INTERMEDIAZIONE_AB_ID, 
 								TipoDiario.ORIENTAMENTO_LAVORO_ID, 
@@ -1124,7 +1122,7 @@ public class SegretariatoSocBaseBean {
 								TipoDiario.MEDIAZIONE_CULT_ID,
 								TipoDiario.RICHIESTA_SERVIZIO_ID};
 		try {
-			val = getSchedeValutazione(scheda.getId(), Arrays.asList(tipiDiario));
+			val = getSchedeValutazione(schedaId, Arrays.asList(tipiDiario));
 			
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
@@ -1557,49 +1555,6 @@ public class SegretariatoSocBaseBean {
 		FacesContext context = FacesContext.getCurrentInstance();
 		return (T) context.getApplication().evaluateExpressionGet(context, "#{" + beanName + "}", Object.class);
 	}
-		
-	public boolean canReadNotaDiario(SsDiario nota, String operatoreAccesso, Long organizzazioneId){
-		if(nota.getPubblica()) //la nota è pubblica
-			return true;
-		
-		//responsabile dell'organizzazione in cui è stata inserita la nota
-		if(this.isResponsabileEnte(nota.getEnte().getCodRouting()))
-			return true;
-		
-		//l'utente che ha scritto la nota è l'operatore corrente
-		if(nota.getAutore().equals(this.getUserNameOperatore())) 
-			return true;
-		
-		//l'operatore che risulta registrato in SS_SCHEDA_ACCESSO è l'utente corrente
-		if(operatoreAccesso!=null && operatoreAccesso.equals(this.getUserNameOperatore())) 
-			return true;
-
-		//l'operatore possiede il permesso di leggere i DIARI in UDC e si è loggato con la stessa organizzazione di creazione della nota
-		if(canReadDiario() && nota.getEnte().getId()== organizzazioneId)
-			return true;
-		
-		return false;
-	}
-	
-	public boolean canReadNotaDiario(SsDiario nota,  String operatoreAccesso){
-		return canReadNotaDiario(nota, operatoreAccesso, this.getPreselectedPContatto().getOrganizzazione().getId());
-	}
-	
-	public boolean canDeleteNotaDiario(SsDiario nota, String operatoreAccesso, Long anagraficaId ){
-		//responsabile dell'organizzazione in cui è stata inserita la nota
-		if(this.isResponsabileEnte(nota.getEnte().getCodRouting()))
-			return true;
-		
-		//l'operatore che risulta registrato in SS_SCHEDA_ACCESSO è l'utente corrente
-		if(operatoreAccesso!=null && operatoreAccesso.equals(this.getUserNameOperatore()) && nota.getSoggetto().getId().doubleValue()==anagraficaId.doubleValue()) 
-			return true;
-		
-		if(nota.getAutore().equals(this.getUserNameOperatore()) && nota.getSoggetto().getId().doubleValue()==anagraficaId.doubleValue()) 
-			return true;
-		
-		return false;
-	}
-	
 	
 	protected SsSchedaAccessoInviante recuperaSsSchedaAccessoInvianteFromSsScheda(SsScheda scheda){
 		SsSchedaAccessoInviante schedaAccessoOrig=null;
@@ -1618,15 +1573,7 @@ public class SegretariatoSocBaseBean {
 	}
 	
 	public String getMSG_INFO_NOTA_PRIVATA() {
-		String msg = "Le note private possono essere visualizzare dall'utente corrente solo se: ";
-		msg +="<ul>";
-		msg+="<li>é il responsabile dell'organizzazione in cui è stata inserita la nota</li>";
-		msg+="<li>ha creato la scheda</li>";
-		msg+="<li>ha inserito la nota</li>";
-		msg+="<li>posside il permesso di leggere i diari ed è attualmente autenticato nella stessa oganizzazione in cui è stata inserita la nota.</li>";
-		msg+="</ul>";
-		return msg;
-		
+		return DataModelCostanti.UDC_MSG_INFO_NOTA_PRIVATA;
 	}
 	
 	public static Object getArgoEjb(String ejbName) {
@@ -1686,34 +1633,6 @@ public class SegretariatoSocBaseBean {
 		return comuneFuoriAmbito;
 	}
 	
-	protected List<Nota> loadNoteDiarioAccessibili(List<SsDiario> diari, String operatore, Long anagraficaId){
-		BaseDTO dto = new BaseDTO();
-		fillUserData(dto);
-		List<Nota> note = new ArrayList<Nota>();
-		for (SsDiario nota : diari){
-			Long idAnagrafica = nota.getSoggetto().getId();
-			dto.setObj(idAnagrafica);
-			List<BigDecimal> lstUffici = schedaService.findUfficioNota(dto);
-			boolean accessoUffNota = true;
-			int i = 0;
-			if(lstUffici.size()>1) logger.warn("Alla nota corrente [ID:"+nota.getId()+"] corrispondono più anagrafiche/uffici");
-			while(accessoUffNota && i<lstUffici.size()){
-				BigDecimal ufficioID = lstUffici.get(i);
-				boolean accessoUfficio = canAccessUfficio(ufficioID.longValue());
-				if(!accessoUfficio) logger.warn("L'utente corrente non può accedere alla nota [ID:"+nota.getId()+"] poichè associata all'ufficio [ID:"+ufficioID+"]");
-				accessoUffNota = accessoUffNota && accessoUfficio;
-				i++;
-			}
-			
-			if(accessoUffNota){
-				boolean canDelete = anagraficaId==null  ? false : canDeleteNotaDiario(nota, operatore, anagraficaId);
-				 note.add(new Nota(nota, this.getCognomeNomeUtente(nota.getAutore()),
-						 canReadNotaDiario(nota, operatore),canDelete));
-			}
-		}
-		return note;
-	}
-
 	public String getLabelUDCAccesso(){
 		if(mappaLabelUDC==null)mappaLabelUDC = CsUiCompBaseBean.getMappaLabelUDC();
 		return this.mappaLabelUDC.get(TabUDC.ACCESSO_TAB);

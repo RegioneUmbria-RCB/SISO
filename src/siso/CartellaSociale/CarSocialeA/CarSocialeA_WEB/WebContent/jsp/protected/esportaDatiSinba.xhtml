@@ -24,24 +24,24 @@
 			<p:panel id="pnlEsportaDatiSinbaid"
 				header="Esporta Valutazione Sinba">
 				<h:panelGrid id="pnlVerificaid" columns="6" cellpadding="8">
-					<p:outputLabel value="Da : " />
+					<p:outputLabel value="Da " />
 					<p:calendar id="data-da" value="#{esportaDatiSinbaBean.dataDA}" pattern="dd/MM/yyyy" />
 
-					<p:outputLabel value="A : " />
+					<p:outputLabel value="a " />
 					<p:calendar value="#{esportaDatiSinbaBean.dataA}" pattern="dd/MM/yyyy" />
 				</h:panelGrid>
 
 				<h:panelGrid id="pnlEsportaid" columns="6" cellpadding="8">
-					<p:outputLabel value="CF: " />
+					<p:outputLabel value="Cod.Fiscale " />
 					<p:inputText value="#{esportaDatiSinbaBean.cf}" />
-					<p:outputLabel value="Cognome: " />
+					<p:outputLabel value="Cognome " />
 					<p:inputText value="#{esportaDatiSinbaBean.cognome}" />
-					<p:outputLabel value="Nome: " />
+					<p:outputLabel value="Nome " />
 					<p:inputText value="#{esportaDatiSinbaBean.nome}" />
 				</h:panelGrid>
 
 				<p:outputPanel>
-					<p:outputLabel value="Stato: " />
+					<p:outputLabel value="Stato " />
 					<p:selectOneButton
 						value="#{esportaDatiSinbaBean.statoEsportazione}">
 						<f:selectItem itemLabel="Tutto" itemValue="a" />

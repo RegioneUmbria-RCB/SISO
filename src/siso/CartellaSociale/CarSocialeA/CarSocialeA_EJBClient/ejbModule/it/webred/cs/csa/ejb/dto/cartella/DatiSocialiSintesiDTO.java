@@ -23,13 +23,6 @@ public class DatiSocialiSintesiDTO implements Serializable{
 	
 	private CsDValutazione familiariConviventi;
 	
-	private String comuneNascitaCod;
-	private String comuneNascitaDes;
-	private String provNascitaCod;
-	
-	private String statoNascitaCod;
-	private String statoNascitaDes;
-	
 	private String tel;
 	private String cel;
 	private String email;
@@ -51,36 +44,6 @@ public class DatiSocialiSintesiDTO implements Serializable{
 	}
 	public void setFamiliariConviventi(CsDValutazione familiariConviventi) {
 		this.familiariConviventi = familiariConviventi;
-	}
-	public String getComuneNascitaCod() {
-		return comuneNascitaCod;
-	}
-	public void setComuneNascitaCod(String comuneNascitaCod) {
-		this.comuneNascitaCod = comuneNascitaCod;
-	}
-	public String getComuneNascitaDes() {
-		return comuneNascitaDes;
-	}
-	public void setComuneNascitaDes(String comuneNascitaDes) {
-		this.comuneNascitaDes = comuneNascitaDes;
-	}
-	public String getProvNascitaCod() {
-		return provNascitaCod;
-	}
-	public void setProvNascitaCod(String provNascitaCod) {
-		this.provNascitaCod = provNascitaCod;
-	}
-	public String getStatoNascitaCod() {
-		return statoNascitaCod;
-	}
-	public void setStatoNascitaCod(String statoNascitaCod) {
-		this.statoNascitaCod = statoNascitaCod;
-	}
-	public String getStatoNascitaDes() {
-		return statoNascitaDes;
-	}
-	public void setStatoNascitaDes(String statoNascitaDes) {
-		this.statoNascitaDes = statoNascitaDes;
 	}
 	public Long getIdDatiSociali() {
 		return idDatiSociali;

@@ -37,13 +37,16 @@
 					<p:rowToggler rendered="#{! empty rowBean.lstInterventiEseguiti}" />
 			</p:column>
 			
+		    <p:column headerText="ID" style="text-align:center;" >
+				<h:outputText value="#{rowBean.master.idInterventoEsegMaster}" />
+			</p:column>
 			<!-- Tipo beneficiario -->
 			<p:column>
 				<f:facet name="header">
 					<h:outputText value="" />
 					
 					<p:selectCheckboxMenu value="#{dataBean.lazyListaErogazioniModel.selectedTipoBeneficiario}" 
-	                                      label="Tipo beneficiario" panelStyle="width:150px"  scrollHeight="150" >
+	                                      label="Tipo" panelStyle="width:100px"  scrollHeight="150" >
 	                    <f:selectItems value="#{dataBean.tipoBeneficiarios}"  />
 	                     <p:ajax event="toggleSelect" update="listaErogazioneInterventi" process="@this" />
 	                     <p:ajax update="listaErogazioneInterventi"  process="@this"/>  
@@ -51,6 +54,7 @@
 				</f:facet>
 				<h:outputText value="#{rowBean.master.tipoBeneficiario}" />
 			</p:column>
+			
 			<!-- Beneficiari (cognome e nome) -->
 			<p:column filterBy="denominazione">
 				<f:facet name="header">
@@ -70,25 +74,28 @@
 				</f:facet>
 				
 				 <ui:repeat value="#{rowBean.beneficiari}" var="beneficiario">
-				 	<h:outputText value="#{beneficiario.codiceFiscale}"  rendered="#{beneficiario.riferimento}" title="Beneficiario di riferimento" />
-				 	<h:outputText value="#{beneficiario.codiceFiscale}"  rendered="#{!beneficiario.riferimento}" style="color:grey; font-size:0.8em;" />
+				 	<h:outputText value="#{beneficiario.cf}"  rendered="#{beneficiario.riferimento}" title="Beneficiario di riferimento" />
+				 	<h:outputText value="#{beneficiario.cf}"  rendered="#{!beneficiario.riferimento}" style="color:grey; font-size:0.8em;" />
 				 	<br/>
 				</ui:repeat>
 			</p:column>
 
-			<!-- Richiesta -->
-			<p:column headerText="Programmato" style="text-align:center;" >
-				<webredcs:tooltipInfo selectItemList="#{rowBean.infoRichiestaIntervento}"  rendered="#{rowBean.richiestaIntervento}" icona="/images/check.png"/>
-			</p:column>
 			<p:column headerText="Cat.Sociale" filterBy="descCategoriaSociale">
 			   <h:outputText value="#{rowBean.master.descCategoriaSociale}"/>
 			</p:column>
+			<p:column>
+				<webredcs:tooltipInfo title="Intervento programamto" 
+									  selectItemList="#{rowBean.infoRichiestaIntervento}"  
+									  rendered="#{rowBean.richiestaIntervento}" icona="/images/planning.png"/>
+			
+			</p:column>
+		
 			<!-- Tipo Intervento -->
 			<p:column>
 				<f:facet name="header">
 					<h:outputText value="" />
 	                <p:selectCheckboxMenu value="#{dataBean.lazyListaErogazioniModel.selectedTipoIntervento}" 
-	                                      label="Intervento" panelStyle="width:200px"  scrollHeight="150" 
+	                                      label="Int. ISTAT" panelStyle="width:200px"  scrollHeight="150" 
 	                                      filter="true" filterMatchMode="startsWith">
 	                    <f:selectItems value="#{dataBean.tipoInterventosRecenti}"  />
 	                     <p:ajax event="toggleSelect" update="listaErogazioneInterventi" process="@this" />
@@ -103,7 +110,7 @@
 			     <f:facet name="header">
 					<h:outputText value="" />
 					<p:selectCheckboxMenu value="#{dataBean.lazyListaErogazioniModel.selectedTipoInterventoCustom}" 
-	                                      label="Intervento Custom" panelStyle="width:200px"  scrollHeight="150" 
+	                                      label="Int.Custom" panelStyle="width:200px"  scrollHeight="150" 
 	                                      filter="true" filterMatchMode="startsWith">
 	                    <f:selectItems value="#{dataBean.tipoInterventosCustom}"  />
 	                     <p:ajax event="toggleSelect" update="listaErogazioneInterventi" process="@this" />
@@ -117,7 +124,7 @@
 			     <f:facet name="header">
 					<h:outputText value="" />
 					<p:selectCheckboxMenu value="#{dataBean.lazyListaErogazioniModel.selectedTipoInterventoInps}" 
-	                                      label="Prestazione INPS" panelStyle="width:200px"  scrollHeight="150" 
+	                                      label="Prest. INPS" panelStyle="width:200px"  scrollHeight="150" 
 	                                      filter="true" filterMatchMode="startsWith">
 	                    <f:selectItems value="#{dataBean.tipoInterventosInps}"  />
 	                     <p:ajax event="toggleSelect" update="listaErogazioneInterventi" process="@this" />
@@ -235,7 +242,7 @@
 				<h:panelGrid columns="2" styleClass="noBorder">
 					<ui:fragment rendered="#{rowBean.renderedRowDiaglogButton}">
 						<p:commandButton id="idBtnApriDlg" process="@this" value="#{rowBean.nomeRowDiaglogButton}"
-							title="#{rowBean.nomeRowDiaglogButton}" action="#{bugFixBean.inizializzaDialogo(rowBean)}"
+							title="#{rowBean.nomeRowDiaglogButton}" action="#{bugFixBean.inizializzaDialogo(rowBean, null)}"
 							oncomplete="if(args &amp;&amp; args.isShowDialog){updateDialogContent(); PF('#{fglInterventoBean.widgetVar}').show()}"
 							icon="ui-icon-play">
 						</p:commandButton>
@@ -251,15 +258,23 @@
 
 			<p:rowExpansion>
 				<p:dataTable id="dataTableDettagli" var="dett" value="#{rowBean.lstInterventiEseguiti}" rowIndexVar="rowIndex">
-
-					<p:column headerText="Data" style="text-align:center;" width="20px">
+					<p:column headerText="ID Erogazione" style="text-align:center;">
+						<h:outputText value="#{dett.idInterventoEseg}"/>
+					</p:column>
+					<p:column headerText="Data #{rowBean.dataErogazioneARendered ? 'Inizio' : ''}" style="text-align:center;" width="20px">
 						<h:outputText value="#{dett.dataErogazione}">
 							<f:convertDateTime pattern="dd/MM/yyyy" />
 						</h:outputText>
 					</p:column>
 					<!-- SISO se c'è visualizzo anche la dataErogazioneA -->
-					<p:column headerText="Data A" style="text-align:center;" width="20px" rendered="#{rowBean.dataErogazioneARendered}">
+					<p:column headerText="Data Fine" style="text-align:center;" width="20px" rendered="#{rowBean.dataErogazioneARendered}">
 						<h:outputText value="#{dett.dataErogazioneA}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</h:outputText>
+					</p:column>
+					
+					<p:column headerText="Data Evento" style="text-align:center;" width="20px">
+						<h:outputText value="#{dett.dataEvento}">
 							<f:convertDateTime pattern="dd/MM/yyyy" />
 						</h:outputText>
 					</p:column>

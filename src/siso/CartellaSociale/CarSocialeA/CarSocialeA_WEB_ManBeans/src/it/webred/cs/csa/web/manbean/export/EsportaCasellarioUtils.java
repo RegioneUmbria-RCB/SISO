@@ -240,11 +240,9 @@ public class EsportaCasellarioUtils {
 
 						EsportazioneDTOView esportazioneDTOView = getLastEsportazioneDTOview(expView, vErogExportHelp.getId() );
 						if (!maxDataErogHelp.equals(esportazioneDTOView.getMaxDataEsecuzione())) {
-							throw new Exception("DataEsecuzione erogazione ["
-											+ esportazioneDTOView.getMaxDataEsecuzione()
-											+ "] non corrispondente con quella della vista ["
-											+ vErogExportHelp.getMaxDataErogazione()+ "] id[" 
-											+ vErogExportHelp.getId()+ "]");
+							throw new Exception("DataEsecuzione erogazione ["+ esportazioneDTOView.getMaxDataEsecuzione()+ "] non corrispondente con quella della vista "
+									+ "["+ vErogExportHelp.getMaxDataErogazione()+ "] "
+									+ "id["+ vErogExportHelp.getId()+ "]");
 						} else {
 							// creo il bean per l'xml
 							EsportazioneDTO esportazioneDTO = creaBeanExportMasterOccasionale(esportazioneDTOView, vErogExportHelp);
@@ -299,22 +297,18 @@ public class EsportaCasellarioUtils {
 					if (vErogExportHelp.getFlagCaratterePrestazione().equals(DataModelCostanti.VErogExportHelp.FLAG_CARATTERE_PRESTAZIONE_PERIODICA)) {
 						// creo il bean per l'xml
 						List<EsportazioneDTOView> listaEsportazioneDTOviewPerIdMaster = getListaEsportazioneDTOview(expView, vErogExportHelp.getId().longValue());
-						List<EsportazioneDTO> esportazioneDTO = creaBeanExportRighePeriodica(listaEsportazioneDTOviewPerIdMaster,vErogExportHelp);
+						List<EsportazioneDTO> esportazioneDTO = creaBeanExportRighePeriodicaSplitted(listaEsportazioneDTOviewPerIdMaster,vErogExportHelp);
 						result.addAll(esportazioneDTO);
-						
+				
 						// SISO-719 assegno l'indice di raggruppamento a ciascuna DTOView confluita in questo DTO
 						for (EsportazioneDTOView viewDTO : listaEsportazioneDTOviewPerIdMaster) {
 							assegnaSeqExportToListaEsportazioneDTOView(expView, viewDTO.getInterventoEsegId(), seqExport);
 //							viewDTO.setSeqExport(seqExport);
 						}
-					}
-					// se la prestazione è occasionale o non è valorizzata
-					else {
+					}else{// se la prestazione è occasionale o non è valorizzata
 						throw new Exception("Flag carattere prestazione ["+ vErogExportHelp.getFlagCaratterePrestazione()+ "] non riconosciuto ID ESEG MAST = "+ vErogExportHelp.getId());
 					}
-				}
-				
-				else {
+				}else{
 					throw new Exception("Tipo export ["+ vErogExportHelp.getTipoExport()+ "] non riconosciuto ID ESEG MAST = "+ vErogExportHelp.getId());
 				}
 				//SISO-1162
@@ -322,8 +316,7 @@ public class EsportaCasellarioUtils {
 					aggiornaListaEsportazioneDTOviewNonEsportabili(expView, vErogExportHelp.getId(), "Codice Prestazione non valorizzato");
 				}
 				//FINE //SISO-1162
-			}
-			catch (Exception e) {
+			}catch (Exception e) {
 				aggiornaListaEsportazioneDTOviewNonEsportabili(expView, vErogExportHelp.getId(), e.getMessage());
 				logger.error("filtraVErogExport"+e.getMessage(), e);
 			}
@@ -342,6 +335,12 @@ public class EsportaCasellarioUtils {
 		 *      fatta in anticipo
 		 */
 		scanForPresaInCaricoNonSo(expView, result);
+		
+		/* SISO-2333
+		 * Le erogazioni nell'intervallo A2.16 - A2.29 non prese in carico vanno escluse dall'esportazione
+		 */
+		
+		scanForPrestazioniNonInCarico(expView, result);
 
 		logger.debug("filtraVErogExport -  NUM. ESPORTAZIONI USCITA[" + result.size() + "]");
 		
@@ -364,6 +363,24 @@ public class EsportaCasellarioUtils {
 		
 		// rimuovo tutte le erogazioni che ho trovato con Presa In Carico "Non so"
 		result.removeAll(preseInCaricoNonSo);
+	}
+	
+	private static void scanForPrestazioniNonInCarico(List<EsportazioneDTOView> expView, List<EsportazioneDTO> result) {
+		List<EsportazioneDTO> preseInCaricoNo = new ArrayList<EsportazioneDTO>();
+
+		for (EsportazioneDTO esportazione : result) {
+			if (FLAG_IN_CARICO.NO.getCodice() == esportazione.getPresaInCarico().intValue() && esportazione.getPicPrestazione()) {
+				// aggiorno la lista per la view
+				aggiornaListaEsportazioneDTOviewNonEsportabili(expView, esportazione.getInterventoEsegMastId(),
+					"Prestazione "+esportazione.getCodPrestazione()+" non esportabile in quanto non presa in carico");
+				
+				// aggiungo l'erogazione a quelle da rimuovere
+				preseInCaricoNo.add(esportazione);
+			}
+		}
+		
+		// rimuovo tutte le erogazioni che ho trovato con Presa In Carico "Non so"
+		result.removeAll(preseInCaricoNo);
 	}
 
 	/*
@@ -498,6 +515,91 @@ public class EsportaCasellarioUtils {
 		return lstOut;
 	}
 
+	private static List<EsportazioneDTO> creaBeanExportRighePeriodicaSplitted(List<EsportazioneDTOView> listaEsportazioneDTOviewPerIdMaster, VErogExportHelp vErogExportHelp) throws Exception {
+	    
+		EsportazioneDTOView primaEsportazione = listaEsportazioneDTOviewPerIdMaster.get(0);
+		List<EsportazioneDTO> lstOut = new ArrayList<EsportazioneDTO>();
+		
+		logger.debug("creaBeanExportRighePeriodicaSplitted numero protocollo = "+ primaEsportazione.getPrestazioneProtocEnte());
+		
+		for(EsportazioneDTOView e : listaEsportazioneDTOviewPerIdMaster) {
+			
+			Date dataInizio = e.getDataEsecuzione();
+			Date dataFine = e.getDataEsecuzioneA()!=null ? e.getDataEsecuzioneA() : e.getDataEsecuzione();
+			HashMap<Integer,Date[]> mappaPeriodi = ripartisciAnnuali(dataInizio,dataFine);
+			HashMap<Integer,List<EsportazioneSpesaDTO>> mappaSpese = ripartisciSpeseAnnuali(e);
+			
+			
+			List<Integer> sortedYears=new ArrayList<Integer>(mappaPeriodi.keySet());
+			Collections.sort(sortedYears);
+			for(int anno : sortedYears){
+				EsportazioneDTO esportazioneDTO = fillDatiComuniExport(e);
+				Date[] intervallo = mappaPeriodi.get(anno);
+				Date dtInizioInt = intervallo[0];
+				Date dtFineInt = intervallo[1];
+				
+				esportazioneDTO.setDataInizio(dtInizioInt);
+				esportazioneDTO.setDataFine(dtFineInt);
+				
+				// PeriodoErogazione = Differenza in mesi fra le due date sopra . 2FB-27 GEN = 1MESE
+				int intervalloErogazione = differenzaMesi(dtInizioInt, dtFineInt);
+				esportazioneDTO.setPeriodoErogazione(intervalloErogazione);
+				
+				List<EsportazioneSpesaDTO> lstSpeseAnno = mappaSpese.get(anno);
+				
+				// ImportoMensile = Si divide la somma di DATASET3.SPESA delle righe PER IL NUMERO DI MESI SOPRA
+				BigDecimal spesaTotale = new BigDecimal(0);
+				BigDecimal percGestitaEnte = new BigDecimal(0);
+				BigDecimal compartUtenti = new BigDecimal(0);
+				BigDecimal compartSsn = new BigDecimal(0);
+				
+				if(lstSpeseAnno!=null){
+					for (EsportazioneSpesaDTO s : lstSpeseAnno){
+						spesaTotale = spesaTotale.add(getBdNotNull(s.getSpesa()));
+						percGestitaEnte = percGestitaEnte.add(getBdNotNull(s.getPercGestitaEnte()));
+						compartUtenti = compartUtenti.add(getBdNotNull(s.getCompartUtenti()));
+						compartSsn = compartSsn.add(getBdNotNull(s.getCompartSsn()));
+					}
+				}else
+					logger.warn("creaBeanExportRighePeriodica: protocollo["+primaEsportazione.getPrestazioneProtocEnte()+"] nessuna spesa trovata per l'anno ["+anno+"]");
+				
+				BigDecimal importoMensile = spesaTotale.divide(new BigDecimal(intervalloErogazione), 2, RoundingMode.HALF_UP);
+					
+				esportazioneDTO.setImportoMensile(importoMensile);
+				esportazioneDTO.setPercGestitaEnte(percGestitaEnte);
+				esportazioneDTO.setCompartUtenti(compartUtenti);
+				esportazioneDTO.setCompartSsn(compartSsn);
+	
+				//SISO-806
+				
+				Long idUnitaMisura = e.getUnitaMisura();
+				BigDecimal valQuotaPeriodica = new BigDecimal(0);
+				
+				if(idUnitaMisura == DataModelCostanti.CsTbUnitaMisura.ID_ORE || idUnitaMisura==DataModelCostanti.CsTbUnitaMisura.ID_ORE_MINUTI){
+					
+					for(EsportazioneDTOView ev : listaEsportazioneDTOviewPerIdMaster){
+						
+						valQuotaPeriodica = valQuotaPeriodica.add(e.getValQuota());
+					}
+				
+					BigDecimal oreMinutiMensili = valQuotaPeriodica.divide(new BigDecimal(intervalloErogazione), 2, RoundingMode.HALF_UP);
+		
+					int ore = oreMinutiMensili.intValue();
+					
+					BigDecimal minutiValQuota = oreMinutiMensili.remainder(BigDecimal.ONE);
+					BigDecimal convMinutiValQuota = (minutiValQuota.multiply(new BigDecimal(60))).setScale(0, BigDecimal.ROUND_HALF_UP);
+					int minuti = convMinutiValQuota.intValue();
+					
+					esportazioneDTO.setOreServizioMensile(StringUtils.leftPad(String.valueOf(ore), 2, "0")  + ":" + StringUtils.leftPad(String.valueOf(minuti),  2, "0")  );
+					//FINE SISO-806
+				}
+				
+				lstOut.add(esportazioneDTO);
+			}
+		}
+		
+		return lstOut;
+	}
 
 	private static List<EsportazioneDTO> creaBeanExportRighePeriodica(List<EsportazioneDTOView> listaEsportazioneDTOviewPerIdMaster, VErogExportHelp vErogExportHelp) throws Exception {
 		    
@@ -526,6 +628,7 @@ public class EsportaCasellarioUtils {
 			
 			esportazioneDTO.setDataInizio(dtInizioInt);
 			esportazioneDTO.setDataFine(dtFineInt);
+			
 			// PeriodoErogazione = Differenza in mesi fra le due date sopra . 2FB-27 GEN = 1MESE
 			int intervalloErogazione = differenzaMesi(dtInizioInt, dtFineInt);
 			esportazioneDTO.setPeriodoErogazione(intervalloErogazione);
@@ -606,6 +709,7 @@ public class EsportaCasellarioUtils {
 		
 		esportazioneDTO.setPresenzaProvaMezzi(primaEsportazione.getPresenzaProvaMezzi());
 		esportazioneDTO.setPresaInCarico(primaEsportazione.getPresaInCarico());
+		esportazioneDTO.setPicPrestazione(primaEsportazione.getPicPrestazione());
 		esportazioneDTO.setCategoriaSocialeId(primaEsportazione.getCategoriaSocialeId());
 
 		// ** mod. SISO-886 **//
@@ -616,6 +720,9 @@ public class EsportaCasellarioUtils {
 		// <SogliaISEE>valore non presente valorizza TAG VUOTO</SogliaISEE>
 		fillBeneficiario(esportazioneDTO, primaEsportazione);
 		// fillForeignKey(esportazioneDTO, primaEsportazione);
+		
+		//SISO-2384
+		esportazioneDTO.setDataEvento(primaEsportazione.getDataEvento());
 		
 		return esportazioneDTO;
 	}
@@ -761,6 +868,60 @@ public class EsportaCasellarioUtils {
 		
 		return mappaAnnoSpese;
 	}
+	
+	private static HashMap<Integer, List<EsportazioneSpesaDTO>> ripartisciSpeseAnnuali(EsportazioneDTOView e) throws Exception{
+		HashMap<Integer, List<EsportazioneSpesaDTO>> mappaAnnoSpese = new HashMap<Integer, List<EsportazioneSpesaDTO>>();
+	
+		HashMap<Integer, Date[]> mappaAP = ripartisciAnnuali(e.getDataEsecuzione(), e.getMaxDataEsecuzione());
+		int periodoErogazione = differenzaMesi(e.getDataEsecuzione(), e.getMaxDataEsecuzione());
+		
+		BigDecimal spesa = new BigDecimal(0);
+		BigDecimal percGestitaEnte = new BigDecimal(0);
+		BigDecimal compartUtenti = new BigDecimal(0);
+		BigDecimal compartSsn = new BigDecimal(0);
+		
+		if (e.getValoreGestitaEnte() != null) {
+			// percGestitaEnte += ValoreGestitaEnte
+			percGestitaEnte = e.getValoreGestitaEnte();
+		} else if (e.getPercGestitaEnte() != null) {
+			// compartUtenti += SPESA * PERC_GESTITA_ENTE / 100
+			percGestitaEnte = e.getSpesa().multiply(e.getPercGestitaEnte()).divide(new BigDecimal(100));
+		} else { 
+			percGestitaEnte = e.getSpesa();
+		}
+
+		compartUtenti = getBdNotNull(e.getCompartUtenti());
+		compartSsn = getBdNotNull(e.getCompartSsn());
+		spesa = getBdNotNull(e.getSpesa());
+		
+		Iterator<Integer> it = mappaAP.keySet().iterator();
+		while(it.hasNext()){
+			
+			EsportazioneSpesaDTO  esportazioneDTO = new EsportazioneSpesaDTO();
+			
+			int anno = ((Integer)it.next()).intValue();
+		    Date[] intervallo = mappaAP.get(anno);
+		    
+		    Date dtInizioInt = intervallo[0];
+		    Date dtFineInt = intervallo[1];
+		    
+			int intervalloErogazione = differenzaMesi(dtInizioInt, dtFineInt);
+				
+			esportazioneDTO.setSpesaDettaglio((spesa.multiply(new BigDecimal(intervalloErogazione))).divide(new BigDecimal(periodoErogazione), 2, RoundingMode.HALF_UP));
+			esportazioneDTO.setPercGestitaEnte((percGestitaEnte.multiply(new BigDecimal(intervalloErogazione))).divide(new BigDecimal(periodoErogazione), 2, RoundingMode.HALF_UP));
+			esportazioneDTO.setCompartUtenti((compartUtenti.multiply(new BigDecimal(intervalloErogazione))).divide(new BigDecimal(periodoErogazione), 2, RoundingMode.HALF_UP)); //Calcolo proporzionalmente
+			esportazioneDTO.setCompartSsn((compartSsn.multiply(new BigDecimal(intervalloErogazione))).divide(new BigDecimal(periodoErogazione), 2, RoundingMode.HALF_UP));
+	
+			List<EsportazioneSpesaDTO> lstSpeseAnno = mappaAnnoSpese.get(anno);
+			if(lstSpeseAnno==null) lstSpeseAnno = new ArrayList<EsportazioneSpesaDTO>();
+			
+			lstSpeseAnno.add(esportazioneDTO);
+			
+			mappaAnnoSpese.put(anno, lstSpeseAnno);
+			
+		}
+		return mappaAnnoSpese;
+	}
 
 	private static int differenzaMesi(Date dataInizio, Date dataFine) throws Exception {
 		int diffMesi = 0;
@@ -785,6 +946,7 @@ public class EsportaCasellarioUtils {
 		// <DataErogazione> V_EROG_EXPORT_HELP.row
 		// .MAX_DATA_EROGAZIONE</DataErogazione>
 		esportazioneDTO.setDataEsecuzione(vErogExportHelp.getMaxDataErogazione());
+
 		// <Importo>> V_EROG_EXPORT_HELP.row .SPESA</Importo>
 
 		esportazioneDTO.setSpesaTestata(vErogExportHelp.getSpesa());

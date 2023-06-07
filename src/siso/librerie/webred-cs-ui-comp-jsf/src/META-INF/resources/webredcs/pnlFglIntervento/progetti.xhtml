@@ -134,7 +134,7 @@
 			      disabled="#{fglInterventoBean.datiProgettoBean.condLavoroId>0 and fglInterventoBean.datiProgettoBean.ingMercatoId>0}">
 			      <f:selectItem noSelectionOption="true" itemLabel="- seleziona -" />
 			      <f:selectItems value="#{fglInterventoBean.datiProgettoBean.lstIngMercato}" />
-			      <p:ajax event="change" listener="#{fglInterventoBean.datiProgettoBean.onChangeIngMercato}" update="@(.updateOnProgettiChange),nascitaIndirizzo" />
+			      <p:ajax event="change" listener="#{fglInterventoBean.datiProgettoBean.onChangeIngMercato}" update="@(.updateOnProgettiChange)" />
 			   </p:selectOneMenu>
 			   <webredcs:tooltipInfo title="Condizione nel mercato del lavoro in ingresso" valueList="#{fglInterventoBean.datiProgettoBean.lstIngMercatoTooltip}" />
 		</h:panelGroup> 
@@ -174,20 +174,6 @@
 	   		<p:outputLabel value="Alcuni dati utente sono stati recuperati dalla cartella sociale" 
 	   					   rendered="#{fglInterventoBean.datiProgettoBean.datiFromCartella}" style="color:red;"/>
 	    
-	     <!--  siso 945  -->	
-	      <h:panelGroup>
-	         <h:panelGrid id="nascitaIndirizzo" columns="5" columnClasses="label, value" width="100%" styleClass="updateOnChangeBeneficiarioRif">
-	           
-		           <h:outputLabel value="Nascita" style="font-weight:bold;"/>
-		           <h:panelGrid colums="1">
-					<webred:pnlComuneNazione id="comuneNazioneNascita"  pnlToUpdate="#{p:component('comuneNazioneNascita')}"
-								comuneNazioneManBean="#{fglInterventoBean.datiProgettoBean.comuneNazioneNascitaBean}" 
-								disabled="#{false}" extraLabelRequired="true" />
-					</h:panelGrid>	
-					
-			</h:panelGrid>	
-		  </h:panelGroup>	
-				<!--  fine siso 945  -->
 	      <h:panelGrid columns="5">
 	         <h:panelGroup>
 	         	<h:outputLabel value="Domicilio, se diverso dalla residenza" style="font-weight:bold;" />

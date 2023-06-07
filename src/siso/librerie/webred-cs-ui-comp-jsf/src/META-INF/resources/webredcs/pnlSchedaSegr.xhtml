@@ -399,17 +399,18 @@
 						<p:outputLabel value="#{nota.formattedData}" />
 					</p:column>
 					<p:column headerText="Ente">
-						<p:outputLabel value="#{nota.ente.nome}" />
+						<p:outputLabel value="#{nota.orgDenominazione}" />
 					</p:column>
 					<p:column headerText="Operatore">
-						<p:outputLabel value="#{cc.attrs.iSchedaSegr.getCognomeNomeUtente(nota.autore)}" />
+						<p:outputLabel value="#{nota.opDenominazione}" />
 					</p:column>
 					<p:column headerText="Tipo" width="20" style="text-align:center;">
-						<p:graphicImage value="#{resource['webredcs/img/closed_lock.png']}" height="25px" rendered="#{!nota.pubblica}" title="nota privata" />
-						<p:graphicImage value="#{resource['webredcs/img/open_lock.png']}" height="25px" rendered="#{nota.pubblica}" title="nota pubblica" />
+						<p:graphicImage value="#{resource['webredcs/img/closed_lock.png']}" height="25px" rendered="#{!nota.pubblica}" title="nota #{nota.labelTipologia}" />
+						<p:graphicImage value="#{resource['webredcs/img/open_lock.png']}" height="25px" rendered="#{nota.pubblica}" title="nota #{nota.labelTipologia}" />
 					</p:column>
 					<p:column headerText="Nota">
-						<h:outputText value="#{nota.nota}" style="display: block; width: 100%" />
+						<h:outputText value="#{nota.nota}" style="display: block; width: 100%" rendered="#{nota.canRead}" />
+						<h:outputText value="#{nota.notaNonAutorizzata}" style="display: block; width: 100%; color:red"  rendered="#{!nota.canRead}"/>
 					</p:column>
 
 				</p:dataTable>

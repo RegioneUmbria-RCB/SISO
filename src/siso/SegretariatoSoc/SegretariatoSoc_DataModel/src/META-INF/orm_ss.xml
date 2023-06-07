@@ -217,6 +217,16 @@
 			]]>
 		</query>
 	</named-query>
+	
+	<named-query name="SsSchedaAccesso.findByAnagraficaId">
+		<query>
+			<![CDATA[
+				select s.accesso from SsScheda s, SsSchedaSegnalato se 
+				where s.segnalato = se.id
+				and se.anagrafica.id = :anagraficaId
+			]]>
+		</query>
+	</named-query>
 
 	<named-query name="SsScheda.readIdSegnalatoByCf">
 		<query>

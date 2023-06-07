@@ -31,6 +31,7 @@ public class InterventoErogazHistoryRowBean implements Serializable {
 	private String descrizioneErogazione;
 	private Date dataErogazione;
 	private Date dataErogazioneA;
+	private Date dataEvento;
 	private CsOSettore settore;
 	private CsCfgIntEsegStato stato;
 	private Boolean esportata = false;
@@ -74,6 +75,7 @@ public class InterventoErogazHistoryRowBean implements Serializable {
 		//this.nuovocsIInterventoEseg=nuovocsIInterventoEseg;
 		this.dataErogazione = intEseg.getDataEsecuzione();
 		this.dataErogazioneA = intEseg.getDataEsecuzioneA();
+		this.dataEvento = intEseg.getDataEvento();
 		this.settore = sett;	
 		
 		String altraOrgErogante="";
@@ -96,6 +98,7 @@ public class InterventoErogazHistoryRowBean implements Serializable {
 		fixedCells.add(new InterventoErogazAttrBean(TipoAttributo.Enum.STRING, getDataErogazioneValue(this.dataErogazione),  header.getColumns().get(index++)));
 		fixedCells.add(new InterventoErogazAttrBean(TipoAttributo.Enum.STRING, getDataErogazioneValue(this.dataErogazioneA), header.getColumns().get(index++)));
 		//FINE SISO-556
+		fixedCells.add(new InterventoErogazAttrBean(TipoAttributo.Enum.STRING, getDataErogazioneValue(this.dataEvento), header.getColumns().get(index++)));
 		
 		//INIZIO SISO-958 aggiunte le colonne fisse Spesa Totale e Valore Erogato
 		fixedCells.add(new InterventoErogazAttrBean(TipoAttributo.Enum.STRING, intEseg.getSpesa()!=null ? intEseg.getSpesa() + " €" : "-", header.getColumns().get(index++)));
@@ -373,4 +376,13 @@ public class InterventoErogazHistoryRowBean implements Serializable {
 	public boolean isEsportata() {
 		return this.esportata!=null && this.esportata.booleanValue();
 	}
+
+	public Date getDataEvento() {
+		return dataEvento;
+	}
+
+	public void setDataEvento(Date dataEvento) {
+		this.dataEvento = dataEvento;
+	}
+	
 }

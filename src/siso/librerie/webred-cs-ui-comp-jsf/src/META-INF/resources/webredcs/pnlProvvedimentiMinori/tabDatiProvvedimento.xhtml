@@ -1,0 +1,90 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui"
+	xmlns:webred="http://java.sun.com/jsf/composite/webred" xmlns:webredcs="http://java.sun.com/jsf/composite/webredcs">
+<ui:fragment>
+
+	<p:outputPanel>
+		<h:panelGrid id="pnldatiProvvedimento" columns="3" width="100%" styleClass="top-aligned-columns">
+		   <p:fieldset legend="Dati Provvedimento">
+		   		
+				<p:selectOneRadio id="datiProvvRadio" value="#{provvMinoriMan.jsonCurrent.datiProvvedimenti.selDatiProvv}"  layout="grid" columns="2">
+					<f:selectItems value="#{provvMinoriMan.datiProv.lstDatiProvvedimento}"/>
+				</p:selectOneRadio>
+			
+				<p:selectBooleanCheckbox id="cbxRichiestaIndagine" itemLabel="Richiesta Indagine" 
+										 value="#{provvMinoriMan.jsonCurrent.datiProvvedimenti.richiestaIndagine}"  />
+			
+			
+				<p:selectManyCheckbox id="affidamento" value="#{provvMinoriMan.jsonCurrent.datiProvvedimenti.selTipoAffidamento}" 
+				                      layout="grid" columns="1" >
+					<f:selectItems value="#{provvMinoriMan.datiProv.lstTipoAffidamento}"/>
+				</p:selectManyCheckbox>
+		   </p:fieldset>
+		   <p:fieldset legend="Tipo Provvedimento">
+		   		<p:selectOneRadio id="tipoProvvRadio" value="#{provvMinoriMan.jsonCurrent.datiProvvedimenti.selTipoProvv}" layout="grid" columns="1">
+						<f:selectItems value="#{provvMinoriMan.datiProv.lstTipoProvvedimento}"/>
+				</p:selectOneRadio>
+		   </p:fieldset>
+		   <p:fieldset legend="Natura Provvedimento">
+		   		<p:selectOneRadio id="naturaProvvRadio" value="#{provvMinoriMan.jsonCurrent.datiProvvedimenti.selNaturaProvv}" layout="grid" columns="1">
+					<f:selectItems value="#{provvMinoriMan.datiProv.lstNaturaProvvedimento}"></f:selectItems>
+				</p:selectOneRadio>
+		   </p:fieldset>
+	
+		</h:panelGrid>
+		<p:spacer height="5px" />
+		<p:fieldset legend="Responsabilità genitoriale" toggleable="false">
+		     <h:panelGrid columns="2" width="100%">
+	     		<p:outputLabel value="Padre"/>
+				<p:selectManyCheckbox id="cessazionePadre" value="#{provvMinoriMan.jsonCurrent.datiProvvedimenti.selCessazionePotestaPadre}" 
+				                      styleClass="column" layout="grid" columns="3" >
+					<f:selectItems value="#{provvMinoriMan.datiProv.lstCessazionePotesta}"/>
+				</p:selectManyCheckbox>
+				<p:outputLabel value="Madre"/>
+				<p:selectManyCheckbox id="cessazioneMadre" value="#{provvMinoriMan.jsonCurrent.datiProvvedimenti.selCessazionePotestaMadre}" 
+				                      styleClass="column" layout="grid" columns="3" >
+					<f:selectItems value="#{provvMinoriMan.datiProv.lstCessazionePotesta}"/>
+				</p:selectManyCheckbox>
+			</h:panelGrid>
+			<p:separator/>
+			<h:panelGrid columns="4" width="100%">
+			    <f:facet name="header">  
+     						<h:outputLabel id="lblProvvedimento" value="Provvedimento" styleClass="bold" />
+ 				 		</f:facet> 
+				<h:outputLabel id="lblNumProvv" value="Num." for="NumProvv" styleClass="" />
+				<h:inputText id="NumProvv" value="#{provvMinoriMan.jsonCurrent.datiProvvedimenti.numProvv}"></h:inputText>
+				
+				<h:outputLabel id="lblDataProtocolloCanc" value="Data deposito in cancelleria" style="display: block; width: 150px;"/>
+				<webred:pnlData dataValue="#{provvMinoriMan.jsonCurrent.datiProvvedimenti.dataProvvCancelleria}" 
+					            dataPattern="dd/MM/yyyy"  dataPatternLabel="gg/mm/aaaa" dataReq="false" />
+				
+				<h:outputLabel id="lblDataProtocollo" value="Data Protocollo" for="dataProtocollo" styleClass="" />
+				<webred:pnlData id="dataProtocollo" dataValue="#{provvMinoriMan.jsonCurrent.datiProvvedimenti.dataProtocolloProvv}" 
+					            dataPattern="dd/MM/yyyy"  dataPatternLabel="gg/mm/aaaa" dataReq="false" />
+				
+				<h:outputLabel id="lblCuratore" value="Curatore" for="curatore" styleClass="" />
+				<h:panelGroup>
+					<h:inputText id="curatore" value="#{provvMinoriMan.jsonCurrent.datiProvvedimenti.curatore}"></h:inputText>
+					<p:spacer width="5px;"/>
+					<p:selectBooleanCheckbox itemLabel="Legale famiglia" id="legaleFamiglia" value="#{provvMinoriMan.jsonCurrent.datiProvvedimenti.legaleFamiglia}" />
+				</h:panelGroup>
+			</h:panelGrid>
+			
+			<p:separator/>
+			<webredcs:pnlComponenteOAltro header="Tutore" iComponenteOAltro="#{provvMinoriMan.datiProv.tutore}" />
+						
+		</p:fieldset>
+		<p:spacer height="10px" />
+		<p:fieldset id="legnetContProvv" legend="Contenuto Provvedimento" toggleable="false">
+				<p:selectManyCheckbox id="indaginePsiSoc" layout="grid" columns="3"
+									  value="#{provvMinoriMan.jsonCurrent.datiProvvedimenti.selIndagine}" >
+					<f:selectItems value="#{provvMinoriMan.datiProv.lstIndagine}"/>
+				</p:selectManyCheckbox>
+			
+				<p:inputTextarea id="indagineNote" style="width:90%" value="#{provvMinoriMan.jsonCurrent.datiProvvedimenti.note}" 
+				                 rows="2" autoResize="false" />
+			
+		</p:fieldset>
+	</p:outputPanel>
+</ui:fragment>
+</html>

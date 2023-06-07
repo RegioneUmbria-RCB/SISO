@@ -1,9 +1,19 @@
 package it.webred.ss.web.bean.util;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
+
+import org.apache.commons.lang3.StringUtils;
+
 import it.webred.cs.data.DataModelCostanti;
 import it.webred.cs.data.DataModelCostanti.Scheda;
 import it.webred.cs.data.model.CsOSettore;
-import it.webred.cs.data.model.CsOSettoreBASIC;
 import it.webred.cs.jsf.manbean.ConsensoPrivacyMan;
 import it.webred.cs.jsf.manbean.FormazioneLavoroMan;
 import it.webred.cs.jsf.manbean.superc.CsUiCompBaseBean;
@@ -12,10 +22,6 @@ import it.webred.cs.json.familiariConviventi.IFamConviventi;
 import it.webred.cs.json.stranieri.IStranieri;
 import it.webred.ejb.utility.ClientUtility;
 import it.webred.ss.data.model.SsAnagrafica;
-import it.webred.ss.data.model.SsDiario;
-import it.webred.ss.data.model.SsInterventiSchede;
-import it.webred.ss.data.model.SsMotivazione;
-import it.webred.ss.data.model.SsMotivazioniSchede;
 import it.webred.ss.data.model.SsScheda;
 import it.webred.ss.data.model.SsSchedaAccesso;
 import it.webred.ss.data.model.SsSchedaAccessoInviante;
@@ -26,23 +32,11 @@ import it.webred.ss.data.model.SsTipoScheda;
 import it.webred.ss.data.model.tb.CsOSettoreLIGHT;
 import it.webred.ss.ejb.client.SsSchedaSessionBeanRemote;
 import it.webred.ss.ejb.dto.BaseDTO;
+import it.webred.ss.ejb.dto.NotaDTO;
+import it.webred.ss.ejb.dto.SchedaUdcDTO;
 import it.webred.ss.web.bean.SegretariatoSocBaseBean;
 import it.webred.ss.web.bean.wizard.Accesso;
-import it.webred.ss.web.bean.wizard.DiarioSociale;
-import it.webred.ss.web.bean.wizard.Nota;
 import it.webred.ss.web.bean.wizard.ServiziRichiestiInterventiCustomBean;
-
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
-import javax.faces.context.FacesContext;
-
-import org.apache.commons.lang3.StringUtils;
 
 @ManagedBean
 @ViewScoped
@@ -119,7 +113,7 @@ public class ViewSchedaBean extends SegretariatoSocBaseBean {
 	private List<String> selectedInterventi = new ArrayList<String>();
 	private String interventiAltro;
 	// diario
-	private DiarioSociale diarioSociale = new DiarioSociale();
+	private List<NotaDTO> diarioSociale = new ArrayList<NotaDTO>();
 	
 	private String indietroButtonLink;
 	
@@ -140,8 +134,13 @@ public class ViewSchedaBean extends SegretariatoSocBaseBean {
 			
 			BaseDTO dto = new BaseDTO();
 			fillUserData(dto);
+			dto.setOrganizzazione(getPreselectedPContatto().getOrganizzazione().getId()); //ID ORGANIZZAZIONE CORRENTE
 			dto.setObj(new Long(selectedScheda));
-			SsScheda s = schedaService.readScheda(dto);
+			dto.setObj2(canReadDiario());
+			SchedaUdcDTO sDTO = schedaService.loadSchedaUdcCompleta(dto);
+			
+			SsScheda s = sDTO.getScheda();
+			
 			
 			// dati accesso
 			SsSchedaAccesso a = s.getAccesso();
@@ -245,8 +244,8 @@ public class ViewSchedaBean extends SegretariatoSocBaseBean {
 			percInvalidita = segnalato.getInvalidita()!=null ? segnalato.getInvalidita().toString() : "";
 			
 			formLavoroSegnalato = new FormazioneLavoroMan();
-			formLavoroSegnalato.setIdCondLavorativa(segnalato.getLavoro()!=null ? new BigDecimal(segnalato.getLavoro()) : null);
-			formLavoroSegnalato.setIdProfessione(segnalato.getProfessione()!=null ? new BigDecimal(segnalato.getProfessione()) : null);
+			formLavoroSegnalato.setIdCondLavorativa(segnalato.getCondLavoroId());
+			formLavoroSegnalato.setIdProfessione(segnalato.getProfessioneId());
 			formLavoroSegnalato.setIdTitoloStudio(segnalato.getTitoloStudioId());
 			formLavoroSegnalato.setIdSettoreImpiego(segnalato.getSettImpiegoId());
 			
@@ -275,35 +274,16 @@ public class ViewSchedaBean extends SegretariatoSocBaseBean {
 			listaRiferimenti.add(r3);
 			
 			// dati motivazione
-        	fillUserData(dto);
-        	dto.setObj(s.getMotivazione());
-        	List<SsMotivazioniSchede> motivi = schedaService.readMotivazioniScheda(dto);
-        	for(SsMotivazioniSchede motivoScheda: motivi){
-        		SsMotivazione m = motivoScheda.getMotivazione();
-        		selectedMotivazioni.add(m.getClassificazione().getDescrizione()+" - "+m.getMotivo());
-        	}
+			selectedMotivazioni = sDTO.getListaMotivazioni();
         	motivazioneAltro = s.getMotivazione().getAltro();
         	
         	// dati interventi
-        	fillUserData(dto);
-        	dto.setObj(s.getInterventi());
-        	List<SsInterventiSchede> tempInterventi = schedaService.readInterventiScheda(dto);
-        	for(SsInterventiSchede interventoScheda: tempInterventi)
-        		selectedInterventi.add(interventoScheda.getIntervento().getIntervento());
+        	selectedInterventi = sDTO.getListaInterventi();
         	interventiAltro = s.getInterventi().getAltro();
         	
         	// dati diario sociale
-        	fillUserData(dto);
-        	dto.setObj(anagrafica.getCf());
-        	List<SsAnagrafica> anagrafiche = schedaService.readAnagraficheByCf(dto);
-        	
-        	for(SsAnagrafica ana: anagrafiche){
-        		dto.setObj(ana);
-        		dto.setObj2(a.getSsRelUffPcontOrg().getSsOOrganizzazione().getId());
-        		List<SsDiario> diari = schedaService.readDiarioSoggettoEnte(dto);
-            	List<Nota> note = loadNoteDiarioAccessibili(diari, a.getOperatore(), null);
-            	diarioSociale.populateNote(note);
-        	}
+        	diarioSociale = sDTO.getNoteDiario();
+		
         	
         	//Dati accesso orig (se scheda inviata)
         	accessoOrig = null;
@@ -574,11 +554,11 @@ public class ViewSchedaBean extends SegretariatoSocBaseBean {
 		this.tipoScheda = tipoScheda;
 	}
 
-	public DiarioSociale getDiarioSociale() {
+	public List<NotaDTO> getDiarioSociale() {
 		return diarioSociale;
 	}
 
-	public void setDiarioSociale(DiarioSociale diarioSociale) {
+	public void setDiarioSociale(List<NotaDTO> diarioSociale) {
 		this.diarioSociale = diarioSociale;
 	}
 

@@ -36,7 +36,7 @@
 				<p:outputPanel styleClass="mb-1">
 					<p:commandButton value="ELENCO EVENTI"
 						action="#{interscambioBean.visualizzaElencoEventi()}"
-						style="width:80%;" styleClass="p-05" update="@(.vistaPrincipale)"></p:commandButton>
+						style="width:80%;" styleClass="p-05" update="@(.vistaPrincipale)"/>
 				</p:outputPanel>
 			</p:outputPanel>
 		</p:panel>
@@ -49,39 +49,18 @@
 				<p:panel header="Ricerca Cartella"
 					rendered="#{interscambioBean.mostraFormRicercaCartella}">
 
-					<p:panelGrid style="margin:0 auto;">
-						<p:row>
-							<!-- COGNOME CARTELLA -->
-							<p:column>
-								<p:outputLabel for="cognomeCartella" value="Cognome:"></p:outputLabel>
-							</p:column>
-							<p:column>
-								<p:inputText id="cognomeCartella" placeholder="Cognome"
-									value="#{interscambioBean.cognome}"></p:inputText>
-							</p:column>
-						</p:row>
-
-						<p:row>
-							<!-- NOME CARTELLA -->
-							<p:column>
-								<p:outputLabel for="nomeCartella" value="Nome:"></p:outputLabel>
-							</p:column>
-							<p:column>
-								<p:inputText id="nomeCartella" placeholder="Nome"
-									value="#{interscambioBean.nome}"></p:inputText>
-							</p:column>
-						</p:row>
-
-
-						<p:row>
-							<!-- PULSANTE DI RICERCA -->
-							<p:column colspan="2" style="text-align:center;">
-								<p:commandButton value="Cerca"
-									action="#{interscambioBean.search()}" update="@form"></p:commandButton>
-							</p:column>
-						</p:row>
-
-					</p:panelGrid>
+					<h:panelGrid style="margin:0 auto;" columns="5">
+						<!-- COGNOME CARTELLA -->
+						<p:outputLabel for="cognomeCartella" value="Cognome"/>
+						<p:inputText id="cognomeCartella" placeholder="Cognome" value="#{interscambioBean.cognome}"/>
+						
+						<!-- NOME CARTELLA -->
+						<p:outputLabel for="nomeCartella" value="Nome"/>
+						<p:inputText id="nomeCartella" placeholder="Nome" value="#{interscambioBean.nome}"/>
+						
+						<!-- PULSANTE DI RICERCA -->
+						<p:commandButton value="Cerca" action="#{interscambioBean.search()}" update="@form"/>
+					</h:panelGrid>
 
 				</p:panel>
 

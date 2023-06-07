@@ -109,8 +109,7 @@ public class DatiProgettoBean extends CsUiCompBaseBean implements Serializable {
 	
 	private ComuneGenericMan comuneMan; //Sede Aziendale
 	private ComuneResidenzaMan domicilioComuneMan;
-	private ComuneNazioneNascitaMan comuneNazioneNascitaBean = null;
-	
+
 	//SISO-972
 	private int numFSE = 0;	
 	
@@ -151,13 +150,6 @@ public class DatiProgettoBean extends CsUiCompBaseBean implements Serializable {
 	}
 
 	private List<SelectItem> listaSettoriTitGroup;
-	public ComuneNazioneNascitaMan getComuneNazioneNascitaBean() {
-		return comuneNazioneNascitaBean;
-	}
-
-	public void setComuneNazioneNascitaBean(ComuneNazioneNascitaMan comuneNazioneNascitaBean) {
-		this.comuneNazioneNascitaBean = comuneNazioneNascitaBean;
-	}
 	
     //SISO-1131
 	/**
@@ -216,6 +208,8 @@ public class DatiProgettoBean extends CsUiCompBaseBean implements Serializable {
 	//SISO-972 fine
 
 	private void loadDatiProgetto(CsIInterventoPr progetto, boolean solalettura, Long tipoIntId, Long tipoInCustomId, Long catSocialeID, String valSoggettoAttuatore) {
+
+		domicilioComuneMan = new ComuneResidenzaMan();
 		
 		this.csIInterventoPr = progetto;
 		
@@ -255,31 +249,13 @@ public class DatiProgettoBean extends CsUiCompBaseBean implements Serializable {
 			}
 
 			String jsonDomicilio = this.getCsIInterventoPr().getCsIInterventoPrFse().getComuneDomicilio();
-			String jsonNascita = this.getCsIInterventoPr().getCsIInterventoPrFse().getComuneNascita();
 			if(!StringUtils.isBlank(this.getModuloPorRegionale())) stampaPor = true;
 			
 			ObjectMapper mapper = new ObjectMapper();
-			
-			//residenzaComuneMan = new ComuneResidenzaMan();
-			domicilioComuneMan = new ComuneResidenzaMan();
-			//SISO - 945
-			comuneNazioneNascitaBean = new ComuneNazioneNascitaMan();
+
 			//SISO - 945 fine
 			try {
 				domicilioComuneMan.setComune(mapper.readValue(jsonDomicilio, ComuneBean.class));
-				
-				ComuneBean nComune = null;
-				AmTabNazioni nNazione = null;
-				if(jsonNascita != null)
-					nComune = mapper.readValue(jsonNascita, ComuneBean.class);
-				
-				String statoCod = this.getCsIInterventoPr().getCsIInterventoPrFse().getStatoNascitaCod();
-				String statoDes = this.getCsIInterventoPr().getCsIInterventoPrFse().getStatoNascitaDes();
-				if(statoCod != null && statoDes != null)
-					nNazione = CsUiCompBaseBean.getNazioneByIstat(statoCod, statoDes);
-				
-				comuneNazioneNascitaBean.init(nComune, nNazione);
-				 
 				//SISO - 945 fine
 			} catch (JsonParseException e) {
 				// TODO Auto-generated catch block
@@ -431,31 +407,6 @@ public class DatiProgettoBean extends CsUiCompBaseBean implements Serializable {
     	}
     	return null;
     }
-
-	private void popolaLuogoDiNascitaFse(){
-		try{
-			
-			ObjectMapper mapper = new ObjectMapper();
-			//resetto i valori per poi valorizzare correttamente
-			this.csIInterventoPr.getCsIInterventoPrFse().setComuneNascita(null);
-			this.csIInterventoPr.getCsIInterventoPrFse().setStatoNascitaCod(null);
-			this.csIInterventoPr.getCsIInterventoPrFse().setStatoNascitaDes(null);
-			
-			if(comuneNazioneNascitaBean.isComune()){
-				ComuneBean comune = this.comuneNazioneNascitaBean.getComuneNascitaMan().getComune();
-				this.csIInterventoPr.getCsIInterventoPrFse().setComuneNascita(comune!=null ? mapper.writeValueAsString(comune) : null);
-			
-			}else{	
-				AmTabNazioni naz = this.comuneNazioneNascitaBean.getNazioneNascitaMan().getNazione();
-				if(naz!=null){
-					this.csIInterventoPr.getCsIInterventoPrFse().setStatoNascitaCod(naz.getCodIstatNazione());
-					this.csIInterventoPr.getCsIInterventoPrFse().setStatoNascitaDes(naz.getNazione());
-				}
-			}
-		} catch (JsonProcessingException e) {
-				logger.error("Errore popolamento Comune/Nazione residenza", e);
-		}
-	}
 	
 	public boolean salva(SoggettoErogazioneBean soggettoErogazione) {
 		boolean bOk = true;	
@@ -479,7 +430,7 @@ public class DatiProgettoBean extends CsUiCompBaseBean implements Serializable {
 			try{
 				//SISO-945 
 				if(this.getCsIInterventoPr().getCsIInterventoPrFse() != null){
-					this.popolaLuogoDiNascitaFse();
+					
 					//SISO-962 Inizio
 					//this.getCsIInterventoPr().getCsIInterventoPrFse().setViaResidenza(soggettoErogazione.getViaResidenza());
 					//this.getCsIInterventoPr().getCsIInterventoPrFse().setComuneResidenza(soggettoErogazione.getJsonComuneResidenza());
@@ -991,27 +942,7 @@ public class DatiProgettoBean extends CsUiCompBaseBean implements Serializable {
 								domicilioComuneMan = new ComuneResidenzaMan();
 								domicilioComuneMan.setComune(mapper.readValue(prEsistente.getCsIInterventoPrFse().getComuneDomicilio(), ComuneBean.class));
 							}
-							if(prEsistente.getCsIInterventoPrFse().getComuneNascita()  != null){
-								this.csIInterventoPr.getCsIInterventoPrFse().setComuneNascita(prEsistente.getCsIInterventoPrFse().getComuneNascita());
-								 comuneNazioneNascitaBean = new ComuneNazioneNascitaMan();
-								
-								ObjectMapper mapper = new ObjectMapper();
-								this.comuneNazioneNascitaBean.getComuneNascitaMan().setComune(mapper.readValue(prEsistente.getCsIInterventoPrFse().getComuneNascita(), ComuneBean.class));
-							 
-								
-							}
-							if(prEsistente.getCsIInterventoPrFse().getStatoNascitaCod()   != null){
-								this.csIInterventoPr.getCsIInterventoPrFse().setStatoNascitaCod(prEsistente.getCsIInterventoPrFse().getStatoNascitaCod());
-								this.csIInterventoPr.getCsIInterventoPrFse().setStatoNascitaDes(prEsistente.getCsIInterventoPrFse().getStatoNascitaDes());
-								
-								 comuneNazioneNascitaBean = new ComuneNazioneNascitaMan();
-								
-								 AmTabNazioni amTabNazioni = 
-										 CsUiCompBaseBean.getNazioneByIstat(prEsistente.getCsIInterventoPrFse().getStatoNascitaCod(), prEsistente.getCsIInterventoPrFse().getStatoNascitaDes());
-									this.comuneNazioneNascitaBean.setNazioneValue();
-									this.comuneNazioneNascitaBean.getNazioneMan().setNazione(amTabNazioni);
-								
-							}
+					
 //										if(prEsistente.getCsIInterventoPrFse().getComuneResidenza() != null && (this.residenzaComuneMan == null || residenzaComuneMan.getComune() == null)){
 //											this.csIInterventoPr.getCsIInterventoPrFse().setComuneResidenza(prEsistente.getCsIInterventoPrFse().getComuneResidenza());
 //											ObjectMapper mapper = new ObjectMapper();
@@ -1056,10 +987,7 @@ public class DatiProgettoBean extends CsUiCompBaseBean implements Serializable {
 		 		//this.residenzaComuneMan = new ComuneResidenzaMan();
 	 			this.domicilioComuneMan = new ComuneResidenzaMan();
 	 			this.comuneMan = new ComuneGenericMan("Sede aziendale");
-	 			if(this.comuneNazioneNascitaBean == null){
-	 				this.comuneNazioneNascitaBean = new ComuneNazioneNascitaMan();
-	 			}
-	 			
+			
 		 		if(this.csIInterventoPr.getProgettoAttivita()!=null)
 		 			 renderAttivita = true;
 		 		else
@@ -1312,7 +1240,6 @@ public class DatiProgettoBean extends CsUiCompBaseBean implements Serializable {
 		if(this.isRenderFSE()){ 
 			
 			/*Valorizzo i campi finali con quelli temporanei della classe, altimenti nel metodo validaSiru trovo tutto a NULL*/
-			popolaLuogoDiNascitaFse();
 			
 			//Validazione campi
 			if(csIInterventoPr.getProgettoAttivita()==null) {
@@ -1327,7 +1254,6 @@ public class DatiProgettoBean extends CsUiCompBaseBean implements Serializable {
 				
 				ObjectMapper mapper = new ObjectMapper();
 				ComuneBean comuneDomicilio = this.domicilioComuneMan.getComune();
-				//this.csIInterventoPr.getCsIInterventoPrFse().setComuneResidenza(mapper.writeValueAsString(rc));
 				try{
 					this.csIInterventoPr.getCsIInterventoPrFse().setComuneDomicilio(mapper.writeValueAsString(comuneDomicilio));
 				} catch (JsonProcessingException e) {
@@ -1335,22 +1261,13 @@ public class DatiProgettoBean extends CsUiCompBaseBean implements Serializable {
 				}
 					
 			
-				//SISO-962 Inizio
-				if( csIInterventoPr.getCsIInterventoPrFse() != null)
-				{
-					if(soggettoErogazione.getCodiceNazioneResidenzaEstero() != null){
-						addError("Progetti","Attenzione: Per i progetti di tipo FSE è obbligatoria la residenza in Italia.");
-						res = false;
-					}
-				}
 				
-				if((csIInterventoPr.getCsIInterventoPrFse().getFlagResDom()!=null && ProgettoErogazioni.FLAG_RES_DOM.DOMICILIO.getCodice().equalsIgnoreCase(csIInterventoPr.getCsIInterventoPrFse().getFlagResDom())) && 
-					(csIInterventoPr.getCsIInterventoPrFse().getViaDomicilio() == null ||
-					 csIInterventoPr.getCsIInterventoPrFse().getViaDomicilio().isEmpty() ||
-				     this.getDomicilioComuneMan().comune==null)){
-					addError("Progetti","Attenzione: è obbligatorio valorizzare via e comune di domicilio");
+				List<String> errors =  this.validaResidenzaDomicilioFSE(soggettoErogazione);
+				if(!errors.isEmpty()) {
 					res = false;
+					this.addError("Progetti", errors);
 				}
+					
 				
 				//VALIDAZIONE SIRU
 				if(res){
@@ -1368,56 +1285,6 @@ public class DatiProgettoBean extends CsUiCompBaseBean implements Serializable {
 						csIInterventoPr.setCsIInterventoPrFseSiru(validazione.getSiruInterventi());
 				}
 				
-				//SISO-996
-				if(isControlloResDomPOR()){
-					/*Verifico che la regione del settore titolare sia diversa da quella di residenza o domicilio*/
-					boolean stessaRegione = false;
-					
-					String belfiore = getSettoreTitolare().getCsOOrganizzazione().getCodCatastale();
-					AmTabComuni comuneTitolare = luoghiService.getComuneItaByBelfiore(belfiore);
-					String regioneTitolare = comuneTitolare!=null ? comuneTitolare.getCodIstatRegione() : null;
-					if(StringUtils.isBlank(regioneTitolare)){
-						/*Potrebbe essere un'organizzazione con cod.fiscale (es.comunità montana)
-						 * recupero la zona sociale corrente
-						 * */
-						AccessTableConfigurazioneEnteSessionBeanRemote opService =
-						(AccessTableConfigurazioneEnteSessionBeanRemote)getEjb("CarSocialeA", "CarSocialeA_EJB", "AccessTableConfigurazioneEnteSessionBean");
-						CeTBaseObject cet = new CeTBaseObject();
-						fillEnte(cet);
-						CsOZonaSoc zona = opService.findZonaSocAbilitata(cet);
-						if(zona!=null && !StringUtils.isBlank(zona.getCodIstatRegione()))
-							regioneTitolare = zona.getCodIstatRegione();
-						else
-							addError("Progetti","Errore di configurazione: cod.istat regione non impostato per la zona sociale corrente. Contattare l'assistenza.");
-					}
-					
-					AmTabComuni comuneDom = null;
-					AmTabComuni comuneRes = null;
-					
-					ComuneBean comuneResidenza = null;
-					if(soggettoErogazione.getJsonComuneResidenza()!=null){
-						try{
-							comuneResidenza = mapper.readValue(soggettoErogazione.getJsonComuneResidenza(), ComuneBean.class);
-						} catch (IOException e) {
-							logger.error(e);
-						}
-					}
-				
-					if(comuneResidenza != null && !StringUtils.isBlank(regioneTitolare)){
-						 comuneRes = luoghiService.getComuneItaByIstat(comuneResidenza.getCodIstatComune());
-						 stessaRegione = regioneTitolare.equals(comuneRes.getCodIstatRegione());
-					}	
-					if(comuneDomicilio!=null && !StringUtils.isBlank(regioneTitolare) && 
-					   comuneDomicilio.getCodIstatComune()!=null && !stessaRegione){
-						 comuneDom = luoghiService.getComuneItaByIstat(comuneDomicilio.getCodIstatComune());
-						 stessaRegione = regioneTitolare.equals(comuneDom.getCodIstatRegione());
-					}	
-					if(!stessaRegione){
-						addError("Progetti","Per progetti finanziati su fondi POR, la regione di residenza o domicilio del beneficiario deve essere uguale alla regione del Comune Titolare");
-						res = false;
-					}
-					
-				}
 			}
 		}
 		//SISO-1131
@@ -1436,6 +1303,86 @@ public class DatiProgettoBean extends CsUiCompBaseBean implements Serializable {
 		
 		return res;
 		
+	}
+	
+	public List<String> validaResidenzaDomicilioFSE(SoggettoErogazioneBean soggettoErogazione) {
+		List<String> msgs = new ArrayList<String>();
+		
+		//SISO-962 Inizio
+		if( csIInterventoPr.getCsIInterventoPrFse() != null)
+		{
+			if(soggettoErogazione.getNazioneResidenza() != null)
+				msgs.add("Attenzione: Per i progetti di tipo FSE è obbligatoria la residenza in Italia.");
+		
+			if((csIInterventoPr.getCsIInterventoPrFse().getFlagResDom()!=null && 
+				ProgettoErogazioni.FLAG_RES_DOM.DOMICILIO.getCodice().equalsIgnoreCase(csIInterventoPr.getCsIInterventoPrFse().getFlagResDom())) && 
+				(StringUtils.isBlank(csIInterventoPr.getCsIInterventoPrFse().getViaDomicilio()) ||
+			     this.getDomicilioComuneMan().comune==null)){
+				 msgs.add("Attenzione: è obbligatorio valorizzare via e comune di domicilio");			}
+		
+			if(!StringUtils.isBlank(csIInterventoPr.getCsIInterventoPrFse().getViaDomicilio()) && 
+					( domicilioComuneMan.getComune()==null || StringUtils.isBlank(domicilioComuneMan.getComune().getCodIstatComune()))){
+				addError("Progetti","Attenzione: è stata inserita la via di domicilio, senza specificare il comune");
+			}
+
+		}
+		
+		
+		
+		//SISO-996
+		if(isControlloResDomPOR()){
+			/*Verifico che la regione del settore titolare sia diversa da quella di residenza o domicilio*/
+			boolean stessaRegione = false;
+			
+			String belfiore = getSettoreTitolare().getCsOOrganizzazione().getCodCatastale();
+			AmTabComuni comuneTitolare = luoghiService.getComuneItaByBelfiore(belfiore);
+			String regioneTitolare = comuneTitolare!=null ? comuneTitolare.getCodIstatRegione() : null;
+			if(StringUtils.isBlank(regioneTitolare)){
+				/*Potrebbe essere un'organizzazione con cod.fiscale (es.comunità montana)
+				 * recupero la zona sociale corrente
+				 * */
+				AccessTableConfigurazioneEnteSessionBeanRemote opService =
+				(AccessTableConfigurazioneEnteSessionBeanRemote)getCarSocialeEjb("AccessTableConfigurazioneEnteSessionBean");
+				CeTBaseObject cet = new CeTBaseObject();
+				fillEnte(cet);
+				CsOZonaSoc zona = opService.findZonaSocAbilitata(cet);
+				if(zona!=null && !StringUtils.isBlank(zona.getCodIstatRegione()))
+					regioneTitolare = zona.getCodIstatRegione();
+				else {
+					msgs.add("Errore di configurazione: cod.istat regione non impostato per la zona sociale corrente. Contattare l'assistenza.");
+				
+				}
+			}
+			
+			AmTabComuni comuneDom = null;
+			AmTabComuni comuneRes = null;
+			
+			ObjectMapper mapper = new ObjectMapper();
+			ComuneBean comuneResidenza = null;
+			ComuneBean comuneDomicilio = this.domicilioComuneMan.getComune();
+			if(soggettoErogazione.getComuneResidenza()!=null){
+				try{
+					comuneResidenza = mapper.readValue(soggettoErogazione.getComuneResidenza(), ComuneBean.class);
+				} catch (IOException e) {
+					logger.error(e);
+				}
+			}
+		
+			if(comuneResidenza != null && !StringUtils.isBlank(regioneTitolare)){
+				 comuneRes = luoghiService.getComuneItaByIstat(comuneResidenza.getCodIstatComune());
+				 stessaRegione = regioneTitolare.equals(comuneRes.getCodIstatRegione());
+			}	
+			if(comuneDomicilio!=null && !StringUtils.isBlank(regioneTitolare) && 
+			   comuneDomicilio.getCodIstatComune()!=null && !stessaRegione){
+				 comuneDom = luoghiService.getComuneItaByIstat(comuneDomicilio.getCodIstatComune());
+				 stessaRegione = regioneTitolare.equals(comuneDom.getCodIstatRegione());
+			}	
+			if(!stessaRegione){
+				msgs.add("Per progetti finanziati su fondi POR, la regione di residenza o domicilio del beneficiario deve essere uguale alla regione del Comune Titolare");
+			}
+			
+		}
+		return msgs;
 	}
 		
 	private boolean validaCampiObbligatoriFse(){
@@ -1472,13 +1419,7 @@ public class DatiProgettoBean extends CsUiCompBaseBean implements Serializable {
 				}
 			}
 		}
-		
-		if(!StringUtils.isBlank(csIInterventoPr.getCsIInterventoPrFse().getViaDomicilio()) && 
-				( domicilioComuneMan.getComune()==null || StringUtils.isBlank(domicilioComuneMan.getComune().getCodIstatComune()))){
-			addError("Progetti","Attenzione: è stata inserita la via di domicilio, senza specificare il comune");
-			ret = false;
-		}
-		
+				
 		if(this.csIInterventoPr.getCsTbIngMercato()==null ) {
 			addError("Progetti","Attenzione: Per i progetti di tipo FSE il campo 'Condizione nel mercato del lavoro in ingresso' è obbligatorio");
 			ret = false;
@@ -1681,35 +1622,16 @@ public class DatiProgettoBean extends CsUiCompBaseBean implements Serializable {
 
 	private void aggiornaDatiDaCartella(){
 		if(datiSociali!=null){
-			//valorizzaLavoroDatiSociali(datiSociali);  //caricati in modo esplicito tramite pulsante SISO-1090
-			
-			//SISO-945
-		    comuneNazioneNascitaBean = new ComuneNazioneNascitaMan();
-		    
-		    if(StringUtils.isBlank(this.csIInterventoPr.getCsIInterventoPrFse().getComuneNascita())){
-		    	//siso - 945
-		    	comuneNazioneNascitaBean = getComuneNazioneNascitaMan(
-		    			datiSociali.getComuneNascitaCod(),
-						datiSociali.getComuneNascitaDes(),
-						datiSociali.getProvNascitaCod(),
-						datiSociali.getStatoNascitaCod(),
-						datiSociali.getStatoNascitaDes());
-		    	
-				//siso - 945 fine
-			    this.datiFromCartella = true;
-		    }
-		    //SISO-945 FINE
-		
 		    //SISO-846
-			if(StringUtils.isBlank(this.csIInterventoPr.getCsIInterventoPrFse().getCellulare())){
+			if(StringUtils.isBlank(this.csIInterventoPr.getCsIInterventoPrFse().getCellulare()) && !StringUtils.isBlank(datiSociali.getCel())){
 				this.csIInterventoPr.getCsIInterventoPrFse().setCellulare(datiSociali.getCel());
 				this.datiFromCartella = true;
 			}
-			if(StringUtils.isBlank(this.csIInterventoPr.getCsIInterventoPrFse().getTelefono())){
+			if(StringUtils.isBlank(this.csIInterventoPr.getCsIInterventoPrFse().getTelefono()) && !StringUtils.isBlank(datiSociali.getTel())){
 				this.csIInterventoPr.getCsIInterventoPrFse().setTelefono(datiSociali.getTel());
 				this.datiFromCartella = true;
 			}
-			if(StringUtils.isBlank(this.csIInterventoPr.getCsIInterventoPrFse().getEmail())){
+			if(StringUtils.isBlank(this.csIInterventoPr.getCsIInterventoPrFse().getEmail()) && !StringUtils.isBlank(datiSociali.getEmail())){
 				this.csIInterventoPr.getCsIInterventoPrFse().setEmail(datiSociali.getEmail());
 				this.datiFromCartella = true;
 			}
@@ -1719,8 +1641,10 @@ public class DatiProgettoBean extends CsUiCompBaseBean implements Serializable {
 				IFamConviventi fam;
 				try {
 					fam = FamiliariManBaseBean.initByModel(datiSociali.getFamiliariConviventi());
-					this.csIInterventoPr.getCsIInterventoPrFse().setCsTbGrVulnerabile(fam.getGruppoVulnerabile()); 
-					this.datiFromCartella=true;
+					if(fam.getGruppoVulnerabile()!=null) {
+						this.csIInterventoPr.getCsIInterventoPrFse().setCsTbGrVulnerabile(fam.getGruppoVulnerabile()); 
+						this.datiFromCartella=true;
+					}
 				} catch (Exception e) {
 					logger.error("Errore recuper scheda familiari conviventi per DATI SOCIALI["+datiSociali.getIdDatiSociali()+"]");
 				}
@@ -1731,22 +1655,24 @@ public class DatiProgettoBean extends CsUiCompBaseBean implements Serializable {
 			if(this.csIInterventoPr.getCsIInterventoPrFse().getViaDomicilio()==null || 
 			   this.csIInterventoPr.getCsIInterventoPrFse().getComuneDomicilio()==null){
 				
-				if(this.csIInterventoPr.getCsIInterventoPrFse().getViaDomicilio()==null && datiSociali.getIndirizzoDomicilio()!=null){
+				if(StringUtils.isBlank(this.csIInterventoPr.getCsIInterventoPrFse().getViaDomicilio()) && !StringUtils.isBlank(datiSociali.getIndirizzoDomicilio())){
 						this.csIInterventoPr.getCsIInterventoPrFse().setViaDomicilio(datiSociali.getIndirizzoDomicilio());
 						this.datiFromCartella = true;
 				}
 				if(this.domicilioComuneMan.getComune()==null){
 						ComuneBean cbean = getComuneBean(datiSociali.getComuneDomicilioCod(), datiSociali.getComuneDomicilioDes(), datiSociali.getProvDomicilioCod());
-						this.domicilioComuneMan.setComune(cbean);
-						this.datiFromCartella = true;
+						if(cbean!=null) {
+							this.domicilioComuneMan.setComune(cbean);
+							this.datiFromCartella = true;
+						}
 				}
 			}
 		}
 	}
 	
 	
-	public void onChangeBeneficiarioRiferimento(String cf ,ComuneNazioneNascitaMan comuneNazioneNascitaMan) {
-		this.comuneNazioneNascitaBean=comuneNazioneNascitaMan;
+	public void onChangeBeneficiarioRiferimento(String cf /*,ComuneNazioneNascitaMan comuneNazioneNascitaMan*/) {
+		//this.comuneNazioneNascitaBean=comuneNazioneNascitaMan;
 		loadDatiSociali(cf);
 		
 		//Resetto i dati provenienti dalla cartella poichè è cambiato il soggetto di riferimento per il quale erano stati configurati
@@ -1756,9 +1682,7 @@ public class DatiProgettoBean extends CsUiCompBaseBean implements Serializable {
 				this.csIInterventoPr.getCsIInterventoPrFse().setEmail(null);
 				this.csIInterventoPr.getCsIInterventoPrFse().setViaDomicilio(null);
 				this.csIInterventoPr.getCsIInterventoPrFse().setComuneDomicilio(null);
-				this.csIInterventoPr.getCsIInterventoPrFse().setComuneNascita(null);
-				this.csIInterventoPr.getCsIInterventoPrFse().setStatoNascitaCod(null);
-				this.csIInterventoPr.getCsIInterventoPrFse().setStatoNascitaDes(null);
+				
 				this.csIInterventoPr.getCsIInterventoPrFse().setCsTbGrVulnerabile(null);
 			}
 			valorizzaLavoroDatiSociali();
@@ -1820,7 +1744,6 @@ public class DatiProgettoBean extends CsUiCompBaseBean implements Serializable {
 		stampaFseDTO.setTelefono(this.getCsIInterventoPr().getCsIInterventoPrFse().getTelefono());
 		stampaFseDTO.setCellulare(this.getCsIInterventoPr().getCsIInterventoPrFse().getCellulare());
 		stampaFseDTO.setEmail(this.getCsIInterventoPr().getCsIInterventoPrFse().getEmail());
-		stampaFseDTO.setLuogoNascita(comuneNazioneNascitaBean.getDescrizioneLuogoDiNascita());
 		
 		if(this.domicilioComuneMan.getComune() != null){
 			stampaFseDTO.setDomicilioCap(this.domicilioComuneMan.getComune().getCap());

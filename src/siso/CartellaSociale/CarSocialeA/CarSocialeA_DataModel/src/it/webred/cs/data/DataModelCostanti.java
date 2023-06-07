@@ -1,7 +1,6 @@
 package it.webred.cs.data;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.regex.Pattern;
@@ -26,6 +25,17 @@ public class DataModelCostanti {
 	public static Pattern patternNumTelFisso = Pattern.compile("(0{1}[1-9]{1,3})[\\s]?(\\d{4,})");
 	public static Pattern patternNumTelMobile = Pattern.compile("(\\d{1,3})[\\s]?(\\d{4,})");
 	public static final String NON_RILEVATO = "Non rilevato";
+	
+	public static final String UDC_MSG_INFO_NOTA_PRIVATA = 
+			"Le note private possono essere visualizzate dall'utente corrente solo se: "+
+			"<ul>"+
+			"<li>é il responsabile dell'organizzazione in cui è stata inserita la nota</li>"+
+			"<li>ha creato la scheda di appartenenza della nota</li>"+
+			"<li>ha inserito la nota</li>"+
+			"<li>posside il permesso di leggere i diari ed è attualmente autenticato nella stessa oganizzazione in cui è stata inserita la nota.</li>"+
+			"</ul>";
+		
+	
 	
 	public static class Segnalibri implements Serializable {
 

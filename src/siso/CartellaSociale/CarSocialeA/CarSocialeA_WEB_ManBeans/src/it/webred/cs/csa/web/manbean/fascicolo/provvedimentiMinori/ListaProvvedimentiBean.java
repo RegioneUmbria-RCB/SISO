@@ -6,8 +6,11 @@ import it.webred.cs.csa.ejb.dto.BaseDTO;
 import it.webred.cs.csa.web.manbean.fascicolo.FascicoloCompBaseBean;
 import it.webred.cs.data.model.CsASoggettoLAZY;
 import it.webred.cs.data.model.CsDValutazione;
+import it.webred.cs.jsf.interfaces.IListaProvvedimentiMinori;
+import it.webred.cs.json.provvedimentiMinori.IProvvedimentiMinori;
+import it.webred.cs.json.provvedimentiMinori.ProvvedimentiMinoriManBaseBean;
 
-public class ListaProvvedimentiBean extends FascicoloCompBaseBean {
+public class ListaProvvedimentiBean extends FascicoloCompBaseBean implements IListaProvvedimentiMinori {
 
 	private LazyListaProvvedimentiModel lazyListaProvvedimentiModel;
 	private IProvvedimentiMinori currProvvedimentiMinoriManBean;

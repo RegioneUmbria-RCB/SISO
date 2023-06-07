@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Map;
 
 import com.osmosit.siso.flussoinps.logic.Cost;
-import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const;
 
 class ValidityChecker {
 
@@ -71,6 +70,11 @@ class ValidityChecker {
 						response.check(u.getDate(datiPrestazione, Cost.PRESTAZIONE_DATA_FINE) != null, "PRESTAZIONE_DATA_FINE [beneficiario:"+soggetto+"]");
 						response.check(u.getInteger(datiPrestazione, Cost.PRESTAZIONE_PERIOD_EROG) != null, "PRESTAZIONE_PERIOD_EROG [beneficiario:"+soggetto+"]");
 						response.check(u.getBigDecimal(datiPrestazione, Cost.PRESTAZIONE_IMPORTO_MENS) != null, "PRESTAZIONE_IMPORTO_MENS [beneficiario:"+soggetto+"]");
+						
+						String codPrestazione = u.getString(datiPrestazione, Cost.PRESTAZIONE_CODICE);
+						if("A1.05.01".equals(codPrestazione))
+							response.check(u.getDate(datiPrestazione, Cost.PRESTAZIONE_DATA_EVENTO) != null, "PRESTAZIONE_DATA_EVENTO [beneficiario:"+soggetto+"]");
+						
 					} else {
 						// prestazione occasionale
 						response.check(u.getDate(datiPrestazione, Cost.PRESTAZIONE_DATA_EROG) != null, "PRESTAZIONE_DATA_EROG [beneficiario:"+soggetto+"]");

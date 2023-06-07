@@ -27,10 +27,10 @@ import it.webred.cs.csa.ejb.dto.fascicolo.colloquio.ListaDatiColloquioDTO;
 import it.webred.cs.csa.ejb.dto.fascicolo.docIndividuali.DocIndividualeBean;
 import it.webred.cs.csa.ejb.dto.fascicolo.isee.ListaDatiIseeDTO;
 import it.webred.cs.csa.ejb.dto.fascicolo.scuola.ListaDatiScuolaDTO;
+import it.webred.cs.csa.ejb.dto.pai.CsPaiMastSoggDTO;
 import it.webred.cs.csa.ejb.dto.pai.ListaDatiPaiDTO;
 import it.webred.cs.csa.ejb.dto.pai.PaiSearchCriteria;
 import it.webred.cs.csa.ejb.dto.pai.PaiSintesiDTO;
-import it.webred.cs.csa.ejb.dto.pai.SoggettoPaiBean;
 import it.webred.cs.csa.ejb.dto.relazione.RelazioneSintesiDTO;
 import it.webred.cs.csa.ejb.dto.relazione.SaveRelazioneDTO;
 import it.webred.cs.data.DataModelCostanti;
@@ -1628,9 +1628,9 @@ public class AccessTableDiarioSessionBean extends CarSocialeBaseSessionBean impl
 			ArrayList<ListaDatiPaiDTO> lstOut = new ArrayList<ListaDatiPaiDTO>();
 			for(CsVistaPai p : lstIn){
 				ListaDatiPaiDTO dto = new ListaDatiPaiDTO(p.getVisSecondoLivello(), p.getSettoreId());
-				List<SoggettoPaiBean> beneficiari = new ArrayList<SoggettoPaiBean>();
+				List<CsPaiMastSoggDTO> beneficiari = new ArrayList<CsPaiMastSoggDTO>();
 				for(CsPaiMastSogg s : p.getBeneficiari()){
-					SoggettoPaiBean b = new SoggettoPaiBean(s);
+					CsPaiMastSoggDTO b = new CsPaiMastSoggDTO(s);
 					beneficiari.add(b);
 				}
 				dto.setBeneficiari(beneficiari);

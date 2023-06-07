@@ -12,6 +12,7 @@ public class ErogazioneDettaglioDTO implements Serializable {
 
 	private Date dataErogazione;
 	private Date dataErogazioneA; //SISO-556
+	private Date dataEvento;
 	private CsCfgIntEsegStato statoErogazione;
 	private Long idInterventoEseg = null;
 	private String descrizione;
@@ -81,6 +82,12 @@ public class ErogazioneDettaglioDTO implements Serializable {
 	}
 	public void setValori(List<CsIInterventoEsegValore> valori) {
 		this.valori = valori;
+	}
+	public Date getDataEvento() {
+		return dataEvento;
+	}
+	public void setDataEvento(Date dataEvento) {
+		this.dataEvento = dataEvento;
 	}
 
 }

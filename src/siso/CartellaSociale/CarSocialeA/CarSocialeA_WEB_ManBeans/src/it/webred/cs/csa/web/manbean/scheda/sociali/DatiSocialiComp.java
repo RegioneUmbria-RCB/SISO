@@ -319,10 +319,10 @@ public class DatiSocialiComp extends SchedaValiditaCompUtils implements IDatiSoc
 	}
 	
 	public void valorizzaFormazioneLavoroDaUDC(SsSchedaSegnalato segnalato) {
-		formLavoroMan.setIdProfessione(segnalato.getProfessione()!=null ? new BigDecimal(segnalato.getProfessione()) : null);
+		formLavoroMan.setIdProfessione(segnalato.getProfessioneId());
 		formLavoroMan.setIdTitoloStudio(segnalato.getTitoloStudioId());
 		formLavoroMan.setIdSettoreImpiego(segnalato.getSettImpiegoId());
-		formLavoroMan.setIdCondLavorativa(segnalato.getLavoro()!=null ? new BigDecimal(segnalato.getLavoro()) : null);
+		formLavoroMan.setIdCondLavorativa(segnalato.getCondLavoroId());
 	}
 		
 	public void valorizzaDatiPorDaUDC(CsExtraFseDatiLavoro sdl){

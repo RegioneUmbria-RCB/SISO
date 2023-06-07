@@ -49,9 +49,11 @@ public class SsSchedaSegnalato implements Serializable {
 	
 	private Boolean stp=false;
 	
-	private String lavoro;
+	@Column(name="COND_LAVORO_ID")
+	private BigDecimal condLavoroId;
 	
-	private String professione;
+	@Column(name="PROFESSIONE_ID")
+	private BigDecimal professioneId;
 	
 	private Long invalidita;
 	
@@ -91,11 +93,11 @@ public class SsSchedaSegnalato implements Serializable {
 	private CsTbTitoloStudio tbTitoloStudio;
 	
 	@ManyToOne  
-	@JoinColumn(name="LAVORO", insertable=false, updatable=false)
+	@JoinColumn(name="COND_LAVORO_ID", insertable=false, updatable=false)
 	private CsTbCondLavoro tbCondLavoro;
 	
 	@ManyToOne  
-	@JoinColumn(name="PROFESSIONE", insertable=false, updatable=false)
+	@JoinColumn(name="PROFESSIONE_ID", insertable=false, updatable=false)
 	private CsTbProfessione tbProfessione;
 	
 	@ManyToOne  
@@ -174,20 +176,14 @@ public class SsSchedaSegnalato implements Serializable {
 		this.anagrafica = anagrafica;
 	}
 
-	public String getProfessione() {
-		return professione;
+	public BigDecimal getProfessioneId() {
+		return professioneId;
 	}
 
-	public void setProfessione(String professione) {
-		this.professione = professione;
+	public void setProfessioneId(BigDecimal professioneId) {
+		this.professioneId = professioneId;
 	}
 	
-	public String getLavoro() {
-		return lavoro;
-	}
-	public void setLavoro(String lavoro) {
-		this.lavoro = lavoro;
-	}
 
 	public BigDecimal getTitoloStudioId() {
 		return titoloStudioId;
@@ -275,6 +271,16 @@ public class SsSchedaSegnalato implements Serializable {
 
 	public void setTbCondLavoro(CsTbCondLavoro tbCondLavoro) {
 		this.tbCondLavoro = tbCondLavoro;
+	}
+	
+	
+
+	public BigDecimal getCondLavoroId() {
+		return condLavoroId;
+	}
+
+	public void setCondLavoroId(BigDecimal condLavoroId) {
+		this.condLavoroId = condLavoroId;
 	}
 
 	public CsTbProfessione getTbProfessione() {

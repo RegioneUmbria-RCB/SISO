@@ -88,6 +88,12 @@ public class InserimentoMinoreDaStruttura implements Serializable {
 	@Column(name = "DIARIO_PAI_ID")
 	private Long diarioPaiId;
 
+	 @Column(name="COMUNE_NASCITA")
+	 private String comuneNascita; //JSON
+	 
+	 @Column(name="NAZIONE_NASCITA")  						
+	 private String nazioneNascita;
+	 
 	public InserimentoMinoreDaStruttura() {
 	}
 
@@ -259,4 +265,19 @@ public class InserimentoMinoreDaStruttura implements Serializable {
 		this.diarioPaiId = diarioPaiId;
 	}
 
+	public String getComuneNascita() {
+		return comuneNascita;
+	}
+
+	public void setComuneNascita(String comuneNascita) {
+		this.comuneNascita = comuneNascita;
+	}
+
+	public String getNazioneNascita() {
+		return nazioneNascita;
+	}
+
+	public void setNazioneNascita(String nazioneNascita) {
+		this.nazioneNascita = nazioneNascita;
+	}
 }

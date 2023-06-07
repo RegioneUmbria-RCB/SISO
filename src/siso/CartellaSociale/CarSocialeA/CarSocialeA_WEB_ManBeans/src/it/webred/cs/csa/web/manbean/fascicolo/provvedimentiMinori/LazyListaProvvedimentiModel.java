@@ -1,26 +1,25 @@
 package it.webred.cs.csa.web.manbean.fascicolo.provvedimentiMinori;
 
-import it.webred.cs.csa.ejb.client.AccessTableDiarioSessionBeanRemote;
-import it.webred.cs.csa.ejb.dto.BaseDTO;
-import it.webred.cs.csa.ejb.dto.ErogazioniSearchCriteria;
-import it.webred.cs.csa.web.manbean.fascicolo.provvedimentiMinori.ver1.ProvvedimentiMinoriManBean;
-import it.webred.cs.data.DataModelCostanti;
-import it.webred.cs.data.model.CsASoggettoLAZY;
-import it.webred.cs.data.model.CsDValutazione;
-import it.webred.cs.jsf.manbean.superc.CsUiCompBaseBean;
-import it.webred.ejb.utility.ClientUtility;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import javax.naming.NamingException;
-
 import org.jboss.logging.Logger;
 import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortOrder;
+
+import it.webred.cs.csa.ejb.client.AccessTableDiarioSessionBeanRemote;
+import it.webred.cs.csa.ejb.dto.BaseDTO;
+import it.webred.cs.csa.ejb.dto.ErogazioniSearchCriteria;
+import it.webred.cs.data.DataModelCostanti;
+import it.webred.cs.data.model.CsASoggettoLAZY;
+import it.webred.cs.data.model.CsDValutazione;
+import it.webred.cs.jsf.manbean.superc.CsUiCompBaseBean;
+import it.webred.cs.json.provvedimentiMinori.IProvvedimentiMinori;
+import it.webred.cs.json.provvedimentiMinori.ProvvedimentiMinoriManBaseBean;
+import it.webred.cs.json.provvedimentiMinori.ProvvedimentiMinoriRowBean;
 
 public class LazyListaProvvedimentiModel extends LazyDataModel<ProvvedimentiMinoriRowBean> {
 
@@ -48,22 +47,15 @@ public class LazyListaProvvedimentiModel extends LazyDataModel<ProvvedimentiMino
 	private List<CsDValutazione> caricaListaProvvedimenti(){
 		
 		List<CsDValutazione> schede = new ArrayList<CsDValutazione>();
-		AccessTableDiarioSessionBeanRemote diarioService;
-		try {
-			diarioService = (AccessTableDiarioSessionBeanRemote) ClientUtility.getEjbInterface("CarSocialeA", "CarSocialeA_EJB", "AccessTableDiarioSessionBean");
-			BaseDTO dto = new BaseDTO();
-			CsUiCompBaseBean.fillEnte(dto);
-			dto.setObj2(DataModelCostanti.TipoDiario.PROVVEDIMENTI_TRIBUNALE);
+		AccessTableDiarioSessionBeanRemote diarioService = (AccessTableDiarioSessionBeanRemote) CsUiCompBaseBean.getCarSocialeEjb("AccessTableDiarioSessionBean");
+		BaseDTO dto = new BaseDTO();
+		CsUiCompBaseBean.fillEnte(dto);
+		dto.setObj2(DataModelCostanti.TipoDiario.PROVVEDIMENTI_TRIBUNALE);
 
-			if (this.soggetto != null) {
-				dto.setObj(soggetto.getAnagraficaId());
-			}
-			schede = diarioService.getSchedeValutazioneSoggetto(dto);
-
-		} catch (NamingException e) {
-			logger.error(e);
+		if (this.soggetto != null) {
+			dto.setObj(soggetto.getAnagraficaId());
 		}
-
+		schede = diarioService.getSchedeValutazioneSoggetto(dto);
 		return schede;
 	}
 	
@@ -74,7 +66,7 @@ public class LazyListaProvvedimentiModel extends LazyDataModel<ProvvedimentiMino
 		for (CsDValutazione csDValutazione : schede) {
 			IProvvedimentiMinori bean;
 			try {
-				bean = ProvvedimentiMinoriManBean.initIProvvedimentiMinoriRow
+				bean = ProvvedimentiMinoriManBaseBean.initIProvvedimentiMinoriRow
 						(csDValutazione, csDValutazione.getCsDDiario().getCsACaso().getCsASoggetto());
 				ProvvedimentiMinoriRowBean row= new ProvvedimentiMinoriRowBean();
 				bean.valorizzaRowList(row);

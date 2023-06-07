@@ -32,6 +32,7 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.CreationHelper;
 import org.apache.poi.ss.usermodel.Row;
 
 @ManagedBean
@@ -223,8 +224,8 @@ public class ListaFseBean extends CsUiCompBaseBean{
 	 * di export delle singole colonne), si procede a generare un file Excel direttamente con Apache POI. */
 	private static final int EXCEL_COLUMN_INDEX_CODICE_PROGETTO = 0;
 	private static final int EXCEL_COLUMN_INDEX_CODICE_FISCALE = 1;
-	private static final int EXCEL_COLUMN_INDEX_COGNOME = 2;
-	private static final int EXCEL_COLUMN_INDEX_NOME = 3;
+	private static final int EXCEL_COLUMN_INDEX_NOME = 2;
+	private static final int EXCEL_COLUMN_INDEX_COGNOME = 3;
 	private static final int EXCEL_COLUMN_INDEX_DATA_NASCITA = 4;
 	private static final int EXCEL_COLUMN_INDEX_COMUNE_NASCITA_ISTAT = 5;
 	private static final int EXCEL_COLUMN_INDEX_COMUNE_NASCITA_DESC = 6;
@@ -263,10 +264,30 @@ public class ListaFseBean extends CsUiCompBaseBean{
 	private static final int EXCEL_COLUMN_SOGGETTO_ATTUATORE = 32;
 	
 	private CellStyle exportCellStyle;
-	
+	private CellStyle dateCellStyle;
+
+
 	private void createAndPopulateCell(Row row, int columnIndex, String value) {
 		Cell cell = row.createCell(columnIndex);
 		cell.setCellStyle(exportCellStyle);
+		
+		cell.setCellValue(value);
+	}
+	
+	private void createAndPopulateIntegerCell(Row row, int columnIndex, String value) {
+		Cell cell = row.createCell(columnIndex);
+		cell.setCellStyle(exportCellStyle);
+		
+		Integer numero = numberValueExtraction(value);
+		if(numero!=null) 
+			cell.setCellValue(numero);
+		else 
+			cell.setCellValue(value);
+	}
+	
+	private void createAndPopulateCell(Row row, int columnIndex, Date value) {
+		Cell cell = row.createCell(columnIndex);
+		cell.setCellStyle(dateCellStyle);
 		
 		cell.setCellValue(value);
 	}
@@ -281,6 +302,11 @@ public class ListaFseBean extends CsUiCompBaseBean{
 		exportCellStyle = workbook.createCellStyle();
 		exportCellStyle.setWrapText(true);
 				
+		dateCellStyle = workbook.createCellStyle();
+		CreationHelper createHelper = workbook.getCreationHelper();
+		dateCellStyle.setDataFormat(createHelper.createDataFormat().getFormat("m/d/yy"));
+		
+		
 		// creo il (solo) foglio del documento
 		HSSFSheet sheet = workbook.createSheet("ListaCasi");
 				
@@ -346,11 +372,11 @@ public class ListaFseBean extends CsUiCompBaseBean{
 			    row.setHeightInPoints(30);
 				
 				// popolo le colonne (replicando di fatto la logica della view)	
-				createAndPopulateCell(row, EXCEL_COLUMN_INDEX_CODICE_PROGETTO, rowFse.getProgettoCod());
+			    createAndPopulateIntegerCell(row, EXCEL_COLUMN_INDEX_CODICE_PROGETTO, rowFse.getProgettoCod());
 				createAndPopulateCell(row, EXCEL_COLUMN_INDEX_CODICE_FISCALE, rowFse.getCf());
 				createAndPopulateCell(row, EXCEL_COLUMN_INDEX_NOME , rowFse.getNome());
 				createAndPopulateCell(row, EXCEL_COLUMN_INDEX_COGNOME, rowFse.getCognome());
-				createAndPopulateCell(row, EXCEL_COLUMN_INDEX_DATA_NASCITA, dataValueExtraction(rowFse.getDataNascita()));
+				createAndPopulateCell(row, EXCEL_COLUMN_INDEX_DATA_NASCITA, rowFse.getDataNascita());
 				
 				String codComuneNascita = rowFse.getNascitaComuneIstat();
 				if(StringUtils.isBlank(codComuneNascita) && !StringUtils.isBlank(rowFse.getNascitaNazioneIstat()))
@@ -376,14 +402,14 @@ public class ListaFseBean extends CsUiCompBaseBean{
 				createAndPopulateCell(row, EXCEL_COLUMN_INDEX_CELLULARE, rowFse.getCellulare());
 				createAndPopulateCell(row, EXCEL_COLUMN_INDEX_EMAIL, rowFse.getEmail());
 				
-				createAndPopulateCell(row, EXCEL_COLUMN_INDEX_TIT_COD, rowFse.getTitoloStudioCod());
-				createAndPopulateCell(row, EXCEL_COLUMN_INDEX_TCOND_COD_TIPOCONDOCCUP, rowFse.getCondOccupazioneCod());
-				createAndPopulateCell(row, EXCEL_COLUMN_INDEX_PERIODO_DISOCC, rowFse.getCondOccupazioneCod());
+				createAndPopulateIntegerCell(row, EXCEL_COLUMN_INDEX_TIT_COD, rowFse.getTitoloStudioCod());
+				createAndPopulateIntegerCell(row, EXCEL_COLUMN_INDEX_TCOND_COD_TIPOCONDOCCUP, rowFse.getCondOccupazioneCod());
+				createAndPopulateIntegerCell(row, EXCEL_COLUMN_INDEX_PERIODO_DISOCC, rowFse.getPeriodoDisoccupazione());
 				
 				//Condizioni vulnerabilità
-				createAndPopulateCell(row, EXCEL_COLUMN_INDEX_01_TCONV, rowFse.getGrVulnerabile());
+				createAndPopulateIntegerCell(row, EXCEL_COLUMN_INDEX_01_TCONV, rowFse.getGrVulnerabile());
 				
-				createAndPopulateCell(row, EXCEL_COLUMN_INDEX_DATA_ISCRIZIONE, dataValueExtraction(rowFse.getDataSottoscrizione()));
+				createAndPopulateCell(row, EXCEL_COLUMN_INDEX_DATA_ISCRIZIONE, rowFse.getDataSottoscrizione());
 				String nomeProgetto = rowFse.getProgettoDenominazione()!=null ? rowFse.getProgettoDenominazione().replaceFirst(DataModelCostanti.patternFSE, "") : null;
 				createAndPopulateCell(row, EXCEL_COLUMN_DENOMINAZIONE_PROGETTO, nomeProgetto);
 				createAndPopulateCell(row, EXCEL_COLUMN_SOGGETTO_ATTUATORE, rowFse.getSoggettoAttuatore());
@@ -422,6 +448,17 @@ public class ListaFseBean extends CsUiCompBaseBean{
 		SimpleDateFormat ddmmyyyy = new SimpleDateFormat("dd/MM/yyyy");
 		
 		return data == null ? "" : ddmmyyyy.format(data);
+	}
+	
+	private Integer numberValueExtraction(String s) {
+		Integer i = null;
+		try {
+			i = Integer.valueOf(s);
+		}catch(NumberFormatException nfe){
+			logger.warn("Impossibile convertire in intero il seguente valore:"+s);
+		}
+		
+		return i;
 	}
 
 	public boolean isCanViewListaAmbito() {

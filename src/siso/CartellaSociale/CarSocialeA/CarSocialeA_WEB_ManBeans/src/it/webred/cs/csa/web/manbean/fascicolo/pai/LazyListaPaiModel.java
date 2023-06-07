@@ -1,11 +1,5 @@
 package it.webred.cs.csa.web.manbean.fascicolo.pai;
 
-import it.webred.cs.csa.ejb.client.AccessTableDiarioSessionBeanRemote;
-import it.webred.cs.csa.ejb.dto.OperatoriSearchCriteria;
-import it.webred.cs.csa.ejb.dto.pai.ListaDatiPaiDTO;
-import it.webred.cs.csa.ejb.dto.pai.PaiSearchCriteria;
-import it.webred.cs.jsf.manbean.superc.CsUiCompBaseBean;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +7,11 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortOrder;
+
+import it.webred.cs.csa.ejb.client.AccessTableDiarioSessionBeanRemote;
+import it.webred.cs.csa.ejb.dto.pai.ListaDatiPaiDTO;
+import it.webred.cs.csa.ejb.dto.pai.PaiSearchCriteria;
+import it.webred.cs.jsf.manbean.superc.CsUiCompBaseBean;
 
 public class LazyListaPaiModel extends LazyDataModel<ListaDatiPaiDTO> {
     

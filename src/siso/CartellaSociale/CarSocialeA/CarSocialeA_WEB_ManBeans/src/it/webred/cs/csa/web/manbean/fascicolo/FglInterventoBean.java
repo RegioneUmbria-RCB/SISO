@@ -1,5 +1,35 @@
 package it.webred.cs.csa.web.manbean.fascicolo;
 
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
+import javax.faces.context.FacesContext;
+import javax.faces.event.AjaxBehaviorEvent;
+import javax.faces.model.SelectItem;
+import javax.faces.model.SelectItemGroup;
+import javax.naming.NamingException;
+
+import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.primefaces.context.RequestContext;
+import org.primefaces.event.FlowEvent;
+
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import it.webred.cs.csa.ejb.client.configurazione.AccessTableNazioniSessionBeanRemote;
 import it.webred.cs.csa.ejb.dto.BaseDTO;
 import it.webred.cs.csa.ejb.dto.InterventoDTO;
@@ -22,7 +52,6 @@ import it.webred.cs.data.DataModelCostanti.TariffeErogazioni.TIPO_RENDICONTO;
 import it.webred.cs.data.DataModelCostanti.TipiCategoriaSociale;
 import it.webred.cs.data.DataModelCostanti.TipoStatoErogazione;
 import it.webred.cs.data.model.CsAAnaIndirizzo;
-import it.webred.cs.data.model.CsAAnagrafica;
 import it.webred.cs.data.model.CsAComponente;
 import it.webred.cs.data.model.CsASoggettoLAZY;
 import it.webred.cs.data.model.CsCCategoriaSociale;
@@ -54,47 +83,21 @@ import it.webred.cs.jsf.bean.erogazioneIntervento.ErogazioneInterventoBean;
 import it.webred.cs.jsf.bean.erogazioneIntervento.InterventoErogazHistoryRowBean;
 import it.webred.cs.jsf.interfaces.IDatiFglIntervento;
 import it.webred.cs.jsf.manbean.ComponenteAltroMan;
-import it.webred.cs.jsf.manbean.ComuneNazioneNascitaMan;
+import it.webred.cs.jsf.manbean.ComuneNascitaMan;
 import it.webred.cs.jsf.manbean.ComuneResidenzaMan;
 import it.webred.cs.jsf.manbean.SinaMan;
 import it.webred.cs.jsf.manbean.superc.CsUiCompBaseBean;
+import it.webred.ct.config.model.AmTabNazioni;
 import it.webred.ct.support.datarouter.CeTBaseObject;
 import it.webred.ejb.utility.ClientUtility;
 import it.webred.jsf.bean.ComuneBean;
 
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.faces.application.FacesMessage;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
-import javax.faces.context.FacesContext;
-import javax.faces.event.AjaxBehaviorEvent;
-import javax.faces.model.SelectItem;
-import javax.faces.model.SelectItemGroup;
-import javax.naming.NamingException;
-
-import org.apache.commons.beanutils.BeanUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.primefaces.context.RequestContext;
-import org.primefaces.event.FlowEvent;
-
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 @ManagedBean(eager = true)
 @SessionScoped
 public class FglInterventoBean extends FascicoloCompSecondoLivello implements IDatiFglIntervento {
+
+	private static final String DATA_EROG_LABEL_DEFAULT = "Data ";
+	private String dataErogLabel = DATA_EROG_LABEL_DEFAULT;
 
 	protected String headerDialogo = "";
 	protected boolean abilitaSalvataggio = false;
@@ -129,13 +132,10 @@ public class FglInterventoBean extends FascicoloCompSecondoLivello implements ID
 
 	private final String tipoErogazioneDisableTooltip = "Modifica disabilitata in quanto ci sono delle erogazioni comprese fra la data \"Dal\" e la data \"Al\"";
 
-	//SISO-945 
-	private ComuneNazioneNascitaMan comuneNazioneNascitaMan = null;
 	// SISO-783
 	private Boolean visualizzaSinaTab = false;
 	private SinaMan sinaMan;
-	//SISO-928
-	private Boolean validaSinaErog = false;
+	
 	//SISO 972
 	private String FSEMessage = "";
 	
@@ -194,7 +194,7 @@ public class FglInterventoBean extends FascicoloCompSecondoLivello implements ID
 	}
 	
 	public void inizializzaErogazione(CsPaiMastSoggDTO soggettoPai) {
-		csASoggetto = null;
+		this.csASoggetto = null;
 		if (soggettoPai != null)
 			csASoggetto = soggettoPai.getCsASoggetto();
 		soggettoNuovaErogazione = new SoggettoErogazioneBean(soggettoPai);
@@ -205,12 +205,6 @@ public class FglInterventoBean extends FascicoloCompSecondoLivello implements ID
 		}
 	}
 
-	public void inizializzaErogazione(SoggettoErogazioneBean soggettoErogazione, ComuneNazioneNascitaMan comuneNazioneNascitaMan) {
-		this.fromPai = false;
-		inizializzaErogazione(soggettoErogazione);
-		this.comuneNazioneNascitaMan = comuneNazioneNascitaMan;
-	}
-	
 	public void inizializzaRiferimentoErogazione(ErogInterventoRowBean row){
 		csASoggetto = null;
 		if (row.getBeneficiarioRiferimento() != null)
@@ -238,22 +232,14 @@ public class FglInterventoBean extends FascicoloCompSecondoLivello implements ID
 		String comune = getCasoComuneResidenza(residenza);
 		String via = residenza!=null ? residenza.getLabelIndirizzo() : null;
 		String statoEstero = residenza!=null ? residenza.getStatoCod() : null;
+		String jsonComuneNascita = getJsonNascitaComuneBean(soggetto);
 		
 		String cfCaso = soggetto!=null && soggetto.getCsAAnagrafica()!=null ? soggetto.getCsAAnagrafica().getCf() : null;
-		if(this.soggettoNuovaErogazione!=null && this.soggettoNuovaErogazione.getCodiceFiscale().equalsIgnoreCase(cfCaso))
-			soggettoNuovaErogazione.integraDatiMancanti(soggetto, via, comune);
+		if(this.soggettoNuovaErogazione!=null && this.soggettoNuovaErogazione.getCf().equalsIgnoreCase(cfCaso))
+			soggettoNuovaErogazione.integraDatiMancanti(soggetto, via, comune, residenza.getStatoCod(), jsonComuneNascita);
 		else
-			soggettoNuovaErogazione = new SoggettoErogazioneBean(soggetto, via , comune, statoEstero, true);
-		
-		comuneNazioneNascitaMan = new ComuneNazioneNascitaMan();
-		if(soggetto!=null){
-			CsAAnagrafica ana = soggetto.getCsAAnagrafica();
-			comuneNazioneNascitaMan = getComuneNazioneNascitaMan(ana.getComuneNascitaCod(), ana.getComuneNascitaDes(), ana.getProvNascitaCod(), 
-																 ana.getStatoNascitaCod(), ana.getStatoNascitaDes());
-		}
-		//else
-		//	soggettoNuovaErogazione.verificaAllineamento(soggetto, via, comune ,true);
-		
+			soggettoNuovaErogazione = new SoggettoErogazioneBean(soggetto, via , comune, statoEstero, jsonComuneNascita, true);
+	
         /*else --> ci sono dei casi in cui i dati dell'erogazione non sono allineati a quelli della cartella. Devo poter comunque mostrare quelli registrati
          * I dati dovranno comunque essere allineati in qualche modo, si potrebbe utilizzare un flag da mostrare in maschera per poter sincronizzare il dato anche 
          * se l'indirizzo di residenza potrebbe cambiare e rimanere coerente alla data dell'erogazione.
@@ -297,7 +283,6 @@ public class FglInterventoBean extends FascicoloCompSecondoLivello implements ID
 		datiInterventoBean = null;
 		datiTariffeInterventoBean = null;
 		datiProgettoBean = new DatiProgettoBean();
-		datiProgettoBean.setComuneNazioneNascitaBean(comuneNazioneNascitaMan);
 		erogazioneInterventoBean.resetFlagProvaMezzi();
 		csIIntervento = null; // SISO-556 fix di un bug non censito evidenziatosi durante la SISO-556
 	}
@@ -352,9 +337,11 @@ public class FglInterventoBean extends FascicoloCompSecondoLivello implements ID
 						String via = residenza!=null ? residenza.getLabelIndirizzo() : null;
 						String json = getCasoComuneResidenza(residenza);
 						String statoEstero = residenza!=null ? residenza.getStatoCod() : null;
-						erogazioneInterventoBean.inizializzaErogazione(idTipoIntevento, idTipoIntrCustom, this.interventoId, new SoggettoErogazioneBean(csASoggetto, via, json, statoEstero, true), beneficiari,dentroFascicolo);				
+						String jsonComuneNascita = this.getJsonNascitaComuneBean(csASoggetto);
+						soggettoNuovaErogazione = new SoggettoErogazioneBean(csASoggetto, via, json, statoEstero, jsonComuneNascita, true);
+						erogazioneInterventoBean.inizializzaErogazione(idTipoIntevento, idTipoIntrCustom, this.interventoId, soggettoNuovaErogazione, beneficiari,dentroFascicolo);				
 					}else
-					  erogazioneInterventoBean.inizializzaNuovaErogazione(idTipoIntevento, idTipoIntrCustom, soggettoNuovaErogazione, idCatSociale,dentroFascicolo);		
+						erogazioneInterventoBean.inizializzaNuovaErogazione(idTipoIntevento, idTipoIntrCustom, soggettoNuovaErogazione, idCatSociale,dentroFascicolo);		
 				}
 
 				if (this.interventoId != null && this.interventoId > 0) {
@@ -378,14 +365,14 @@ public class FglInterventoBean extends FascicoloCompSecondoLivello implements ID
 				progetto.setSettoreTitolare(getCurrentOpSettore().getCsOSettore());
 			
 			boolean tabProgettoSolaLettura = false;
-			String soggettoErogazioneBeanCF = erogazioneInterventoBean.getSoggettoErogazione().getCodiceFiscale();
+			String soggettoErogazioneBeanCF = erogazioneInterventoBean.getSoggettoErogazione().getCf();
 			datiProgettoBean.loadDatiProgetto(progetto,tabProgettoSolaLettura,idTipoIntevento, idTipoIntrCustom, catSocId, soggettoErogazioneBeanCF, this.getZonaSociale());
 			
 			loadDatiTariffeInterventoBean(datiProgettoBean.getSettoreTitolare());
 			cmbSettoreOnChange();
 			
 			loadDatiPai(master != null && master.getDiarioPaiId() != null ? master.getDiarioPaiId().longValue() : null);
-			String cf = erogazioneInterventoBean.getSoggettoErogazione().getCodiceFiscale();
+			String cf = erogazioneInterventoBean.getSoggettoErogazione().getCf();
 			initDatiSina(catSocId, master!=null ? master.getId() : null, cf);
 			initStrutturaDisponibilita(struttDispo);
 			initConsuntivazione(consuntivazione);
@@ -988,6 +975,7 @@ public class FglInterventoBean extends FascicoloCompSecondoLivello implements ID
 		try {
 
 			this.erogazioneInterventoBean.valorizzaResidenza();
+			this.erogazioneInterventoBean.valorizzaLuogoDiNascita();
 			this.erogazioneInterventoBean.valorizzaSesso();
 			
 			// TODO OK foglio attivazione controlli
@@ -1033,7 +1021,8 @@ public class FglInterventoBean extends FascicoloCompSecondoLivello implements ID
 					quotaCorrente = null;
 				bSaved &= savedQuota;
 				
-				boolean savedProgetto = this.datiProgettoBean.salva(this.erogazioneInterventoBean!=null ? this.erogazioneInterventoBean.getSoggettoErogazione() : soggettoNuovaErogazione);
+				SoggettoErogazioneBean soggettoErogazione = this.erogazioneInterventoBean!=null ? this.erogazioneInterventoBean.getSoggettoErogazione() : null;
+				boolean savedProgetto = this.datiProgettoBean.salva(soggettoErogazione);
 				CsIInterventoPr progettoCorrente = datiProgettoBean.getCsIInterventoPr();
 				if (progettoCorrente != null && (progettoCorrente.getId() == null || progettoCorrente.getId() == 0))
 					progettoCorrente = null;
@@ -1045,14 +1034,15 @@ public class FglInterventoBean extends FascicoloCompSecondoLivello implements ID
 
 				if (datiErogazioniTabRendered)
 					bSaved &= salvaDatiErogazione(quotaCorrente, progettoCorrente);
+				
 				//SISO 929
-				List<String> msgErog = sinaMan!=null ? sinaMan.validaSinaErogazione(erogazioneInterventoBean.getCsIPs().getFlagInCarico(), 
-					                                                 erogazioneInterventoBean.getErogazioneHistory().getRows()) : null;
-				validaSinaErog = (msgErog==null || msgErog.size() ==0);
-				// SISO-783
-				// ** mod. SISO-886 **//
-				if (sinaMan != null && visualizzaSinaTab && validaSinaErog)
+				if (isSinaRendered()) {
+					List<String> msgErog = sinaMan.validaSinaErogazione(erogazioneInterventoBean.getCsIPs().getFlagInCarico(), erogazioneInterventoBean.getErogazioneHistory().getRows());
+					// SISO-783
+					// ** mod. SISO-886 **//
+					if (msgErog==null || msgErog.size() ==0)
 						bSaved &= sinaMan.salvaDaFglIntervento(this.erogazioneInterventoBean.getNuovoIntEsegMast().getId());
+				}
 			} else
 				bSaved = false;
 
@@ -1122,10 +1112,11 @@ public class FglInterventoBean extends FascicoloCompSecondoLivello implements ID
 
 	// INZIO SISO-556
 	private boolean validaSalvataggio() {
+		SoggettoErogazioneBean soggettoErogazione = this.erogazioneInterventoBean!=null ? this.erogazioneInterventoBean.getSoggettoErogazione() : null;
 		if (!erogazioneInterventoBean.validaTestata()
 				|| !datiTariffeInterventoBean.valida()
 				|| !erogazioneInterventoBean.validaErogazioni(datiTariffeInterventoBean.getCsIQuota())
-				|| !datiProgettoBean.validaDatiProgetto(this.erogazioneInterventoBean!=null ? this.erogazioneInterventoBean.getSoggettoErogazione() : soggettoNuovaErogazione)
+				|| !datiProgettoBean.validaDatiProgetto(soggettoErogazione)
 				|| !validaSina()
 				){
 			
@@ -1139,22 +1130,22 @@ public class FglInterventoBean extends FascicoloCompSecondoLivello implements ID
 	// FINE SISO-556
 
 	public void onChangeProgetto(){
-		SoggettoErogazioneBean soggetto = this.erogazioneInterventoBean!=null ? this.erogazioneInterventoBean.getSoggettoErogazione() : soggettoNuovaErogazione;
-		String cf = soggetto!=null ? soggetto.getCodiceFiscale() : null;
+		SoggettoErogazioneBean soggetto = this.erogazioneInterventoBean!=null ? this.erogazioneInterventoBean.getSoggettoErogazione() : null;
+		String cf = soggetto!=null ? soggetto.getCf() : null;
 		datiProgettoBean.onChangeProgetto(cf);
 	}
 	
 	//SISO -972
 	public void onChangeAttivita(){
-		SoggettoErogazioneBean soggetto = this.erogazioneInterventoBean!=null ? this.erogazioneInterventoBean.getSoggettoErogazione() : soggettoNuovaErogazione;
-		String cf = soggetto!=null ? soggetto.getCodiceFiscale() : null;
+		SoggettoErogazioneBean soggetto = this.erogazioneInterventoBean!=null ? this.erogazioneInterventoBean.getSoggettoErogazione() : null;
+		String cf = soggetto!=null ? soggetto.getCf() : null;
 		datiProgettoBean.onChangeAttivita(cf);
 	}
 	//FINE SISO-972
 
 	public void onChangeOrigineFinanziamento(AjaxBehaviorEvent event){ 
-		SoggettoErogazioneBean soggetto = this.erogazioneInterventoBean!=null ? this.erogazioneInterventoBean.getSoggettoErogazione() : soggettoNuovaErogazione;
-		String cf = soggetto!=null ? soggetto.getCodiceFiscale() : null;
+		SoggettoErogazioneBean soggetto = this.erogazioneInterventoBean!=null ? this.erogazioneInterventoBean.getSoggettoErogazione() : null;
+		String cf = soggetto!=null ? soggetto.getCf() : null;
 		datiProgettoBean.onChangeOrigineFinanziamento(cf);
 	}
 
@@ -1753,6 +1744,17 @@ public class FglInterventoBean extends FascicoloCompSecondoLivello implements ID
 		boolean res = erogazioneInterventoBean.isStatoErogativo() && this.datiTariffeInterventoBean.isRendicontoPeriodico();
 		return res;
 	}
+	
+	
+	public String getDataErogLabel() {
+		if(erogazioneInterventoBean.isStatoErogativo()){ 
+			if(datiTariffeInterventoBean.isRendicontoPeriodico())
+				dataErogLabel = "Data inizio erogazione";
+			else dataErogLabel = "Data erogazione";
+		}else 
+			dataErogLabel = DATA_EROG_LABEL_DEFAULT;
+		return dataErogLabel;
+	}
 
 	public boolean isUnitaMisuraRequired() {
 
@@ -2022,8 +2024,10 @@ public class FglInterventoBean extends FascicoloCompSecondoLivello implements ID
 			}
 			
 			datiProgettoBean = new DatiProgettoBean();
-			datiProgettoBean.loadDatiProgetto(progetto,false,row.getIdTipoIntervento(),row.getIdTipoInterventoCustom(), row.getIdCatSociale(), beneficRif.getCodiceFiscale(), null);
+			datiProgettoBean.loadDatiProgetto(progetto,false,row.getIdTipoIntervento(),row.getIdTipoInterventoCustom(), row.getIdCatSociale(), beneficRif.getCf(), null);
 		}else{
+			this.erogazioneInterventoBean.valorizzaResidenza();
+			this.erogazioneInterventoBean.valorizzaLuogoDiNascita();
 			beneficRif = erogazioneInterventoBean.getSoggettoErogazione();// se mi arriva dal tab progetti lui è beneficiario
 		}
 			
@@ -2034,7 +2038,7 @@ public class FglInterventoBean extends FascicoloCompSecondoLivello implements ID
 		if(beneficRif.getCsASoggetto() == null){
 			BaseDTO dto = new BaseDTO();
 			fillEnte(dto);
-			dto.setObj(beneficRif.getCodiceFiscale());
+			dto.setObj(beneficRif.getCf());
 			beneficRif.setCsASoggetto(soggettoService.getSoggettoByCF(dto));
 		}
 		
@@ -2052,6 +2056,11 @@ public class FglInterventoBean extends FascicoloCompSecondoLivello implements ID
 		fillEnte(dto);
 		dto.setObj(stampaFseDTO);
 		dto.setObj2(datiProgettoBean.getMappaCampiFse());
+		
+		
+		List<String> msgRes = datiProgettoBean.validaResidenzaDomicilioFSE(beneficRif);
+		msg.addAll(msgRes);
+		
 		List<String> msgPor = datiPorService.validaStampa(dto);
 		msg.addAll(msgPor);
 					
@@ -2066,6 +2075,7 @@ public class FglInterventoBean extends FascicoloCompSecondoLivello implements ID
 		////FINE SISO-1010 
 		RequestContext.getCurrentInstance().execute("PF('wVdlgStampaPor').show()");
 		//chiamare la stampa
+	
 	}
 
 	private void inizializzaStampa(SoggettoErogazioneBean beneficRif){
@@ -2074,15 +2084,15 @@ public class FglInterventoBean extends FascicoloCompSecondoLivello implements ID
 		//Dati beneficiario
 		stampaFseDTO.setCognome(beneficRif.getCognome());
 		stampaFseDTO.setNome(beneficRif.getNome());
-		stampaFseDTO.setCodiceFiscale(beneficRif.getCodiceFiscale());
+		stampaFseDTO.setCodiceFiscale(beneficRif.getCf());
 		stampaFseDTO.setCittadinanza(beneficRif.getCittadinanza());
 		stampaFseDTO.setAnnoNascita(beneficRif.getAnnoNascita()!=null ? beneficRif.getAnnoNascita().toString() : null);
 		/**
 		 * Prendendo i dati dal codice fiscale va considerato se prevedere i casi di omocodia!!?
 		 * */
-		if(beneficRif.getCodiceFiscale().length() <= 16 ){//se > 16 è temporaneo e lo ignoro
-				String beneficGiornoNascita = beneficRif.getCodiceFiscale().substring(9, 11);
-				String letteraMeseNascita = beneficRif.getCodiceFiscale().substring(8,9).toUpperCase();
+		if(beneficRif.getCf().length() <= 16 ){//se > 16 è temporaneo e lo ignoro
+				String beneficGiornoNascita = beneficRif.getCf().substring(9, 11);
+				String letteraMeseNascita = beneficRif.getCf().substring(8,9).toUpperCase();
 				String meseNascita= "";
 				String beneficAnnoNascita = beneficRif.getAnnoNascita().toString(); 
 				int benefSessoGiorno = Integer.parseInt(beneficGiornoNascita);
@@ -2122,9 +2132,9 @@ public class FglInterventoBean extends FascicoloCompSecondoLivello implements ID
 		
 		ComuneResidenzaMan residenzaComuneMan = new ComuneResidenzaMan();
 		ObjectMapper mapper = new ObjectMapper();
-		if(!beneficRif.getJsonComuneResidenza().isEmpty()){
+		if(!StringUtils.isBlank(beneficRif.getComuneResidenza())){
 			try {
-				residenzaComuneMan.setComune(mapper.readValue(beneficRif.getJsonComuneResidenza(), ComuneBean.class));
+				residenzaComuneMan.setComune(mapper.readValue(beneficRif.getComuneResidenza(), ComuneBean.class));
 			} catch (JsonParseException e) {
 				logger.error(e.getMessage(), e);
 			} catch (JsonMappingException e) {
@@ -2138,6 +2148,26 @@ public class FglInterventoBean extends FascicoloCompSecondoLivello implements ID
 			stampaFseDTO.setComuneResidenza(residenzaComuneMan.getComune().getDenominazione());
 		}
 		stampaFseDTO.setViaResidenza(beneficRif.getViaResidenza());
+		
+		ComuneNascitaMan nascitaComuneMan = new ComuneNascitaMan();
+		
+		if(!StringUtils.isBlank(beneficRif.getComuneNascita())){
+			try {
+				nascitaComuneMan.setComune(mapper.readValue(beneficRif.getComuneNascita(), ComuneBean.class));
+			} catch (JsonParseException e) {
+				logger.error(e.getMessage(), e);
+			} catch (JsonMappingException e) {
+				logger.error(e.getMessage(), e);
+			} catch (IOException e) {
+				logger.error(e.getMessage(), e);
+			}
+			
+			stampaFseDTO.setLuogoNascita(nascitaComuneMan.getDescrizioneCompleta());
+		}else{
+			AmTabNazioni nazione = getNazioneByIstat(beneficRif.getNazioneNascita(), null);
+			stampaFseDTO.setLuogoNascita(nazione!=null ? nazione.getNazione() : null);
+		}
+		
 		this.datiProgettoBean.valorizzaStampaFse(stampaFseDTO);
 		
 	}
@@ -2156,13 +2186,17 @@ public class FglInterventoBean extends FascicoloCompSecondoLivello implements ID
 		bean.esportaModelloPor(stampaFseDTO);
 	}
 	
+	
+	private boolean isSinaRendered() {
+		return visualizzaSinaTab && sinaMan != null;
+	}
+	
 	//SISO-783
 	private Boolean validaSina(){
 		
 		//se il sina non è gestito è sempre valido
-		if(!visualizzaSinaTab || sinaMan == null){
+		if(!isSinaRendered())
 			return true;
-		}
 
 		Boolean valido = true;
 		List<String> lst = new ArrayList<String>();
@@ -2214,28 +2248,10 @@ public class FglInterventoBean extends FascicoloCompSecondoLivello implements ID
 	    }
 		this.erogazioneInterventoBean.aggiornaSoggettoRiferimento();
 		
-		//Resetto il valore, perchè dal soggettoErogazioneBean al momento non riesco a recuperare il luogo di nascita
-		this.comuneNazioneNascitaMan = new ComuneNazioneNascitaMan();
-		
-		CsASoggettoLAZY soggetto = this.erogazioneInterventoBean.getSoggettoErogazione().getCsASoggetto();
-		if(soggetto!=null && this.datiProgettoBean.isRenderFSE()){
-			CsAAnagrafica ana = soggetto.getCsAAnagrafica();
-			comuneNazioneNascitaMan = getComuneNazioneNascitaMan(ana.getComuneNascitaCod(), ana.getComuneNascitaDes(), ana.getProvNascitaCod(), 
-																 ana.getStatoNascitaCod(), ana.getStatoNascitaDes());
-		}
-		
-		String cfRiferimento = this.erogazioneInterventoBean.getSoggettoErogazione()!=null ? this.erogazioneInterventoBean.getSoggettoErogazione().getCodiceFiscale() : null;
-		datiProgettoBean.onChangeBeneficiarioRiferimento(cfRiferimento, comuneNazioneNascitaMan);
+		String cfRiferimento = this.erogazioneInterventoBean.getSoggettoErogazione()!=null ? this.erogazioneInterventoBean.getSoggettoErogazione().getCf() : null;
+		datiProgettoBean.onChangeBeneficiarioRiferimento(cfRiferimento);
 	}
     //fine-SISO-722
-
-	public SoggettoErogazioneBean getSoggettoNuovaErogazione() {
-		return soggettoNuovaErogazione;
-	}
-
-	public void setSoggettoNuovaErogazione(SoggettoErogazioneBean soggettoNuovaErogazione) {
-		this.soggettoNuovaErogazione = soggettoNuovaErogazione;
-	}
 
 	//SISO-1133
 	public String flowSpese(FlowEvent event){

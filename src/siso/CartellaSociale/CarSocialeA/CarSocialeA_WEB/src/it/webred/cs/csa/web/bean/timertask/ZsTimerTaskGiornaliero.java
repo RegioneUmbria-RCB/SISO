@@ -1,5 +1,22 @@
 package it.webred.cs.csa.web.bean.timertask;
 
+import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.TimerTask;
+
+import javax.interceptor.ExcludeDefaultInterceptors;
+import javax.naming.NamingException;
+
+import org.apache.commons.lang3.StringUtils;
+import org.jboss.logging.Logger;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import it.webred.cs.csa.ejb.client.AccessTableAlertSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.AccessTableCasoSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.AccessTableDiarioSessionBeanRemote;
@@ -9,19 +26,19 @@ import it.webred.cs.csa.ejb.client.AccessTableIterStepSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.AccessTableParentiGitSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.AccessTableSoggettoSessionBeanRemote;
 import it.webred.cs.csa.ejb.dto.BaseDTO;
+import it.webred.cs.csa.ejb.dto.ComuneBean;
 import it.webred.cs.csa.ejb.dto.ConfrontoSsCsDTO;
 import it.webred.cs.csa.ejb.dto.IterDTO;
 import it.webred.cs.csa.ejb.dto.OperatoreDTO;
 import it.webred.cs.csa.ejb.dto.OrganizzazioneDTO;
 import it.webred.cs.csa.ejb.dto.alert.AlertDTO;
 import it.webred.cs.csa.ejb.dto.erogazioni.SoggettoErogazioneBean;
-import it.webred.cs.csa.web.manbean.fascicolo.provvedimentiMinori.IProvvedimentiMinori;
-import it.webred.cs.csa.web.manbean.fascicolo.provvedimentiMinori.ver1.ProvvedimentiMinoriManBean;
 import it.webred.cs.data.DataModelCostanti;
 import it.webred.cs.data.DataModelCostanti.TipiAlertCod;
 import it.webred.cs.data.DataModelCostanti.TipoDiario;
 import it.webred.cs.data.DataModelCostanti.TipoRicercaSoggetto;
 import it.webred.cs.data.model.CsAAnaIndirizzo;
+import it.webred.cs.data.model.CsAAnagrafica;
 import it.webred.cs.data.model.CsACaso;
 import it.webred.cs.data.model.CsAComponenteAnagCasoGit;
 import it.webred.cs.data.model.CsAFamigliaGruppoGit;
@@ -37,6 +54,8 @@ import it.webred.cs.data.model.view.VSsSchedeUdcDiff;
 import it.webred.cs.jsf.manbean.superc.CsUiCompBaseBean;
 import it.webred.cs.json.abitazione.AbitazioneManBaseBean;
 import it.webred.cs.json.abitazione.IAbitazione;
+import it.webred.cs.json.provvedimentiMinori.IProvvedimentiMinori;
+import it.webred.cs.json.provvedimentiMinori.ProvvedimentiMinoriManBaseBean;
 import it.webred.cs.json.stranieri.IStranieri;
 import it.webred.cs.json.stranieri.StranieriManBaseBean;
 import it.webred.cs.json.stranieri.ver1.StranieriBean;
@@ -46,20 +65,6 @@ import it.webred.siso.ws.ricerca.dto.FamiliareDettaglio;
 import it.webred.siso.ws.ricerca.dto.PersonaDettaglio;
 import it.webred.siso.ws.ricerca.dto.RicercaAnagraficaParams;
 import it.webred.siso.ws.ricerca.dto.RicercaAnagraficaResult;
-
-import java.math.BigDecimal;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.TimerTask;
-
-import javax.interceptor.ExcludeDefaultInterceptors;
-import javax.naming.NamingException;
-
-import org.apache.commons.lang3.StringUtils;
-import org.jboss.logging.Logger;
 
 @ExcludeDefaultInterceptors
 public class ZsTimerTaskGiornaliero extends TimerTask {
@@ -887,7 +892,7 @@ public class ZsTimerTaskGiornaliero extends TimerTask {
     			IProvvedimentiMinori bean;
     			String descrizione = "";
     			
-    			bean = ProvvedimentiMinoriManBean.initIProvvedimentiMinoriTask(csDValutazione, csDValutazione.getCsDDiario().getCsACaso().getCsASoggetto());
+    			bean = ProvvedimentiMinoriManBaseBean.initIProvvedimentiMinoriTask(csDValutazione, csDValutazione.getCsDDiario().getCsACaso().getCsASoggetto());
 				Date dtAdempimento = bean.getScadenzaAdempimento();
 				Date dtAggiornamento = bean.getScadenzaAggiornamento();
 				
@@ -1097,10 +1102,22 @@ public class ZsTimerTaskGiornaliero extends TimerTask {
 	    			 	}
 	    			
 	    			String via = residenza!=null ? residenza.getLabelIndirizzo() : null;
+	    			String jsonComuneNascita=null;
+	    			if(soggetto!=null) {
+	    				CsAAnagrafica ana = soggetto.getCsAAnagrafica();
+	    			
+						ObjectMapper om = new ObjectMapper();
+						if(ana.getComuneNascitaCod() !=null){
+							ComuneBean cb = new ComuneBean(ana.getComuneNascitaCod(), ana.getComuneNascitaDes(), ana.getProvNascitaCod());
+							try {
+								jsonComuneNascita = om.writeValueAsString(cb);
+							} catch (JsonProcessingException ex) {}
+						}
+	    			}
 	    		    
 	    			boolean datiCompleti = bean.isValorizzato();
-	    			boolean allineatoAnagrafica = bean.isAllineatoAnagrafica();
-	    			boolean allineatoResidenza = bean.isAllineatoResidenza(via, CsUiCompBaseBean.getCasoComuneResidenza(residenza));
+	    			boolean allineatoAnagrafica = bean.verificaAllineamentoAnagrafica(jsonComuneNascita);
+	    			boolean allineatoResidenza = bean.verificaAllineamentoResidenza(via, CsUiCompBaseBean.getCasoComuneResidenza(residenza), residenza.getStatoCod());
 	    			
 	    		//	if(anagrafeUfficiale){
 		    			if(!datiValidi && datiCompleti && allineatoAnagrafica && allineatoResidenza){

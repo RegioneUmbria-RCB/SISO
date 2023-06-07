@@ -8,25 +8,27 @@ import javax.faces.context.FacesContext;
 
 import org.primefaces.event.ToggleEvent;
 
+import it.webred.ss.ejb.dto.NotaDTO;
+
 public class DiarioSociale {
 	
 	
-	private List<Nota> note;
+	private List<NotaDTO> note;
 	
 	public DiarioSociale(){
-		note = new ArrayList<Nota>();
+		note = new ArrayList<NotaDTO>();
 	}
 	
-	public DiarioSociale(List<Nota> note){
+	public DiarioSociale(List<NotaDTO> note){
 		populateNote(note);
 	}
 	
-	public List<Nota> getNote(){
+	public List<NotaDTO> getNote(){
 		return note;
 	}
 
-	public void populateNote(List<Nota> note){
-		for(Nota n: note)
+	public void populateNote(List<NotaDTO> note){
+		for(NotaDTO n: note)
 			this.note.add(n);
 	}
 	

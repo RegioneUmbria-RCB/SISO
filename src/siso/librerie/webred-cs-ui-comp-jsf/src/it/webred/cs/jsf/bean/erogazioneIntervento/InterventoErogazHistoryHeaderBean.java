@@ -1,20 +1,19 @@
 package it.webred.cs.jsf.bean.erogazioneIntervento;
 
-import it.webred.cs.jsf.manbean.superc.CsUiCompBaseBean;
-
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+
+import it.webred.cs.jsf.manbean.superc.CsUiCompBaseBean;
 
 public class InterventoErogazHistoryHeaderBean extends CsUiCompBaseBean implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private static String COLUMN_DATA_EROG_DA = "da";
-	private static String COLUMN_DATA_EROG_A = "a";
+	private static String COLUMN_DATA_EROG_DA = "Data inizio";
+	private static String COLUMN_DATA_EROG_A = "Data fine";
+	private static String COLUMN_DATA_EVENTO = "Data evento";
 	private static String COLUMN_STATO = "Stato";
 	private static String COLUMN_NOTE = "Note";
 	private static String COLUMN_EROGANTE = "Erogante";
@@ -34,6 +33,7 @@ public class InterventoErogazHistoryHeaderBean extends CsUiCompBaseBean implemen
 		this.fixedColumns.add(COLUMN_STATO);
 		this.fixedColumns.add(COLUMN_DATA_EROG_DA);
 		this.fixedColumns.add(COLUMN_DATA_EROG_A);
+		this.fixedColumns.add(COLUMN_DATA_EVENTO);
 		this.fixedColumns.add(COLUMN_SPESA_TOTALE);
 		this.fixedColumns.add(COLUMN_VALORE_EROGATO);
 		//SISO-775 riga erogante viene tolta dato che è sempre uguale

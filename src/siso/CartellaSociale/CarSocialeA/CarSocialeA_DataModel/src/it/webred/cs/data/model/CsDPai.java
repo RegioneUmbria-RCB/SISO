@@ -343,7 +343,7 @@ public class CsDPai implements ICsDDiarioChild, Serializable {
 		CsPaiMastSogg riferimento = null;
 		while(itr.hasNext()) {
 			CsPaiMastSogg sogg = itr.next();
-			if (sogg.getIntestatario()) {
+			if (sogg.getRiferimento()) {
 				riferimento = sogg;
 			} else {
 				altri.add(sogg);
@@ -358,7 +358,7 @@ public class CsDPai implements ICsDDiarioChild, Serializable {
 	public CsPaiMastSogg getBeneficiarioRiferimento(){
 		List<CsPaiMastSogg> beneficiari = this.getBeneficiari();
 		for(CsPaiMastSogg b : beneficiari){
-			if(b.getIntestatario()) return b;
+			if(b.getRiferimento()) return b;
 		}
 		return null;
 	}

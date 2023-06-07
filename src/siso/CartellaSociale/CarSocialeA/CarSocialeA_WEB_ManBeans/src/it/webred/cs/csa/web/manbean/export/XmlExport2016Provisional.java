@@ -152,6 +152,7 @@ final class XmlExport2016Provisional extends PsaXmlExporter {
 
 			mappaDatiPrestazione.put(Cost.PRESTAZIONE_DATA_INIZIO, erogDaEsportare.getDataInizio());
 			mappaDatiPrestazione.put(Cost.PRESTAZIONE_DATA_FINE, erogDaEsportare.getDataFine());
+			mappaDatiPrestazione.put(Cost.PRESTAZIONE_DATA_EVENTO, erogDaEsportare.getDataEvento());
 			mappaDatiPrestazione.put(Cost.PRESTAZIONE_PERIOD_EROG, erogDaEsportare.getPeriodoErogazione());
 			mappaDatiPrestazione.put(Cost.PRESTAZIONE_IMPORTO_MENS, erogDaEsportare.getImportoMensile());
 			mappaDatiPrestazione.put(Cost.PRESTAZIONE_QUOTA_ENTE, erogDaEsportare.getPercGestitaEnte());
