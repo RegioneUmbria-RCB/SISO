@@ -1,0 +1,104 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui"
+	xmlns:webred="http://java.sun.com/jsf/composite/webred" xmlns:webredcs="http://java.sun.com/jsf/composite/webredcs">
+<ui:fragment>
+        <p:panelGrid styleClass="top-aligned-columns" style="padding:0px;">
+        <p:row>
+        <p:column rowspan="3">
+        <p:fieldset legend="Interventi di tutela">
+        <h:panelGrid columns="1" styleClass="top-aligned-columns">
+        	<p:selectBooleanCheckbox itemLabel="Allontanamento" id="allontanamento" value="#{provvMinoriMan.jsonCurrent.interventiTutela.allontanamento}" style="padding-bottom: 10px;" />
+			
+			<p:outputPanel style="margin-left:15px;">
+				<p:selectOneRadio id="selInTutela" layout="custom" value="#{provvMinoriMan.jsonCurrent.interventiTutela.selIntTutela}" styleClass="span-14 bottom-padding" columns="1" 
+					style="display: inline-table; vertical-align: top; font-size: 95%; color: red;">
+				   <!-- <f:selectItem itemLabel="Comunità educativa" itemValue="Comunità educativa"  /> 
+			            <f:selectItem itemLabel="Comunita psico-terapeutica" itemValue="Comunita psico-terapeutica" /> -->
+			            <f:selectItem itemLabel="Affido familiare" itemValue="Affido familiare" />
+			            <f:selectItem itemLabel="#{provvMinoriMan.interTutela.cmbxForRadioAffido}" itemValue="#{provvMinoriMan.interTutela.cmbxForRadioAffido}" />
+			            <f:selectItem itemLabel="Non definito" itemValue="Non definito" />
+				</p:selectOneRadio>
+				<h:panelGrid columns="2" cellpadding="5">
+				  <!--   <p:radioButton id="opt0" for="selInTutela" itemIndex="0" />
+				    <h:outputLabel for="opt0" value="Comunità educativa" />
+				   
+				    <p:radioButton id="opt1" for="selInTutela" itemIndex="1" />
+				    <h:outputLabel for="opt1" value="Comunita psico-terapeutica" /> -->
+				    
+				    <p:radioButton id="opt2" for="selInTutela" itemIndex="0" />
+				    <h:outputLabel for="opt2" value="Affido familiare" />
+				    
+		            <p:radioButton id="opt3" for="selInTutela" itemIndex="1" />
+		            <h:panelGrid columns="4">
+			            <h:outputLabel for="opt3" value="#{provvMinoriMan.interTutela.cmbxForRadioAffido}" />
+			            <p:tooltip for="opt3" value="Se presenti in 'Risorse' della cartella, sarà caricata la lista di parenti disponibili"/>
+			            <p:spacer width="5px;"/>
+						<p:selectOneMenu id="parentiAffido" rendered="#{!empty provvMinoriMan.interTutela.lstParenti}" value="#{provvMinoriMan.jsonCurrent.interventiTutela.selAffidoParenti}" 
+						                 styleClass="bottom-padding" columns="1">
+						    <f:selectItem noSelectionOption="true" itemLabel="- seleziona -"/>
+							<f:selectItems var="item" value="#{provvMinoriMan.interTutela.lstParenti}" itemValue="item.label" itemLabel="item.label"/>
+						</p:selectOneMenu>
+					</h:panelGrid>
+					
+					<p:radioButton id="opt4" for="selInTutela" itemIndex="2" />
+				    <h:outputLabel for="opt4" value="Non definito" />
+	            </h:panelGrid>
+			</p:outputPanel>
+			
+			<p:selectManyCheckbox id="multiIntTutela" value="#{provvMinoriMan.jsonCurrent.interventiTutela.selMultiIntTutela}" layout="grid" columns="1">
+					<f:selectItems value="#{provvMinoriMan.interTutela.lstInterventiTutelaCheck}"/>
+			</p:selectManyCheckbox>
+        </h:panelGrid>
+        </p:fieldset>
+        </p:column>
+        <p:column rowspan="3">
+        <p:fieldset legend="Tipo di collocamento">
+        	<p:selectOneRadio id="tipocollocamento"  layout="grid" value="#{provvMinoriMan.jsonCurrent.interventiTutela.selTipoColocamento}" styleClass="span-20 bottom-padding" columns="1">
+				<f:selectItems value="#{provvMinoriMan.interTutela.lstTipoColocamento}"/>
+			</p:selectOneRadio>
+        </p:fieldset>
+        </p:column>
+        <p:column>
+        <p:fieldset legend="Incontri protetti">
+      		<h:panelGrid columns="1" width="100%">
+				<p:selectOneRadio id="sorIncontriPro" value="#{provvMinoriMan.jsonCurrent.interventiTutela.selIncontriProtetti}" layout="grid" 
+				    styleClass="span-14 bottom-padding" columns="2" >
+					<f:selectItems value="#{provvMinoriMan.interTutela.lstIncontriProtetti}"/>
+				</p:selectOneRadio>
+				<h:panelGrid id="incontriParenti" columns="2">
+					<h:outputLabel for="incontriPro" value="Quali Parenti" style="padding-left: 10px;" />
+					<p:selectOneMenu id="incontriPro" value="#{provvMinoriMan.jsonCurrent.interventiTutela.selQualiParenti}" styleClass="bottom-padding" columns="1">
+						<f:selectItem noSelectionOption="true" itemLabel="- seleziona -"/>
+						<f:selectItems var="item" value="#{provvMinoriMan.interTutela.lstParenti}" itemValue="item.label" itemLabel="item.label"></f:selectItems>
+					</p:selectOneMenu>
+				</h:panelGrid>
+			</h:panelGrid>
+        </p:fieldset>
+        </p:column>
+        </p:row>
+        <p:row>
+        <p:column>
+        <p:fieldset legend="Regolamentazione Incontri">
+	     	<h:panelGrid columns="3">
+	     	   <p:selectBooleanButton value="#{provvMinoriMan.jsonCurrent.interventiTutela.regIncontri}" onLabel="SI" offLabel="NO" >
+	     	   	<p:ajax event="change" update="incontriProConchi" listener="#{provvMinoriMan.interTutela.onChangeRegolamentazioneIncontri(provvMinoriMan.jsonCurrent.interventiTutela)}"/>
+	     	   </p:selectBooleanButton>
+				<h:outputLabel value="Con chi" />
+				<h:inputText id="incontriProConchi" disabled="#{!provvMinoriMan.jsonCurrent.interventiTutela.regIncontri}"
+				             value="#{provvMinoriMan.jsonCurrent.interventiTutela.incontriProttAqualiParenti}" />
+			</h:panelGrid>
+        </p:fieldset>
+        </p:column>
+        </p:row>
+        <p:row>
+        <p:column colspan="1">
+           <p:fieldset legend="Sospensione Rapporti">
+        	<p:selectOneRadio id="sospRapp" value="#{provvMinoriMan.jsonCurrent.interventiTutela.selSospensioneRapporti}" layout="grid" columns="4">
+				<f:selectItems value="#{provvMinoriMan.interTutela.lstSospensioneRapporti}"/>
+			</p:selectOneRadio>
+		    </p:fieldset>
+        </p:column></p:row>
+        </p:panelGrid>
+	
+</ui:fragment>
+</html>

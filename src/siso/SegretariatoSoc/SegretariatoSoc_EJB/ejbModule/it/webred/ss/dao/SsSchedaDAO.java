@@ -1,42 +1,5 @@
 package it.webred.ss.dao;
 
-import it.webred.ct.support.validation.annotation.AuditConsentiAccessoAnonimo;
-import it.webred.ct.support.validation.annotation.AuditSaltaValidazioneSessionID;
-import it.webred.ss.data.model.ArBufferSsInvio;
-import it.webred.ss.data.model.SsAnagrafica;
-import it.webred.ss.data.model.SsAnagraficaLog;
-import it.webred.ss.data.model.SsCCategoriaSociale;
-import it.webred.ss.data.model.SsClassificazioneMotivazione;
-import it.webred.ss.data.model.SsDiario;
-import it.webred.ss.data.model.SsIndirizzo;
-import it.webred.ss.data.model.SsInterventiSchede;
-import it.webred.ss.data.model.SsIntervento;
-import it.webred.ss.data.model.SsInterventoEconomico;
-import it.webred.ss.data.model.SsInterventoEconomicoTipo;
-import it.webred.ss.data.model.SsMotivazione;
-import it.webred.ss.data.model.SsMotivazioniSchede;
-import it.webred.ss.data.model.SsOOrganizzazione;
-import it.webred.ss.data.model.SsRelUffPcontOrg;
-import it.webred.ss.data.model.SsRelUffPcontOrgPK;
-import it.webred.ss.data.model.SsScheda;
-import it.webred.ss.data.model.SsSchedaAccessoInviante;
-import it.webred.ss.data.model.SsSchedaInterventi;
-import it.webred.ss.data.model.SsSchedaMotivazione;
-import it.webred.ss.data.model.SsSchedaRiferimento;
-import it.webred.ss.data.model.SsSchedaSegnalante;
-import it.webred.ss.data.model.SsSchedaSegnalato;
-import it.webred.ss.data.model.SsTipoScheda;
-import it.webred.ss.data.model.SsUfficio;
-import it.webred.ss.data.model.privacy.CsSsPrivacy;
-import it.webred.ss.data.model.privacy.RdcConsensiSocToLav;
-import it.webred.ss.data.model.privacy.RdcConsensiSocToLavPK;
-import it.webred.ss.data.model.privacy.SsSchedaPrivacy;
-import it.webred.ss.ejb.dto.BaseDTO;
-import it.webred.ss.ejb.dto.DatiSchedaListDTO;
-import it.webred.ss.ejb.dto.OperatoreDTO;
-import it.webred.ss.ejb.dto.OrganizzazioneDTO;
-import it.webred.ss.ejb.dto.SsSearchCriteria;
-
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -52,6 +15,35 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
 import org.jboss.logging.Logger;
+
+import it.webred.ss.data.model.ArBufferSsInvio;
+import it.webred.ss.data.model.SsAnagrafica;
+import it.webred.ss.data.model.SsAnagraficaLog;
+import it.webred.ss.data.model.SsCCategoriaSociale;
+import it.webred.ss.data.model.SsClassificazioneMotivazione;
+import it.webred.ss.data.model.SsDiario;
+import it.webred.ss.data.model.SsIndirizzo;
+import it.webred.ss.data.model.SsInterventiSchede;
+import it.webred.ss.data.model.SsIntervento;
+import it.webred.ss.data.model.SsInterventoEconomico;
+import it.webred.ss.data.model.SsInterventoEconomicoTipo;
+import it.webred.ss.data.model.SsMotivazione;
+import it.webred.ss.data.model.SsMotivazioniSchede;
+import it.webred.ss.data.model.SsScheda;
+import it.webred.ss.data.model.SsSchedaAccesso;
+import it.webred.ss.data.model.SsSchedaAccessoInviante;
+import it.webred.ss.data.model.SsSchedaInterventi;
+import it.webred.ss.data.model.SsSchedaMotivazione;
+import it.webred.ss.data.model.SsSchedaRiferimento;
+import it.webred.ss.data.model.SsSchedaSegnalante;
+import it.webred.ss.data.model.SsSchedaSegnalato;
+import it.webred.ss.data.model.privacy.CsSsPrivacy;
+import it.webred.ss.data.model.privacy.RdcConsensiSocToLav;
+import it.webred.ss.data.model.privacy.RdcConsensiSocToLavPK;
+import it.webred.ss.data.model.privacy.SsSchedaPrivacy;
+import it.webred.ss.ejb.dto.BaseDTO;
+import it.webred.ss.ejb.dto.DatiSchedaListDTO;
+import it.webred.ss.ejb.dto.SsSearchCriteria;
 
 @Named
 public class SsSchedaDAO implements Serializable {
@@ -327,12 +319,9 @@ public void updateCompletamentoScheda(SsScheda  scheda)throws Exception{
 
 	@SuppressWarnings("unchecked")
 	public SsAnagrafica readAnagraficaByCf(String cf) {
-		Query q = em.createNamedQuery("SsScheda.readAnagraficaByCf")
-				.setParameter("cf", cf);
-		List<SsAnagrafica> results = (List<SsAnagrafica>)q.getResultList();
+		List<SsAnagrafica> results = this.readAnagraficheByCf(cf);
 		if(results != null && !results.isEmpty())
-			return (SsAnagrafica) q.getResultList().get(0);
-		
+			return (SsAnagrafica) results.get(0);
 		return null;
 	}
 
@@ -467,6 +456,18 @@ public void updateCompletamentoScheda(SsScheda  scheda)throws Exception{
 	}
 
 
+	public String findDenominazioneOperatore(String username) {
+		String denominazione = username;
+		Query q = em.createNativeQuery("SELECT COGNOME, NOME FROM AM_ANAGRAFICA WHERE FK_AM_USER = :username ");
+		q.setParameter("username", username);
+		List<Object[]> res= q.getResultList();
+		if(res!=null && !res.isEmpty()) {
+			Object[] operatore = res.get(0);
+			denominazione =  operatore[0]+" "+operatore[1];
+		}
+		return denominazione;
+	}
+
 
 	@SuppressWarnings("unchecked")
 	public List<SsInterventoEconomico> readInterventiEconomici(SsAnagrafica anagrafica) {
@@ -504,8 +505,8 @@ public void updateCompletamentoScheda(SsScheda  scheda)throws Exception{
 
 	@SuppressWarnings("unchecked")
 	public List<SsAnagrafica> readAnagraficheByCf(String cf) {
-		Query q = em.createNamedQuery("SsScheda.readAnagraficaByCf")
-				.setParameter("cf", cf);
+		Query q = em.createNamedQuery("SsScheda.readAnagraficaByCf");
+		q.setParameter("cf", cf);
 		return (List<SsAnagrafica>)q.getResultList();
 	}
 
@@ -896,14 +897,21 @@ public void updateCompletamentoScheda(SsScheda  scheda)throws Exception{
 		em.persist(newAnagraficaLog);
 	}
 
-	public List<BigDecimal> findUfficioNota(Long anagraficaId) {
-		String sql = "select distinct u.id from ss_Scheda_segnalato se left join ss_Scheda s on SE.ID = s.segnalato "+
+	public List<BigDecimal> findUfficioNota(Long anagraficaNotaId) {
+		String sql = "select distinct u.id "+
+				"from ss_Scheda_segnalato se left join ss_Scheda s on SE.ID = s.segnalato "+
 				"left join ss_Scheda_accesso a on a.id=s.accesso "+
 				"left join ss_ufficio u  on a.rel_upo_ufficio_id = u.id "+
 				"where se.anagrafica = :anagraficaId";
 		Query q = em.createNativeQuery(sql);
-		q.setParameter("anagraficaId", anagraficaId);
+		q.setParameter("anagraficaId", anagraficaNotaId);
 		return (List<BigDecimal>) q.getResultList();
+	}
+
+	public SsSchedaAccesso findAccessoByAnagraficaId(Long anagraficaNota) {
+		Query q = em.createNamedQuery("SsSchedaAccesso.findByAnagraficaId");
+		q.setParameter("anagraficaId", anagraficaNota);
+		return (SsSchedaAccesso) q.getSingleResult();
 	}
 }
 

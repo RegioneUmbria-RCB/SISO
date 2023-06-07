@@ -1,15 +1,5 @@
 package it.webred.cs.json.valSinba.ver1.tabs;
 
-import it.webred.cs.csa.ejb.client.configurazione.AccessTableConfigurazioneSessionBeanRemote;
-import it.webred.cs.csa.ejb.client.configurazione.AccessTableNazioniSessionBeanRemote;
-import it.webred.cs.csa.ejb.dto.BaseDTO;
-import it.webred.cs.csa.ejb.dto.KeyValueDTO;
-import it.webred.cs.data.model.CsAComponente;
-import it.webred.cs.jsf.manbean.ComponenteAltroMan;
-import it.webred.ct.config.model.AmTabNazioni;
-import it.webred.ct.support.datarouter.CeTBaseObject;
-import it.webred.ejb.utility.ClientUtility;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -24,6 +14,13 @@ import org.jboss.logging.Logger;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import it.webred.cs.csa.ejb.client.configurazione.AccessTableNazioniSessionBeanRemote;
+import it.webred.cs.csa.ejb.dto.BaseDTO;
+import it.webred.cs.data.model.CsAComponente;
+import it.webred.cs.jsf.manbean.ComponenteAltroMan;
+import it.webred.ct.config.model.AmTabNazioni;
+import it.webred.ejb.utility.ClientUtility;
+
 public class DatiFamigliaMan {
 	
 	public static Logger logger = Logger.getLogger("carsociale.log");
@@ -31,8 +28,6 @@ public class DatiFamigliaMan {
 	public static final String NAME = "Dati Famiglia";
 	
 	private List<AmTabNazioni> lstCittadinanza;
-	private List<AmTabNazioni> lstNazioni;
-	
 	private List<SelectItem> lstRegioni;
 	private List<SelectItem> lstOccupazioni;
 	private List<SelectItem> lstTitoliStudio;
@@ -191,11 +186,6 @@ public class DatiFamigliaMan {
 		
 	}
 	
-	public void aggiungiComponente()
-	{
-		
-	}
-	
 	public void valorizzaJson(DatiFamigliaBean datiFamigliaBean){
 		//Valorizzo dati componente familiare
 		//datiFamigliaBean.setLstCittadinanze(lstCittadinanza);
@@ -203,33 +193,6 @@ public class DatiFamigliaMan {
 		//datiFamigliaBean.setLstTitoliStudio(lstNazioni);
 	}
 		
-	public List<AmTabNazioni> getNazioni()
-	{
-		List<AmTabNazioni> lstNazioneResidenza = new ArrayList<AmTabNazioni>();
-		try {
-			AccessTableNazioniSessionBeanRemote bean = (AccessTableNazioniSessionBeanRemote) ClientUtility
-					.getEjbInterface("CarSocialeA", "CarSocialeA_EJB",
-								"AccessTableNazioniSessionBean");
-			List<AmTabNazioni> beanLstNazioni = bean.getNazioni();
-			
-            if(beanLstNazioni != null && beanLstNazioni.size()>0){
-			Iterator<AmTabNazioni> it=beanLstNazioni.iterator();
-			while(it.hasNext()){
-				AmTabNazioni nazione=it.next();
-				if(nazione.getIso3166()==null){
-					it.remove();
-				}
-			}
-            }
-			if (beanLstNazioni != null) {
-				lstNazioneResidenza.addAll(beanLstNazioni);
-			}
-		} catch (NamingException e) {
-			logger.error("getListaNazioni", e);
-		}
-		
-		return lstNazioneResidenza;
-	}
 	
 /*	public List<SelectItem> getTitoli() {
 		List<SelectItem> titoliStudio = new ArrayList<SelectItem>();
@@ -317,8 +280,6 @@ public class DatiFamigliaMan {
 	public void loadListe()
 	{
 		lstCittadinanza = this.getCittadinanze();
-		//lstTitoliStudio = this.getTitoli();
-		lstNazioni = this.getNazioni();
 	}
 
 	
@@ -356,14 +317,16 @@ public class DatiFamigliaMan {
 		return lstTitoliStudio;
 	}
 
-	public List<AmTabNazioni> getLstNazioni() {
-		return lstNazioni;
+	public List<SelectItem> getLstOccupazioni() {
+		List<OCCUPAZIONE> lst =  Arrays.asList(OCCUPAZIONE.values());
+		lstOccupazioni = new ArrayList<SelectItem>();
+		for(OCCUPAZIONE tipo : lst ){
+			SelectItem si = new SelectItem(tipo.getCodice(), tipo.getDescrizione());
+			lstOccupazioni.add(si);
+		}
+		return lstOccupazioni;
 	}
-
-	public void setLstNazioni(List<AmTabNazioni> lstNazioni) {
-		this.lstNazioni = lstNazioni;
-	}
-
+	
 	public List<SelectItem> getLstRegioni() {
 		List<REGIONI> lst =  Arrays.asList(REGIONI.values());
 		lstRegioni = new ArrayList<SelectItem>();
@@ -374,14 +337,5 @@ public class DatiFamigliaMan {
 		return lstRegioni;
 	}
 
-	public List<SelectItem> getLstOccupazioni() {
-		List<OCCUPAZIONE> lst =  Arrays.asList(OCCUPAZIONE.values());
-		lstOccupazioni = new ArrayList<SelectItem>();
-		for(OCCUPAZIONE tipo : lst ){
-			SelectItem si = new SelectItem(tipo.getCodice(), tipo.getDescrizione());
-			lstOccupazioni.add(si);
-		}
-		return lstOccupazioni;
-	}
 
 }

@@ -145,8 +145,8 @@ class XmlMarshaller {
 				ps.setCodicePrestazione(u.getString(datiPrestazione, Cost.PRESTAZIONE_CODICE));
 				ps.setDenominazionePrestazione(u.getString(datiPrestazione, Cost.PRESTAZIONE_DENOMINAZIONE));
 				ps.setProtocolloDomanda(u.getString(datiPrestazione, Cost.PRESTAZIONE_PROTOC_ENTE));
-				// data evento - IGNORARE
-
+				ps.setDataEvento(u.getXmlGregorianCalendar(datiPrestazione, Cost.PRESTAZIONE_DATA_EVENTO));
+				
 				if (caratterePrestazione == 1) {
 					// prestazione periodica
 					ps.setDataInizioPrestazione(u.getXmlGregorianCalendar(datiPrestazione, Cost.PRESTAZIONE_DATA_INIZIO));
@@ -156,8 +156,7 @@ class XmlMarshaller {
 					
 					//SISO-806
 					ps.setOreServizioMensile(u.getString(datiPrestazione, Cost.PRESTAZIONE_ORE_MINUTI_MENS)); //SISO-806
-				}
-				else {
+				}else {
 					// prestazione occasionale
 					ps.setDataErogazionePrestazione(u.getXmlGregorianCalendar(datiPrestazione, Cost.PRESTAZIONE_DATA_EROG));
 					ps.setImportoPrestazione(u.getBigDecimal(datiPrestazione, Cost.PRESTAZIONE_IMPORTO));

@@ -245,7 +245,7 @@ public class PaiAffidoBean extends CsUiCompBaseBean {
 			logger.debug("Affido Salvato correttamente");
 		} catch (Exception e) {
 			logger.error("Errore salvataggio affido", e);
-			throw new CarSocialeServiceException("Errore salvataggio dati affido");
+			throw new CarSocialeServiceException("Errore salvataggio dati affido", e);
 		}
 	}
 

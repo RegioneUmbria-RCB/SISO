@@ -36,6 +36,7 @@ import it.webred.cs.csa.ejb.dto.siru.SiruResultDTO;
 import it.webred.cs.data.DataModelCostanti;
 import it.webred.cs.data.model.ArFfProgetto;
 import it.webred.cs.data.model.CsAAnaIndirizzo;
+import it.webred.cs.data.model.CsAAnagrafica;
 import it.webred.cs.data.model.CsACaso;
 import it.webred.cs.data.model.CsASoggettoLAZY;
 import it.webred.cs.data.model.CsCTipoInterventoCustom;
@@ -95,6 +96,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -540,7 +542,18 @@ public class AccessTableInterventoSessionBean extends CarSocialeBaseSessionBean 
 				if(diario!=null){
 					CsASoggettoLAZY soggetto = diario.getCsACaso().getCsASoggetto();
 					CsAAnaIndirizzo residenza = indirizzoDao.getResidenzaBySoggetto(soggetto.getCsAAnagrafica().getId());
-					SoggettoErogazioneBean b = new SoggettoErogazioneBean(soggetto, residenza.getLabelIndirizzo(), this.getCasoComuneResidenza(residenza),  residenza.getStatoCod(), true);
+					String jsonN = null;
+					CsAAnagrafica ana = soggetto.getCsAAnagrafica();
+					
+					ObjectMapper om = new ObjectMapper();
+					if(ana.getComuneNascitaCod() !=null){
+						ComuneBean cb = new ComuneBean(ana.getComuneNascitaCod(), ana.getComuneNascitaDes(), ana.getProvNascitaCod());
+						try {
+							jsonN = om.writeValueAsString(cb);
+						} catch (JsonProcessingException ex) {}
+					}
+					
+					SoggettoErogazioneBean b = new SoggettoErogazioneBean(soggetto, residenza.getLabelIndirizzo(), this.getCasoComuneResidenza(residenza),  residenza.getStatoCod(), jsonN, true);
 					beneficiari.add(b);
 				}
 				
@@ -616,6 +629,7 @@ public class AccessTableInterventoSessionBean extends CarSocialeBaseSessionBean 
 			d.setCompartecipazione(new CompartecipazioneDTO(es.getCompartUtenti(), es.getCompartSsn(), es.getCompartAltre(), es.getNoteAltreCompart(), false));
 			d.setDataErogazione(es.getDataEsecuzione());
 			d.setDataErogazioneA(es.getDataEsecuzioneA()); //SISO-556
+			d.setDataEvento(es.getDataEvento());
 			d.setStatoErogazione(es.getStato());
 			d.setDescrizione(es.getNote());
 			d.setIdInterventoEseg(es.getId());
@@ -877,9 +891,9 @@ public class AccessTableInterventoSessionBean extends CarSocialeBaseSessionBean 
 		Long progettoId = csiInterventoPr.getProgetto()!=null ? csiInterventoPr.getProgetto().getId() : null;
 		Long attivitaId = csiInterventoPr.getProgettoAttivita()!=null ? csiInterventoPr.getProgettoAttivita().getId() : null;
 		SoggettoErogazioneBean seb = (SoggettoErogazioneBean) dto.getObj2();
-		dto.setObj(seb.getCodiceFiscale());
+		dto.setObj(seb.getCf());
 		
-		List<CsIInterventoEsegMastSogg> lsti = interventoErogazioneDao.getBeneficiariErogazione(seb.getCodiceFiscale(), attivitaId, progettoId);
+		List<CsIInterventoEsegMastSogg> lsti = interventoErogazioneDao.getBeneficiariErogazione(seb.getCf(), attivitaId, progettoId);
 		if(lsti != null)
 			for(CsIInterventoEsegMastSogg csInterventoMastSogg : lsti){
 				
@@ -920,8 +934,8 @@ public class AccessTableInterventoSessionBean extends CarSocialeBaseSessionBean 
 					prCurrent.getCsIInterventoPrFse().setUserIns(csiInterventoPr.getCsIInterventoPrFse().getUserIns());
 					
 					prCurrent.getCsIInterventoPrFse().setComuneDomicilio(csiInterventoPr.getCsIInterventoPrFse().getComuneDomicilio());
-					prCurrent.getCsIInterventoPrFse().setComuneNascita(csiInterventoPr.getCsIInterventoPrFse().getComuneNascita());
-					//csiInterventoPrFseUpdate.setComuneResidenza(csiInterventoPr.getCsIInterventoPrFse().getComuneResidenza());
+					//prCurrent.getCsIInterventoPrFse().setComuneNascita(csiInterventoPr.getCsIInterventoPrFse().getComuneNascita());
+					//prCurrent.setComuneResidenza(csiInterventoPr.getCsIInterventoPrFse().getComuneResidenza());
 					
 					prCurrent.getCsIInterventoPrFse().setComunicaVul(csiInterventoPr.getCsIInterventoPrFse().getComunicaVul());
 					prCurrent.getCsIInterventoPrFse().setCsTbGrVulnerabile(csiInterventoPr.getCsIInterventoPrFse().getCsTbGrVulnerabile());
@@ -935,10 +949,10 @@ public class AccessTableInterventoSessionBean extends CarSocialeBaseSessionBean 
 					prCurrent.getCsIInterventoPrFse().setTelefono(csiInterventoPr.getCsIInterventoPrFse().getTelefono());
 					prCurrent.getCsIInterventoPrFse().setTitoloStudioAnno(csiInterventoPr.getCsIInterventoPrFse().getTitoloStudioAnno());
 					prCurrent.getCsIInterventoPrFse().setViaDomicilio(csiInterventoPr.getCsIInterventoPrFse().getViaDomicilio());
-					//csiInterventoPrFseUpdate.setViaResidenza(csiInterventoPr.getCsIInterventoPrFse().getViaResidenza());
+					//prCurrent.setViaResidenza(csiInterventoPr.getCsIInterventoPrFse().getViaResidenza());
 					
-					prCurrent.getCsIInterventoPrFse().setStatoNascitaCod(csiInterventoPr.getCsIInterventoPrFse().getStatoNascitaCod());
-					prCurrent.getCsIInterventoPrFse().setStatoNascitaDes(csiInterventoPr.getCsIInterventoPrFse().getStatoNascitaDes());
+					//prCurrent.getCsIInterventoPrFse().setStatoNascitaCod(csiInterventoPr.getCsIInterventoPrFse().getStatoNascitaCod());
+					//prCurrent.getCsIInterventoPrFse().setStatoNascitaDes(csiInterventoPr.getCsIInterventoPrFse().getStatoNascitaDes());
 
 					prCurrent.getCsIInterventoPrFse().setTitoloStudioAnno(csiInterventoPr.getCsIInterventoPrFse().getTitoloStudioAnno());
 					
@@ -985,14 +999,16 @@ public class AccessTableInterventoSessionBean extends CarSocialeBaseSessionBean 
 		CsDPai csDPaiNuovoRif = (CsDPai) dto.getObj2();
 		Long csDPaiRifDaSostituireId = (Long) dto.getObj3();
 		CsIIntervento intervento= interventoDao.getInterventoById(idIntervento);
-
+		Long idPaiInterventoOld = intervento!=null ? intervento.getDiarioPaiId() : null;
+		
 		if (csDPaiNuovoRif==null && //sostituzione
-				intervento!=null && csDPaiRifDaSostituireId!=null
-				&& !csDPaiRifDaSostituireId.equals(intervento.getDiarioPaiId())){
+			csDPaiRifDaSostituireId!=null && !csDPaiRifDaSostituireId.equals(idPaiInterventoOld)){
 
 			// skip
 		} else {
-			intervento.setDiarioPaiId(csDPaiNuovoRif.getDiarioId());
+			Long idPai = csDPaiNuovoRif!=null ? csDPaiNuovoRif.getDiarioId() : null;
+			// se csDPaiNuovoRif=null significa che devo sganciare l'intervento
+			intervento.setDiarioPaiId(idPai);
 			interventoDao.updateIntervento(intervento);
 		}
 	}
@@ -1177,21 +1193,21 @@ public class AccessTableInterventoSessionBean extends CarSocialeBaseSessionBean 
 		
 		SiruInputDTO pds = new SiruInputDTO();
 		pds.setCittadinanza(seb.getCittadinanza());
-		pds.setCodiceFiscale(seb.getCodiceFiscale());
+		pds.setCodiceFiscale(seb.getCf());
 		
-		Object[] cfExt = estraiDaCF(seb.getCodiceFiscale());
+		Object[] cfExt = estraiDaCF(seb.getCf());
 		pds.setSesso(cfExt[0].toString());
 		pds.setDataNascita((Date)cfExt[1]);
 		
 		pds.setFlagResDom(fse.getFlagResDom());
 		
-		if(!StringUtils.isBlank(fse.getComuneNascita())){
-			pds.setComuneNascitaCod(estraiFromJson(fse.getComuneNascita(), "codIstatComune"));
-		}else if(!StringUtils.isBlank(fse.getStatoNascitaCod())){
-			pds.setStatoNascitaCod(fse.getStatoNascitaCod());
+		if(!StringUtils.isBlank(seb.getComuneNascita())){
+			pds.setComuneNascitaCod(estraiFromJson(seb.getComuneNascita(), "codIstatComune"));
+		}else if(!StringUtils.isBlank(seb.getNazioneNascita())){
+			pds.setStatoNascitaCod(seb.getNazioneNascita());
 		}
 		
-		pds.setCodIstatComuneResidenza(estraiFromJson(seb.getJsonComuneResidenza(), "codIstatComune"));
+		pds.setCodIstatComuneResidenza(estraiFromJson(seb.getComuneResidenza(), "codIstatComune"));
 		pds.setCodIstatComuneDomicilio(estraiFromJson(fse.getComuneDomicilio(), "codIstatComune"));
 		
 		if(progetto.getCsTbTitoloStudio() != null && progetto.getCsTbTitoloStudio().getId() != 0)

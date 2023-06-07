@@ -3,12 +3,8 @@ package com.osmosit.siso.flussoinps.logic;
 public class Cost {
 
 	public static String BENEFICIARIO_CF = "cfBeneficiario";
-
-	public static String RESIDENZA_REGIONE = "regione";
+	
 	public static String RESIDENZA_COMUNE = "comune";
-	public static String RESIDENZA_NAZIONE = "nazione";
-	//IDBeneficiario="PROVA BENEFICIARIO
-	public static String BENEFICIARIO_ID = "IDBeneficiario";
 	
 	public static String ANAGRAFICA_NOME = "nome";
 	public static String ANAGRAFICA_COGNOME = "cognome";
@@ -41,22 +37,26 @@ public class Cost {
 	public static String PRESTAZIONE_PRESA_IN_CARICO = "presaInCarico"; // SISO-657
 	public static String PRESTAZIONE_AREA_UTENZA = "areaUtenza"; // SISO-657
 	public static String PRESTAZIONE_ORE_MINUTI_MENS = "oreMinutiMens"; // SISO-806
+	
 	//SINBA TASK-777
-	public static String DATA_VALUTAZIONE = "dataValutazione";
-	public static String SCUOLA_FREQUENTATA = "scuolaFrequentata";
-	public static String CONDIZIONE_LAVORO = "condizioneLavoro";
-	public static String CODICE_ANONIMO_BENEFICIARIO="IDBeneficiario";
+	//public static String DATA_VALUTAZIONE = "dataValutazione";
+	public static String BENEFICIARIO_ID = "IDBeneficiario";
 	public static String ANNO_NASCITA = "annoNascita";
-	public static String NAZIONE_RESIDENZA = "nazioneResidenza";
-	public static String NUMERO_COMPONENTI_ISEE = "numeroComponentiIsee";
-	public static String FASCIA_ETA_BENEFICIARIO = "fasciaEtaBeneficiario";
-	public static String FASCIA_ISEE_BENEFICIARIO = "fasciaIseeBeneficiario";
-	public static String COMPOSIZIONE_FAMIGLIA = "composizioneFamiglia";
+	public static String RESIDENZA_NAZIONE = "nazione";
+	public static String RESIDENZA_REGIONE = "regione";
+	
+	public static String LIST_COMPOSIZIONE_FAMIGLIA = "composizioneFamigliaList"; //Lista di stringhe
+	public static String DETT_COMPOSIZIONE_FAMIGLIA = "composizioneFamigliaDett";
+	public static String MINORE_STRANIERO_NON_ACCOMPAGNATO = "minoreStranieroNonAccompagnato";
 	public static String CONDIZIONE_MINORE = "condizioneMinore";
 	public static String LUOGO_VITA = "luogoVita";
-	public static String NAZIONE_RESIDENZA_FAM = "nazioneResidenzaFam";
-	public static String REGIONE_RESIDENZA_FAM = "regioneResidenzaFam";
-	public static String MINORE_STRANIERO_NON_ACCOMPAGNATO = "minoreStranieroNonAccompagnato";
+	public static String SCUOLA_FREQUENTATA = "scuolaFrequentata";
+	public static String CONDIZIONE_LAVORO = "condizioneLavoro";
+	
+	public static String DISABILE = "disabile";
+	public static String TIPO_DISABILITA = "tipoDisabilita";
+	public static String CERTIFICAZIONE_INVALIDITA_CIVILE = "certificazioneInvaliditaCivile";
+	
 	public static String CITTADINANZA_PADRE = "cittadinanzaPadre";
 	public static String CITTADINANZA_MADRE = "cittadinanzaMadre";
 	public static String REGIONE_RESIDENZA_PADRE = "regioneResidenzaPadre";
@@ -65,31 +65,37 @@ public class Cost {
 	public static String TITOLO_STUDIO_MADRE = "titoloStudioMadre";
 	public static String OCCUPAZIONE_PADRE = "occupazionePadre";
 	public static String OCCUPAZIONE_MADRE = "occupazioneMadre";
-	public static String DISABILE = "disabile";
-	public static String TIPO_DISABILITA = "tipoDisabilita";
-	public static String CERTIFICAZIONE_INVALIDITA_CIVILE = "certificazioneInvaliditaCivile";
+	
+	public static String DATA_PRIMA_SEGNALAZIONE = "dataPrimaSegnalazione";
 	public static String FONTE_SEGNALAZIONE = "fonteSegnalazione";
-	public static String DATA_SEGNALAZIONE = "dataSegnalazione";
-	public static String SEGNALAZIONE_AUTORITA_GIUDIZIARIA = "segnalazioneAutoritaGiudiziaria";
-	public static String PROVVEDIMENTO_GIUDIZIARIO = "provvedimentoGiudiziario";
 	public static String VALUTAZIONE_MINORE = "valutazioneMinore";
 	public static String VALUTAZIONE_FAMIGLIA_MINORE = "valutazioneFamigliaMinore";
-	public static String AUTORITA_PROVVEDIMENTO_GIUDIZIARIO = "autoritaProvvedimentoGudiziario";
+	public static String SEGNALAZIONE_AUTORITA_GIUDIZIARIA = "segnalazioneAutoritaGiudiziaria";
+	public static String DATA_SEGNALAZIONE = "dataSegnalazione";
+	public static String PROVVEDIMENTO_GIUDIZIARIO = "provvedimentoGiudiziario";
 	public static String DATA_PROVVEDIMENTO_GIUDIZIARIO = "dataProvvedimentoGiudiziario";
-	public static String TIPO_PROVVEDIMENTO = "tipoProvvedimento";
+	public static String AUTORITA_PROVVEDIMENTO_GIUDIZIARIO = "autoritaProvvedimentoGudiziario";
 	public static String POTESTA_TUTELA = "potestaTutela";
+	
+	public static String TIPO_PROVVEDIMENTO = "tipoProvvedimento";
 	public static String FORMA_INTERVENTO = "formaIntervento";
 	public static String TIPO_INTERVENTO = "tipoIntervento";
 	public static String DURATA_INTERVENTO = "durataIntervento";
 	public static String CARATTERE_INTERVENTO = "carattereIntervento";
 	public static String ESITO_INTERVENTO = "esitoIntervento";
+	
 	public static String CARATTERE_INSERIMENTO = "carattereInserimento";
-	public static String ESITO_INSERIMENTO_STRUTTURA = "esitoInserimentoSTruttura";
-	public static String COLLABORAZIONE_INTERVENTI = "collaborazioneInterventi";
 	public static String FORMA_INSERIMENTO = "formaInserimento";
 	public static String TIPO_INSERIMENTO = "tipoInserimento";
+	public static String ESITO_INSERIMENTO_STRUTTURA = "esitoInserimentoSTruttura";
 	public static String MOTIVAZIONE_CHIUSURA_CARICO = "motivazioneChiusuraCarico";
 	public static String SITUAZIONE_CHIUSURA_CARICO = "situazioneChiusuraCarico";
+	public static String COLLABORAZIONE_INTERVENTI = "collaborazioneInterventi";
+	
+	public static String LIST_CODICI_PRESTAZIONE = "codiciPrestazione";        //Lista di stringhe
+	public static String NUMERO_COMPONENTI_ISEE = "numeroComponentiIsee";
+	public static String FASCIA_ETA_BENEFICIARIO = "fasciaEtaBeneficiario";
+	public static String FASCIA_ISEE_BENEFICIARIO = "fasciaIseeBeneficiario";
 	
 	//SISO-784 SINA
 	public static String SINA_COLLEGATO = "sinaCollegato";

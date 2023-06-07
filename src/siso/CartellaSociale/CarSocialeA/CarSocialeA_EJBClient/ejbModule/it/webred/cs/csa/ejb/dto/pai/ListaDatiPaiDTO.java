@@ -9,7 +9,7 @@ public class ListaDatiPaiDTO extends DatiInterceptorDTO{
 	
 	private Long diarioId;
 	private String tipoBeneficiario;
-	private List<SoggettoPaiBean> beneficiari;
+	private List<CsPaiMastSoggDTO> beneficiari;
 	private String tipoPai;
 	private Date dataAttivazioneDa;
 	private Date dataChiusuraDa;
@@ -50,12 +50,14 @@ public class ListaDatiPaiDTO extends DatiInterceptorDTO{
 	public void setTipoBeneficiario(String tipoBeneficiario) {
 		this.tipoBeneficiario = tipoBeneficiario;
 	}
-	public List<SoggettoPaiBean> getBeneficiari() {
+	public List<CsPaiMastSoggDTO> getBeneficiari() {
 		return beneficiari;
 	}
-	public void setBeneficiari(List<SoggettoPaiBean> beneficiari) {
+
+	public void setBeneficiari(List<CsPaiMastSoggDTO> beneficiari) {
 		this.beneficiari = beneficiari;
 	}
+
 	public String getTipoPai() {
 		return tipoPai;
 	}
@@ -106,8 +108,8 @@ public class ListaDatiPaiDTO extends DatiInterceptorDTO{
 	}
 	
 	public boolean hasBeneficiarioCF(String cf) {
-		for (SoggettoPaiBean s : beneficiari) {
-			if (s.getCodiceFiscale().equalsIgnoreCase(cf)) {
+		for (CsPaiMastSoggDTO s : beneficiari) {
+			if (s.getCf().equalsIgnoreCase(cf)) {
 				return true;
 			}
 		}
@@ -116,7 +118,7 @@ public class ListaDatiPaiDTO extends DatiInterceptorDTO{
 	
 	public boolean hasBeneficiarioCaso() {
 		boolean hasCaso = false;
-		for (SoggettoPaiBean s : beneficiari) {
+		for (CsPaiMastSoggDTO s : beneficiari) {
 			if (s.isRiferimento()) {
 				hasCaso = s.getCsASoggetto() != null ? true : false;
 			    
@@ -127,7 +129,7 @@ public class ListaDatiPaiDTO extends DatiInterceptorDTO{
 	
 	public String getCognomeNome() {
 		String cognomeNome ="";
-		for (SoggettoPaiBean csPaiMastSogg : beneficiari) {
+		for (CsPaiMastSoggDTO csPaiMastSogg : beneficiari) {
 			if (csPaiMastSogg.isRiferimento()) {
 				cognomeNome = csPaiMastSogg.getCognome() +" "+ csPaiMastSogg.getNome();
 			    

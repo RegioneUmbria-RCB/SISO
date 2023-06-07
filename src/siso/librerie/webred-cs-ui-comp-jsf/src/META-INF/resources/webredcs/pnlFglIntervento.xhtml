@@ -58,12 +58,12 @@
 			</p:tab>
 			<p:tab id="interventiTab" title="Interventi" titletip="Interventi" rendered="#{fglInterventoBean.datiInterventoTabRendered}" >	
 			   
-			   <!-- Dettaglio dati Intervento (In modifica)  -->
-			    <ui:include src="/webredcs/pnlFglIntervento/frgDettInterventoModifica.xhtml"/> 
+			<!-- Dettaglio dati Intervento (In modifica) -->
+			<webredcs:pnlDettInterventoModifica  fglInterventoBean="#{fglInterventoBean}" styleClass="cc.attrs.styleClass"/> 
 			    
-			     <!-- Dettaglio dati Intervento (In lettura) abilitato se non è un nuovo intervento -->
-			    <ui:include src="/webredcs/pnlFglIntervento/frgDettInterventoLettura.xhtml"/> 
-			  
+			<!-- Dettaglio dati Intervento (In lettura) abilitato se non è un nuovo intervento -->
+			<webredcs:pnlDettInterventoLettura  fglInterventoBean="#{fglInterventoBean}" styleClass="cc.attrs.styleClass"/> 
+		
 		<p:panel id="pnlFoglioAmministrativo" header="Dati Foglio Amministrativo " styleClass="#{'updateFlagRespintoChange updateFlagAttivazioneChange'}"
 				toggleable="true" toggleSpeed="500" widgetVar="FApanel">
 				

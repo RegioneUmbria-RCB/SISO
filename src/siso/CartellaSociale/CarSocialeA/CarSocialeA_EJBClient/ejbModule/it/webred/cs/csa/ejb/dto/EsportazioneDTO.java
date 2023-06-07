@@ -1,11 +1,12 @@
 package it.webred.cs.csa.ejb.dto;
 
-import it.webred.cs.data.model.CsCTipoIntervento;
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import it.webred.cs.data.DataModelCostanti.CSIPs.FLAG_IN_CARICO;
+import it.webred.cs.data.model.CsCTipoIntervento;
 
 /**
  * 
@@ -37,6 +38,7 @@ public class EsportazioneDTO extends EsportazioneSpesaDTO {
 	private String carattere;
 	private String codPrestazione;
 	private String denomPrestazione;
+	private Boolean picPrestazione=false;
 	private String protDomPrest;
 	// private BigDecimal sogliaISEE;
 
@@ -59,7 +61,8 @@ public class EsportazioneDTO extends EsportazioneSpesaDTO {
 	
 	private Date dataEsecuzione;
 	private Date dataEsecuzioneA; // SISO-538
-
+	private Date dataEvento;
+	
 	// INIZIO SISO-538 campi utili nel caso di erogazioni periodiche
 	protected Date dataInizio;
 	protected Date dataFine;
@@ -652,6 +655,7 @@ public class EsportazioneDTO extends EsportazioneSpesaDTO {
 				+ ", dataFine=" + dataFine
 				+ ", dataEsecuzione=" + dataEsecuzione
 				+ ", dataEsecuzioneA=" + dataEsecuzioneA 
+				+ ", dataEvento=" + dataEvento 
 				+ ", periodoErogazione=" + periodoErogazione
 				+ ", importoMensile=" + importoMensile 
 				+ ", spesaTestata="+ spesaTestata 
@@ -686,4 +690,27 @@ public class EsportazioneDTO extends EsportazioneSpesaDTO {
 		this.frequenza = frequenza;
 	}
 
+	public Date getDataEvento() {
+		return dataEvento;
+	}
+
+	public void setDataEvento(Date dataEvento) {
+		this.dataEvento = dataEvento;
+	}
+
+	public Boolean getPicPrestazione() {
+		return picPrestazione;
+	}
+
+	public void setPicPrestazione(Boolean picPrestazione) {
+		this.picPrestazione = picPrestazione;
+	}
+
+	public Boolean getRenderMessaggioPrestazionePic() {
+		boolean render = false;
+		if(this.presaInCarico!=null && this.picPrestazione) {
+			render =  this.picPrestazione && FLAG_IN_CARICO.NO.getCodice()==presaInCarico.intValue();
+		}
+		return render;
+	}
 }

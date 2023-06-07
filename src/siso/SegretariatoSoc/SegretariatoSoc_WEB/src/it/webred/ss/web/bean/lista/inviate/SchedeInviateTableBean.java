@@ -1,69 +1,32 @@
 package it.webred.ss.web.bean.lista.inviate;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
+import javax.faces.model.SelectItem;
+
+import org.primefaces.component.datatable.DataTable;
+import org.primefaces.model.StreamedContent;
+
 import it.webred.cs.csa.ejb.client.AccessTableSchedaSegrSessionBeanRemote;
 import it.webred.cs.data.DataModelCostanti;
-import it.webred.cs.data.model.CsTbCittadinanzaAcq;
-import it.webred.cs.data.model.CsTbTipologiaFamiliare;
-import it.webred.cs.jsf.manbean.FormazioneLavoroMan;
-import it.webred.cs.json.familiariConviventi.IFamConviventi;
 import it.webred.ejb.utility.ClientUtility;
 import it.webred.ss.data.model.SsAnagrafica;
-import it.webred.ss.data.model.SsDiario;
-import it.webred.ss.data.model.SsInterventiSchede;
-import it.webred.ss.data.model.SsMotivazioniSchede;
-import it.webred.ss.data.model.SsPuntoContatto;
-import it.webred.ss.data.model.SsScheda;
-import it.webred.ss.data.model.SsSchedaAccesso;
-import it.webred.ss.data.model.SsSchedaRiferimento;
-import it.webred.ss.data.model.SsSchedaSegnalante;
-import it.webred.ss.data.model.SsSchedaSegnalato;
 import it.webred.ss.data.model.SsTipoScheda;
 import it.webred.ss.ejb.client.SsSchedaSessionBeanRemote;
 import it.webred.ss.ejb.dto.BaseDTO;
 import it.webred.ss.ejb.dto.OperatoreDTO;
 import it.webred.ss.web.bean.SegretariatoSocSchedeTblBaseBean;
 import it.webred.ss.web.bean.lista.Scheda;
-import it.webred.ss.web.bean.lista.soggetti.SearchBean;
 import it.webred.ss.web.bean.report.ReportBaseBean;
 import it.webred.ss.web.bean.report.ReportPrivacyBean;
 import it.webred.ss.web.bean.report.ReportSchedaBean;
 import it.webred.ss.web.bean.util.PuntoContatto;
 import it.webred.ss.web.bean.util.Ufficio;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.PostConstruct;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
-import javax.faces.context.FacesContext;
-import javax.faces.model.SelectItem;
-import javax.naming.NamingException;
-import javax.servlet.ServletContext;
-
-import net.sf.jasperreports.engine.JREmptyDataSource;
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperExportManager;
-import net.sf.jasperreports.engine.JasperFillManager;
-import net.sf.jasperreports.engine.JasperPrint;
-
-import org.primefaces.component.datatable.DataTable;
-import org.primefaces.model.DefaultStreamedContent;
-import org.primefaces.model.StreamedContent;
-
-import com.lowagie.text.BadElementException;
-import com.lowagie.text.Document;
-import com.lowagie.text.DocumentException;
-import com.lowagie.text.Image;
-import com.lowagie.text.PageSize;
-import com.lowagie.text.Phrase;
 
 
 @ManagedBean

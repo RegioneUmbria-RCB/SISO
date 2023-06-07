@@ -1,23 +1,20 @@
 package it.webred.ss.ejb.dto;
 
-import it.webred.ss.data.model.SsDiario;
-import it.webred.ss.data.model.SsInterventoEconomico;
-import it.webred.ss.data.model.SsScheda;
-import it.webred.ss.data.model.SsSchedaRiferimento;
-import it.webred.ss.data.model.SsSchedaSegnalato;
-import it.webred.ss.ejb.dto.report.DatiPrivacyPdfDTO;
-
-import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
+
+import it.webred.ss.data.model.SsInterventoEconomico;
+import it.webred.ss.data.model.SsSchedaRiferimento;
+import it.webred.ss.ejb.dto.report.DatiPrivacyPdfDTO;
 
 public class SchedaUdcDTO extends SchedaUdcBaseDTO  {
 
 	private List<String> listaMotivazioni;
-	private List<String> listaDiari;
+	
 	private List<SsInterventoEconomico> listaInterventiEconomici;
 	private List<SsSchedaRiferimento> listaRiferimenti;
 	private List<String> listaInterventi;
-	private List<SsDiario> noteDiario;
+	private List<NotaDTO> noteDiario;
 	private DatiPrivacyPdfDTO datiPrivacyPDF;
 	
 	
@@ -26,12 +23,6 @@ public class SchedaUdcDTO extends SchedaUdcBaseDTO  {
 	}
 	public void setListaMotivazioni(List<String> listaMotivazioni) {
 		this.listaMotivazioni = listaMotivazioni;
-	}
-	public List<String> getListaDiari() {
-		return listaDiari;
-	}
-	public void setListaDiari(List<String> listaDiari) {
-		this.listaDiari = listaDiari;
 	}
 	public List<SsInterventoEconomico> getListaInterventiEconomici() {
 		return listaInterventiEconomici;
@@ -52,10 +43,10 @@ public class SchedaUdcDTO extends SchedaUdcBaseDTO  {
 	public void setListaInterventi(List<String> listaInterventi) {
 		this.listaInterventi = listaInterventi;
 	}
-	public List<SsDiario> getNoteDiario() {
+	public List<NotaDTO> getNoteDiario() {
 		return noteDiario;
 	}
-	public void setNoteDiario(List<SsDiario> noteDiario) {
+	public void setNoteDiario(List<NotaDTO> noteDiario) {
 		this.noteDiario = noteDiario;
 	}
 	public DatiPrivacyPdfDTO getDatiPrivacyPDF() {
@@ -63,5 +54,11 @@ public class SchedaUdcDTO extends SchedaUdcBaseDTO  {
 	}
 	public void setDatiPrivacyPDF(DatiPrivacyPdfDTO datiPrivacyPDF) {
 		this.datiPrivacyPDF = datiPrivacyPDF;
+	}
+	public List<String> getListaDiari(){
+		List<String> diari = new ArrayList<String>();
+		for(NotaDTO d : noteDiario)
+			diari.add(d.getNota());
+		return diari;
 	}
 }

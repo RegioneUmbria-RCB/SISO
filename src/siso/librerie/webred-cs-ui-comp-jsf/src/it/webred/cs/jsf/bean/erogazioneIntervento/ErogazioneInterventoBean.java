@@ -23,6 +23,7 @@ import it.webred.cs.data.DataModelCostanti.TipoStatoErogazione;
 import it.webred.cs.data.model.ArRelClassememoPresInps;
 import it.webred.cs.data.model.ArTbPrestazioniInps;
 import it.webred.cs.data.model.CsAAnaIndirizzo;
+import it.webred.cs.data.model.CsAAnagrafica;
 import it.webred.cs.data.model.CsASoggettoLAZY;
 import it.webred.cs.data.model.CsCTipoIntervento;
 import it.webred.cs.data.model.CsCTipoInterventoCustom;
@@ -42,6 +43,7 @@ import it.webred.cs.data.model.CsOOperatoreSettore;
 import it.webred.cs.data.model.CsOSettore;
 import it.webred.cs.data.model.CsTbSchedaMultidim;
 import it.webred.cs.jsf.bean.DatiUserSearchBean;
+import it.webred.cs.jsf.manbean.ComuneNazioneNascitaMan;
 import it.webred.cs.jsf.manbean.ComuneNazioneResidenzaMan;
 import it.webred.cs.jsf.manbean.ProtocolloDsuMan;
 import it.webred.cs.jsf.manbean.RisorsaFamiliareBean;
@@ -85,7 +87,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class ErogazioneInterventoBean extends CsUiCompBaseBean implements Serializable {
 	private static final long serialVersionUID = 1L;
-
+	private static final String DATA_EVENTO_LABEL_DEFAULT = "Data evento che dà diritto alla prestazione ";
+	
 	protected AccessTableInterventoSessionBeanRemote interventoService = (AccessTableInterventoSessionBeanRemote) getCarSocialeEjb("AccessTableInterventoSessionBean");
 	protected AccessTablePsExportSessionBeanRemote psExportService = (AccessTablePsExportSessionBeanRemote) getCarSocialeEjb("AccessTablePsExportSessionBean"); // SISO-524
 	
@@ -107,6 +110,7 @@ public class ErogazioneInterventoBean extends CsUiCompBaseBean implements Serial
 
 	private Date dataErog;
 	private Date dataErogA;
+	private Date dataEvento;
 	private Long statoSelezionatoId;
 
 	private List<CsCfgIntEsegStato> listaStatiErogazione;
@@ -162,6 +166,7 @@ public class ErogazioneInterventoBean extends CsUiCompBaseBean implements Serial
 	// SISO-657 private boolean situazioneEconomicaVerificata;
 	private String iseeSelezionata;
 	private List<SelectItem> listaCodiciPrestazione; // MOD-RL
+	private List<String> listaPrestazioniPIC;
 	private List<KeyValueDTO> listaIsee; // MOD-RL
 	// SISO-657 private String txtProtocolloDomandaPrestazioneLabel ;
 	// SISO-657 private Integer flagProvaMezzi;
@@ -190,12 +195,16 @@ public class ErogazioneInterventoBean extends CsUiCompBaseBean implements Serial
 	
 	//SISO-962
 	private ComuneNazioneResidenzaMan comuneNazioneResidenzaMan = null;
+	
+	private ComuneNazioneNascitaMan comuneNazioneNascitaMan = null;
 
 	//SISO 1201
 	private boolean nazioneResidenzaNonDefinita = false;
 	
 	//Minori in Struttura
 	private Boolean isStrutturaSelezionata = false;
+	
+	private String dataEventoLabel = DATA_EVENTO_LABEL_DEFAULT;
 		
 	public ComuneNazioneResidenzaMan getComuneNazioneResidenzaMan() {
 		return comuneNazioneResidenzaMan;
@@ -266,7 +275,7 @@ public class ErogazioneInterventoBean extends CsUiCompBaseBean implements Serial
 			//this.altriSoggetti.add(soggettoErogazione);
 			
 			// SISO-1138
-			String s = soggettoErogazione.getSessoBeneficiario();		
+			String s = soggettoErogazione.getSesso();		
 			this.sessoBeneficiario = new SessoBean(s);
 			
 			// --
@@ -314,6 +323,7 @@ public class ErogazioneInterventoBean extends CsUiCompBaseBean implements Serial
 		
 		//SISO-962 INIZIO
 		initDatiResidenza();
+		initDatiNascita();
 		//SISO-962 FINE
 	}
 
@@ -338,26 +348,39 @@ public class ErogazioneInterventoBean extends CsUiCompBaseBean implements Serial
 		settoreSelezionato = null;
 	}
 	
-	//SISO-962 INIZIO	
-	private void initDatiResidenza(){
-		 comuneNazioneResidenzaMan = new ComuneNazioneResidenzaMan();
+	private void initDatiNascita() {
+		comuneNazioneNascitaMan = new ComuneNazioneNascitaMan();
 		
 		 //Se mi trovo in una nuova erogazione recupero i dati dalla Cartella sociale
 		 //Se sono in visualizza/modifica trovo valorizzati i dati relativi al MastSogg
-		 if(StringUtils.isBlank(soggettoErogazione.getJsonComuneResidenza()) && 
-			StringUtils.isBlank(soggettoErogazione.getCodiceNazioneResidenzaEstero()) && 
-			StringUtils.isBlank(soggettoErogazione.getViaResidenza())){
+		 if(StringUtils.isBlank(soggettoErogazione.getComuneNascita()) && 
+			StringUtils.isBlank(soggettoErogazione.getNazioneNascita())){
 			 
 			 	CsASoggettoLAZY csASoggetto = (soggettoErogazione.getCsASoggetto() != null ? soggettoErogazione.getCsASoggetto() :  null);
 			 	if(csASoggetto != null){
-				    CsAAnaIndirizzo residenza =  findIndirizzoResidenzaCaso(csASoggetto);
-					String via = residenza!=null ? residenza.getLabelIndirizzo() : null;
-					String statoResidenza = residenza !=null ? residenza.getStatoCod() : null;
+			 		String jsonComuneNascita = this.getJsonNascitaComuneBean(csASoggetto);
 					
-					soggettoErogazione.sincronizzaResidenza(via, getCasoComuneResidenza(residenza), statoResidenza);
+			 		soggettoErogazione.setComuneNascita(jsonComuneNascita);
+			 		soggettoErogazione.setNazioneNascita(csASoggetto.getCsAAnagrafica().getStatoNascitaCod());
 				}
 		 }
 		
+		 this.valorizzaNascitaMan();
+		
+	}
+	
+	//SISO-962 INIZIO	
+	private void initDatiResidenza(){
+		 comuneNazioneResidenzaMan = new ComuneNazioneResidenzaMan();
+		 
+		 //Se mi trovo in una nuova erogazione recupero i dati dalla Cartella sociale
+		 //Se sono in visualizza/modifica trovo valorizzati i dati relativi al MastSogg
+		 if(StringUtils.isBlank(soggettoErogazione.getComuneResidenza()) && 
+			StringUtils.isBlank(soggettoErogazione.getNazioneResidenza()) && 
+			StringUtils.isBlank(soggettoErogazione.getViaResidenza())){
+			 	sincronizzaResidenza(soggettoErogazione);
+		 }
+		 
 		 this.valorizzaResidenzaMan();
 		
 	}
@@ -447,6 +470,7 @@ public class ErogazioneInterventoBean extends CsUiCompBaseBean implements Serial
 		//Comanda comunque INTERVENTO_ID (non il custom!)
 		initDatiSituazioneEconomicaVerificata(tipoInterventoId);
 		initDatiResidenza();
+		initDatiNascita();
 		
 		//#ROMACAPITALE
 		setVisualizzaPannelloDettaglio(false);
@@ -549,6 +573,21 @@ public class ErogazioneInterventoBean extends CsUiCompBaseBean implements Serial
 		// Comanda comunque INTERVENTO_ID (non il custom!)
 		initDatiSituazioneEconomicaVerificata(tipoInterventoId);
 		initDatiResidenza();
+		initDatiNascita();
+		
+		verificaAllineamentoSoggettoCaso();
+	}
+	
+	private void verificaAllineamentoSoggettoCaso() {
+		CsASoggettoLAZY csASoggetto = (soggettoErogazione.getCsASoggetto() != null ? soggettoErogazione.getCsASoggetto() :  null);
+		if(csASoggetto != null){
+		    CsAAnaIndirizzo residenza =  findIndirizzoResidenzaCaso(csASoggetto);
+		    String viaResidenzaCaso = residenza!=null ? residenza.getLabelIndirizzo() : null;
+		    String statoResidenzaCaso = residenza !=null ? residenza.getStatoCod() : null;
+		    String comuneResidenzaCaso = residenza!=null ? getCasoComuneResidenza(residenza) : null;
+		    String comuneNascitaCaso = getJsonNascitaComuneBean(csASoggetto);
+		    soggettoErogazione.verificaAllineamentoCaso(viaResidenzaCaso, comuneResidenzaCaso, statoResidenzaCaso, comuneNascitaCaso);
+		}
 	}
 
 	private void initTipoInterventoCustom(Long idTipoInteventoCustom) {
@@ -564,7 +603,7 @@ public class ErogazioneInterventoBean extends CsUiCompBaseBean implements Serial
 	private void initRisorsaFamiliareBean() {
 		risorsaFamBean = null;
 		if(this.isNucleoBeneficiario() && this.dentroFascicolo)
-			this.risorsaFamBean = new RisorsaFamiliareBean(soggettoErogazione.getCodiceFiscale());
+			this.risorsaFamBean = new RisorsaFamiliareBean(soggettoErogazione.getCf());
 	}
 
 	public void initDatiSituazioneEconomicaVerificata(Long idTipoIntervento) {
@@ -604,6 +643,7 @@ public class ErogazioneInterventoBean extends CsUiCompBaseBean implements Serial
 	private void resetOrganizAndNuovoIntEseg() {
 		this.dataErog = dataAttivazioneDa;
 		this.dataErogA = null; // SISO-556
+		this.dataEvento = null;
 		if (this.selSettoreEroganteId != null && selSettoreEroganteId.compareTo((long) 0) != 0) {
 			loadListaOperatoriEroganti(selSettoreEroganteId);
 		}
@@ -666,7 +706,7 @@ public class ErogazioneInterventoBean extends CsUiCompBaseBean implements Serial
 				addWarning("Beneficiari","La seconda cittadinanza del soggetto beneficiario di riferimento non è più valida");
 				valido=false;
 			}else
-				lstcf.add(soggettoErogazione.getCodiceFiscale().toUpperCase());
+				lstcf.add(soggettoErogazione.getCf().toUpperCase());
 			
 			if (!this.isUnicoBeneficiario()) {
 				
@@ -683,10 +723,10 @@ public class ErogazioneInterventoBean extends CsUiCompBaseBean implements Serial
 						}
 	
 						// Verifica che non ci siano soggetti uguali
-						if (!lstcf.contains(seb.getCodiceFiscale().toUpperCase()))
-							lstcf.add(seb.getCodiceFiscale().toUpperCase());
+						if (!lstcf.contains(seb.getCf().toUpperCase()))
+							lstcf.add(seb.getCf().toUpperCase());
 						else{
-							addWarning("Beneficiari","Beneficiario duplicato: "+ seb.getCodiceFiscale());
+							addWarning("Beneficiari","Beneficiario duplicato: "+ seb.getCf());
 							valido=false;
 						}
 					}
@@ -857,17 +897,12 @@ public class ErogazioneInterventoBean extends CsUiCompBaseBean implements Serial
 			
 			//Valorizzo dati del soggetto beneficiario principale
 			//SISO-760
-			soggettoErogazione.setRiferimento(true);
-			if(this.comuneNazioneResidenzaMan  != null && this.comuneNazioneResidenzaMan.getComuneResidenzaMan().getComune() != null){
-				soggettoErogazione.setNazioneResidenzaNonDefinita(false); //SISO-1021 
-				ObjectMapper mapper = new ObjectMapper();
-				try {
-					soggettoErogazione.setJsonComuneResidenza(mapper.writeValueAsString(comuneNazioneResidenzaMan.getComuneResidenzaMan().getComune()));
-				} catch (Exception e) {
-					logger.error(e);
-				}
-			}
-			 
+			
+			soggettoErogazione.setRiferimento(true);			
+			this.valorizzaResidenza();
+			this.valorizzaLuogoDiNascita();
+			this.valorizzaSesso();
+			
 			CsIInterventoEsegMastSogg brif = this.valorizzaSoggettiErogazione(soggettoErogazione);
 			brif = nuovoIntEsegMast.addBeneficiario(brif);
 			
@@ -883,7 +918,7 @@ public class ErogazioneInterventoBean extends CsUiCompBaseBean implements Serial
 			if (nuovoIntEsegMast.getCsIInterventoEsegs() != null && !nuovoIntEsegMast.getCsIInterventoEsegs().isEmpty() &&
 				nuovoIntEsegMast.getBeneficiari() != null && !nuovoIntEsegMast.getBeneficiari().isEmpty()) {
 
-				String codiceFiscale = soggettoErogazione.getCodiceFiscale();
+				String codiceFiscale = soggettoErogazione.getCf();
 				String benefLuogoNascita = codiceFiscale.substring(11, 15);
 			    //SISO-1138
 				if (this.sessoBeneficiario != null)
@@ -1047,7 +1082,7 @@ public class ErogazioneInterventoBean extends CsUiCompBaseBean implements Serial
 		TempCodFiscManager tempMan = (TempCodFiscManager)getReferencedBean("tempCodFiscManager");
 		boolean cfTemporeneo=false;
 		try {
-			cfTemporeneo = tempMan.isTemporaneo(this.soggettoErogazione.getCodiceFiscale());
+			cfTemporeneo = tempMan.isTemporaneo(this.soggettoErogazione.getCf());
 		} catch (Exception e) {
 			logger.error("Errore verifica codice fiscale temporaneo", e);
 		}
@@ -1112,33 +1147,36 @@ public class ErogazioneInterventoBean extends CsUiCompBaseBean implements Serial
 		CsIInterventoEsegMastSogg s = new CsIInterventoEsegMastSogg();
 		CsASoggettoLAZY casos = se.getCsASoggetto();
 		if (casos == null)
-			casos = getSchedaCSByCF(se.getCodiceFiscale());
+			casos = getSchedaCSByCF(se.getCf());
 		
 		if(casos!=null){
 			se.setCsASoggetto(casos);
 			s.setCaso(se.getCsASoggetto().getCsACaso());
 		}
 
+		s.setRiferimento(se.isRiferimento());
+		
 		s.setCognome(se.getCognome());
 		s.setNome(se.getNome());
-		s.setCf(se.getCodiceFiscale().toUpperCase());
+		s.setCf(se.getCf().toUpperCase());
 		s.setCittadinanza(se.getCittadinanza());
-		s.setAnnoNascita(se.getAnnoNascita());
-		s.setRiferimento(se.isRiferimento());
-		//SISO-962 Inizio
 		
-		s.setNazioneResidenza(se.getCodiceNazioneResidenzaEstero());
+		s.setAnnoNascita(se.getAnnoNascita());
+		s.setComuneNascita(se.getComuneNascita());
+		s.setNazioneNascita(se.getNazioneNascita());
+		
+		s.setNazioneResidenza(se.getNazioneResidenza());
 		s.setNazioneResidenzaNonDefinita(se.isNazioneResidenzaNonDefinita());//SISO-1021
-		s.setComuneResidenza(se.getJsonComuneResidenza());
+		s.setComuneResidenza(se.getComuneResidenza());
 		s.setViaResidenza(se.getViaResidenza());
 		s.setSecondaCittadinanza(se.getCittadinanza2());
 		s.setDatiValidi(se.getDatiValidi()!=null ? se.getDatiValidi().booleanValue() : false);
-		//SISO-962 Fine
+	
 		CsOOperatoreSettore opSettoreMast = getCurrentOpSettore();
 		s.setUserIns(opSettoreMast.getCsOOperatore().getUsername());
 		s.setDtIns(new Date());
 		//SISO-1138
-		s.setSesso(se.getSessoBeneficiario());
+		s.setSesso(se.getSesso());
 		return s;
 	}
 
@@ -1161,6 +1199,7 @@ public class ErogazioneInterventoBean extends CsUiCompBaseBean implements Serial
 		
 		nuovoIntEseg.setDataEsecuzione(row.getIntEseg().getDataEsecuzione());
 		nuovoIntEseg.setDataEsecuzione(row.getIntEseg().getDataEsecuzioneA());
+		nuovoIntEseg.setDataEvento(row.getIntEseg().getDataEvento());
 		nuovoIntEseg.setCsIInterventoEsegMast(this.nuovoIntEsegMast);
 
 		nuovoIntEseg.setNote(row.getIntEseg().getNote());
@@ -1232,6 +1271,7 @@ public class ErogazioneInterventoBean extends CsUiCompBaseBean implements Serial
 
 		nuovoIntEseg.setDataEsecuzione(row.getDataErogazione());
 		nuovoIntEseg.setDataEsecuzioneA(row.getDataErogazioneA());
+		nuovoIntEseg.setDataEvento(row.getDataEvento());
 		nuovoIntEseg.setCsIInterventoEsegValores(listaIntEsegValore);
 	}
 
@@ -1306,6 +1346,7 @@ public class ErogazioneInterventoBean extends CsUiCompBaseBean implements Serial
 	private void setPrimiDatiInNuovoIntEsegTemp() {
 		nuovocsIntEseg.setDataEsecuzione(dataErog);
 		nuovocsIntEseg.setDataEsecuzioneA(dataErogA);
+		nuovocsIntEseg.setDataEvento(dataEvento);
 		nuovocsIntEseg.setCsOOperatoreSettore(getOperatoreErogSelezionato());
 		nuovocsIntEseg.setStato(getStatoSelezionato());
 		nuovocsIntEseg.setDtIns(new Date());
@@ -1343,7 +1384,6 @@ public class ErogazioneInterventoBean extends CsUiCompBaseBean implements Serial
 		} else {
 			// INIZIO SISO-556
 			if (rendicontoPeriodico) {
-
 				if (visualizzaIntervalloDateErogazione) {
 					if(this.dataErogA==null){
 						this.addErrorCampiObbligatori("Erogazioni", "Data di fine erogazione");
@@ -1383,6 +1423,11 @@ public class ErogazioneInterventoBean extends CsUiCompBaseBean implements Serial
 								}
 							}
 						}
+					}
+					
+					if(this.dataEvento==null && isDataEventoObbligatoria()) {
+						this.addErrorCampiObbligatori("Erogazioni", this.getDataEventoLabel());
+						bOk = false;
 					}
 				}
 
@@ -2188,9 +2233,11 @@ public class ErogazioneInterventoBean extends CsUiCompBaseBean implements Serial
 		if (r != null && r.getSoggettoCaso() != null) {
 
 			CsASoggettoLAZY s = r.getSoggettoCaso();
+			CsAAnagrafica ana = s.getCsAAnagrafica();
 			CsAAnaIndirizzo residenza = findIndirizzoResidenzaCaso(s);
 			String via = residenza!=null ? residenza.getLabelIndirizzo() : null;
-			sero = new SoggettoErogazioneBean(s, via, getCasoComuneResidenza(residenza), residenza.getStatoCod(), false);
+			String jsonComuneNascita = this.getJsonNascitaComuneBean(s);
+			sero = new SoggettoErogazioneBean(s, via, getCasoComuneResidenza(residenza), residenza.getStatoCod(), jsonComuneNascita, false);
 
 			this.getAltriSoggetti().add(sero);
 
@@ -2201,7 +2248,7 @@ public class ErogazioneInterventoBean extends CsUiCompBaseBean implements Serial
 	public void addSoggettoManuale() {
 
 		boolean valido = true;
-		if(this.altroSoggettoTmp.getCodiceFiscale()==null || altroSoggettoTmp.getCodiceFiscale().isEmpty()){
+		if(this.altroSoggettoTmp.getCf()==null || altroSoggettoTmp.getCf().isEmpty()){
 			addMessage(FacesMessage.SEVERITY_ERROR,"Inserire il codice fiscale del nuovo beneficiario");
 			valido=false;
 		}
@@ -2226,7 +2273,7 @@ public class ErogazioneInterventoBean extends CsUiCompBaseBean implements Serial
 			valido=false;
 		}
 				
-		if(valido && !isSoggettoPresente(this.altroSoggettoTmp.getCodiceFiscale())){
+		if(valido && !isSoggettoPresente(this.altroSoggettoTmp.getCf())){
 			this.getAltriSoggetti().add(this.altroSoggettoTmp);
 			this.altroSoggettoTmp=new SoggettoErogazioneBean(false);
 		}else
@@ -2265,6 +2312,16 @@ public class ErogazioneInterventoBean extends CsUiCompBaseBean implements Serial
 				   p.getProvenienzaRicerca().equalsIgnoreCase(DataModelCostanti.TipoRicercaSoggetto.SIGESS))
 					p = CsUiCompBaseBean.getPersonaDaAnagEsterna(p.getProvenienzaRicerca(), p.getIdentificativo());
 				
+				String jsonN = null;
+				if(p.getComuneResidenza()!=null){
+					ComuneBean cb = new ComuneBean(p.getComuneNascita());
+					try {
+						jsonN = om.writeValueAsString(cb);
+					} catch (JsonProcessingException e) {}
+				}
+				String nazioneNascita = p.getNazioneNascita()!=null ? p.getNazioneNascita().getCodIstatNazione() : null;
+				
+				
 				String json = null;
 				if(p.getComuneResidenza()!=null){
 					ComuneBean cb = new ComuneBean(p.getComuneResidenza());
@@ -2272,7 +2329,9 @@ public class ErogazioneInterventoBean extends CsUiCompBaseBean implements Serial
 						json = om.writeValueAsString(cb);
 					} catch (JsonProcessingException e) {}
 				}
-				sero = new SoggettoErogazioneBean(p.getCognome(), p.getNome(), p.getCodfisc(), p.getCittadinanza(), p.getDataNascita(), p.getIndirizzoCivicoResidenza() , json, p.getSesso(), false);
+				String nazioneResidenza = p.getNazioneResidenza()!=null ? p.getNazioneResidenza().getCodIstatNazione() : null;
+				
+				sero = new SoggettoErogazioneBean(p.getCognome(), p.getNome(), p.getCodfisc(), p.getCittadinanza(), p.getDataNascita(), p.getIndirizzoCivicoResidenza() , json, nazioneResidenza, jsonN, nazioneNascita,  p.getSesso(), false);
 				
 				UserSearchBeanExt ubean = (UserSearchBeanExt)getReferencedBean("userSearchBeanExt");
 				ubean.clearParameters();
@@ -2280,8 +2339,8 @@ public class ErogazioneInterventoBean extends CsUiCompBaseBean implements Serial
 			}
 			
 			if(sero!=null){
-				if(!isSoggettoPresente(sero.getCodiceFiscale())){
-					CsASoggettoLAZY caso = getSchedaCSByCF(sero.getCodiceFiscale());
+				if(!isSoggettoPresente(sero.getCf())){
+					CsASoggettoLAZY caso = getSchedaCSByCF(sero.getCf());
 					sero.setCsASoggetto(caso);
 
 					this.getAltriSoggetti().add(sero);
@@ -2297,13 +2356,13 @@ public class ErogazioneInterventoBean extends CsUiCompBaseBean implements Serial
 		boolean trovato = false;
 		if(!StringUtils.isBlank(cf)){
 			//Verifico se coincide con quello di riferimento
-			if(this.getSoggettoErogazione().getCodiceFiscale().equalsIgnoreCase(cf))
+			if(this.getSoggettoErogazione().getCf().equalsIgnoreCase(cf))
 				trovato = true;
 			
 			//Verifico se esiste nella lista dei soggetti
 			int i =0;
 			while(i<this.getAltriSoggetti().size() && !trovato){
-				if(this.getAltriSoggetti().get(i).getCodiceFiscale().equalsIgnoreCase(cf))
+				if(this.getAltriSoggetti().get(i).getCf().equalsIgnoreCase(cf))
 					trovato = true;
 				i++;
 			}
@@ -2497,7 +2556,7 @@ public class ErogazioneInterventoBean extends CsUiCompBaseBean implements Serial
 
 	public void setCsIPs(CsIPs csIPs) {
 		this.csIPs = csIPs;
-		this.protDsuMan = new ProtocolloDsuMan(this.csIPs, soggettoErogazione!=null ? soggettoErogazione.getCodiceFiscale() : null);
+		this.protDsuMan = new ProtocolloDsuMan(this.csIPs, soggettoErogazione!=null ? soggettoErogazione.getCf() : null);
 	}
 
 	// FINE MOD-RL
@@ -2681,6 +2740,7 @@ public class ErogazioneInterventoBean extends CsUiCompBaseBean implements Serial
 		this.setLabelCodicePrestazione("Codice prestazione INPS");
 		
 			listaCodiciPrestazione = new ArrayList<SelectItem>();
+			listaPrestazioniPIC = new ArrayList<String>();
 			
 			if (idTipoIntevento!=null) {
 				BaseDTO dto = new BaseDTO();
@@ -2700,6 +2760,9 @@ public class ErogazioneInterventoBean extends CsUiCompBaseBean implements Serial
 				
 				for (ArRelClassememoPresInps a : listaArRelClassememoPresInp) {
 					String codice = a.getArTbPrestazioniInp().getCodice();
+					if(a.getArTbPrestazioniInp().getFlagEsportaSePic())
+						listaPrestazioniPIC.add(codice);
+					
 					SelectItem si = new SelectItem(codice, codice + " " + a.getArTbPrestazioniInp().getDenominazione());
 					if(a.getArTbPrestazioniInp().getFlagNonEsportare())
 						si1.add(si);
@@ -2716,6 +2779,16 @@ public class ErogazioneInterventoBean extends CsUiCompBaseBean implements Serial
 				}
 			}
 
+	}
+	
+	public Boolean getRenderMessaggioPrestazionePic() {
+		boolean render = false;
+		String codSelected = this.getCsIPs()!=null ? this.getCsIPs().getCodPrestazione() : null;
+		Integer inCarico = this.getCsIPs()!=null ? this.getCsIPs().getFlagInCarico() : null;
+		if(!StringUtils.isBlank(codSelected) && inCarico!=null) {
+			render =  listaPrestazioniPIC.contains(codSelected) && FLAG_IN_CARICO.NO.getCodice()==inCarico;
+		}
+		return render;
 	}
 	
 	// INIZIO SISO-657 - Nuovo tracciato casellario PSA - PS - SINA
@@ -2788,7 +2861,7 @@ public class ErogazioneInterventoBean extends CsUiCompBaseBean implements Serial
 	}
 
 	// SISO-860
-	public void radioClick() {
+	public void onChangePresaInCarico() {
 		this.sceltaRadio = true;
 	}
 	
@@ -2953,7 +3026,7 @@ public class ErogazioneInterventoBean extends CsUiCompBaseBean implements Serial
 
 		// SISO - 883
 		BaseDTO bdto = new BaseDTO();
-		bdto.setObj(soggettoErogazione.getCodiceFiscale());
+		bdto.setObj(soggettoErogazione.getCf());
 		fillEnte(bdto);
 		List<ErogazionePrestazioneDTO> listErogIntervento = interventoService.recuperaListaErogazioneDuplicateByCf(bdto);
 		
@@ -3060,17 +3133,17 @@ public class ErogazioneInterventoBean extends CsUiCompBaseBean implements Serial
 		ObjectMapper om = new ObjectMapper();
 		try {
 			
-			if(!StringUtils.isBlank(soggettoErogazione.getCodiceNazioneResidenzaEstero())){
+			if(!StringUtils.isBlank(soggettoErogazione.getNazioneResidenza())){
 				this.comuneNazioneResidenzaMan.setNazioneValue();
-				AmTabNazioni naz = luoghiService.getNazioneByIstat(soggettoErogazione.getCodiceNazioneResidenzaEstero());
+				AmTabNazioni naz = luoghiService.getNazioneByIstat(soggettoErogazione.getNazioneResidenza());
 				this.comuneNazioneResidenzaMan.getNazioneResidenzaMan().setNazione(naz);
-			}else if(StringUtils.isBlank(soggettoErogazione.getCodiceNazioneResidenzaEstero()) && soggettoErogazione.isNazioneResidenzaNonDefinita()){
+			}else if(StringUtils.isBlank(soggettoErogazione.getNazioneResidenza()) && soggettoErogazione.isNazioneResidenzaNonDefinita()){
 					this.comuneNazioneResidenzaMan.setNazioneValue();
 				
 			}else{
 				this.comuneNazioneResidenzaMan.setComuneValue();
-				if(!StringUtils.isBlank(soggettoErogazione.getJsonComuneResidenza()))
-					this.comuneNazioneResidenzaMan.getComuneMan().setComune(om.readValue(soggettoErogazione.getJsonComuneResidenza(), ComuneBean.class));	
+				if(!StringUtils.isBlank(soggettoErogazione.getComuneResidenza()))
+					this.comuneNazioneResidenzaMan.getComuneMan().setComune(om.readValue(soggettoErogazione.getComuneResidenza(), ComuneBean.class));	
 			}
 		} catch (Exception e) {
 			logger.error(e);
@@ -3078,10 +3151,30 @@ public class ErogazioneInterventoBean extends CsUiCompBaseBean implements Serial
 		 
 	}
 
+	public void valorizzaNascitaMan(){
+	 	//Estraggo i dati e deserializzo
+		ObjectMapper om = new ObjectMapper();
+		try {
+			
+			if(!StringUtils.isBlank(soggettoErogazione.getNazioneNascita())){
+				this.comuneNazioneNascitaMan.setNazioneValue();
+				AmTabNazioni naz = luoghiService.getNazioneByIstat(soggettoErogazione.getNazioneNascita());
+				this.comuneNazioneNascitaMan.getNazioneNascitaMan().setNazione(naz);
+			}else{
+				this.comuneNazioneNascitaMan.setComuneValue();
+				if(!StringUtils.isBlank(soggettoErogazione.getComuneNascita()))
+					this.comuneNazioneNascitaMan.getComuneMan().setComune(om.readValue(soggettoErogazione.getComuneNascita(), ComuneBean.class));	
+			}
+		} catch (Exception e) {
+			logger.error(e);
+		}
+		 
+	}
+	
 	//SISO_1138
 	public void valorizzaSesso(){
 		if(this.sessoBeneficiario!=null)
-			this.soggettoErogazione.setSessoBeneficiario(this.sessoBeneficiario.getSesso());
+			this.soggettoErogazione.setSesso(this.sessoBeneficiario.getSesso());
 	}
 	
 	public void valorizzaResidenza() {
@@ -3089,20 +3182,43 @@ public class ErogazioneInterventoBean extends CsUiCompBaseBean implements Serial
 		if(this.comuneNazioneResidenzaMan != null && this.comuneNazioneResidenzaMan.isComune() && this.comuneNazioneResidenzaMan.getComuneMan().getComune() != null){
 			ObjectMapper om = new ObjectMapper();
 			try{
-				this.soggettoErogazione.setCodiceNazioneResidenzaEstero(null);
+				this.soggettoErogazione.setNazioneResidenza(null);
 				this.soggettoErogazione.setNazioneResidenzaNonDefinita(false);//SISO-1021 se la azione estera di residenza è nulla e il comune è valorizzata il check "non disponibile " deve tornare a false
-				this.soggettoErogazione.setJsonComuneResidenza(om.writeValueAsString(this.comuneNazioneResidenzaMan.getComuneMan().getComune()));
+				this.soggettoErogazione.setComuneResidenza(om.writeValueAsString(this.comuneNazioneResidenzaMan.getComuneMan().getComune()));
 		 	}catch(Exception ex){
 				
 			}
 		}else if(this.comuneNazioneResidenzaMan != null && this.comuneNazioneResidenzaMan.isNazione() && this.comuneNazioneResidenzaMan.getNazioneMan().getNazione()!=null){
 			
-			this.soggettoErogazione.setCodiceNazioneResidenzaEstero(this.comuneNazioneResidenzaMan.getNazioneMan().getNazione().getCodIstatNazione()); //.getIso3166());
-			this.soggettoErogazione.setJsonComuneResidenza(null);
+			this.soggettoErogazione.setNazioneResidenza(this.comuneNazioneResidenzaMan.getNazioneMan().getNazione().getCodIstatNazione()); //.getIso3166());
+			this.soggettoErogazione.setComuneResidenza(null);
 			
 		}
 		//SISO-962 Fine
 			
+	}
+	
+	public void valorizzaLuogoDiNascita(){
+		try{
+			
+			ObjectMapper mapper = new ObjectMapper();
+			//resetto i valori per poi valorizzare correttamente
+			soggettoErogazione.setComuneNascita(null);
+			soggettoErogazione.setNazioneNascita(null);
+			
+			if(comuneNazioneNascitaMan.isComune()){
+				ComuneBean comune = this.comuneNazioneNascitaMan.getComuneNascitaMan().getComune();
+				soggettoErogazione.setComuneNascita(comune!=null ? mapper.writeValueAsString(comune) : null);
+			
+			}else{	
+				AmTabNazioni naz = this.comuneNazioneNascitaMan.getNazioneNascitaMan().getNazione();
+				if(naz!=null){
+					soggettoErogazione.setNazioneNascita(naz.getCodIstatNazione());
+				}
+			}
+		} catch (JsonProcessingException e) {
+				logger.error("Errore popolamento Comune/Nazione nascita", e);
+		}
 	}
 
 	public void aggiornaSoggettoRiferimento() {
@@ -3122,7 +3238,7 @@ public class ErogazioneInterventoBean extends CsUiCompBaseBean implements Serial
 		}*/
 
 		this.valorizzaResidenzaMan();
-		
+		this.valorizzaNascitaMan();
 	}
 
 	// SISO-1138
@@ -3188,8 +3304,9 @@ public class ErogazioneInterventoBean extends CsUiCompBaseBean implements Serial
 	}
 	
 	public void sincronizzaDatiAnagrafici(){
-		this.soggettoErogazione.sincronizzaDatiAnagrafici();
-		String s = soggettoErogazione.getSessoBeneficiario();		
+		String comuneNascita = getJsonNascitaComuneBean(soggettoErogazione.getCsASoggetto());
+		this.soggettoErogazione.sincronizzaDatiAnagrafici(comuneNascita);
+		String s = soggettoErogazione.getSesso();		
 		this.sessoBeneficiario = new SessoBean(s);
 	}
 	
@@ -3197,13 +3314,13 @@ public class ErogazioneInterventoBean extends CsUiCompBaseBean implements Serial
 		String value = "-";
 		try {
 			
-			if(!StringUtils.isBlank(se.getJsonComuneResidenza())){
+			if(!StringUtils.isBlank(se.getComuneResidenza())){
 				ObjectMapper om = new ObjectMapper();
-				ComuneBean bean = om.readValue(se.getJsonComuneResidenza(), ComuneBean.class);
+				ComuneBean bean = om.readValue(se.getComuneResidenza(), ComuneBean.class);
 				value = bean.getDenominazione()+" ("+bean.getSiglaProv()+")";
 			}else{
-				if(!StringUtils.isBlank(se.getCodiceNazioneResidenzaEstero())){
-					AmTabNazioni naz = luoghiService.getNazioneByIstat(se.getCodiceNazioneResidenzaEstero());
+				if(!StringUtils.isBlank(se.getNazioneResidenza())){
+					AmTabNazioni naz = luoghiService.getNazioneByIstat(se.getNazioneResidenza());
 					value = naz.getNazione();
 				}
 			}
@@ -3278,5 +3395,31 @@ public class ErogazioneInterventoBean extends CsUiCompBaseBean implements Serial
 	public List<InterventoErogazHistoryRowBean> getStoricoOperazioni(){
 		return this.erogazioneHistory.getRows();
 	}
+
+	public Date getDataEvento() {
+		return dataEvento;
+	}
+
+	public void setDataEvento(Date dataEvento) {
+		this.dataEvento = dataEvento;
+	}
 	
+	public ComuneNazioneNascitaMan getComuneNazioneNascitaMan() {
+		return comuneNazioneNascitaMan;
+	}
+
+	public void setComuneNazioneNascitaMan(ComuneNazioneNascitaMan comuneNazioneNascitaMan) {
+		this.comuneNazioneNascitaMan = comuneNazioneNascitaMan;
+	}
+
+	private boolean isDataEventoObbligatoria(){
+		return csIPs!=null && "A1.05.01".equals(csIPs.getCodPrestazione());
+	}
+	
+	public String getDataEventoLabel() {
+		if(csIPs!=null && "A1.05.01".equals(csIPs.getCodPrestazione())) //SISO-2384
+			this.dataEventoLabel = "Data di effettiva erogazione del contributo (cassa)";
+		else this.dataEventoLabel = DATA_EVENTO_LABEL_DEFAULT;
+		return dataEventoLabel;
+	}	
 }

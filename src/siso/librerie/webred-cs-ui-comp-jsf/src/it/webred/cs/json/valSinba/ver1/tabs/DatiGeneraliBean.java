@@ -2,9 +2,12 @@ package it.webred.cs.json.valSinba.ver1.tabs;
 
 import it.webred.cs.data.model.ArTbPrestazioniInps;
 
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -15,7 +18,9 @@ public class DatiGeneraliBean {
 	private Date dataRiferimentoValutazione;
 	private String codiceAnonimoBeneficiario;
 	private String annoNascita;
+	private String regioneResidenzaBeneficiario;
 	private String nazioneResidenzaBeneficiario;
+
 	private int scuolaFrequentata;
 	private int condizioneLavoro;
 	
@@ -27,7 +32,8 @@ public class DatiGeneraliBean {
 	private List<String> prestazioniSel = new ArrayList<String>();
 	
 	@JsonIgnore private String codicePrestazione;
-	@JsonIgnore private List<String> lstNazioneResidenza;
+//	@JsonIgnore private List<String> lstNazioneResidenza;
+//	@JsonIgnore private List<String> lstRegioneResidenza;
 	@JsonIgnore private List<ArTbPrestazioniInps> lstPrestazioni;
 	
 	
@@ -47,17 +53,6 @@ public class DatiGeneraliBean {
 		}
 		
 	}
-	public List<String> getLstNazioneResidenza() {
-		return lstNazioneResidenza;
-	}
-
-
-
-	public void setLstNazioneResidenza(List<String> lstNazioneResidenza) {
-		this.lstNazioneResidenza = lstNazioneResidenza;
-	}
-
-
 
 	public List<ArTbPrestazioniInps> getLstPrestazioni() {
 		return lstPrestazioni;
@@ -182,6 +177,13 @@ public class DatiGeneraliBean {
 	public void setPrestazioniSel(List<String> prestazioniSel) {
 		this.prestazioniSel = prestazioniSel;
 	}
-	
+
+	public String getRegioneResidenzaBeneficiario() {
+		return regioneResidenzaBeneficiario;
+	}
+
+	public void setRegioneResidenzaBeneficiario(String regioneResidenzaBeneficiario) {
+		this.regioneResidenzaBeneficiario = regioneResidenzaBeneficiario;
+	}
 	
 }

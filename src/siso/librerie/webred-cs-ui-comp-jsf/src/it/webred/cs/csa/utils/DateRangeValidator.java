@@ -41,7 +41,7 @@ public class DateRangeValidator implements Validator {
 			if (endDate.before(startDate))
 	            throw new ValidatorException(new FacesMessage(FacesMessage.SEVERITY_ERROR, "La data inizio ("+startStr+") deve essere precedente alla data fine ("+endStr+")", ""));
 		} catch (ParseException e) {
-			throw new ValidatorException(new FacesMessage(FacesMessage.SEVERITY_ERROR, "Errore durante conversione delle date", ""));
+			throw new ValidatorException(new FacesMessage(FacesMessage.SEVERITY_ERROR, "Errore durante conversione delle date", ""), e);
 		}
 	}
 

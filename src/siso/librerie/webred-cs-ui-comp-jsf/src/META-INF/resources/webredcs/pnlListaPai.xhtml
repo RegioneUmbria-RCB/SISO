@@ -35,11 +35,10 @@
 		<!-- ELENCO PROGETTI -->
 		<ui:include src="/webredcs/pnlPai/listaPai.xhtml"/> 
 		
-		
 		<p:panel header="Beneficiario" rendered="#{not empty cc.attrs.iPai.selectedPai}">
-			<ui:include src="/webredcs/pnlPai/beneficiari.xhtml" />
+			 <webredcs:pnlBeneficiariPai iPai="#{cc.attrs.iPai}"  />
 		</p:panel>
-
+				
 		<!-- inizio aggiunta evoluzione-pai -->  
         <p:panel id="paiDetailContainer" rendered="#{not empty cc.attrs.iPai.selectedPai}" >
 			    <f:facet name="header">

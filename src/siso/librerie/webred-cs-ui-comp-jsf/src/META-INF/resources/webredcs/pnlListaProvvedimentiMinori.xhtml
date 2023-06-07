@@ -1,0 +1,107 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+     	xmlns:h="http://java.sun.com/jsf/html"
+		xmlns:f="http://java.sun.com/jsf/core"
+		xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+		xmlns:ui="http://java.sun.com/jsf/facelets"
+		xmlns:p="http://primefaces.org/ui"
+	  	xmlns:composite="http://java.sun.com/jsf/composite">
+      
+	<h:head>
+		<title>Gestione Lista Provvedimenti Minori</title>
+	</h:head>
+	<h:body>
+	<composite:interface componentType="pnlListaProvvedimentiMinori">
+		<composite:attribute name="iDatiLista" type="it.webred.cs.jsf.interfaces.IListaProvvedimentiMinori" />
+		<composite:attribute name="esciActionUpdate" required="false"/>
+		<composite:attribute name="salvaActionUpdate" required="false"/>
+	</composite:interface>
+	<composite:implementation xmlns:webred="http://java.sun.com/jsf/composite/webred" xmlns:webredcs="http://java.sun.com/jsf/composite/webredcs">
+			
+		<h:panelGrid columns="1" cellpadding="0" cellspacing="0" width="100%">
+			<p:commandButton id="nuovo" value="Nuovo" process="@this" 
+							 disabled="#{cc.attrs.iDatiLista.readOnly}" 
+			                 actionListener="#{cc.attrs.iDatiLista.openDialogOnNew}" 
+			                 oncomplete="if(args &amp;&amp; args.isShowDialog){updateProvvedimentoContent(); ProvMinoriDialog.show()}" 
+			                 icon="ui-icon-document-b" >
+			</p:commandButton>
+			<p:remoteCommand id="rmtBtnNuovoProvvedimento" name="updateProvvedimentoContent" process="@this" update="@(.updateOnOpenDialogProvvMinori)" />
+		</h:panelGrid>
+		<p:spacer height="2"/>
+		
+		<p:dataTable id="listaProvvedimenti" var="rowBean" value="#{cc.attrs.iDatiLista.lazyListaProvvedimentiModel}" 
+			rowIndexVar="rowIndex" rowKey="#{rowBean.idRow}" emptyMessage="Nessun provvedimento presente"
+			widgetVar="listaProvvedimentiWidget" filterDelay="2000"  paginator="true" 
+			paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+			rows="10" rowsPerPageTemplate="10,20,40" lazy="true" selectionMode="single" styleClass="ui-datatable-hor-scroll">
+
+			<p:column headerText="Data Provvedimento" style="text-align:center;">
+				<h:outputText value="#{rowBean.dataProvv}">
+					<f:convertDateTime pattern="dd/MM/yyyy" />
+				</h:outputText>
+			</p:column>
+			<p:column headerText="num.Provvedimento">
+				<h:outputText value="#{rowBean.nProvvedimento}" />
+			</p:column>
+			<p:column headerText="Tipo Provvedimento">
+				<h:outputText value="#{rowBean.tipoProvv}" />
+			</p:column>
+			<p:column headerText="Affido al Comune" style="text-align:center;">
+				<p:selectBooleanCheckbox id="affidoComune" value="#{rowBean.affidoComune}" disabled="true" />
+			</p:column>
+			<p:column headerText="Scadenza Adempimento" style="text-align:center;">
+				<h:outputText value="#{rowBean.scadenzaAdempimento}" >
+				 	<f:convertDateTime pattern="dd/MM/yyyy"/>
+				</h:outputText>
+			</p:column>
+			<p:column headerText="Ultima Modifica" style="text-align:center;">	
+						<h:outputLabel value="#{rowBean.dtModifica}">
+							<f:convertDateTime type="date" pattern="dd/MM/yyyy HH:mm:ss" timeZone="Europe/Berlin" />
+						</h:outputLabel>
+						<h:outputLabel value=" da #{rowBean.opModifica}" />
+		    </p:column>
+			<p:column>
+				<p:commandButton value="Modifica" icon="ui-icon-pencil" process="@this" action="#{cc.attrs.iDatiLista.setOnModificaProvv(rowBean.idRow)}"
+				                 oncomplete="if(args &amp;&amp; args.isShowDialog){updateProvvedimentoContent(); ProvMinoriDialog.show()}" />
+				                 
+				<p:commandButton value="Rimuovi" actionListener="#{cc.attrs.iDatiLista.beforElimina(rowBean.idRow)}"  onclick="ConfermaElimina.show()" />
+			</p:column>
+		</p:dataTable>
+
+		<p:confirmDialog id="EliminaRiga" global="false" header="Elimina" widgetVar="ConfermaElimina"  severity="alert" closable="false" message="Procedere con l'eliminazione?">
+			<p:panelGrid>
+				<p:row>
+					<p:column style="text-align: center;">
+						<p:commandButton value="SI" onclick="ConfermaElimina.hide()" actionListener="#{bugFixProvv.elimina()}" process="@this" update="listaProvvedimenti" />
+						<p:commandButton value="NO" onclick="ConfermaElimina.hide()" type="button" />
+					</p:column>
+				</p:row>
+			</p:panelGrid>
+		</p:confirmDialog>
+	
+		<!-- INIZIO DIALOG -->
+		<p:dialog id="provMinoriDialog" widgetVar="ProvMinoriDialog" closable="true"
+            		  header="Provvedimenti Tribunale" modal="true" 
+          			  resizable="true" dynamic="true" position="center" draggable="true"
+          			  onShow="var scrollPanel = jQuery(PF('ProvMinoriScrollPanel').jqId);
+          			  							scrollPanel.width(scrollPanel.width()+25);
+          			  							scrollPanel.height(jQuery(window).height()*0.85);">
+          		
+          	<p:scrollPanel mode="native" widgetVar="ProvMinoriScrollPanel">		
+          		<p:outputPanel id="pnlDialogProvvTribunale" styleClass="#{'updateOnOpenDialogProvvMinori'}">
+          			<webredcs:pnlProvvedimentiMinori iProvvMinori="#{cc.attrs.iDatiLista.currProvvedimentiMinoriManBean}" />
+          										 	 
+	          		<webred:pnlSalvaEsci dialogToHide="ProvMinoriDialog" pnlToUpdate=":#{p:component('listaProvvedimenti')}" 
+										 disabled="#{cc.attrs.iDatiLista.readOnly}"
+				                         salvaAction="#{cc.attrs.iDatiLista.salva()}" 
+				                         renderedBtnSalvaSecondoLivello="#{cc.attrs.iDatiLista.renderedSecondoLivello}"
+				                         salvaSecondoLivelloAction="#{cc.attrs.iDatiLista.salvaSecondoLivello()}"/>   
+			                         
+          		</p:outputPanel>
+          	</p:scrollPanel>
+        </p:dialog>
+			
+	</composite:implementation>
+	</h:body>
+		
+</html>

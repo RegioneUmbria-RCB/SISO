@@ -431,6 +431,15 @@
 			</h:panelGrid>
 			<webred:pnlNota id="diario_pubblico_servizi" notaLabel="Visibile a tutti" notaValue="#{nuovaSchedaWizard.notaDiarioPubblica.nota}" />
 		</p:outputPanel>
+		<p:outputPanel style="display: inline-block; vertical-align:top;">
+			<h:panelGrid columns="2">
+				<p:outputLabel value="Data"/>
+				<webred:pnlData dataValue="#{nuovaSchedaWizard.notaDiarioPrivata.data}" 
+			            dataPattern="dd/MM/yyyy"  dataPatternLabel="gg/mm/aaaa" dataReq="false" />
+			</h:panelGrid>
+			<webred:pnlNota id="diario_privato_servizi" notaLabel="Privata" notaValue="#{nuovaSchedaWizard.notaDiarioPrivata.nota}" />
+		</p:outputPanel>
+		
 	</p:panel>		
 	<p:separator />
 	<webred:pnlRequiredSalva salvaAction="#{nuovaSchedaWizard.salvaTabServiziRichiesti()}"  

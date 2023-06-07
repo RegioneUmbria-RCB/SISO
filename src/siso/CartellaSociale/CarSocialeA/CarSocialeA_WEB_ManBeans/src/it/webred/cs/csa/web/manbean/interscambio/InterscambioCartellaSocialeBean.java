@@ -85,8 +85,9 @@ public class InterscambioCartellaSocialeBean extends CsUiCompBaseBean {
 		} else {
 			this.eventCfFilter = null;
 		}
-		
-		// 2018-02-01 Smartpeg - spostata in PostConstruct per Maintenance
+	}
+	
+	private void loadListaEventi() {
 		BaseDTO bdto = new BaseDTO();
 		fillEnte(bdto);
 
@@ -94,8 +95,7 @@ public class InterscambioCartellaSocialeBean extends CsUiCompBaseBean {
 			this.listaEventi = this.ics.getListaEventi(bdto);
 			this.eventCfFilter = null;
 		} else {
-			this.listaEventi = this.ics
-					.getListaEventi(bdto, this.eventCfFilter, this.eventTypeFilter);
+			this.listaEventi = this.ics.getListaEventi(bdto, this.eventCfFilter, this.eventTypeFilter);
 		}
 	}
 
@@ -124,6 +124,7 @@ public class InterscambioCartellaSocialeBean extends CsUiCompBaseBean {
 	 * Visualizza una dataTable con la lista degli eventi IMPORT/EXPORT
 	 */
 	public void visualizzaElencoEventi() {
+		this.loadListaEventi();
 		this.nascondiTutto();
 		this.mostraElencoEventi = true;
 		logger.info("Visualizzazione eventi avviata...");
@@ -163,6 +164,7 @@ public class InterscambioCartellaSocialeBean extends CsUiCompBaseBean {
 		logger.info("Evento cancellato " + evt.getCodiceFiscale());
 		fillEnte(evt);
 		this.ics.cancellaEvento(evt);
+		this.loadListaEventi();
 	}
 
 	/***

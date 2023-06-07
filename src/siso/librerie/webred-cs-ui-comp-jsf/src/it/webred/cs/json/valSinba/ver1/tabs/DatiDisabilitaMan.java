@@ -31,10 +31,6 @@ public class DatiDisabilitaMan {
 		
 	}
 	
-	public void aggiungiComponente()
-	{
-		
-	}
 	
 	public void valorizzaJson(DatiDisabilitaBean datiDisabilitaBean){
 		//Valorizzo dati componente familiare

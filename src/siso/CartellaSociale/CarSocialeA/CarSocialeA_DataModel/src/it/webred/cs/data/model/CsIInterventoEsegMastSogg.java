@@ -38,6 +38,12 @@ public class CsIInterventoEsegMastSogg implements Serializable {
 	@Column(name="ANNO_NASCITA")
 	private Integer annoNascita;
 	
+	@Column(name="COMUNE_NASCITA")
+	private String comuneNascita; //JSON
+ 
+	@Column(name="NAZIONE_NASCITA")
+	private String nazioneNascita; 
+	
 	@Column(name="FLAG_RIFERIMENTO")
 	private Boolean riferimento;
 	
@@ -83,8 +89,6 @@ public class CsIInterventoEsegMastSogg implements Serializable {
 	@Column(name="FLAG_NAZ_RES_NON_DEFINITA")
 	private Boolean nazioneResidenzaNonDefinita;
 		
-
-	 
 	 public String getNazioneResidenza() {
 		return nazioneResidenza;
 	}
@@ -250,5 +254,20 @@ public class CsIInterventoEsegMastSogg implements Serializable {
 	public void setNazioneResidenzaNonDefinita(Boolean nazioneResidenzaNonDefinita) {
 		this.nazioneResidenzaNonDefinita = nazioneResidenzaNonDefinita;
 	}
-	
+
+	public String getComuneNascita() {
+		return comuneNascita;
+	}
+
+	public void setComuneNascita(String comuneNascita) {
+		this.comuneNascita = comuneNascita;
+	}
+
+	public String getNazioneNascita() {
+		return nazioneNascita;
+	}
+
+	public void setNazioneNascita(String nazioneNascita) {
+		this.nazioneNascita = nazioneNascita;
+	}
 }

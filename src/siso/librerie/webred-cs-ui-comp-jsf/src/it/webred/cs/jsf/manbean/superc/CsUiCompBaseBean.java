@@ -42,6 +42,7 @@ import it.webred.cs.data.DataModelCostanti.TipoDiario;
 import it.webred.cs.data.DataModelCostanti.TipoStatoErogazione;
 import it.webred.cs.data.model.ArFfProgetto;
 import it.webred.cs.data.model.CsAAnaIndirizzo;
+import it.webred.cs.data.model.CsAAnagrafica;
 import it.webred.cs.data.model.CsAComponente;
 import it.webred.cs.data.model.CsAIndirizzo;
 import it.webred.cs.data.model.CsASoggettoLAZY;
@@ -127,6 +128,7 @@ import org.primefaces.context.RequestContext;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class CsUiCompBaseBean {
@@ -1281,7 +1283,7 @@ public class CsUiCompBaseBean {
 		return null;
 	}
 	
-	public List<CsDValutazione> getSchedeJsonInterventiCustom(SsScheda scheda){
+	public List<CsDValutazione> getSchedeJsonInterventiCustom(Long schedaId){
 		List<CsDValutazione> val = new ArrayList<CsDValutazione>();
 		Integer[] tipiDiario = {TipoDiario.INTERMEDIAZIONE_AB_ID, 
 								TipoDiario.ORIENTAMENTO_LAVORO_ID, 
@@ -1290,7 +1292,7 @@ public class CsUiCompBaseBean {
 								TipoDiario.MEDIAZIONE_CULT_ID,
 								TipoDiario.RICHIESTA_SERVIZIO_ID};
 		try {
-			val = getSchedeValutazione(scheda.getId(), Arrays.asList(tipiDiario));
+			val = getSchedeValutazione(schedaId, Arrays.asList(tipiDiario));
 			
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
@@ -1394,6 +1396,21 @@ public class CsUiCompBaseBean {
 			nazione = getNazioneByIstat(codStato, descStato);
 		comuneNazioneNascitaMan.init(comuneBean,nazione);
 		return comuneNazioneNascitaMan;
+	}
+	
+	public static String getJsonNascitaComuneBean(CsASoggettoLAZY soggetto) {
+		String json = null;
+		ObjectMapper om = new ObjectMapper();
+		if(soggetto!=null) {
+			CsAAnagrafica ana = soggetto.getCsAAnagrafica();
+			if(ana.getComuneNascitaCod() !=null){
+				ComuneBean cb = getComuneBean(ana.getComuneNascitaCod(), ana.getComuneNascitaDes(), ana.getProvNascitaCod());
+				try {
+					json = om.writeValueAsString(cb);
+				} catch (JsonProcessingException ex) {}
+			}
+		}
+		return json;
 	}
 	
 	public static ComuneBean getComuneBean(String codice, String descrizione, String prov){
@@ -1639,6 +1656,16 @@ public class CsUiCompBaseBean {
 		return comuneResidenza;
 	}
 	
+	public static String getComuneJson(String comCod, String comDes) {
+		ComuneBean comuneBean = getComuneBean(comCod, comDes, null);
+	 	if(comuneBean!=null){
+			try{
+				ObjectMapper om = new ObjectMapper();
+				return om.writeValueAsString(comuneBean);
+			}catch(Exception ex ){}
+	 	}
+	 	return null;
+	}
 	
 	private static RicercaAnagraficaResult ricercaAnaSigess(RicercaAnagraficaParams params){
 		RicercaAnagraficaResult result = new RicercaAnagraficaResult();

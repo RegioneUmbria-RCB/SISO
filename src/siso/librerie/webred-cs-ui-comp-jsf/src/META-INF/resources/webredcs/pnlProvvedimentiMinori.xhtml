@@ -1,0 +1,83 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:webred="http://java.sun.com/jsf/composite/webred"
+	xmlns:webredcs="http://java.sun.com/jsf/composite/webredcs">
+
+<h:head>
+	<title>Componente Interno al dialog Provvedimenti Minori</title>
+</h:head>
+<h:body>
+	<composite:interface componentType="pnlProvvedimentiMinori">
+		<composite:attribute name="iProvvMinori" type="it.webred.cs.json.provvedimentiMinori.IProvvedimentiMinori" />
+	</composite:interface>
+
+
+	<composite:implementation>
+	
+	  <p:tabView  id="ProvedimentoMinTabView" style="padding:0;" effect="fade">
+		
+			<p:tab id="DatiProvedimentoTab" title="#{cc.attrs.iProvvMinori.datiProv.tabName}" 
+			       rendered="true" titletip="#{cc.attrs.iProvvMinori.datiProv.tabName}">
+				<f:facet name="title">
+					<h:outputText value="#{cc.attrs.iProvvMinori.datiProv.tabName}" style="vertical-align: bottom;" />
+				</f:facet>
+				
+				<ui:include src="/webredcs/pnlProvvedimentiMinori/tabDatiProvvedimento.xhtml" >
+					<ui:param name="provvMinoriMan" value="#{cc.attrs.iProvvMinori}" />
+				</ui:include>
+			</p:tab>
+			<p:tab id="prescSpecTab" title="#{cc.attrs.iProvvMinori.prescSpec.tabName}" 
+			       rendered="true" titletip="#{cc.attrs.iProvvMinori.prescSpec.tabName}">
+
+				<f:facet name="title">
+					<h:outputText value="#{cc.attrs.iProvvMinori.prescSpec.tabName}" style="vertical-align: bottom;" />
+				</f:facet>
+				<ui:include src="/webredcs/pnlProvvedimentiMinori/tabPrescrizioniSpecialistiche.xhtml">
+					<ui:param name="provvMinoriMan" value="#{cc.attrs.iProvvMinori}" />
+				</ui:include>
+
+			</p:tab>
+			<p:tab id="prescSocEdTab" title="#{cc.attrs.iProvvMinori.prescSocEd.tabName}" 
+			       rendered="true" titletip="#{cc.attrs.iProvvMinori.prescSocEd.tabName}">
+				<f:facet name="title">
+					<h:outputText value="#{cc.attrs.iProvvMinori.prescSocEd.tabName}" style="vertical-align: bottom;" />
+				</f:facet>
+				
+				<ui:include src="/webredcs/pnlProvvedimentiMinori/tabPrescrizioniSocioEducativa.xhtml">
+					<ui:param name="provvMinoriMan" value="#{cc.attrs.iProvvMinori}" />
+				</ui:include>
+
+			</p:tab>
+			<p:tab id="interTutelaTab" title="#{cc.attrs.iProvvMinori.interTutela.tabName}" 
+			       rendered="true" titletip="#{cc.attrs.iProvvMinori.interTutela.tabName}">
+
+				<f:facet name="title">
+					<h:outputText value="#{cc.attrs.iProvvMinori.interTutela.tabName}" style="vertical-align: bottom;" />
+				</f:facet>
+				<ui:include src="/webredcs/pnlProvvedimentiMinori/tabInterventiTutela.xhtml">
+					<ui:param name="provvMinoriMan" value="#{cc.attrs.iProvvMinori}" />
+				</ui:include>
+
+			</p:tab>
+	
+			<p:tab id="intSpecTempTab" title="#{cc.attrs.iProvvMinori.intSpecTemp.tabName}" 
+			       rendered="true" titletip="#{cc.attrs.iProvvMinori.intSpecTemp.tabName}">
+				<f:facet name="title">
+					<h:outputText value="#{cc.attrs.iProvvMinori.intSpecTemp.tabName}" style="vertical-align: bottom;" />
+				</f:facet>
+				<ui:include src="/webredcs/pnlProvvedimentiMinori/tabIntSpecTempiChiusure.xhtml">
+					<ui:param name="provvMinoriMan" value="#{cc.attrs.iProvvMinori}" />
+				</ui:include>
+			</p:tab>
+			
+
+		</p:tabView>
+	</composite:implementation>
+</h:body>
+
+</html>

@@ -13,6 +13,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -132,14 +133,14 @@ public class ValSinbaBean extends JsonBaseBean {
 			if (getDatiGenerali().getDataRiferimentoValutazione() == null)
 				messagges.add("Dati Generali: Data di riferimento valutazione è un campo obbligatorio");
 			
-			if (getDatiGenerali().getCodiceAnonimoBeneficiario() == null || "".equals(getDatiGenerali().getCodiceAnonimoBeneficiario()))
+			if (StringUtils.isBlank(getDatiGenerali().getCodiceAnonimoBeneficiario()))
 				messagges.add("Dati Generali: Codice Anonimo Beneficiario è un campo obbligatorio");
 			
-			if (getDatiGenerali().getAnnoNascita() == null || getDatiGenerali().getAnnoNascita().isEmpty())
+			if (StringUtils.isBlank(getDatiGenerali().getAnnoNascita()))
 				messagges.add("Dati Generali: Anno di Nascita è un campo obbligatorio");
 			
-			if (getDatiGenerali().getNazioneResidenzaBeneficiario() == null || "".equals(getDatiGenerali().getNazioneResidenzaBeneficiario()))
-				messagges.add("Dati Generali: Nazione di Residenza del Beneficiario è un campo obbligatorio");
+			if (StringUtils.isBlank(getDatiGenerali().getNazioneResidenzaBeneficiario()))
+				messagges.add("Dati Generali: Nazione di residenza del beneficiario è un campo obbligatorio");
 			
 			if (getDatiGenerali().getScuolaFrequentata() == 0)
 				messagges.add("Dati Generali: Scuola Frequentata è un campo obbligatorio");
@@ -147,48 +148,47 @@ public class ValSinbaBean extends JsonBaseBean {
 			if (getDatiGenerali().getCondizioneLavoro() == 0)
 				messagges.add("Dati Generali: Condizione Lavoro è un campo obbligatorio");
 			
+			if (getDatiGenerali().getFasciaEtaBeneficiario() == 0)
+				messagges.add("Dati Generali: Fascia di età del beneficiario è un campo obbligatorio");
+			
 			if(getDatiGenerali().getPrestazioniSel() == null || getDatiGenerali().getPrestazioniSel().size() == 0){
 				//messagges.add("Dati Generali: Selezionate almeno una prestazione dall'elenco");	
 				messagges.add("Dati Generali: non esistono prestazioni per la data: "+ formatter.format(this.getDatiGenerali().getDataRiferimentoValutazione()));
 			}
 			// TAB Dati Famiglia
+			if (getDatiFamiglia().getLstComponentiFamiglia() == null || getDatiFamiglia().getLstComponentiFamiglia().isEmpty())
+				messagges.add("Dati Famiglia: Inserire la lista dei componenti familiari");
+			
+			if (getDatiFamiglia().getMinoreStranieroNonAccompagnato() == 0)
+				messagges.add("Dati Famiglia: Minore straniero non accompagnato è un campo obbligatorio");
+			
 			if (getDatiFamiglia().getCondizioneMinore() == 0)
 				messagges.add("Dati Famiglia: Condizione Minore è un campo obbligatorio");
 			
 			if (getDatiFamiglia().getLuogoVita() == 0)
 				messagges.add("Dati Famiglia: Luogo Vita è un campo obbligatorio");
-			
-			if (getDatiFamiglia().getNazioneResidenza() == null || "".equals(getDatiFamiglia().getNazioneResidenza()))
-				messagges.add("Dati Famiglia: Nazione Residenza e' un campo obbligatorio");
-		
-			if (getDatiFamiglia().getRegione() == 0)
-				messagges.add("Dati Famiglia: Regione è un campo obbligatorio");
-			
-			if (getDatiFamiglia().getMinoreStranieroNonAccompagnato() == 0)
-				messagges.add("Dati Famiglia: Minore straniero non accompagnato è un campo obbligatorio");
-			
-			if (getDatiFamiglia().getLstComponentiFamiglia() == null || getDatiFamiglia().getLstComponentiFamiglia().isEmpty())
-				messagges.add("Dati Famiglia: Composizione familiare non è valorizzato");
-						
+							
 			// TAB Disabilita'
 			if (getDatiDisabilita().getDisabile() == 0)
 				messagges.add("Disabilità: Disabilità è un campo obbligatorio");
 			
-			//if (getDatiDisabilita().getTipoDisabilita() == 0)
-				//messagges.add("Disabilità: Tipo Disabilità è un campo obbligatorio");
-			
-			//if (getDatiDisabilita().getCertificazioneInvCivile() == 0)
-				//messagges.add("Disabilità: Certificazione Invalidità Civile è un campo obbligatorio");
-			
+			if(getDatiDisabilita().isDisabileSelected()) {
+				if (getDatiDisabilita().getTipoDisabilita()== 0)
+					messagges.add("Disabilità: Se il soggetto è disabile, il campo Tipo Disabilità è obbligatorio");
+				
+				if (getDatiDisabilita().getCertificazioneInvCivile() == 0)
+					messagges.add("Disabilità: Se il soggetto è disabile, il campo Certificazione Invalidità Civile è obbligatorio");
+			}
 			// TAB Segnalazioni
+			
+			if (getDatiSegnalazioni().getDataPrimaSegnalazione() == null)
+				messagges.add("Segnalazioni: Data Prima Segnalazione è un campo obbligatorio");
+		
 			if (getDatiSegnalazioni().getFonte() == 0)
 				messagges.add("Segnalazioni: Fonte della Segnalazione è un campo obbligatorio");
 			
 			if (getDatiSegnalazioni().getValutazioneMinore() == 0)
 				messagges.add("Segnalazioni: Valutazione del Minore è un campo obbligatorio");
-			
-			if (getDatiSegnalazioni().getDataSegnalazione() == null)
-				messagges.add("Segnalazioni: Data Segnalazione è un campo obbligatorio");
 			
 			if (getDatiSegnalazioni().getValutazioneFamiglia() == 0)
 				messagges.add("Segnalazioni: Valutazione Famiglia del Minore è un campo obbligatorio");
@@ -196,8 +196,15 @@ public class ValSinbaBean extends JsonBaseBean {
 			if (getDatiSegnalazioni().getAutoritaGiudiziaria() == 0)
 				messagges.add("Segnalazioni: Segnalazione Autorità Giudiziaria è un campo obbligatorio");
 			
+			if(getDatiSegnalazioni().isAutoritàGiudiziariaSel() && getDatiSegnalazioni().getDataSegnalazione()==null)
+				messagges.add("Segnalazioni: Inserire la data di segnalazione all'autorità giudiziaria");
+			
 			if (getDatiSegnalazioni().getProvvedimentoGiudiziario() == 0)
 				messagges.add("Segnalazioni: Provvedimento Giudiziario è un campo obbligatorio");
+			
+			if(getDatiSegnalazioni().isProvvGiudiziarioSel() && getDatiSegnalazioni().getDataProvvedimento()==null)
+				messagges.add("Segnalazioni: Inserire la data del provvedimento giudiziario");
+			
 			
 			// TAB Affidamento
 			
@@ -205,4 +212,5 @@ public class ValSinbaBean extends JsonBaseBean {
 		
 		return messagges;
 	}
+
 }

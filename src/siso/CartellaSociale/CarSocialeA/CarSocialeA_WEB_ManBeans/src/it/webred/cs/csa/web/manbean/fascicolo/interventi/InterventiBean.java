@@ -158,7 +158,7 @@ public class InterventiBean extends FascicoloCompBaseBean implements IDatiInterv
 	
 	public void inizializzaNuovaErogazione() {
 		fglInterventoBean.setFromPai(false);
-		erogazioniInterventiBean.inizializzaDialogo(null);
+		erogazioniInterventiBean.inizializzaDialogo(null, null);
 		fglInterventoBean.setDatiErogazioniTabRendered(true);
 		fglInterventoBean.setDatiInterventoTabRendered(false);
 		
@@ -168,14 +168,6 @@ public class InterventiBean extends FascicoloCompBaseBean implements IDatiInterv
 			tipoIntTreeView.resetCustomIstat();
 	}
 	
-	//SISO-748
-	public void inizializzaNuovaErogazione(TipoInterventoManBean tipoIntTreeView, Boolean cambiaBeneficiario){
-		fglInterventoBean.setFromPai(true);
-		erogazioniInterventiBean.inizializzaDialogoByTreeView(tipoIntTreeView);
-		fglInterventoBean.setDatiErogazioniTabRendered(true);
-		fglInterventoBean.setDatiInterventoTabRendered(false);
-		fglInterventoBean.getErogazioneInterventoBean().setCambiaBeneficiarioRiferimento(cambiaBeneficiario);
-	}
 	public void inizializzaNuovaErogazione(TipoInterventoManBean tipoIntTreeView, Boolean cambiaBeneficiario, StrutturaDisponibilitaDTO struttDisp){
 		fglInterventoBean.setFromPai(true);
 		erogazioniInterventiBean.inizializzaDialogoByTreeView(tipoIntTreeView,struttDisp);

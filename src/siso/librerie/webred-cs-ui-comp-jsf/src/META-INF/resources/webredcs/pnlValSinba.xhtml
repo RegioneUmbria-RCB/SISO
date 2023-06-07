@@ -29,10 +29,8 @@
 								immediate="true" update=":#{p:component('schedaSinbaContent')}" process="@this"
 								partialSubmit="true" rendered="#{cc.attrs.esisteStorico and cc.attrs.sinbaManBean.isNew() and !cc.attrs.sinbaManBean.isCopia()}" />
 			
-			<p:tabView id="tabViewValMultidimMinori_v1" 
-				rendered="#{cc.attrs.sinbaManBean.versionLowerCase eq '1'}" 
-				style="padding:0;"
-				orientation="top" scrollable="true" effect="fade" activeIndex="0">
+			<p:tabView id="tabViewValMultidimMinori_v1" rendered="#{cc.attrs.sinbaManBean.versionLowerCase eq '1'}" 
+				style="padding:0;" orientation="top" scrollable="true" effect="fade" activeIndex="0">
 		      
 				<p:tab id="datiGenerali" title="Dati Generali">
 		
@@ -50,12 +48,10 @@
 							          <f:ajax  event="change" process="@this" listener="#{cc.attrs.sinbaManBean.initCalendar}" update="@this :#{p:component('dtPrestazioni')} :#{p:component('panelSegnalazioni')}  :#{p:component('affidamentoPAI')} :#{p:component('affidamentoForma')} :#{p:component('affidamentoCarattere')}" />
 							     </p:calendar>
 								<h:outputText value="Codice anonimo beneficiario *"/>
-								<p:inputText id="codBeneficiarioaVal" disabled="true"
-									required="false"
-									value="#{cc.attrs.sinbaManBean.jsonCurrent.datiGenerali.codiceAnonimoBeneficiario}" />
+								<p:inputText id="codBeneficiarioaVal" disabled="true" 
+											 value="#{cc.attrs.sinbaManBean.jsonCurrent.datiGenerali.codiceAnonimoBeneficiario}" />
 								<h:outputText value="Anno di nascita *"/>
 								<p:inputText id="annoNascitaVal" disabled="true"
-									required="false"
 									value="#{cc.attrs.sinbaManBean.jsonCurrent.datiGenerali.annoNascita}" />
 <!-- 								<p:selectOneMenu id="annoNascitaVal" -->
 <!-- 									value="#{cc.attrs.sinbaManBean.jsonCurrent.datiGenerali.annoNascita}" -->
@@ -63,9 +59,21 @@
 <!-- 									<f:selectItem noSelectionOption="true" itemLabel="- seleziona -" /> -->
 <!-- 									<f:selectItems value="#{cc.attrs.sinbaManBean.datiGen.lstAnni}" /> -->
 <!-- 								</p:selectOneMenu> -->
+								<h:outputText value="Fascia di età del beneficiario *"/>
+								<p:selectOneMenu id="fasciaEtaVal"
+									value="#{cc.attrs.sinbaManBean.jsonCurrent.datiGenerali.fasciaEtaBeneficiario}"
+									style="width:200px">
+									<f:selectItem noSelectionOption="true" itemLabel="- seleziona -" />
+									<f:selectItem itemLabel="0-3 anni" itemValue="1" />
+									<f:selectItem itemLabel="3-6 anni" itemValue="2" />
+									<f:selectItem itemLabel="6-9 anni" itemValue="3" />
+									<f:selectItem itemLabel="9-12 anni" itemValue="4" />
+									<f:selectItem itemLabel="12-15 anni" itemValue="5" />
+									<f:selectItem itemLabel="15-18 anni" itemValue="6" />
+								</p:selectOneMenu>
 								
 								<h:outputText value="Nazione di residenza del beneficiario *"   />
-								<p:selectOneMenu id="nazioneVal" required="false" filter="true" filterMatchMode="contains"
+								<p:selectOneMenu id="nazioneVal" filter="true" filterMatchMode="contains"
 									value="#{cc.attrs.sinbaManBean.jsonCurrent.datiGenerali.nazioneResidenzaBeneficiario}"
 									style="width:200px">
 									<f:selectItem noSelectionOption="true" itemLabel="- seleziona -" />
@@ -75,34 +83,33 @@
 										itemValue="#{nazione.iso3166}" />
 								</p:selectOneMenu>
 								
+								<h:outputText value="Regione di residenza del beneficiario"   />
+								<p:selectOneMenu id="regioneVal" filter="true" filterMatchMode="contains"
+									value="#{cc.attrs.sinbaManBean.jsonCurrent.datiGenerali.regioneResidenzaBeneficiario}" style="width:200px">
+									<f:selectItem noSelectionOption="true" itemLabel="- seleziona -" />
+									<f:selectItems value="#{cc.attrs.sinbaManBean.datiGen.lstRegioni}"/>
+								</p:selectOneMenu>
+								
 								<h:outputText value="Scuola frequentata *"/>
-								<p:selectOneMenu id="scuolaVal" required="false"
-									value="#{cc.attrs.sinbaManBean.jsonCurrent.datiGenerali.scuolaFrequentata}"
-									style="width:200px">
+								<p:selectOneMenu id="scuolaVal" value="#{cc.attrs.sinbaManBean.jsonCurrent.datiGenerali.scuolaFrequentata}" style="width:200px">
 									<f:selectItem itemLabel="- seleziona -" noSelectionOption="true"  />
-									<f:selectItem itemLabel="Nessuna Scuola" itemValue="1" />
-									<f:selectItem itemLabel="Struttura" itemValue="2" />
-									<f:selectItem itemLabel="Asilo nido" itemValue="3" />
-									<f:selectItem itemLabel="Scuola dell'infanzia" itemValue="4" />
-									<f:selectItem itemLabel="Scuola primaria" itemValue="5" />
-									<f:selectItem itemLabel="Scuola secondaria I grado" itemValue="6" />
-									<f:selectItem itemLabel="Scuola secondaria II grado" itemValue="7" />
-									<f:selectItem itemLabel="Corso formazione professionale" itemValue="8" />
+									<f:selectItem itemLabel="nessuna Scuola" itemValue="1" />
+									<f:selectItem itemLabel="struttura" itemValue="2" />
+									<f:selectItem itemLabel="asilo nido" itemValue="3" />
+									<f:selectItem itemLabel="scuola dell'infanzia" itemValue="4" />
+									<f:selectItem itemLabel="scuola primaria" itemValue="5" />
+									<f:selectItem itemLabel="scuola secondaria I grado" itemValue="6" />
+									<f:selectItem itemLabel="scuola secondaria II grado" itemValue="7" />
+									<f:selectItem itemLabel="corso formazione professionale" itemValue="8" />
 								</p:selectOneMenu>
 								
 								<h:outputText value="Condizione lavoro *"/>
-								<p:selectOneMenu id="condizioneLavoroVal" required="false"
-									value="#{cc.attrs.sinbaManBean.jsonCurrent.datiGenerali.condizioneLavoro}" style="width:200px">
+								<p:selectOneMenu id="condizioneLavoroVal" value="#{cc.attrs.sinbaManBean.jsonCurrent.datiGenerali.condizioneLavoro}" style="width:200px">
 									<f:selectItem noSelectionOption="true" itemLabel="- seleziona -" />
-									<f:selectItem
-										itemLabel="Inattivo (non in età di lavoro, non ha e non cerca lavoro)"
-										itemValue="1" />
-									<f:selectItem itemLabel="Occupato" itemValue="2" />
-									<f:selectItem
-										itemLabel="Disoccupato alla ricerca di prima occupazione"
-										itemValue="3" />
-									<f:selectItem itemLabel="In cerca di prima occupazione"
-										itemValue="4" />
+									<f:selectItem itemValue="1" itemLabel="inattivo (non in età di lavoro, non ha e non cerca lavoro)"/>
+									<f:selectItem itemValue="2" itemLabel="occupato"  />
+									<f:selectItem itemValue="3" itemLabel="disoccupato alla ricerca di prima occupazione"/>
+									<f:selectItem itemValue="4" itemLabel="in cerca di prima occupazione"/>
 								</p:selectOneMenu>
 							
 							</p:panelGrid>
@@ -114,7 +121,8 @@
 								style="font-weight: bold;background-color: red;color: white" />
 							<p:panelGrid cellpadding="10" width="100%" styleClass="tableNoBg" columns="4">
 								 
-									<h:outputText value="Numero componenti ISEE"   />
+									<h:outputText value="Numero componenti ISEE" 
+												  title="Inserire il numero di componenti del nucleo familiare come risulta da attestazione ISEE"  />
 									<p:selectOneMenu id="componentiIseeVal"
 										value="#{cc.attrs.sinbaManBean.jsonCurrent.datiGenerali.numeroComponentiISEE}"
 										style="width:200px">
@@ -131,34 +139,19 @@
 										<f:selectItem itemLabel="9" itemValue="9" />
 									</p:selectOneMenu>
 									 
-									<h:outputText value="Fascia di età del beneficiario"/>
-									<p:selectOneMenu id="fasciaEtaVal"
-										value="#{cc.attrs.sinbaManBean.jsonCurrent.datiGenerali.fasciaEtaBeneficiario}"
-										style="width:200px">
-										<f:selectItem noSelectionOption="true" itemLabel="- seleziona -" />
-										<f:selectItem itemLabel="0-3 anni" itemValue="1" />
-										<f:selectItem itemLabel="3-6 anni" itemValue="2" />
-										<f:selectItem itemLabel="6-9 anni" itemValue="3" />
-										<f:selectItem itemLabel="9-12 anni" itemValue="4" />
-										<f:selectItem itemLabel="12-15 anni" itemValue="5" />
-										<f:selectItem itemLabel="15-18 anni" itemValue="6" />
-									</p:selectOneMenu>
-									 
 									<h:outputText value="Fascia ISEE del beneficiario"   />
 									<p:selectOneMenu id="fasciaIseeVal"
 										value="#{cc.attrs.sinbaManBean.jsonCurrent.datiGenerali.fasciaISEEBeneficiario}"
 										style="width:200px">
 										<f:selectItem noSelectionOption="true" itemLabel="- seleziona -" />
-										<f:selectItem itemLabel="Valore ISEE=0" itemValue="1" />
-										<f:selectItem itemLabel="Tra 0.01 e 3000 Euro" itemValue="2" />
-										<f:selectItem itemLabel="Tra 3000.01 e 6000 Euro" itemValue="3" />
-										<f:selectItem itemLabel="Tra 6000.01 e 9000 Euro" itemValue="4" />
-										<f:selectItem itemLabel="Tra 9000.01 e 12000 Euro" itemValue="5" />
-										<f:selectItem itemLabel="Tra 12000.01 e 15000 Euro"
-											itemValue="6" />
-										<f:selectItem itemLabel="Tra 15000.01 e 20000 Euro"
-											itemValue="7" />
-										<f:selectItem itemLabel="Oltre i 20000 Euro" itemValue="8" />
+										<f:selectItem itemValue="1" itemLabel="Valore ISEE=0" />
+										<f:selectItem itemValue="2" itemLabel="Tra 0.01 e 3000 Euro" />
+										<f:selectItem itemValue="3" itemLabel="Tra 3000.01 e 6000 Euro" />
+										<f:selectItem itemValue="4" itemLabel="Tra 6000.01 e 9000 Euro" />
+										<f:selectItem itemValue="5" itemLabel="Tra 9000.01 e 12000 Euro"  />
+										<f:selectItem itemValue="6" itemLabel="Tra 12000.01 e 15000 Euro"  />
+										<f:selectItem itemValue="7" itemLabel="Tra 15000.01 e 20000 Euro" />
+										<f:selectItem itemValue="8" itemLabel="Oltre i 20000 Euro" />
 									</p:selectOneMenu>
 									 
 							</p:panelGrid>
@@ -267,29 +260,12 @@
 										<f:selectItem itemLabel="Senza dimora" itemValue="8" />
 									</p:selectOneMenu>
 									
-									<h:outputText value="Nazione di residenza *"   />
-									<p:selectOneMenu id="nazioneRedidenzaVal" required="false" filter="true" filterMatchMode="contains"
-										value="#{cc.attrs.sinbaManBean.jsonCurrent.datiFamiglia.nazioneResidenza}"
-										style="width:200px">
-										<f:selectItem noSelectionOption="true" itemLabel="- seleziona -" />
-										<f:selectItems value="#{cc.attrs.sinbaManBean.datiFam.lstNazioni}"
-											var="nazione" itemLabel="#{nazione.nazione}"
-											itemValue="#{nazione.iso3166}" />
-									</p:selectOneMenu>
-								
-									<h:outputText value="Regione *"   />
-									<p:selectOneMenu id="regioneVal" required="false"
-										value="#{cc.attrs.sinbaManBean.jsonCurrent.datiFamiglia.regione}" style="width:200px">
-										<f:selectItem noSelectionOption="true" itemLabel="- seleziona -" />
-										<f:selectItems value="#{cc.attrs.sinbaManBean.datiFam.lstRegioni}"/>
-									</p:selectOneMenu>
-								
 							</p:panelGrid>
 							
 								<p:fieldset id="panelFamiglia" legend="Dati relativi alla composizione familiare">
 									<p:panelGrid id="panelComboFamiglia" cellpadding="10" width="100%" styleClass="tableNoBg" columns="4">
 											<h:outputText value="Composizione Famiglia *"   />
-											<p:selectOneMenu id="composizioneFamigliaVal" required="false"
+											<p:selectOneMenu id="composizioneFamigliaVal" 
 												value="#{cc.attrs.sinbaManBean.jsonCurrent.datiFamiglia.composizioneFamiglia}"
 												style="width:200px">
 												<f:selectItem noSelectionOption="true" itemLabel="- seleziona -" />
@@ -298,7 +274,7 @@
 											</p:selectOneMenu>
 										
 											<h:outputText value="Cittadinanza #{cc.attrs.sinbaManBean.jsonCurrent.datiFamiglia.genitoreSelected ? '*' : ''}" />
-											<p:selectOneMenu id="cittadinanzaVal" required="false" filter="true" filterMatchMode="contains"
+											<p:selectOneMenu id="cittadinanzaVal" filter="true" filterMatchMode="contains"
 												value="#{cc.attrs.sinbaManBean.jsonCurrent.datiFamiglia.cittadinanza}" style="width:200px">
 												<f:selectItem noSelectionOption="true" itemLabel="- seleziona -" />
 												<f:selectItems value="#{cc.attrs.sinbaManBean.datiFam.lstCittadinanza}"
@@ -308,7 +284,7 @@
 											</p:selectOneMenu>
 										
 											<h:outputText value="Regione #{cc.attrs.sinbaManBean.jsonCurrent.datiFamiglia.genitoreSelected ? '*' : ''}" />
-											<p:selectOneMenu id="regioneFamVal" required="false"
+											<p:selectOneMenu id="regioneFamVal" filter="true" filterMatchMode="contains"
 												value="#{cc.attrs.sinbaManBean.jsonCurrent.datiFamiglia.regioneFam}"
 												style="width:200px">
 												<f:selectItem noSelectionOption="true" itemLabel="- seleziona -" />
@@ -333,7 +309,7 @@
 											
 											<p:spacer width="10px"/>
 											<p:commandButton value="Aggiungi" process="panelFamiglia" icon="ui-icon-plus"
-												action="#{cc.attrs.sinbaManBean.jsonCurrent.datiFamiglia.aggiungiComponente()}"
+												action="#{cc.attrs.sinbaManBean.aggiungiComponenteFamiglia()}"
 												update=":#{p:component('dtFamigliariGrid')} :#{p:component('panelComboFamiglia')}" />
 											
 									</p:panelGrid>
@@ -381,11 +357,13 @@
 									value="#{cc.attrs.sinbaManBean.jsonCurrent.datiDisabilita.disabile}" style="width:200px">
 									<f:selectItem itemLabel="SI" itemValue="1" />
 									<f:selectItem itemLabel="NO" itemValue="2" />
+									<p:ajax event="change" process="@this" listener="#{cc.attrs.sinbaManBean.onChangeDisabile}" update="tipoDisabilitaVal, certInvaliditaCivileVal"/>
 								</p:selectOneButton>
 	
 								<h:outputText value="Tipo disabilità "  />
-								<p:selectOneMenu id="tipoDisabilitaVal" required="false"
+								<p:selectOneMenu id="tipoDisabilitaVal" 
 									value="#{cc.attrs.sinbaManBean.jsonCurrent.datiDisabilita.tipoDisabilita}"
+									disabled="#{!cc.attrs.sinbaManBean.jsonCurrent.datiDisabilita.disabileSelected}"
 									style="width:200px">
 									<f:selectItem noSelectionOption="true" itemLabel="- seleziona -" />
 									<f:selectItem itemLabel="Fisica" itemValue="1" />
@@ -397,19 +375,14 @@
 								<h:outputText value="Certificazione invalidità Civile "   />
 								<p:selectOneMenu id="certInvaliditaCivileVal" required="false"
 									value="#{cc.attrs.sinbaManBean.jsonCurrent.datiDisabilita.certificazioneInvCivile}"
+									disabled="#{!cc.attrs.sinbaManBean.jsonCurrent.datiDisabilita.disabileSelected}"
 									style="width:200px">
 									<f:selectItem noSelectionOption="true" itemLabel="- seleziona -" />
-									<f:selectItem
-										itemLabel="Certificazione invalidità civile parziale non inferiore al 75%"
-										itemValue="1" />
-									<f:selectItem
-										itemLabel="Certificazione invalidità civile totale (100%) con indennità di accompagnamento"
-										itemValue="2" />
-									<f:selectItem
-										itemLabel="Certificazione invalidità civile totale (100%) senza indennità di accompagnamento"
-										itemValue="3" />
-									<f:selectItem itemLabel="Certificazione NPI" itemValue="4" />
-									<f:selectItem itemLabel="Certificazione 1.104" itemValue="5" />
+									<f:selectItem itemValue="1" itemLabel="Certificazione invalidità civile parziale non inferiore al 75%" />
+									<f:selectItem itemValue="2" itemLabel="Certificazione invalidità civile totale (100%) con indennità di accompagnamento"/>
+									<f:selectItem itemValue="3" itemLabel="Certificazione invalidità civile totale (100%) senza indennità di accompagnamento"/>
+									<f:selectItem itemValue="4" itemLabel="Certificazione NPI" />
+									<f:selectItem itemValue="5" itemLabel="Certificazione 1.104"  />
 								</p:selectOneMenu>
 	
 							</p:panelGrid>
@@ -423,179 +396,144 @@
 						<p:outputPanel id="panelSegnalazioni">
 							<p:panelGrid  cellpadding="10" width="100%" styleClass="tableNoBg" columns="4">
 							
+									<h:outputText value="Data prima segnalazione *"/>
+									<!-- formato voluto da INPS in export "MM/yyyy" dataPatternLabel="mm/aaaa" -->
+									<webred:pnlData dataReq="false"
+										dataValue="#{cc.attrs.sinbaManBean.jsonCurrent.datiSegnalazioni.dataPrimaSegnalazione}"
+										dataReqMes="Immettere una data" dataPattern="dd/MM/yyyy"
+										dataPatternLabel="gg/mm/aaaa" />
+							
 									<h:outputText value="Fonte della segnalazione *"   />
-									<p:selectOneMenu id="fonteSegnalazioneVal" required="false"
+									<p:selectOneMenu id="fonteSegnalazioneVal" filter="true" filterMatchMode="contains"
 										value="#{cc.attrs.sinbaManBean.jsonCurrent.datiSegnalazioni.fonte}"
 										style="width:200px">
 										<f:selectItem noSelectionOption="true" itemLabel="- seleziona -" />
-										<f:selectItem
-											itemLabel="Servizio sociale minori della giustizia minorile"
-											itemValue="1" />
-										<f:selectItem
-											itemLabel="Altro servizio sociale (consultori, centri famiglia, di altro ambito/distretto)"
-											itemValue="2" />
-										<f:selectItem
-											itemLabel="Servizi sanitari / medico di base / pediatra"
-											itemValue="3" />
-										<f:selectItem itemLabel="Privato sociale / volontariato"
-											itemValue="4" />
-										<f:selectItem itemLabel="Forze dell'ordine" itemValue="5" />
-										<f:selectItem itemLabel="Beneficiario stesso" itemValue="6" />
-										<f:selectItem itemLabel="Genitori affidatari / tutore"
-											itemValue="7" />
-										<f:selectItem
-											itemLabel="Genitori / fratelli / altri familiari conviventi"
-											itemValue="8" />
-										<f:selectItem itemLabel="Parenti non conviventi" itemValue="9" />
-										<f:selectItem itemLabel="Tribunale ordinario" itemValue="10" />
-										<f:selectItem itemLabel="Autorità giudiziarie minorili"
-											itemValue="11" />
-										<f:selectItem itemLabel="Professionista privato" itemValue="12" />
-										<f:selectItem itemLabel="Scuola" itemValue="13" />
-										<f:selectItem itemLabel="Vicinato o conoscenti" itemValue="14" />
+										<f:selectItem itemValue="1" itemLabel="servizio sociale minori della giustizia minorile"  />
+										<f:selectItem itemValue="2" itemLabel="altro servizio sociale (consultori, centri famiglia, di altro ambito/distretto)"/>
+										<f:selectItem itemValue="3" itemLabel="servizi sanitari / medico di base / pediatra"/>
+										<f:selectItem itemValue="4" itemLabel="privato sociale / volontariato"/>
+										<f:selectItem itemValue="5" itemLabel="forze dell'ordine"  />
+										<f:selectItem itemValue="6" itemLabel="beneficiario stesso"  />
+										<f:selectItem itemValue="7" itemLabel="genitori affidatari / tutore"/>
+										<f:selectItem itemValue="8" itemLabel="genitori / fratelli / altri familiari conviventi"/>
+										<f:selectItem itemValue="9" itemLabel="parenti non conviventi" />
+										<f:selectItem itemValue="10" itemLabel="tribunale ordinario"  />
+										<f:selectItem itemValue="11" itemLabel="autorità giudiziarie minorili" />
+										<f:selectItem itemValue="12" itemLabel="professionista privato" />
+										<f:selectItem itemValue="13" itemLabel="scuola"  />
+										<f:selectItem itemValue="14" itemLabel="vicinato o conoscenti"  />
 									</p:selectOneMenu>
-									
-									<h:outputText value="Data segnalazione *"/>
-									<!-- formato voluto da INPS in export "MM/yyyy" dataPatternLabel="mm/aaaa" -->
-									<webred:pnlData dataReq="false"
-										dataValue="#{cc.attrs.sinbaManBean.jsonCurrent.datiSegnalazioni.dataSegnalazione}"
-										dataReqMes="Immettere una data" dataPattern="dd/MM/yyyy"
-										dataPatternLabel="gg/mm/aaaa" />
-									
+		
+									<h:outputText value="Valutazione del minore *"   />
+									<p:selectOneMenu id="valutazioneMinoreVal" filter="true" filterMatchMode="contains"
+										value="#{cc.attrs.sinbaManBean.jsonCurrent.datiSegnalazioni.valutazioneMinore}"
+										style="width:200px">
+										<f:selectItem noSelectionOption="true" itemLabel="- seleziona -" />
+										<f:selectItem itemValue="1" itemLabel="nessuna specifica problematica"/>
+										<f:selectItem itemValue="2" itemLabel="problemi relazionali e comportamentali"/>
+										<f:selectItem itemValue="3" itemLabel="dipendenze"  />
+										<f:selectItem itemValue="4" itemLabel="presunto stato di abbandono"/>
+										<f:selectItem itemValue="5" itemLabel="problemi sanitari"  />
+										<f:selectItem itemValue="6" itemLabel="violenza sessuale subita, prostituzione, tratta, pedopornografia"/>
+										<f:selectItem itemValue="7" itemLabel="altre forme di violenza e maltrattamento subite"/>
+										<f:selectItem itemValue="8" itemLabel="comportamenti di grave devianza"/>
+										<f:selectItem itemValue="9" itemLabel="problemi di autonomia, disabilità"/>
+										<f:selectItem itemValue="10" itemLabel="coinvolto in procedure penali"/>
+										<f:selectItem itemValue="11" itemLabel="gestante/Madre minorenne"/>
+										<f:selectItem itemValue="12" itemLabel="minore straniero non accompagnato"/>
+										<f:selectItem itemValue="13" itemLabel="abbandono scolastico" />
+									</p:selectOneMenu>
+		
+									<h:outputText value="Valutazione famiglia del minore *"   />
+									<p:selectOneMenu id="valutazioneFamigliaMinoreVal" filter="true" filterMatchMode="contains"
+										value="#{cc.attrs.sinbaManBean.jsonCurrent.datiSegnalazioni.valutazioneFamiglia}"
+										style="width:200px">
+										<f:selectItem noSelectionOption="true" itemLabel="- seleziona -" />
+										<f:selectItem itemValue="1" itemLabel="nessuna specifica problematica"/>
+										<f:selectItem itemValue="2" itemLabel="fragilità/inadeguatezza genitoriale, problematiche socio-ducative e relazionali" />
+										<f:selectItem itemValue="3" itemLabel="dipendenze"  />
+										<f:selectItem itemValue="4" itemLabel="problematiche psichiatriche"/>
+										<f:selectItem itemValue="5" itemLabel="altre problematiche sanitarie" />
+										<f:selectItem itemValue="6" itemLabel="grave conflittualità familiare"/>
+										<f:selectItem itemValue="7" itemLabel="famiglia maltrattante"  />
+										<f:selectItem itemValue="8" itemLabel="famiglia abusante" />
+										<f:selectItem itemValue="9" itemLabel="problemi giudiziari"  />
+										<f:selectItem itemValue="10" itemLabel="fallimento affido preadottivo nel I anno"/>
+										<f:selectItem itemValue="11" itemLabel="inadempiezza obblighi sanitari"/>
+										<f:selectItem itemValue="12" itemLabel="difficoltà economiche"  />
+										<f:selectItem itemValue="13" itemLabel="difficoltà abitative"  />
+									</p:selectOneMenu>
+		
 									<h:outputText value="Segnalazione autorità giudiziaria *"/>
-									<p:selectOneButton id="segnAutoritaGuidVal" required="false"
+									<p:selectOneButton id="segnAutoritaGuidVal" 
 										value="#{cc.attrs.sinbaManBean.jsonCurrent.datiSegnalazioni.autoritaGiudiziaria}">
 										<f:selectItem itemLabel="SI" itemValue="1" />
 										<f:selectItem itemLabel="NO" itemValue="2" />
 									</p:selectOneButton>
 		
+									<h:outputText value="Data segnalazione"/>
+									<!-- formato voluto da INPS in export "MM/yyyy" dataPatternLabel="mm/aaaa" -->
+									<webred:pnlData 
+										dataValue="#{cc.attrs.sinbaManBean.jsonCurrent.datiSegnalazioni.dataSegnalazione}"
+										dataReqMes="Immettere una data" dataPattern="dd/MM/yyyy"
+										dataPatternLabel="gg/mm/aaaa" />
+							
+		
 									<h:outputText value="Provvedimento giudiziario *"/>
-									<p:selectOneButton id="provvGiudVal" required="false"
+									<p:selectOneButton id="provvGiudVal" 
 										value="#{cc.attrs.sinbaManBean.jsonCurrent.datiSegnalazioni.provvedimentoGiudiziario}">
 										<f:selectItem itemLabel="SI" itemValue="1" />
 										<f:selectItem itemLabel="NO" itemValue="2" />
 									</p:selectOneButton>
 		
-		
-									<h:outputText value="Valutazione del minore *"   />
-									<p:selectOneMenu id="valutazioneMinoreVal" required="false"
-										value="#{cc.attrs.sinbaManBean.jsonCurrent.datiSegnalazioni.valutazioneMinore}"
-										style="width:200px">
-										<f:selectItem noSelectionOption="true" itemLabel="- seleziona -" />
-										<f:selectItem itemLabel="Nessuna specifica problematica"
-											itemValue="1" />
-										<f:selectItem itemLabel="Problemi relazionali e comportamentali"
-											itemValue="2" />
-										<f:selectItem itemLabel="Dipendenze" itemValue="3" />
-										<f:selectItem itemLabel="Presunto stato di abbandono"
-											itemValue="4" />
-										<f:selectItem itemLabel="Problemi sanitari" itemValue="5" />
-										<f:selectItem
-											itemLabel="Violenza sessuale subita, prostituzione, tratta, pedopornografia"
-											itemValue="6" />
-										<f:selectItem
-											itemLabel="Altre forme di violenza e maltrattamento subite"
-											itemValue="7" />
-										<f:selectItem itemLabel="Comportamenti di grave devianza"
-											itemValue="8" />
-										<f:selectItem itemLabel="Problemi di autonomia, disabilità"
-											itemValue="9" />
-										<f:selectItem itemLabel="Coinvolto in procedure penali"
-											itemValue="10" />
-										<f:selectItem itemLabel="Gestante/Madre minorenne"
-											itemValue="11" />
-										<f:selectItem itemLabel="Minore straniero non accompagnato"
-											itemValue="12" />
-										<f:selectItem itemLabel="Abbandono scolastico" itemValue="13" />
-									</p:selectOneMenu>
-		
-									<h:outputText value="Valutazione famiglia del minore *"   />
-									<p:selectOneMenu id="valutazioneFamigliaMinoreVal"
-										required="false"
-										value="#{cc.attrs.sinbaManBean.jsonCurrent.datiSegnalazioni.valutazioneFamiglia}"
-										style="width:200px">
-										<f:selectItem noSelectionOption="true" itemLabel="- seleziona -" />
-										<f:selectItem itemLabel="Nessuna specifica problematica"
-											itemValue="1" />
-										<f:selectItem
-											itemLabel="Fragilità/inadeguatezza genitoriale, problematiche socio-ducative e relazionali"
-											itemValue="2" />
-										<f:selectItem itemLabel="Dipendenze" itemValue="3" />
-										<f:selectItem itemLabel="Problematiche psichiatriche"
-											itemValue="4" />
-										<f:selectItem itemLabel="Altre problematiche sanitarie"
-											itemValue="5" />
-										<f:selectItem itemLabel="Grave conflittualità familiare"
-											itemValue="6" />
-										<f:selectItem itemLabel="Famiglia maltrattante" itemValue="7" />
-										<f:selectItem itemLabel="Famiglia abusante" itemValue="8" />
-										<f:selectItem itemLabel="Problemi giudiziari" itemValue="9" />
-										<f:selectItem
-											itemLabel="Fallimento affido preadottivo nel I anno"
-											itemValue="10" />
-										<f:selectItem itemLabel="Inadempiezza obblighi sanitari"
-											itemValue="11" />
-										<f:selectItem itemLabel="Difficoltà economiche" itemValue="12" />
-										<f:selectItem itemLabel="Difficoltà abitative" itemValue="13" />
-									</p:selectOneMenu>
-		
-							</p:panelGrid>
-							<p:spacer height="30px"/>
-							<p:panelGrid cellpadding="10" width="100%" styleClass="tableNoBg" columns="4">
-								
-									<h:outputText value="Autorità del provvedimento giudiziario "   />
-									<p:selectOneMenu id="autoritaProvvGiudVal" required="false"
-										value="#{cc.attrs.sinbaManBean.jsonCurrent.datiSegnalazioni.autoritaProvvedimento}"
-										style="width:200px">
-										<f:selectItem noSelectionOption="true" itemLabel="- seleziona -" />
-										<f:selectItem itemLabel="Giudice tutelare" itemValue="1" />
-										<f:selectItem itemLabel="Tribunale per i minori" itemValue="2" />
-										<f:selectItem itemLabel="Procura per i minori" itemValue="3" />
-										<f:selectItem itemLabel="Tribunale ordinario" itemValue="4" />
-									</p:selectOneMenu>
-
 									<h:outputText value="Data del provvedimento giudiziario "/>
 									<!--  formato voluto da INPS in export "MM/yyyy" dataPatternLabel="mm/aaaa" -->
 									<webred:pnlData dataReq="false"
 										dataValue="#{cc.attrs.sinbaManBean.jsonCurrent.datiSegnalazioni.dataProvvedimento}"
 										dataReqMes="Immettere una data" dataPattern="dd/MM/yyyy"
-										dataPatternLabel="gg/mm/aaaa" />									
-
-									<h:outputText value="Tipo del provvedimento "/>
-									<p:selectOneMenu id="tipoProvvGiudVal" required="false"
-										value="#{cc.attrs.sinbaManBean.jsonCurrent.datiSegnalazioni.tipoProvvedimento}"
-										style="width:200px">
-										<f:selectItem noSelectionOption="true" itemLabel="- seleziona -" />
-										<f:selectItem itemLabel="Adottabilità" itemValue="1" />
-										<f:selectItem itemLabel="Adozione nazionale" itemValue="2" />
-										<f:selectItem itemLabel="Adozione internazionale" itemValue="3" />
-										<f:selectItem itemLabel="Affidamento familiare" itemValue="4" />
-										<f:selectItem itemLabel="Affido al servizio sociale"
-											itemValue="5" />
-										<f:selectItem
-											itemLabel="Affido a uno dei genitori in caso di separazione"
-											itemValue="6" />
-										<f:selectItem itemLabel="Vigilanza" itemValue="7" />
-										<f:selectItem
-											itemLabel="Post-adozione 'allontanamento del minore in via d'emergenza (art.403 c.c.)'"
-											itemValue="8" />
-									</p:selectOneMenu>
-									
-									<h:outputText value="Responsabilità tutela "   />
-									<p:selectOneMenu id="potestaTutelaVal" required="false"
-										value="#{cc.attrs.sinbaManBean.jsonCurrent.datiSegnalazioni.potestaTutela}"
-										style="width:200px">
-										<f:selectItem noSelectionOption="true" itemLabel="- seleziona -" />
-										<f:selectItem itemLabel="Sospensione responsabilità genitoriale"
-											itemValue="1" />
-										<f:selectItem itemLabel="Decadenza responsabilità genitoriale"
-											itemValue="2" />
-										<f:selectItem itemLabel="Prescrizione ai genitori" itemValue="3" />
-										<f:selectItem itemLabel="Tutela a parenti o altri soggetti"
-											itemValue="4" />
-										<f:selectItem itemLabel="Curatela" itemValue="5" />
-									</p:selectOneMenu>
+										dataPatternLabel="gg/mm/aaaa" />				
+							</p:panelGrid>
+							<p:spacer height="30px"/>
+							<p:panelGrid cellpadding="10" width="100%" styleClass="tableNoBg" columns="4">
 								
+								<h:outputText value="Autorità del provvedimento giudiziario "   />
+								<p:selectOneMenu id="autoritaProvvGiudVal" required="false"
+									value="#{cc.attrs.sinbaManBean.jsonCurrent.datiSegnalazioni.autoritaProvvedimento}"
+									style="width:200px">
+									<f:selectItem noSelectionOption="true" itemLabel="- seleziona -" />
+									<f:selectItem itemLabel="Giudice tutelare" itemValue="1" />
+									<f:selectItem itemLabel="Tribunale per i minori" itemValue="2" />
+									<f:selectItem itemLabel="Procura per i minori" itemValue="3" />
+									<f:selectItem itemLabel="Tribunale ordinario" itemValue="4" />
+								</p:selectOneMenu>					
+
+								<h:outputText value="Responsabilità tutela " />
+								<p:selectOneMenu id="potestaTutelaVal" required="false"
+									value="#{cc.attrs.sinbaManBean.jsonCurrent.datiSegnalazioni.potestaTutela}"
+									style="width:200px">
+									<f:selectItem noSelectionOption="true" itemLabel="- seleziona -" />
+									<f:selectItem itemValue="1" itemLabel="sospensione responsabilità genitoriale"/>
+									<f:selectItem itemValue="2" itemLabel="decadenza responsabilità genitoriale"/>
+									<f:selectItem itemValue="3" itemLabel="prescrizione ai genitori" />
+									<f:selectItem itemValue="4" itemLabel="tutela a parenti o altri soggetti"/>
+									<f:selectItem itemValue="5" itemLabel="curatela"  />
+								</p:selectOneMenu>
+
+								<h:outputText value="Tipo del provvedimento "/>
+								<p:selectOneMenu id="tipoProvvGiudVal" filter="true" filterMatchMode="contains"
+									value="#{cc.attrs.sinbaManBean.jsonCurrent.datiSegnalazioni.tipoProvvedimento}"
+									style="width:200px">
+									<f:selectItem noSelectionOption="true" itemLabel="- seleziona -" />
+									<f:selectItem itemValue="1" itemLabel="adottabilità" />
+									<f:selectItem itemValue="2" itemLabel="adozione nazionale"/>
+									<f:selectItem itemValue="3" itemLabel="adozione internazionale"  />
+									<f:selectItem itemValue="4" itemLabel="affidamento familiare" />
+									<f:selectItem itemValue="5" itemLabel="affido al servizio sociale" />
+									<f:selectItem itemValue="6" itemLabel="affido a uno dei genitori in caso di separazione"/>
+									<f:selectItem itemValue="7" itemLabel="vigilanza" />
+									<f:selectItem itemValue="8" itemLabel="post-adozione 'allontanamento del minore in via d'emergenza (art.403 c.c.)'"/>
+								</p:selectOneMenu>
+									
 							</p:panelGrid>
 						</p:outputPanel>
 					</p:scrollPanel>
@@ -612,212 +550,151 @@
 						 <h:outputText id="msgDaPAI" rendered="#{cc.attrs.sinbaManBean.jsonCurrent.datiAffidamento.datiDaProgettoPAI}"  value="#{cc.attrs.sinbaManBean.jsonCurrent.datiAffidamento.messaggioDaPai}"
 													style="font-weight: bold;background-color: red;color: white" />
 								 				
-								 			 
-									 
 						</p:panelGrid>	
 						
-						    <p:fieldset legend="Dati relativi all'affido">
-						    
-						   
-							<p:panelGrid id="affidamentoForma" cellpadding="10" width="100%" styleClass="tableNoBg" columns="2">
+						<p:fieldset legend="Dati relativi all'affido">
+							<p:panelGrid id="affidamentoForma" cellpadding="10" width="100%" styleClass="tableNoBg" columns="4">
 							
-									 
-								  
-								
-											<h:outputText value="Forme di intervento"   />
-											<p:selectOneButton id="formeInterventoVal"
-												value="#{cc.attrs.sinbaManBean.jsonCurrent.datiAffidamento.formaIntervento}"
-												style="width:200px">
-												<f:selectItem itemLabel="Consensuale" itemValue="1" />
-												<f:selectItem itemLabel="Giudiziario" itemValue="2" />
-											</p:selectOneButton>
-									 
-											<h:outputText value="Esito"   />
-									 	 	<p:selectOneMenu id="esitoVal"
-												value="#{cc.attrs.sinbaManBean.jsonCurrent.datiAffidamento.esito}"
-												style="width:200px">
-												<f:selectItem noSelectionOption="true" itemLabel="- seleziona -" />
-												<f:selectItem itemLabel="Rientrato nella famiglia di origine"
-													itemValue="1" />
-												<f:selectItem itemLabel="Affidato ad altro nucleo familiare"
-													itemValue="2" />
-												<f:selectItem itemLabel="Adottato" itemValue="3" />
-												<f:selectItem itemLabel="Inserito in struttura socio-educativa"
-													itemValue="4" />
-												<f:selectItem itemLabel="Inserito in struttura sanitaria"
-													itemValue="5" />
-												<f:selectItem itemLabel="Vita in autonomia" itemValue="6" />
-												<f:selectItem itemLabel="Rimpatriato" itemValue="7" />
-												<f:selectItem itemLabel="Destinazione ignota" itemValue="8" />
-												<f:selectItem itemLabel="Altro" itemValue="9" />
-											</p:selectOneMenu>
-
-										
-									 
-											<h:outputText value="Tipo di intervento" style="font-weight: bold;" />
-									  
-											<p:selectOneButton id="tipoInterventoVal" value="#{cc.attrs.sinbaManBean.jsonCurrent.datiAffidamento.tipoIntervento}">
-												<f:selectItem itemLabel="Intrafamiliare" itemValue="1" />
-												<f:selectItem itemLabel="Eterofamiliare" itemValue="2" />
-											</p:selectOneButton>
+								<h:outputText value="Forme di intervento"   />
+								<p:selectOneButton id="formeInterventoVal"
+									value="#{cc.attrs.sinbaManBean.jsonCurrent.datiAffidamento.formaIntervento}"
+									style="width:200px">
+									<f:selectItem itemLabel="Consensuale" itemValue="1" />
+									<f:selectItem itemLabel="Giudiziario" itemValue="2" />
+								</p:selectOneButton>
+						 				 
+								<h:outputText value="Tipo di intervento" style="font-weight: bold;" />
+								<p:selectOneButton id="tipoInterventoVal" value="#{cc.attrs.sinbaManBean.jsonCurrent.datiAffidamento.tipoIntervento}">
+									<f:selectItem itemLabel="Intrafamiliare" itemValue="1" />
+									<f:selectItem itemLabel="Eterofamiliare" itemValue="2" />
+								</p:selectOneButton>
 										 
-										<h:outputText value="Durata" style="font-weight: bold;" />
-									 	 
-											<p:selectOneButton id="durataVal" value="#{cc.attrs.sinbaManBean.jsonCurrent.datiAffidamento.durata}">
-												<f:selectItem itemLabel="Tempo pieno" itemValue="1" />
-												<f:selectItem itemLabel="Tempo parziale" itemValue="2" />
-											</p:selectOneButton>
-									 
-										<h:outputText value="Carattere"  />
-									 	 
-										<p:selectOneButton id="carattereVal" value="#{cc.attrs.sinbaManBean.jsonCurrent.datiAffidamento.carattere}">
-											<f:selectItem itemLabel="Residenziale" itemValue="1" />
-											<f:selectItem itemLabel="Diurno" itemValue="2" />
-										</p:selectOneButton>
-									 
+								<h:outputText value="Durata" style="font-weight: bold;" />
+								<p:selectOneButton id="durataVal" value="#{cc.attrs.sinbaManBean.jsonCurrent.datiAffidamento.durata}">
+									<f:selectItem itemLabel="Tempo pieno" itemValue="1" />
+									<f:selectItem itemLabel="Tempo parziale" itemValue="2" />
+								</p:selectOneButton>
+							 
+								<h:outputText value="Carattere"  />
+								<p:selectOneButton id="carattereVal" value="#{cc.attrs.sinbaManBean.jsonCurrent.datiAffidamento.carattere}">
+									<f:selectItem itemLabel="Residenziale" itemValue="1" />
+									<f:selectItem itemLabel="Diurno" itemValue="2" />
+								</p:selectOneButton>
+						 
+								<h:outputText value="Esito"   />
+						 	 	<p:selectOneMenu id="esitoVal" value="#{cc.attrs.sinbaManBean.jsonCurrent.datiAffidamento.esito}"
+									style="width:200px">
+									<f:selectItem noSelectionOption="true" itemLabel="- seleziona -" />
+									<f:selectItem itemValue="1" itemLabel="rientrato nella famiglia di origine"/>
+									<f:selectItem itemValue="2" itemLabel="affidato ad altro nucleo familiare"/>
+									<f:selectItem itemValue="3" itemLabel="adottato" />
+									<f:selectItem itemValue="4" itemLabel="inserito in struttura socio-educativa"/>
+									<f:selectItem itemValue="5" itemLabel="inserito in struttura sanitaria"/>
+									<f:selectItem itemValue="6" itemLabel="vita in autonomia" />
+									<f:selectItem itemValue="7" itemLabel="rimpatriato" />
+									<f:selectItem itemValue="8" itemLabel="destinazione ignota" />
+									<f:selectItem itemValue="9" itemLabel="altro" />
+								</p:selectOneMenu>
+
 							</p:panelGrid>
-							</p:fieldset>
-							<p:fieldset legend="Dati relativi all'inserimento residenziale">
+						</p:fieldset>
+						<p:fieldset legend="Dati relativi all'inserimento residenziale">
 							<p:panelGrid id="affidamentoCarattere" cellpadding="10" width="100%" styleClass="tableNoBg" columns="4">
 						
-									<h:outputText value="Carattere inserimento"  />
-									<p:selectOneMenu id="carattereInserimentoVal"
-										value="#{cc.attrs.sinbaManBean.jsonCurrent.datiAffidamento.carattereInserimento}"
-										style="width:200px">
-										<f:selectItem noSelectionOption="true" itemLabel="- seleziona -" />
-										<f:selectItem
-											itemLabel="Familiare-prevalente accoglienza abitativa"
-											itemValue="1" />
-										<f:selectItem itemLabel="Familiare-prevalente funzione tutelare"
-											itemValue="2" />
-										<f:selectItem itemLabel="Familiare-funzione socio-educativa"
-											itemValue="3" />
-										<f:selectItem itemLabel="Comunitario-accoglienza di emergenze"
-											itemValue="4" />
-										<f:selectItem
-											itemLabel="Comunitario-prevalente accoglienza abitativa"
-											itemValue="5" />
-										<f:selectItem
-											itemLabel="Comunitario-prevalente funzione tutelare"
-											itemValue="6" />
-										<f:selectItem itemLabel="Comunitario-funzione socio-educativa"
-											itemValue="7" />
-										<f:selectItem
-											itemLabel="Comunitario-funzione educativa-psicologica"
-											itemValue="8" />
-										<f:selectItem
-											itemLabel="Comunitario-funzione integrazione socio-sanitaria bassa"
-											itemValue="9" />
-										<f:selectItem
-											itemLabel="Comunitario-funzione integrazione socio-sanitaria medio-alta"
-											itemValue="10" />
-									</p:selectOneMenu>
-									
-									<h:outputText value="Forma inserimento"  />
-									<p:selectOneButton id="formaInsVal"
-										value="#{cc.attrs.sinbaManBean.jsonCurrent.datiAffidamento.formaInserimento}"
-										style="width:200px">
-										<f:selectItem itemLabel="Consensuale" itemValue="1" />
-										<f:selectItem itemLabel="Giudiziaria" itemValue="2" />
-									</p:selectOneButton>
-									
-									<h:outputText value="Tipo inserimento"  />
-									<p:selectOneButton id="tipoInsVal"
-										value="#{cc.attrs.sinbaManBean.jsonCurrent.datiAffidamento.tipoInserimento}">
-										<f:selectItem itemLabel="Con genitore" itemValue="1" />
-										<f:selectItem itemLabel="Senza genitore" itemValue="2" />
-									</p:selectOneButton>
+								<h:outputText value="Carattere inserimento"  />
+								<p:selectOneMenu id="carattereInserimentoVal" filter="true" filterMatchMode="contains"
+									value="#{cc.attrs.sinbaManBean.jsonCurrent.datiAffidamento.carattereInserimento}"
+									style="width:200px">
+									<f:selectItem noSelectionOption="true" itemLabel="- seleziona -" />
+									<f:selectItem itemValue="1" itemLabel="familiare-prevalente accoglienza abitativa"/>
+									<f:selectItem itemValue="2" itemLabel="familiare-prevalente funzione tutelare"/>
+									<f:selectItem itemValue="3" itemLabel="familiare-funzione socio-educativa"/>
+									<f:selectItem itemValue="4" itemLabel="comunitario-accoglienza di emergenze"/>
+									<f:selectItem itemValue="5" itemLabel="comunitario-prevalente accoglienza abitativa"/>
+									<f:selectItem itemValue="6" itemLabel="comunitario-prevalente funzione tutelare"/>
+									<f:selectItem itemValue="7" itemLabel="comunitario-funzione socio-educativa"/>
+									<f:selectItem itemValue="8" itemLabel="comunitario-funzione educativa-psicologica"/>
+									<f:selectItem itemValue="9" itemLabel="comunitario-funzione integrazione socio-sanitaria bassa"/>
+									<f:selectItem itemValue="10" itemLabel="comunitario-funzione integrazione socio-sanitaria medio-alta"/>
+								</p:selectOneMenu>
+								
+								<h:outputText value="Forma inserimento"  />
+								<p:selectOneButton id="formaInsVal"
+									value="#{cc.attrs.sinbaManBean.jsonCurrent.datiAffidamento.formaInserimento}"
+									style="width:200px">
+									<f:selectItem itemLabel="Consensuale" itemValue="1" />
+									<f:selectItem itemLabel="Giudiziaria" itemValue="2" />
+								</p:selectOneButton>
+								
+								<h:outputText value="Tipo inserimento"  />
+								<p:selectOneButton id="tipoInsVal"
+									value="#{cc.attrs.sinbaManBean.jsonCurrent.datiAffidamento.tipoInserimento}">
+									<f:selectItem itemLabel="Con genitore" itemValue="1" />
+									<f:selectItem itemLabel="Senza genitore" itemValue="2" />
+								</p:selectOneButton>
 		
-									<h:outputText value="Esito inserimento struttura"  />
-									<p:selectOneMenu id="esitoInserimentoStrutturaVal"
-										value="#{cc.attrs.sinbaManBean.jsonCurrent.datiAffidamento.esitoInserimentoStruttura}"
-										style="width:200px">
-										<f:selectItem noSelectionOption="true" itemLabel="- seleziona -" />
-										<f:selectItem itemLabel="Rientrato nella famiglia di origine"
-											itemValue="1" />
-										<f:selectItem itemLabel="In famiglia affidataria o affidatario"
-											itemValue="2" />
-										<f:selectItem itemLabel="Adottato" itemValue="3" />
-										<f:selectItem
-											itemLabel="Inserito in altra struttura socio-educativa"
-											itemValue="4" />
-										<f:selectItem itemLabel="Inserito in struttura sanitaria"
-											itemValue="5" />
-										<f:selectItem itemLabel="Reso autonomo" itemValue="6" />
-										<f:selectItem itemLabel="Rimpatriato" itemValue="7" />
-										<f:selectItem itemLabel="Destinazione ignota" itemValue="8" />
-										<f:selectItem itemLabel="Altro" itemValue="9" />
-									</p:selectOneMenu>
+								<h:outputText value="Esito inserimento struttura"  />
+								<p:selectOneMenu id="esitoInserimentoStrutturaVal"
+									value="#{cc.attrs.sinbaManBean.jsonCurrent.datiAffidamento.esitoInserimentoStruttura}"
+									style="width:200px">
+									<f:selectItem noSelectionOption="true" itemLabel="- seleziona -" />
+									<f:selectItem itemValue="1" itemLabel="rientrato nella famiglia di origine"/>
+									<f:selectItem itemValue="2" itemLabel="in famiglia affidataria o affidatario"/>
+									<f:selectItem itemValue="3" itemLabel="adottato"/>
+									<f:selectItem itemValue="4" itemLabel="inserito in altra struttura socio-educativa"/>
+									<f:selectItem itemValue="5" itemLabel="inserito in struttura sanitaria"/>
+									<f:selectItem itemValue="6" itemLabel="reso autonomo"  />
+									<f:selectItem itemValue="7" itemLabel="rimpatriato"  />
+									<f:selectItem itemValue="8" itemLabel="destinazione ignota" />
+									<f:selectItem itemValue="9" itemLabel="altro" />
+								</p:selectOneMenu>
 									
-									<h:outputText value="Motivazione chiusura carico"  />
-									<p:selectOneMenu id="motChiusuraCaricoVal"
-										value="#{cc.attrs.sinbaManBean.jsonCurrent.datiAffidamento.motivazioneChiusuraCarico}"
-										style="width:200px">
-										<f:selectItem noSelectionOption="true" itemLabel="- seleziona -" />
-										<f:selectItem
-											itemLabel="Passaggio a servizio territoriale altro ambito/distretto della stessa regione"
-											itemValue="1" />
-										<f:selectItem
-											itemLabel="Passaggio a servizio territoriale altro ambito/distretto di altra regione"
-											itemValue="2" />
-										<f:selectItem itemLabel="Raggiunta età maggiorenne"
-											itemValue="3" />
-										<f:selectItem
-											itemLabel="Conclusione degli interventi e della presa in carico per risoluzione dello stato di bisogno"
-											itemValue="4" />
-										<f:selectItem
-											itemLabel="Uscita richiesta dal minore utente o dalla famiglia"
-											itemValue="5" />
-										<f:selectItem itemLabel="Rimpatriato" itemValue="6" />
-										<f:selectItem itemLabel="Irreperibilità" itemValue="7" />
-										<f:selectItem itemLabel="Decesso" itemValue="8" />
-										<f:selectItem itemLabel="Altro" itemValue="9" />
-									</p:selectOneMenu>
+								<h:outputText value="Motivazione chiusura carico"  />
+								<p:selectOneMenu id="motChiusuraCaricoVal"
+									value="#{cc.attrs.sinbaManBean.jsonCurrent.datiAffidamento.motivazioneChiusuraCarico}"
+									style="width:200px">
+									<f:selectItem noSelectionOption="true" itemLabel="- seleziona -" />
+									<f:selectItem itemValue="1" itemLabel="passaggio a servizio territoriale altro ambito/distretto della stessa regione"/>
+									<f:selectItem itemValue="2" itemLabel="passaggio a servizio territoriale altro ambito/distretto di altra regione"/>
+									<f:selectItem itemValue="3" itemLabel="raggiunta età maggiorenne"/>
+									<f:selectItem itemValue="4" itemLabel="conclusione degli interventi e della presa in carico per risoluzione dello stato di bisogno"/>
+									<f:selectItem itemValue="5" itemLabel="uscita richiesta dal minore utente o dalla famiglia"/>
+									<f:selectItem itemValue="6" itemLabel="rimpatriato"  />
+									<f:selectItem itemValue="7" itemLabel="irreperibilità" />
+									<f:selectItem itemValue="8" itemLabel="decesso"  />
+									<f:selectItem itemValue="9" itemLabel="altro"/>
+								</p:selectOneMenu>
 									
-									<h:outputText value="Situazione chiusura carico"  />
-									<p:selectOneMenu id="sitChiusuraCaricoVal"
-										value="#{cc.attrs.sinbaManBean.jsonCurrent.datiAffidamento.situazioneChiusuraCarico}"
-										style="width:200px">
-										<f:selectItem noSelectionOption="true" itemLabel="- seleziona -" />
-										<f:selectItem itemLabel="Nella famiglia di origine"
-											itemValue="1" />
-										<f:selectItem
-											itemLabel="Vita in autonomia (in appartamento anche con altri non familiari o parenti)"
-											itemValue="2" />
-										<f:selectItem
-											itemLabel="Rimane nella famiglia affidataria anche se maggiorenne"
-											itemValue="3" />
-										<f:selectItem
-											itemLabel="Rimane nella struttura residenziale socio-assistenziale anche se maggiorenne"
-											itemValue="4" />
-										<f:selectItem
-											itemLabel="Collocato in struttura residenziale sanitaria"
-											itemValue="5" />
-										<f:selectItem itemLabel="Adottato in una nuova famiglia"
-											itemValue="6" />
-										<f:selectItem itemLabel="In istituto penale" itemValue="7" />
-										<f:selectItem itemLabel="Destinazione ignota" itemValue="8" />
-									</p:selectOneMenu>
+								<h:outputText value="Situazione chiusura carico"  />
+								<p:selectOneMenu id="sitChiusuraCaricoVal"
+									value="#{cc.attrs.sinbaManBean.jsonCurrent.datiAffidamento.situazioneChiusuraCarico}"
+									style="width:200px">
+									<f:selectItem noSelectionOption="true" itemLabel="- seleziona -" />
+									<f:selectItem itemValue="1" itemLabel="nella famiglia di origine"/>
+									<f:selectItem itemValue="2" itemLabel="vita in autonomia (in appartamento anche con altri non familiari o parenti)"/>
+									<f:selectItem itemValue="3" itemLabel="rimane nella famiglia affidataria anche se maggiorenne"/>
+									<f:selectItem itemValue="4" itemLabel="rimane nella struttura residenziale socio-assistenziale anche se maggiorenne"/>
+									<f:selectItem itemValue="5" itemLabel="collocato in struttura residenziale sanitaria"/>
+									<f:selectItem itemValue="6" itemLabel="adottato in una nuova famiglia"/>
+									<f:selectItem itemValue="7" itemLabel="in istituto penale" />
+									<f:selectItem itemValue="8" itemLabel="destinazione ignota"  />
+								</p:selectOneMenu>
 		
-									<h:outputText value="Collaborazione interventi"  />
-									<p:selectOneMenu id="collInterventiVal"
-										value="#{cc.attrs.sinbaManBean.jsonCurrent.datiAffidamento.collaborazioneInterventi}"
-										style="width:200px">
-										<f:selectItem noSelectionOption="true" itemLabel="- seleziona -" />
-										<f:selectItem itemLabel="SERT" itemValue="1" />
-										<f:selectItem itemLabel="NPI" itemValue="2" />
-										<f:selectItem itemLabel="Psicologia" itemValue="3" />
-										<f:selectItem itemLabel="Clinica/dsm" itemValue="4" />
-										<f:selectItem
-											itemLabel="Altri servizi sociali (consultorio, centri, famiglia, adulti, di altro abito/distretto)"
-											itemValue="5" />
-										<f:selectItem itemLabel="Ussm ministero giustizia" itemValue="6" />
-										<f:selectItem itemLabel="Scuola" itemValue="7" />
-										<f:selectItem
-											itemLabel="Servizi privato sociale associazionismo, volontariato"
-											itemValue="8" />
-										<f:selectItem itemLabel="Altro" itemValue="9" />
-									</p:selectOneMenu>
+								<h:outputText value="Collaborazione interventi"  />
+								<p:selectOneMenu id="collInterventiVal"
+									value="#{cc.attrs.sinbaManBean.jsonCurrent.datiAffidamento.collaborazioneInterventi}"
+									style="width:200px">
+									<f:selectItem noSelectionOption="true" itemLabel="- seleziona -" />
+									<f:selectItem itemValue="1" itemLabel="SERT" />
+									<f:selectItem itemValue="2" itemLabel="NPI" />
+									<f:selectItem itemValue="3" itemLabel="psicologia"  />
+									<f:selectItem itemValue="4" itemLabel="clinica/dsm" />
+									<f:selectItem itemValue="5" itemLabel="altri servizi sociali (consultorio, centri, famiglia, adulti, di altro abito/distretto)"/>
+									<f:selectItem itemValue="6" itemLabel="ussm ministero giustizia"  />
+									<f:selectItem itemValue="7" itemLabel="scuola"  />
+									<f:selectItem itemValue="8" itemLabel="servizi privato sociale associazionismo, volontariato"/>
+									<f:selectItem itemValue="9" itemLabel="altro" />
+								</p:selectOneMenu>
 							
 							</p:panelGrid>
 							</p:fieldset>

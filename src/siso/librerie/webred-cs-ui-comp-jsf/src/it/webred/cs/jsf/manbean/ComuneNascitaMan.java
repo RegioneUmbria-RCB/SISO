@@ -31,6 +31,11 @@ public class ComuneNascitaMan extends ComuneMan implements   Serializable {
 
 	}
 
+	public String getDescrizioneCompleta() {
+		String s = "";
+		s+= this.comune!=null ? comune.getDenominazione()+ " ("+comune.getSiglaProv()+")" : "";
+		return s;
+	}
 
 }
 	

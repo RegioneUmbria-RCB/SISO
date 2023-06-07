@@ -237,7 +237,7 @@ final class XmlExport2018 extends PsaXmlExporter {
 		mappaDatiPrestazione.put(Cost.PRESTAZIONE_QUOTA_RICHIESTA, "");
 		mappaDatiPrestazione.put(Cost.PRESTAZIONE_SOGLIA_ISEE, "");
 
-		mappaDatiPrestazione.put(Cost.PRESTAZIONE_DATA_EVENTO, "");
+		mappaDatiPrestazione.put(Cost.PRESTAZIONE_DATA_EVENTO, erogDaEsportare.getDataEvento());
 		
 		// (cioè presaInCarico=sì)
 		mappaDatiPrestazione.put(Cost.PRESTAZIONE_PRESA_IN_CARICO, erogDaEsportare.getPresaInCarico().intValue());

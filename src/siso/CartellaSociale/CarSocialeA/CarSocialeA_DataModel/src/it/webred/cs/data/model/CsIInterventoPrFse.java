@@ -110,14 +110,7 @@ public class CsIInterventoPrFse implements Serializable {
 	 private String telefono;
 	 private String email;
 	
-	 //SISO - 945 
-	 @Column(name="COMUNE_NASCITA")
-	 private String comuneNascita; //JSON
-	 @Column(name="STATO_NASCITA_COD")  						
-	 private String statoNascitaCod;
-	 @Column(name="STATO_NASCITA_DES")  					
-	 private String statoNascitaDes;
-	
+		
 	 //FINE SISO - 945
 	 //SISO-1010
 	 @Column(name="COMUNICA_VUL")
@@ -130,11 +123,6 @@ public class CsIInterventoPrFse implements Serializable {
 	 @Column(name="SOGGETTO_ATTUATORE")
 	 private String soggettoAttuatore;
  
-	public String getStatoNascitaCod() {
-		return statoNascitaCod;
-	}
-
-
 	public Boolean getComunicaVul() {
 		return comunicaVul;
 	}
@@ -142,31 +130,6 @@ public class CsIInterventoPrFse implements Serializable {
 
 	public void setComunicaVul(Boolean comunicaVul) {
 		this.comunicaVul = comunicaVul;
-	}
-
-
-	public String getComuneNascita() {
-		return comuneNascita;
-	}
-
-
-	public void setComuneNascita(String comuneNascita) {
-		this.comuneNascita = comuneNascita;
-	}
-
-
-	public void setStatoNascitaCod(String statoNascitaCod) {
-		this.statoNascitaCod = statoNascitaCod;
-	}
-
-
-	public String getStatoNascitaDes() {
-		return statoNascitaDes;
-	}
-
-
-	public void setStatoNascitaDes(String statoNascitaDes) {
-		this.statoNascitaDes = statoNascitaDes;
 	}
 
 	public long getInterventoPrId() {

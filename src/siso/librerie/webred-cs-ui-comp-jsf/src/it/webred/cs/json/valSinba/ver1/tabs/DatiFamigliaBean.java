@@ -17,9 +17,6 @@ public class DatiFamigliaBean {
 	
 	private int condizioneMinore;
 	private int luogoVita;
-	private String nazioneResidenza;
-	private SelectItem nazioneResidenzaItem;
-	private int regione;
 	private int minoreStranieroNonAccompagnato;
 	
 	@JsonIgnore private int composizioneFamiglia;
@@ -44,9 +41,10 @@ public class DatiFamigliaBean {
 		return genitore;
 	}
 	
-	
-	public void aggiungiComponente()
+	public List<String> aggiungiComponente()
 	{
+		List<String> error = new ArrayList<String>();
+		
 		ComponenteFamigliaBean cf = new ComponenteFamigliaBean();
 		if (composizioneFamiglia != 0 && !componenteExist(composizioneFamiglia)){
 			
@@ -74,8 +72,10 @@ public class DatiFamigliaBean {
 			if (cf.isNotNull()){
 				lstComponentiFamiglia.add(cf);
 				resetCombo();
-			}
-		}
+			}else error.add("Per aggiungere Padre o Madre è necessario compilare tutti i campi obbligatori");
+		}else error.add("Selezionare la parentela");
+		
+		return error;
 	}
 	
 	private void resetCombo()
@@ -142,22 +142,6 @@ public class DatiFamigliaBean {
 		this.luogoVita = luogoVita;
 	}
 
-	public String getNazioneResidenza() {
-		return nazioneResidenza;
-	}
-
-	public void setNazioneResidenza(String nazioneResidenza) {
-		this.nazioneResidenza = nazioneResidenza;
-	}
-
-	public int getRegione() {
-		return regione;
-	}
-
-	public void setRegione(int regione) {
-		this.regione = regione;
-	}
-
 	public int getMinoreStranieroNonAccompagnato() {
 		return minoreStranieroNonAccompagnato;
 	}
@@ -206,12 +190,5 @@ public class DatiFamigliaBean {
 		this.occupazione = occupazione;
 	}
 
-	public SelectItem getNazioneResidenzaItem() {
-		return nazioneResidenzaItem;
-	}
-
-	public void setNazioneResidenzaItem(SelectItem nazioneResidenzaItem) {
-		this.nazioneResidenzaItem = nazioneResidenzaItem;
-	}
-
+	
 }

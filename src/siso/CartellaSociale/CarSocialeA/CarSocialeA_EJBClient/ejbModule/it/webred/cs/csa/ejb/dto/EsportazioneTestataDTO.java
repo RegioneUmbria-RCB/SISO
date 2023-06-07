@@ -1,5 +1,6 @@
 package it.webred.cs.csa.ejb.dto;
 
+import it.webred.cs.data.DataModelCostanti.CSIPs.FLAG_IN_CARICO;
 import it.webred.cs.data.model.CsCTipoIntervento;
 
 import java.io.Serializable;
@@ -27,11 +28,13 @@ public class EsportazioneTestataDTO implements Serializable, Comparable<Esportaz
 
 	private String categoriaSocialeDescrizione;
 	private String prestazioneProtocolloEnte; // Numero protocollo
+	private String codPrestazione;
 	private String denominazionePrestazione;
 	private String soggettoNome;
 	private String soggettoCognome;
 	private String soggettoCodiceFiscale;
 	private String tipoBeneficiario;
+	private String inCarico;
 	
 	private BigDecimal spesaTestata;
 	
@@ -79,7 +82,16 @@ public class EsportazioneTestataDTO implements Serializable, Comparable<Esportaz
 		
 		this.categoriaSocialeDescrizione = dettaglioEsportazione.getCategoriaSocialeDescrizione();
 		this.prestazioneProtocolloEnte = dettaglioEsportazione.getPrestazioneProtocEnte();
+		this.codPrestazione = dettaglioEsportazione.getCodPrestazione();
 		this.denominazionePrestazione = dettaglioEsportazione.getDenomPrestazione();
+		
+		if(FLAG_IN_CARICO.NO.getCodice() == dettaglioEsportazione.getPresaInCarico().intValue())
+			this.inCarico = FLAG_IN_CARICO.NO.getDescrizione();
+		else if(FLAG_IN_CARICO.SI.getCodice() == dettaglioEsportazione.getPresaInCarico().intValue())
+			this.inCarico = FLAG_IN_CARICO.SI.getDescrizione();
+		else if(FLAG_IN_CARICO.NON_SO.getCodice() == dettaglioEsportazione.getPresaInCarico().intValue())
+				this.inCarico = FLAG_IN_CARICO.NON_SO.getDescrizione();
+		
 		this.soggettoNome = dettaglioEsportazione.getSoggettoNome();
 		this.soggettoCognome = dettaglioEsportazione.getSoggettoCognome();
 		this.soggettoCodiceFiscale = dettaglioEsportazione.getSoggettoCodiceFiscale();
@@ -226,6 +238,22 @@ public class EsportazioneTestataDTO implements Serializable, Comparable<Esportaz
 
 	public void setTipoBeneficiario(String tipoBeneficiario) {
 		this.tipoBeneficiario = tipoBeneficiario;
+	}
+
+	public String getCodPrestazione() {
+		return codPrestazione;
+	}
+
+	public void setCodPrestazione(String codPrestazione) {
+		this.codPrestazione = codPrestazione;
+	}
+
+	public String getInCarico() {
+		return inCarico;
+	}
+
+	public void setInCarico(String inCarico) {
+		this.inCarico = inCarico;
 	}
 	
 }

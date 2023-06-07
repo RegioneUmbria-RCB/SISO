@@ -1,0 +1,19 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui"
+	xmlns:webred="http://java.sun.com/jsf/composite/webred" xmlns:webredcs="http://java.sun.com/jsf/composite/webredcs">
+<ui:fragment>
+	
+	<h:panelGrid columns="1"  styleClass="top-aligned-columns" width="100%">
+		
+	    <p:selectManyCheckbox id="sostegno" value="#{provvMinoriMan.jsonCurrent.prescrSocioEducative.selSostegno}"  layout="grid" columns="3">
+					<f:selectItems value="#{provvMinoriMan.prescSocEd.lstSostegno}"/>
+		</p:selectManyCheckbox>
+		  
+		<p:spacer height="10px"/>
+		<h:outputLabel id="lblNote" value="Note" for="note" styleClass="bold" />
+		<p:inputTextarea id="note"  value="#{provvMinoriMan.jsonCurrent.prescrSocioEducative.note}" 
+						 rows="2" styleClass="span-20" autoResize="false"  />
+	
+	</h:panelGrid>
+</ui:fragment>
+</html>

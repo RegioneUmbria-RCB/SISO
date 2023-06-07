@@ -28,7 +28,7 @@
 			styleClass="dialog">
 			<h:panelGrid columns="2">
 				<h:outputLabel value="Beneficiario:" />
-				<h:outputLabel value="#{fglInterventoBean.soggettoNuovaErogazione.cognome} #{fglInterventoBean.soggettoNuovaErogazione.nome}" style="font-weight:bold;" />
+				<h:outputLabel value="#{cc.attrs.dettaglio.soggettoCognome} #{cc.attrs.dettaglio.soggettoNome}" style="font-weight:bold;" />
 			</h:panelGrid>
 			<p:tabView id="esportazioneTabView">
 				<p:tab title="Gestione Erogazione">
@@ -36,8 +36,16 @@
 						<p:outputLabel id="lblPresoInCarico" for="cbxPresoInCarico" value="Durante il servizio il beneficiario è in carico? " style="display:block;width:200px" />
 						<p:selectOneRadio id="cbxPresoInCarico" value="#{cc.attrs.dettaglio.presaInCarico}">
 							<f:selectItems value="#{fglInterventoBean.erogazioneInterventoBean.listaOpzioniPresoInCarico}" />
+							<p:ajax event="change" partialSubmit="true" process="@this" update="@(.updateOnPicChange)"/>
 						</p:selectOneRadio>
 					</h:panelGrid>
+					<p:outputPanel styleClass="updateOnPicChange">
+			 			<p:outputLabel id="lblPresPic" value="Gli interventi e i servizi classificati con codice da A2.16 a A2.29 
+		 					      costituiscono informazioni da inserire nel Casellario solo in caso di presa in carico 
+		 					      da parte del servizio sociale professionale" 
+		 					      rendered="#{cc.attrs.dettaglio.renderMessaggioPrestazionePic}"
+		 					      style="font-weight:bold;color:red;" />
+		 			</p:outputPanel>
 				</p:tab>
 				<p:tab title="Gestione SINA" rendered="#{fglInterventoBean.visualizzaSinaTab}" titletip="Sistema informativo per la non autosufficienza">
 					<ui:include src="/webredcs/pnlFglIntervento/sina.xhtml" />

@@ -163,13 +163,15 @@ public class PaiBean extends FascicoloCompSecondoLivello implements IPai, Serial
 	// SISO-520
 	private Date dataNuovoMonitoraggio;
 
+	//ManBean
+	private SessoBean sessoBeneficiario;
+	private ComuneNazioneResidenzaMan comuneNazioneResidenzaMan = null;
+	private ComuneNazioneNascitaMan comuneNazioneNascitaMan = null;
+	
 	// SISO-1280
 	private CsPaiMastSoggDTO soggRiferimentoPai;
 	private List<CsPaiMastSoggDTO> altriSoggetti;
-	private SessoBean sessoBeneficiario;
 	private List<String> listaCittadinanze;
-	private ComuneNazioneResidenzaMan comuneNazioneResidenzaMan = null;
-	private ComuneNazioneNascitaMan comuneNazioneNascitaMan = new ComuneNazioneNascitaMan();
 	private RisorsaFamiliareBean risorsaFamBean;
 	private Boolean testataDisabled = false;
 	private boolean nuovoInsSoggManuale = false;
@@ -317,6 +319,7 @@ public class PaiBean extends FascicoloCompSecondoLivello implements IPai, Serial
 			// SISO-1131
 			this.setSelectedProgettoAltro(new CsTbProgettoAltro());
 			comuneNazioneResidenzaMan = new ComuneNazioneResidenzaMan();
+			comuneNazioneNascitaMan = new ComuneNazioneNascitaMan();
 			testataDisabled = false;
 			this.setReadOnly(false);
 		} catch (Exception e) {
@@ -338,6 +341,15 @@ public class PaiBean extends FascicoloCompSecondoLivello implements IPai, Serial
 		this.initializeData();
 	}
 
+	private void valorizzaManBean() {
+		this.valorizzaResidenzaMan();
+		this.valorizzaNascitaMan();
+
+		this.sessoBeneficiario = new SessoBean();
+		if(soggRiferimentoPai!=null)
+			this.sessoBeneficiario.setSesso(soggRiferimentoPai.getSesso());
+	}
+	
 	@Override
 	public void nuovo() {
 		picklistRelazioni = null;
@@ -366,12 +378,11 @@ public class PaiBean extends FascicoloCompSecondoLivello implements IPai, Serial
 
 			CsAAnaIndirizzo residenza = findIndirizzoResidenzaCaso(csASoggetto);
 			String via = residenza != null ? residenza.getLabelIndirizzo() : null;
-			soggRiferimentoPai = new CsPaiMastSoggDTO(csASoggetto, via, getCasoComuneResidenza(residenza), residenza.getStatoCod(), true);
-
-			this.valorizzaResidenzaMan();
-
-			this.sessoBeneficiario = new SessoBean();
-			this.sessoBeneficiario.setSesso(soggRiferimentoPai.getSesso());
+			
+			CsAAnagrafica ana = csASoggetto.getCsAAnagrafica();
+			String comuneNascita = getComuneJson(ana.getComuneNascitaCod(), ana.getComuneNascitaDes());
+			
+			soggRiferimentoPai = new CsPaiMastSoggDTO(csASoggetto, via, getCasoComuneResidenza(residenza), residenza.getStatoCod(), comuneNascita,  true);
 
 			tipoInterventoManBean = new TipoInterventoManBean(listTipoInterventos, getFilterCategorie(this.catsocCorrenti));
 
@@ -381,8 +392,6 @@ public class PaiBean extends FascicoloCompSecondoLivello implements IPai, Serial
 
 				idCasoSoggEsterno = sogg != null && sogg.getCsACaso() != null ? sogg.getCsACaso().getId() : null;
 
-				this.sessoBeneficiario = new SessoBean();
-				this.sessoBeneficiario.setSesso(soggRiferimentoPai.getSesso());
 				// se l'anagrafica selezionata e' presente nella cartella sociale
 				if (idCasoSoggEsterno != null) {
 					soggRiferimentoPai.setCasoId(idCasoSoggEsterno);
@@ -405,9 +414,8 @@ public class PaiBean extends FascicoloCompSecondoLivello implements IPai, Serial
 			} else {
 				// inizializzazione delle varie picklist
 				initPickList();
-				soggRiferimentoPai = new CsPaiMastSoggDTO();
-				soggRiferimentoPai.setIntestatario(true);
-				this.sessoBeneficiario = new SessoBean();
+				soggRiferimentoPai = new CsPaiMastSoggDTO(true);
+				
 				this.altroSoggettoTmp = new CsPaiMastSoggDTO(false);
 				tipoInterventoManBean = new TipoInterventoManBean(listTipoInterventos, "");
 			}
@@ -425,6 +433,7 @@ public class PaiBean extends FascicoloCompSecondoLivello implements IPai, Serial
 		// SISO_1034
 		selectedPai.setMonitoraggioObiettivi(false);
 		this.setSelectedProgettoAltro(new CsTbProgettoAltro());
+		this.valorizzaManBean();
 	}
 
 	@Override
@@ -451,11 +460,7 @@ public class PaiBean extends FascicoloCompSecondoLivello implements IPai, Serial
 
 			tipoPai = selectedPai.getCsTbTipoPai();
 			soggRiferimentoPai = toDto(selectedPai.getBeneficiari().get(0));
-			this.sessoBeneficiario = new SessoBean();
-			this.sessoBeneficiario.setSesso(soggRiferimentoPai.getSesso());
-
-			this.valorizzaResidenzaMan();
-
+			
 			if (soggRiferimentoPai.getCasoId() != null)
 				idCasoSoggEsterno = soggRiferimentoPai.getCasoId();
 			altriSoggetti = new ArrayList<CsPaiMastSoggDTO>();
@@ -476,12 +481,11 @@ public class PaiBean extends FascicoloCompSecondoLivello implements IPai, Serial
 				tipoInterventoManBean = new TipoInterventoManBean(listTipoInterventos,getFilterCategorie(this.catsocCorrenti));
 
 			} else {
-				dto.setObj(soggRiferimentoPai.getCf());
-				CsASoggettoLAZY sogg = soggettoService.getSoggettoByCF(dto);
-				if (sogg != null) {
-					List<CsCCategoriaSociale> lstCatSoc = loadCatSocialiAttuali(sogg.getAnagraficaId());
+				
+				if (soggRiferimentoPai.getCsASoggetto() != null) {
+					List<CsCCategoriaSociale> lstCatSoc = loadCatSocialiAttuali(soggRiferimentoPai.getCsASoggetto().getAnagraficaId());
 					tipoInterventoManBean = new TipoInterventoManBean(listTipoInterventos,getFilterCategorie(lstCatSoc));
-					progettiIndividualiExtBean.initializeData(sogg, lstCatSoc);
+					progettiIndividualiExtBean.initializeData(soggRiferimentoPai.getCsASoggetto(), lstCatSoc);
 
 				} else {
 					String filteredCatSoc = "";
@@ -544,6 +548,8 @@ public class PaiBean extends FascicoloCompSecondoLivello implements IPai, Serial
 			CsTbProgettoAltro altro = this.selectedPai.getCsTbProgettoAltro() != null ? this.selectedPai.getCsTbProgettoAltro() : new CsTbProgettoAltro();
 			this.setSelectedProgettoAltro(altro);
 
+			this.valorizzaManBean();
+			
 //			RequestContext.getCurrentInstance().update("frmProgettiIndividuali:paiExtComponent:paitabview:panelIntervento:interventoTree");	
 			RequestContext.getCurrentInstance().update("frmProgettiIndividuali:paiExtComponent:paitabview");
 
@@ -557,10 +563,24 @@ public class PaiBean extends FascicoloCompSecondoLivello implements IPai, Serial
 		if (source == null) {
 			return null;
 		}
-
-		CsPaiMastSoggDTO target = new CsPaiMastSoggDTO();
-		String[] ignore = { "pai" };
-		BeanUtils.copyProperties(source, target, ignore);
+		
+		String via = null;
+		String jsonComuneResidenza = null;
+		String nazioneResidenza = null;
+		String jsonComuneNascita = null;
+		if(source.getCaso()!=null) {
+			CsASoggettoLAZY soggetto = source.getCaso().getCsASoggetto();
+			if (soggetto != null){
+				CsAAnaIndirizzo residenza = findIndirizzoResidenzaCaso(soggetto);
+				via = residenza!=null ? residenza.getLabelIndirizzo() : null;
+				nazioneResidenza = residenza!=null ? residenza.getStatoCod() : null;
+				jsonComuneNascita = getJsonNascitaComuneBean(soggetto);	
+			}
+		}
+		
+		CsPaiMastSoggDTO target = new CsPaiMastSoggDTO(source, via, jsonComuneResidenza, nazioneResidenza, jsonComuneNascita);
+	//	String[] ignore = { "pai" };
+	//	BeanUtils.copyProperties(source, target, ignore);
 		return target;
 	}
 
@@ -746,19 +766,13 @@ public class PaiBean extends FascicoloCompSecondoLivello implements IPai, Serial
 				// SISO 1280: Aggiungo i beneficiari all'entita CsDPai
 				List<CsPaiMastSogg> lstBeneficiari = new ArrayList<CsPaiMastSogg>();
 				soggRiferimentoPai.setDiarioId(selectedPai.getDiarioId());
-				
-				if (this.comuneNazioneResidenzaMan != null
-						&& this.comuneNazioneResidenzaMan.getComuneResidenzaMan().getComune() != null) {
-					soggRiferimentoPai.setNazioneResidenzaNonDefinita(false);
-					soggRiferimentoPai.setComuneResidenza(comuneNazioneResidenzaMan.getComuneResidenzaMan().getComuneAsJson());
-				}
+				aggiornaDatiSoggettoRiferimentoDaManBean();
 
 				if (fromFascicoloCartellaUtente) {
 					soggRiferimentoPai.setCasoId(idCaso);
 				} else {
 					soggRiferimentoPai.setCasoId(idCasoSoggEsterno);
 				}
-				soggRiferimentoPai.setSesso(this.sessoBeneficiario.getSesso());
 				lstBeneficiari.add(toEntity(soggRiferimentoPai));
 
 				if (altriSoggetti != null && altriSoggetti.size() > 0) {
@@ -848,8 +862,8 @@ public class PaiBean extends FascicoloCompSecondoLivello implements IPai, Serial
 		} else if (!validaCittadinanza(soggRiferimentoPai.getCittadinanza())) {
 			addWarning("Beneficiari", "La cittadinanza del soggetto beneficiario di riferimento non è più valida");
 			valido = false;
-		} else if (!StringUtils.isEmpty(soggRiferimentoPai.getSecondaCittadinanza())
-				&& !validaCittadinanza(soggRiferimentoPai.getSecondaCittadinanza())) {
+		} else if (!StringUtils.isEmpty(soggRiferimentoPai.getCittadinanza2())
+				&& !validaCittadinanza(soggRiferimentoPai.getCittadinanza2())) {
 			addWarning("Beneficiari",
 					"La seconda cittadinanza del soggetto beneficiario di riferimento non è più valida");
 			valido = false;
@@ -962,38 +976,12 @@ public class PaiBean extends FascicoloCompSecondoLivello implements IPai, Serial
 
 	@Override
 	public void salvaGestioneMonitoraggioObiettivi() {
-		aggiornaDatiInseriti();
+		this.aggiornaDatiSoggettoRiferimentoDaManBean();
 
 		if (this.selectedPai.getMonitoraggioObiettivi())
 			this.salvataggioSenzaMonitoraggio();
 		else
 			RequestContext.getCurrentInstance().execute("PF('confermaSalvataggioDettaglioPai').show();");
-	}
-
-	public void aggiornaDatiInseriti() {
-
-		soggRiferimentoPai.setSesso(this.sessoBeneficiario.getSesso());
-
-		if (this.comuneNazioneResidenzaMan != null && this.comuneNazioneResidenzaMan.isComune()
-				&& this.comuneNazioneResidenzaMan.getComuneMan().getComune() != null) {
-			ObjectMapper om = new ObjectMapper();
-			try {
-				this.soggRiferimentoPai.setNazioneResidenzaNonDefinita(false);
-				this.soggRiferimentoPai.setNazioneResidenza(null);
-				this.soggRiferimentoPai.setComuneResidenza(
-						om.writeValueAsString(this.comuneNazioneResidenzaMan.getComuneMan().getComune()));
-			} catch (Exception ex) {
-
-			}
-		} else if (this.comuneNazioneResidenzaMan != null && this.comuneNazioneResidenzaMan.isNazione()
-				&& this.comuneNazioneResidenzaMan.getNazioneMan().getNazione() != null) {
-
-			this.soggRiferimentoPai.setNazioneResidenza(
-					this.comuneNazioneResidenzaMan.getNazioneMan().getNazione().getCodIstatNazione());
-			this.soggRiferimentoPai.setComuneResidenza(null);
-
-		}
-
 	}
 
 	@Override
@@ -1150,7 +1138,8 @@ public class PaiBean extends FascicoloCompSecondoLivello implements IPai, Serial
 
 		// verificare se ci sono interventi associati ancora aperti e che la relativa
 		// data di chiuera sia compresa nella data del progetto
-		if (this.picklistInterventi != null && this.picklistInterventi.getTarget() != null) {
+		if (this.picklistInterventi != null && this.picklistInterventi.getTarget() != null && 
+			!this.picklistInterventi.getTarget().isEmpty()) {
 			boolean aperti = false;
 			Date maxDataChiusuraFA = null;
 
@@ -1167,7 +1156,7 @@ public class PaiBean extends FascicoloCompSecondoLivello implements IPai, Serial
 				}
 			}
 			if (aperti) {
-				errors.add("Ci sono interventi associati ancora aperti: è necessario chiuderli ovvero scollegarli dal progetto per poter chiudere il PAI");
+				errors.add("Ci sono interventi associati ancora aperti: è necessario chiuderli o scollegarli dal progetto per poter chiudere il Progetto Individuale");
 			} else if (maxDataChiusuraFA != null && maxDataChiusuraFA.after(this.selectedPai.getCsDDiario().getDtChiusuraDa())) {
 				errors.add("Ci sono interventi associati con fogli amministrativi la cui data di chiusura è successiva a quella di chiusura del progetto");
 			}
@@ -1175,7 +1164,8 @@ public class PaiBean extends FascicoloCompSecondoLivello implements IPai, Serial
 
 		// verificare per ogni mast se ci sono erogazioni ancora aperte e che la data di
 		// chiusura sia compresa nella data del progetto
-		if (this.picklistErogazioni != null && this.picklistErogazioni.getTarget() != null) {
+		if (this.picklistErogazioni != null && this.picklistErogazioni.getTarget() != null && 
+			!this.picklistErogazioni.getTarget().isEmpty()) {
 			boolean aperti = true;
 			boolean dopoDataChiusura = false;
 
@@ -1200,7 +1190,7 @@ public class PaiBean extends FascicoloCompSecondoLivello implements IPai, Serial
 			}
 
 			if (aperti)
-				errors.add("Ci sono erogazioni associate ancora aperte: è necessario chiuderle per poter chiudere il Progetto Individuale");
+				errors.add("Ci sono erogazioni associate ancora aperte: è necessario chiuderle o scollegarle per poter chiudere il Progetto Individuale");
 			if(dopoDataChiusura)
 				errors.add("Ci sono erogazioni associate con fogli amministrativi la cui data di chiusura è successiva a quella di chiusura del progetto");
 		}
@@ -2298,31 +2288,51 @@ public class PaiBean extends FascicoloCompSecondoLivello implements IPai, Serial
 			//fascicoloBean = (FascicoloBean) context.getApplication().evaluateExpressionGet(context, "#{fascicoloBean}",FascicoloBean.class);
 
 			fascicoloBean.getInterventiBean().getErogazioniInterventiBean().SetFromFascicolo(getCsASoggetto());
-			if (strutturaAccettataDaEnte != null) {
-				fascicoloBean.getInterventiBean().inizializzaNuovaErogazione(tipoInterventoManBean, true, strutturaAccettataDaEnte);
-			} else {
-				fascicoloBean.getInterventiBean().inizializzaNuovaErogazione(tipoInterventoManBean, true);
-			}
+			fascicoloBean.getInterventiBean().inizializzaNuovaErogazione(tipoInterventoManBean, true, strutturaAccettataDaEnte);
 
 		} else {
 			progettiIndividualiExtBean = (ProgettiIndividualiExtBean) context.getApplication()
 					.evaluateExpressionGet(context, "#{progettiInvidualiExt}", ProgettiIndividualiExtBean.class);
 
-			CsASoggettoLAZY soggetto = this.recuperaSoggetto(soggRiferimentoPai.getCf());
-
-			if (soggetto != null)
-				progettiIndividualiExtBean.getInterventiBean().getErogazioniInterventiBean().SetFromPai(soggetto);
-			else
-				progettiIndividualiExtBean.getInterventiBean().getErogazioniInterventiBean().SetFromPai(soggRiferimentoPai);
-
-			if (strutturaAccettataDaEnte != null) {
-				progettiIndividualiExtBean.getInterventiBean().inizializzaNuovaErogazione(tipoInterventoManBean, true,strutturaAccettataDaEnte);
-			} else {
-				progettiIndividualiExtBean.getInterventiBean().inizializzaNuovaErogazione(tipoInterventoManBean, true);
-			}
-
+			//Popolo il soggettoRiferimentoPai con i dati provenienti dai ManBean
+			aggiornaDatiSoggettoRiferimentoDaManBean();
+			progettiIndividualiExtBean.getInterventiBean().getErogazioniInterventiBean().SetFromPai(soggRiferimentoPai);
+			progettiIndividualiExtBean.getInterventiBean().inizializzaNuovaErogazione(tipoInterventoManBean, true, strutturaAccettataDaEnte);
 		}
 
+	}
+	
+	private void aggiornaDatiSoggettoRiferimentoDaManBean(){
+		if(sessoBeneficiario!=null)
+			soggRiferimentoPai.setSesso(this.sessoBeneficiario.getSesso());		
+		
+		if (this.comuneNazioneResidenzaMan != null) { 
+			if (this.comuneNazioneResidenzaMan.isComune() && this.comuneNazioneResidenzaMan.getComuneMan().getComune() != null) {
+				soggRiferimentoPai.setNazioneResidenzaNonDefinita(false);
+				soggRiferimentoPai.setComuneResidenza(comuneNazioneResidenzaMan.getComuneMan().getComuneAsJson());
+				soggRiferimentoPai.setNazioneResidenza(null);
+			}else if(this.comuneNazioneResidenzaMan.isNazione() && this.comuneNazioneResidenzaMan.getNazioneMan().getNazione()!=null) {
+				soggRiferimentoPai.setNazioneResidenzaNonDefinita(false);
+				soggRiferimentoPai.setComuneResidenza(null);
+				soggRiferimentoPai.setNazioneResidenza(this.comuneNazioneResidenzaMan.getNazioneMan().getNazione().getCodIstatNazione());
+			}else {
+				soggRiferimentoPai.setComuneResidenza(null);
+				soggRiferimentoPai.setNazioneResidenza(null);
+			}
+		}
+		
+		if (this.comuneNazioneNascitaMan != null) { 
+			if (this.comuneNazioneNascitaMan.isComune() && this.comuneNazioneNascitaMan.getComuneMan().getComune() != null) {
+				soggRiferimentoPai.setComuneNascita(comuneNazioneNascitaMan.getComuneMan().getComuneAsJson());
+				soggRiferimentoPai.setNazioneNascita(null);
+			}else if(this.comuneNazioneNascitaMan.isNazione() && this.comuneNazioneNascitaMan.getNazioneMan().getNazione()!=null) {
+				soggRiferimentoPai.setComuneNascita(null);
+				soggRiferimentoPai.setNazioneNascita(this.comuneNazioneNascitaMan.getNazioneMan().getNazione().getCodIstatNazione());
+			}else {
+				soggRiferimentoPai.setComuneNascita(null);
+				soggRiferimentoPai.setNazioneNascita(null);
+			}
+		}
 	}
 
 	@Override
@@ -2333,18 +2343,15 @@ public class PaiBean extends FascicoloCompSecondoLivello implements IPai, Serial
 			fascicoloBean = (FascicoloBean) this.getBeanReference("fascicoloBean");
 
 			fascicoloBean.getInterventiBean().getErogazioniInterventiBean().SetFromFascicolo(getCsASoggetto());
-			fascicoloBean.getInterventiBean().getErogazioniInterventiBean().inizializzaDialogo(obj);
+			fascicoloBean.getInterventiBean().getErogazioniInterventiBean().inizializzaDialogo(obj, null);
 
 		} else {
 			progettiIndividualiExtBean = (ProgettiIndividualiExtBean) this.getBeanReference("progettiInvidualiExt");
-			CsASoggettoLAZY soggetto = this.recuperaSoggetto(soggRiferimentoPai.getCf());
+			
+			aggiornaDatiSoggettoRiferimentoDaManBean();
+			progettiIndividualiExtBean.getInterventiBean().getErogazioniInterventiBean().SetFromPai(soggRiferimentoPai);
 
-			if (soggetto != null) {
-				progettiIndividualiExtBean.getInterventiBean().getErogazioniInterventiBean().SetFromPai(soggetto);
-			} else
-				progettiIndividualiExtBean.getInterventiBean().getErogazioniInterventiBean().SetFromPai(soggRiferimentoPai);
-
-			progettiIndividualiExtBean.getInterventiBean().getErogazioniInterventiBean().inizializzaDialogo(obj);
+			progettiIndividualiExtBean.getInterventiBean().getErogazioniInterventiBean().inizializzaDialogo(obj, null);
 		}
 
 	}
@@ -2656,7 +2663,7 @@ public class PaiBean extends FascicoloCompSecondoLivello implements IPai, Serial
 		if (this.isUnicoBeneficiario()) {
 //			altriSoggetti = new HashSet<CsPaiMastSoggDTO>();
 			altriSoggetti = new ArrayList<CsPaiMastSoggDTO>();
-			soggRiferimentoPai.setIntestatario(true);
+			soggRiferimentoPai.setRiferimento(true);
 			selectedPai.setTotBeneficiari(Integer.valueOf(1));
 		} else if (selectedPai.getTotBeneficiari() == null) {
 			selectedPai.setTotBeneficiari(Integer.valueOf(1));
@@ -2690,7 +2697,7 @@ public class PaiBean extends FascicoloCompSecondoLivello implements IPai, Serial
 	 */
 	public boolean isDisabilitaBeneficiarioRif() {
 
-		return soggRiferimentoPai.isValorizzato() || selectedPai.getDiarioId() != null || fromFascicoloCartellaUtente;
+		return (soggRiferimentoPai.isValorizzato() && selectedPai.getDiarioId() != null) || fromFascicoloCartellaUtente;
 	}
 
 	public List<String> getListaCittadinanze() {
@@ -2814,31 +2821,57 @@ public class PaiBean extends FascicoloCompSecondoLivello implements IPai, Serial
 		return result;
 	}
 
-	public void sincronizzaResidenza(CsPaiMastSoggDTO soggDTO) {
-		this.csASoggetto = soggDTO.getCaso() != null ? soggDTO.getCaso().getCsASoggetto() : null;
-		if (this.csASoggetto != null) {
-			CsAAnaIndirizzo residenza = findIndirizzoResidenzaCaso(this.csASoggetto);
-			String via = residenza != null ? residenza.getLabelIndirizzo() : null;
-			soggDTO.sincronizzaResidenza(via, getCasoComuneResidenza(residenza), residenza.getStatoCod());
+	public void sincronizzaResidenza(CsPaiMastSoggDTO se){
+		CsASoggettoLAZY soggetto = se.getCsASoggetto();
+		if(soggetto!=null){
+			CsAAnaIndirizzo residenza = findIndirizzoResidenzaCaso(soggetto);
+			String via = residenza!=null ? residenza.getLabelIndirizzo() : null;
+			String statoCod = residenza!=null ? residenza.getStatoCod() : null;
+			se.sincronizzaResidenza(via, getCasoComuneResidenza(residenza), statoCod);
 			this.valorizzaResidenzaMan();
 		}
+	}
+	
+	public void valorizzaNascitaMan(){
+	 	//Estraggo i dati e deserializzo
+		this.comuneNazioneNascitaMan = new ComuneNazioneNascitaMan();
+		ObjectMapper om = new ObjectMapper();
+		try {
+			if(soggRiferimentoPai!=null) {
+				if(!StringUtils.isBlank(soggRiferimentoPai.getNazioneNascita())){
+					this.comuneNazioneNascitaMan.setNazioneValue();
+					AmTabNazioni naz = luoghiService.getNazioneByIstat(soggRiferimentoPai.getNazioneNascita());
+					this.comuneNazioneNascitaMan.getNazioneNascitaMan().setNazione(naz);
+				}else{
+					this.comuneNazioneNascitaMan.setComuneValue();
+					if(!StringUtils.isBlank(soggRiferimentoPai.getComuneNascita()))
+						this.comuneNazioneNascitaMan.getComuneMan().setComune(om.readValue(soggRiferimentoPai.getComuneNascita(), ComuneBean.class));	
+				}
+			}
+		} catch (Exception e) {
+			logger.error(e);
+		}
+		 
 	}
 
 	public void valorizzaResidenzaMan() {
 		// Estraggo i dati e deserializzo
+		comuneNazioneResidenzaMan = new ComuneNazioneResidenzaMan();
 		ObjectMapper om = new ObjectMapper();
 		try {
 
-			if (!StringUtils.isBlank(soggRiferimentoPai.getNazioneResidenza())) {
-				this.comuneNazioneResidenzaMan.setNazioneValue();
-				AmTabNazioni naz = luoghiService.getNazioneByIstat(soggRiferimentoPai.getNazioneResidenza());
-				this.comuneNazioneResidenzaMan.getNazioneResidenzaMan().setNazione(naz);
-			} else if (StringUtils.isBlank(soggRiferimentoPai.getNazioneResidenza()) && soggRiferimentoPai.isNazioneResidenzaNonDefinita()) {
-				this.comuneNazioneResidenzaMan.setNazioneValue();
-			} else {
-				this.comuneNazioneResidenzaMan.setComuneValue();
-				if (!StringUtils.isBlank(soggRiferimentoPai.getComuneResidenza()))
-					this.comuneNazioneResidenzaMan.getComuneMan().setComune(om.readValue(soggRiferimentoPai.getComuneResidenza(), ComuneBean.class));
+			if(soggRiferimentoPai!=null) {
+				if (!StringUtils.isBlank(soggRiferimentoPai.getNazioneResidenza())) {
+					this.comuneNazioneResidenzaMan.setNazioneValue();
+					AmTabNazioni naz = luoghiService.getNazioneByIstat(soggRiferimentoPai.getNazioneResidenza());
+					this.comuneNazioneResidenzaMan.getNazioneResidenzaMan().setNazione(naz);
+				} else if (StringUtils.isBlank(soggRiferimentoPai.getNazioneResidenza()) && soggRiferimentoPai.isNazioneResidenzaNonDefinita()) {
+					this.comuneNazioneResidenzaMan.setNazioneValue();
+				} else {
+					this.comuneNazioneResidenzaMan.setComuneValue();
+					if (!StringUtils.isBlank(soggRiferimentoPai.getComuneResidenza()))
+						this.comuneNazioneResidenzaMan.getComuneMan().setComune(om.readValue(soggRiferimentoPai.getComuneResidenza(), ComuneBean.class));
+				}
 			}
 		} catch (Exception e) {
 			logger.error(e);
@@ -2865,7 +2898,9 @@ public class PaiBean extends FascicoloCompSecondoLivello implements IPai, Serial
 
 			if (p != null) {
 				comuneNazioneNascitaMan.init(p.getComuneNascita(), p.getNazioneNascita());
-
+				String nazioneNascita = p.getNazioneNascita()!=null ? p.getNazioneNascita().getCodIstatNazione(): null;
+				String jsonComuneNascita = comuneNazioneNascitaMan.isComune() ? comuneNazioneNascitaMan.getComuneNascitaMan().getComuneAsJson() : null;
+				
 				String jsonResidenza = null;
 				if (p.getComuneResidenza() != null) {
 					ComuneBean comuneResidenza = new ComuneBean(p.getComuneResidenza());
@@ -2873,33 +2908,35 @@ public class PaiBean extends FascicoloCompSecondoLivello implements IPai, Serial
 						jsonResidenza = om.writeValueAsString(comuneResidenza);
 					} catch (JsonProcessingException e1) {}
 				}
+				String nazioneResidenza = p.getNazioneResidenza()!=null ? p.getNazioneResidenza().getCodIstatNazione(): null;
+				
 				soggRiferimentoPai = new CsPaiMastSoggDTO(p.getCognome(), p.getNome(), p.getCodfisc(),
-						p.getCittadinanza(), p.getDataNascita(), p.getIndirizzoCivicoResidenza(), jsonResidenza,
-						p.getSesso(), true);
-
+						p.getCittadinanza(), p.getDataNascita(), p.getIndirizzoCivicoResidenza(), jsonResidenza, nazioneResidenza,
+						p.getSesso(), jsonComuneNascita , nazioneNascita, true);	
 	
 				/*Verifico la  corrispondenza dei dati anagrafici con quelli del caso*/		
 				String codFisPersona = p!=null ? p.getCodfisc() : null;
 				CsASoggettoLAZY soggetto = this.getSchedaCSByCF(codFisPersona);
 				if (soggetto != null){
+					CsAAnagrafica ana = soggetto.getCsAAnagrafica();
 					CsAAnaIndirizzo residenza = findIndirizzoResidenzaCaso(soggetto);
 					String via = residenza!=null ? residenza.getLabelIndirizzo() : null;
-					soggRiferimentoPai.integraDatiMancanti(soggetto, via, getCasoComuneResidenza(residenza));
+					String comuneNascita = getComuneJson(ana.getStatoNascitaCod(), ana.getStatoNascitaDes());
+					soggRiferimentoPai.integraDatiMancanti(soggetto, via, getCasoComuneResidenza(residenza), residenza.getStatoCod(), comuneNascita);
 					
 				    if(p.getComuneNascita()==null && p.getNazioneNascita()==null){
-				    	CsAAnagrafica ana =  soggetto.getCsAAnagrafica();
 				    	comuneNazioneNascitaMan = getComuneNazioneNascitaMan(
 				    			 ana.getComuneNascitaCod(), ana.getComuneNascitaDes(), ana.getProvNascitaCod(), 
 								 ana.getStatoNascitaCod(), ana.getStatoNascitaDes());
 				    	
 				    }
 				}
-				
-				valorizzaResidenzaMan();	
 			}
 		} else
 			soggRiferimentoPai = null;
 
+		this.valorizzaManBean();
+		
 		UserSearchBeanExt ubean = (UserSearchBeanExt) getReferencedBean("userSearchBeanExt");
 		ubean.clearParameters();
 	}
@@ -2990,6 +3027,15 @@ public class PaiBean extends FascicoloCompSecondoLivello implements IPai, Serial
 					|| p.getProvenienzaRicerca().equalsIgnoreCase(DataModelCostanti.TipoRicercaSoggetto.SIGESS))
 				p = CsUiCompBaseBean.getPersonaDaAnagEsterna(p.getProvenienzaRicerca(), p.getIdentificativo());
 
+			String jsonNascita = null;
+			if (p.getComuneNascita() != null) {
+				ComuneBean cb = new ComuneBean(p.getComuneNascita());
+				try {
+					jsonNascita = om.writeValueAsString(cb);
+				} catch (JsonProcessingException e) {}
+			}
+			String nazioneNascita = p.getNazioneNascita()!=null ? p.getNazioneNascita().getCodIstatNazione(): null;
+			
 			String json = null;
 			if (p.getComuneResidenza() != null) {
 				ComuneBean cb = new ComuneBean(p.getComuneResidenza());
@@ -2997,8 +3043,10 @@ public class PaiBean extends FascicoloCompSecondoLivello implements IPai, Serial
 					json = om.writeValueAsString(cb);
 				} catch (JsonProcessingException e) {}
 			}
+			String nazioneResidenza = p.getNazioneResidenza()!=null ? p.getNazioneResidenza().getCodIstatNazione() : null;
+			
 			soggPai = new CsPaiMastSoggDTO(p.getCognome(), p.getNome(), p.getCodfisc(), p.getCittadinanza(),
-					p.getDataNascita(), p.getIndirizzoCivicoResidenza(), json, p.getSesso(), false);
+					p.getDataNascita(), p.getIndirizzoCivicoResidenza(), json, nazioneResidenza,  p.getSesso(), jsonNascita, nazioneNascita , false);
 
 			UserSearchBeanExt ubean = (UserSearchBeanExt) getReferencedBean("userSearchBeanExt");
 			ubean.clearParameters();
@@ -3034,20 +3082,19 @@ public class PaiBean extends FascicoloCompSecondoLivello implements IPai, Serial
 	}
 
 	public void aggiornaSoggettoRiferimento() {
-		this.soggRiferimentoPai.setIntestatario(false);
+		this.soggRiferimentoPai.setRiferimento(false);
 		this.altriSoggetti.add(this.soggRiferimentoPai);
 
-		this.soggettoSelezionato.setIntestatario(true);
+		this.soggettoSelezionato.setRiferimento(true);
 		this.soggRiferimentoPai = this.soggettoSelezionato;
 		this.altriSoggetti.remove(this.soggettoSelezionato);
 		this.soggettoSelezionato = null;
 
-		this.valorizzaResidenzaMan();
-
+		this.valorizzaManBean();	
 	}
 
 	public void onUpdateDatiRif(CsPaiMastSoggDTO soggPai) {
-		if (soggPai.getIntestatario()) {
+		if (soggPai.isRiferimento()) {
 			soggRiferimentoPai.setCittadinanza(soggPai.getCittadinanza());
 			soggRiferimentoPai.setAnnoNascita(soggPai.getAnnoNascita());
 		}
@@ -3055,10 +3102,10 @@ public class PaiBean extends FascicoloCompSecondoLivello implements IPai, Serial
 
 	public void onUpdateDatiPrinc() {
 		for (CsPaiMastSoggDTO s : this.getAltriSoggetti()) {
-			if (s.getIntestatario()) {
+			if (s.isRiferimento()) {
 				s.setCittadinanza(soggRiferimentoPai.getCittadinanza());
 				s.setAnnoNascita(soggRiferimentoPai.getAnnoNascita());
-				s.setSecondaCittadinanza(soggRiferimentoPai.getSecondaCittadinanza());
+				s.setCittadinanza2(soggRiferimentoPai.getCittadinanza2());
 			}
 		}
 	}
@@ -3134,7 +3181,7 @@ public class PaiBean extends FascicoloCompSecondoLivello implements IPai, Serial
 				getPicklistRelazioniEsterneFromCF(soggRiferimentoPai.getCf());
 				getPicklistInterventiEsterniFromCF(soggRiferimentoPai.getCf());
 				getPicklistErogazioniEsterniFromCF(soggRiferimentoPai.getCf());
-
+				
 				progettiIndividualiExtBean.initializeData(soggRiferimentoPai);
 				tipoInterventoManBean = new TipoInterventoManBean(listTipoInterventos, "");
 
@@ -3214,7 +3261,6 @@ public class PaiBean extends FascicoloCompSecondoLivello implements IPai, Serial
 		ErogInterventoRowBean masterA = masterAvvio();
 
 		if (masterA != null) {
-			Object obj = masterA;
 			InterventiBean interventiBean = null;
 			if (fromFascicoloCartellaUtente) {
 				fascicoloBean = (FascicoloBean) this.getBeanReference("fascicoloBean");
@@ -3223,7 +3269,7 @@ public class PaiBean extends FascicoloCompSecondoLivello implements IPai, Serial
 				progettiIndividualiExtBean = (ProgettiIndividualiExtBean) this.getBeanReference("progettiInvidualiExt");
 				interventiBean = progettiIndividualiExtBean.getInterventiBean();
 			}
-			initializeInterventiDialog(interventiBean, consuntivazione, obj);
+			initializeInterventiDialog(interventiBean, consuntivazione, masterA);
 
 		} else {
 			addWarning("Non è possibile erogare il serivizio in quanto non esistono erogazioni aperte", "");
@@ -3233,13 +3279,8 @@ public class PaiBean extends FascicoloCompSecondoLivello implements IPai, Serial
 	}
 
 	public void initializeInterventiDialog(InterventiBean interventiBean, InserimentoConsuntivazioneDTO consuntivazione, Object rowMasterErog) {
-		CsASoggettoLAZY soggetto = this.recuperaSoggetto(soggRiferimentoPai.getCf());
-
-		if (soggetto != null)
-			interventiBean.getErogazioniInterventiBean().SetFromPai(soggetto);
-		else
-			interventiBean.getErogazioniInterventiBean().SetFromPai(soggRiferimentoPai);
-
+		this.aggiornaDatiSoggettoRiferimentoDaManBean();
+		interventiBean.getErogazioniInterventiBean().SetFromPai(soggRiferimentoPai);
 		interventiBean.getErogazioniInterventiBean().inizializzaDialogo(rowMasterErog, consuntivazione);
 	}
 
@@ -3731,6 +3772,16 @@ public class PaiBean extends FascicoloCompSecondoLivello implements IPai, Serial
 	public String getClassePai(){
 		return tipoPai!=null ? tipoPai.getProgetto() : null;
 	}
+
+	public ComuneNazioneNascitaMan getComuneNazioneNascitaMan() {
+		return comuneNazioneNascitaMan;
+	}
+
+	public void setComuneNazioneNascitaMan(ComuneNazioneNascitaMan comuneNazioneNascitaMan) {
+		this.comuneNazioneNascitaMan = comuneNazioneNascitaMan;
+	}
+	
+	
 
 	/* SISO-2181
 	public PaiRedCittadinanzaBean getPaiRedCittadinanzaBean() {

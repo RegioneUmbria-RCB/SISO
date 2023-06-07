@@ -125,6 +125,7 @@ final class XmlExport2015Impl extends PsaXmlExporter {
 		if (erogDaEsportare.getCarattere().equals(DataModelCostanti.CSIPs.CARATTERE_PRESTAZIONE_DI_TIPO_PERIODICO)) {
 			mappaDatiPrest.put(Cost.PRESTAZIONE_DATA_INIZIO, datef.format(erogDaEsportare.getDataInizio()));
 			mappaDatiPrest.put(Cost.PRESTAZIONE_DATA_FINE, datef.format(erogDaEsportare.getDataFine()));
+			mappaDatiPrest.put(Cost.PRESTAZIONE_DATA_EVENTO, datef.format(erogDaEsportare.getDataEvento()));
 			mappaDatiPrest.put(Cost.PRESTAZIONE_PERIOD_EROG, String.valueOf(erogDaEsportare.getPeriodoErogazione()));
 			mappaDatiPrest.put(Cost.PRESTAZIONE_IMPORTO_MENS, df.format(erogDaEsportare.getImportoMensile()));
 			mappaDatiPrest.put(Cost.PRESTAZIONE_QUOTA_ENTE, df.format(erogDaEsportare.getPercGestitaEnte()));

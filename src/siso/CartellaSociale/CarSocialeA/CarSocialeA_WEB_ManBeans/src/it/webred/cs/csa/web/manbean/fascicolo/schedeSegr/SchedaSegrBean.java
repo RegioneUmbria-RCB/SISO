@@ -34,7 +34,7 @@ import it.webred.cs.json.serviziorichiestocustom.IServizioRichiestoCustom;
 import it.webred.cs.json.serviziorichiestocustom.ServizioRichiestoCustomManBaseBean;
 import it.webred.cs.json.stranieri.IStranieri;
 import it.webred.ct.config.model.AmTabComuni;
-import it.webred.ss.data.model.SsDiario;
+//import it.webred.ss.data.model.SsDiario;
 import it.webred.ss.data.model.SsScheda;
 import it.webred.ss.data.model.SsSchedaAccesso;
 import it.webred.ss.data.model.SsSchedaRiferimento;
@@ -43,7 +43,6 @@ import it.webred.ss.ejb.client.SsSchedaSessionBeanRemote;
 import it.webred.ss.ejb.dto.SchedaUdcDTO;
 import it.webred.ss.ejb.dto.report.DatiPrivacyPdfDTO;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -132,8 +131,8 @@ public class SchedaSegrBean extends CsUiCompBaseBean implements ISchedaSegr {
 				if (segnalato != null && segnalato.getAnagrafica()!=null) {
 					
 					formLavoroSegnalato = new FormazioneLavoroMan();
-					formLavoroSegnalato.setIdCondLavorativa(segnalato.getLavoro()!=null ? new BigDecimal(segnalato.getLavoro()) : null);
-					formLavoroSegnalato.setIdProfessione(segnalato.getProfessione()!=null ? new BigDecimal(segnalato.getProfessione()) : null);
+					formLavoroSegnalato.setIdCondLavorativa(segnalato.getCondLavoroId());
+					formLavoroSegnalato.setIdProfessione(segnalato.getProfessioneId());
 					formLavoroSegnalato.setIdTitoloStudio(segnalato.getTitoloStudioId());
 					formLavoroSegnalato.setIdSettoreImpiego(segnalato.getSettImpiegoId());
 					
@@ -141,7 +140,7 @@ public class SchedaSegrBean extends CsUiCompBaseBean implements ISchedaSegr {
 					abitazioneMan = super.getSchedaJsonAbitazione(idSchedaSegr);
 					famConviventiMan = super.getSchedaJsonFamConviventi(idSchedaSegr);
 							
-					List<CsDValutazione> res = getSchedeJsonInterventiCustom(scheda.getScheda());
+					List<CsDValutazione> res = getSchedeJsonInterventiCustom(idSchedaSegr);
 					lstServiziRichiesti = new ArrayList<ISchedaValutazione>();
 					for(CsDValutazione val : res){
 
@@ -207,35 +206,6 @@ public class SchedaSegrBean extends CsUiCompBaseBean implements ISchedaSegr {
 		vistaCasiAltri = schedaSegrService.findVistaCasiAltriBySchedaIdProvenienza(csDto);
 	}
 		
-	private boolean canReadNotaDiario(SsDiario nota, String operatoreAccesso){
-		return canReadNotaDiario(nota, operatoreAccesso, getCurrentOpSettore().getCsOSettore().getCsOOrganizzazione().getId());
-	}
-	
-	
-	private boolean canReadNotaDiario(SsDiario nota, String operatoreAccesso, Long organizzazioneId){
-		String opCorrente = getCurrentOpSettore().getCsOOperatore().getUsername();
-		if(nota.getPubblica()) //la nota è pubblica
-			return true;
-		
-		//responsabile dell'organizzazione in cui è stata inserita la nota
-		if(isResponsabileSsEnte(nota.getEnte().getCodRouting()))
-			return true;
-		
-		//l'utente che ha scritto la nota è l'operatore corrente
-		if(nota.getAutore().equals(opCorrente))
-			return true;
-		
-		//l'operatore che risulta registrato in SS_SCHEDA_ACCESSO è l'utente corrente
-		if(operatoreAccesso.equals(opCorrente)) 
-			return true;
-
-		//l'operatore possiede il permesso di leggere i DIARI in UDC e si è loggato con la stessa organizzazione di creazione della nota
-		if(canReadDiarioSS() && nota.getEnte().getId()== organizzazioneId)
-			return true;
-		
-		return false;
-	}
-	
 	public boolean isRenderSchedaSegr() {
 		return checkPermesso(PermessiSchedeSegr.ITEM, PermessiSchedeSegr.VISUALIZZA_SCHEDE_SEGR) && scheda.getScheda() != null;
 	}
@@ -389,15 +359,7 @@ public class SchedaSegrBean extends CsUiCompBaseBean implements ISchedaSegr {
 	}
 	
 	public String getMSG_INFO_NOTA_PRIVATA() {
-		String msg = "Le note private possono essere visualizzare dall'utente corrente solo se: ";
-		msg +="<ul>";
-		msg+="<li>é il responsabile dell'organizzazione in cui è stata inserita la nota</li>";
-		msg+="<li>ha creato la scheda</li>";
-		msg+="<li>ha inserito la nota</li>";
-		msg+="<li>posside il permesso di leggere i diari ed è attualmente autenticato nella stessa oganizzazione in cui è stata inserita la nota.</li>";
-		msg+="</ul>";
-		return msg;
-		
+		return DataModelCostanti.UDC_MSG_INFO_NOTA_PRIVATA;
 	}
 
 	@Override

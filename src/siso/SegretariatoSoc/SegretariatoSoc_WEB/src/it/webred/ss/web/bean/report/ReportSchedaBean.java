@@ -1,5 +1,23 @@
 package it.webred.ss.web.bean.report;
 
+import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
+import javax.servlet.ServletContext;
+
+import org.apache.commons.lang3.StringUtils;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
+
 import it.webred.cs.data.DataModelCostanti.TipoDiario;
 import it.webred.cs.data.model.CsDValutazione;
 import it.webred.cs.json.abitazione.IAbitazione;
@@ -14,12 +32,8 @@ import it.webred.cs.json.stranieri.StranieriManBaseBean;
 import it.webred.cs.json.stranieri.ver1.StranieriBean;
 import it.webred.cs.json.stranieri.ver1.StranieriManBean;
 import it.webred.jsf.bean.ComuneBean;
-import it.webred.ss.data.model.SsAnagrafica;
-import it.webred.ss.data.model.SsDiario;
-import it.webred.ss.data.model.SsScheda;
-import it.webred.ss.data.model.SsSchedaAccesso;
-import it.webred.ss.ejb.client.SsSchedaSessionBeanRemote;
 import it.webred.ss.ejb.dto.BaseDTO;
+import it.webred.ss.ejb.dto.NotaDTO;
 import it.webred.ss.ejb.dto.report.DatiSchedaPdfDTO;
 import it.webred.ss.web.bean.lista.soggetti.SearchBean;
 import it.webred.ss.web.bean.report.dto.ArrivoInItalia;
@@ -30,29 +44,10 @@ import it.webred.ss.web.bean.report.dto.JRBeanDataSourceReportScheda;
 import it.webred.ss.web.bean.report.dto.LinguaAttestato;
 import it.webred.ss.web.bean.report.dto.LinguaAutovalutazione;
 import it.webred.ss.web.bean.report.dto.PresenzaInItalia;
-import it.webred.ss.web.bean.wizard.Nota;
-
-import java.io.InputStream;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
-import javax.faces.context.FacesContext;
-import javax.servlet.ServletContext;
-
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
-
-import org.apache.commons.lang3.StringUtils;
-import org.primefaces.model.DefaultStreamedContent;
-import org.primefaces.model.StreamedContent;
 
 @ManagedBean
 @ViewScoped
@@ -88,8 +83,10 @@ public class ReportSchedaBean extends ReportBaseBean {
 				BaseDTO dto = new BaseDTO();
 				fillUserData(dto);
 				dto.setObj(idScheda);
+				dto.setOrganizzazione(getPreselectedPContatto().getOrganizzazione().getId()); //ID ORGANIZZAZIONE CORRENTE
+				dto.setObj2(canReadDiario());
 				dati = schedaService.getDatiReportScheda(dto);
-		
+				
 		} catch (Exception e) {
 	 		addError("pdf.error");
 	 		logger.error(e);
@@ -207,41 +204,23 @@ public class ReportSchedaBean extends ReportBaseBean {
 				parameters.put("in_carico", format(search.isInCs(dati.getCf())));
 			
 				// diario
-				SsSchedaSessionBeanRemote schedaService = this.getSsSchedaService();
-				
-				BaseDTO dto = new BaseDTO();
-				fillUserData(dto);
-				dto.setObj(selSchedaId);
-				SsScheda s = schedaService.readScheda(dto);
-				SsSchedaAccesso accesso = s.getAccesso();
-				IFamConviventi famMan = super.getSchedaJsonFamConviventi(s.getId());
-	
-				dto.setObj(dati.getCf());
-				List<SsAnagrafica> anagrafiche = schedaService.readAnagraficheByCf(dto);
-	
 				String diario = "";
-				for (SsAnagrafica ana : anagrafiche) {
-					dto.setObj(ana);
-					dto.setObj2(accesso.getSsRelUffPcontOrg().getSsOOrganizzazione().getId());
-					List<SsDiario> diari = schedaService.readDiarioSoggettoEnte(dto);
-					List<Nota> note = this.loadNoteDiarioAccessibili(diari, accesso.getOperatore(), null);
-					for (Nota nota : note)
-						if (nota.isCanRead()) {
-							String ente = nota.getEnte() != null ? nota.getEnte().getNome() : "";
-	
-							diario += "DATA: " + (nota.getData() != null ? ddMMyyyyhhmmss.format(nota.getData()) : " ") + "\n";
-							diario += "AUTORE: " + nota.getOperatore() + "\n";
-							diario += "ENTE: " + ente + "\n";
-							diario += "PUBBLICA: " + format(nota.getPubblica()) + "\n";
-							diario += "NOTA: " + nota.getNota() + "\n\n";
-						}
+				List<NotaDTO> note = dati!=null ? dati.getNoteDiario() : new ArrayList<NotaDTO>();
+				for (NotaDTO nota : note) {
+					if (nota.isCanRead()) {
+						diario += "DATA: " + nota.getFormattedData() + "\n";
+						diario += "AUTORE: " + nota.getOpDenominazione() + "\n";
+						diario += "ENTE: " + nota.getOrgDenominazione() + "\n";
+						diario += "PUBBLICA: " + format(nota.getPubblica()) + "\n";
+						diario += "NOTA: " + nota.getNota() + "\n\n";
+					}
 				}
 	
 				if (!diario.isEmpty())
 					parameters.put("diario", diario);
 	
 				// siso-437 [sm]
-				IAbitazione iab = super.getSchedaJsonAbitazione(s.getId());
+				IAbitazione iab = super.getSchedaJsonAbitazione(selSchedaId);
 				AbitazioneManBean abitazioneManBean = (AbitazioneManBean) iab;
 				AbitazioneBean abitazioneBean = abitazioneManBean.getJsonCurrent();
 	
@@ -252,12 +231,12 @@ public class ReportSchedaBean extends ReportBaseBean {
 				parameters.put("abitazione_note", abitazioneBean.getNote());
 	
 				
-	
+				IFamConviventi famMan = super.getSchedaJsonFamConviventi(selSchedaId);
 				famMan.fillReport(jrBeanDsReport.getFamiliariEConviventi());
 		
 				// opzionalità della sezione per i cittadini stranieri
 	
-				IStranieri iStranieri = getSchedaJsonStranieri(s.getId());
+				IStranieri iStranieri = getSchedaJsonStranieri(selSchedaId);
 				if (iStranieri != null) {
 					parameters.put("presenzaInItalia", true);
 					StranieriManBaseBean stranBaseManBean = (StranieriManBaseBean) iStranieri;
@@ -335,7 +314,7 @@ public class ReportSchedaBean extends ReportBaseBean {
 				}
 	
 				StringBuilder sbListaTipiIntervento = new StringBuilder();
-				List<CsDValutazione> res = getSchedeJsonInterventiCustom(s);
+				List<CsDValutazione> res = getSchedeJsonInterventiCustom(selSchedaId);
 				for(CsDValutazione val : res){
 					
 					if(TipoDiario.INTERMEDIAZIONE_AB_ID==val.getCsDDiario().getCsTbTipoDiario().getId()){

@@ -782,93 +782,110 @@ public class ValSinbaManBean extends ValSinbaManBaseBean {
 
 	@Override
 	public SinbaDTO fillExportDTO() {
-	
-			SinbaDTO sinbaDTO = new SinbaDTO();
+		DateFormat df1 = new SimpleDateFormat("dd/MM/yyyy");
+		DateFormat df2 = new SimpleDateFormat("MM/yyyy");
+		SinbaDTO sinbaDTO = new SinbaDTO();
+		
+		DatiGeneraliBean generali = getJsonCurrent().getDatiGenerali();
+		DatiFamigliaBean famiglia = getJsonCurrent().getDatiFamiglia();
+		DatiAffidamentoBean affidamento = getJsonCurrent().getDatiAffidamento();
+		DatiSegnalazioniBean segnalazioni = getJsonCurrent().getDatiSegnalazioni();
+		DatiDisabilitaBean disabilita = getJsonCurrent().getDatiDisabilita();
+		try {		
+		
+			sinbaDTO.setCodiceAnonimoBeneficiario(generali.getCodiceAnonimoBeneficiario());
+			sinbaDTO.setAnnoNascita(String.valueOf(generali.getAnnoNascita()));
+			sinbaDTO.setCodNazioneResidenza(String.format("%03d", Integer.parseInt(generali.getNazioneResidenzaBeneficiario())));
+			sinbaDTO.setCodRegioneResidenza(generali.getRegioneResidenzaBeneficiario());
+		
+			sinbaDTO.setMinoreStranieroNonAccompagnato(String.valueOf(famiglia.getMinoreStranieroNonAccompagnato()));
+			sinbaDTO.setCondizioneMinore(String.valueOf(famiglia.getCondizioneMinore()));
+			sinbaDTO.setLuogoVita(String.valueOf(famiglia.getLuogoVita()));
+			sinbaDTO.setScuolaFrequentata(String.valueOf(generali.getScuolaFrequentata()));
+			sinbaDTO.setCondizioneLavoro(String.valueOf(generali.getCondizioneLavoro()));
 			
-			DatiGeneraliBean generali = getJsonCurrent().getDatiGenerali();
-			DatiFamigliaBean famiglia = getJsonCurrent().getDatiFamiglia();
-			DatiAffidamentoBean affidamento = getJsonCurrent().getDatiAffidamento();
-			DatiSegnalazioniBean segnalazioni = getJsonCurrent().getDatiSegnalazioni();
-			DatiDisabilitaBean disabilita = getJsonCurrent().getDatiDisabilita();
-			try {		
-				// TODO:popolare il sinbaDTO
-				//verificare se effettivamente recuperate tutte queste join...);
-				sinbaDTO.setAnnoNascita(String.valueOf(generali.getAnnoNascita()));
-				sinbaDTO.setAutoritaProvvedimentoGiudiziario(String.valueOf(segnalazioni.getAutoritaProvvedimento()));
-				sinbaDTO.setCarattereInserimento(String.valueOf(affidamento.getCarattereInserimento()));
-				sinbaDTO.setCarattereIntervento(String.valueOf(affidamento.getCarattere()));
-				if (famiglia.getLstComponentiFamiglia().size() > 0)
-				{
-					for (ComponenteFamigliaBean c : famiglia.getLstComponentiFamiglia())
+			sinbaDTO.setDisabile(String.valueOf(disabilita.getDisabile()));
+			if(disabilita.isDisabileSelected()) {
+				sinbaDTO.setTipoDisabilita(String.valueOf(disabilita.getTipoDisabilita()));	
+				sinbaDTO.setInvCivCertificazioni(String.valueOf(disabilita.getCertificazioneInvCivile()));
+			}
+			
+			//Composizione famiglia
+			if (famiglia.getLstComponentiFamiglia().size() > 0){
+				for (ComponenteFamigliaBean c : famiglia.getLstComponentiFamiglia()){
+					if (c.getTipoID() == 1) // Madre
 					{
-						if (c.getTipoID() == 1) // Madre
-						{
-							sinbaDTO.setCittadinanzaMadre(c.getCittadinanzaID());
-							sinbaDTO.setOccupazioneMadre(String.valueOf(c.getOccupazioneID()));
-							sinbaDTO.setTitoloStudioMadre(String.valueOf(c.getTitoloStudioID()));
-							sinbaDTO.setRegioneResidenzaMadre(String.valueOf(c.getRegioneID()));
-						}
-						if (c.getTipoID() == 2) // Padre
-						{
-							sinbaDTO.setCittadinanzaPadre(c.getCittadinanzaID());
-							sinbaDTO.setOccupazionePadre(String.valueOf(c.getOccupazioneID()));
-							sinbaDTO.setTitoloStudioPadre(String.valueOf(c.getTitoloStudioID()));
-							sinbaDTO.setRegioneResidenzaPadre(String.valueOf(c.getRegioneID()));
-						}
-						sinbaDTO.getComponentiFamigliaSel().add(String.valueOf(c.getTipoID()));
+						sinbaDTO.setCittadinanzaMadre(c.getCittadinanzaID());
+						sinbaDTO.setOccupazioneMadre(String.valueOf(c.getOccupazioneID()));
+						sinbaDTO.setTitoloStudioMadre(String.valueOf(c.getTitoloStudioID()));
+						sinbaDTO.setRegioneResidenzaMadre(String.valueOf(c.getRegioneID()));
 					}
-				}
-				sinbaDTO.setCodiceAnonimoBeneficiario(generali.getCodiceAnonimoBeneficiario());
-				if (generali.getPrestazioniSel().size() > 0)
-				{
-					for (String c : generali.getPrestazioniSel())
+					if (c.getTipoID() == 2) // Padre
 					{
-						sinbaDTO.getPrestazioniSel().add(c);
+						sinbaDTO.setCittadinanzaPadre(c.getCittadinanzaID());
+						sinbaDTO.setOccupazionePadre(String.valueOf(c.getOccupazioneID()));
+						sinbaDTO.setTitoloStudioPadre(String.valueOf(c.getTitoloStudioID()));
+						sinbaDTO.setRegioneResidenzaPadre(String.valueOf(c.getRegioneID()));
 					}
+					sinbaDTO.getComponentiFamigliaSel().add(String.valueOf(c.getTipoID()));
 				}
-				sinbaDTO.setCodNazioneResidenza(String.format("%03d", Integer.parseInt(generali.getNazioneResidenzaBeneficiario())));
-				sinbaDTO.setCodNazioneResidenzaFam(String.format("%03d", Integer.parseInt(famiglia.getNazioneResidenza())));
-				sinbaDTO.setCodRegioneResidenzaFam(String.valueOf(famiglia.getRegioneFam()));
-				sinbaDTO.setCollaborazioneInterventi(String.valueOf(affidamento.getCollaborazioneInterventi()));
-				sinbaDTO.setCondizioneLavoro(String.valueOf(generali.getCondizioneLavoro()));
-				sinbaDTO.setCondizioneMinore(String.valueOf(famiglia.getCondizioneMinore()));
-				DateFormat df1 = new SimpleDateFormat("dd/MM/yyyy");
-				DateFormat df2 = new SimpleDateFormat("MM/yyyy");
-				if (segnalazioni.getDataProvvedimento() != null)
-					sinbaDTO.setDataProvvedimentoGiudiziario(df2.format(segnalazioni.getDataProvvedimento()));
-				if (segnalazioni.getDataSegnalazione() != null)
-					sinbaDTO.setDataSegnalazione(df2.format(segnalazioni.getDataSegnalazione()));
-				if (generali.getDataRiferimentoValutazione() != null)
-					sinbaDTO.setDataValutazione(df1.format(generali.getDataRiferimentoValutazione()));
-				sinbaDTO.setDisabile(String.valueOf(disabilita.getDisabile()));
-				sinbaDTO.setDurataIntervento(String.valueOf(affidamento.getDurata()));
-				sinbaDTO.setEsitoInserimentoStruttura(String.valueOf(affidamento.getEsitoInserimentoStruttura()));
-				sinbaDTO.setEsitoIntervento(String.valueOf(affidamento.getEsito()));
-				sinbaDTO.setFasciaEtaBeneficiario(String.valueOf(generali.getFasciaEtaBeneficiario()));
-				sinbaDTO.setFasciaISEEBenefeciario(String.valueOf(generali.getFasciaISEEBeneficiario()));
-				sinbaDTO.setFonteSegnalazione(String.valueOf(segnalazioni.getFonte()));
-				sinbaDTO.setFormaInserimento(String.valueOf(affidamento.getFormaInserimento()));
-				sinbaDTO.setFormaIntervento(String.valueOf(affidamento.getFormaIntervento()));
-				sinbaDTO.setLuogoVita(String.valueOf(famiglia.getLuogoVita()));
-				sinbaDTO.setMinoreStranieroNonAccompagnato(String.valueOf(famiglia.getMinoreStranieroNonAccompagnato()));
-				sinbaDTO.setMotivazioneChiusuraCarico(String.valueOf(affidamento.getMotivazioneChiusuraCarico()));
-				sinbaDTO.setNazioneResidenzaBeneficiario(String.valueOf(generali.getNazioneResidenzaBeneficiario()));
-				sinbaDTO.setNumeroCompIsee(String.valueOf(generali.getNumeroComponentiISEE()));
-				sinbaDTO.setPotestaTutela(String.valueOf(segnalazioni.getPotestaTutela()));
-				sinbaDTO.setProvvedimentoGiudiziario(String.valueOf(segnalazioni.getProvvedimentoGiudiziario()));
-				sinbaDTO.setScuolaFrequentata(String.valueOf(generali.getScuolaFrequentata()));
-				sinbaDTO.setSegnalazioneAutoritaGiudiziaria(String.valueOf(segnalazioni.getAutoritaGiudiziaria()));
-				sinbaDTO.setSituazioneChiusuraCarico(String.valueOf(affidamento.getSituazioneChiusuraCarico()));
-				sinbaDTO.setTipoDisabilita(String.valueOf(disabilita.getTipoDisabilita()!=0 ? disabilita.getTipoDisabilita() : null));	
-				sinbaDTO.setTipoIntervento(String.valueOf(affidamento.getTipoIntervento()));
-				sinbaDTO.setTipoProvvedimento(String.valueOf(segnalazioni.getTipoProvvedimento()));
-				sinbaDTO.setValutazioneFamigliaMinore(String.valueOf(segnalazioni.getValutazioneFamiglia()));
-				sinbaDTO.setValutazioneMinore(String.valueOf(segnalazioni.getValutazioneMinore()));
-				
-			} catch (Exception e) {
-				logger.error(e.getMessage(), e);;
-			} 
-			return sinbaDTO;
+			}
+			
+			if (segnalazioni.getDataPrimaSegnalazione() != null)
+				sinbaDTO.setDataPrimaSegnalazione(df2.format(segnalazioni.getDataPrimaSegnalazione()));
+			sinbaDTO.setFonteSegnalazione(String.valueOf(segnalazioni.getFonte()));
+			sinbaDTO.setValutazioneMinore(String.valueOf(segnalazioni.getValutazioneMinore()));
+			sinbaDTO.setValutazioneFamigliaMinore(String.valueOf(segnalazioni.getValutazioneFamiglia()));
+			sinbaDTO.setSegnalazioneAutoritaGiudiziaria(String.valueOf(segnalazioni.getAutoritaGiudiziaria()));
+			if (segnalazioni.getDataSegnalazione() != null)
+				sinbaDTO.setDataSegnalazione(df2.format(segnalazioni.getDataSegnalazione()));
+			
+			sinbaDTO.setProvvedimentoGiudiziario(String.valueOf(segnalazioni.getProvvedimentoGiudiziario()));
+			if (segnalazioni.getDataProvvedimento() != null)
+				sinbaDTO.setDataProvvedimentoGiudiziario(df2.format(segnalazioni.getDataProvvedimento()));
+			
+			sinbaDTO.setAutoritaProvvedimentoGiudiziario(String.valueOf(segnalazioni.getAutoritaProvvedimento()));
+			sinbaDTO.setPotestaTutela(String.valueOf(segnalazioni.getPotestaTutela()));
+			sinbaDTO.setTipoProvvedimento(String.valueOf(segnalazioni.getTipoProvvedimento()));
+			
+			sinbaDTO.setFormaInterventoAffido(String.valueOf(affidamento.getFormaIntervento()));
+			sinbaDTO.setTipoInterventoAffido(String.valueOf(affidamento.getTipoIntervento()));
+			sinbaDTO.setDurataAffido(String.valueOf(affidamento.getDurata()));
+			sinbaDTO.setCarattereAffido(String.valueOf(affidamento.getCarattere()));
+			sinbaDTO.setEsitoAffido(String.valueOf(affidamento.getEsito()));
+			
+			sinbaDTO.setCarattereInserimentoResidenziale(String.valueOf(affidamento.getCarattereInserimento()));
+			sinbaDTO.setFormaInserimentoResidenziale(String.valueOf(affidamento.getFormaInserimento()));
+			sinbaDTO.setTipoInserimentoResidenziale(String.valueOf(affidamento.getTipoInserimento()));
+			sinbaDTO.setEsitoInserimentoStruttura(String.valueOf(affidamento.getEsitoInserimentoStruttura()));
+			sinbaDTO.setMotivazioneChiusuraCarico(String.valueOf(affidamento.getMotivazioneChiusuraCarico()));
+			sinbaDTO.setSituazioneChiusuraCarico(String.valueOf(affidamento.getSituazioneChiusuraCarico()));
+			sinbaDTO.setCollaborazioneInterventi(String.valueOf(affidamento.getCollaborazioneInterventi()));
+			
+			//Codici prestazione
+			if (generali.getPrestazioniSel().size() > 0){
+				for (String c : generali.getPrestazioniSel())
+					sinbaDTO.getPrestazioniSel().add(c);
+			}
+			
+			sinbaDTO.setNumeroCompIsee(String.valueOf(generali.getNumeroComponentiISEE()));
+			sinbaDTO.setFasciaEtaBeneficiario(String.valueOf(generali.getFasciaEtaBeneficiario()));
+			sinbaDTO.setFasciaIseeBeneficiario(String.valueOf(generali.getFasciaISEEBeneficiario()));
+			
+			
+		//	sinbaDTO.setCodNazioneResidenzaFam(String.format("%03d", Integer.parseInt(famiglia.getNazioneResidenza())));
+		//	sinbaDTO.setCodRegioneResidenzaFam(String.valueOf(famiglia.getRegioneFam()));
+			
+			/*
+			 * if (generali.getDataRiferimentoValutazione() != null)
+			 * sinbaDTO.setDataValutazione(df1.format(generali.getDataRiferimentoValutazione
+			 * ()));
+			 */
+			
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);;
+		} 
+		return sinbaDTO;
 
 	}
 	
@@ -914,4 +931,15 @@ public class ValSinbaManBean extends ValSinbaManBaseBean {
     	return daAggiornare;
 	}
 	
+	@Override
+	public void onChangeDisabile() {
+		this.getJsonCurrent().getDatiDisabilita().onChangeDisabile();
+	}
+	
+	@Override
+	public void aggiungiComponenteFamiglia() {
+		List<String> msg = this.getJsonCurrent().getDatiFamiglia().aggiungiComponente();
+		if(!msg.isEmpty())
+			this.addWarning("Attenzione: inserimento componenti familiari", msg);
+	}
 }

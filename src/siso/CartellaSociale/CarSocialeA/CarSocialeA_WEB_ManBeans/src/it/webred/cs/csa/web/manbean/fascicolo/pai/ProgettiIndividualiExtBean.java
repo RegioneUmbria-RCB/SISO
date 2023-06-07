@@ -31,7 +31,6 @@ public class ProgettiIndividualiExtBean extends CsUiCompBaseBean {
 	protected RelazioniBean relazioniBean;
 	protected PaiBean paiBean;
 	// beneficiari
-	private ComuneNazioneNascitaMan comuneNazioneNascitaMan = null;
 	private DatiProgettoBean datiProgettoBean;
 
 	protected AccessTableCatSocialeSessionBeanRemote catSocService = (AccessTableCatSocialeSessionBeanRemote) getCarSocialeEjb(
@@ -113,18 +112,7 @@ public class ProgettiIndividualiExtBean extends CsUiCompBaseBean {
 		}
 		getPaiBean().aggiornaSoggettoRiferimento();
 
-		// Resetto il valore, perchè dal soggettoErogazioneBean al momento non riesco a
-		// recuperare il luogo di nascita
-		this.comuneNazioneNascitaMan = new ComuneNazioneNascitaMan();
-		
-		CsASoggettoLAZY soggetto = getPaiBean().getSoggRiferimentoPai().getCsASoggetto();
-		if (soggetto != null && this.datiProgettoBean.isRenderFSE()) {
-			CsAAnagrafica ana = soggetto.getCsAAnagrafica();
-			comuneNazioneNascitaMan = getComuneNazioneNascitaMan(ana.getComuneNascitaCod(), ana.getComuneNascitaDes(), ana.getProvNascitaCod(), 
-					 											 ana.getStatoNascitaCod(), ana.getStatoNascitaDes());
-		}
-		
 		String cfRiferimento = getPaiBean().getSoggRiferimentoPai()!=null ? getPaiBean().getSoggRiferimentoPai().getCf() : null;
-		datiProgettoBean.onChangeBeneficiarioRiferimento(cfRiferimento, comuneNazioneNascitaMan);
+		datiProgettoBean.onChangeBeneficiarioRiferimento(cfRiferimento);
 	}
 }

@@ -116,10 +116,13 @@ public class ExportCasellarioDAO extends CarSocialeBaseDAO implements Serializab
 			e.setBenefNazione((String)o[7]);				
 			e.setNumProtDSU((String)o[8]);	
 			if(o[9]!=null)
-			e.setAnnoProtDSU(((BigDecimal)o[9]).intValue());
+				e.setAnnoProtDSU(((BigDecimal)o[9]).intValue());
 			e.setDataDSU(convertTimestampToDate(o[10]));
 			e.setCodPrestazione((String)o[11]);
 			e.setDenomPrestazione((String)o[12]);
+			if (o[59] != null) {
+				e.setPicPrestazione(((BigDecimal) o[59]).intValue() == 1 ? true : false);
+			}
 			e.setPrestazioneProtocEnte((String)o[13]);
 //				e.setSogliaISEE((BigDecimal)o[15]);				
 			
@@ -246,6 +249,7 @@ public class ExportCasellarioDAO extends CarSocialeBaseDAO implements Serializab
 			
 			e.setTipoBeneficiario((String)o[56]);
 			e.setFrequenza((String)o[57]);
+			e.setDataEvento(convertTimestampToDate(o[58]));
 			
 			listEsportazioni.add(e);
 		}

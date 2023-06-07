@@ -1,9 +1,25 @@
 package it.webred.ss.ejb;
 
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+
+import javax.ejb.EJB;
+import javax.ejb.Stateless;
+import javax.interceptor.Interceptors;
+
+import org.apache.commons.lang3.StringUtils;
+import org.jboss.logging.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import it.webred.amprofiler.ejb.perm.LoginBeanService;
+import it.webred.amprofiler.model.AmGroup;
 import it.webred.ct.support.validation.ValidationStateless;
-import it.webred.ct.support.validation.annotation.AuditConsentiAccessoAnonimo;
-import it.webred.ct.support.validation.annotation.AuditSaltaValidazioneSessionID;
 import it.webred.ss.dao.ConfigurazioneDAO;
 import it.webred.ss.dao.SsSchedaDAO;
 import it.webred.ss.data.model.ArBufferSsInvio;
@@ -21,8 +37,6 @@ import it.webred.ss.data.model.SsMotivazione;
 import it.webred.ss.data.model.SsMotivazioniSchede;
 import it.webred.ss.data.model.SsOOrganizzazione;
 import it.webred.ss.data.model.SsPuntoContatto;
-import it.webred.ss.data.model.SsRelUffPcontOrg;
-import it.webred.ss.data.model.SsRelUffPcontOrgPK;
 import it.webred.ss.data.model.SsScheda;
 import it.webred.ss.data.model.SsSchedaAccesso;
 import it.webred.ss.data.model.SsSchedaAccessoInviante;
@@ -42,6 +56,7 @@ import it.webred.ss.ejb.client.SsSchedaSessionBeanRemote;
 import it.webred.ss.ejb.dto.BaseDTO;
 import it.webred.ss.ejb.dto.DatiPrivacyDTO;
 import it.webred.ss.ejb.dto.DatiSchedaListDTO;
+import it.webred.ss.ejb.dto.NotaDTO;
 import it.webred.ss.ejb.dto.SchedaUdcBaseDTO;
 import it.webred.ss.ejb.dto.SchedaUdcDTO;
 import it.webred.ss.ejb.dto.SintesiSchedeUfficioDTO;
@@ -49,22 +64,6 @@ import it.webred.ss.ejb.dto.SsSearchCriteria;
 import it.webred.ss.ejb.dto.report.DatiPrivacyPdfDTO;
 import it.webred.ss.ejb.dto.report.DatiSchedaPdfDTO;
 import it.webred.ss.ejb.dto.report.RiferimentoPdfDTO;
-
-import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-
-import javax.ejb.EJB;
-import javax.ejb.Stateless;
-import javax.interceptor.Interceptors;
-
-import org.apache.commons.lang3.StringUtils;
-import org.jboss.logging.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Session Bean implementation class SsSchedaSessionBean
@@ -258,11 +257,23 @@ public class SsSchedaSessionBean implements SsSchedaSessionBeanRemote {
 		}
 		return out;
 	}
+	
+	private List<NotaDTO> readDiarioSociale(SsAnagrafica anagrafica, Long organizzazioneID){
+		List<NotaDTO> out = new ArrayList<NotaDTO>();
+		List<SsDiario> listaDiari = dao.readDiarioSociale(anagrafica, organizzazioneID);
+		for(SsDiario d : listaDiari) {
+			String operatore = dao.findDenominazioneOperatore(d.getAutore());
+			NotaDTO dto = new NotaDTO(d, operatore);
+			out.add(dto);
+		}
+		return out;
+	}
 
 	@Override
 	public SchedaUdcDTO loadSchedaUdcCompleta(BaseDTO dto){
 		SchedaUdcDTO out = new SchedaUdcDTO();
 		Long id = (Long)dto.getObj();
+		
 		Long organizzazioneId = dto.getOrganizzazione();
     	Boolean canReadDiario = (Boolean)dto.getObj2();
     	
@@ -275,24 +286,25 @@ public class SsSchedaSessionBean implements SsSchedaSessionBeanRemote {
 			if (ssScheda.getMotivazione() != null) {
 				List<SsMotivazioniSchede> listaMotivazioni = dao.readMotivazioniScheda(ssScheda.getMotivazione());
 				List<String> motivazioni = new ArrayList<String>();
-				for(SsMotivazioniSchede m : listaMotivazioni)
-					motivazioni.add(m.getMotivazione().getMotivo());
+				for(SsMotivazioniSchede motivoScheda : listaMotivazioni) {
+					SsMotivazione m = motivoScheda.getMotivazione();
+					String s = m.getClassificazione().getDescrizione()+" - "+m.getMotivo();
+					motivazioni.add(s);
+				}
 				out.setListaMotivazioni(motivazioni);
 			}
 
 			if (ssSchedaSegnalato != null && ssSchedaSegnalato.getAnagrafica() != null) {
 				SsAnagrafica anagrafica = ssSchedaSegnalato.getAnagrafica();
-				Long organizzazioneID = ssScheda.getAccesso().getSsRelUffPcontOrg().getSsOOrganizzazione().getId();
-				List<SsDiario> listaDiari = dao.readDiarioSociale(anagrafica, organizzazioneID);
-				List<String> diari = new ArrayList<String>();
-				for(SsDiario d : listaDiari)
-					diari.add(d.getNota());
-				out.setListaDiari(diari);
-				
+				Long orgAccessoId = ssScheda.getAccesso().getSsRelUffPcontOrg().getSsOOrganizzazione().getId();
+				/*
+				 * List<NotaDTO> listaDiari = readDiarioSociale(anagrafica, organizzazioneID);
+				 * out.setNoteDiario(listaDiari);
+				 */
 				List<SsInterventoEconomico> listaInterventiEcon = dao.readInterventiEconomici(anagrafica);
 				out.setListaInterventiEconomici(listaInterventiEcon);
 				
-				CsSsPrivacy privacy = dao.findSchedaPrivacy(anagrafica.getCf(), organizzazioneID);
+				CsSsPrivacy privacy = dao.findSchedaPrivacy(anagrafica.getCf(), orgAccessoId);
 				out.setPrivacySottoscritta(privacy!=null);
 			
 		        DatiPrivacyPdfDTO datiPrivacy = loadDatiReportPrivacyPDF(ssScheda, ssSchedaSegnalato);
@@ -316,47 +328,183 @@ public class SsSchedaSessionBean implements SsSchedaSessionBeanRemote {
 			}
 			
 			//FINE SISO 961
+			
 			// dati diario sociale
-        	List<SsAnagrafica> anagrafiche = dao.readAnagraficheByCf(ssSchedaSegnalato.getAnagrafica().getCf());
-        	
-        	
-        	List<SsDiario>  noteDiario = new ArrayList<SsDiario>();
-        	for(SsAnagrafica ana: anagrafiche){
-        		Long orgId = ssScheda.getAccesso().getSsRelUffPcontOrg().getSsOOrganizzazione().getId();
-        		List<SsDiario> lstDiari = dao.readDiarioSociale(ana, orgId);
-        		for(SsDiario diario : lstDiari){
-        			if(!canReadNotaDiario(diario, ssScheda.getAccesso().getOperatore(), organizzazioneId, dto.getUserId(), canReadDiario))
-        				diario.setNota(" ** L'operatore corrente non è autorizzato a leggere il contenuto della nota **");
-        			noteDiario.add(diario); 
-        		}
-        	}
+			
+        	Long orgSchAccessoCorrente = ssScheda.getAccesso().getSsRelUffPcontOrg().getSsOOrganizzazione().getId();
+        	String operSchAccessoCorrente = ssScheda.getAccesso().getOperatore();
+        	List<NotaDTO>  noteDiario = findListNoteDiario(ssSchedaSegnalato.getAnagrafica(), orgSchAccessoCorrente, operSchAccessoCorrente, organizzazioneId, dto.getUserId(), canReadDiario, dto.getEnteId());
         	out.setNoteDiario(noteDiario);
 
 		}
 		return out;
 	}
 	
-	private boolean canReadNotaDiario(SsDiario nota, String operatoreAccesso, Long organizzazioneId, String uNameOperatoreCorrente, Boolean canReadDiario){
+	private List<NotaDTO> findListNoteDiario(SsAnagrafica anagrafica, Long orgSchAccessoCorrente, String operSchAccessoCorrente, Long orgCorrenteId, String uNameCorrente, boolean canReadDiario, String codEnteCorrente){
+		// dati diario sociale
+    	List<SsAnagrafica> anagrafiche = dao.readAnagraficheByCf(anagrafica.getCf());
+    	
+    	List<NotaDTO>  noteDiario = new ArrayList<NotaDTO>();
+    	for(SsAnagrafica ana: anagrafiche){
+    		List<SsDiario> listaDiari = dao.readDiarioSociale(ana, orgSchAccessoCorrente);
+    		List<NotaDTO> note = loadNoteDiarioAccessibili(listaDiari, operSchAccessoCorrente, anagrafica.getId(), orgCorrenteId, uNameCorrente, canReadDiario, codEnteCorrente);
+    		noteDiario.addAll(note);
+    	}
+    	return noteDiario;
+	}
+	
+	@Override
+	public List<NotaDTO> loadNoteDiarioAccessibili(BaseDTO dto){
+		List<NotaDTO> lista = new ArrayList<NotaDTO>();
+		
+		Long orgCorrenteId = dto.getOrganizzazione();
+		String username = dto.getUserId();
+		String orgCorrenteBelfiore = dto.getEnteId();
+		
+		Long schedaId = (Long)dto.getObj();
+		SsScheda scheda = dao.readScheda(schedaId);
+		SsSchedaAccesso accesso = scheda.getAccesso();
+		
+		SsSchedaSegnalato segnalato = dao.readSegnalatoById(scheda.getSegnalato());
+		
+		Boolean canReadDiario = (Boolean)dto.getObj2();
+		List<SsAnagrafica> anagrafiche = (List<SsAnagrafica>)dto.getObj3();
+		
+		String operSchAccesso = accesso.getOperatore();
+		Long orgSchAccesso = accesso.getSsRelUffPcontOrg().getSsOOrganizzazione().getId();
+		Long anagraficaSchedaId = segnalato.getAnagrafica().getId();
+	
+		for (SsAnagrafica ana : anagrafiche) {
+			List<SsDiario> diari = dao.readDiarioSociale(ana, orgSchAccesso);
+			List<NotaDTO> note = this.loadNoteDiarioAccessibili(diari, operSchAccesso, anagraficaSchedaId, orgCorrenteId, username, canReadDiario, orgCorrenteBelfiore);
+			lista.addAll(note);
+		}
+		
+		return lista; 	
+	}
+	
+	private List<NotaDTO> loadNoteDiarioAccessibili(List<SsDiario> diari, String operSchAccesso, Long anagraficaSchedaId, Long orgCorrenteId, String userId, boolean canReadDiario, String orgCorrenteBelfiore){
+		List<NotaDTO> note = new ArrayList<NotaDTO>();
+		for (SsDiario diario : diari){
+			List<BigDecimal> lstUffici = dao.findUfficioNota(diario.getSoggetto().getId());
+			boolean accessoUffNota = true;
+			int i = 0;
+			if(lstUffici.size()>1) logger.warn("Alla nota corrente [ID:"+diario.getId()+"] corrispondono più anagrafiche/uffici");
+			while(accessoUffNota && i<lstUffici.size()){
+				BigDecimal ufficioID = lstUffici.get(i);
+				boolean accessoUfficio = canAccessUfficio(ufficioID.longValue(), userId,  orgCorrenteBelfiore);
+				if(!accessoUfficio) logger.warn("L'utente corrente non può accedere alla nota [ID:"+diario.getId()+"] poichè associata all'ufficio [ID:"+ufficioID+"]");
+				accessoUffNota = accessoUffNota && accessoUfficio;
+				i++;
+			}
+			
+			if(accessoUffNota){
+				String operatoreNotaDesc = dao.findDenominazioneOperatore(diario.getAutore());
+				NotaDTO nota = new NotaDTO(diario, operatoreNotaDesc);
+				nota.setCanRead(canReadNotaDiario(nota, operSchAccesso, orgCorrenteId, userId, canReadDiario));
+    		
+				boolean canDelete = anagraficaSchedaId==null  ? false : canDeleteNotaDiario(nota, operSchAccesso, anagraficaSchedaId, orgCorrenteId, userId);
+				nota.setCanDelete(canDelete);
+				note.add(nota);
+			}
+		}
+		return note;
+	}
+	
+	private boolean canAccessUfficio(Long ufficioID, String uNameOpCorrente, String enteCorrente){
+		boolean ufficioAbilitato = true;
+		List<AmGroup> gruppiUtente = loginService.getGruppi(uNameOpCorrente, enteCorrente);
+		logger.debug("AM_GROUP per "+uNameOpCorrente+ ": "+gruppiUtente.size());
+		if (gruppiUtente != null){
+			try {
+	    		
+	        	SsUfficio ufficio = confdao.readUfficio(ufficioID);
+	        	if(ufficio!=null){
+	        	String escludiGruppi = ufficio.getEscludiAmGroup();
+		        	if(escludiGruppi!=null && !escludiGruppi.trim().isEmpty()){
+		        		String[] grs = escludiGruppi.split("\\|");
+		        		List<String> gruppiEsclusi = Arrays.asList(grs);
+	
+		        		//Verifico che i gruppi cui appartiene l'utente non siano compresi in quelli esclusi dall'accesso
+		        		for(AmGroup gr : gruppiUtente){
+		        			String gruppoUtente = gr.getName();
+		        			for(String gruppoEscluso : gruppiEsclusi){
+		        				if(gruppoEscluso.equals(gruppoUtente)) {
+		        					ufficioAbilitato=false;
+		        					break;
+		        				}
+		        			}
+		        		}
+		        		
+		        	}
+	        	}
+	        		
+	    	} catch(Exception e) {
+	    		logger.error(e.getMessage(), e);	
+	    		ufficioAbilitato = false;
+			}
+			
+		}
+		return ufficioAbilitato;	
+	}
+	
+
+
+	public boolean isResponsabileEnte(String belfioreNota, String uNameOperatoreCorrente){
+		boolean responsabileSsEnte = loginService.appartieneAGruppoLike(uNameOperatoreCorrente, belfioreNota, "SSOCIALE_RESPONSABILI");
+		return responsabileSsEnte;
+	}
+	
+	
+	private boolean canReadNotaDiario(NotaDTO nota, String operSchAccesso, Long orgCorrenteId, String uNameOperatoreCorrente, Boolean canReadDiario){
 		
 		if(nota.getPubblica()) //la nota è pubblica
 			return true;
 		
-		boolean responsabileSsEnte = loginService.appartieneAGruppoLike(uNameOperatoreCorrente, nota.getEnte().getCodRouting(), "SSOCIALE_RESPONSABILI");
 		//responsabile dell'organizzazione in cui è stata inserita la nota
-		if(responsabileSsEnte)
+		if(this.isResponsabileEnte(nota.getOrgBelfiore(), uNameOperatoreCorrente))
 			return true;
 		
 		//l'utente che ha scritto la nota è l'operatore corrente
-		if(nota.getAutore().equals(uNameOperatoreCorrente))
+		if(nota.getOpUsername().equals(uNameOperatoreCorrente))
 			return true;
 		
-		//l'operatore che risulta registrato in SS_SCHEDA_ACCESSO è l'utente corrente
-		if(operatoreAccesso.equals(uNameOperatoreCorrente)) 
+		
+		Long anagraficaNota = nota.getAnagraficaId();
+		SsSchedaAccesso accesso = dao.findAccessoByAnagraficaId(anagraficaNota);
+		
+		
+		//l'operatore che risulta registrato in SS_SCHEDA_ACCESSO (di appartenenza della nota) è l'utente corrente 
+		//(devo prendere scheda accesso associata al diario altrimenti se un altro soggetto crea )
+		if(accesso!=null && uNameOperatoreCorrente.equals(accesso.getOperatore())) 
 			return true;
 
 		//l'operatore possiede il permesso di leggere i DIARI in UDC e si è loggato con la stessa organizzazione di creazione della nota
-		if(canReadDiario && nota.getEnte().getId()== organizzazioneId)
+		if(canReadDiario && orgCorrenteId.equals(nota.getOrgId()))		
 			return true;
+		
+		return false;
+	}
+	
+	private boolean canDeleteNotaDiario(NotaDTO nota, String operSchAccesso, Long anagraficaSchedaId, Long orgCorrenteId, String uNameOperatoreCorrente) {
+		boolean notaCreataInSchedaCorrente = nota.getAnagraficaId().longValue() == anagraficaSchedaId.longValue();
+		
+		//responsabile dell'organizzazione in cui è stata inserita la nota
+		if(this.isResponsabileEnte(nota.getOrgBelfiore(), uNameOperatoreCorrente))
+			return true;
+		
+		//La nota è relativa alla SCHEDA specifica corrente, non altre (le note possono essere recuperate per CF)
+		if(notaCreataInSchedaCorrente) {
+			
+			//L'utente corrente ha scritto la nota
+			if(nota.getOpUsername().equals(uNameOperatoreCorrente)) 
+				return true;
+			
+			//l'operatore che risulta registrato in SS_SCHEDA_ACCESSO è l'utente corrente
+			if(operSchAccesso!=null && operSchAccesso.equals(uNameOperatoreCorrente)) 
+				return true;
+			
+		}
 		
 		return false;
 	}
@@ -670,13 +818,28 @@ public class SsSchedaSessionBean implements SsSchedaSessionBeanRemote {
 
 	@Override
 	public Long writeNotaDiario(BaseDTO dto) {
-		SsDiario nota = (SsDiario)dto.getObj();
-		return dao.writeNotaDiario(nota).getId();
+		NotaDTO nota = (NotaDTO)dto.getObj();
+		SsAnagrafica anagrafica = (SsAnagrafica)dto.getObj2();
+
+		SsDiario model = new SsDiario();
+		
+		model.setId(nota.getId());
+		model.setAutore(nota.getOpUsername());
+		Date data = nota.getData()==null ? new Date() : nota.getData();
+		model.setData(data);
+		
+		SsOOrganizzazione o = confdao.findOrganizzazione(nota.getOrgId());
+		model.setEnte(o);
+		model.setPubblica(nota.getPubblica());
+		model.setNota(nota.getNota());
+		model.setSoggetto(anagrafica);
+				
+		return dao.writeNotaDiario(model).getId();
 	}
 
 	@Override
 	public void updateNotaDiario(BaseDTO dto) {
-		SsDiario nota = (SsDiario)dto.getObj();
+		NotaDTO nota = (NotaDTO)dto.getObj();
 		dao.updateNotaDiario(nota.getId(), nota.getNota());
 	}
 	
@@ -882,11 +1045,6 @@ public class SsSchedaSessionBean implements SsSchedaSessionBeanRemote {
 	}
 	
 	@Override
-	public List<BigDecimal> findUfficioNota(BaseDTO dto){
-		return dao.findUfficioNota((Long)dto.getObj());
-	}
-
-	@Override
 	public DatiPrivacyPdfDTO getDatiReportPrivacy(BaseDTO dto){
 		Long idScheda = (Long)dto.getObj();
 		DatiPrivacyPdfDTO dati = null; 	
@@ -1036,6 +1194,9 @@ public class SsSchedaSessionBean implements SsSchedaSessionBeanRemote {
 	@Override
 	public DatiSchedaPdfDTO getDatiReportScheda(BaseDTO dto) {
 		Long idScheda = (Long)dto.getObj();
+		Long orgCorrenteId = (Long)dto.getOrganizzazione();
+		boolean caRead = (Boolean)dto.getObj2();
+		
 		DatiSchedaPdfDTO dati = null; 	
 			
 		SsScheda s = dao.readScheda(idScheda);
@@ -1157,7 +1318,12 @@ public class SsSchedaSessionBean implements SsSchedaSessionBeanRemote {
 			dati.setInterventi(temp);
 			dati.setInterventoAltro(format(s.getInterventi().getAltro()));
 
-
+			//note diario
+			Long orgSchAccessoCorrente = accesso.getSsRelUffPcontOrg().getSsOOrganizzazione().getId();
+        	String operSchAccessoCorrente = accesso.getOperatore();
+			List<NotaDTO> noteDiario = this.findListNoteDiario(segnalato.getAnagrafica(), orgSchAccessoCorrente, operSchAccessoCorrente, orgCorrenteId, dto.getUserId(), caRead, dto.getEnteId());
+			dati.setNoteDiario(noteDiario);
+			
 			// tipo
 			SsTipoScheda tipo = confdao.readTipoSchedaById(s.getTipo());
 			dati.setTipoScheda(format(tipo!=null ? tipo.getTipo() : null));

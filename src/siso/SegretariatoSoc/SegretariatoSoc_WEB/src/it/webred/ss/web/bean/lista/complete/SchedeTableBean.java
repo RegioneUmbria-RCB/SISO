@@ -159,7 +159,7 @@ public class SchedeTableBean extends SegretariatoSocSchedeTblBaseBean {
 		    		} catch (IOException e) {
 		    			logger.error(e);
 		    		}
-	    		 }else printPolicyError();
+	    		 }else printPolicyError("L'operatore corrente non è autorizzato a modificare la scheda selezionata");
     		}else printPolicyUfficiError();
     	}
     }

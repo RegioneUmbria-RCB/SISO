@@ -15,25 +15,26 @@ public class SinbaDTO implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
 	
-	private String dataValutazione;
+//	private String dataValutazione;
 	private String codiceAnonimoBeneficiario;
 	private String annoNascita;
-	private String nazioneResidenzaBeneficiario;
-	private String scuolaFrequentata;
-	private String condizioneLavoro;
-	
-	private String fasciaEtaBeneficiario;
-	private String fasciaISEEBenefeciario;
-	private String codicePrestazione;
-	
+	private String codRegioneResidenza;
 	private String codNazioneResidenza;
-	private String numeroCompIsee;
-	private String fasciaIseeBeneficiario;
+	
+	//private String codNazioneResidenza;
+	
+	private String minoreStranieroNonAccompagnato;
 	private String condizioneMinore;
 	private String luogoVita;
-	private String codNazioneResidenzaFam;
-	private String codRegioneResidenzaFam;
-	private String minoreStranieroNonAccompagnato;
+	private String scuolaFrequentata;
+	private String condizioneLavoro;
+
+	private String disabile;
+	private String tipoDisabilita;
+	private String invCivCertificazioni;
+	
+	//private String codNazioneResidenzaFam;
+	//private String codRegioneResidenzaFam;
 	private String cittadinanzaMadre;
 	private String cittadinanzaPadre;
 	private String regioneResidenzaMadre;
@@ -42,43 +43,50 @@ public class SinbaDTO implements Serializable{
 	private String titoloStudioPadre;
 	private String occupazioneMadre;
 	private String occupazionePadre;
-	private String disabile;
-	private String tipoDisabilita;
-	private String dataSegnalazione;
+	
+	private String dataPrimaSegnalazione;
 	private String fonteSegnalazione;
-	private String segnalazioneAutoritaGiudiziaria;
-	private String provvedimentoGiudiziario;
 	private String valutazioneMinore;
 	private String valutazioneFamigliaMinore;
-	private String autoritaProvvedimentoGiudiziario;
+	private String segnalazioneAutoritaGiudiziaria;
+	private String dataSegnalazione;
+	private String provvedimentoGiudiziario;
 	private String dataProvvedimentoGiudiziario;
-	private String tipoProvvedimento;
+	private String autoritaProvvedimentoGiudiziario;
 	private String potestaTutela;
-	private String formaIntervento;
-	private String tipoIntervento;
-	private String durataIntervento;
-	private String carattereIntervento;
-	private String esitoIntervento;
-	private String CarattereInserimento;
-	private String formaInserimento;
+	private String tipoProvvedimento;
+	private String formaInterventoAffido;
+	private String tipoInterventoAffido;
+	private String durataAffido;
+	private String carattereAffido;
+	private String esitoAffido;
+	private String carattereInserimentoResidenziale;
+	private String formaInserimentoResidenziale;
+	private String tipoInserimentoResidenziale;
 	private String esitoInserimentoStruttura;
-	private String collaborazioneInterventi;
 	private String motivazioneChiusuraCarico;
 	private String situazioneChiusuraCarico;
+	private String collaborazioneInterventi;
 	
+	private String codicePrestazione;
+	
+	private String numeroCompIsee;
+	private String fasciaEtaBeneficiario;
+	private String fasciaIseeBeneficiario;
 	
 	// Lista prestazioni aggiunte ??
 	private List<String> prestazioniSel=new ArrayList<String>();
 	private List<String> componentiFamigliaSel=new ArrayList<String>();
 	
-	private List<String> lstNazioneResidenza;
+	//private List<String> lstNazioneResidenza;
+	
 	private List<ArTbPrestazioniInps> lstPrestazioni;
-	public String getDataValutazione() {
-		return dataValutazione;
-	}
-	public void setDataValutazione(String dataRiferimentoValutazione) {
-		this.dataValutazione = dataRiferimentoValutazione;
-	}
+	
+	/*
+	 * public String getDataValutazione() { return dataValutazione; } public void
+	 * setDataValutazione(String dataRiferimentoValutazione) { this.dataValutazione
+	 * = dataRiferimentoValutazione; }
+	 */
 	public String getCodiceAnonimoBeneficiario() {
 		return codiceAnonimoBeneficiario;
 	}
@@ -90,12 +98,6 @@ public class SinbaDTO implements Serializable{
 	}
 	public void setAnnoNascita(String annoNascita) {
 		this.annoNascita = annoNascita;
-	}
-	public String getNazioneResidenzaBeneficiario() {
-		return nazioneResidenzaBeneficiario;
-	}
-	public void setNazioneResidenzaBeneficiario(String nazioneResidenzaBeneficiario) {
-		this.nazioneResidenzaBeneficiario = nazioneResidenzaBeneficiario;
 	}
 	public String getScuolaFrequentata() {
 		return scuolaFrequentata;
@@ -115,12 +117,6 @@ public class SinbaDTO implements Serializable{
 	public void setFasciaEtaBeneficiario(String fasciaEtaBeneficiario) {
 		this.fasciaEtaBeneficiario = fasciaEtaBeneficiario;
 	}
-	public String getFasciaISEEBenefeciario() {
-		return fasciaISEEBenefeciario;
-	}
-	public void setFasciaISEEBenefeciario(String fasciaISEEBenefeciario) {
-		this.fasciaISEEBenefeciario = fasciaISEEBenefeciario;
-	}
 	public String getCodicePrestazione() {
 		return codicePrestazione;
 	}
@@ -133,12 +129,6 @@ public class SinbaDTO implements Serializable{
 	public void setPrestazioniSel(List<String> prestazioniSel) {
 		this.prestazioniSel = prestazioniSel;
 	}
-	public List<String> getLstNazioneResidenza() {
-		return lstNazioneResidenza;
-	}
-	public void setLstNazioneResidenza(List<String> lstNazioneResidenza) {
-		this.lstNazioneResidenza = lstNazioneResidenza;
-	}
 	public List<ArTbPrestazioniInps> getLstPrestazioni() {
 		return lstPrestazioni;
 	}
@@ -150,12 +140,6 @@ public class SinbaDTO implements Serializable{
 	}
 	public void setComponentiFamigliaSel(List<String> componentiFamigliaSel) {
 		this.componentiFamigliaSel = componentiFamigliaSel;
-	}
-	public String getCodNazioneResidenza() {
-		return codNazioneResidenza;
-	}
-	public void setCodNazioneResidenza(String codNazioneResidenza) {
-		this.codNazioneResidenza = codNazioneResidenza;
 	}
 	public String getNumeroCompIsee() {
 		return numeroCompIsee;
@@ -181,18 +165,7 @@ public class SinbaDTO implements Serializable{
 	public void setLuogoVita(String luogoVita) {
 		this.luogoVita = luogoVita;
 	}
-	public String getCodNazioneResidenzaFam() {
-		return codNazioneResidenzaFam;
-	}
-	public void setCodNazioneResidenzaFam(String codNazioneResidenzaFam) {
-		this.codNazioneResidenzaFam = codNazioneResidenzaFam;
-	}
-	public String getCodRegioneResidenzaFam() {
-		return codRegioneResidenzaFam;
-	}
-	public void setCodRegioneResidenzaFam(String codRegioneResidenzaFam) {
-		this.codRegioneResidenzaFam = codRegioneResidenzaFam;
-	}
+	
 	public String getMinoreStranieroNonAccompagnato() {
 		return minoreStranieroNonAccompagnato;
 	}
@@ -321,48 +294,6 @@ public class SinbaDTO implements Serializable{
 	public void setPotestaTutela(String potestaTutela) {
 		this.potestaTutela = potestaTutela;
 	}
-	public String getFormaIntervento() {
-		return formaIntervento;
-	}
-	public void setFormaIntervento(String formaIntervento) {
-		this.formaIntervento = formaIntervento;
-	}
-	public String getTipoIntervento() {
-		return tipoIntervento;
-	}
-	public void setTipoIntervento(String tipoIntervento) {
-		this.tipoIntervento = tipoIntervento;
-	}
-	public String getDurataIntervento() {
-		return durataIntervento;
-	}
-	public void setDurataIntervento(String durataIntervento) {
-		this.durataIntervento = durataIntervento;
-	}
-	public String getCarattereIntervento() {
-		return carattereIntervento;
-	}
-	public void setCarattereIntervento(String carattereIntervento) {
-		this.carattereIntervento = carattereIntervento;
-	}
-	public String getEsitoIntervento() {
-		return esitoIntervento;
-	}
-	public void setEsitoIntervento(String esitoIntervento) {
-		this.esitoIntervento = esitoIntervento;
-	}
-	public String getCarattereInserimento() {
-		return CarattereInserimento;
-	}
-	public void setCarattereInserimento(String carattereInserimento) {
-		CarattereInserimento = carattereInserimento;
-	}
-	public String getFormaInserimento() {
-		return formaInserimento;
-	}
-	public void setFormaInserimento(String formaInserimento) {
-		this.formaInserimento = formaInserimento;
-	}
 	public String getEsitoInserimentoStruttura() {
 		return esitoInserimentoStruttura;
 	}
@@ -386,6 +317,81 @@ public class SinbaDTO implements Serializable{
 	}
 	public void setSituazioneChiusuraCarico(String situazioneChiusuraCarico) {
 		this.situazioneChiusuraCarico = situazioneChiusuraCarico;
+	}
+	public String getInvCivCertificazioni() {
+		return invCivCertificazioni;
+	}
+	public void setInvCivCertificazioni(String invCivCertificazioni) {
+		this.invCivCertificazioni = invCivCertificazioni;
+	}
+	public String getDataPrimaSegnalazione() {
+		return dataPrimaSegnalazione;
+	}
+	public void setDataPrimaSegnalazione(String dataPrimaSegnalazione) {
+		this.dataPrimaSegnalazione = dataPrimaSegnalazione;
+	}
+	public String getFormaInterventoAffido() {
+		return formaInterventoAffido;
+	}
+	public void setFormaInterventoAffido(String formaInterventoAffido) {
+		this.formaInterventoAffido = formaInterventoAffido;
+	}
+	public String getTipoInterventoAffido() {
+		return tipoInterventoAffido;
+	}
+	public void setTipoInterventoAffido(String tipoInterventoAffido) {
+		this.tipoInterventoAffido = tipoInterventoAffido;
+	}
+	public String getDurataAffido() {
+		return durataAffido;
+	}
+	public void setDurataAffido(String durataAffido) {
+		this.durataAffido = durataAffido;
+	}
+	public String getCarattereAffido() {
+		return carattereAffido;
+	}
+	public void setCarattereAffido(String carattereAffido) {
+		this.carattereAffido = carattereAffido;
+	}
+	public String getEsitoAffido() {
+		return esitoAffido;
+	}
+	public void setEsitoAffido(String esitoAffido) {
+		this.esitoAffido = esitoAffido;
+	}
+	public String getCarattereInserimentoResidenziale() {
+		return carattereInserimentoResidenziale;
+	}
+	public void setCarattereInserimentoResidenziale(String carattereInserimentoResidenziale) {
+		this.carattereInserimentoResidenziale = carattereInserimentoResidenziale;
+	}
+	public String getFormaInserimentoResidenziale() {
+		return formaInserimentoResidenziale;
+	}
+	public void setFormaInserimentoResidenziale(String formaInserimentoResidenziale) {
+		this.formaInserimentoResidenziale = formaInserimentoResidenziale;
+	}
+	public String getTipoInserimentoResidenziale() {
+		return tipoInserimentoResidenziale;
+	}
+	public void setTipoInserimentoResidenziale(String tipoInserimentoResidenziale) {
+		this.tipoInserimentoResidenziale = tipoInserimentoResidenziale;
+	}
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+	public String getCodRegioneResidenza() {
+		return codRegioneResidenza;
+	}
+	public void setCodRegioneResidenza(String codRegioneResidenza) {
+		this.codRegioneResidenza = codRegioneResidenza;
+	}
+	public String getCodNazioneResidenza() {
+		return codNazioneResidenza;
+	}
+	public void setCodNazioneResidenza(String codNazioneResidenza) {
+		this.codNazioneResidenza = codNazioneResidenza;
 	}
 	
 }

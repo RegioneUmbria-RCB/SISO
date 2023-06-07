@@ -602,7 +602,7 @@ public class PaiPTIBean extends CsUiCompBaseBean implements Serializable {
 			logger.debug("PTI Salvato correttamente");
 		} catch (Exception e) {
 			logger.error("Errore salvataggio PTI", e);
-			throw new CarSocialeServiceException("Errore salvataggio PTI");
+			throw new CarSocialeServiceException("Errore salvataggio PTI", e);
 		}
 	}
 

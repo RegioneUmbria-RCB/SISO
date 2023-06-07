@@ -7,13 +7,17 @@ import it.webred.cs.data.model.ArTbPrestazioniInps;
 import it.webred.cs.data.model.CsAComponente;
 import it.webred.cs.jsf.manbean.ComponenteAltroMan;
 import it.webred.cs.jsf.manbean.superc.CsUiCompBaseBean;
+import it.webred.cs.json.valSinba.ver1.tabs.DatiFamigliaMan.REGIONI;
 import it.webred.ct.config.model.AmTabNazioni;
 import it.webred.ejb.utility.ClientUtility;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Iterator;
 import java.util.List;
 
+import javax.faces.model.SelectItem;
 import javax.naming.NamingException;
 
 import org.jboss.logging.Logger;
@@ -25,7 +29,8 @@ public class DatiGeneraliMan {
 	public static final String NAME = "Dati Generali";
 	
 	private List<AmTabNazioni> lstNazioneResidenza;
-	private List<String> lstComuni;
+	private List<SelectItem> lstRegioni;
+	
 	private List<ArTbPrestazioniInps> lstPrestazioni;
 	private List<String> lstAnni;
 	
@@ -58,23 +63,41 @@ public class DatiGeneraliMan {
 		//datiGeneraliBean.setLstPrestazioni(lstPrestazioni);
 	}
 	
+	
+	public List<AmTabNazioni> getNazioni()
+	{
+		List<AmTabNazioni> lstNazioneResidenza = new ArrayList<AmTabNazioni>();
+		try {
+			AccessTableNazioniSessionBeanRemote bean = (AccessTableNazioniSessionBeanRemote) ClientUtility
+					.getEjbInterface("CarSocialeA", "CarSocialeA_EJB",
+								"AccessTableNazioniSessionBean");
+			List<AmTabNazioni> beanLstNazioni = bean.getNazioni();
+			
+            if(beanLstNazioni != null && beanLstNazioni.size()>0){
+			Iterator<AmTabNazioni> it=beanLstNazioni.iterator();
+			while(it.hasNext()){
+				AmTabNazioni nazione=it.next();
+				if(nazione.getIso3166()==null){
+					it.remove();
+				}
+			}
+            }
+			if (beanLstNazioni != null) {
+				lstNazioneResidenza.addAll(beanLstNazioni);
+			}
+		} catch (NamingException e) {
+			logger.error("getListaNazioni", e);
+		}
+		
+		return lstNazioneResidenza;
+	}
+
 
 	@SuppressWarnings("deprecation")
 	public void loadListe(/*BaseDTO bo*/)
 	{
 		if (lstNazioneResidenza == null || lstNazioneResidenza.isEmpty()) {
-			lstNazioneResidenza = new ArrayList<AmTabNazioni>();
-			try {
-				AccessTableNazioniSessionBeanRemote bean = (AccessTableNazioniSessionBeanRemote) ClientUtility
-						.getEjbInterface("CarSocialeA", "CarSocialeA_EJB",
-								"AccessTableNazioniSessionBean");
-				List<AmTabNazioni> beanLstNazioni = bean.getNazioni();
-				if (beanLstNazioni != null) {
-					lstNazioneResidenza.addAll(beanLstNazioni);
-				}
-			} catch (NamingException e) {
-				logger.error("getListaNazioni", e);
-			}
+			lstNazioneResidenza = this.getNazioni();
 		}
 		if (lstPrestazioni == null || lstPrestazioni.isEmpty()) {
 			lstPrestazioni = new ArrayList<ArTbPrestazioniInps>();
@@ -102,24 +125,6 @@ public class DatiGeneraliMan {
 				lstAnni.add(String.valueOf(i));
 			}
 		}
-		/*
-		if (lstComuni == null || lstComuni.isEmpty()) {
-			lstComuni = new ArrayList<String>();
-			try {
-				AccessTableComuniSessionBeanRemote bean = (AccessTableComuniSessionBeanRemote) ClientUtility
-						.getEjbInterface("CarSocialeA", "CarSocialeA_EJB",
-								"AccessTableComuniSessionBean");
-				List<AmTabComuni> beanLstComune = bean.getComuni();
-				if (beanLstComune != null) {
-					for (AmTabComuni c : beanLstComune) {
-						lstComuni.add(c.getDenominazione());
-					}
-				}
-			} catch (NamingException e) {
-				logger.error("getListaComuni", e);
-			}
-		}
-		*/
 		
 	}
 
@@ -156,6 +161,17 @@ public class DatiGeneraliMan {
 		this.lstNazioneResidenza = lstNazioneResidenza;
 	}
 
+	public List<SelectItem> getLstRegioni() {
+		List<REGIONI> lst =  Arrays.asList(REGIONI.values());
+		lstRegioni = new ArrayList<SelectItem>();
+		for(REGIONI tipo : lst ){
+			SelectItem si = new SelectItem(tipo.getCodice(), tipo.getDescrizione());
+			lstRegioni.add(si);
+		}
+		return lstRegioni;
+	}
+
+	
 	public List<String> getLstAnni() {
 		return lstAnni;
 	}

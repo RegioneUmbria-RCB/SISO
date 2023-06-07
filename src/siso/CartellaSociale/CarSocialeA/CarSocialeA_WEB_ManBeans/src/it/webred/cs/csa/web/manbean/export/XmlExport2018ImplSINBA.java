@@ -10,6 +10,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.osmosit.siso.flussoinps.logic.Cost;
 import com.osmosit.siso.flussoinps.sinba_2018.XmlSinbaExporter;
 
@@ -56,30 +58,27 @@ final class XmlExport2018ImplSINBA extends SinbaXmlExporter {
 				}
 				
 				
-				prestazioniMinoreSinba = (List<Map<String, Object>>) sinbaMinore.get("prestazioniSel");
+				prestazioniMinoreSinba = (List<Map<String, Object>>) sinbaMinore.get(Cost.LIST_CODICI_PRESTAZIONE);
 				
 				if (prestazioniMinoreSinba == null) {
 					prestazioniMinoreSinba = new ArrayList<Map<String, Object>>();
 				}
 				
-				
 				List<Map<String, Object>> prestazioni = estraiDatiPrestazione(e);
 				prestazioniMinoreSinba.addAll(prestazioni);
-				
-				sinbaMinore.put("prestazioniSel",prestazioniMinoreSinba);
+				sinbaMinore.put(Cost.LIST_CODICI_PRESTAZIONE,prestazioniMinoreSinba);
 				
 				//TODO fai cosa analoga per i famigliari
-				componentiFamigliaMinoreSinba = (List<Map<String, Object>>) sinbaMinore.get("componentiFamigliaSel");
+				componentiFamigliaMinoreSinba = (List<Map<String, Object>>) sinbaMinore.get(Cost.LIST_COMPOSIZIONE_FAMIGLIA);
 				
 				if (componentiFamigliaMinoreSinba == null) {
 					componentiFamigliaMinoreSinba = new ArrayList<Map<String, Object>>();
 				}
 				
-				
 				List<Map<String, Object>> familiari = estraiDatiFamigliaBeneficiario(e);
 				componentiFamigliaMinoreSinba.addAll(familiari);
 				
-				sinbaMinore.put("componentiFamigliaSel",componentiFamigliaMinoreSinba);
+				sinbaMinore.put(Cost.LIST_COMPOSIZIONE_FAMIGLIA,componentiFamigliaMinoreSinba);
 				
 				//a questo punto dovrei avere per ogni beneficiarioMinore una Map chiave valore (nome_campo_voluto_da_inps, valore campo))
 				
@@ -99,101 +98,69 @@ final class XmlExport2018ImplSINBA extends SinbaXmlExporter {
 	
 	private Map<String, Object> estraiDatiGeneraliBeneficiario(SinbaDTO sinbaDaEsportare) {
 		Map<String, Object> MappaDatiGenBene = new HashMap<String, Object>();
-		if (sinbaDaEsportare.getDataValutazione() != null)
-			MappaDatiGenBene.put(Cost.DATA_VALUTAZIONE, sinbaDaEsportare.getDataValutazione());
-		if (sinbaDaEsportare.getScuolaFrequentata() != null)
-			MappaDatiGenBene.put(Cost.SCUOLA_FREQUENTATA, sinbaDaEsportare.getScuolaFrequentata());
-		if (sinbaDaEsportare.getCondizioneLavoro() != null)
-			MappaDatiGenBene.put(Cost.CONDIZIONE_LAVORO, sinbaDaEsportare.getCondizioneLavoro());
 		
+		//Composizione famiglia caricata in forma di lista
 		
+		this.popolaElementoMappa(MappaDatiGenBene, Cost.BENEFICIARIO_ID, sinbaDaEsportare.getCodiceAnonimoBeneficiario());
+		this.popolaElementoMappa(MappaDatiGenBene, Cost.ANNO_NASCITA, sinbaDaEsportare.getAnnoNascita());
+		this.popolaElementoMappa(MappaDatiGenBene, Cost.RESIDENZA_NAZIONE, sinbaDaEsportare.getCodNazioneResidenza());
+		this.popolaElementoMappa(MappaDatiGenBene, Cost.RESIDENZA_REGIONE, sinbaDaEsportare.getCodRegioneResidenza());
+		this.popolaElementoMappa(MappaDatiGenBene, Cost.MINORE_STRANIERO_NON_ACCOMPAGNATO, sinbaDaEsportare.getMinoreStranieroNonAccompagnato());
+		this.popolaElementoMappa(MappaDatiGenBene, Cost.CONDIZIONE_MINORE, sinbaDaEsportare.getCondizioneMinore());
+		this.popolaElementoMappa(MappaDatiGenBene, Cost.LUOGO_VITA, sinbaDaEsportare.getLuogoVita());
+		this.popolaElementoMappa(MappaDatiGenBene, Cost.SCUOLA_FREQUENTATA, sinbaDaEsportare.getScuolaFrequentata());
+		this.popolaElementoMappa(MappaDatiGenBene, Cost.CONDIZIONE_LAVORO, sinbaDaEsportare.getCondizioneLavoro());		
 		
-		if (sinbaDaEsportare.getCodiceAnonimoBeneficiario() != null)
-			MappaDatiGenBene.put(Cost.CODICE_ANONIMO_BENEFICIARIO, sinbaDaEsportare.getCodiceAnonimoBeneficiario());
-		if (sinbaDaEsportare.getAnnoNascita() != null)
-			MappaDatiGenBene.put(Cost.ANNO_NASCITA, sinbaDaEsportare.getAnnoNascita());
-		if (sinbaDaEsportare.getCodNazioneResidenza() != null)
-			MappaDatiGenBene.put(Cost.NAZIONE_RESIDENZA, sinbaDaEsportare.getCodNazioneResidenza());
-		if (sinbaDaEsportare.getNumeroCompIsee() != null)
-			MappaDatiGenBene.put(Cost.NUMERO_COMPONENTI_ISEE, sinbaDaEsportare.getNumeroCompIsee());
-		if (sinbaDaEsportare.getFasciaEtaBeneficiario() != null)
-			MappaDatiGenBene.put(Cost.FASCIA_ETA_BENEFICIARIO, sinbaDaEsportare.getFasciaEtaBeneficiario());
-		if (sinbaDaEsportare.getFasciaIseeBeneficiario() != null)
-			MappaDatiGenBene.put(Cost.FASCIA_ISEE_BENEFICIARIO, sinbaDaEsportare.getFasciaIseeBeneficiario());
-		if (sinbaDaEsportare.getCondizioneMinore() != null)
-			MappaDatiGenBene.put(Cost.CONDIZIONE_MINORE, sinbaDaEsportare.getCondizioneMinore());
-		if (sinbaDaEsportare.getLuogoVita() != null)
-			MappaDatiGenBene.put(Cost.LUOGO_VITA, sinbaDaEsportare.getLuogoVita());
-		if (sinbaDaEsportare.getCodRegioneResidenzaFam() != null)
-			MappaDatiGenBene.put(Cost.NAZIONE_RESIDENZA_FAM, sinbaDaEsportare.getCodRegioneResidenzaFam());
-		if (sinbaDaEsportare.getCodNazioneResidenzaFam() != null)
-			MappaDatiGenBene.put(Cost.REGIONE_RESIDENZA_FAM, sinbaDaEsportare.getCodNazioneResidenzaFam());
-		if (sinbaDaEsportare.getMinoreStranieroNonAccompagnato() != null)
-			MappaDatiGenBene.put(Cost.MINORE_STRANIERO_NON_ACCOMPAGNATO, sinbaDaEsportare.getMinoreStranieroNonAccompagnato());
-		if (sinbaDaEsportare.getCittadinanzaMadre() != null)
-			MappaDatiGenBene.put(Cost.CITTADINANZA_MADRE, sinbaDaEsportare.getCittadinanzaMadre());
-		if (sinbaDaEsportare.getCittadinanzaPadre() != null)
-			MappaDatiGenBene.put(Cost.CITTADINANZA_PADRE, sinbaDaEsportare.getCittadinanzaPadre());
-		if (sinbaDaEsportare.getRegioneResidenzaMadre() != null)
-			MappaDatiGenBene.put(Cost.REGIONE_RESIDENZA_MADRE, sinbaDaEsportare.getRegioneResidenzaMadre());
-		if (sinbaDaEsportare.getRegioneResidenzaPadre() != null)
-			MappaDatiGenBene.put(Cost.REGIONE_RESIDENZA_PADRE, sinbaDaEsportare.getRegioneResidenzaPadre());
-		if (sinbaDaEsportare.getTitoloStudioMadre() != null)
-			MappaDatiGenBene.put(Cost.TITOLO_STUDIO_MADRE, sinbaDaEsportare.getTitoloStudioMadre());
-		if (sinbaDaEsportare.getTitoloStudioPadre() != null)
-			MappaDatiGenBene.put(Cost.TITOLO_STUDIO_PADRE, sinbaDaEsportare.getTitoloStudioPadre());
-		if (sinbaDaEsportare.getOccupazioneMadre() != null)
-			MappaDatiGenBene.put(Cost.OCCUPAZIONE_MADRE, sinbaDaEsportare.getOccupazioneMadre());
-		if (sinbaDaEsportare.getOccupazionePadre() != null)
-			MappaDatiGenBene.put(Cost.OCCUPAZIONE_PADRE, sinbaDaEsportare.getOccupazionePadre());
-		if (sinbaDaEsportare.getDisabile() != null)
-			MappaDatiGenBene.put(Cost.DISABILE, sinbaDaEsportare.getDisabile());
-		if (sinbaDaEsportare.getTipoDisabilita() != null)
-			MappaDatiGenBene.put(Cost.TIPO_DISABILITA, sinbaDaEsportare.getTipoDisabilita());
-		if (sinbaDaEsportare.getFonteSegnalazione() != null)
-			MappaDatiGenBene.put(Cost.FONTE_SEGNALAZIONE, sinbaDaEsportare.getFonteSegnalazione());
-		if (sinbaDaEsportare.getDataSegnalazione() != null)
-			MappaDatiGenBene.put(Cost.DATA_SEGNALAZIONE, sinbaDaEsportare.getDataSegnalazione());
-		if (sinbaDaEsportare.getSegnalazioneAutoritaGiudiziaria() != null)
-			MappaDatiGenBene.put(Cost.SEGNALAZIONE_AUTORITA_GIUDIZIARIA, sinbaDaEsportare.getSegnalazioneAutoritaGiudiziaria());
-		if (sinbaDaEsportare.getProvvedimentoGiudiziario() != null)
-			MappaDatiGenBene.put(Cost.PROVVEDIMENTO_GIUDIZIARIO, sinbaDaEsportare.getProvvedimentoGiudiziario());
-		if (sinbaDaEsportare.getValutazioneMinore() != null)
-			MappaDatiGenBene.put(Cost.VALUTAZIONE_MINORE, sinbaDaEsportare.getValutazioneMinore());
-		if (sinbaDaEsportare.getValutazioneFamigliaMinore() != null)
-			MappaDatiGenBene.put(Cost.VALUTAZIONE_FAMIGLIA_MINORE, sinbaDaEsportare.getValutazioneFamigliaMinore());
-		if (sinbaDaEsportare.getAutoritaProvvedimentoGiudiziario() != null)
-			MappaDatiGenBene.put(Cost.AUTORITA_PROVVEDIMENTO_GIUDIZIARIO, sinbaDaEsportare.getAutoritaProvvedimentoGiudiziario());
-		if (sinbaDaEsportare.getDataProvvedimentoGiudiziario() != null)
-			MappaDatiGenBene.put(Cost.DATA_PROVVEDIMENTO_GIUDIZIARIO, sinbaDaEsportare.getDataProvvedimentoGiudiziario());
-		if (sinbaDaEsportare.getTipoProvvedimento() != null)
-			MappaDatiGenBene.put(Cost.TIPO_PROVVEDIMENTO, sinbaDaEsportare.getTipoProvvedimento());
-		if (sinbaDaEsportare.getPotestaTutela() != null)
-			MappaDatiGenBene.put(Cost.POTESTA_TUTELA, sinbaDaEsportare.getPotestaTutela());
-		if (sinbaDaEsportare.getFormaIntervento() != null)
-			MappaDatiGenBene.put(Cost.FORMA_INTERVENTO, sinbaDaEsportare.getFormaIntervento());
-		if (sinbaDaEsportare.getTipoIntervento() != null)
-			MappaDatiGenBene.put(Cost.TIPO_INTERVENTO, sinbaDaEsportare.getTipoIntervento());
-		if (sinbaDaEsportare.getDurataIntervento() != null)
-			MappaDatiGenBene.put(Cost.DURATA_INTERVENTO, sinbaDaEsportare.getDurataIntervento());
-		if (sinbaDaEsportare.getCarattereIntervento() != null)
-			MappaDatiGenBene.put(Cost.CARATTERE_INTERVENTO, sinbaDaEsportare.getCarattereIntervento());
-		if (sinbaDaEsportare.getEsitoIntervento() != null)
-			MappaDatiGenBene.put(Cost.ESITO_INTERVENTO, sinbaDaEsportare.getEsitoIntervento());
-		if (sinbaDaEsportare.getCarattereInserimento() != null)
-			MappaDatiGenBene.put(Cost.CARATTERE_INSERIMENTO, sinbaDaEsportare.getCarattereInserimento());
-		if (sinbaDaEsportare.getFormaInserimento() != null)
-			MappaDatiGenBene.put(Cost.FORMA_INSERIMENTO, sinbaDaEsportare.getFormaInserimento());
-		if (sinbaDaEsportare.getEsitoInserimentoStruttura() != null)
-			MappaDatiGenBene.put(Cost.ESITO_INSERIMENTO_STRUTTURA, sinbaDaEsportare.getEsitoInserimentoStruttura());
-		if (sinbaDaEsportare.getCollaborazioneInterventi() != null)
-			MappaDatiGenBene.put(Cost.COLLABORAZIONE_INTERVENTI, sinbaDaEsportare.getCollaborazioneInterventi());
-		if (sinbaDaEsportare.getMotivazioneChiusuraCarico() != null)
-			MappaDatiGenBene.put(Cost.MOTIVAZIONE_CHIUSURA_CARICO, sinbaDaEsportare.getMotivazioneChiusuraCarico());
-		if (sinbaDaEsportare.getSituazioneChiusuraCarico() != null)
-			MappaDatiGenBene.put(Cost.SITUAZIONE_CHIUSURA_CARICO, sinbaDaEsportare.getSituazioneChiusuraCarico());
+		this.popolaElementoMappa(MappaDatiGenBene, Cost.DISABILE, sinbaDaEsportare.getDisabile());
+		this.popolaElementoMappa(MappaDatiGenBene, Cost.TIPO_DISABILITA, sinbaDaEsportare.getTipoDisabilita());
+		this.popolaElementoMappa(MappaDatiGenBene, Cost.CERTIFICAZIONE_INVALIDITA_CIVILE, sinbaDaEsportare.getInvCivCertificazioni());
+		
+		this.popolaElementoMappa(MappaDatiGenBene, Cost.CITTADINANZA_MADRE, sinbaDaEsportare.getCittadinanzaMadre());
+		this.popolaElementoMappa(MappaDatiGenBene, Cost.CITTADINANZA_PADRE, sinbaDaEsportare.getCittadinanzaPadre());
+		this.popolaElementoMappa(MappaDatiGenBene, Cost.REGIONE_RESIDENZA_MADRE, sinbaDaEsportare.getRegioneResidenzaMadre());
+		this.popolaElementoMappa(MappaDatiGenBene, Cost.REGIONE_RESIDENZA_PADRE, sinbaDaEsportare.getRegioneResidenzaPadre());
+		this.popolaElementoMappa(MappaDatiGenBene, Cost.TITOLO_STUDIO_MADRE, sinbaDaEsportare.getTitoloStudioMadre());
+		this.popolaElementoMappa(MappaDatiGenBene, Cost.TITOLO_STUDIO_PADRE, sinbaDaEsportare.getTitoloStudioPadre());
+		this.popolaElementoMappa(MappaDatiGenBene, Cost.OCCUPAZIONE_MADRE, sinbaDaEsportare.getOccupazioneMadre());
+		this.popolaElementoMappa(MappaDatiGenBene, Cost.OCCUPAZIONE_PADRE, sinbaDaEsportare.getOccupazionePadre());
+		
+		this.popolaElementoMappa(MappaDatiGenBene, Cost.DATA_PRIMA_SEGNALAZIONE, sinbaDaEsportare.getDataPrimaSegnalazione());
+		this.popolaElementoMappa(MappaDatiGenBene, Cost.FONTE_SEGNALAZIONE, sinbaDaEsportare.getFonteSegnalazione());
+		this.popolaElementoMappa(MappaDatiGenBene, Cost.VALUTAZIONE_MINORE, sinbaDaEsportare.getValutazioneMinore());
+		this.popolaElementoMappa(MappaDatiGenBene, Cost.VALUTAZIONE_FAMIGLIA_MINORE, sinbaDaEsportare.getValutazioneFamigliaMinore());
+		this.popolaElementoMappa(MappaDatiGenBene, Cost.SEGNALAZIONE_AUTORITA_GIUDIZIARIA, sinbaDaEsportare.getSegnalazioneAutoritaGiudiziaria());
+		this.popolaElementoMappa(MappaDatiGenBene, Cost.DATA_SEGNALAZIONE, sinbaDaEsportare.getDataSegnalazione());
+		this.popolaElementoMappa(MappaDatiGenBene, Cost.PROVVEDIMENTO_GIUDIZIARIO, sinbaDaEsportare.getProvvedimentoGiudiziario());
+		this.popolaElementoMappa(MappaDatiGenBene, Cost.DATA_PROVVEDIMENTO_GIUDIZIARIO, sinbaDaEsportare.getDataProvvedimentoGiudiziario());
+		this.popolaElementoMappa(MappaDatiGenBene, Cost.AUTORITA_PROVVEDIMENTO_GIUDIZIARIO, sinbaDaEsportare.getAutoritaProvvedimentoGiudiziario());
+		this.popolaElementoMappa(MappaDatiGenBene, Cost.POTESTA_TUTELA, sinbaDaEsportare.getPotestaTutela());
+		this.popolaElementoMappa(MappaDatiGenBene, Cost.TIPO_PROVVEDIMENTO, sinbaDaEsportare.getTipoProvvedimento());
+		
+		this.popolaElementoMappa(MappaDatiGenBene, Cost.FORMA_INTERVENTO, sinbaDaEsportare.getFormaInterventoAffido());
+		this.popolaElementoMappa(MappaDatiGenBene, Cost.TIPO_INTERVENTO, sinbaDaEsportare.getTipoInterventoAffido());
+		this.popolaElementoMappa(MappaDatiGenBene, Cost.DURATA_INTERVENTO, sinbaDaEsportare.getDurataAffido());
+		this.popolaElementoMappa(MappaDatiGenBene, Cost.CARATTERE_INTERVENTO, sinbaDaEsportare.getCarattereAffido());
+		this.popolaElementoMappa(MappaDatiGenBene, Cost.ESITO_INTERVENTO, sinbaDaEsportare.getEsitoAffido());
+		
+		this.popolaElementoMappa(MappaDatiGenBene, Cost.CARATTERE_INSERIMENTO, sinbaDaEsportare.getCarattereInserimentoResidenziale());
+		this.popolaElementoMappa(MappaDatiGenBene, Cost.FORMA_INSERIMENTO, sinbaDaEsportare.getFormaInserimentoResidenziale());
+		this.popolaElementoMappa(MappaDatiGenBene, Cost.TIPO_INSERIMENTO, sinbaDaEsportare.getTipoInserimentoResidenziale());
+		this.popolaElementoMappa(MappaDatiGenBene, Cost.ESITO_INSERIMENTO_STRUTTURA, sinbaDaEsportare.getEsitoInserimentoStruttura());
+		
+		this.popolaElementoMappa(MappaDatiGenBene, Cost.MOTIVAZIONE_CHIUSURA_CARICO, sinbaDaEsportare.getMotivazioneChiusuraCarico());
+		this.popolaElementoMappa(MappaDatiGenBene, Cost.SITUAZIONE_CHIUSURA_CARICO, sinbaDaEsportare.getSituazioneChiusuraCarico());
+		this.popolaElementoMappa(MappaDatiGenBene, Cost.COLLABORAZIONE_INTERVENTI, sinbaDaEsportare.getCollaborazioneInterventi());
+		
+		this.popolaElementoMappa(MappaDatiGenBene, Cost.NUMERO_COMPONENTI_ISEE, sinbaDaEsportare.getNumeroCompIsee());
+		this.popolaElementoMappa(MappaDatiGenBene, Cost.FASCIA_ETA_BENEFICIARIO, sinbaDaEsportare.getFasciaEtaBeneficiario());
+		this.popolaElementoMappa(MappaDatiGenBene, Cost.FASCIA_ISEE_BENEFICIARIO, sinbaDaEsportare.getFasciaIseeBeneficiario());
 		
 		return MappaDatiGenBene;
+	}
+	
+	private void popolaElementoMappa(Map<String,Object> MappaDatiGenBene, String key, String value){
+		if (!StringUtils.isBlank(value))
+			MappaDatiGenBene.put(key, value);
 	}
 	
 	private List<Map<String, Object>> estraiDatiFamigliaBeneficiario(SinbaDTO sinbaDaEsportare) {
@@ -207,7 +174,7 @@ final class XmlExport2018ImplSINBA extends SinbaXmlExporter {
 			Map<String, Object> mappaDatiFamiglia = new HashMap<String, Object>();
 			if (componente != null)
 			{
-				mappaDatiFamiglia.put(Cost.COMPOSIZIONE_FAMIGLIA, componente);
+				mappaDatiFamiglia.put(Cost.DETT_COMPOSIZIONE_FAMIGLIA, componente);
 				mappaDatiFam.add(mappaDatiFamiglia);
 			}
 				

@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import it.webred.ss.ejb.dto.NotaDTO;
+
 
 public class DatiSchedaPdfDTO implements Serializable{
 	public final String EMPTY = "";
@@ -74,6 +76,7 @@ public class DatiSchedaPdfDTO implements Serializable{
 	
 	private String tipoScheda;
 	
+	private List<NotaDTO> noteDiario;
 	
 	public DatiSchedaPdfDTO() {
 		lstRiferimenti = new ArrayList<RiferimentoPdfDTO>();
@@ -432,5 +435,12 @@ public class DatiSchedaPdfDTO implements Serializable{
 	public void setRecuperaLabelEnte(Boolean recuperaLabelEnte) {
 		this.recuperaLabelEnte = recuperaLabelEnte;
 	}
-	
+
+	public List<NotaDTO> getNoteDiario() {
+		return noteDiario;
+	}
+
+	public void setNoteDiario(List<NotaDTO> noteDiario) {
+		this.noteDiario = noteDiario;
+	}
 }

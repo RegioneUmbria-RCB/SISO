@@ -43,6 +43,10 @@ public class CsIInterventoEseg implements Serializable {
 	private Date dataEsecuzioneA;
 	
 	@Temporal(TemporalType.DATE)
+	@Column(name="DATA_EVENTO")
+	private Date dataEvento;
+	
+	@Temporal(TemporalType.DATE)
 	@Column(name="DT_INS")
 	private Date dtIns;
 
@@ -305,5 +309,12 @@ public class CsIInterventoEseg implements Serializable {
 	public void setMasterId(Long masterId) {
 		this.masterId = masterId;
 	}
-	
+
+	public Date getDataEvento() {
+		return dataEvento;
+	}
+
+	public void setDataEvento(Date dataEvento) {
+		this.dataEvento = dataEvento;
+	}
 }

@@ -1,5 +1,35 @@
 package it.webred.ss.web.bean.wizard;
 
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
+import javax.faces.event.AjaxBehaviorEvent;
+import javax.faces.event.ValueChangeEvent;
+import javax.faces.model.SelectItem;
+import javax.faces.model.SelectItemGroup;
+import javax.naming.NamingException;
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang3.SerializationUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.primefaces.context.RequestContext;
+import org.primefaces.event.FlowEvent;
+import org.primefaces.model.StreamedContent;
+
 import it.umbriadigitale.argo.ejb.client.cs.bean.ArConfigurazioneService;
 import it.umbriadigitale.argo.ejb.client.cs.dto.configurazione.ArOrganizzazioneDTO;
 import it.webred.amprofiler.ejb.user.UserService;
@@ -66,7 +96,6 @@ import it.webred.siso.ws.ricerca.dto.RicercaAnagraficaResult;
 import it.webred.ss.data.model.ArBufferSsInvio;
 import it.webred.ss.data.model.SsAnagrafica;
 import it.webred.ss.data.model.SsAnagraficaLog;
-import it.webred.ss.data.model.SsDiario;
 import it.webred.ss.data.model.SsInterventiSchede;
 import it.webred.ss.data.model.SsIntervento;
 import it.webred.ss.data.model.SsInterventoEconomico;
@@ -88,6 +117,7 @@ import it.webred.ss.data.model.SsTipoScheda;
 import it.webred.ss.data.model.SsUfficio;
 import it.webred.ss.ejb.client.SsSchedaSessionBeanRemote;
 import it.webred.ss.ejb.dto.BaseDTO;
+import it.webred.ss.ejb.dto.NotaDTO;
 import it.webred.ss.ejb.dto.OrganizzazioneDTO;
 import it.webred.ss.ejb.dto.report.DatiPrivacyPdfDTO;
 import it.webred.ss.ejb.dto.report.RiferimentoPdfDTO;
@@ -100,36 +130,6 @@ import it.webred.ss.web.bean.util.Soggetto;
 import it.webred.ss.web.bean.util.Ufficio;
 import it.webred.ss.web.bean.util.UserBean;
 import it.webred.ss.web.dto.RilevazionePresenzeDettaglio;
-
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
-import javax.faces.context.FacesContext;
-import javax.faces.event.AjaxBehaviorEvent;
-import javax.faces.event.ValueChangeEvent;
-import javax.faces.model.SelectItem;
-import javax.faces.model.SelectItemGroup;
-import javax.naming.NamingException;
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.commons.lang3.SerializationUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.primefaces.context.RequestContext;
-import org.primefaces.event.FlowEvent;
-import org.primefaces.model.StreamedContent;
 
 @ManagedBean
 @ViewScoped
@@ -177,8 +177,8 @@ public class NuovaSchedaWizard extends SegretariatoSocBaseBean {
 	private Interventi intervento;
 	private Long tipoScheda;
 	private DiarioSociale diarioSociale;
-	private Nota notaDiarioPubblica;
-	private Nota notaDiarioPrivata;
+	private NotaDTO notaDiarioPubblica;
+	private NotaDTO notaDiarioPrivata;
 	private String interventoEconomicoTipo;
 	private String interventoEconomicoImporto;
 	private Long categoriaSociale;
@@ -342,7 +342,7 @@ public class NuovaSchedaWizard extends SegretariatoSocBaseBean {
 	private String indietroButtonTesto;
 	private String indietroButtonLink;
 
-	private Nota selectedNota2Delete;
+	private NotaDTO selectedNota2Delete;
 
 	// SISO-906
 	private static Long AFFIDATARIO_NON_PARENTE;
@@ -591,11 +591,11 @@ public class NuovaSchedaWizard extends SegretariatoSocBaseBean {
 
 		this.diarioSociale = new DiarioSociale();
 
-		notaDiarioPrivata = new Nota();
+		notaDiarioPrivata = new NotaDTO();
 		notaDiarioPrivata.setPubblica(false);
 		notaDiarioPrivata.setData(new Date());
 
-		notaDiarioPubblica = new Nota();
+		notaDiarioPubblica = new NotaDTO();
 		notaDiarioPubblica.setPubblica(true);
 		notaDiarioPubblica.setData(new Date());
 		this.tipoScheda = null;
@@ -1006,22 +1006,18 @@ public class NuovaSchedaWizard extends SegretariatoSocBaseBean {
 		}
 	}
 
-	public Nota getNotaDiarioPubblica() {
+	public NotaDTO getNotaDiarioPubblica() {
 		return notaDiarioPubblica;
 	}
-
-	public void setNotaDiarioPubblica(Nota notaDiarioPubblica) {
+	public void setNotaDiarioPubblica(NotaDTO notaDiarioPubblica) {
 		this.notaDiarioPubblica = notaDiarioPubblica;
 	}
-
-	public Nota getNotaDiarioPrivata() {
+	public NotaDTO getNotaDiarioPrivata() {
 		return notaDiarioPrivata;
 	}
-
-	public void setNotaDiarioPrivata(Nota notaDiarioPrivata) {
+	public void setNotaDiarioPrivata(NotaDTO notaDiarioPrivata) {
 		this.notaDiarioPrivata = notaDiarioPrivata;
 	}
-
 	public DiarioSociale getDiarioSociale() {
 		return this.diarioSociale;
 	}
@@ -1880,10 +1876,6 @@ public class NuovaSchedaWizard extends SegretariatoSocBaseBean {
 		}
 	}
 
-	public void eliminaNota(Nota nota) {
-		saveOrUpdateNotaDiario(nota);
-	}
-
 	public boolean annullaInvio() {
 		try {
 			rimuoviSchedaInvioBuffer();
@@ -2431,25 +2423,25 @@ public class NuovaSchedaWizard extends SegretariatoSocBaseBean {
 		motivazione.initMotiviClasseFromModel(schedaLstMotivi);
 	}
 
-	private void saveOrUpdateNotaDiario(Nota nota) {
-		if (nota.getId() == null && !nota.isEmpty()) {
-			nota.setAuthor(this.getUserNameOperatore(), this.getPreselectedPContatto().getOrganizzazione());
+	private void saveOrUpdateNotaDiario(NotaDTO nota) {
+		if (nota.getId() == null && !nota.getNota().isEmpty()) {
+			nota.setOpUsername(this.getUserNameOperatore());
+			nota.setOrgId(this.getPreselectedPContatto().getOrganizzazione().getId());
+			nota.setOrgDenominazione(this.getPreselectedPContatto().getOrganizzazione().getNome());
+			nota.setOrgBelfiore(this.getPreselectedPContatto().getOrganizzazione().getBelfiore());
 			saveNotaIntoDB(nota);
 		} else if (nota.getId() != null) {
 			updateNotaIntoDB(nota);
 		}
 	}
 
-	private boolean updateNotaIntoDB(Nota nota) {
+	private boolean updateNotaIntoDB(NotaDTO nota) {
 		try {
 			SsSchedaSessionBeanRemote schedaService = this.getSsSchedaService();
 
-			SsDiario model = new SsDiario();
-			nota.fillModel(model);
-
 			BaseDTO dto = new BaseDTO();
 			fillUserData(dto);
-			dto.setObj(model);
+			dto.setObj(nota);
 
 			schedaService.updateNotaDiario(dto);
 
@@ -2463,19 +2455,17 @@ public class NuovaSchedaWizard extends SegretariatoSocBaseBean {
 		}
 	}
 
-	private boolean saveNotaIntoDB(Nota nota) {
+	private boolean saveNotaIntoDB(NotaDTO nota) {
 		try {
 			SsSchedaSessionBeanRemote schedaService = this.getSsSchedaService();
 
-			SsDiario model = new SsDiario();
-			nota.fillModel(model, segnalato.getAnagraficaModel());
-
 			BaseDTO dto = new BaseDTO();
 			fillUserData(dto);
-			dto.setObj(model);
-
-			model.setId(schedaService.writeNotaDiario(dto));
-			nota.setId(model.getId());
+			dto.setObj(nota);
+			dto.setObj2(segnalato.getAnagraficaModel());
+			
+			Long notaId = schedaService.writeNotaDiario(dto); 
+			nota.setId(notaId);
 
 			return true;
 
@@ -2848,9 +2838,8 @@ public class NuovaSchedaWizard extends SegretariatoSocBaseBean {
 				salvaSchedaFamConviventi(salvato, reload);
 			}
 
-			loadTipiScheda(); // Ricarica per gestire la disabilitazioni delle proposte di prese in carico
-			initDiarioSociale(segnalato); // Spostato in questo punto, altrimenti per i nuovi inserimenti non mostra i
-											// diari precedentemente inseriti
+			loadTipiScheda(); 				// Ricarica per gestire la disabilitazioni delle proposte di prese in carico
+			initDiarioSociale(segnalato); 	// Spostato in questo punto, altrimenti per i nuovi inserimenti non mostra i diari precedentemente inseriti
 			riferimentoComeSegnalanteChecked();// SISO-448
 
 			loadManJsonServiziRichiesti(segnalatoModel, true);
@@ -3357,16 +3346,14 @@ public class NuovaSchedaWizard extends SegretariatoSocBaseBean {
 				dto.setObj(segnalato.getAnagrafica().getCodiceFiscale());
 				anagrafiche = schedaService.readAnagraficheByCf(dto);
 			}
-
-			for (SsAnagrafica ana : anagrafiche) {
-				dto.setObj(ana);
-				dto.setObj2(accesso.getPuntoContatto().getOrganizzazione().getId());
-				List<SsDiario> diari = schedaService.readDiarioSoggettoEnte(dto);
-				List<Nota> note = loadNoteDiarioAccessibili(diari, accesso.getOperatore(),
-						segnalato.getAnagrafica().getId());
-				diarioSociale.populateNote(note);
-			}
-
+			
+			dto.setOrganizzazione(this.getPreselectedPContatto().getOrganizzazione().getId());
+			dto.setObj(scheda.getId());
+			dto.setObj2(canReadDiario());
+			dto.setObj3(anagrafiche);
+			
+			List<NotaDTO> note = schedaService.loadNoteDiarioAccessibili(dto);
+			diarioSociale.populateNote(note);
 			return true;
 
 		} catch (Exception e) {
@@ -5979,11 +5966,11 @@ public class NuovaSchedaWizard extends SegretariatoSocBaseBean {
 		this.esciAction();
 	}
 
-	public Nota getSelectedNota2Delete() {
+	public NotaDTO getSelectedNota2Delete() {
 		return selectedNota2Delete;
 	}
 
-	public void setSelectedNota2Delete(Nota selectedNota2Delete) {
+	public void setSelectedNota2Delete(NotaDTO selectedNota2Delete) {
 		this.selectedNota2Delete = selectedNota2Delete;
 	}
 

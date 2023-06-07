@@ -1,0 +1,320 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+     	xmlns:h="http://java.sun.com/jsf/html"
+		xmlns:f="http://java.sun.com/jsf/core"
+		xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+		xmlns:ui="http://java.sun.com/jsf/facelets"
+		xmlns:p="http://primefaces.org/ui"
+	  	xmlns:composite="http://java.sun.com/jsf/composite"
+		xmlns:webred="http://java.sun.com/jsf/composite/webred"
+		xmlns:webredcs="http://java.sun.com/jsf/composite/webredcs">
+
+<h:head>
+	<title>Beneficiari Pai</title>	
+</h:head>
+<h:body>
+	<composite:interface componentType="pnlBeneficiariPai">
+		<composite:attribute name="iPai" 	    type="it.webred.cs.jsf.interfaces.IPai" />
+	</composite:interface>
+
+	<composite:implementation>
+		<p:panel id="pnlBeneficiario" width="100%" styleClass="#{'updateOnTipoBeneficiarioChange updateOnChangeBeneficiarioRif'}">
+
+	<h:panelGrid columns="8">
+		<p:outputLabel value="Tipo" />
+		<p:spacer width="10px" />
+		<p:selectOneMenu id="cbxBeneficiario" style="width:150px"
+			value="#{cc.attrs.iPai.selectedPai.tipoBeneficiario}">
+
+			<f:selectItems value="#{cc.attrs.iPai.listaOpzioniBen}" />
+			<p:ajax update="@(.updateOnTipoBeneficiarioChange)" process="@this"
+				listener="#{cc.attrs.iPai.onChangeTipoBeneficiario}" />
+		</p:selectOneMenu>
+		<p:spacer width="40px" />
+		<p:outputLabel value="Num. totale soggetti beneficiari *" />
+		<webredcs:tooltipInfo
+			stringDescr="Il numero totale di soggetti che risultano o possono essere considerati beneficiari dell'intervento" />
+		<p:spacer width="10px" />
+		<p:spinner id="totBeneficiari" size="2" min="1"
+			styleClass="#{'updateOnTipoBeneficiarioChange'}"
+			required="#{!cc.attrs.iPai.unicoBeneficiario}" immediate="true"
+			requiredMessage="Il num. totale dei soggetti beneficiari è un campo obbligatorio"
+			disabled="#{cc.attrs.iPai.unicoBeneficiario}"
+			value="#{cc.attrs.iPai.selectedPai.totBeneficiari}">
+			<p:ajax partialSubmit="true" process="@this" />
+		</p:spinner>
+	</h:panelGrid>
+
+	<p:spacer height="10px" />
+	<p:fieldset legend="Beneficiario di riferimento"
+		styleClass="#{'updateOnSincronizzazione'}">
+
+		<h:panelGrid id="pnlUnicoBeneficiario" columns="6">
+			<p:outputLabel id="lblCognome" for="txtCognome" value="Cognome" />
+			<p:inputText id="txtCognome"
+				value="#{cc.attrs.iPai.soggRiferimentoPai.cognome}"
+				disabled="#{cc.attrs.iPai.disabilitaBeneficiarioRif}" >
+				<p:ajax partialSubmit="true" process="@this" />
+				</p:inputText>
+
+			<p:outputLabel id="lblNome" for="txtNome" value="Nome" />
+			<p:inputText id="txtNome"
+				value="#{cc.attrs.iPai.soggRiferimentoPai.nome}"
+				disabled="#{cc.attrs.iPai.disabilitaBeneficiarioRif}" >
+				<p:ajax partialSubmit="true" process="@this" />
+				</p:inputText>
+
+			<p:outputLabel id="lblCodFiscale" value="Cod.fiscale *" />
+			<h:panelGrid columns="2">
+				<webredcs:pnlCodFisc 
+					codFiscValue="#{cc.attrs.iPai.soggRiferimentoPai.cf}"
+					codFiscValMes="Codice Fiscale del beneficiario di riferimento non corretto"
+					disabled="#{cc.attrs.iPai.disabilitaBeneficiarioRif}"
+					onBlurAction="#{cc.attrs.iPai.onCFBlurAction()}" />
+			
+		   </h:panelGrid> 
+			
+			<h:outputText value="Sesso *" />
+			<webred:pnlSesso id="pnlSessoBeneficiario"
+				value="#{cc.attrs.iPai.sessoBeneficiario}"
+				disabled="#{cc.attrs.iPai.disabilitaBeneficiarioRif}"
+				onUpdAction="true" />
+				
+			<p:outputLabel id="lblCittadinanza" value="Cittadinanza *" />
+			<p:selectOneMenu label="Cittadinanza" id="txtCittadinanza"
+				value="#{cc.attrs.iPai.soggRiferimentoPai.cittadinanza}"
+				effect="fold" editable="false" filter="true"
+				filterMatchMode="startsWith"
+				disabled="#{cc.attrs.iPai.disabilitaBeneficiarioRif}">
+				<f:selectItem itemLabel="- seleziona -" noSelectionOption="true" />
+				<f:selectItems value="#{cc.attrs.iPai.listaCittadinanze}" />
+				<!-- 	               <p:ajax event="change" process="@this" listener="#{cc.attrs.iPai.onUpdateDatiPrinc()}" /> -->
+				<p:ajax partialSubmit="true" process="@this" />
+			</p:selectOneMenu>
+
+			<p:outputLabel id="lblCittadinanza2" value="Cittadinanza 2" />
+			<p:selectOneMenu label="Cittadinanza2" id="txtCittadinanza2"
+				value="#{cc.attrs.iPai.soggRiferimentoPai.cittadinanza2}"
+				effect="fold" editable="false" filter="true"
+				filterMatchMode="startsWith"
+				disabled="#{cc.attrs.iPai.disabilitaBeneficiarioRif}">
+				<f:selectItem itemLabel="- seleziona -" noSelectionOption="true" />
+				<f:selectItems value="#{cc.attrs.iPai.listaCittadinanze}" />
+				<!-- 	               <p:ajax event="change" process="@this" listener="#{cc.attrs.iPai.onUpdateDatiPrinc()}" /> -->
+				<p:ajax partialSubmit="true" process="@this" />
+			</p:selectOneMenu>
+			
+			<p:outputLabel id="lblAnnoNascita" value="Anno di nascita *" /> 
+			<p:spinner  id="spAnnoNascita" value="#{cc.attrs.iPai.soggRiferimentoPai.annoNascita}"
+				disabled="#{cc.attrs.iPai.disabilitaBeneficiarioRif}" size="4"
+				maxlength="4" min="1900" thousandSeparator="">
+					<p:ajax  process="@this" event="change"  listener="#{cc.attrs.iPai.onAnnoNascitaChange()}" />
+			</p:spinner>
+			
+			<h:outputLabel value="" />
+			<h:panelGrid columns="2">
+			<webred:pnlComuneNazione id="comuneNazioneNascita"
+					disabled="#{cc.attrs.iPai.disabilitaBeneficiarioRif}" extraLabelRequired="true"
+					comuneNazioneManBean="#{cc.attrs.iPai.comuneNazioneNascitaMan}"/>
+			</h:panelGrid>
+
+			<h:outputLabel value="" />
+			<h:outputLabel value="" />
+
+			<h:outputLabel value="Via di residenza *" />
+			<p:inputText disabled="#{cc.attrs.iPai.disabilitaBeneficiarioRif}"
+				size="50" value="#{cc.attrs.iPai.soggRiferimentoPai.viaResidenza}">
+				<p:ajax event="blur" />
+			</p:inputText>
+			<h:outputLabel value="*" />
+			<h:panelGrid columns="2">
+				<webred:pnlComuneNazione
+					disabled="#{cc.attrs.iPai.disabilitaBeneficiarioRif}"
+					comuneNazioneManBean="#{cc.attrs.iPai.comuneNazioneResidenzaMan}"
+					pnlToUpdate="#{p:component('pnlCheckNonDisp')}" />
+				<h:panelGrid id="pnlCheckNonDisp" columns="1">
+					<h:panelGroup>
+						<p:selectBooleanCheckbox
+						    disabled="#{cc.attrs.iPai.disabilitaBeneficiarioRif}"
+							value="#{cc.attrs.iPai.soggRiferimentoPai.nazioneResidenzaNonDefinita}"
+							rendered="#{not cc.attrs.iPai.comuneNazioneResidenzaMan.comuneRendered}"
+							itemLabel="Non disponibile" >
+							<p:ajax event="change" partialSubmit="true" process="@this"/>
+						</p:selectBooleanCheckbox>
+						<webredcs:tooltipInfo
+							title="Stato estero di residenza non definito"
+							valueList="#{cc.attrs.iPai.nazioneResidenzaList}"
+							rendered="#{not cc.attrs.iPai.comuneNazioneResidenzaMan.comuneRendered}" />
+					</h:panelGroup>
+				</h:panelGrid>
+			</h:panelGrid>
+
+		</h:panelGrid>
+		<p:outputPanel id="pnlSincronizza" rendered="#{cc.attrs.iPai.accessoEsternoDatiCartella}">
+			 <h:panelGrid columns="3" rendered="#{!cc.attrs.iPai.soggRiferimentoPai.allineatoAnagrafica}"  >     
+				<p:outputLabel value="Il caso associato a questo codice fiscale ha diversi dati anagrafici"
+					style="font-weight:bold;color:red;"/>
+				<p:commandButton value="Sincronizza dati anagrafici" partialSubmit="true"
+					action="#{cc.attrs.iPai.soggRiferimentoPai.sincronizzaDatiAnagrafici()}"
+					update="@(.updateOnSincronizzazione)" />
+				<webredcs:tooltipInfo title="Dati anagrafici da caso" stringList="#{cc.attrs.iPai.soggRiferimentoPai.tooltipDifferenzeAnagrafica}"/>
+		    </h:panelGrid>
+			  <h:panelGrid columns="3" rendered="#{!cc.attrs.iPai.soggRiferimentoPai.allineatoResidenza}">
+			    <p:outputLabel value="Il caso associato a questo codice fiscale ha un diverso indirizzo di residenza"
+					style="font-weight:bold;color:red;"/>
+				<p:commandButton value="Sincronizza residenza" partialSubmit="true"
+					action="#{cc.attrs.iPai.sincronizzaResidenza(cc.attrs.iPai.soggRiferimentoPai)}"
+					update="@(.updateOnSincronizzazione)" />
+					<webredcs:tooltipInfo title="Residenza da caso" stringList="#{cc.attrs.iPai.soggRiferimentoPai.tooltipDifferenzeResidenza}"/>
+			  </h:panelGrid>
+		</p:outputPanel>
+	</p:fieldset>
+	<p:spacer height="10px" />
+	 <p:fieldset id="pnlAltroBeneficiario" legend="Altri beneficiari" rendered="#{!cc.attrs.iPai.unicoBeneficiario}">
+            <p:outputPanel id="pnlBeneficiarioExtraFascicolo" columns="2"
+               rendered="#{!cc.attrs.iPai.testataDisabled and !cc.attrs.iPai.unicoBeneficiario}">
+
+               <p:selectOneButton value="#{cc.attrs.iPai.nuovoInsSoggManuale}">
+	           		<f:selectItem itemLabel="Inserisci soggetto" itemValue="#{true}" />
+					<f:selectItem itemLabel="Carica soggetto da anagrafe" itemValue="#{false}" />
+	            	 <p:ajax update="pnlBeneficiarioExtraFascicolo"
+                     listener="#{cc.attrs.iPai.onChangeTipoNuovoInsSogg()}"/>
+	        	</p:selectOneButton>
+
+               <h:panelGrid columns="6" rendered="#{cc.attrs.iPai.nuovoInsSoggManuale}" >
+                  <p:outputLabel id="lblAltroCognome" for="txtAltroCognome" value="Cognome" />
+                  <p:inputText id="txtAltroCognome" value="#{cc.attrs.iPai.altroSoggettoTmp.cognome}" />
+
+                  <p:outputLabel id="lblAltroNome" for="txtAltroNome" value="Nome" />
+                  <p:inputText id="txtAltroNome" value="#{cc.attrs.iPai.altroSoggettoTmp.nome}" />
+
+                  <p:outputLabel id="lblAltroCodFiscale" value="Cod.fiscale *" />
+                  <webredcs:pnlCodFisc codFiscValue="#{cc.attrs.iPai.altroSoggettoTmp.cf}"
+                     codFiscValMes="Codice Fiscale in testata non corretto"/>
+                     
+                  <p:outputLabel id="lblAltroAnnoNascita" value="Anno di nascita *" />
+                  <p:spinner value="#{cc.attrs.iPai.altroSoggettoTmp.annoNascita}" size="4" maxlength="4" min="1900"/>   
+
+                  <p:outputLabel id="lblAltroCittadinanza" value="Cittadinanza *" />
+                  <p:selectOneMenu label="Cittadinanza" id="txtAltroCittadinanza"
+                     value="#{cc.attrs.iPai.altroSoggettoTmp.cittadinanza}" effect="fold" editable="false"
+                     filter="true" filterMatchMode="startsWith">
+                     <f:selectItem itemLabel="- seleziona -" noSelectionOption="true" />
+                     <f:selectItems value="#{cc.attrs.iPai.listaCittadinanze}" />
+                  </p:selectOneMenu>
+
+                  <p:spacer width="10px" />
+                  <p:commandButton value="Aggiungi Beneficiario" title="Aggiungi Beneficiario" icon="ui-icon-plusthick" partialSubmit="true"
+                     process="@parent:pnlBeneficiarioExtraFascicolo" update="@parent:pnlAltroBeneficiario:"
+                     action="#{cc.attrs.iPai.addSoggettoManuale()}" />
+
+               </h:panelGrid>
+               <p:outputPanel rendered="#{!cc.attrs.iPai.nuovoInsSoggManuale}"
+                  style="font-size:0.8em;">
+                  <webredcs:pnlUserSearchExt id="beneficiarioUserSearch" styleClass="myAutoComplete"
+                     userManBean="#{userSearchBeanExt}"/>
+
+                  <p:commandButton title="Aggiungi Beneficiario" value="Aggiungi Beneficiario" icon="ui-icon-plusthick" partialSubmit="true"
+                     process="@parent:pnlBeneficiarioExtraFascicolo" update="@parent:pnlAltroBeneficiario:"
+                     action="#{cc.attrs.iPai.addDaAnagrafeWrapper(userSearchBeanExt.selSoggetto)}"/>
+               </p:outputPanel>
+
+           </p:outputPanel>
+            <p:outputPanel rendered="#{!cc.attrs.iPai.unicoBeneficiario}">
+            <p:dataTable id="dataTableBeneficiari"
+               value="#{cc.attrs.iPai.altriSoggetti}" var="beneficiario"
+               emptyMessage="Inserire almeno un beneficiario" rowKey="#{beneficiario.cf}"
+               selection="#{cc.attrs.iPai.soggettoSelezionato}" selectionMode="single">
+               <p:column style="text-align:center;">
+                  <p:graphicImage value="#{resource['webredcs/img/created.png']}" width="10px"
+                     rendered="#{beneficiario.csASoggetto!=null}" title="Cartella Sociale presente" style="cursor:pointer"/>
+               </p:column>
+  		        <p:column headerText="Cognome">
+                  <p:inplace disabled="#{cc.attrs.iPai.testataDisabled  and beneficiario.cognome!=null}"
+                     emptyLabel="-" editor="true">
+                     <p:inputText value="#{beneficiario.cognome}" />
+                  </p:inplace>
+               </p:column>
+               <p:column headerText="Nome">
+                  <p:inplace disabled="#{cc.attrs.iPai.testataDisabled and beneficiario.nome!=null}"
+                     emptyLabel="-" editor="true">
+                     <p:inputText value="#{beneficiario.nome}" />
+                  </p:inplace>
+               </p:column>
+               
+              <p:column headerText="Cod.fiscale" style="text-align:center;">
+                  <p:inplace
+                     disabled="#{cc.attrs.iPai.testataDisabled and beneficiario.cf!=null}"
+                     emptyLabel="-" editor="true">
+                     <p:inputText value="#{beneficiario.cf}" />
+                  </p:inplace>
+               </p:column>
+
+               <p:column headerText="Anno nascita" style="text-align:center;" width="50">
+                  <p:outputLabel value="#{beneficiario.annoNascita}"
+                     rendered="#{cc.attrs.iPai.testataDisabled and beneficiario.annoNascita!=null}"/>
+                  <p:spinner value="#{beneficiario.annoNascita}"
+                     rendered="#{!cc.attrs.iPai.testataDisabled or beneficiario.annoNascita==null}"
+                     size="4" maxlength="4" min="1900">
+                     <p:ajax event="change" process="@this"
+                        listener="#{cc.attrs.iPai.onUpdateDatiRif(beneficiario)}"/>
+                  </p:spinner>
+               </p:column>
+
+               <p:column headerText="Cittadinanza" style="text-align:center;">
+                  <p:outputLabel value="#{beneficiario.cittadinanza}"
+                     rendered="#{cc.attrs.iPai.testataDisabled and beneficiario.cittadinanza!=null}"/>
+                  <p:selectOneMenu
+                     rendered="#{!cc.attrs.iPai.testataDisabled or beneficiario.cittadinanza==null}"
+                     label="Cittadinanza" value="#{beneficiario.cittadinanza}" effect="fold" editable="false" filter="true"
+                     filterMatchMode="startsWith">
+                     <f:selectItem itemLabel="- seleziona -" noSelectionOption="true" />
+                     <f:selectItems value="#{cc.attrs.iPai.listaCittadinanze}" />
+                     <p:ajax event="change" process="@this"
+                        listener="#{cc.attrs.iPai.onUpdateDatiRif(beneficiario)}" />
+                  </p:selectOneMenu>
+               </p:column>
+               <p:column headerText="Cittadinanza 2" rendered="false" style="text-align:center;">
+                  <p:outputLabel value="#{beneficiario.cittadinanza2}"
+                     rendered="#{cc.attrs.iPai.testataDisabled and beneficiario.cittadinanza2!=null}" />
+                  <p:selectOneMenu
+                     rendered="#{!cc.attrs.iPai.testataDisabled or beneficiario.cittadinanza2==null}"
+                     label="Cittadinanza" value="#{beneficiario.cittadinanza2}" effect="fold" editable="false" filter="true"
+                     filterMatchMode="startsWith">
+                     <f:selectItem itemLabel="- seleziona -" noSelectionOption="true" />
+                     <f:selectItems value="#{cc.attrs.iPai.listaCittadinanze}" />
+                     <p:ajax event="change" process="@this"
+                        listener="#{cc.attrs.iPai.onUpdateDatiRif(beneficiario)}"/>
+                  </p:selectOneMenu>
+               </p:column>
+                <p:column headerText="Residenza">
+                   <p:inplace
+                     disabled="#{cc.attrs.iPai.testataDisabled and beneficiario.viaResidenza!=null}"
+                     emptyLabel="-" editor="true">
+                     <p:inputText value="#{beneficiario.viaResidenza}" />
+                  </p:inplace>
+                  <p:outputLabel value=" #{cc.attrs.iPai.getLabelLuogoResidenza(beneficiario)}"/>   
+                </p:column>
+             
+               <p:column style="text-align:center;" width="20px;">
+                  <p:commandButton title="Elimina" icon="ui-icon-trash"
+                     disabled="#{cc.attrs.iPai.disabilitaDatiBeneficiario}"
+                     action="#{cc.attrs.iPai.removeBeneficiario(beneficiario)}" process="@this"
+                     update="dataTableBeneficiari" />
+               </p:column>
+               
+               <f:facet name="footer">
+           		<p:commandButton id="btnBeneficiarioRif" value="Imposta come riferimento" icon="ui-icon-pencil" 
+           		 	disabled="#{cc.attrs.iPai.disabilitaDatiBeneficiario}"
+           		 	rendered="#{cc.attrs.iPai.cambiaBeneficiarioRiferimento}"
+           			update="@(.updateOnChangeBeneficiarioRif)" process="dataTableBeneficiari"
+               		action="#{fglInterventoBean.onChangeBeneficiario()}" />
+           	   </f:facet>
+
+            </p:dataTable>
+            </p:outputPanel>
+            </p:fieldset>
+</p:panel>
+	</composite:implementation>
+</h:body>
+</html>

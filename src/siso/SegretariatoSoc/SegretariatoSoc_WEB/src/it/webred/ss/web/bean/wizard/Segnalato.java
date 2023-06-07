@@ -202,10 +202,10 @@ public class Segnalato {
 			
 			
 			//codTipologiaFam = segnalato.getTipologia_familiare();
-			formLavoroMan.setIdCondLavorativa(segnalato.getLavoro()!=null ? new BigDecimal(segnalato.getLavoro()) : null);
-			formLavoroMan.setIdProfessione(segnalato.getProfessione()!=null ? new BigDecimal(segnalato.getProfessione()) : null);
-			formLavoroMan.setIdSettoreImpiego(segnalato.getSettImpiegoId()!=null ? segnalato.getSettImpiegoId() : null);
-			formLavoroMan.setIdTitoloStudio(segnalato.getTitoloStudioId()!=null ? segnalato.getTitoloStudioId() : null);
+			formLavoroMan.setIdCondLavorativa(segnalato.getCondLavoroId());
+			formLavoroMan.setIdProfessione(segnalato.getProfessioneId());
+			formLavoroMan.setIdSettoreImpiego(segnalato.getSettImpiegoId());
+			formLavoroMan.setIdTitoloStudio(segnalato.getTitoloStudioId());
 		}
 	}
 	
@@ -229,8 +229,8 @@ public class Segnalato {
 		segnalatoModel.setNoteDomicilio(noteDomicilio);
 		
 		//segnalatoModel.setTipologia_familiare(codTipologiaFam);
-		segnalatoModel.setLavoro(formLavoroMan.getIdCondLavorativa()!=null && formLavoroMan.getIdCondLavorativa().longValue()>0 ? formLavoroMan.getIdCondLavorativa().toString() : null);
-		segnalatoModel.setProfessione(formLavoroMan.getIdProfessione()!=null && formLavoroMan.getIdProfessione().longValue()>0 ? formLavoroMan.getIdProfessione().toString() : null);	
+		segnalatoModel.setCondLavoroId(formLavoroMan.getIdCondLavorativa()!=null && formLavoroMan.getIdCondLavorativa().longValue()>0 ? formLavoroMan.getIdCondLavorativa() : null);
+		segnalatoModel.setProfessioneId(formLavoroMan.getIdProfessione()!=null && formLavoroMan.getIdProfessione().longValue()>0 ? formLavoroMan.getIdProfessione() : null);	
 	    segnalatoModel.setSettImpiegoId(formLavoroMan.getIdSettoreImpiego()!=null && formLavoroMan.getIdSettoreImpiego().longValue()>0 ? formLavoroMan.getIdSettoreImpiego() : null);
 	    segnalatoModel.setTitoloStudioId(formLavoroMan.getIdTitoloStudio()!=null && formLavoroMan.getIdTitoloStudio().longValue()>0 ? formLavoroMan.getIdTitoloStudio() : null); 
 	

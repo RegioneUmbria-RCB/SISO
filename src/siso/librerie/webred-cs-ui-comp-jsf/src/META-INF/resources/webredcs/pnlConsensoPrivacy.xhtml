@@ -27,7 +27,7 @@
 	    	<p:outputLabel  value="Modulo privacy non sottoscrivibile"   rendered="#{cc.attrs.iConsensoPrivacy.privacy==null and cc.attrs.iConsensoPrivacy.utenteAnonimo }" style="font-weight:bold;color:orange;" />
 	     	<p:outputLabel  value="#{cc.attrs.iConsensoPrivacy.privacy}" rendered="#{cc.attrs.iConsensoPrivacy.privacy!=null}" style="font-weight:bold;"/>
 			
-			<p:commandButton value="Modulo Privacy"  ajax="false" 
+			<p:commandButton id="btnPrivacyDownload" value="Modulo Privacy"  ajax="false" 
 							 title="Download PDF del Modulo Privacy" icon="ui-icon-arrowthickstop-1-s" 
 							 rendered="#{!cc.attrs.readOnly and cc.attrs.iConsensoPrivacy.privacy==null}"
 							 disabled="#{!cc.attrs.canPrint}" onclick="PrimeFaces.monitorDownload(start, stop);" >

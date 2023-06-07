@@ -52,6 +52,7 @@ import it.webred.cs.jsf.bean.DatiUserSearchBean;
 import it.webred.cs.jsf.manbean.ComuneNazioneNascitaMan;
 import it.webred.cs.jsf.manbean.UserSearchBeanExt;
 import it.webred.cs.jsf.manbean.superc.CsUiCompBaseBean;
+import it.webred.ct.config.model.AmTabNazioni;
 import it.webred.jsf.bean.ComuneBean;
 import it.webred.siso.ws.ricerca.dto.PersonaDettaglio;
 
@@ -80,10 +81,6 @@ public class ErogazioniInterventiBean extends CsUiCompBaseBean {
 	private List<SelectItem> tipoInterventosCustom;
 	private List<SelectItem> tipoInterventosInps;
 	private List<SelectItem> listaTipoFiltroInterventi;
-	
-	//SISO-945
-	private ComuneNazioneNascitaMan comuneNazioneNascitaMan = new ComuneNazioneNascitaMan();
-		
 	
 	private String idRow;
 
@@ -129,31 +126,34 @@ public class ErogazioniInterventiBean extends CsUiCompBaseBean {
 		provenienteDaFascicolo = true;
 		CsAAnaIndirizzo residenza = findIndirizzoResidenzaCaso(soggetto);
 		String via = residenza!=null ? residenza.getLabelIndirizzo() : null;
-		soggettoErogazioneSelezionato = new SoggettoErogazioneBean(soggetto,via, getCasoComuneResidenza(residenza), residenza.getStatoCod(), true);
-		lazyListaErogazioniModel.setSelectedSoggettoErogazioneCF(soggettoErogazioneSelezionato.getCodiceFiscale());
+		CsAAnagrafica ana = soggetto.getCsAAnagrafica();
+		String jsonComuneNascita = getJsonNascitaComuneBean(soggetto);
+		soggettoErogazioneSelezionato = new SoggettoErogazioneBean(soggetto,via, getCasoComuneResidenza(residenza), residenza.getStatoCod(), jsonComuneNascita, true);
+		lazyListaErogazioniModel.setSelectedSoggettoErogazioneCF(soggettoErogazioneSelezionato.getCf());
 		
 		//init();
 	}
-	public void SetFromPai(CsASoggettoLAZY soggetto)
-	{
-		provenienteDaFascicolo = false;
-		CsAAnaIndirizzo residenza = findIndirizzoResidenzaCaso(soggetto);
-		String via = residenza!=null ? residenza.getLabelIndirizzo() : null;
-		soggettoErogazioneSelezionato = new SoggettoErogazioneBean(soggetto,via, getCasoComuneResidenza(residenza), residenza.getStatoCod(),  true);
-		lazyListaErogazioniModel.setSelectedSoggettoErogazioneCF(soggettoErogazioneSelezionato.getCodiceFiscale());
-		//init();
-		this.fglInterventoBean.setFromPai(Boolean.TRUE);
+
+	
+	  public void SetFromPai(CsASoggettoLAZY soggetto) { 
+		  provenienteDaFascicolo = false; 
+		  CsAAnaIndirizzo residenza = findIndirizzoResidenzaCaso(soggetto);
+		  String via = residenza!=null ? residenza.getLabelIndirizzo() : null; String
+		  jsonComuneNascita = getJsonNascitaComuneBean(soggetto);
+		  soggettoErogazioneSelezionato = new SoggettoErogazioneBean(soggetto,via, getCasoComuneResidenza(residenza), residenza.getStatoCod(),jsonComuneNascita, true);
+		  lazyListaErogazioniModel.setSelectedSoggettoErogazioneCF(soggettoErogazioneSelezionato.getCf()); //init();
+		  this.fglInterventoBean.setFromPai(Boolean.TRUE); 
 	}
+	 	
 	public void SetFromPai(CsPaiMastSoggDTO soggettoPai)
 	{
 		provenienteDaFascicolo = false;
-//		CsAAnaIndirizzo residenza = findIndirizzoResidenzaCaso(soggetto);
-//		String via = residenza!=null ? residenza.getLabelIndirizzo() : null;
 		soggettoErogazioneSelezionato = new SoggettoErogazioneBean(soggettoPai);
-		lazyListaErogazioniModel.setSelectedSoggettoErogazioneCF(soggettoErogazioneSelezionato.getCodiceFiscale());
+		lazyListaErogazioniModel.setSelectedSoggettoErogazioneCF(soggettoErogazioneSelezionato.getCf());
 		//init();
 		fglInterventoBean.setFromPai(Boolean.TRUE);
 	}
+	
 	public void inizializzaSoggettoDialog(DatiUserSearchBean sbean){
 		PersonaDettaglio p  = sbean!=null ? sbean.getSoggetto() : null;
 		if(p!=null) {
@@ -165,14 +165,14 @@ public class ErogazioniInterventiBean extends CsUiCompBaseBean {
 			}
 		}
 		this.nuovoSoggetto=sbean;
-		this.inizializzaDialogo(null);
+		this.inizializzaDialogo(null, null);
 	}
 	
 	protected void loadSoggettoErogazioneSelezionato() {
 		ObjectMapper om = new ObjectMapper();
 		DatiUserSearchBean sbean = this.nuovoSoggetto;
 		String idPersonaSelezionata = sbean!=null ? sbean.getId() : null;
-		comuneNazioneNascitaMan = new ComuneNazioneNascitaMan();
+		ComuneNazioneNascitaMan comuneNazioneNascitaMan = new ComuneNazioneNascitaMan();
 		if (StringUtils.isNotEmpty(idPersonaSelezionata)) {
 				PersonaDettaglio p = null;
 				if(sbean.getSoggetto()!=null)
@@ -186,6 +186,11 @@ public class ErogazioniInterventiBean extends CsUiCompBaseBean {
 				
 			if (p != null) {
 				comuneNazioneNascitaMan.init(p.getComuneNascita(), p.getNazioneNascita());
+				String jsonNascita = comuneNazioneNascitaMan.isComune()? comuneNazioneNascitaMan.getComuneMan().getComuneAsJson() : null;
+				AmTabNazioni nazioneNascita = comuneNazioneNascitaMan.isNazione() ? comuneNazioneNascitaMan.getNazioneMan().getNazione(): null;
+				String nazNascitaCod = nazioneNascita!=null ? nazioneNascita.getCodIstatNazione() : null;
+				
+				
 				
 				String jsonResidenza=null;
 				if(p.getComuneResidenza()!=null){
@@ -194,7 +199,8 @@ public class ErogazioniInterventiBean extends CsUiCompBaseBean {
 						jsonResidenza = om.writeValueAsString(comuneResidenza);
 					} catch (JsonProcessingException e1) {}
 				}
-				soggettoErogazioneSelezionato = new SoggettoErogazioneBean(p.getCognome(), p.getNome(), p.getCodfisc(), p.getCittadinanza(), p.getDataNascita(), p.getIndirizzoCivicoResidenza(), jsonResidenza, p.getSesso(),  true);
+				String nazioneResidenza = p.getNazioneResidenza()!=null ? p.getNazioneResidenza().getCodIstatNazione() : null;
+				soggettoErogazioneSelezionato = new SoggettoErogazioneBean(p.getCognome(), p.getNome(), p.getCodfisc(), p.getCittadinanza(), p.getDataNascita(), p.getIndirizzoCivicoResidenza(), jsonResidenza, nazioneResidenza, jsonNascita, nazNascitaCod, p.getSesso(),  true);
 				
 				//SISO-962 fine
 			}
@@ -205,13 +211,10 @@ public class ErogazioniInterventiBean extends CsUiCompBaseBean {
 			if (soggetto != null){
 				CsAAnaIndirizzo residenza = findIndirizzoResidenzaCaso(soggetto);
 				String via = residenza!=null ? residenza.getLabelIndirizzo() : null;
-				soggettoErogazioneSelezionato.integraDatiMancanti(soggetto, via, getCasoComuneResidenza(residenza));
+				String nazResidenza = residenza!=null ? residenza.getStatoCod() : null;
+				String jsonComuneNascita = getJsonNascitaComuneBean(soggetto);
 				
-			    if(p.getComuneNascita()==null && p.getNazioneNascita()==null){
-			    	CsAAnagrafica ana = soggetto.getCsAAnagrafica();
-					comuneNazioneNascitaMan = getComuneNazioneNascitaMan(ana.getComuneNascitaCod(), ana.getComuneNascitaDes(), ana.getProvNascitaCod(), 
-																		 ana.getStatoNascitaCod(), ana.getStatoNascitaDes());
-			    }
+				soggettoErogazioneSelezionato.integraDatiMancanti(soggetto, via, getCasoComuneResidenza(residenza), nazResidenza, jsonComuneNascita);
 			}
 			
 		}else
@@ -267,47 +270,18 @@ public class ErogazioniInterventiBean extends CsUiCompBaseBean {
 		}
 	}
 	
-	//SISO-748
-	public void inizializzaDialogoByTreeView(TipoInterventoManBean tipoIntTreeView){
-		this.tipoInterventoId = tipoIntTreeView.getSelTipoInterventoId();
-		if (tipoInterventoId == null || tipoInterventoId <= 0) {
-			addError("Selezionare un tipo di intervento", "Selezionare un tipo di intervento");
-			return;
-		}
-
-		Long tipoInterventoCustomId = tipoIntTreeView.getSelTipoInterventoCutomId();
-		Long catSoc = tipoIntTreeView.getSelCatSocialeId();
-
-		fglInterventoBean.inizializzaErogazione(soggettoErogazioneSelezionato);
-		fglInterventoBean.inizializzaDialog(false, true, 0L, 0L, tipoInterventoId, tipoInterventoCustomId, catSoc, true, true, "Nuova Erogazione", null, true, null, null);
-		fglInterventoBean.setDatiInterventoTabRendered(false);
-		
-		//overwrite header
-		fglInterventoBean.setHeaderDialogo( "Erogazione - " + fglInterventoBean.getErogazioneInterventoBean().getNomeTipoErogazione());
-		
-		this.tipoInterventoId=0L;
-		this.tipoIntCustomName="";
-		
-		if (isTreeViewTipoIntervento())// SISO-1110
-			this.tipoIntTreeView.reset();
-		else
-			this.tipoIntTreeView.resetCustomIstat();
-		
-		UserSearchBeanExt ubean = (UserSearchBeanExt)getReferencedBean("userSearchBeanExt");
-		ubean.clearParameters();
-		nuovoSoggetto=null;
-	}
-	
 	public void inizializzaDialogoByTreeView(TipoInterventoManBean tipoIntTreeView, StrutturaDisponibilitaDTO struttDisp){
 		this.tipoInterventoId = tipoIntTreeView.getSelTipoInterventoId();
 		if (tipoInterventoId == null || tipoInterventoId <= 0) {
 			addError("Selezionare un tipo di intervento", "Selezionare un tipo di intervento");
 			return;
 		}
+		Long tipoInterventoCustomId = tipoIntTreeView.getSelTipoInterventoCutomId();
+		Long catSoc = tipoIntTreeView.getSelCatSocialeId();
 		
 		//boolean datiErogazioniTabRendered = !provenienteDaFascicolo;
 		fglInterventoBean.inizializzaErogazione(soggettoErogazioneSelezionato);
-		fglInterventoBean.inizializzaDialog(false, true, 0L, 0L, tipoInterventoId, tipoIntTreeView.getSelTipoInterventoCutomId(), tipoIntTreeView.getSelCatSocialeId(), true, true, "Nuova Erogazione", null, true, struttDisp, null);
+		fglInterventoBean.inizializzaDialog(false, true, 0L, 0L, tipoInterventoId, tipoInterventoCustomId, catSoc, true, true, "Nuova Erogazione", null, true, struttDisp, null);
 		fglInterventoBean.setDatiInterventoTabRendered(false);
 		
 		//overwrite header
@@ -324,58 +298,6 @@ public class ErogazioniInterventiBean extends CsUiCompBaseBean {
 		UserSearchBeanExt ubean = (UserSearchBeanExt)getReferencedBean("userSearchBeanExt");
 		ubean.clearParameters();
 		nuovoSoggetto=null;
-	}
-	public void inizializzaDialogo(Object obj) {
-
-		if (obj == null) {
-			
-			this.tipoInterventoId = tipoIntTreeView.getSelTipoInterventoId();
-			if (tipoInterventoId == null || tipoInterventoId <= 0) {
-				addError("Selezionare un tipo di intervento", "Selezionare un tipo di intervento");
-				return;
-			}
-
-			if( !provenienteDaFascicolo )
-				loadSoggettoErogazioneSelezionato();
-			//SISO 945 - Inizio
-			else{
-				//proviene da fascicolo, devo recuperare dal soggetto i dati anagrafici
-				 
-			}
-			//SISO 945 - Fine
-			//boolean datiErogazioniTabRendered = !provenienteDaFascicolo;
-			Long tipoInterventoCustomId = tipoIntTreeView.getSelTipoInterventoCutomId();
-			Long catSoc = tipoIntTreeView.getSelCatSocialeId();
-			fglInterventoBean.inizializzaErogazione(soggettoErogazioneSelezionato, comuneNazioneNascitaMan);
-			fglInterventoBean.inizializzaDialog(false, true, 0L, 0L, tipoInterventoId, tipoInterventoCustomId, catSoc, true, true, "Nuova Erogazione", null, provenienteDaFascicolo, null, null);
-			
-		}else{
-			ErogInterventoRowBean row = (ErogInterventoRowBean) obj;
-			logger.info("Carico un'erogazione esistente per modificarla:"+row.getIdRow());
-			boolean datiErogazioniTabRendered = row.isRenderBtnEroga() || row.isRenderBtnAvviaErog();
-			fglInterventoBean.inizializzaRiferimentoErogazione(row);
-			
-			BaseDTO dto = new BaseDTO();
-			fillEnte(dto);
-			dto.setObj(row.getMaster().getIdInterventoEsegMaster());
-			CsIInterventoEsegMast master = interventoService.getCsIInterventoEsegMastById(dto);
-			fglInterventoBean.inizializzaDialog(false, datiErogazioniTabRendered, row.getIdIntervento(), row.getDiarioId(), row.getIdTipoIntervento(), row.getIdTipoInterventoCustom(), row.getIdCatSociale(), true, true, "Modifica Erogazione", master, provenienteDaFascicolo, null, null);
-		}
-		
-		fglInterventoBean.setDatiInterventoTabRendered(false);
-		this.nuovoSoggetto=null;
-		//overwrite header
-		fglInterventoBean.setHeaderDialogo( "Erogazione - " + fglInterventoBean.getErogazioneInterventoBean().getNomeTipoErogazione());
-		
-		this.tipoInterventoId=0L;
-		this.tipoIntCustomName="";
-		
-		if (isTreeViewTipoIntervento())// SISO-1110
-			this.tipoIntTreeView.reset();
-		else
-			this.tipoIntTreeView.resetCustomIstat();
-		
-		//TODO:Reset ricerca
 	}
 
 	public void inizializzaDialogo(Object obj, InserimentoConsuntivazioneDTO consuntivazione) {
@@ -398,32 +320,31 @@ public class ErogazioniInterventiBean extends CsUiCompBaseBean {
 			// SISO 945 - Fine
 			// boolean datiErogazioniTabRendered = !provenienteDaFascicolo;
 			Long catSoc = tipoIntTreeView.getSelCatSocialeId();
-			Long tipoInterventoCustom = tipoIntTreeView.getSelTipoInterventoCutomId();
-			fglInterventoBean.inizializzaErogazione(soggettoErogazioneSelezionato, comuneNazioneNascitaMan);
-			fglInterventoBean.inizializzaDialog(false, true, 0L, 0L, tipoInterventoId, tipoInterventoCustom, catSoc, true, true, "Nuova Erogazione", null, provenienteDaFascicolo, null, consuntivazione);
-
+			Long tipoInterventoCustomId = tipoIntTreeView.getSelTipoInterventoCutomId();
+			fglInterventoBean.inizializzaErogazione(soggettoErogazioneSelezionato /*, comuneNazioneNascitaMan*/);
+			fglInterventoBean.inizializzaDialog(false, true, 0L, 0L, tipoInterventoId, tipoInterventoCustomId, catSoc, true, true, "Nuova Erogazione", null, provenienteDaFascicolo, null, consuntivazione);
+			
 		} else {
 			ErogInterventoRowBean row = (ErogInterventoRowBean) obj;
 			logger.info("Carico un'erogazione esistente per modificarla:" + row.getIdRow());
 			boolean datiErogazioniTabRendered = row.isRenderBtnEroga() || row.isRenderBtnAvviaErog();
-			fglInterventoBean.inizializzaRiferimentoErogazione(row);
 
 			BaseDTO dto = new BaseDTO();
 			fillEnte(dto);
 			dto.setObj(row.getMaster().getIdInterventoEsegMaster());
 			CsIInterventoEsegMast master = interventoService.getCsIInterventoEsegMastById(dto);
-
+			if(master==null)
+				fglInterventoBean.inizializzaRiferimentoErogazione(row);
+			
 			fglInterventoBean.inizializzaDialog(false, datiErogazioniTabRendered, row.getIdIntervento(),
 					row.getDiarioId(), row.getIdTipoIntervento(), row.getIdTipoInterventoCustom(),
-					row.getIdCatSociale(), true, true, "Modifica Erogazione", master, provenienteDaFascicolo,
-					null, consuntivazione);
+					row.getIdCatSociale(), true, true, "Modifica Erogazione", master, provenienteDaFascicolo, null, consuntivazione);
 		}
 
 		fglInterventoBean.setDatiInterventoTabRendered(false);
 		this.nuovoSoggetto = null;
 		// overwrite header
-		fglInterventoBean.setHeaderDialogo(
-				"Erogazione - " + fglInterventoBean.getErogazioneInterventoBean().getNomeTipoErogazione());
+		fglInterventoBean.setHeaderDialogo("Erogazione - " + fglInterventoBean.getErogazioneInterventoBean().getNomeTipoErogazione());
 
 		this.tipoInterventoId = 0L;
 		this.tipoIntCustomName = "";
@@ -461,17 +382,21 @@ public class ErogazioniInterventiBean extends CsUiCompBaseBean {
 				return;
 			}	
 			
+			SoggettoErogazioneBean beneficiario = rowBean.getBeneficiarioRiferimento();
+			String riferimento = "num. "+ idErogazione +" ["+ beneficiario.getCognome()+" "+beneficiario.getNome()+"]";
+			
 			try{
 						
 		    	interventoService.rimuoviInterventoEseguitoMast(dto);
 		    	
 			}catch(Exception t){
 				logger.error(t);
-				addError("Eliminazione non riuscita", "Errore nell'eliminazione dell'intervento");
+				addError("Eliminazione non riuscita", "Errore nell'eliminazione dell'intervento "+ riferimento);
 				return;
 				
 			}
-		
+			
+			this.addInfo("", "Eliminazione dell'intervento "+ riferimento +" completata con successo");
 		}
 	}
 
@@ -630,7 +555,7 @@ public class ErogazioniInterventiBean extends CsUiCompBaseBean {
 		List<String> cfs = new ArrayList<String>();
 		
 		for (SoggettoErogazioneBean soggettoErogazione : beneficiari) {
-			String cf = soggettoErogazione.getCodiceFiscale();
+			String cf = soggettoErogazione.getCf();
 			cfs.add(cf);
 		}
 		

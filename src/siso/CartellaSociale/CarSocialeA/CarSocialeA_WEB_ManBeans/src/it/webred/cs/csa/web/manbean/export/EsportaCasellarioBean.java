@@ -963,7 +963,7 @@ public class EsportaCasellarioBean extends CsUiCompBaseBean {
 		CsASoggettoLAZY s = soggettoErogazioneSelezionato.getCsASoggetto();
 		Long casoId = s != null ? s.getCsACaso().getId() : null;
 		
-		String cf = soggettoErogazioneSelezionato.getCodiceFiscale()!=null ? soggettoErogazioneSelezionato.getCodiceFiscale() : ""; //SISO-928		
+		String cf = soggettoErogazioneSelezionato.getCf()!=null ? soggettoErogazioneSelezionato.getCf() : ""; //SISO-928		
 		
 		fglInterventoBean.setSinaMan(buildSinaMan(casoId, getDettaglioDaGestire().getInterventoEsegMastId(), cf));
 
@@ -1069,6 +1069,7 @@ public class EsportaCasellarioBean extends CsUiCompBaseBean {
 					row.setStato(eseg.getStato());
 					row.setDataErogazione(eseg.getDataEsecuzione());
 					row.setDataErogazioneA(eseg.getDataEsecuzioneA());
+					row.setDataEvento(eseg.getDataEvento());
 					
 					dto.setObj(eseg.getId());
 					boolean esportata = psExportService.verificaErogazioneEsportataByEsegId(dto);

@@ -35,7 +35,7 @@
    		<p:spacer height="10px"/>
    		<p:fieldset id="fsBeneficiarioRif" legend="Beneficiario di riferimento" styleClass="#{'updateOnSincronizzazione'}">
    		    
-	         <h:panelGrid id="pnlUnicoBeneficiario" columns="6" >
+	         <h:panelGrid id="pnlUnicoBeneficiario" columns="4" >
 	            <p:outputLabel id="lblCognome" for="txtCognome" value="Cognome" />
 	            <p:inputText id="txtCognome" required="#{fglInterventoBean.erogazioneInterventoBean.unicoBeneficiario}"
 	               requiredMessage="Inserire il cognome del soggetto in Testata"
@@ -53,20 +53,13 @@
 	            <p:outputLabel id="lblCodFiscale" value="Cod.fiscale *" />
 	            <h:panelGrid columns="2">
 		            <webredcs:pnlCodFisc 
-		               codFiscValue="#{fglInterventoBean.erogazioneInterventoBean.soggettoErogazione.codiceFiscale}"
+		               codFiscValue="#{fglInterventoBean.erogazioneInterventoBean.soggettoErogazione.cf}"
 		               codFiscValMes="Codice Fiscale del benficiario di riferimento non corretto"
 		               disabled="#{fglInterventoBean.erogazioneInterventoBean.disabilitaBeneficiarioRif}" />
 		             <p:graphicImage value="#{resource['webredcs/img/created.png']}" width="20px"
 	                     rendered="#{fglInterventoBean.erogazioneInterventoBean.soggettoErogazione.csASoggetto!=null}" title="Cartella Sociale presente" style="cursor:pointer"/>   
                 </h:panelGrid>     
 	
-	           <p:outputLabel id="lblAnnoNascita" value="Anno di nascita *" />
-	            <p:spinner value="#{fglInterventoBean.erogazioneInterventoBean.soggettoErogazione.annoNascita}"
-	               disabled="#{fglInterventoBean.erogazioneInterventoBean.disabilitaBeneficiarioRif}" 
-	               size="4" maxlength="4"
-	               min="1900" >	
-				   <p:ajax partialSubmit="true" process="@this" />
-				</p:spinner>
 				<h:outputText value="Sesso *" />
 				<webred:pnlSesso id="pnlSessoBeneficiario" value="#{fglInterventoBean.erogazioneInterventoBean.sessoBeneficiario}" 
 				    disabled="#{fglInterventoBean.erogazioneInterventoBean.disabilitaBeneficiarioRif}"  
@@ -91,7 +84,22 @@
 	               <f:selectItems value="#{fglInterventoBean.erogazioneInterventoBean.listaCittadinanze}" />
 	               <p:ajax event="change" process="@this" listener="#{fglInterventoBean.erogazioneInterventoBean.onUpdateDatiPrinc()}" />
 	            </p:selectOneMenu>  
-	            
+	
+	           <p:outputLabel id="lblAnnoNascita" value="Anno di nascita *" />
+	            <p:spinner value="#{fglInterventoBean.erogazioneInterventoBean.soggettoErogazione.annoNascita}"
+	               disabled="#{fglInterventoBean.erogazioneInterventoBean.disabilitaBeneficiarioRif}" 
+	               size="4" maxlength="4"
+	               min="1900" >	
+				   <p:ajax partialSubmit="true" process="@this" />
+				</p:spinner>
+				
+	           <h:outputLabel value="Luogo di nascita" />
+	           <h:panelGrid colums="1">
+				<webred:pnlComuneNazione id="comuneNazioneNascita"  pnlToUpdate="#{p:component('comuneNazioneNascita')}"
+							comuneNazioneManBean="#{fglInterventoBean.erogazioneInterventoBean.comuneNazioneNascitaMan}" 
+							disabled="#{fglInterventoBean.erogazioneInterventoBean.disabilitaBeneficiarioRif}" extraLabelRequired="false" />
+				</h:panelGrid>	
+					
 	            <h:outputLabel value="Via di residenza *" />
 				 <p:inputText disabled="#{fglInterventoBean.erogazioneInterventoBean.disabilitaBeneficiarioRif}" 
 				 	size="50"
@@ -106,7 +114,10 @@
 	         	<h:panelGrid id="pnlCheckNonDisp" columns="1">
 	         	<h:panelGroup>	         		
 	         	 <p:selectBooleanCheckbox value="#{fglInterventoBean.erogazioneInterventoBean.soggettoErogazione.nazioneResidenzaNonDefinita}" 
-	         	 rendered="#{not fglInterventoBean.erogazioneInterventoBean.comuneNazioneResidenzaMan.comuneRendered}" itemLabel="Non disponibile"/> 	
+	         	 						  rendered="#{not fglInterventoBean.erogazioneInterventoBean.comuneNazioneResidenzaMan.comuneRendered}" 
+	         	 						  itemLabel="Non disponibile">
+	         	 	  <p:ajax event="change" partialSubmit="true" process="@this"/>
+	         	 </p:selectBooleanCheckbox> 	
 	         	<!-- SISO-1021 aggiunto tooltipInfo -->		
 		         <webredcs:tooltipInfo title="Stato estero di residenza non definito" valueList="#{fglInterventoBean.erogazioneInterventoBean.nazioneResidenzaList}" 
 		         rendered="#{not fglInterventoBean.erogazioneInterventoBean.comuneNazioneResidenzaMan.comuneRendered}"   />
@@ -116,18 +127,21 @@
 	           
 	         </h:panelGrid>
 	         <p:outputPanel id="pnlSincronizza" rendered="#{fglInterventoBean.erogazioneInterventoBean.accessoEsternoDatiCartella}">
-		         <h:panelGrid columns="2" rendered="#{!fglInterventoBean.erogazioneInterventoBean.soggettoErogazione.allineatoAnagrafica}" >
+		         <h:panelGrid columns="3" rendered="#{!fglInterventoBean.erogazioneInterventoBean.soggettoErogazione.allineatoAnagrafica}" >
 	   		     	<p:outputLabel value="Il caso associato a questo codice fiscale ha diversi dati anagrafici" style="font-weight:bold;color:red;"/>
+	   		     	<webredcs:tooltipInfo title="Dati anagrafici da caso" stringList="#{fglInterventoBean.erogazioneInterventoBean.soggettoErogazione.tooltipDifferenzeAnagrafica}"/>
 	   		     	<p:commandButton value="Sincronizza dati anagrafici" partialSubmit="true"
-	   		     					 action="#{fglInterventoBean.erogazioneInterventoBean.sincronizzaDatiAnagrafici()}" update="@(.updateOnSincronizzazione)"/>
+	   		     					 action="#{fglInterventoBean.erogazioneInterventoBean.sincronizzaDatiAnagrafici()}" 
+	   		     					 update="@(.updateOnSincronizzazione)"/>
 	   		     </h:panelGrid>
-	   		     <h:panelGrid columns="2" rendered="#{!fglInterventoBean.erogazioneInterventoBean.soggettoErogazione.allineatoResidenza}">
+	   		     <h:panelGrid columns="3" rendered="#{!fglInterventoBean.erogazioneInterventoBean.soggettoErogazione.allineatoResidenza}">
 		        	<p:outputLabel value="Il caso associato a questo codice fiscale ha un diverso indirizzo di residenza"
-	            				   style="font-weight:bold;color:red;" rendered="#{!fglInterventoBean.erogazioneInterventoBean.soggettoErogazione.allineatoResidenza}" />
-		        	<p:commandButton value="Sincronizza residenza" partialSubmit="true"
+	            				   style="font-weight:bold;color:red;"/>
+		        	<webredcs:tooltipInfo title="Residenza da caso" stringList="#{fglInterventoBean.erogazioneInterventoBean.soggettoErogazione.tooltipDifferenzeResidenza}"/>
+		            <p:commandButton value="Sincronizza residenza" partialSubmit="true"
 		        					 action="#{fglInterventoBean.erogazioneInterventoBean.sincronizzaResidenza(fglInterventoBean.erogazioneInterventoBean.soggettoErogazione)}" 
 		        				     update="@(.updateOnSincronizzazione)"/>
-		         </h:panelGrid>
+		          </h:panelGrid>
 	         </p:outputPanel>
          </p:fieldset>
          <p:spacer height="10px"/>
@@ -161,7 +175,7 @@
                   <p:inputText id="txtAltroNome" value="#{fglInterventoBean.erogazioneInterventoBean.altroSoggettoTmp.nome}" />
 
                   <p:outputLabel id="lblAltroCodFiscale" value="Cod.fiscale *" />
-                  <webredcs:pnlCodFisc codFiscValue="#{fglInterventoBean.erogazioneInterventoBean.altroSoggettoTmp.codiceFiscale}"
+                  <webredcs:pnlCodFisc codFiscValue="#{fglInterventoBean.erogazioneInterventoBean.altroSoggettoTmp.cf}"
                      codFiscValMes="Codice Fiscale in testata non corretto"/>
                      
                   <p:outputLabel id="lblAltroAnnoNascita" value="Anno di nascita *" />
@@ -195,7 +209,7 @@
             <p:outputPanel rendered="#{!fglInterventoBean.erogazioneInterventoBean.unicoBeneficiario}">
             <p:dataTable id="dataTableBeneficiari"
                value="#{fglInterventoBean.erogazioneInterventoBean.altriSoggetti}" var="beneficiario"
-               emptyMessage="Inserire almeno un beneficiario" rowKey="#{beneficiario.codiceFiscale}"
+               emptyMessage="Inserire almeno un beneficiario" rowKey="#{beneficiario.cf}"
                selection="#{fglInterventoBean.erogazioneInterventoBean.beneficiarioSel}" selectionMode="single">
                <p:column style="text-align:center;">
                   <p:graphicImage value="#{resource['webredcs/img/created.png']}" width="10px"
@@ -216,9 +230,9 @@
                
               <p:column headerText="Cod.fiscale" style="text-align:center;">
                   <p:inplace
-                     disabled="#{fglInterventoBean.erogazioneInterventoBean.testataDisabled and beneficiario.codiceFiscale!=null}"
+                     disabled="#{fglInterventoBean.erogazioneInterventoBean.testataDisabled and beneficiario.cf!=null}"
                      emptyLabel="-" editor="true">
-                     <p:inputText value="#{beneficiario.codiceFiscale}" />
+                     <p:inputText value="#{beneficiario.cf}" />
                   </p:inplace>
                </p:column>
 

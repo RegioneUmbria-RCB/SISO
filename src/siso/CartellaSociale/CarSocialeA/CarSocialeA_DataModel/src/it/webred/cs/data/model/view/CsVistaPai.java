@@ -317,7 +317,7 @@ public class CsVistaPai implements Serializable {
 		CsPaiMastSogg riferimento = null;
 		while(itr.hasNext()) {
 			CsPaiMastSogg sogg = itr.next();
-			if (sogg.getIntestatario()) {
+			if (sogg.getRiferimento()) {
 				riferimento = sogg;
 			} else {
 				altri.add(sogg);

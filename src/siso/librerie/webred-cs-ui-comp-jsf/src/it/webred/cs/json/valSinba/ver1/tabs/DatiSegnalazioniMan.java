@@ -31,11 +31,6 @@ public class DatiSegnalazioniMan {
 		
 	}
 	
-	public void aggiungiComponente()
-	{
-		
-	}
-	
 	public void valorizzaJson(DatiSegnalazioniBean DatiSegnalazioniBean){
 		//Valorizzo dati componente familiare
 		//datiFamigliaBean.setLstCittadinanze(lstCittadinanza);

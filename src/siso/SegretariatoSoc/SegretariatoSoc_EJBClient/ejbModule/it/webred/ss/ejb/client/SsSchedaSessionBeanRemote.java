@@ -1,5 +1,11 @@
 package it.webred.ss.ejb.client;
 
+import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.List;
+
+import javax.ejb.Remote;
+
 import it.webred.ss.data.model.ArBufferSsInvio;
 import it.webred.ss.data.model.SsAnagrafica;
 import it.webred.ss.data.model.SsAnagraficaLog;
@@ -12,27 +18,20 @@ import it.webred.ss.data.model.SsInterventoEconomicoTipo;
 import it.webred.ss.data.model.SsMotivazione;
 import it.webred.ss.data.model.SsMotivazioniSchede;
 import it.webred.ss.data.model.SsOOrganizzazione;
-import it.webred.ss.data.model.SsRelUffPcontOrg;
 import it.webred.ss.data.model.SsScheda;
 import it.webred.ss.data.model.SsSchedaAccessoInviante;
 import it.webred.ss.data.model.SsSchedaSegnalante;
 import it.webred.ss.data.model.SsSchedaSegnalato;
-import it.webred.ss.data.model.SsTipoScheda;
 import it.webred.ss.ejb.dto.BaseDTO;
 import it.webred.ss.ejb.dto.DatiPrivacyDTO;
 import it.webred.ss.ejb.dto.DatiSchedaListDTO;
+import it.webred.ss.ejb.dto.NotaDTO;
 import it.webred.ss.ejb.dto.SchedaUdcBaseDTO;
 import it.webred.ss.ejb.dto.SchedaUdcDTO;
 import it.webred.ss.ejb.dto.SintesiSchedeUfficioDTO;
 import it.webred.ss.ejb.dto.SsSearchCriteria;
 import it.webred.ss.ejb.dto.report.DatiPrivacyPdfDTO;
 import it.webred.ss.ejb.dto.report.DatiSchedaPdfDTO;
-
-import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.List;
-
-import javax.ejb.Remote;
 
 @Remote
 public interface SsSchedaSessionBeanRemote {
@@ -136,11 +135,11 @@ public interface SsSchedaSessionBeanRemote {
 	public boolean esisteDuplicatoAlias(BaseDTO dto);
 	public List<SsAnagrafica> readAnagraficheByAlias(BaseDTO dto);
 	public SsAnagraficaLog findAnagraficaLogById(BaseDTO dto);
-	public List<BigDecimal> findUfficioNota(BaseDTO dto);
 	
 	public DatiPrivacyPdfDTO getDatiReportPrivacy(BaseDTO dto);
 	public DatiSchedaPdfDTO getDatiReportScheda(BaseDTO dto);
 	public SchedaUdcDTO loadSchedaUdcCompleta(BaseDTO dto);
 	public SchedaUdcBaseDTO loadSchedaUdcBase(BaseDTO dto);
+	public List<NotaDTO> loadNoteDiarioAccessibili(BaseDTO dto);
 	
 	}

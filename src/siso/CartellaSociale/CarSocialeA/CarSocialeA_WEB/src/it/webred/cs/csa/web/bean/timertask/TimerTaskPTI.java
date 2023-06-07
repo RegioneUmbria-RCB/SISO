@@ -347,9 +347,10 @@ public class TimerTaskPTI {
 		if (source == null) {
 			return null;
 		}
-		CsPaiMastSoggDTO target = new CsPaiMastSoggDTO();
-		String[] ignore = { "pai" };
-		BeanUtils.copyProperties(source, target, ignore);
+		
+		CsPaiMastSoggDTO target = new CsPaiMastSoggDTO(source);
+		//String[] ignore = { "pai" };
+		//BeanUtils.copyProperties(source, target, ignore);
 		return target;
 	}
 
@@ -534,6 +535,8 @@ public class TimerTaskPTI {
 	private CsPaiMastSogg recuperaMinore(InserimentoMinoreDaStruttura ins, Long idCaso) {
 		CsPaiMastSogg minore = new CsPaiMastSogg();
 		minore.setAnnoNascita(ins.getAnnoNascita());
+		minore.setNazioneNascita(ins.getNazioneNascita());
+		minore.setComuneNascita(ins.getComuneNascita());
 		minore.setCasoId(idCaso);
 		minore.setCf(ins.getCf());
 		minore.setCittadinanza(ins.getCittadinanza());
@@ -543,7 +546,7 @@ public class TimerTaskPTI {
 		minore.setDiarioId(ins.getDiarioPaiId());
 		minore.setDtIns(new Date());
 		minore.setDtMod(new Date());
-		minore.setIntestatario(true);
+		minore.setRiferimento(true);
 		//Se da Rilevazione presenze ho inserito il comune di residenza la Nazione di residenza è Italia
 		//ma in CS se viene valorizzato il comune di residenza la nazione è a null
 		if(ins.getComuneResidenza()!=null && !ins.getComuneResidenza().isEmpty()) {

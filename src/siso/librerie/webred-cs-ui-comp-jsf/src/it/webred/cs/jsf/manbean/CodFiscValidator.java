@@ -1,7 +1,6 @@
 package it.webred.cs.jsf.manbean;
 
 import javax.faces.application.FacesMessage;
-import javax.faces.bean.ManagedProperty;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
 import javax.faces.context.FacesContext;
@@ -49,7 +48,7 @@ public class CodFiscValidator implements Validator {
 					throw new ValidatorException(new FacesMessage("Codice fiscale non valido"));
 				}
 			} catch (Exception e) {
-				throw new ValidatorException(new FacesMessage("Errore nel validatore: "+e.getMessage()));
+				throw new ValidatorException(new FacesMessage("Errore nel validatore: "+e.getMessage()), e);
 			}
 		}
 	}

@@ -388,28 +388,9 @@
 				<p:spacer height="5" />
 			</h:panelGrid>
 			
-				<f:metadata>
-					<ui:param name="bugFixProvv" value="#{fascicoloBean.listaProvvedimentiBean}" />
-					<ui:param name="solaLettura" value="#{fascicoloBean.provedimentiMinoriReadOnly}" />
-				</f:metadata>
-				<ui:include src="/jsp/protected/provvedimentiMinori/listaProvedimentiTribunale.xhtml">
-					<ui:param name="dataBean" value="#{fascicoloBean.listaProvvedimentiBean}" />
-				</ui:include>
+			<webredcs:pnlListaProvvedimentiMinori iDatiLista="#{fascicoloBean.listaProvvedimentiBean}"/>
+
 			</h:form>
-			
-			<p:dialog id="provMinoriDialog" widgetVar="ProvMinoriDialog" closable="true"
-            		  header="Provvedimenti Tribunale" modal="true" 
-          			  resizable="true" dynamic="true" position="center" draggable="true"
-          			  onShow="var scrollPanel = jQuery(PF('ProvMinoriScrollPanel').jqId);
-          			  							scrollPanel.width(scrollPanel.width()+25);
-          			  							scrollPanel.height(jQuery(window).height()*0.85);">
-          		
-          		<p:scrollPanel mode="native" widgetVar="ProvMinoriScrollPanel">
-	          		<ui:include src="/jsp/protected/provvedimentiMinori/dialogProvvedimentiMinori.xhtml">
-						<ui:param name="provMinoriTabManBean" value="#{fascicoloBean.listaProvvedimentiBean.currProvvedimentiMinoriManBean}" />
-					</ui:include>
-				</p:scrollPanel>
-			</p:dialog>
 		</p:outputPanel>
 		</p:tab>
 
