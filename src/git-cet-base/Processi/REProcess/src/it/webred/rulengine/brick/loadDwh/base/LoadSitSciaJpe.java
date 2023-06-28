@@ -71,15 +71,20 @@ public class LoadSitSciaJpe extends AbstractLoaderCommand implements Rule {
 			String gg_istruttoria = (String) ctx.get(_jrulecfg.getProperty("rengine.rule.param.in.20.descr"));
 			String gg_prop_motiv = (String) ctx.get(_jrulecfg.getProperty("rengine.rule.param.in.21.descr"));
 			String gg_interruzione = (String) ctx.get(_jrulecfg.getProperty("rengine.rule.param.in.22.descr"));
-			String gg_sospensione = (String) ctx.get(_jrulecfg.getProperty("rengine.rule.param.in.23.descr"));
+			String gg_sospensione = (String) ctx.get(_jrulecfg.getProperty("rengine.rule.param.in.23.descr"));			
+			String imprese = (String) ctx.get(_jrulecfg.getProperty("rengine.rule.param.in.24.descr"));
+			String dataAvvioProc = (String) ctx.get(_jrulecfg.getProperty("rengine.rule.param.in.25.descr"));
+			String idPratica = (String) ctx.get(_jrulecfg.getProperty("rengine.rule.param.in.26.descr"));
+			String statoPratica = (String) ctx.get(_jrulecfg.getProperty("rengine.rule.param.in.27.descr"));
+			String note = (String) ctx.get(_jrulecfg.getProperty("rengine.rule.param.in.28.descr"));
 			
-			String provenienza = (String) ctx.get(_jrulecfg.getProperty("rengine.rule.param.in.24.descr"));
-			Timestamp dt_inizio_val = (Timestamp) ctx.get(_jrulecfg.getProperty("rengine.rule.param.in.25.descr"));
-			Timestamp dt_fine_val = (Timestamp) ctx.get(_jrulecfg.getProperty("rengine.rule.param.in.26.descr"));
-			Timestamp dt_exp_dato = (Timestamp) ctx.get(_jrulecfg.getProperty("rengine.rule.param.in.27.descr"));
-			Timestamp dt_inizio_dato = (Timestamp) ctx.get(_jrulecfg.getProperty("rengine.rule.param.in.28.descr"));
-			Timestamp dt_fine_dato = (Timestamp) ctx.get(_jrulecfg.getProperty("rengine.rule.param.in.29.descr"));
-			BigDecimal flag_dt_val_dato = (BigDecimal) ctx.get(_jrulecfg.getProperty("rengine.rule.param.in.30.descr"));
+			String provenienza = (String) ctx.get(_jrulecfg.getProperty("rengine.rule.param.in.29.descr"));
+			Timestamp dt_inizio_val = (Timestamp) ctx.get(_jrulecfg.getProperty("rengine.rule.param.in.30.descr"));
+			Timestamp dt_fine_val = (Timestamp) ctx.get(_jrulecfg.getProperty("rengine.rule.param.in.31.descr"));
+			Timestamp dt_exp_dato = (Timestamp) ctx.get(_jrulecfg.getProperty("rengine.rule.param.in.32.descr"));
+			Timestamp dt_inizio_dato = (Timestamp) ctx.get(_jrulecfg.getProperty("rengine.rule.param.in.33.descr"));
+			Timestamp dt_fine_dato = (Timestamp) ctx.get(_jrulecfg.getProperty("rengine.rule.param.in.34.descr"));
+			BigDecimal flag_dt_val_dato = (BigDecimal) ctx.get(_jrulecfg.getProperty("rengine.rule.param.in.35.descr"));
 			
 			if(fk_ente_sorgente==null || dt_exp_dato==null || flag_dt_val_dato==null)
 				return new RejectAck("SCIA JPE PRATICHE EDILIZIE - Dati obbligatori non forniti");
@@ -114,7 +119,12 @@ public class LoadSitSciaJpe extends AbstractLoaderCommand implements Rule {
 			sciaJpe.setGg_istruttoria(gg_istruttoria);
 			sciaJpe.setGg_prop_motiv(gg_prop_motiv);
 			sciaJpe.setGg_interruzione(gg_interruzione);
-			sciaJpe.setGg_sospensione(gg_sospensione);
+			sciaJpe.setGg_sospensione(gg_sospensione);			
+			sciaJpe.setImprese(imprese);
+			sciaJpe.setDataAvvioProc(dataAvvioProc);
+			sciaJpe.setIdPratica(idPratica);
+			sciaJpe.setStatoPratica(statoPratica);
+			sciaJpe.setNote(note);
 			
 			sciaJpe.setProvenienza( provenienza );
 			sciaJpe.setDtInizioVal((DtIniVal)DwhUtils.getDataDwh(new DtIniVal(), dt_inizio_val));

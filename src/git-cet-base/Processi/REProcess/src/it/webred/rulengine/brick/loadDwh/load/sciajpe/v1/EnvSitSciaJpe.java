@@ -39,7 +39,7 @@ public class EnvSitSciaJpe extends EnvInsertDwh {
 		 * 
 		 */
 		
-		//non è stata rilevata alcuna chiave primaria nella tabella BUCAP_AFM
+		//non ï¿½ stata rilevata alcuna chiave primaria nella tabella BUCAP_AFM
 		params.put("ID_ORIG", null);
 		params.put("FK_ENTE_SORGENTE", new BigDecimal(FK_ENTE_SORGENTE));
 		
@@ -63,7 +63,12 @@ public class EnvSitSciaJpe extends EnvInsertDwh {
 		params.put("GG_ISTRUTTORIA", rs.getString("GG_ISTRUTTORIA"));
 		params.put("GG_PROP_MOTIV", rs.getString("GG_PROP_MOTIV"));
 		params.put("GG_INTERRUZIONE", rs.getString("GG_INTERRUZIONE"));
-		params.put("GG_SOSPENSIONE", rs.getString("GG_SOSPENSIONE"));
+		params.put("GG_SOSPENSIONE", rs.getString("GG_SOSPENSIONE"));		
+		params.put("IMPRESE", rs.getString("IMPRESE"));
+		params.put("DATA_AVVIO_PROC", rs.getString("DATA_AVVIO_PROC"));
+		params.put("ID_PRATICA", rs.getString("ID_PRATICA"));
+		params.put("STATO_PRATICA", rs.getString("STATO_PRATICA"));
+		params.put("NOTE", rs.getString("NOTE"));
 
 		//String generatoriNumero = rs.getString("GENERATORI_NUMERO");
 		//params.put("GENERATORI_NUMERO", generatoriNumero != null ? new BigDecimal(generatoriNumero.replace(",", ".")) : null);

@@ -1923,7 +1923,7 @@ public class BaseAction {
 		} catch (Exception e) {
 			logger.error("Errore eliminazione utente",e);
 			rollback(con);
-			throw new Exception("Impossibile cancellare lutente a causa si informazioni collegate");
+			throw new Exception("Impossibile cancellare l'utente a causa si informazioni collegate", e);
 		} finally {
 			chiudiConnessione(con, st);
 		}

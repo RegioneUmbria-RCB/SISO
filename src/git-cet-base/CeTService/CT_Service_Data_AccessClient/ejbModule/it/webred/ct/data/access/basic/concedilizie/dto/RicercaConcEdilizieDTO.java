@@ -1,13 +1,16 @@
 package it.webred.ct.data.access.basic.concedilizie.dto;
 
-import it.webred.ct.data.access.basic.catasto.dto.ParametriCatastaliDTO;
+
+import java.util.Date;
+
 import it.webred.ct.data.access.basic.common.dto.RicercaCivicoDTO;
 import it.webred.ct.data.access.basic.common.dto.RicercaOggettoDTO;
-import it.webred.ct.support.datarouter.CeTBaseObject;
+
 
 public class RicercaConcEdilizieDTO extends RicercaOggettoDTO {
 	
 	private static final long serialVersionUID = 1L;
+	
 	private String idConc;
 	private String idExtConc;
 	
@@ -16,10 +19,13 @@ public class RicercaConcEdilizieDTO extends RicercaOggettoDTO {
 	private String progressivoNumero;
 	private String protocolloAnno;
 	private String protocolloNumero;
-	
+	private Date dtRifDal;
+	private Date dtRifAl;
 	private String tipoCatasto;
 	
 	private RicercaCivicoDTO indirizzo;
+	
+	private Integer limit = 0;
 	
 	public RicercaConcEdilizieDTO(){
 		indirizzo = new RicercaCivicoDTO();
@@ -99,6 +105,42 @@ public class RicercaConcEdilizieDTO extends RicercaOggettoDTO {
 	public String getTipoCatasto() {
 		return tipoCatasto;
 	}
+
+
+	public Integer getLimit() {
+		return limit;
+	}
+
+
+	public void setLimit(Integer limit) {
+		this.limit = limit;
+	}
+
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
+
+	public Date getDtRifDal() {
+		return dtRifDal;
+	}
+
+
+	public void setDtRifDal(Date dtRifDal) {
+		this.dtRifDal = dtRifDal;
+	}
+
+
+	public Date getDtRifAl() {
+		return dtRifAl;
+	}
+
+
+	public void setDtRifAl(Date dtRifAl) {
+		this.dtRifAl = dtRifAl;
+	}
+	
 	
 
 }

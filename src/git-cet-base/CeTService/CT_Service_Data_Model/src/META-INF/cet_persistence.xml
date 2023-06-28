@@ -144,6 +144,7 @@
 		<class>it.webred.ct.data.model.ici.SitTIciVersamenti</class>
 		<class>it.webred.ct.data.model.ici.SitTIciVia</class>
 		<class>it.webred.ct.data.model.ici.SitTIciContrib</class>
+		<class>it.webred.ct.data.model.ici.SitTIciContit</class>
 		<class>it.webred.ct.data.model.anagrafe.SitComune</class>
 		<class>it.webred.ct.data.model.anagrafe.SitDCivico</class>
 		<class>it.webred.ct.data.model.anagrafe.SitDCivicoV</class>

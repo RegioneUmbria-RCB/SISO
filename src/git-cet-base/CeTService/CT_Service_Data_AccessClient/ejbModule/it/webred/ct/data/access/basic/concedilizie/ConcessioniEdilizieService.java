@@ -4,6 +4,7 @@ import it.webred.ct.data.access.basic.catasto.dto.RicercaOggettoCatDTO;
 import it.webred.ct.data.access.basic.common.dto.RicercaCivicoDTO;
 import it.webred.ct.data.access.basic.common.dto.RicercaOggettoDTO;
 import it.webred.ct.data.access.basic.common.dto.RicercaSoggettoDTO;
+import it.webred.ct.data.access.basic.concedilizie.dto.ConcEdiSearchCriteria;
 import it.webred.ct.data.access.basic.concedilizie.dto.ConcessioneDTO;
 import it.webred.ct.data.access.basic.concedilizie.dto.IndirizzoConcessioneDTO;
 import it.webred.ct.data.access.basic.concedilizie.dto.RicercaConcEdilizieDTO;
@@ -43,6 +44,6 @@ public interface ConcessioniEdilizieService {
 	public ConcVisuraDTO getVisuraById(RicercaConcEdilizieDTO rc);
 	public List<ConcVisuraDTO> getVisureCiviciDelFabbricato(RicercaOggettoCatDTO ro);
 	public List<String> getVisureTipiAtto(RicercaConcEdilizieDTO rc);
-	
+	public List<Object[]> getPraticheEdiliByParams(ConcEdiSearchCriteria rce);
 
 }

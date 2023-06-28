@@ -1,11 +1,13 @@
 package it.webred.ct.data.access.basic.concedilizie;
 
 import it.webred.ct.data.access.basic.CTServiceBaseBean;
+
 import it.webred.ct.data.access.basic.catasto.dto.RicercaOggettoCatDTO;
 import it.webred.ct.data.access.basic.common.dto.RicercaCivicoDTO;
 import it.webred.ct.data.access.basic.common.dto.RicercaSoggettoDTO;
 import it.webred.ct.data.access.basic.common.utils.StringUtils;
 import it.webred.ct.data.access.basic.concedilizie.dao.ConcessioniEdilizieDAO;
+import it.webred.ct.data.access.basic.concedilizie.dto.ConcEdiSearchCriteria;
 import it.webred.ct.data.access.basic.concedilizie.dto.ConcessioneDTO;
 import it.webred.ct.data.access.basic.concedilizie.dto.IndirizzoConcessioneDTO;
 import it.webred.ct.data.access.basic.concedilizie.dto.RicercaConcEdilizieDTO;
@@ -370,6 +372,10 @@ public class ConcessioniEdilizieServiceBean extends CTServiceBaseBean implements
 		return concEdilizieDAO.getVisureTipiAtto();
 	}
 
+	@Override
+	public List<Object[]> getPraticheEdiliByParams(ConcEdiSearchCriteria rce) {
+		return concEdilizieDAO.getPraticheEdiliByParams(rce);
+	}
 	
 	
 }

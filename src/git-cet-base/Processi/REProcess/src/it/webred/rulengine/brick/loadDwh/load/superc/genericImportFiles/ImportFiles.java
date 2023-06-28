@@ -256,7 +256,7 @@ public abstract class ImportFiles<T extends EnvImport>  {
                         
                         preProcessingFiles();
                         
-                        log.info("Cerco file da elaorare in percorsoFiles=" + percorsoFiles); 
+                        log.info("Cerco file da elaborare in percorsoFiles=" + percorsoFiles); 
                         String[] files = this.cercaFileDaElaborare(percorsoFiles);
                         
 
@@ -421,6 +421,12 @@ public abstract class ImportFiles<T extends EnvImport>  {
                                         }
                                         
                                         List<String> campi = getValoriFromLine(tipoRecord,currentLine);
+                                        
+                                        if (campi == null || campi.size() == 0) {
+                                        	//se per qualche motivo (riga vuota, errori gestiti) getValoriFromLine() segnala che la riga deve essere saltata
+                                        	continue;
+                                        }
+                                        
                                         // nome campi sulla riga 1
                                         if (riga==1) {
                                                 StringBuffer s = new StringBuffer();

@@ -1,6 +1,5 @@
 package it.webred.ct.data.access.basic.catasto.dao;
 
-import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 
 import it.webred.ct.data.access.basic.CTQueryBuilder;
@@ -1330,12 +1329,32 @@ public class CatastoQueryBuilder extends CTQueryBuilder{
 		String hql = this.HQL_IMMO_BY_PARAMS;
 		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
 		
+		String foglio = criteria.getFoglio();
+		try {
+			if (foglio != null && !foglio.trim().equals("")) {
+				foglio = "" + Integer.parseInt(foglio);
+			}
+		} catch (Exception e) {
+			logger.warn("Parametro Foglio = " + foglio + " non utilizzabile perché non è un numero intero; non sarà preso in considerazione");
+			foglio = null;
+		}
+		
+		String unimm = criteria.getUnimm();
+		try {
+			if (unimm != null && !unimm.trim().equals("")) {
+				unimm = "" + Integer.parseInt(unimm);
+			}
+		} catch (Exception e) {
+			logger.warn("Parametro Unimm = " + unimm + " non utilizzabile perché non è un numero intero; non sarà preso in considerazione");
+			unimm = null;
+		}
+		
 		String cond = "";
 		cond = (criteria.getCodEnte() == null || criteria.getCodEnte().trim().equals("") ? cond : addOperator(cond) +  " c.codiFiscLuna = '"+criteria.getCodEnte()+"' " );
 		cond = (criteria.getSezione() == null || criteria.getSezione().trim().equals("") ? cond : addOperator(cond) +  " (c.idSezc is null or c.idSezc = '"+criteria.getSezione()+"') " );
-		cond = (criteria.getFoglio() == null || criteria.getFoglio().trim().equals("") ? cond : addOperator(cond) +  " u.id.foglio = TO_NUMBER('"+criteria.getFoglio()+"') " );
+		cond = (foglio == null || foglio.trim().equals("") ? cond : addOperator(cond) +  " u.id.foglio = TO_NUMBER('"+foglio+"') " );
 		cond = (criteria.getParticella() == null || criteria.getParticella().trim().equals("") ? cond : addOperator(cond) +  " u.id.particella = LPAD('"+criteria.getParticella()+"' ,5,'0') " );
-		cond = (criteria.getUnimm() == null || criteria.getUnimm().trim().equals("") ? cond : addOperator(cond) +  " u.id.unimm = TO_NUMBER('"+criteria.getUnimm()+"') " );
+		cond = (unimm == null || unimm.trim().equals("") ? cond : addOperator(cond) +  " u.id.unimm = TO_NUMBER('"+unimm+"') " );
 		cond = (criteria.getDtVal() == null ? cond : addOperator(cond) +  " u.dataInizioVal <= TO_DATE('"+  formatter.format(criteria.getDtVal())+"', 'dd/MM/yyyy') AND u.id.dataFineVal >= TO_DATE('"+  formatter.format(criteria.getDtVal())+"', 'dd/MM/yyyy') " );
 		
 		hql = hql.replace("@HQL_CONDIZIONI_WHERE@", cond);
@@ -1347,10 +1366,20 @@ public class CatastoQueryBuilder extends CTQueryBuilder{
 		String hql = this.HQL_TERRE_BY_PARAMS;
 		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
 		
+		String foglio = criteria.getFoglio();
+		try {			
+			if (foglio != null && !foglio.trim().equals("")) {
+				foglio = "" + Integer.parseInt(foglio);
+			}
+		} catch (Exception e) {
+			logger.warn("Parametro Foglio = " + foglio + " non utilizzabile perché non è un numero intero; non sarà preso in considerazione");
+			foglio = null;
+		}
+		
 		String cond = "";
 		cond = (criteria.getCodEnte() == null || criteria.getCodEnte().trim().equals("") ? cond : addOperator(cond) +  " (c.codiFiscLuna = '"+criteria.getCodEnte()+"' OR c.codNazionale = '"+criteria.getCodEnte()+"' ) " );
 		cond = (criteria.getSezione() == null || criteria.getSezione().trim().equals("") ? cond : addOperator(cond) +  " (c.idSezc is null or c.idSezc = '"+criteria.getSezione()+"' ) " );
-		cond = (criteria.getFoglio() == null || criteria.getFoglio().trim().equals("") ? cond : addOperator(cond) +  " t.id.foglio = TO_NUMBER('"+criteria.getFoglio()+"') " );
+		cond = (foglio == null || foglio.trim().equals("") ? cond : addOperator(cond) +  " t.id.foglio = TO_NUMBER('"+foglio+"') " );
 		cond = (criteria.getParticella() == null || criteria.getParticella().trim().equals("") ? cond : addOperator(cond) +  " t.id.particella = LPAD('"+criteria.getParticella()+"' ,5,'0') " );
 		cond = (criteria.getSub() == null || criteria.getSub().trim().equals("") ? cond : addOperator(cond) +  " NVL(t.id.sub,' ') = NVL('"+criteria.getSub()+"') " );
 		cond = (criteria.getDtVal() == null ? cond : addOperator(cond) +  " t.id.dataFine >= TO_DATE('"+  formatter.format(criteria.getDtVal())+"', 'dd/MM/yyyy') " );
