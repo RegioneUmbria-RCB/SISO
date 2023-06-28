@@ -23,7 +23,7 @@ public class EnvSitCConcessioniExtra17OnlyOne extends EnvInsertDwh {
 		
 		params.put("FK_ENTE_SORGENTE", 3);
 		
-		params.put("ID_ORIG_C_CONCESSIONI",rs.getString("A"));	
+		params.put("ID_ORIG_C_CONCESSIONI",rs.getString("A"));
 		params.put("ALTRI_NUMERO_PG", rs.getClob("EXTRA_A"));
 		params.put("ALTRI_ANNO_PG", rs.getClob("EXTRA_B"));
 		params.put("ALTRI_SUB_PG", rs.getClob("EXTRA_C"));
@@ -32,7 +32,7 @@ public class EnvSitCConcessioniExtra17OnlyOne extends EnvInsertDwh {
 		params.put("NPG_ATTO_PRAT_RIF", rs.getClob("EXTRA_F"));
 		params.put("ANNO_PG_ATTO_PRAT_RIF", rs.getClob("EXTRA_G"));
 		params.put("PRATICHE_COLLEGATE", rs.getClob("EXTRA_H"));
-
+		params.put("COD_UFFICIO", rs.getString("EXTRA_COD_UFF"));
 		params.put("DT_EXP_DATO", (Timestamp) altriParams[0]);
 		params.put("DT_INI_VAL_DATO", null);
 		params.put("DT_FINE_VAL_DATO", null);

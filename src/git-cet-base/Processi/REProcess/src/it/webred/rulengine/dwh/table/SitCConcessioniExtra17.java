@@ -17,6 +17,7 @@ public class SitCConcessioniExtra17 extends TabellaDwhMultiProv
 	private CLOB npgAttoPratRif;
 	private CLOB annoPgAttoPratRif;
 	private CLOB praticheCollegate;
+	private String codUfficio;
 
 	public Relazione getIdExtCConcessioni()
 	{
@@ -39,6 +40,7 @@ public class SitCConcessioniExtra17 extends TabellaDwhMultiProv
 				npgAttoPratRif +
 				annoPgAttoPratRif +
 				praticheCollegate +
+				(codUfficio == null ? "" : codUfficio) +
 				getProvenienza();
 	}
 
@@ -105,5 +107,13 @@ public class SitCConcessioniExtra17 extends TabellaDwhMultiProv
 	public void setPraticheCollegate(CLOB praticheCollegate) {
 		this.praticheCollegate = praticheCollegate;
 	}
+
+	public String getCodUfficio() {
+		return codUfficio;
+	}
+
+	public void setCodUfficio(String codUfficio) {
+		this.codUfficio = codUfficio;
+	}	
 
 }

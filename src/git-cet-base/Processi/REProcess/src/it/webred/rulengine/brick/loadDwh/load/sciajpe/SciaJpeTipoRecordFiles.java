@@ -1,24 +1,30 @@
 package it.webred.rulengine.brick.loadDwh.load.sciajpe;
 
-
-
 import it.webred.rulengine.brick.loadDwh.load.sciajpe.bean.Testata;
 
 import it.webred.rulengine.brick.loadDwh.load.superc.genericImportFiles.ImportFilesWithTipoRecord;
 import it.webred.rulengine.exception.RulEngineException;
+import it.webred.utils.DateFormat;
 
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import com.ibm.icu.util.Calendar;
+import java.util.Calendar;
 
 public class SciaJpeTipoRecordFiles<T extends SciaJpeTipoRecordEnv<Testata>> extends ImportFilesWithTipoRecord<T> {
+	
+	public static final int NUM_CAMPI = 26;
+	
+	private String myCurrentLine;
+	private boolean inStr = false;
+	private boolean escape = false;
 	
 	public SciaJpeTipoRecordFiles(T env) {
 		super(env);
@@ -29,35 +35,57 @@ public class SciaJpeTipoRecordFiles<T extends SciaJpeTipoRecordEnv<Testata>> ext
 	}//-------------------------------------------------------------------------
 
 	@Override
-	public List<String> getValoriFromLine(String tipoRecord,String currentLine) throws RulEngineException {		
-		/*
-		while (currentLine.indexOf(",,") > -1) {
-			currentLine = currentLine.replace(",,", ",\"\",");
+	public List<String> getValoriFromLine(String tipoRecord, String currentLine) throws RulEngineException {		
+		//per lettura formato csv
+		StringBuffer sb = new StringBuffer();
+		for (int i = 0; i < currentLine.toCharArray().length; i++) {
+			char car = currentLine.toCharArray()[i];
+			if (car == '\"') {
+				if (!inStr) {
+					inStr = true;
+				} else {
+					if ((i == currentLine.toCharArray().length - 1 || currentLine.toCharArray()[i + 1] == ',') && !escape) {
+						inStr = false;
+					} else if (i == currentLine.toCharArray().length - 1 || currentLine.toCharArray()[i + 1] == '\"') {
+						escape = !escape;
+						if (!escape) {
+							sb.append(car);
+						}
+					} else {
+						escape = false;
+						sb.append(car);
+					}
+				}
+			} else if (car == ',' && !inStr) {
+				sb.append("§@§");
+			} else {
+				sb.append(car);
+			}
 		}
-		if (currentLine.endsWith(",")) {
-			currentLine += "\"\"";
+		currentLine = sb.toString();
+		
+		//per concatenazione righe se c'è un a capo interno ad un valore
+		if (myCurrentLine == null) {
+			myCurrentLine = "";
 		}
-		*/
-		/*
-		 * il -1 sotto all'interno dello split server per generare gli item all'interno dell'array anche se vuoti nel file di testo (ad es. ###)
-		 */
-		String[] values = currentLine.split("#", -1);
+		myCurrentLine += ((myCurrentLine.equals("") ? "" : "\r\n") +
+						currentLine);
+		
+		String[] values = myCurrentLine.split("§@§", -1);
 		String[] ret = new String[values.length];
 		int idx = 0;
 		for (String value : values) {
-			/*
-			if (idx == 0 && value.startsWith("\"")) {
-				value = value.substring(1);
-			}
-			
-			if (idx == values.length - 1 && value.endsWith("\"")) {
-				value = value.substring(0, value.length() - 1);
-			}
-			*/
 			ret[idx] = value;
 			idx++;
 		}
-		//ret[ret.length - 1] = env.getTestata().getData();
+		
+		if (ret.length < NUM_CAMPI) {
+			return new ArrayList<String>();
+		}
+		
+		myCurrentLine = "";
+		inStr = false;
+		escape = false;
 		return Arrays.asList(ret);		
 	}//-------------------------------------------------------------------------
 
@@ -82,7 +110,7 @@ public class SciaJpeTipoRecordFiles<T extends SciaJpeTipoRecordEnv<Testata>> ext
 			st = con.createStatement();
 			st.execute(env.createTableUNO);
 		} catch (SQLException e1) {
-			log.warn("Tabella esiste gia�: OK, BENE");
+			log.warn("Tabella esiste gia�: OK, BENE");
 		}
 		finally {
 			try {
@@ -95,7 +123,7 @@ public class SciaJpeTipoRecordFiles<T extends SciaJpeTipoRecordEnv<Testata>> ext
 			st = con.createStatement();
 			st.execute(env.RE_SCIA_JPE_IDX);
 		} catch (SQLException e1) {
-			log.warn("INDICE esiste gia�: OK, BENE");
+			log.warn("INDICE esiste gia�: OK, BENE");
 		}
 		finally {
 			try {
@@ -108,10 +136,10 @@ public class SciaJpeTipoRecordFiles<T extends SciaJpeTipoRecordEnv<Testata>> ext
 	}
 
 	@Override
-	public it.webred.rulengine.brick.loadDwh.load.superc.genericImportFiles.bean.Testata getTestata(String file) throws RulEngineException {			
+	public it.webred.rulengine.brick.loadDwh.load.superc.genericImportFiles.bean.Testata getTestata(String file) throws RulEngineException {
 		Testata t = new Testata();
 		try {
-			t.setData(file.substring(0, 8));
+			t.setData(DateFormat.dateToString(new Date(Calendar.getInstance().getTime().getTime()), "yyyyMMdd"));
 			return t;	
 		} catch (Exception e) {
 			log.error("Errore cercando di leggere la testata del file",e);

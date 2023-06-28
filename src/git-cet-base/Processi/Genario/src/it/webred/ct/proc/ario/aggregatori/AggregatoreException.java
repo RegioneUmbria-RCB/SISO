@@ -7,7 +7,10 @@ public class AggregatoreException extends RulEngineException {
 
 	public AggregatoreException(String messaggio) {
 		super(messaggio);
-		
+	}
+	public AggregatoreException(String messaggio,Throwable e)
+	{
+		super(messaggio, e);
 	}
 
 	/**

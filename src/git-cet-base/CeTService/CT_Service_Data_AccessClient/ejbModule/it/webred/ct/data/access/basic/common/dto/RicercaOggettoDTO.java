@@ -1,13 +1,15 @@
 package it.webred.ct.data.access.basic.common.dto;
 
 import java.io.Serializable;
+
 import java.util.Date;
 
-import it.webred.ct.data.model.ici.VTIciCiviciAll;
 import it.webred.ct.support.datarouter.CeTBaseObject;
 
 public class RicercaOggettoDTO extends CeTBaseObject implements Serializable{
+	
 	private static final long serialVersionUID = 1L;
+	
 	private String provenienza; 
 	private String sezione;
     private String foglio;
@@ -15,7 +17,11 @@ public class RicercaOggettoDTO extends CeTBaseObject implements Serializable{
 	private String sub;
 	private String annoRif;
 	private Date dtRif;
+
 	
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
 	public String getProvenienza() {
 		return provenienza;
 	}

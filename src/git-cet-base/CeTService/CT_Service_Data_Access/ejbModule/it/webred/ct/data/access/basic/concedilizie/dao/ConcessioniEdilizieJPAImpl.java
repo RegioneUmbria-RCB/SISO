@@ -5,6 +5,7 @@ import it.webred.ct.data.access.basic.catasto.dto.RicercaOggettoCatDTO;
 import it.webred.ct.data.access.basic.common.dto.RicercaCivicoDTO;
 import it.webred.ct.data.access.basic.concedilizie.ConcessioniEdilizieException;
 import it.webred.ct.data.access.basic.concedilizie.ConcessioniEdilizieQueryBuilder;
+import it.webred.ct.data.access.basic.concedilizie.dto.ConcEdiSearchCriteria;
 import it.webred.ct.data.access.basic.concedilizie.dto.RicercaConcEdilizieDTO;
 import it.webred.ct.data.access.basic.concedilizie.dto.SoggettoConcessioneDTO;
 import it.webred.ct.data.model.concedilizie.ConcEdilizieVisure;
@@ -505,7 +506,7 @@ public class ConcessioniEdilizieJPAImpl extends CTServiceBaseDAO implements Conc
 		}
 		
 		return lst;
-	}
+	}//-------------------------------------------------------------------------
 	
 	@Override
 	public List<ConcEdilizieVisure> getVisureByListaId(RicercaCivicoDTO rc) {
@@ -523,6 +524,29 @@ public class ConcessioniEdilizieJPAImpl extends CTServiceBaseDAO implements Conc
 		}
 		
 		return lista;
-	}
+	}//-------------------------------------------------------------------------
+	
+	@Override
+	public List<Object[]> getPraticheEdiliByParams(ConcEdiSearchCriteria ro)  {
+		List<Object[]> lista = new ArrayList<Object[]>();
+		logger.debug("ConcessioniEdilizieJPAImpl.getPraticheEdiliByParams() " );
+		try {
+			String sql = (new ConcessioniEdilizieQueryBuilder()).getSQL_PRATICHE_EDILI_BY_PARAMS( ro );
+			Query q = manager_diogene.createNativeQuery( sql );
+			q.setMaxResults(ro.getRicercaOggetto().getLimit());
+			/*
+			q.setParameter(1, idExtConc);
+			Date dtFinVal = new Date(); 
+			q.setParameter(2,dtFinVal);
+			*/
+			lista = q.getResultList();		
+			logger.debug("Result size ["+lista.size()+"]");
+
+		} catch (Throwable t) {
+			logger.error("", t);
+			throw new ConcessioniEdilizieException (t);
+		}
+		return lista;
+	}//-------------------------------------------------------------------------
 	
 }

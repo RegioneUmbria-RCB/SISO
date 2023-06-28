@@ -3,11 +3,6 @@ package it.webred.rulengine.dwh.table;
 
 public class SitSciaJpe extends TabellaDwhMultiProv
 {
-	/*
-	private String identificativoImpianto;
-	private BigDecimal generatoriNumero;
-	private DataDwh dtFileCsv;
-	*/
 	private String numero_pratica;
 	private String data_apertura;
 	private String data_chiusura;
@@ -28,14 +23,19 @@ public class SitSciaJpe extends TabellaDwhMultiProv
 	private String gg_istruttoria;
 	private String gg_prop_motiv;
 	private String gg_interruzione;
-	private String gg_sospensione;
+	private String gg_sospensione;	
+	private String imprese;
+	private String dataAvvioProc;
+	private String idPratica;
+	private String statoPratica;
+	private String note;
 
 	
 	@Override
 	public String getValueForCtrHash(){
 		return numero_pratica + 
-				data_apertura +
-				data_chiusura +
+		data_apertura +
+		data_chiusura +
 		macrotipo +
 		procedimento +
 		oggetto +
@@ -53,8 +53,13 @@ public class SitSciaJpe extends TabellaDwhMultiProv
 		gg_istruttoria +
 		gg_prop_motiv +
 		gg_interruzione +
-		gg_sospensione;
-	}//-------------------------------------------------------------------------
+		gg_sospensione +
+		imprese +
+		dataAvvioProc +
+		idPratica +
+		statoPratica +
+		note;
+	}
 
 
 	public String getNumero_pratica() {
@@ -267,6 +272,53 @@ public class SitSciaJpe extends TabellaDwhMultiProv
 	}
 
 
+	public String getImprese() {
+		return imprese;
+	}
 
+
+	public void setImprese(String imprese) {
+		this.imprese = imprese;
+	}
+
+
+	public String getDataAvvioProc() {
+		return dataAvvioProc;
+	}
+
+
+	public void setDataAvvioProc(String dataAvvioProc) {
+		this.dataAvvioProc = dataAvvioProc;
+	}
+
+
+	public String getIdPratica() {
+		return idPratica;
+	}
+
+
+	public void setIdPratica(String idPratica) {
+		this.idPratica = idPratica;
+	}
+
+
+	public String getStatoPratica() {
+		return statoPratica;
+	}
+
+
+	public void setStatoPratica(String statoPratica) {
+		this.statoPratica = statoPratica;
+	}
+
+
+	public String getNote() {
+		return note;
+	}
+
+
+	public void setNote(String note) {
+		this.note = note;
+	}
 	
 }

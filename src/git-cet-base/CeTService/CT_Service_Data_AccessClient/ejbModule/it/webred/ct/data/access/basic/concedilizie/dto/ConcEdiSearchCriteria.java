@@ -7,6 +7,7 @@ public class ConcEdiSearchCriteria extends CeTBaseObject{
 	private static final long serialVersionUID = 1L;
 	private RicercaConcEdilizieDTO ricercaOggetto;
 	private RicercaSoggettoConcEdilizieDTO ricercaSoggetto;
+	
 	public RicercaConcEdilizieDTO getRicercaOggetto() {
 		return ricercaOggetto;
 	}

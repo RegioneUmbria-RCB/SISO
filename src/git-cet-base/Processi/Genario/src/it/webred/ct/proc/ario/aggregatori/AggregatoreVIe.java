@@ -91,7 +91,7 @@ public class AggregatoreVIe extends TipoAggregatore
 			
 			
 			log.error("Errore:Aggregatore=" + e.getMessage(),e);
-			AggregatoreException ea = new AggregatoreException(e.getMessage());
+			AggregatoreException ea = new AggregatoreException(e.getMessage(), e);
 			throw ea;
 		}
 		finally{
@@ -180,7 +180,7 @@ public class AggregatoreVIe extends TipoAggregatore
 		}
 		
 		}catch(Throwable e){
-			throw new Exception("Errore in Rimozione Duplicati Vie Unico (Aggregazione fonte di riferimento) "+e.getMessage());
+			throw new AggregatoreException("Errore in Rimozione Duplicati Vie Unico (Aggregazione fonte di riferimento) "+e.getMessage(), e);
 		}finally{
 			DbUtils.close(rs);
 			DbUtils.close(st2);DbUtils.close(st3);DbUtils.close(st4);
@@ -207,7 +207,7 @@ public class AggregatoreVIe extends TipoAggregatore
 				
 				return GestioneStringheVie.ugualiSenzaPuntato(vu.getIndirizzo(),vnr.getIndirizzo());
 		} catch (Exception e) {    		
-			throw new Exception("Errore in confronto Descrizione Puntata "+e.getMessage());
+			throw new AggregatoreException("Errore in confronto Descrizione Puntata "+e.getMessage(), e);
     	}
 	}
 		
@@ -346,7 +346,7 @@ public class AggregatoreVIe extends TipoAggregatore
 			
 		}catch(Exception e){					
 			conn.rollback();
-			throw new Exception("Errore in operazione aggregazione fonte riferimento VIE: "+e.getMessage());
+			throw new AggregatoreException("Errore in operazione aggregazione fonte riferimento VIE: "+e.getMessage(),e);
 		}
 		finally{
 			if(lVieTotDaAggr!=null)
@@ -384,7 +384,7 @@ public class AggregatoreVIe extends TipoAggregatore
 		return viarioUnico;	
 			
 		} catch (Exception e) {
-			throw new Exception ("Errore in caricamento dati da tabella SIT_VIA_UNICO "+e.getMessage());
+			throw new AggregatoreException ("Errore in caricamento dati da tabella SIT_VIA_UNICO "+e.getMessage(), e);
 		} finally {
 			if(rs!=null)
 				rs.close();
@@ -472,7 +472,7 @@ public class AggregatoreVIe extends TipoAggregatore
 			log.error("Indirizzo in errore:" +  indirizzo);
 			log.error("_____ERRORE FUZZY____: " + sqlVieUnico);
 			log.error(e.getMessage(),e);
-			throw new Exception ("Errore in caricamento dati da tabella SIT_VIA_UNICO in modo FUZZY ",e );
+			throw new Exception ("Errore in caricamento dati da tabella SIT_VIA_UNICO in modo FUZZY ", e );
 		} finally {
 			if(rs!=null)
 				rs.close();
@@ -504,7 +504,7 @@ public class AggregatoreVIe extends TipoAggregatore
 		try {
 			st1.executeUpdate(sqlCreateIndex);	
 		} catch (Exception e) {
-			throw new Exception ("Errore in CREAZIONE INDICE TEXT "+e.getMessage());
+			throw new Exception ("Errore in CREAZIONE INDICE TEXT "+e.getMessage(), e);
 		} finally {
 			DbUtils.close(st1);
 		}				
@@ -523,7 +523,7 @@ public class AggregatoreVIe extends TipoAggregatore
 		try {
 		    proc.execute();
 		} catch (Exception e) {
-			throw new Exception ("Errore in SYNC INDICE TEXT "+e.getMessage());
+			throw new Exception ("Errore in SYNC INDICE TEXT "+e.getMessage(), e);
 		} finally {
 			if(proc!=null)
 				proc.close();
@@ -551,7 +551,7 @@ public class AggregatoreVIe extends TipoAggregatore
 			log.info("Lista Dati da caricare in Totale caricata");
 			
 		}catch (Exception e) {
-			throw new Exception("Errore in lettura dati da Aggregare in SIT_VIA_TOTALE "+e.getMessage());
+			throw new Exception("Errore in lettura dati da Aggregare in SIT_VIA_TOTALE "+e.getMessage(), e);
 		}
 		
 		return rs;
@@ -611,7 +611,7 @@ public class AggregatoreVIe extends TipoAggregatore
 				
 		}catch (Exception e) {
 
-			throw new Exception("Errore in Associa Vie Puntate " + e.getMessage());
+			throw new Exception("Errore in Associa Vie Puntate " + e.getMessage(), e);
 			
 		}	
 			
@@ -725,7 +725,7 @@ public class AggregatoreVIe extends TipoAggregatore
 			}
 
 		}catch (Exception e) {
-			throw new Exception("Errore in Associa Vie Stesso Sedime "+e.getMessage());
+			throw new Exception("Errore in Associa Vie Stesso Sedime "+e.getMessage(), e);
 		}
 		
 	}
@@ -770,7 +770,7 @@ public class AggregatoreVIe extends TipoAggregatore
 			
 
 		}catch (Exception e) {
-			throw new Exception("Errore in salvataggio dato in SIT_VIA_UNICO "+e.getMessage());
+			throw new Exception("Errore in salvataggio dato in SIT_VIA_UNICO "+e.getMessage(), e);
 		}
 	}
 		
@@ -805,7 +805,7 @@ public class AggregatoreVIe extends TipoAggregatore
 			}
 			
 		}catch (Exception e) {
-			throw new Exception("Errore in confronto vecchia via con nuova "+e.getMessage());
+			throw new Exception("Errore in confronto vecchia via con nuova "+e.getMessage(), e);
 		}	
 	}
 	
@@ -836,7 +836,7 @@ public class AggregatoreVIe extends TipoAggregatore
 			ps.close();
 			
 		}catch (Exception e) {
-			throw new Exception("Errore nella cancellazione elementi da tabella UNICO :" + e.getMessage());
+			throw new Exception("Errore nella cancellazione elementi da tabella UNICO :" + e.getMessage(), e);
 		}
 		
 	}
@@ -869,7 +869,7 @@ public class AggregatoreVIe extends TipoAggregatore
 
 			
 		}catch (Exception e) {
-			throw new Exception("Errore nella ricerca della via UNICO per codice VIA originario :" + e.getMessage());
+			throw new Exception("Errore nella ricerca della via UNICO per codice VIA originario :" + e.getMessage(), e);
 		}finally{
 			if(ps!=null)ps.close();
 			if(rs!=null)rs.close();
@@ -907,7 +907,7 @@ public class AggregatoreVIe extends TipoAggregatore
 
 			
 		}catch (Exception e) {
-			throw new Exception("Errore nella ricerca della via UNICO per codice VIA originario :" + e.getMessage());
+			throw new Exception("Errore nella ricerca della via UNICO per codice VIA originario :" + e.getMessage(), e);
 		}finally{
 			if(ps!=null)ps.close();
 			if(rs!=null)rs.close();
@@ -951,7 +951,7 @@ public class AggregatoreVIe extends TipoAggregatore
 			}
 			
 		}catch (Exception e) {
-			throw new Exception("Errore nella ricerca della via UNICO per INDIRIZZO :" + e.getMessage());
+			throw new Exception("Errore nella ricerca della via UNICO per INDIRIZZO :" + e.getMessage(), e);
 		}finally{
 			DbUtils.close(rs);
 			DbUtils.close(rs1);

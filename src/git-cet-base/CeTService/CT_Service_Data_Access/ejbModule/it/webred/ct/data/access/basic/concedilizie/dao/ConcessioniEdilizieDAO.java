@@ -3,6 +3,7 @@ package it.webred.ct.data.access.basic.concedilizie.dao;
 import it.webred.ct.data.access.basic.catasto.dto.RicercaOggettoCatDTO;
 import it.webred.ct.data.access.basic.common.dto.RicercaCivicoDTO;
 import it.webred.ct.data.access.basic.concedilizie.ConcessioniEdilizieException;
+import it.webred.ct.data.access.basic.concedilizie.dto.ConcEdiSearchCriteria;
 import it.webred.ct.data.access.basic.concedilizie.dto.RicercaConcEdilizieDTO;
 import it.webred.ct.data.access.basic.concedilizie.dto.SoggettoConcessioneDTO;
 import it.webred.ct.data.model.concedilizie.ConcEdilizieVisure;
@@ -41,6 +42,8 @@ public interface ConcessioniEdilizieDAO {
 	public ConcEdilizieVisureDoc getDocVisuraById(BigDecimal id);
 	public List<String> getVisureTipiAtto();
 	public SitCConcessioni getConcessioneByIdExt(RicercaConcEdilizieDTO ro) throws ConcessioniEdilizieException;
+	
+	public List<Object[]> getPraticheEdiliByParams(ConcEdiSearchCriteria rce)  throws ConcessioniEdilizieException;
 	
 	
 	

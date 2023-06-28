@@ -41,13 +41,16 @@ public class ImportConedilOnlyOne extends ImportFiles implements Rule   {
 	private String IMPORTCONEDILONLYONE_ANAGRAFE = getProperty("table1.name");
 	private String IMPORTCONEDILONLYONE_CONEDIL = getProperty("table2.name");
 	private String IMPORTCONEDILONLYONE_CONEDIL17 = getProperty("table17.name");
+	private String IMPORTCONEDILONLYONE_CONEDIL22 = getProperty("table22.name");
 	private String IMPORTCONEDILONLYONE_ANAGRAFE_IDX = getProperty("table1.idx");
 	private String IMPORTCONEDILONLYONE_CONEDIL_IDX = getProperty("table2.idx");
 	private String IMPORTCONEDILONLYONE_CONEDIL17_IDX = getProperty("table17.idx");
+	private String IMPORTCONEDILONLYONE_CONEDIL22_IDX = getProperty("table22.idx");
 	
 	private String createTableAnaSql = getProperty("sql.CREATE_IMPORTCONEDILONLYONE_ANAGRAFE");
 	private String createTableConedilSql = getProperty("sql.CREATE_IMPORTCONEDILONLYONE_CONEDIL");
 	private String createTableConedil17Sql = getProperty("sql.CREATE_IMPORTCONEDILONLYONE_CONEDIL17");
+	private String createTableConedil22Sql = getProperty("sql.CREATE_IMPORTCONEDILONLYONE_CONEDIL22");
 		
 	
 	private static final org.apache.log4j.Logger log = Logger.getLogger(ImportConedilOnlyOne.class.getName());
@@ -60,8 +63,6 @@ public class ImportConedilOnlyOne extends ImportFiles implements Rule   {
 
 	
 	public CommandAck execute(Context ctx, Connection conn) throws CommandException {
-		
-
 		
 		String percorsoFilesAna = Utils.getConfigProperty("dir.files",ctx.getBelfiore(),ctx.getIdFonte())+getProperty("dir.fileAnagrafica");
 		String percorsoFilesConedil = Utils. getConfigProperty("dir.files",ctx.getBelfiore(),ctx.getIdFonte())+getProperty("dir.fileConedil");
@@ -77,6 +78,7 @@ public class ImportConedilOnlyOne extends ImportFiles implements Rule   {
 		String percorsoFilesConedi17 = Utils.getConfigProperty("dir.files",ctx.getBelfiore(),ctx.getIdFonte())+getProperty("dir.fileConedi17");
 		String percorsoFilesConedi19 = Utils.getConfigProperty("dir.files",ctx.getBelfiore(),ctx.getIdFonte())+getProperty("dir.fileConedi19");
 		String percorsoFilesConedi20 = Utils.getConfigProperty("dir.files",ctx.getBelfiore(),ctx.getIdFonte())+getProperty("dir.fileConedi20");
+		String percorsoFilesConedi22 = Utils.getConfigProperty("dir.files",ctx.getBelfiore(),ctx.getIdFonte())+getProperty("dir.fileConedi22");
 
 		String ret = null;
 
@@ -85,43 +87,46 @@ public class ImportConedilOnlyOne extends ImportFiles implements Rule   {
 			ret = this.elabora(conn, ctx, percorsoFilesAna , IMPORTCONEDILONLYONE_ANAGRAFE , false,null);
 			log.info(ret);
 			log.info("ELABORO " + percorsoFilesConedil);
-			ret = this.elabora(conn, ctx, percorsoFilesConedil, IMPORTCONEDILONLYONE_CONEDIL, true ,null);
+			ret = this.elabora(conn, ctx, percorsoFilesConedil, IMPORTCONEDILONLYONE_CONEDIL17, true ,null);
 			log.info(ret);
 			log.info("ELABORO " + percorsoFilesConedi2);
-			ret = this.elabora(conn, ctx, percorsoFilesConedi2, IMPORTCONEDILONLYONE_CONEDIL , true,null);
+			ret = this.elabora(conn, ctx, percorsoFilesConedi2, IMPORTCONEDILONLYONE_CONEDIL17 , true,null);
 			log.info(ret);
 			log.info("ELABORO " + percorsoFilesConedi3);
-			ret = this.elabora(conn, ctx, percorsoFilesConedi3, IMPORTCONEDILONLYONE_CONEDIL , true,null);
+			ret = this.elabora(conn, ctx, percorsoFilesConedi3, IMPORTCONEDILONLYONE_CONEDIL17 , true,null);
 			log.info(ret);
 			log.info("ELABORO " + percorsoFilesConedi4);
-			ret = this.elabora(conn, ctx, percorsoFilesConedi4, IMPORTCONEDILONLYONE_CONEDIL, true, null);
+			ret = this.elabora(conn, ctx, percorsoFilesConedi4, IMPORTCONEDILONLYONE_CONEDIL17, true, null);
 			log.info(ret);
 			log.info("ELABORO " + percorsoFilesConedi5);
-			ret = this.elabora(conn, ctx, percorsoFilesConedi5, IMPORTCONEDILONLYONE_CONEDIL, true, null);
+			ret = this.elabora(conn, ctx, percorsoFilesConedi5, IMPORTCONEDILONLYONE_CONEDIL17, true, null);
 			log.info(ret);
 			log.info("ELABORO " + percorsoFilesConedi9);
 			ret = this.elabora(conn, ctx, percorsoFilesConedi9, IMPORTCONEDILONLYONE_CONEDIL17, true, null);
 			log.info(ret);
 			log.info("ELABORO " + percorsoFilesConedi10);
-			ret = this.elabora(conn, ctx, percorsoFilesConedi10, IMPORTCONEDILONLYONE_CONEDIL, true, null);
+			ret = this.elabora(conn, ctx, percorsoFilesConedi10, IMPORTCONEDILONLYONE_CONEDIL17, true, null);
 			log.info(ret);
 			log.info("ELABORO " + percorsoFilesConedi11);
-			ret = this.elabora(conn, ctx, percorsoFilesConedi11, IMPORTCONEDILONLYONE_CONEDIL, true, null);
+			ret = this.elabora(conn, ctx, percorsoFilesConedi11, IMPORTCONEDILONLYONE_CONEDIL17, true, null);
 			log.info(ret);
 			log.info("ELABORO " + percorsoFilesConedi12);
-			ret = this.elabora(conn, ctx, percorsoFilesConedi12, IMPORTCONEDILONLYONE_CONEDIL, true, null);
+			ret = this.elabora(conn, ctx, percorsoFilesConedi12, IMPORTCONEDILONLYONE_CONEDIL17, true, null);
 			log.info(ret);
 			log.info("ELABORO " + percorsoFilesConedi15);
-			ret = this.elabora(conn, ctx, percorsoFilesConedi15, IMPORTCONEDILONLYONE_CONEDIL, true, null);
+			ret = this.elabora(conn, ctx, percorsoFilesConedi15, IMPORTCONEDILONLYONE_CONEDIL17, true, null);
 			log.info(ret);			
 			log.info("ELABORO " + percorsoFilesConedi17);
 			ret = this.elabora(conn, ctx, percorsoFilesConedi17, IMPORTCONEDILONLYONE_CONEDIL17, true, null);
 			log.info(ret);			
 			log.info("ELABORO " + percorsoFilesConedi19);
-			ret = this.elabora(conn, ctx, percorsoFilesConedi19, IMPORTCONEDILONLYONE_CONEDIL, true, null);
+			ret = this.elabora(conn, ctx, percorsoFilesConedi19, IMPORTCONEDILONLYONE_CONEDIL17, true, null);
 			log.info(ret);
 			log.info("ELABORO " + percorsoFilesConedi20);
-			ret = this.elabora(conn, ctx, percorsoFilesConedi20, IMPORTCONEDILONLYONE_CONEDIL, true, null);
+			ret = this.elabora(conn, ctx, percorsoFilesConedi20, IMPORTCONEDILONLYONE_CONEDIL17, true, null);
+			log.info(ret);
+			log.info("ELABORO " + percorsoFilesConedi22);
+			ret = this.elabora(conn, ctx, percorsoFilesConedi22, IMPORTCONEDILONLYONE_CONEDIL22, true, null);
 			log.info(ret);
 		} catch (Exception e) {
 			log.error("Errore grave importando i dati", e);
@@ -236,68 +241,69 @@ public class ImportConedilOnlyOne extends ImportFiles implements Rule   {
 			}
 			
 			// INSERIMENTO CONCESSIONI CONEDIL - DATI EXTRA
-			ps = con.prepareStatement(getProperty("sql.IMPORTCONEDILONLYONE_CONEDIL17"));
-			rs = ps.executeQuery();
-			
-			launchSitConcPersona = new CommandLauncher(belfiore);
-			cmdSitConcPersona = CommandFactory.getCommand(it.webred.rulengine.brick.loadDwh.base.LoadSitCConcPersona.class.getName(),true);
-			
-			bcSitConcPersona = new BeanCommand();
-			bcSitConcPersona = cmdSitConcPersona.getBeanCommand();
-
-			launchSitConcessioni = new CommandLauncher(belfiore);
-			cmd1 = CommandFactory.getCommand(it.webred.rulengine.brick.loadDwh.base.LoadSitCConcessioni.class.getName(),true);
-			
-			bcSitConcessioni = new BeanCommand();
-			bcSitConcessioni = cmd1.getBeanCommand();
-			
-			launchSitConcessioniCatasto = new CommandLauncher(belfiore);
-			cmd2 = CommandFactory.getCommand(it.webred.rulengine.brick.loadDwh.base.LoadSitCConcessioniCatasto.class.getName(),true);
-			
-			bcSitConcessioniCatasto = new BeanCommand();
-			bcSitConcessioniCatasto = cmd2.getBeanCommand();
-
-			launchSitConcIndirizzi = new CommandLauncher(belfiore);
-			cmd3 = CommandFactory.getCommand(it.webred.rulengine.brick.loadDwh.base.LoadSitCConcIndirizzi.class.getName(),true);
-			
-			bcSitConcIndirizzi = new BeanCommand();
-			bcSitConcIndirizzi = cmd3.getBeanCommand();
-			
-			CommandLauncher launchSitConcessioniExtra17 = new CommandLauncher(belfiore);
-			Command cmd4 = CommandFactory.getCommand(it.webred.rulengine.brick.loadDwh.base.LoadSitCConcessioniExtra17.class.getName(),true);
-			
-			BeanCommand bcSitConcessioniExtra17 = new BeanCommand();
-			bcSitConcessioniExtra17 = cmd4.getBeanCommand();
-
-			while (rs.next()) {
-
-				// INSERIMENTO SIT_C_CONCESSIONI	
-				EnvInsertDwh ec = new EnvSitCConcessioniOnlyOne  (this.IMPORTCONEDILONLYONE_CONEDIL,"A");
-				ec.setParametriPerGetRighe(rs.getTimestamp("DT_EXP_DATO"));
-				InsertDwh.launchInserimento(con,ec, launchSitConcessioni, bcSitConcessioni,(String)ctx.get("connessione"),ctx, rs, abnormals);
-
-				// INSERIMENTO SIT_C_CONC_PERSONA	
-				EnvInsertDwh ecp = new EnvSitCConcPersonaOnlyOne(this.IMPORTCONEDILONLYONE_CONEDIL,"A");
-				ecp.setParametriPerGetRighe(rs.getTimestamp("DT_EXP_DATO"));
-				InsertDwh.launchInserimento(con,ecp,launchSitConcPersona, bcSitConcPersona,(String)ctx.get("connessione"),ctx, rs, abnormals);
-
-				// INSERIMENTO SIT_C_CONCESSIONI_CATASTO	
-				EnvInsertDwh ecc = new EnvSitCConcessioniCatastoOnlyOne (this.IMPORTCONEDILONLYONE_CONEDIL,"A");
-				ecc.setParametriPerGetRighe(rs.getTimestamp("DT_EXP_DATO"));
-				InsertDwh.launchInserimento(con,ecc, launchSitConcessioniCatasto, bcSitConcessioniCatasto,(String)ctx.get("connessione"),ctx, rs, abnormals);
-
-				// INSERIMENTO SIT_C_CONC_INDIRIZZI	
-				EnvInsertDwh eci = new EnvSitCConcIndirizziOnlyOne (this.IMPORTCONEDILONLYONE_CONEDIL,"A");
-				eci.setParametriPerGetRighe(rs.getTimestamp("DT_EXP_DATO"));
-				InsertDwh.launchInserimento(con,eci, launchSitConcIndirizzi, bcSitConcIndirizzi,(String)ctx.get("connessione"),ctx, rs, abnormals);
+			for (int i = 0; i < 2; i++) {
+				ps = con.prepareStatement(getProperty(i == 0 ? "sql.IMPORTCONEDILONLYONE_CONEDIL17" : "sql.IMPORTCONEDILONLYONE_CONEDIL22"));
+				rs = ps.executeQuery();
 				
-				// INSERIMENTO SIT_C_CONCESSIONI_EXTRA17	
-				EnvInsertDwh ece17 = new EnvSitCConcessioniExtra17OnlyOne (this.IMPORTCONEDILONLYONE_CONEDIL17,"A");
-				ece17.setParametriPerGetRighe(rs.getTimestamp("DT_EXP_DATO"));
-				InsertDwh.launchInserimento(con,ece17, launchSitConcessioniExtra17, bcSitConcessioniExtra17,(String)ctx.get("connessione"),ctx, rs, abnormals);				
+				launchSitConcPersona = new CommandLauncher(belfiore);
+				cmdSitConcPersona = CommandFactory.getCommand(it.webred.rulengine.brick.loadDwh.base.LoadSitCConcPersona.class.getName(),true);
 				
-			}		
-			
+				bcSitConcPersona = new BeanCommand();
+				bcSitConcPersona = cmdSitConcPersona.getBeanCommand();
+
+				launchSitConcessioni = new CommandLauncher(belfiore);
+				cmd1 = CommandFactory.getCommand(it.webred.rulengine.brick.loadDwh.base.LoadSitCConcessioni.class.getName(),true);
+				
+				bcSitConcessioni = new BeanCommand();
+				bcSitConcessioni = cmd1.getBeanCommand();
+				
+				launchSitConcessioniCatasto = new CommandLauncher(belfiore);
+				cmd2 = CommandFactory.getCommand(it.webred.rulengine.brick.loadDwh.base.LoadSitCConcessioniCatasto.class.getName(),true);
+				
+				bcSitConcessioniCatasto = new BeanCommand();
+				bcSitConcessioniCatasto = cmd2.getBeanCommand();
+
+				launchSitConcIndirizzi = new CommandLauncher(belfiore);
+				cmd3 = CommandFactory.getCommand(it.webred.rulengine.brick.loadDwh.base.LoadSitCConcIndirizzi.class.getName(),true);
+				
+				bcSitConcIndirizzi = new BeanCommand();
+				bcSitConcIndirizzi = cmd3.getBeanCommand();
+				
+				CommandLauncher launchSitConcessioniExtra17 = new CommandLauncher(belfiore);
+				Command cmd4 = CommandFactory.getCommand(it.webred.rulengine.brick.loadDwh.base.LoadSitCConcessioniExtra17.class.getName(),true);
+				
+				BeanCommand bcSitConcessioniExtra17 = new BeanCommand();
+				bcSitConcessioniExtra17 = cmd4.getBeanCommand();
+
+				while (rs.next()) {
+
+					// INSERIMENTO SIT_C_CONCESSIONI	
+					EnvInsertDwh ec = new EnvSitCConcessioniOnlyOne  (this.IMPORTCONEDILONLYONE_CONEDIL,"A");
+					ec.setParametriPerGetRighe(rs.getTimestamp("DT_EXP_DATO"));
+					InsertDwh.launchInserimento(con,ec, launchSitConcessioni, bcSitConcessioni,(String)ctx.get("connessione"),ctx, rs, abnormals);
+
+					// INSERIMENTO SIT_C_CONC_PERSONA	
+					EnvInsertDwh ecp = new EnvSitCConcPersonaOnlyOne(this.IMPORTCONEDILONLYONE_CONEDIL,"A");
+					ecp.setParametriPerGetRighe(rs.getTimestamp("DT_EXP_DATO"));
+					InsertDwh.launchInserimento(con,ecp,launchSitConcPersona, bcSitConcPersona,(String)ctx.get("connessione"),ctx, rs, abnormals);
+
+					// INSERIMENTO SIT_C_CONCESSIONI_CATASTO	
+					EnvInsertDwh ecc = new EnvSitCConcessioniCatastoOnlyOne (this.IMPORTCONEDILONLYONE_CONEDIL,"A");
+					ecc.setParametriPerGetRighe(rs.getTimestamp("DT_EXP_DATO"));
+					InsertDwh.launchInserimento(con,ecc, launchSitConcessioniCatasto, bcSitConcessioniCatasto,(String)ctx.get("connessione"),ctx, rs, abnormals);
+
+					// INSERIMENTO SIT_C_CONC_INDIRIZZI	
+					EnvInsertDwh eci = new EnvSitCConcIndirizziOnlyOne (this.IMPORTCONEDILONLYONE_CONEDIL,"A");
+					eci.setParametriPerGetRighe(rs.getTimestamp("DT_EXP_DATO"));
+					InsertDwh.launchInserimento(con,eci, launchSitConcIndirizzi, bcSitConcIndirizzi,(String)ctx.get("connessione"),ctx, rs, abnormals);
+					
+					// INSERIMENTO SIT_C_CONCESSIONI_EXTRA17	
+					EnvInsertDwh ece17 = new EnvSitCConcessioniExtra17OnlyOne (i == 0 ? this.IMPORTCONEDILONLYONE_CONEDIL17 : this.IMPORTCONEDILONLYONE_CONEDIL22,"A");
+					ece17.setParametriPerGetRighe(rs.getTimestamp("DT_EXP_DATO"));
+					InsertDwh.launchInserimento(con,ece17, launchSitConcessioniExtra17, bcSitConcessioniExtra17,(String)ctx.get("connessione"),ctx, rs, abnormals);		
+					
+				}
+			}			
 			
 			// SE ONLYONE HA INTRODOTTO CONCESSIONI CHE ERANO GIA' IN INFORM 
 			// RIPORTO LE IMMAGINE CHE ERANO DI INFORM SU ONLYONE FACENDO UN UPDATE DELLA
@@ -372,7 +378,20 @@ public class ImportConedilOnlyOne extends ImportFiles implements Rule   {
 					st.close();
 			} catch (SQLException e1) {
 			}			
-		}		
+		}
+		try {
+			st = con.createStatement();
+			st.execute(createTableConedil22Sql);
+		} catch (SQLException e1) {
+			log.warn("Tabella esiste già : OK , BENE");
+		}
+		finally {
+			try {
+				if (st!=null)
+					st.close();
+			} catch (SQLException e1) {
+			}			
+		}
 		try {
 			st = con.createStatement();
 			st.execute(this.IMPORTCONEDILONLYONE_ANAGRAFE_IDX);
@@ -411,7 +430,20 @@ public class ImportConedilOnlyOne extends ImportFiles implements Rule   {
 					st.close();
 			} catch (SQLException e1) {
 			}			
-		}		
+		}
+		try {
+			st = con.createStatement();
+			st.execute(this.IMPORTCONEDILONLYONE_CONEDIL22_IDX);
+		} catch (SQLException e1) {
+			log.warn("indice esiste già : OK , BENE");
+		}
+		finally {
+			try {
+				if (st!=null)
+					st.close();
+			} catch (SQLException e1) {
+			}			
+		}
 	}
 
 

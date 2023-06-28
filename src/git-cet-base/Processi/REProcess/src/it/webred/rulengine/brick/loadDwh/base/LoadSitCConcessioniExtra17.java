@@ -60,11 +60,12 @@ public class LoadSitCConcessioniExtra17 extends AbstractLoaderCommand implements
 			CLOB npgAttoPratRif = (CLOB) ctx.get(((RRuleParamIn) parametriIn.get(8)).getDescr());
 			CLOB annoPgAttoPratRif = (CLOB) ctx.get(((RRuleParamIn) parametriIn.get(9)).getDescr());
 			CLOB praticheCollegate = (CLOB) ctx.get(((RRuleParamIn) parametriIn.get(10)).getDescr());			
-			Timestamp dt_exp_dato = (Timestamp) ctx.get(((RRuleParamIn) parametriIn.get(11)).getDescr());
-			Timestamp dt_ini_val_dato = (Timestamp) ctx.get(((RRuleParamIn) parametriIn.get(12)).getDescr());
-			Timestamp dt_fine_val_dato = (Timestamp) ctx.get(((RRuleParamIn) parametriIn.get(13)).getDescr());
-			Integer flag_dt_val_dato = (Integer) ctx.get(((RRuleParamIn) parametriIn.get(14)).getDescr());
-			String provenienza = (String) ctx.get(((RRuleParamIn) parametriIn.get(15)).getDescr());	
+			String codUfficio = (String) ctx.get(((RRuleParamIn) parametriIn.get(11)).getDescr());			
+			Timestamp dt_exp_dato = (Timestamp) ctx.get(((RRuleParamIn) parametriIn.get(12)).getDescr());
+			Timestamp dt_ini_val_dato = (Timestamp) ctx.get(((RRuleParamIn) parametriIn.get(13)).getDescr());
+			Timestamp dt_fine_val_dato = (Timestamp) ctx.get(((RRuleParamIn) parametriIn.get(14)).getDescr());
+			Integer flag_dt_val_dato = (Integer) ctx.get(((RRuleParamIn) parametriIn.get(15)).getDescr());
+			String provenienza = (String) ctx.get(((RRuleParamIn) parametriIn.get(16)).getDescr());	
 	
 			if(fk_ente_sorgente==null || dt_exp_dato==null || flag_dt_val_dato==null)
 				return new RejectAck("SIT_C_CONCESSIONI_EXTRA17 - Dati obbligatori non forniti");
@@ -86,6 +87,7 @@ public class LoadSitCConcessioniExtra17 extends AbstractLoaderCommand implements
 			tab.setNpgAttoPratRif(npgAttoPratRif);
 			tab.setAnnoPgAttoPratRif(annoPgAttoPratRif);
 			tab.setPraticheCollegate(praticheCollegate);
+			tab.setCodUfficio(codUfficio);
 			
 			tab.setDtExpDato((DtExpDato)DwhUtils.getDataDwh(new DtExpDato(),dt_exp_dato));
 			tab.setDtInizioDato((DtIniDato)DwhUtils.getDataDwh(new DtIniDato(),dt_ini_val_dato));
