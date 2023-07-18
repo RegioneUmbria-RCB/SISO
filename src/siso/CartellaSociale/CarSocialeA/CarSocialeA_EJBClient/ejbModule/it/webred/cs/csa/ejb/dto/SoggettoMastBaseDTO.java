@@ -247,17 +247,22 @@ public class SoggettoMastBaseDTO implements Serializable {
 			boolean comuneValido = !StringUtils.isBlank(this.comuneResidenza);
 			boolean viaValida = !StringUtils.isBlank(viaResidenza);
 			
-			boolean statoNValido = !StringUtils.isBlank(this.nazioneNascita);
-			boolean comuneNValido = !StringUtils.isBlank(this.comuneNascita);
+			boolean luogoNascitaValido = this.isLuogoNascitaValido(); 
 			
 			   //SISO-962
-			 validato = validato && (statoNValido || comuneNValido) &&
+			 validato = validato && luogoNascitaValido &&
 					 (statoValido || (comuneValido && viaValida) || StringUtils.equalsIgnoreCase(DataModelCostanti.SENZA_FISSA_DIMORA, viaResidenza));
 			   //SISO-962 Fine
 		}
 	    return validato;	
 	}
-	 
+	
+	public boolean isLuogoNascitaValido() {
+		boolean statoNValido = !StringUtils.isBlank(this.nazioneNascita);
+		boolean comuneNValido = !StringUtils.isBlank(this.comuneNascita);
+		return (statoNValido || comuneNValido);
+	}
+	
 	protected Integer getAnno(Date data){
 		if(data!=null){
 			Calendar calendar1 = Calendar.getInstance();

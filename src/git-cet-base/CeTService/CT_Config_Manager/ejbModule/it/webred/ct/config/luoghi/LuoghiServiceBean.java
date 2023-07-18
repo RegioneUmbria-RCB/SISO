@@ -351,6 +351,9 @@ public class LuoghiServiceBean implements LuoghiService {
 		if(nazione==null) //Non è stato trovata la nazione con il cod.ISTAT, provo con il cod.CIE
 			nazione = this.getNazioneByCodCie(codice);
 		
+		if(nazione==null) //Non è stato trovata la nazione con il cod.ISTAT, cod.CIE provo con la Sigla
+			nazione = this.getNazioneBySigla(codice);
+		
 		if(nazione==null)
 			logger.warn("getNazioneByCodiceGenerico - No results per ["+codice+"]");
 		

@@ -97,7 +97,7 @@
 	           <h:panelGrid colums="1">
 				<webred:pnlComuneNazione id="comuneNazioneNascita"  pnlToUpdate="#{p:component('comuneNazioneNascita')}"
 							comuneNazioneManBean="#{fglInterventoBean.erogazioneInterventoBean.comuneNazioneNascitaMan}" 
-							disabled="#{fglInterventoBean.erogazioneInterventoBean.disabilitaBeneficiarioRif}" extraLabelRequired="false" />
+							disabled="#{fglInterventoBean.erogazioneInterventoBean.disabilitaBeneficiarioRif and fglInterventoBean.erogazioneInterventoBean.soggettoErogazione.luogoNascitaValido}" extraLabelRequired="false" />
 				</h:panelGrid>	
 					
 	            <h:outputLabel value="Via di residenza *" />

@@ -356,16 +356,22 @@ public class AnagrafeServiceBean extends CTServiceBaseBean implements AnagrafeSe
 		
 		
 		//comune nascita
+		AmTabComuni comuneNascitaTab = null;
 		if(componente.getInfoAggiuntive().getComuneNascita() != null &&
 				componente.getInfoAggiuntive().getComuneNascita().getIdOrig().startsWith("0")) {
-			componente.setCodComNas(componente.getInfoAggiuntive().getComuneNascita().getIdOrig()); //.replaceFirst("0", "")); 
-			componente.setDesComNas(componente.getInfoAggiuntive().getComuneNascita().getDescrizione());
+			String codIstatComune = componente.getInfoAggiuntive().getComuneNascita().getIdOrig();
+			comuneNascitaTab = luoghiService.getComuneItaByIstat(codIstatComune);
+			if(comuneNascitaTab!=null) {
+				componente.setCodComNas(comuneNascitaTab.getCodIstatComune()); //.replaceFirst("0", "")); 
+				componente.setDesComNas(comuneNascitaTab.getDenominazione());
+			}
 		}
 		
 		//provincia e stato nascita
 		if(componente.getInfoAggiuntive().getProvNascita() != null) {
 			String siglaProv = componente.getInfoAggiuntive().getProvNascita().getSigla();
-			if(siglaProv.length() <= 2) {
+			boolean provinciaIta = comuneNascitaTab!=null && comuneNascitaTab.getSiglaProv().equals(siglaProv);
+			if(provinciaIta) {
 				componente.setSiglaProvNas(siglaProv);
 				componente.setCodStatoNas("ITA");
 				componente.setIstatStatoNas("1");
@@ -381,11 +387,10 @@ public class AnagrafeServiceBean extends CTServiceBaseBean implements AnagrafeSe
 		}else{ 
 			//Tabella SIT_PROVINCIA è vuota o non contiene il valore - recupero da AM_TAB_COMUNI utilizzando idOrig
 			//(Apparentemente sembra corrispondere al Cod.Istat (eliminando uno 0 iniziale)
-			AmTabComuni comuneNascita = luoghiService.getComuneItaByIstat(componente.getCodComNas());
-			if(comuneNascita!=null){
-				componente.setSiglaProvNas(comuneNascita.getSiglaProv());
-				componente.setCodComNas(comuneNascita.getCodIstatComune());
-				componente.setDesComNas(comuneNascita.getDenominazione());
+			if(comuneNascitaTab!=null){
+				componente.setSiglaProvNas(comuneNascitaTab.getSiglaProv());
+				componente.setCodComNas(comuneNascitaTab.getCodIstatComune());
+				componente.setDesComNas(comuneNascitaTab.getDenominazione());
 				componente.setCodStatoNas("ITA");
 				componente.setIstatStatoNas("1");
 				componente.setDesStatoNas("ITALIA");
