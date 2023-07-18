@@ -3268,7 +3268,9 @@ public class ErogazioneInterventoBean extends CsUiCompBaseBean implements Serial
 	}
 	
 	public boolean isDisabilitaBeneficiarioRif(){
-       return this.isDisabilitaDatiMaster() || this.soggettoErogazione.isDisabilita(); 
+		boolean disabilitaDatiMaster = this.isDisabilitaDatiMaster() ;
+		boolean disabilitaAnagrafica = this.soggettoErogazione.isDisabilita();
+       return disabilitaAnagrafica || disabilitaDatiMaster; 
 	}
 	
 	public boolean isDisabilitaDatiMaster(){

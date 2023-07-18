@@ -675,26 +675,26 @@ public class RicercaSoggettoSessionBean extends CsBaseSessionBean implements Ric
 		return comuneNascita;
 	}
 	
-	private AmTabNazioni findNazione(String codice, String descrizione) {
+	private AmTabNazioni findNazione(String codIstat, String descrizione) {
 		AmTabNazioni nazione = null;
 		
 		if(mappaIstatNazioni==null)
 			mappaIstatNazioni= new HashMap<String,AmTabNazioni>();
 
-		if(codice!=null && !codice.isEmpty()){
-			codice = "100".equalsIgnoreCase(codice) ? "1" : codice;
-			if(!mappaIstatNazioni.containsKey(codice)) {
+		if(!StringUtils.isBlank(codIstat)){
+			codIstat = "100".equalsIgnoreCase(codIstat) ? "1" : codIstat;
+			if(!mappaIstatNazioni.containsKey(codIstat)) {
 				try{
-					nazione = luoghiService.getNazioneByIstat(codice);
+					nazione = luoghiService.getNazioneByIstat(codIstat);
 				}catch(Exception e){}
 				if(nazione==null && descrizione!=null){
-					logger.debug("Ricerco Nazione con cod.istat "+codice+ " --> NON TROVATA!");
+					logger.debug("Ricerco Nazione con cod.istat "+codIstat+ " --> NON TROVATA!");
 				    nazione = new AmTabNazioni();
-				    nazione.setCodIstatNazione(codice);
+				    nazione.setCodIstatNazione(codIstat);
 				    nazione.setNazione(descrizione);
 				}
-				mappaIstatNazioni.put(codice, nazione);
-			}else nazione = mappaIstatNazioni.get(codice);
+				mappaIstatNazioni.put(codIstat, nazione);
+			}else nazione = mappaIstatNazioni.get(codIstat);
 		}
 		
 		return nazione;
@@ -730,7 +730,7 @@ public class RicercaSoggettoSessionBean extends CsBaseSessionBean implements Ric
 				AmTabComuni comNas = this.findComune(info.getCodComNas());
 				pd.setComuneNascita(comNas);
 			}else{
-				pd.setNazioneNascita(findNazione(info.getCodStatoNas(), info.getDesStatoNas()));
+				pd.setNazioneNascita(findNazione(info.getIstatStatoNas(),info.getDesStatoNas()));
 			}
 			
 			if("ITALIA".equalsIgnoreCase(info.getDesStatoRes())){
@@ -837,7 +837,7 @@ public class RicercaSoggettoSessionBean extends CsBaseSessionBean implements Ric
 				AmTabComuni comuneNascita = this.findComune(f.getCodComNas());
 	    		componenteGit.setComuneNascita(comuneNascita);
 	    		if(!ITALIA.equalsIgnoreCase(f.getDesStatoNas())){
-	    			componenteGit.setNazioneNascita(findNazione(f.getCodStatoNas(), f.getDesStatoNas()));
+	    			componenteGit.setNazioneNascita(findNazione(f.getIstatStatoNas(), f.getDesStatoNas()));
 	    		}
 	    		
 	    		componenteGit.setIndirizzoResidenza(f.getIndirizzoResidenza());
