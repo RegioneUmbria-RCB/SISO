@@ -419,7 +419,8 @@ public class InterventoErogazioneDAO extends CarSocialeBaseDAO implements Serial
 				
 				//SISO-1162
 				e.setCodicePrestazioneInps((String)o[36]);
-				e.setDenominazionePrestazioneInps((String)o[37]);				
+				e.setDenominazionePrestazioneInps((String)o[37]);
+				e.setDataEventoUltimaErogazione((Date)o[38]);
 				//FINE SISO-1162
 				
 				lista.add(e);

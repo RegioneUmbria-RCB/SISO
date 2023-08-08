@@ -1,797 +1,1350 @@
 <?xml version="1.0" encoding="UTF-8"?><project-modules id="moduleCoreId" project-version="1.5.0">
-            
+                    
+    
+    
     
     <wb-module deploy-name="SocioSanitario">
-                        
+                                        
+        
+        
         
         <wb-resource deploy-path="/" source-path="/EarContent" tag="defaultRootSource"/>
-                        
+                                        
+        
+        
         
         <dependent-module archiveName="org.springframework.transaction-3.0.4.RELEASE.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/spring/3.0.4/org.springframework.transaction-3.0.4.RELEASE.jar">
-                                    
+                                                            
+            
+            
             
             <dependency-type>uses</dependency-type>
-                                
+                                                        
+        
+        
         
         </dependent-module>
-                        
+                                        
+        
+        
         
         <dependent-module archiveName="org.springframework.aop-3.0.4.RELEASE.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/spring/3.0.4/org.springframework.aop-3.0.4.RELEASE.jar">
-                                    
+                                                            
+            
+            
             
             <dependency-type>uses</dependency-type>
-                                
+                                                        
+        
+        
         
         </dependent-module>
-                        
+                                        
+        
+        
         
         <dependent-module archiveName="org.springframework.expression-3.0.4.RELEASE.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/spring/3.0.4/org.springframework.expression-3.0.4.RELEASE.jar">
-                                    
+                                                            
+            
+            
             
             <dependency-type>uses</dependency-type>
-                                
+                                                        
+        
+        
         
         </dependent-module>
-                        
+                                        
+        
+        
         
         <dependent-module archiveName="org.springframework.asm-3.0.4.RELEASE.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/spring/3.0.4/org.springframework.asm-3.0.4.RELEASE.jar">
-                                    
+                                                            
+            
+            
             
             <dependency-type>uses</dependency-type>
-                                
+                                                        
+        
+        
         
         </dependent-module>
-                        
+                                        
+        
+        
         
         <dependent-module archiveName="org.springframework.beans-3.0.4.RELEASE.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/spring/3.0.4/org.springframework.beans-3.0.4.RELEASE.jar">
-                                    
+                                                            
+            
+            
             
             <dependency-type>uses</dependency-type>
-                                
+                                                        
+        
+        
         
         </dependent-module>
-                        
+                                        
+        
+        
         
         <dependent-module archiveName="org.springframework.web-3.0.4.RELEASE.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/spring/3.0.4/org.springframework.web-3.0.4.RELEASE.jar">
-                                    
+                                                            
+            
+            
             
             <dependency-type>uses</dependency-type>
-                                
+                                                        
+        
+        
         
         </dependent-module>
-                        
+                                        
+        
+        
         
         <dependent-module archiveName="org.springframework.jdbc-3.0.4.RELEASE.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/spring/3.0.4/org.springframework.jdbc-3.0.4.RELEASE.jar">
-                                    
+                                                            
+            
+            
             
             <dependency-type>uses</dependency-type>
-                                
+                                                        
+        
+        
         
         </dependent-module>
-                        
+                                        
+        
+        
         
         <dependent-module archiveName="org.springframework.context-3.0.4.RELEASE.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/spring/3.0.4/org.springframework.context-3.0.4.RELEASE.jar">
-                                    
+                                                            
+            
+            
             
             <dependency-type>uses</dependency-type>
-                                
+                                                        
+        
+        
         
         </dependent-module>
-                        
+                                        
+        
+        
         
         <dependent-module archiveName="org.springframework.context.support-3.0.4.RELEASE.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/spring/3.0.4/org.springframework.context.support-3.0.4.RELEASE.jar">
-                                    
+                                                            
+            
+            
             
             <dependency-type>uses</dependency-type>
-                                
+                                                        
+        
+        
         
         </dependent-module>
-                        
+                                        
+        
+        
         
         <dependent-module archiveName="org.springframework.core-3.0.4.RELEASE.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/spring/3.0.4/org.springframework.core-3.0.4.RELEASE.jar">
-                                    
+                                                            
+            
+            
             
             <dependency-type>uses</dependency-type>
-                                
+                                                        
+        
+        
         
         </dependent-module>
-                        
+                                        
+        
+        
         
         <dependent-module archiveName="org.springframework.orm-3.0.4.RELEASE.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/spring/3.0.4/org.springframework.orm-3.0.4.RELEASE.jar">
-                                    
+                                                            
+            
+            
             
             <dependency-type>uses</dependency-type>
-                                
+                                                        
+        
+        
         
         </dependent-module>
-                        
+                                        
+        
+        
         
         <dependent-module archiveName="datarouter.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/cet-lib/datarouter.jar">
-                                    
+                                                            
+            
+            
             
             <dependency-type>uses</dependency-type>
-                                
+                                                        
+        
+        
         
         </dependent-module>
-                        
+                                        
+        
+        
         
         <dependent-module archiveName="cglib-2.2.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/cglib/2.2/cglib-2.2.jar">
-                                    
+                                                            
+            
+            
             
             <dependency-type>uses</dependency-type>
-                                
+                                                        
+        
+        
         
         </dependent-module>
-                        
+                                        
+        
+        
         
         <dependent-module archiveName="com.springsource.org.aspectj.weaver-1.6.8.RELEASE.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/spring/aspectj/1.6.8/com.springsource.org.aspectj.weaver-1.6.8.RELEASE.jar">
-                                    
+                                                            
+            
+            
             
             <dependency-type>uses</dependency-type>
-                                
+                                                        
+        
+        
         
         </dependent-module>
-                        
+                                        
+        
+        
         
         <dependent-module archiveName="aopalliance.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/aopalliance/1.0/aopalliance.jar">
-                                    
+                                                            
+            
+            
             
             <dependency-type>uses</dependency-type>
-                                
+                                                        
+        
+        
         
         </dependent-module>
-                        
+                                        
+        
+        
         
         <dependent-module archiveName="asm-all-3.3.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/asm/3.3/asm-all-3.3.jar">
-                                    
+                                                            
+            
+            
             
             <dependency-type>uses</dependency-type>
-                                
+                                                        
+        
+        
         
         </dependent-module>
-                        
+                                        
+        
+        
         
         <dependent-module archiveName="commons-pool-1.2.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/apache-commons/main/commons-pool-1.2.jar">
-                                    
+                                                            
+            
+            
             
             <dependency-type>uses</dependency-type>
-                                
+                                                        
+        
+        
         
         </dependent-module>
-                        
+                                        
+        
+        
         
         <dependent-module archiveName="commons-net-1.4.1.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/apache-commons/main/commons-net-1.4.1.jar">
-                                    
+                                                            
+            
+            
             
             <dependency-type>uses</dependency-type>
-                                
+                                                        
+        
+        
         
         </dependent-module>
-                        
+                                        
+        
+        
         
         <dependent-module archiveName="commons-beanutils.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/apache-commons/main/commons-beanutils.jar">
-                                    
+                                                            
+            
+            
             
             <dependency-type>uses</dependency-type>
-                                
+                                                        
+        
+        
         
         </dependent-module>
-                        
+                                        
+        
+        
         
         <dependent-module archiveName="commons-lang.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/apache-commons/main/commons-lang.jar">
-                                    
+                                                            
+            
+            
             
             <dependency-type>uses</dependency-type>
-                                
+                                                        
+        
+        
         
         </dependent-module>
-                        
+                                        
+        
+        
         
         <dependent-module archiveName="commons-jxpath-1.3.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/apache-commons/main/commons-jxpath-1.3.jar">
-                                    
+                                                            
+            
+            
             
             <dependency-type>uses</dependency-type>
-                                
+                                                        
+        
+        
         
         </dependent-module>
-                        
+                                        
+        
+        
         
         <dependent-module archiveName="commons-codec.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/apache-commons/main/commons-codec.jar">
-                                    
+                                                            
+            
+            
             
             <dependency-type>uses</dependency-type>
-                                
+                                                        
+        
+        
         
         </dependent-module>
-                        
+                                        
+        
+        
         
         <dependent-module archiveName="commons-discovery-0.2.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/apache-commons/main/commons-discovery-0.2.jar">
-                                    
+                                                            
+            
+            
             
             <dependency-type>uses</dependency-type>
-                                
+                                                        
+        
+        
         
         </dependent-module>
-                        
+                                        
+        
+        
         
         <dependent-module archiveName="commons-lang3-3.1.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/apache-commons/main/commons-lang3-3.1.jar">
-                                    
+                                                            
+            
+            
             
             <dependency-type>uses</dependency-type>
-                                
+                                                        
+        
+        
         
         </dependent-module>
-                        
+                                        
+        
+        
         
         <dependent-module archiveName="commons-jelly-1.0.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/apache-commons/main/commons-jelly-1.0.jar">
-                                    
+                                                            
+            
+            
             
             <dependency-type>uses</dependency-type>
-                                
+                                                        
+        
+        
         
         </dependent-module>
-                        
+                                        
+        
+        
         
         <dependent-module archiveName="commons-jelly-tags-log-1.0.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/apache-commons/main/commons-jelly-tags-log-1.0.jar">
-                                    
+                                                            
+            
+            
             
             <dependency-type>uses</dependency-type>
-                                
+                                                        
+        
+        
         
         </dependent-module>
-                        
+                                        
+        
+        
         
         <dependent-module archiveName="commons-dbutils-1.1.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/apache-commons/main/commons-dbutils-1.1.jar">
-                                    
+                                                            
+            
+            
             
             <dependency-type>uses</dependency-type>
-                                
+                                                        
+        
+        
         
         </dependent-module>
-                        
+                                        
+        
+        
         
         <dependent-module archiveName="commons-jelly-tags-xml-1.1.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/apache-commons/main/commons-jelly-tags-xml-1.1.jar">
-                                    
+                                                            
+            
+            
             
             <dependency-type>uses</dependency-type>
-                                
+                                                        
+        
+        
         
         </dependent-module>
-                        
+                                        
+        
+        
         
         <dependent-module archiveName="commons-el.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/apache-commons/main/commons-el.jar">
-                                    
+                                                            
+            
+            
             
             <dependency-type>uses</dependency-type>
-                                
+                                                        
+        
+        
         
         </dependent-module>
-                        
+                                        
+        
+        
         
         <dependent-module archiveName="commons-codec-1.7.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/apache-commons/main/commons-codec-1.7.jar">
-                                    
+                                                            
+            
+            
             
             <dependency-type>uses</dependency-type>
-                                
+                                                        
+        
+        
         
         </dependent-module>
-                        
+                                        
+        
+        
         
         <dependent-module archiveName="commons-jexl-1.1.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/apache-commons/main/commons-jexl-1.1.jar">
-                                    
+                                                            
+            
+            
             
             <dependency-type>uses</dependency-type>
-                                
+                                                        
+        
+        
         
         </dependent-module>
-                        
+                                        
+        
+        
         
         <dependent-module archiveName="commons-jelly-tags-define-1.0.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/apache-commons/main/commons-jelly-tags-define-1.0.jar">
-                                    
+                                                            
+            
+            
             
             <dependency-type>uses</dependency-type>
-                                
+                                                        
+        
+        
         
         </dependent-module>
-                        
+                                        
+        
+        
         
         <dependent-module archiveName="commons-io-2.4.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/apache-commons/main/commons-io-2.4.jar">
-                                    
+                                                            
+            
+            
             
             <dependency-type>uses</dependency-type>
-                                
+                                                        
+        
+        
         
         </dependent-module>
-                        
+                                        
+        
+        
         
         <dependent-module archiveName="commons-logging-1.1.1.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/apache-commons/main/commons-logging-1.1.1.jar">
-                                    
+                                                            
+            
+            
             
             <dependency-type>uses</dependency-type>
-                                
+                                                        
+        
+        
         
         </dependent-module>
-                        
+                                        
+        
+        
         
         <dependent-module archiveName="commons-validator.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/apache-commons/main/commons-validator.jar">
-                                    
+                                                            
+            
+            
             
             <dependency-type>uses</dependency-type>
-                                
+                                                        
+        
+        
         
         </dependent-module>
-                        
+                                        
+        
+        
         
         <dependent-module archiveName="commons-dbcp-1.2.1.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/apache-commons/main/commons-dbcp-1.2.1.jar">
-                                    
+                                                            
+            
+            
             
             <dependency-type>uses</dependency-type>
-                                
+                                                        
+        
+        
         
         </dependent-module>
-                        
+                                        
+        
+        
         
         <dependent-module archiveName="WebredEJBUtility.jar" deploy-path="/lib" handle="module:/resource/WebredEJBUtility/WebredEJBUtility">
-                                    
+                                                            
+            
+            
             
             <dependency-type>uses</dependency-type>
-                                
+                                                        
+        
+        
         
         </dependent-module>
-                        
+                                        
+        
+        
         
         <dependent-module archiveName="commons-fileupload-1.3.1.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/apache-commons/main/commons-fileupload-1.3.1.jar">
-                                    
+                                                            
+            
+            
             
             <dependency-type>uses</dependency-type>
-                                
+                                                        
+        
+        
         
         </dependent-module>
-                        
+                                        
+        
+        
         
         <dependent-module archiveName="MediciRegioneServiceClient.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/SISO/MediciRegioneServiceClient.jar">
-                                    
+                                                            
+            
+            
             
             <dependency-type>uses</dependency-type>
-                                
+                                                        
+        
+        
         
         </dependent-module>
-                        
+                                        
+        
+        
         
         <dependent-module archiveName="CarSocialeA_DataModel.jar" deploy-path="/lib" handle="module:/resource/CarSocialeA_DataModel/CarSocialeA_DataModel">
-                                    
+                                                            
+            
+            
             
             <dependency-type>uses</dependency-type>
-                                
+                                                        
+        
+        
         
         </dependent-module>
-                        
+                                        
+        
+        
         
         <dependent-module archiveName="SocioSanitario_EJB.jar" deploy-path="/" handle="module:/resource/SocioSanitario_EJB/SocioSanitario_EJB">
-                                    
+                                                            
+            
+            
             
             <dependency-type>uses</dependency-type>
-                                
+                                                        
+        
+        
         
         </dependent-module>
-                        
+                                        
+        
+        
         
         <dependent-module archiveName="SocioSanitario_EJBClient.jar" deploy-path="/lib" handle="module:/resource/SocioSanitario_EJBClient/SocioSanitario_EJBClient">
-                                    
+                                                            
+            
+            
             
             <dependency-type>uses</dependency-type>
-                                
+                                                        
+        
+        
         
         </dependent-module>
-                        
+                                        
+        
+        
         
         <dependent-module archiveName="webred-cs-base.jar" deploy-path="/lib" handle="module:/resource/webred-cs-base/webred-cs-base">
-                                    
+                                                            
+            
+            
             
             <dependency-type>uses</dependency-type>
-                                
+                                                        
+        
+        
         
         </dependent-module>
-                        
+                                        
+        
+        
         
         <dependent-module archiveName="webredutils.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/cet-lib/webredutils.jar">
-                                    
+                                                            
+            
+            
             
             <dependency-type>uses</dependency-type>
-                                
+                                                        
+        
+        
         
         </dependent-module>
-                        
+                                        
+        
+        
         
         <dependent-module archiveName="AnagrafeRegionaleClient_DTO.jar" deploy-path="/lib" handle="module:/resource/AnagrafeRegionaleClient_DTO/AnagrafeRegionaleClient_DTO">
-                                    
+                                                            
+            
+            
             
             <dependency-type>uses</dependency-type>
-                                
+                                                        
+        
+        
         
         </dependent-module>
-                        
+                                        
+        
+        
         
         <dependent-module archiveName="jaxb-xjc.jar" deploy-path="/" handle="module:/classpath/lib/CT-LIBS/jaxb/jaxb-xjc.jar">
-                                    
+                                                            
+            
+            
             
             <dependent-object/>
-                                    
+                                                            
+            
+            
             
             <dependency-type>uses</dependency-type>
-                                
+                                                        
+        
+        
         
         </dependent-module>
-                        
+                                        
+        
+        
         
         <dependent-module archiveName="jaxb-core.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/jaxb/jaxb-core.jar">
-                                    
+                                                            
+            
+            
             
             <dependency-type>uses</dependency-type>
-                                
+                                                        
+        
+        
         
         </dependent-module>
-                        
+                                        
+        
+        
         
         <dependent-module archiveName="jaxb-jxc.jar" deploy-path="/" handle="module:/classpath/lib/CT-LIBS/jaxb/jaxb-jxc.jar">
-                                    
+                                                            
+            
+            
             
             <dependent-object/>
-                                    
+                                                            
+            
+            
             
             <dependency-type>uses</dependency-type>
-                                
+                                                        
+        
+        
         
         </dependent-module>
-                        
+                                        
+        
+        
         
         <dependent-module archiveName="jaxb-impl.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/jaxb/jaxb-impl.jar">
-                                    
+                                                            
+            
+            
             
             <dependency-type>uses</dependency-type>
-                                
+                                                        
+        
+        
         
         </dependent-module>
-                        
+                                        
+        
+        
         
         <dependent-module archiveName="jaxb-api.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/jaxb/jaxb-api.jar">
-                                    
+                                                            
+            
+            
             
             <dependency-type>uses</dependency-type>
-                                
+                                                        
+        
+        
         
         </dependent-module>
-                        
+                                        
+        
+        
         
         <dependent-module archiveName="CarSocialeA_EJBClient.jar" deploy-path="/lib" handle="module:/resource/CarSocialeA_EJBClient/CarSocialeA_EJBClient">
-                                    
+                                                            
+            
+            
             
             <dependency-type>uses</dependency-type>
-                                
+                                                        
+        
+        
         
         </dependent-module>
-                        
+                                        
+        
+        
         
         <dependent-module archiveName="CT_Config_Data_Model.jar" deploy-path="/lib" handle="module:/resource/CT_Config_Data_Model/CT_Config_Data_Model">
-                                    
+                                                            
+            
+            
             
             <dependency-type>uses</dependency-type>
-                                
+                                                        
+        
+        
         
         </dependent-module>
-                        
+                                        
+        
+        
         
         <dependent-module archiveName="CT_Config_ManagerClient.jar" deploy-path="/lib" handle="module:/resource/CT_Config_ManagerClient/CT_Config_ManagerClient">
-                                    
+                                                            
+            
+            
             
             <dependency-type>uses</dependency-type>
-                                
+                                                        
+        
+        
         
         </dependent-module>
-                        
+                                        
+        
+        
         
         <dependent-module archiveName="XmlSchema-1.4.7.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/sirps/runtime/XmlSchema-1.4.7.jar">
-                                    
+                                                            
+            
+            
             
             <dependency-type>uses</dependency-type>
-                                
+                                                        
+        
+        
         
         </dependent-module>
-                        
+                                        
+        
+        
         
         <dependent-module archiveName="axis2-xmlbeans-1.6.2.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/sirps/runtime/axis2-xmlbeans-1.6.2.jar">
-                                    
+                                                            
+            
+            
             
             <dependency-type>uses</dependency-type>
-                                
+                                                        
+        
+        
         
         </dependent-module>
-                     
+                                     
+        
+        
         
         
         <dependent-module archiveName="commons-httpclient-3.1.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/sirps/runtime/commons-httpclient-3.1.jar">
-                                    
+                                                            
+            
+            
             
             <dependency-type>uses</dependency-type>
-                                
+                                                        
+        
+        
         
         </dependent-module>
-                        
+                                        
+        
+        
         
         <dependent-module archiveName="wsdl4j-1.6.2.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/sirps/runtime/wsdl4j-1.6.2.jar">
-                                    
+                                                            
+            
+            
             
             <dependency-type>uses</dependency-type>
-                                
+                                                        
+        
+        
         
         </dependent-module>
-                        
+                                        
+        
+        
         
         <dependent-module archiveName="httpcore-4.1.4.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/apache-http/httpcore-4.1.4.jar">
-                                    
+                                                            
+            
+            
             
             <dependency-type>uses</dependency-type>
-                                
+                                                        
+        
+        
         
         </dependent-module>
-                        
+                                        
+        
+        
         
         <dependent-module archiveName="axis2-json-1.6.2.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/sirps/runtime/axis2-json-1.6.2.jar">
-                                    
+                                                            
+            
+            
             
             <dependency-type>uses</dependency-type>
-                                
+                                                        
+        
+        
         
         </dependent-module>
-                        
+                                        
+        
+        
         
         <dependent-module archiveName="axis2-ant-plugin-1.6.2.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/sirps/runtime/axis2-ant-plugin-1.6.2.jar">
-                                    
+                                                            
+            
+            
             
             <dependency-type>uses</dependency-type>
-                                
+                                                        
+        
+        
         
         </dependent-module>
-                        
+                                        
+        
+        
         
         <dependent-module archiveName="axis2-saaj-1.6.2.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/sirps/runtime/axis2-saaj-1.6.2.jar">
-                                    
+                                                            
+            
+            
             
             <dependency-type>uses</dependency-type>
-                                
+                                                        
+        
+        
         
         </dependent-module>
-                        
+                                        
+        
+        
         
         <dependent-module archiveName="axis2-corba-1.6.2.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/sirps/runtime/axis2-corba-1.6.2.jar">
-                                    
+                                                            
+            
+            
             
             <dependency-type>uses</dependency-type>
-                                
+                                                        
+        
+        
         
         </dependent-module>
-                        
+                                        
+        
+        
         
         <dependent-module archiveName="axis2-java2wsdl-1.6.2.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/sirps/runtime/axis2-java2wsdl-1.6.2.jar">
-                                    
+                                                            
+            
+            
             
             <dependency-type>uses</dependency-type>
-                                
+                                                        
+        
+        
         
         </dependent-module>
-                        
+                                        
+        
+        
         
         <dependent-module archiveName="axis2-mtompolicy-1.6.2.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/sirps/runtime/axis2-mtompolicy-1.6.2.jar">
-                                    
+                                                            
+            
+            
             
             <dependency-type>uses</dependency-type>
-                                
+                                                        
+        
+        
         
         </dependent-module>
-                        
+                                        
+        
+        
         
         <dependent-module archiveName="axis2-adb-codegen-1.6.2.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/sirps/runtime/axis2-adb-codegen-1.6.2.jar">
-                                    
+                                                            
+            
+            
             
             <dependency-type>uses</dependency-type>
-                                
+                                                        
+        
+        
         
         </dependent-module>
-                        
+                                        
+        
+        
         
         <dependent-module archiveName="axis2-soapmonitor-servlet-1.6.2.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/sirps/runtime/axis2-soapmonitor-servlet-1.6.2.jar">
-                                    
+                                                            
+            
+            
             
             <dependency-type>uses</dependency-type>
-                                
+                                                        
+        
+        
         
         </dependent-module>
-                        
+                                        
+        
+        
         
         <dependent-module archiveName="axiom-impl-1.2.13.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/sirps/runtime/axiom-impl-1.2.13.jar">
-                                    
+                                                            
+            
+            
             
             <dependency-type>uses</dependency-type>
-                                
+                                                        
+        
+        
         
         </dependent-module>
-                        
+                                        
+        
+        
         
         <dependent-module archiveName="axis2-jibx-1.6.2.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/sirps/runtime/axis2-jibx-1.6.2.jar">
-                                    
+                                                            
+            
+            
             
             <dependency-type>uses</dependency-type>
-                                
+                                                        
+        
+        
         
         </dependent-module>
-                        
+                                        
+        
+        
         
         <dependent-module archiveName="axis2-spring-1.6.2.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/sirps/runtime/axis2-spring-1.6.2.jar">
-                                    
+                                                            
+            
+            
             
             <dependency-type>uses</dependency-type>
-                                
+                                                        
+        
+        
         
         </dependent-module>
-                        
+                                        
+        
+        
         
         <dependent-module archiveName="axis2-jaxbri-1.6.2.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/sirps/runtime/axis2-jaxbri-1.6.2.jar">
-                                    
+                                                            
+            
+            
             
             <dependency-type>uses</dependency-type>
-                                
+                                                        
+        
+        
         
         </dependent-module>
-                        
+                                        
+        
+        
         
         <dependent-module archiveName="axis2-metadata-1.6.2.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/sirps/runtime/axis2-metadata-1.6.2.jar">
-                                    
+                                                            
+            
+            
             
             <dependency-type>uses</dependency-type>
-                                
+                                                        
+        
+        
         
         </dependent-module>
-                        
+                                        
+        
+        
         
         <dependent-module archiveName="axis2-adb-1.6.2.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/sirps/runtime/axis2-adb-1.6.2.jar">
-                                    
+                                                            
+            
+            
             
             <dependency-type>uses</dependency-type>
-                                
+                                                        
+        
+        
         
         </dependent-module>
-                        
+                                        
+        
+        
         
         <dependent-module archiveName="axiom-api-1.2.13.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/sirps/runtime/axiom-api-1.2.13.jar">
-                                    
+                                                            
+            
+            
             
             <dependency-type>uses</dependency-type>
-                                
+                                                        
+        
+        
         
         </dependent-module>
-                        
+                                        
+        
+        
         
         <dependent-module archiveName="xmlbeans-2.3.0.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/sirps/runtime/xmlbeans-2.3.0.jar">
-                                    
+                                                            
+            
+            
             
             <dependency-type>uses</dependency-type>
-                                
+                                                        
+        
+        
         
         </dependent-module>
-                        
+                                        
+        
+        
         
         <dependent-module archiveName="neethi-3.0.2.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/sirps/runtime/neethi-3.0.2.jar">
-                                    
+                                                            
+            
+            
             
             <dependency-type>uses</dependency-type>
-                                
+                                                        
+        
+        
         
         </dependent-module>
-                        
+                                        
+        
+        
         
         <dependent-module archiveName="axis2-fastinfoset-1.6.2.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/sirps/runtime/axis2-fastinfoset-1.6.2.jar">
-                                    
+                                                            
+            
+            
             
             <dependency-type>uses</dependency-type>
-                                
+                                                        
+        
+        
         
         </dependent-module>
-                        
+                                        
+        
+        
         
         <dependent-module archiveName="axis2-codegen-1.6.2.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/sirps/runtime/axis2-codegen-1.6.2.jar">
-                                    
+                                                            
+            
+            
             
             <dependency-type>uses</dependency-type>
-                                
+                                                        
+        
+        
         
         </dependent-module>
-                        
+                                        
+        
+        
         
         <dependent-module archiveName="axis2-transport-local-1.6.2.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/sirps/runtime/axis2-transport-local-1.6.2.jar">
-                                    
+                                                            
+            
+            
             
             <dependency-type>uses</dependency-type>
-                                
+                                                        
+        
+        
         
         </dependent-module>
-                        
+                                        
+        
+        
         
         <dependent-module archiveName="axiom-dom-1.2.13.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/sirps/runtime/axiom-dom-1.2.13.jar">
-                                    
+                                                            
+            
+            
             
             <dependency-type>uses</dependency-type>
-                                
+                                                        
+        
+        
         
         </dependent-module>
-                        
+                                        
+        
+        
         
         <dependent-module archiveName="axis2-jaxws-1.6.2.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/sirps/runtime/axis2-jaxws-1.6.2.jar">
-                                    
+                                                            
+            
+            
             
             <dependency-type>uses</dependency-type>
-                                
+                                                        
+        
+        
         
         </dependent-module>
-                        
+                                        
+        
+        
         
         <dependent-module archiveName="axis2-clustering-1.6.2.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/sirps/runtime/axis2-clustering-1.6.2.jar">
-                                    
+                                                            
+            
+            
             
             <dependency-type>uses</dependency-type>
-                                
+                                                        
+        
+        
         
         </dependent-module>
-                        
+                                        
+        
+        
         
         <dependent-module archiveName="axis2-transport-http-1.6.2.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/sirps/runtime/axis2-transport-http-1.6.2.jar">
-                                    
+                                                            
+            
+            
             
             <dependency-type>uses</dependency-type>
-                                
+                                                        
+        
+        
         
         </dependent-module>
-                        
+                                        
+        
+        
         
         <dependent-module archiveName="xml-resolver-1.2.jar" deploy-path="/" handle="module:/classpath/lib/CT-LIBS/sirps/xml-resolver-1.2.jar">
-                                    
+                                                            
+            
+            
             
             <dependent-object/>
-                                    
+                                                            
+            
+            
             
             <dependency-type>uses</dependency-type>
-                                
+                                                        
+        
+        
         
         </dependent-module>
-                        
+                                        
+        
+        
         
         <dependent-module archiveName="axis2-kernel-1.6.2.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/sirps/runtime/axis2-kernel-1.6.2.jar">
-                                    
+                                                            
+            
+            
             
             <dependency-type>uses</dependency-type>
-                                
+                                                        
+        
+        
         
         </dependent-module>
-                        
+                                        
+        
+        
         
         <dependent-module archiveName="AnagrafeRegionaleClient.jar" deploy-path="/lib" handle="module:/classpath/lib/CT-LIBS/SISO/AnagrafeRegionaleClient.jar">
-                                    
+                                                            
+            
+            
             
             <dependency-type>uses</dependency-type>
-                                
+                                                        
+        
+        
         
         </dependent-module>
-                        
+                                        
+        
+        
         
         <dependent-module archiveName="SegretariatoSoc_EJBClient.jar" deploy-path="/lib" handle="module:/resource/SegretariatoSoc_EJBClient/SegretariatoSoc_EJBClient">
-                                    
+                                                            
+            
+            
             
             <dependency-type>uses</dependency-type>
+                                                        
+        
+        
+        
+        </dependent-module>
+                                        
+        
+        
+        
+        <dependent-module archiveName="ISEERegioneMarcheClient.jar" deploy-path="/lib" handle="module:/resource/ISEERegioneMarcheClient/ISEERegioneMarcheClient">
+                                                            
+            
+            
+            
+            <dependency-type>uses</dependency-type>
+                                                        
+        
+        
+        
+        </dependent-module>
                                 
+        
+        
+        <dependent-module archiveName="AnagrafeRegionaleMarcheClient.jar" deploy-path="/lib" handle="module:/resource/AnagrafeRegionaleMarcheClient/AnagrafeRegionaleMarcheClient">
+                                                
+            
+            
+            <dependency-type>uses</dependency-type>
+                                            
+        
         
         </dependent-module>
                         
         
-        <dependent-module archiveName="ISEERegioneMarcheClient.jar" deploy-path="/lib" handle="module:/resource/ISEERegioneMarcheClient/ISEERegioneMarcheClient">
+        <dependent-module archiveName="SegretariatoSoc_DataModel.jar" deploy-path="/lib" handle="module:/resource/SegretariatoSoc_DataModel/SegretariatoSoc_DataModel">
                                     
             
             <dependency-type>uses</dependency-type>
@@ -799,17 +1352,18 @@
         
         </dependent-module>
                 
-        <dependent-module archiveName="AnagrafeRegionaleMarcheClient.jar" deploy-path="/lib" handle="module:/resource/AnagrafeRegionaleMarcheClient/AnagrafeRegionaleMarcheClient">
+        <dependent-module archiveName="Argo_EJBClient.jar" deploy-path="/lib" handle="module:/resource/Argo_EJBClient/Argo_EJBClient">
                         
             <dependency-type>uses</dependency-type>
                     
         </dependent-module>
-        <dependent-module archiveName="SegretariatoSoc_DataModel.jar" deploy-path="/lib" handle="module:/resource/SegretariatoSoc_DataModel/SegretariatoSoc_DataModel">
-            <dependency-type>uses</dependency-type>
-        </dependent-module>
-                    
+                                    
+    
+    
     
     </wb-module>
-        
+                
+
+
 
 </project-modules>

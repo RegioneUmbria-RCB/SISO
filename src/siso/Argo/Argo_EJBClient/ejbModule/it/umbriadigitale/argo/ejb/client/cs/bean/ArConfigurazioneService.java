@@ -1,5 +1,6 @@
 package it.umbriadigitale.argo.ejb.client.cs.bean;
 
+import it.umbriadigitale.argo.data.ArBiInviante;
 import it.umbriadigitale.argo.ejb.client.cs.dto.configurazione.ArAttivitaDTO;
 import it.umbriadigitale.argo.ejb.client.cs.dto.configurazione.ArFondoDTO;
 import it.umbriadigitale.argo.ejb.client.cs.dto.configurazione.ArFonteDTO;
@@ -41,4 +42,7 @@ public interface ArConfigurazioneService {
 	public List<ArFondoDTO> getListaFondiDTO();
 	public void disabilitaFonti(List<Long> lstIds);
 	
+	// SISO-1160
+	public String findCodRoutingInviante(String nomeInviante, Long idInviante);
+ 
 }

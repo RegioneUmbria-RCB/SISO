@@ -6,6 +6,8 @@
 		<persistence-unit name="Argo_DataModel" transaction-type="JTA">
 		<provider>org.hibernate.ejb.HibernatePersistence</provider>  
 		<mapping-file>META-INF/orm_argo.xml</mapping-file>
+		
+		<class>it.umbriadigitale.argo.data.ArBiInviante</class>
 
 		<class>it.umbriadigitale.argo.data.cs.data.ArCsSoggettoCs</class>
 		<class>it.umbriadigitale.argo.data.cs.data.ArCsDatoCs</class>

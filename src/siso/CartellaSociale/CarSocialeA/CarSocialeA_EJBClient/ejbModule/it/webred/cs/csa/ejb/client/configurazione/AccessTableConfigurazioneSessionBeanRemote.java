@@ -268,10 +268,7 @@ public interface AccessTableConfigurazioneSessionBeanRemote {
 	public List<CsTbMicroIntervento> readPDSMicro(BaseDTO dto);
 
 	public List<KeyValueDTO> getStruttureTribunale(CeTBaseObject bo);
-
-	// SISO-1160
-	public ArBiInviante findInviante(BaseDTO dto);
-
+	
 	// SISO-1190
 	public List<CsTbTitoloStudio> getTbTitoloStudioAbilitato(BaseDTO dto);
 

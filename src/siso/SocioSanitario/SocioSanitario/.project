@@ -16,6 +16,7 @@
 		<project>SegretariatoSoc_DataModel</project>
 		<project>ISEERegioneMarcheClient</project>
 		<project>AnagrafeRegionaleMarcheClient</project>
+		<project>Argo_EJBClient</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

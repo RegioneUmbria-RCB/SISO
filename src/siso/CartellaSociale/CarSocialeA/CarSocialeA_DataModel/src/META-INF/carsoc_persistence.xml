@@ -320,8 +320,6 @@
 	 	<class>it.webred.cs.data.model.ArRelIntCustomPresInps</class>
 	 	<class>it.webred.cs.data.model.ArRelIntCustomIstat</class>
     	<!-- SISO- 1110 -->
-    	<!-- SISO-1160  -->
-    	<class>it.webred.cs.data.model.ArBiInviante</class> 
     	<!-- SISO- 1131 -->
     	<class>it.webred.cs.data.model.CsTbProgettoAltro</class>
     	<!-- SISO-469 -->

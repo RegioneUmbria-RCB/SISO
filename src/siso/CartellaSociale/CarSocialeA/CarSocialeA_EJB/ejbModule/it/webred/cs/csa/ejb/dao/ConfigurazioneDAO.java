@@ -1193,19 +1193,6 @@ public class ConfigurazioneDAO extends CarSocialeBaseDAO implements Serializable
 		return null;
 	}
 
-	//SISO-1160
-	public ArBiInviante findArBiInviante(String nomeInviante, Long idInviante) {
-		Query q = em.createNamedQuery("ArBiInviante.findByInvianteIdAndNome");
-		q.setParameter("idInviante", idInviante); 
-		q.setParameter("nomeInviante", nomeInviante);
-		 
-		List<ArBiInviante> lst = q.getResultList();
-		if(!lst.isEmpty()) return ((ArBiInviante)lst.get(0));
-		return null;
-	}
-	
-	//SISO-1160 Fine
-	
 	public CsTbFormaGiuridica getFormaGiuridicaById(String obj) {
 		if(obj!=null)
 			return em.find(CsTbFormaGiuridica.class, obj);

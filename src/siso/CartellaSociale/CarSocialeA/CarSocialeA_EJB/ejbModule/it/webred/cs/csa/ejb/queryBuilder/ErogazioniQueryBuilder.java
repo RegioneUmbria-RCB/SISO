@@ -19,6 +19,7 @@ public class ErogazioniQueryBuilder extends QueryBuilderBase {
 	
 	private static String SETTORE_ID = "settoreId";
 	private static String DATA_EROGAZIONE = "dataErogazione";
+	private static String DATA_EVENTO = "dataEvento";
 	private static String STATO_EROGAZIONE = "statoErogazione";
 	private static String LINEA_FINANZIAMENTO = "lineaFinanziamento";
 	private static String DIARIO_PAI_ID = "diarioPaiId";
@@ -365,7 +366,8 @@ public class ErogazioniQueryBuilder extends QueryBuilderBase {
 				+"mastersogg.CASO_ID, " 
 				+"master.SETT_SECONDO_LIVELLO, " //SISO-812
 				+"nvl(master.COD_PRESTAZIONE, 'Non definito') COD_PRESTAZIONE, "  //SISO-1162 
-				+"nvl(master.DENOM_PRESTAZIONE, 'Non definito') DENOM_PRESTAZIONE "  //SISO-1162
+				+"nvl(master.DENOM_PRESTAZIONE, 'Non definito') DENOM_PRESTAZIONE, "  //SISO-1162
+				+ "INTESEG.data_evento "
 				+"from "
 				+"Cs_O_Operatore_Settore opSett, " 
 				+"V_EROG_MAST_PR master "
@@ -440,7 +442,8 @@ public class ErogazioniQueryBuilder extends QueryBuilderBase {
 				+"mastersogg.CASO_ID, " 
 				+"master.SETT_SECONDO_LIVELLO, "  //SISO-812
 				+"nvl(master.COD_PRESTAZIONE, 'Non definito') COD_PRESTAZIONE, "  //SISO-1162 
-				+"nvl(master.DENOM_PRESTAZIONE, 'Non definito') DENOM_PRESTAZIONE "  //SISO-1162
+				+"nvl(master.DENOM_PRESTAZIONE, 'Non definito') DENOM_PRESTAZIONE, "  //SISO-1162
+				+ "INTESEG.data_evento "
 				+"from Cs_I_Intervento inter  "+
 				joinLastFoglioIntervento + "foglio on (foglio.intervento_Id=inter.id)  "+
 				//"left join Cs_Flg_Intervento foglio on (foglio.intervento_Id=inter.id)  "+
@@ -552,6 +555,8 @@ public class ErogazioniQueryBuilder extends QueryBuilderBase {
 			params = setParameter(q, SETTORE_ID, criteria.getSettoreId(), params);
 		if(criteria.getDataErogazione()!=null)
 			params = setParameter(q, DATA_EROGAZIONE, criteria.getDataErogazione(), params);
+		if(criteria.getDataEvento()!=null)
+			params = setParameter(q, DATA_EVENTO, criteria.getDataEvento(), params);
 		if(!StringUtils.isBlank(criteria.getStatoErogazione()))
 			params = setParameter(q, STATO_EROGAZIONE, criteria.getStatoErogazione().toUpperCase(), params);	
 		if(!StringUtils.isBlank(criteria.getLineaFinanziamento()))
@@ -583,6 +588,8 @@ public class ErogazioniQueryBuilder extends QueryBuilderBase {
 		String sqlCriteria = "";
 		
 		sqlCriteria += criteria.getDataErogazione() == null ? "" : " AND DATA_EROGAZIONE >= :" + DATA_EROGAZIONE;
+		
+		sqlCriteria += criteria.getDataEvento() == null ? "" : " AND DATA_EVENTO >= :" + DATA_EVENTO;
 		
 		sqlCriteria += StringUtils.isBlank(criteria.getStatoErogazione()) ? "" : " AND UPPER(stato_erogazione) "+ concatLikeParam(STATO_EROGAZIONE);
 		

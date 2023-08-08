@@ -830,7 +830,8 @@ public class DatiProgettoBean extends CsUiCompBaseBean implements Serializable {
 			this.csIInterventoPr.setCsTbProgettoAltro(new CsTbProgettoAltro());
 		}
 		
-		if(datiSociali==null && !StringUtils.isBlank(soggettoErogazioneCF)) loadDatiSociali(soggettoErogazioneCF);
+		if(datiSociali==null && !StringUtils.isBlank(soggettoErogazioneCF)) 
+			loadDatiSociali(soggettoErogazioneCF);
 	
 		if(this.isRenderFSE()){
 			
@@ -982,12 +983,10 @@ public class DatiProgettoBean extends CsUiCompBaseBean implements Serializable {
  	
 		 	if(numFSE == 0){
 		 		
-		 		//this.csIInterventoPr.setCsIInterventoPrFse(new CsIInterventoPrFse());
-		 		 this.resetDatiFSE();
-		 		//this.residenzaComuneMan = new ComuneResidenzaMan();
-	 			this.domicilioComuneMan = new ComuneResidenzaMan();
-	 			this.comuneMan = new ComuneGenericMan("Sede aziendale");
-			
+		 		this.resetDatiFSE();
+	 			if(domicilioComuneMan == null)
+	 				this.domicilioComuneMan = new ComuneResidenzaMan();
+	 			
 		 		if(this.csIInterventoPr.getProgettoAttivita()!=null)
 		 			 renderAttivita = true;
 		 		else
@@ -1191,10 +1190,6 @@ public class DatiProgettoBean extends CsUiCompBaseBean implements Serializable {
 
 	public ComuneResidenzaMan getDomicilioComuneMan() {
 		return domicilioComuneMan;
-	}
-
-	public void setDomicilioComuneMan(ComuneResidenzaMan domicilioComuneMan) {
-		this.domicilioComuneMan = domicilioComuneMan;
 	}
 
 	public void addMessage(FacesMessage.Severity tipoMessaggio,String summary) {

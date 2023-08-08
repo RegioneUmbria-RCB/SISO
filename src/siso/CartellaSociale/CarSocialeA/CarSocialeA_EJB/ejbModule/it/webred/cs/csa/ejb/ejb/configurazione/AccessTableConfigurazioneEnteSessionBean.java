@@ -1,6 +1,7 @@
 package it.webred.cs.csa.ejb.ejb.configurazione;
 
 import it.webred.cs.csa.ejb.CarSocialeBaseSessionBean;
+import it.webred.cs.csa.ejb.client.CarSocialeServiceException;
 import it.webred.cs.csa.ejb.client.configurazione.AccessTableConfigurazioneEnteSessionBeanRemote;
 import it.webred.cs.csa.ejb.dao.CatSocialeDAO;
 import it.webred.cs.csa.ejb.dao.IndirizzoDAO;
@@ -233,7 +234,12 @@ public class AccessTableConfigurazioneEnteSessionBean extends CarSocialeBaseSess
     @AuditSaltaValidazioneSessionID
     @Override
    public CsOOrganizzazione getOrganizzazioneCapofila(CeTBaseObject cet) {
-   	return operatoreDao.getOrganizzazioneCapofila();
+	   	try {
+	    	return operatoreDao.getOrganizzazioneCapofila();
+	    }catch (Exception e) {
+			logger.error("getOrganizzazioneCapofila ["+cet.getEnteId()+"] "+ e.getMessage(), e);
+			throw new CarSocialeServiceException(e);
+		}
    }
     
   

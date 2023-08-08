@@ -16,7 +16,6 @@ import it.webred.cs.csa.ejb.dto.erogazioni.configurazione.ErogStatoCfgDTO;
 import it.webred.cs.csa.ejb.dto.fascicolo.scuola.ScuoleSearchCriteria;
 import it.webred.cs.csa.ejb.dto.pai.base.CsPaiFaseChiusuraDTO;
 import it.webred.cs.csa.ejb.dto.siru.ConfigurazioneFseDTO;
-import it.webred.cs.data.model.ArBiInviante;
 import it.webred.cs.data.model.ArFfProgetto;
 import it.webred.cs.data.model.ArFfProgettoAttivita;
 import it.webred.cs.data.model.ArRelClassememoPresInps;
@@ -937,14 +936,6 @@ public class AccessTableConfigurazioneSessionBean extends CarSocialeBaseSessionB
 	@Override
 	public List<KeyValueDTO> getStruttureTribunale(CeTBaseObject bo) {
 		return configurazioneDAO.getTbItems("CS_TB_TRIB_STRUTTURA");
-	}
-
-	//SISO-1160
-	@Override
-	@AuditConsentiAccessoAnonimo
-	@AuditSaltaValidazioneSessionID
-	public ArBiInviante findInviante(BaseDTO dto){
-		return configurazioneDAO.findArBiInviante((String)dto.getObj(), (Long)dto.getObj2());
 	}
 
 	@Override

@@ -195,6 +195,10 @@ public class AccessTableSchedaSessionBean extends CarSocialeBaseSessionBean impl
 			CsASoggettoLAZY s = datiSociali.getCsASoggetto();
 			CsAAnagrafica ana = s.getCsAAnagrafica();
 			
+			dto.setCel(ana.getCell());
+			dto.setTel(ana.getTel());
+			dto.setEmail(ana.getEmail());
+			
 			CsAAnaIndirizzo domicilio = indirizzoDao.getDomicilioBySoggetto(ana.getId());
 			if(domicilio!=null){
 				dto.setIndirizzoDomicilio(domicilio.getLabelIndirizzo());
