@@ -15,6 +15,7 @@ public class ErogazioneMasterDTO implements Serializable {
 	
 	private Date dataRichiestaIntervento;
 	private Date dataUltimaErogazione;
+	private Date dataEventoUltimaErogazione;
 	private String statoUltimaErogazione;
 	private Long diarioId;
 	private String statoUltimoFlg;
@@ -71,6 +72,14 @@ public class ErogazioneMasterDTO implements Serializable {
 	public String getStatoUltimaErogazione() {
 		return statoUltimaErogazione;
 	}
+	
+	public Date getDataEventoUltimaErogazione() {
+		return dataEventoUltimaErogazione;
+	}
+
+	public void setDataEventoUltimaErogazione(Date dataEventoUltimaErogazione) {
+		this.dataEventoUltimaErogazione = dataEventoUltimaErogazione;
+	}
 
 	public Long getDiarioId() {
 		return diarioId;
@@ -91,7 +100,7 @@ public class ErogazioneMasterDTO implements Serializable {
 	public void setDataUltimaErogazione(Date dataUltimaErogazione) {
 		this.dataUltimaErogazione = dataUltimaErogazione;
 	}
-
+	
 	public void setStatoUltimaErogazione(String statoUltimaErogazione) {
 		this.statoUltimaErogazione = statoUltimaErogazione;
 	}

@@ -208,7 +208,20 @@
 					<f:convertDateTime pattern="dd/MM/yyyy" />
 				</h:outputText>
 			</p:column>
+			<!-- Data Evento Ultima Erogazione -->
+			<p:column style="text-align:center;">
+				<f:facet name="header">
+					<h:outputText value="Data evento ultima operazione" />
+					<p:calendar id="dataEvento"  value="#{dataBean.lazyListaErogazioniModel.dataEventoUltimaErogazione}" pattern="dd/MM/yyyy" size="10"
+						onchange="PF('listaErogazioneInterventiWidget').filter(); updateTabella();">
+						<p:ajax event="dateSelect" process="@this" update="listaErogazioneInterventi" />
+					</p:calendar>
+				</f:facet>
 
+				<h:outputText value="#{rowBean.master.dataEventoUltimaErogazione}">
+					<f:convertDateTime pattern="dd/MM/yyyy" />
+				</h:outputText>
+			</p:column>
 			<!-- Stato Ultima Erogazione -->
 			<p:column filterBy="statoErogazione" style="text-align:center;">
 				<f:facet name="header">

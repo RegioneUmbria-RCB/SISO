@@ -14,6 +14,7 @@ import org.jboss.logging.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import it.umbriadigitale.argo.data.ArBiInviante;
 import it.umbriadigitale.argo.data.cs.data.ArFfFondo;
 import it.umbriadigitale.argo.data.cs.data.ArFfLineafin;
 import it.umbriadigitale.argo.data.cs.data.ArFfLineafinOrg;
@@ -484,5 +485,11 @@ public class ArConfigurazioneServiceBean implements ArConfigurazioneService {
 	@Override
 	public List<ArProgettoDTO> getListaProgetti(List<Long> idOrganizzazioni) {
 		return dao.getListaProgetti(idOrganizzazioni);
+	}
+	
+	@Override
+	public String findCodRoutingInviante(String nomeInviante, Long idInviante){
+		ArBiInviante inviante =  dao.findArBiInviante(nomeInviante, idInviante);
+		return inviante!=null && inviante.getAbilitato() ? inviante.getCodRouting() : null;
 	}
 }

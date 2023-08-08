@@ -1375,6 +1375,7 @@ public class ErogazioneInterventoBean extends CsUiCompBaseBean implements Serial
 		boolean bOk = true;
 		
 		this.valorizzaResidenza();
+		this.valorizzaLuogoDiNascita();
 		this.valorizzaSesso();
 		bOk = validaTestata();
 

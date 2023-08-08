@@ -425,10 +425,11 @@ public class ErogazioniInterventiBean extends CsUiCompBaseBean {
 	//private static final int EXCEL_COLUMN_INDEX_GESTORE = 9;
 	private static final int EXCEL_COLUMN_INDEX_SETT_EROGANTE = 9;
 	private static final int EXCEL_COLUMN_INDEX_DATA_ULTIMA_EROG = 10;
-	private static final int EXCEL_COLUMN_INDEX_STATO_ULTIMA_EROG = 11;
-	private static final int EXCEL_COLUMN_INDEX_TOT_SPESA = 12;
-	private static final int EXCEL_COLUMN_INDEX_TOT_SERVIZIO = 13;
-	private static final int EXCEL_COLUMN_INDEX_TOT_ATTRIBUTI = 14;
+	private static final int EXCEL_COLUMN_INDEX_DATA_EVENTO_ULTIMA_EROG = 11;
+	private static final int EXCEL_COLUMN_INDEX_STATO_ULTIMA_EROG = 12;
+	private static final int EXCEL_COLUMN_INDEX_TOT_SPESA = 13;
+	private static final int EXCEL_COLUMN_INDEX_TOT_SERVIZIO = 14;
+	private static final int EXCEL_COLUMN_INDEX_TOT_ATTRIBUTI = 15;
 	
 	private CellStyle exportCellStyle;
 	
@@ -462,6 +463,7 @@ public class ErogazioniInterventiBean extends CsUiCompBaseBean {
 		//createAndPopulateCell(headerRow, EXCEL_COLUMN_INDEX_GESTORE, "Gestore");
 		createAndPopulateCell(headerRow, EXCEL_COLUMN_INDEX_SETT_EROGANTE, "Sett. Erogante");
 		createAndPopulateCell(headerRow, EXCEL_COLUMN_INDEX_DATA_ULTIMA_EROG, "Data Ultima Erog.");
+		createAndPopulateCell(headerRow, EXCEL_COLUMN_INDEX_DATA_EVENTO_ULTIMA_EROG, "Data Evento Ultima Erog.");
 		createAndPopulateCell(headerRow, EXCEL_COLUMN_INDEX_STATO_ULTIMA_EROG, "Stato Ultima Erog.");
 		createAndPopulateCell(headerRow, EXCEL_COLUMN_INDEX_TOT_SPESA, "Tot.Spesa");
 		createAndPopulateCell(headerRow, EXCEL_COLUMN_INDEX_TOT_SERVIZIO, "Tot.Servizio");
@@ -497,6 +499,7 @@ public class ErogazioniInterventiBean extends CsUiCompBaseBean {
 				//createAndPopulateCell(row, EXCEL_COLUMN_INDEX_GESTORE,settoreValueExtraction(rowListaErogazioni.getSettoreGestore()));
 				createAndPopulateCell(row, EXCEL_COLUMN_INDEX_SETT_EROGANTE,rowListaErogazioni.getSettoreErogante());
 				createAndPopulateCell(row, EXCEL_COLUMN_INDEX_DATA_ULTIMA_EROG,dataUltimaErogValueExtraction(rowListaErogazioni.getMaster().getDataUltimaErogazione()));
+				createAndPopulateCell(row, EXCEL_COLUMN_INDEX_DATA_EVENTO_ULTIMA_EROG,dataUltimaErogValueExtraction(rowListaErogazioni.getMaster().getDataEventoUltimaErogazione()));
 				createAndPopulateCell(row, EXCEL_COLUMN_INDEX_STATO_ULTIMA_EROG, rowListaErogazioni.getMaster().getStatoUltimaErogazione());
 				createAndPopulateCell(row, EXCEL_COLUMN_INDEX_TOT_SPESA, totSpesaValueExtraction(rowListaErogazioni.getMaster()));
 				createAndPopulateCell(row, EXCEL_COLUMN_INDEX_TOT_SERVIZIO, rowListaErogazioni.getSommaUnitaMisura());

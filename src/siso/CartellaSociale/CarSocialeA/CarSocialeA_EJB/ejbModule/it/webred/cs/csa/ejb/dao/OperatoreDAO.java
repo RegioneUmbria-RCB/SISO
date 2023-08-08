@@ -135,15 +135,10 @@ public class OperatoreDAO extends CarSocialeBaseDAO implements Serializable {
 	/* SISO-663 SM */
 
 	public CsOOrganizzazione getOrganizzazioneCapofila() {
-		try {
-			TypedQuery<CsOOrganizzazione> q = em.createNamedQuery("CsOOrganizzazione.findCapofila", CsOOrganizzazione.class);
-			List<CsOOrganizzazione> lst = q.getResultList();
-			if(lst.size()>0)
-				return lst.get(0);
-		}
-		catch (Exception e) {
-			logger.error(e.getMessage(), e);
-		}
+		TypedQuery<CsOOrganizzazione> q = em.createNamedQuery("CsOOrganizzazione.findCapofila", CsOOrganizzazione.class);
+		List<CsOOrganizzazione> lst = q.getResultList();
+		if(lst.size()>0)
+			return lst.get(0);
 		return null;
 	}
 	

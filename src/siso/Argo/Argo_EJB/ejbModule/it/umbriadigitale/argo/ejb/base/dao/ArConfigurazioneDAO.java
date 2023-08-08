@@ -1,5 +1,6 @@
 package it.umbriadigitale.argo.ejb.base.dao;
 
+import it.umbriadigitale.argo.data.ArBiInviante;
 import it.umbriadigitale.argo.data.cs.data.ArFfFondo;
 import it.umbriadigitale.argo.data.cs.data.ArFfLineafin;
 import it.umbriadigitale.argo.data.cs.data.ArFfLineafinOrg;
@@ -315,6 +316,19 @@ public class ArConfigurazioneDAO extends ArgoBaseDAO implements Serializable{
 		return q.getResultList();
 	}
 	
+
+	//SISO-1160
+	public ArBiInviante findArBiInviante(String nomeInviante, Long idInviante) {
+		Query q = em.createNamedQuery("ArBiInviante.findByInvianteIdAndNome");
+		q.setParameter("idInviante", idInviante); 
+		q.setParameter("nomeInviante", nomeInviante);
+		 
+		List<ArBiInviante> lst = q.getResultList();
+		if(!lst.isEmpty()) return ((ArBiInviante)lst.get(0));
+		return null;
+	}
+	
+	//SISO-1160 Fine
 	
 	
 }

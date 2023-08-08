@@ -22,6 +22,7 @@ public class LazyListaErogazioniModel extends LazyDataModel<ErogInterventoRowBea
      
 	private int tipoFiltroInterventiSelezionato;
 	private Date dataUltimaErogazione;
+	private Date dataEventoUltimaErogazione;
 	private Long[] selectedTipoIntervento;
 	private Long[] selectedTipoInterventoCustom;
 	private String[] selectedTipoBeneficiario;
@@ -79,7 +80,10 @@ public class LazyListaErogazioniModel extends LazyDataModel<ErogInterventoRowBea
 		
 		if(this.dataUltimaErogazione!=null)
 			bDto.setDataErogazione(this.dataUltimaErogazione);
-			
+		
+		if(this.dataEventoUltimaErogazione!=null)
+			bDto.setDataEvento(this.dataEventoUltimaErogazione);
+		
 		if(this.selectedTipoIntervento!=null && this.selectedTipoIntervento.length>0)
 			bDto.setLstTipoIntervento(this.selectedTipoIntervento);
 		
@@ -199,5 +203,12 @@ public class LazyListaErogazioniModel extends LazyDataModel<ErogInterventoRowBea
 	}
 
 
-	
+	public Date getDataEventoUltimaErogazione() {
+		return dataEventoUltimaErogazione;
+	}
+
+
+	public void setDataEventoUltimaErogazione(Date dataEventoUltimaErogazione) {
+		this.dataEventoUltimaErogazione = dataEventoUltimaErogazione;
+	}	
 }

@@ -3451,16 +3451,7 @@
 			]]>
 		</query>
 	</named-query>  
-	<!--  SISO-1160 Inizio -->
-		<named-query name="ArBiInviante.findByInvianteIdAndNome">
-				<query>
-					<![CDATA[
-					select c from ArBiInviante c 				
-						where (c.idInviante = :idInviante and c.nomeInviante = :nomeInviante)
-			 	]]>
-			</query>
-		</named-query>  
-	<!--  SISO-1160 Fine -->	
+
 	<!--  SISO-1110 Inizio -->
 	<named-query name="VServiziCustom.findAreaTInterventoById">
 		<query>

@@ -1,16 +1,14 @@
 package it.webred.cs.sociosan.ejb.ejb;
 
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.List;
-import java.util.Properties;
 
 import javax.ejb.Stateless;
 import javax.naming.NamingException;
 
 import org.apache.commons.lang3.StringUtils;
 
+import it.umbriadigitale.argo.ejb.client.cs.bean.ArConfigurazioneService;
 import it.webred.cs.csa.ejb.client.configurazione.AccessTableConfigurazioneEnteSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.configurazione.AccessTableConfigurazioneSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.domini.AccessTableDominiSiruSessionBeanRemote;
@@ -23,7 +21,6 @@ import it.webred.cs.csa.ejb.dto.rest.TabellaDecodificaExtDTO;
 import it.webred.cs.csa.ejb.dto.rest.TrascodificheResponseDTO;
 import it.webred.cs.csa.ejb.dto.siru.SiruDominioDTO;
 import it.webred.cs.csa.ejb.enumeratori.SiruEnum;
-import it.webred.cs.data.model.ArBiInviante;
 import it.webred.cs.data.model.ArTClasse;
 import it.webred.cs.data.model.CsOOrganizzazione;
 import it.webred.cs.data.model.CsTbCondLavoro;
@@ -41,13 +38,14 @@ import it.webred.ss.ejb.client.ConfigurazioneSessionBeanRemote;
 @Stateless
 public class AccessTableConfigurazioneSessionBeanClient   extends BaseSessionBean implements AccessTableConfigurazioneSessionBeanClientRemote {
 
+	protected ArConfigurazioneService sbArgo;
 	protected AccessTableConfigurazioneSessionBeanRemote sb;
 	protected ConfigurazioneSessionBeanRemote sb3;
 	protected AccessTableConfigurazioneEnteSessionBeanRemote sb4;
 	protected AccessTableDominiSiruSessionBeanRemote sbArFse;
 	protected String ente = "";
 	protected int esito = 0;
-	protected String msg = "Operazione conclusa correttamente.";
+	protected String msg = "Operazione conclusa correttamente";
 	
 	
 	private void setEsitoOperazione(int codice, String messaggio){
@@ -55,22 +53,15 @@ public class AccessTableConfigurazioneSessionBeanClient   extends BaseSessionBea
 		this.msg = messaggio;
 	}
 	
-	private ArBiInviante verificaInviante(String nomeInviante, Long idInviante) {
+	private String verificaInviante(String nomeInviante, Long idInviante) {
+	
+		String invianteResult = sbArgo.findCodRoutingInviante(nomeInviante, idInviante);
 		
-	 	BaseDTO dto = new BaseDTO();
-		dto.setEnteId(ente);
-		dto.setObj(nomeInviante);
-		dto.setObj2(idInviante); 
-	    ArBiInviante invianteResult = sb.findInviante(dto);
+		if(!StringUtils.isBlank(invianteResult))
+			setEsitoOperazione(0, "Inviante abilitato");
+		else if(invianteResult  == null)
+			setEsitoOperazione(-10, "KO - Inviante non presente o non abilitato");
 		
-		
-		if(invianteResult  == null)
-			setEsitoOperazione(-10, "KO - Utente non presente.");
-		else if(invianteResult.getAbilitato().equals("0")){
-			setEsitoOperazione(-11, "KO - Utente non abilitato.");
-		}
-			
-		setEsitoOperazione(0, "Utente abilitato.");
 		return invianteResult;
 	}
 	
@@ -306,11 +297,12 @@ public class AccessTableConfigurazioneSessionBeanClient   extends BaseSessionBea
 			String nomeInviante = input.getNomeInviante();
 			String nomeTabella = input.getNomeTabella();
 			
-			getEnteCapofila();
-			
-			ArBiInviante inviante = this.verificaInviante(nomeInviante, idInviante);
+			String codRoutingInviante = this.verificaInviante(nomeInviante, idInviante);
 			
 			if(esito == 0){	
+			
+				fillEnteCapofila(codRoutingInviante);
+				if(!StringUtils.isBlank(ente)){
 					if(isRicercaDecodifica(nomeTabella, TableConfigurazioniCostanti.CS_TB_SERVIZI)) 
 						responseDTO.setTbServizi(estraiInterventiSS());
 					
@@ -340,7 +332,7 @@ public class AccessTableConfigurazioneSessionBeanClient   extends BaseSessionBea
 						responseDTO.setTbFonteFinanziamento(estraiFonteFinanziamento());
 					
 					if(isRicercaDecodifica(nomeTabella, TableConfigurazioniCostanti.AR_FF_PROGETTO)) 
-						responseDTO.setTbProgetto(estraiProgetti(inviante.getCodRouting()));
+						responseDTO.setTbProgetto(estraiProgetti(codRoutingInviante));
 						
 					if(this.isRicercaDecodifica(nomeTabella, TableConfigurazioniCostanti.AR_FSE_COND_ING_MERCATO_LAVORO))
 						responseDTO.setTbFseCondIngMercatoLavoro(estraiArFseChk(TableConfigurazioniCostanti.AR_FSE_COND_ING_MERCATO_LAVORO, SiruEnum.CONDIZIONE_MERCATO.name()));
@@ -361,9 +353,11 @@ public class AccessTableConfigurazioneSessionBeanClient   extends BaseSessionBea
 						responseDTO.setTbFseTipologiaLavoro(estraiArFseChk(TableConfigurazioniCostanti.AR_FSE_TIPOLOGIA_LAVORO, SiruEnum.TIPOLOGIA_LAVORO.name()));
 					
 					if(this.isRicercaDecodifica(nomeTabella, TableConfigurazioniCostanti.AR_FSE_TITOLO_STUDIO))
-						responseDTO.setTbFseTitoloStudio(estraiArFseChk(TableConfigurazioniCostanti.AR_FSE_TITOLO_STUDIO, SiruEnum.TITOLO_STUDIO.name()));					
+						responseDTO.setTbFseTitoloStudio(estraiArFseChk(TableConfigurazioniCostanti.AR_FSE_TITOLO_STUDIO, SiruEnum.TITOLO_STUDIO.name()));		
+				}else
+					setEsitoOperazione(-12, "Errore di elaborazione: ente capofila non trovato");
 			}
-			
+		
 
 		}catch(Throwable e){
 			logger.error(e.getMessage(), e);
@@ -382,52 +376,23 @@ public class AccessTableConfigurazioneSessionBeanClient   extends BaseSessionBea
 		sb3 =  (ConfigurazioneSessionBeanRemote) ClientUtility.getEjbInterface("SegretariatoSoc", "SegretariatoSoc_EJB", "ConfigurazioneSessionBean");	
 		sb4 = (AccessTableConfigurazioneEnteSessionBeanRemote) ClientUtility.getEjbInterface("CarSocialeA", "CarSocialeA_EJB", "AccessTableConfigurazioneEnteSessionBean");
 		sbArFse = (AccessTableDominiSiruSessionBeanRemote)ClientUtility.getEjbInterface("CarSocialeA", "CarSocialeA_EJB","AccessTableDominiSiruSessionBean");
-		
+		sbArgo = (ArConfigurazioneService)ClientUtility.getEjbInterface("Argo", "Argo_EJB","ArConfigurazioneServiceBean");
+ 
 	}
 
-	
-	 private void getEnteCapofila() {
-		
-		//recupero tutti gli enti dal properties per far girare il task su tutti i DB
-		String path = System.getProperty("jboss.server.config.dir") + "\\datarouter.properties";
-		String newpath = "file:///" + path.replaceAll("\\\\", "/");
-		URL url;
-		try {
-			
-			
-			url = new URL(newpath);
-
-			Properties props = new Properties();
-			props.load(url.openStream());
-			Enumeration e = props.propertyNames();
-			
-		
-			List<String> capofila = new ArrayList<String>();
-		
-			while (e.hasMoreElements()) {
-		    	//Recupero il capofila per ogni CS
-		    	String enteId = (String) e.nextElement();
-		    	CsOOrganizzazione org = null;
-		    	try{
-			    	CeTBaseObject dto = new CeTBaseObject();
-			    	dto.setEnteId(enteId);
-			    	org = sb4.getOrganizzazioneCapofila(dto);
-		    	}catch(Exception err){
-		    		logger.error("Errore recupero capofila per:"+enteId, err);
-		    	}
-		    	
-		    	if(org!=null && !capofila.contains(org.getCodRouting())) 
-		    		capofila.add(org.getCodRouting());
-		    }
-		    	
-			this.ente = capofila.get(0);
-		    
-		    
-		} catch (Exception e) {
-			logger.error("Lettura Tabelle di configurazione: Eccezione: " + e.getMessage(), e);
-		}
-	
+	private void fillEnteCapofila(String belfiore) {
+		//Recupero il capofila per ogni CS
+    	CsOOrganizzazione org = null;
+    	try{
+	    	CeTBaseObject dto = new CeTBaseObject();
+	    	dto.setEnteId(belfiore);
+	    	logger.debug("Ricerca capofila per ente: "+belfiore);
+	    	org = sb4.getOrganizzazioneCapofila(dto);
+	    	
+	    	ente = org!=null ? org.getCodRouting() : null;
+	    	
+    	}catch(Exception err){
+    		logger.error("Errore recupero capofila per:"+belfiore, err);
+    	}	
 	}
-
 }
-

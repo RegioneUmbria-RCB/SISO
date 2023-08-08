@@ -26,6 +26,7 @@ public class ErogazioniSearchCriteria extends PaginationDTO{
 	private Long[] lstTipoInterventoCustom;
 	private String[] lstTipoInterventoInps; //SISO-1162
 	private Date dataErogazione;
+	private Date dataEvento;
 	private String statoErogazione;
 	
 	//frida aggiunti
@@ -76,6 +77,12 @@ public class ErogazioniSearchCriteria extends PaginationDTO{
 	}
 	public void setDataErogazione(Date dataErogazione) {
 		this.dataErogazione = dataErogazione;
+	}
+	public Date getDataEvento() {
+		return dataEvento;
+	}
+	public void setDataEvento(Date dataEvento) {
+		this.dataEvento = dataEvento;
 	}
 	public void setPermessoAutorizzativo(boolean permessoAutorizzativo) {
 		this.permessoAutorizzativo = permessoAutorizzativo;
