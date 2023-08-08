@@ -309,6 +309,15 @@
                 <max-backup-index value="3"/>
                 <append value="true"/>
             </size-rotating-file-handler>
+			<size-rotating-file-handler name="SOCIOSAN_FILE">
+                <formatter>
+                    <pattern-formatter pattern="%d{dd MM yyyy HH:mm:ss,SSS} %-5p [%c] (%t) %s%E%n"/>
+                </formatter>
+                <file relative-to="jboss.server.log.dir" path="sociosan.log"/>
+                <rotate-size value="300m"/>
+                <max-backup-index value="3"/>
+                <append value="true"/>
+            </size-rotating-file-handler>
 
 
             <logger category="org.hibernate.SQL">
@@ -338,6 +347,12 @@
 						<handler name="WS_FILE"/>
 					</handlers>
 			</logger>
+			<logger category="sociosan_log">
+                <level name="DEBUG"/>
+                <handlers>
+                    <handler name="SOCIOSAN_FILE"/>
+                </handlers>
+            </logger>
             <logger category="ctservice.log">
                 <level name="INFO"/>
                 <handlers>
