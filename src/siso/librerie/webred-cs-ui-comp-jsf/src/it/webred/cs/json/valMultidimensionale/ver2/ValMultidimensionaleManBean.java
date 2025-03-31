@@ -908,8 +908,8 @@ public class ValMultidimensionaleManBean extends ValMultidimensionaleManBaseBean
 			}
 			pdf.setAltriProblemi(!ape.isEmpty() ? ape.substring(0,ape.lastIndexOf(',')) : "");
 			
-			pdf.setValAdAbitazione(getLabelByCod(TipoParamSchedaMultidime.ABIT_ADEGUATEZZA, this.getJsonCurrent().getAdAbitRating().toString()));
-			pdf.setValUbAbitazione(getLabelByCod(TipoParamSchedaMultidime.ABIT_UBICAZIONE, this.getJsonCurrent().getUbAbits().toString()));
+			pdf.setValAdAbitazione(getLabelByCod(TipoParamSchedaMultidime.ABIT_ADEGUATEZZA, this.getJsonCurrent().getAdAbitRating()));
+			pdf.setValUbAbitazione(getLabelByCod(TipoParamSchedaMultidime.ABIT_UBICAZIONE, this.getJsonCurrent().getUbAbits()));
 			
 			//Situazione Economica
 		
@@ -1008,8 +1008,8 @@ public class ValMultidimensionaleManBean extends ValMultidimensionaleManBaseBean
 		}
 		pdf.setAltriProblemi(!ape.isEmpty() ? ape.substring(0,ape.lastIndexOf(',')) : "");
 		
-		pdf.setValAdAbitazione(getLabelByCod(TipoParamSchedaMultidime.ABIT_ADEGUATEZZA, this.getJsonCurrent().getAdAbitRating().toString()));
-		pdf.setValUbAbitazione(getLabelByCod(TipoParamSchedaMultidime.ABIT_UBICAZIONE, this.getJsonCurrent().getUbAbits().toString()));
+		pdf.setValAdAbitazione(getLabelByCod(TipoParamSchedaMultidime.ABIT_ADEGUATEZZA, this.getJsonCurrent().getAdAbitRating()));
+		pdf.setValUbAbitazione(getLabelByCod(TipoParamSchedaMultidime.ABIT_UBICAZIONE, this.getJsonCurrent().getUbAbits()));
 	}
 	
 

@@ -323,6 +323,27 @@
 				</p:outputPanel>
 			</h:form>
 		</p:dialog>
+		
+		<!-- INIZIO SCHEDA VALUTAZIONE DIALOG -->
+		<p:dialog id="schedaMultidimAnzDialog" widgetVar="schedaMultidimAnzDialog" 
+				header="Dettaglio Schede Valutazione Multidimensionali" modal="true" 
+			    dynamic="true" width="70%">
+			<h:form id="frmDialogMultidim">    
+				<p:outputPanel id="pnlDlgValMultidim"  styleClass="updateOnOpenDialogValMultidim">
+					
+					<webredcs:pnlValMultidimensionale 
+								iSchedaMultidimAnz="#{fascicoloBean.listaValMultidimensionaliBean.currSchedaMultidimManBean}"
+								listaIsee="#{fascicoloBean.iseeBean.listaIsee}"/>
+					
+					<webred:pnlSalvaEsci dialogToHide="schedaMultidimAnzDialog" pnlToUpdate=":#{p:component('schedaMultidimAnz')}" 
+										 disabled="#{fascicoloBean.listaValMultidimensionaliBean.readOnly}"
+				                         salvaAction="#{fascicoloBean.listaValMultidimensionaliBean.salva()}" 
+				                         renderedBtnSalvaSecondoLivello="#{fascicoloBean.listaValMultidimensionaliBean.renderedSecondoLivello}"
+				                         salvaSecondoLivelloAction="#{fascicoloBean.listaValMultidimensionaliBean.salvaSecondoLivello()}"/>
+				</p:outputPanel>
+			</h:form>
+			</p:dialog>
+			<!-- FINE SCHEDA VALUTAZIONE DIALOG -->
         
         </p:outputPanel>
       </p:tab>

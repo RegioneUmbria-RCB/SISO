@@ -65,32 +65,11 @@
 						action="#{cc.attrs.iDatiLista.setOnModifica(row.scheda.diarioId)}" process="@this"
 						oncomplete="if(args &amp;&amp; args.isShowDialog){updatevalMultidimContent(); PF('schedaMultidimAnzDialog').show()}"/>
 					
-					<h:commandButton value="Stampa"  immediate="true" icon="ui-icon-print"
-									 action="#{cc.attrs.iDatiLista.esportaStampa(row.scheda)}" 
-									 styleClass="ui-button ui-widget ui-state-default ui-corner-all"
-									 style="padding: .3em 1em; line-height: 1.4;"/>
+					<p:commandButton value="Stampa" icon="ui-icon-print" ajax="false"
+									 action="#{cc.attrs.iDatiLista.esportaStampa(row.scheda)}" process="@this"/>
 				</p:column>
 			</p:dataTable>
-				
-			<!-- INIZIO SCHEDA VALUTAZIONE DIALOG -->
-			<p:dialog id="schedaMultidimAnzDialog" widgetVar="schedaMultidimAnzDialog" 
-				header="Dettaglio Schede Valutazione Multidimensionali" modal="true" 
-			    dynamic="true" width="70%">
-				<p:outputPanel id="pnlDlgValMultidim"  styleClass="updateOnOpenDialogValMultidim">
-					
-					<webredcs:pnlValMultidimensionale 
-								iSchedaMultidimAnz="#{cc.attrs.iDatiLista.currSchedaMultidimManBean}"
-								listaIsee="#{cc.attrs.listaIsee}"/>
-					
-					<webred:pnlSalvaEsci dialogToHide="schedaMultidimAnzDialog" pnlToUpdate=":#{p:component('schedaMultidimAnz')}" 
-										 disabled="#{cc.attrs.iDatiLista.readOnly}"
-				                         salvaAction="#{cc.attrs.iDatiLista.salva()}" 
-				                         renderedBtnSalvaSecondoLivello="#{cc.attrs.iDatiLista.renderedSecondoLivello}"
-				                         salvaSecondoLivelloAction="#{cc.attrs.iDatiLista.salvaSecondoLivello()}"/>
-				</p:outputPanel>
-			</p:dialog>
-			<!-- FINE SCHEDA VALUTAZIONE DIALOG -->
-			
+						
 		</composite:implementation>
 	</h:body>
 		
