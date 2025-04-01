@@ -43,7 +43,6 @@ import it.webred.cs.csa.web.manbean.fascicolo.interventiTreeView.TipoInterventoM
 import it.webred.cs.data.DataModelCostanti;
 import it.webred.cs.data.DataModelCostanti.TipoRicercaSoggetto;
 import it.webred.cs.data.model.CsAAnaIndirizzo;
-import it.webred.cs.data.model.CsAAnagrafica;
 import it.webred.cs.data.model.CsASoggettoLAZY;
 import it.webred.cs.data.model.CsIInterventoEsegMast;
 import it.webred.cs.data.model.CsIPsExport;
@@ -92,61 +91,64 @@ public class ErogazioniInterventiBean extends CsUiCompBaseBean {
 	@PostConstruct
 	public void init() {
 		logger.debug("ErogazioniInterventiBean: init()");
-		fglInterventoBean = (FglInterventoBean)getBeanReference("fglInterventoBean");
-		init( DataModelCostanti.ListaErogazioni.TUTTI );
+		
+		this.fglInterventoBean = (FglInterventoBean) getBeanReference("fglInterventoBean");
+		
+		this.init(DataModelCostanti.ListaErogazioni.TUTTI);
 	}
 
-	private void init(int defaultTipoFiltroIntervento ){
-		logger.debug("INIT ErogazioniInterventiBean");
-		listaTipoFiltroInterventi = new ArrayList<SelectItem>();
-		listaTipoFiltroInterventi.add(new SelectItem(DataModelCostanti.ListaErogazioni.TUTTI, "Tutti"));
-		listaTipoFiltroInterventi.add(new SelectItem(DataModelCostanti.ListaErogazioni.CON_RICHIESTA, "Richiesti"));
-		listaTipoFiltroInterventi.add(new SelectItem(DataModelCostanti.ListaErogazioni.SENZA_RICHIESTA, "Erogati senza richiesta "));
-
-		lazyListaErogazioniModel = new LazyListaErogazioniModel(defaultTipoFiltroIntervento);
+	private void init(int defaultTipoFiltroIntervento) {
 		
-		loadTipoInterventiAbilitati();
-		loadTipoInterventiInps();
-		loadTipoInterventiRecenti();
+		logger.debug("INIT ErogazioniInterventiBean");
+		
+		this.listaTipoFiltroInterventi = new ArrayList<SelectItem>();
+		this.listaTipoFiltroInterventi.add(new SelectItem(DataModelCostanti.ListaErogazioni.TUTTI, "Tutti"));
+		this.listaTipoFiltroInterventi.add(new SelectItem(DataModelCostanti.ListaErogazioni.CON_RICHIESTA, "Richiesti"));
+		this.listaTipoFiltroInterventi.add(new SelectItem(DataModelCostanti.ListaErogazioni.SENZA_RICHIESTA, "Erogati senza richiesta "));
+
+		this.lazyListaErogazioniModel = new LazyListaErogazioniModel(defaultTipoFiltroIntervento);
+		
+		this.loadTipoInterventiAbilitati();
+		this.loadTipoInterventiInps();
+		this.loadTipoInterventiRecenti();
 		
 		//SISO-745
 		//la componente treeview se provengo dal fascicolo è presente nel bean InterventiBean, non va caricata di nuovo
-		if(!provenienteDaFascicolo){
-			this.tipoIntTreeView = new TipoInterventoManBean(tipoInterventosAll,"");	
+		if (!this.provenienteDaFascicolo) {
+			this.tipoIntTreeView = new TipoInterventoManBean(this.tipoInterventosAll, "");
 		}
 		
-		tipoInterventoId = 0L;
+		this.tipoInterventoId = 0L;
 		// rowIndex = null;
-		idRow = null;
+		this.idRow = null;
+		
 		logger.debug("END INIT ErogazioniInterventiBean");
 	}
 	
-	public void SetFromFascicolo(CsASoggettoLAZY soggetto)
-	{
+	public void SetFromFascicolo(CsASoggettoLAZY soggetto) {
 		provenienteDaFascicolo = true;
 		CsAAnaIndirizzo residenza = findIndirizzoResidenzaCaso(soggetto);
 		String via = residenza!=null ? residenza.getLabelIndirizzo() : null;
-		CsAAnagrafica ana = soggetto.getCsAAnagrafica();
+		String statoCodResidenza = residenza!=null ? residenza.getStatoCod() : null;
+		logger.debug("SetFromFascicolo - RESIDENZA VIA:["+via+"], STATO["+statoCodResidenza+"]");
 		String jsonComuneNascita = getJsonNascitaComuneBean(soggetto);
-		soggettoErogazioneSelezionato = new SoggettoErogazioneBean(soggetto,via, getCasoComuneResidenza(residenza), residenza.getStatoCod(), jsonComuneNascita, true);
+		soggettoErogazioneSelezionato = new SoggettoErogazioneBean(soggetto,via, getCasoComuneResidenza(residenza), statoCodResidenza, jsonComuneNascita, true);
 		lazyListaErogazioniModel.setSelectedSoggettoErogazioneCF(soggettoErogazioneSelezionato.getCf());
 		
 		//init();
 	}
 
-	
-	  public void SetFromPai(CsASoggettoLAZY soggetto) { 
-		  provenienteDaFascicolo = false; 
-		  CsAAnaIndirizzo residenza = findIndirizzoResidenzaCaso(soggetto);
-		  String via = residenza!=null ? residenza.getLabelIndirizzo() : null; String
-		  jsonComuneNascita = getJsonNascitaComuneBean(soggetto);
-		  soggettoErogazioneSelezionato = new SoggettoErogazioneBean(soggetto,via, getCasoComuneResidenza(residenza), residenza.getStatoCod(),jsonComuneNascita, true);
-		  lazyListaErogazioniModel.setSelectedSoggettoErogazioneCF(soggettoErogazioneSelezionato.getCf()); //init();
-		  this.fglInterventoBean.setFromPai(Boolean.TRUE); 
+	public void SetFromPai(CsASoggettoLAZY soggetto) { 
+		provenienteDaFascicolo = false; 
+		CsAAnaIndirizzo residenza = findIndirizzoResidenzaCaso(soggetto);
+		String via = residenza!=null ? residenza.getLabelIndirizzo() : null; String
+		jsonComuneNascita = getJsonNascitaComuneBean(soggetto);
+		soggettoErogazioneSelezionato = new SoggettoErogazioneBean(soggetto,via, getCasoComuneResidenza(residenza), residenza.getStatoCod(),jsonComuneNascita, true);
+		lazyListaErogazioniModel.setSelectedSoggettoErogazioneCF(soggettoErogazioneSelezionato.getCf()); //init();
+		this.fglInterventoBean.setFromPai(Boolean.TRUE); 
 	}
 	 	
-	public void SetFromPai(CsPaiMastSoggDTO soggettoPai)
-	{
+	public void SetFromPai(CsPaiMastSoggDTO soggettoPai) {
 		provenienteDaFascicolo = false;
 		soggettoErogazioneSelezionato = new SoggettoErogazioneBean(soggettoPai);
 		lazyListaErogazioniModel.setSelectedSoggettoErogazioneCF(soggettoErogazioneSelezionato.getCf());
@@ -198,7 +200,7 @@ public class ErogazioniInterventiBean extends CsUiCompBaseBean {
 					try {
 						jsonResidenza = om.writeValueAsString(comuneResidenza);
 					} catch (JsonProcessingException e1) {}
-				}
+				}	
 				String nazioneResidenza = p.getNazioneResidenza()!=null ? p.getNazioneResidenza().getCodIstatNazione() : null;
 				soggettoErogazioneSelezionato = new SoggettoErogazioneBean(p.getCognome(), p.getNome(), p.getCodfisc(), p.getCittadinanza(), p.getDataNascita(), p.getIndirizzoCivicoResidenza(), jsonResidenza, nazioneResidenza, jsonNascita, nazNascitaCod, p.getSesso(),  true);
 				
@@ -433,6 +435,20 @@ public class ErogazioniInterventiBean extends CsUiCompBaseBean {
 	
 	private CellStyle exportCellStyle;
 	
+	/**
+	 * 
+	 * <h1>excelExport</h1>
+	 *
+	 * <p>
+	 * </p>
+	 *
+	 * @throws IOException
+	 *
+	 * @since 1.0.0
+	 * @version 1.0.1
+
+	 * @lastUpdate 2025-02-04 - DDV
+	 */
 	public void excelExport() throws IOException {
 //		System.out.println("******** EXCEL EXPORT ********");
 		
@@ -474,12 +490,23 @@ public class ErogazioniInterventiBean extends CsUiCompBaseBean {
 		//contatore righe excel
 		int excelRow = 0;
 		//totale righe da esportare
-		int rowCount = lazyListaErogazioniModel.getRowCount();
+		int rowCount = this.lazyListaErogazioniModel.getRowCount();
 		int pageSize = 100; // lazyListaErogazioniModel.getPageSize();
-		List<ErogInterventoRowBean> listaErogs = lazyListaErogazioniModel.load(erogRows, pageSize, lazyListaErogazioniModel.sortField, lazyListaErogazioniModel.sortOrder, lazyListaErogazioniModel.filters);
 		
-		while(erogRows < rowCount){ 
-			for(ErogInterventoRowBean rowListaErogazioni : listaErogs){
+		this.lazyListaErogazioniModel.downloadFromExcel = true;
+		
+		List<ErogInterventoRowBean> listaErogs = this.lazyListaErogazioniModel.load
+				( erogRows
+				, pageSize
+				, this.lazyListaErogazioniModel.sortField
+				, this.lazyListaErogazioniModel.sortOrder
+				, this.lazyListaErogazioniModel.filters
+				);
+		
+		while (erogRows < rowCount) {
+			
+			for (ErogInterventoRowBean rowListaErogazioni : listaErogs) {
+				
 				excelRow++;
 				
 				// creo la i-esima riga, con l'altezza predefinita (in modo che si capisca se una cella ha più righe di contenuto)
@@ -487,27 +514,34 @@ public class ErogazioniInterventiBean extends CsUiCompBaseBean {
 				row.setHeightInPoints(30);
 				
 				// popolo le colonne (replicando di fatto la logica della view)
-				createAndPopulateCell(row, EXCEL_COLUMN_INDEX_TIPO_BENEFICIARIO,rowListaErogazioni.getMaster().getTipoBeneficiario());
-				createAndPopulateCell(row, EXCEL_COLUMN_INDEX_BENEFICIARI,beneficiariValueExtraction(rowListaErogazioni.getBeneficiari()));	
-				createAndPopulateCell(row, EXCEL_COLUMN_INDEX_BENEFICIARI_CF,beneficiariCfValueExtraction(rowListaErogazioni.getBeneficiari()));	
-				createAndPopulateCell(row, EXCEL_COLUMN_INDEX_RICHIESTA,richiestaValueExtraction(rowListaErogazioni.isRichiestaIntervento()));
-				createAndPopulateCell(row, EXCEL_COLUMN_INDEX_TIPO_INTERVENTO,rowListaErogazioni.getMaster().getTipoIntervento().getDescrizione());
+				createAndPopulateCell(row, EXCEL_COLUMN_INDEX_TIPO_BENEFICIARIO, rowListaErogazioni.getMaster().getTipoBeneficiario());
+				createAndPopulateCell(row, EXCEL_COLUMN_INDEX_BENEFICIARI, beneficiariValueExtraction(rowListaErogazioni.getBeneficiari()));	
+				createAndPopulateCell(row, EXCEL_COLUMN_INDEX_BENEFICIARI_CF, beneficiariCfValueExtraction(rowListaErogazioni.getBeneficiari()));	
+				createAndPopulateCell(row, EXCEL_COLUMN_INDEX_RICHIESTA, richiestaValueExtraction(rowListaErogazioni.isRichiestaIntervento()));
+				createAndPopulateCell(row, EXCEL_COLUMN_INDEX_TIPO_INTERVENTO, rowListaErogazioni.getMaster().getTipoIntervento().getDescrizione());
 				createAndPopulateCell(row, EXCEL_COLUMN_INDEX_TIPO_INTERVENTO_CUSTOM, rowListaErogazioni.getMaster().getTipoInterventoCustom());
-				createAndPopulateCell(row, EXCEL_COLUMN_INDEX_NOTE,rowListaErogazioni.getMaster().getDescrIntervento());
-				createAndPopulateCell(row, EXCEL_COLUMN_INDEX_PROGETTO,rowListaErogazioni.getDescrizioneProgetto());
-				createAndPopulateCell(row, EXCEL_COLUMN_INDEX_SETT_TITOLARE,rowListaErogazioni.getSettoreTitolare());
+				createAndPopulateCell(row, EXCEL_COLUMN_INDEX_NOTE, rowListaErogazioni.getMaster().getDescrIntervento());
+				createAndPopulateCell(row, EXCEL_COLUMN_INDEX_PROGETTO, rowListaErogazioni.getDescrizioneProgetto());
+				createAndPopulateCell(row, EXCEL_COLUMN_INDEX_SETT_TITOLARE, rowListaErogazioni.getSettoreTitolare());
 				//createAndPopulateCell(row, EXCEL_COLUMN_INDEX_GESTORE,settoreValueExtraction(rowListaErogazioni.getSettoreGestore()));
-				createAndPopulateCell(row, EXCEL_COLUMN_INDEX_SETT_EROGANTE,rowListaErogazioni.getSettoreErogante());
-				createAndPopulateCell(row, EXCEL_COLUMN_INDEX_DATA_ULTIMA_EROG,dataUltimaErogValueExtraction(rowListaErogazioni.getMaster().getDataUltimaErogazione()));
-				createAndPopulateCell(row, EXCEL_COLUMN_INDEX_DATA_EVENTO_ULTIMA_EROG,dataUltimaErogValueExtraction(rowListaErogazioni.getMaster().getDataEventoUltimaErogazione()));
+				createAndPopulateCell(row, EXCEL_COLUMN_INDEX_SETT_EROGANTE, rowListaErogazioni.getSettoreErogante());
+				createAndPopulateCell(row, EXCEL_COLUMN_INDEX_DATA_ULTIMA_EROG, dataUltimaErogValueExtraction(rowListaErogazioni.getMaster().getDataUltimaErogazione()));
+				createAndPopulateCell(row, EXCEL_COLUMN_INDEX_DATA_EVENTO_ULTIMA_EROG, dataUltimaErogValueExtraction(rowListaErogazioni.getMaster().getDataEventoUltimaErogazione()));
 				createAndPopulateCell(row, EXCEL_COLUMN_INDEX_STATO_ULTIMA_EROG, rowListaErogazioni.getMaster().getStatoUltimaErogazione());
 				createAndPopulateCell(row, EXCEL_COLUMN_INDEX_TOT_SPESA, totSpesaValueExtraction(rowListaErogazioni.getMaster()));
 				createAndPopulateCell(row, EXCEL_COLUMN_INDEX_TOT_SERVIZIO, rowListaErogazioni.getSommaUnitaMisura());
 				createAndPopulateCell(row, EXCEL_COLUMN_INDEX_TOT_ATTRIBUTI, rowListaErogazioni.getDettaglioTotaleErogazione());
 			
 			}
-			   erogRows += pageSize;
-			   listaErogs = lazyListaErogazioniModel.load(excelRow, pageSize, lazyListaErogazioniModel.sortField, lazyListaErogazioniModel.sortOrder, lazyListaErogazioniModel.filters);
+			
+			erogRows += pageSize;
+			listaErogs = this.lazyListaErogazioniModel.load
+					( excelRow
+					, pageSize
+					, lazyListaErogazioniModel.sortField
+					, lazyListaErogazioniModel.sortOrder
+					, lazyListaErogazioniModel.filters
+					);
 		}
 		
 		// imposto la larghezza delle colonne
@@ -515,14 +549,13 @@ public class ErogazioniInterventiBean extends CsUiCompBaseBean {
 			sheet.setColumnWidth(i, 20 * 256);	// la larghezza è in 1/256 di carattere
 		}
 		
-		
 		// scateno la response con il download dell'Excel creato
 		FacesContext fc = FacesContext.getCurrentInstance();
 		ExternalContext ec = fc.getExternalContext();
 		
 		String cfCaso = !StringUtils.isBlank(lazyListaErogazioniModel.getSelectedSoggettoErogazioneCF()) ? "_"+this.lazyListaErogazioniModel.getSelectedSoggettoErogazioneCF(): "";
 		
-		String fileName = "erogazioni"+cfCaso+".xls";
+		String fileName = "erogazioni" + cfCaso + ".xls";
 		String contentType = "application/vnd.ms-excel";
 		
 		ec.responseReset();

@@ -377,5 +377,9 @@ public class ConcessioniEdilizieServiceBean extends CTServiceBaseBean implements
 		return concEdilizieDAO.getPraticheEdiliByParams(rce);
 	}
 	
+	@Override
+	public List<Object[]> getPraticheEdiliByParamsCounter(ConcEdiSearchCriteria rce) {
+		return concEdilizieDAO.getPraticheEdiliByParamsCounter(rce);
+	}
 	
 }

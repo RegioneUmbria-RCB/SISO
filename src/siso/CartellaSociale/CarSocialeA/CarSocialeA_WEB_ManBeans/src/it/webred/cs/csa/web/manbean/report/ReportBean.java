@@ -486,7 +486,10 @@ public class ReportBean extends ReportBaseBean {
 			ReportPdfDTO pdfDTO = json.fillReport(reportPath, listaSubreport, map, lstIsee, manSchedaBarthelBean);
 			fillReportCommonData(reportPath, listaSubreport, map, pdfDTO);
 			
-			jUtils.esportaReport("MultiDim_"+getDenominazione(), reportPath + "/schMultidimensionale"+json.getVersionLowerCase()+".jrxml", listaSubreport, map, new JRBeanCollectionDataSource(Arrays.asList(pdfDTO)));
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+			String sdata = sdf.format(json.getCurrentModel().getCsDDiario().getDtAmministrativa());
+			
+			jUtils.esportaReport("MultiDim_"+getDenominazione()+"_"+sdata, reportPath + "/schMultidimensionale"+json.getVersionLowerCase()+".jrxml", listaSubreport, map, new JRBeanCollectionDataSource(Arrays.asList(pdfDTO)));
 			
 		} catch (Exception e) {
 			addErrorFromProperties("report.error");
