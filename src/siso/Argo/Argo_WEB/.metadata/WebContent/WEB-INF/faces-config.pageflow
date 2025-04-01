@@ -1,2 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<pageflow:Pageflow xmlns:pageflow="http://www.sybase.com/suade/pageflow" id="pf14074070520850" configfile="/Argo_WEB/WebContent/WEB-INF/faces-config.xml"/>
+<pageflow:Pageflow xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:pageflow="http://www.sybase.com/suade/pageflow" id="pf14074070520850" configfile="/Argo_WEB/WebContent/WEB-INF/faces-config.xml">
+  <nodes xsi:type="pageflow:PFPage" name="*" x="122" y="370" id="pf17248503654581" outlinks="pf17248503654742 pf17248503654743" path="*"/>
+  <nodes xsi:type="pageflow:PFPage" name="jsp/protected/periods/newPeriod.xhtml" x="338" y="178" id="pf17248503654744" referenceLink="//@navigationRule.0/@navigationCase.0/@toViewId|" inlinks="pf17248503654742" path="/jsp/protected/periods/newPeriod.xhtml"/>
+  <nodes xsi:type="pageflow:PFPage" name="jsp/protected/periods/home.xhtml" x="338" y="562" id="pf17248503654745" referenceLink="//@navigationRule.1/@navigationCase.0/@toViewId|" inlinks="pf17248503654743" path="/jsp/protected/periods/home.xhtml"/>
+  <links id="pf17248503654742" target="pf17248503654744" source="pf17248503654581" outcome="cs.newPeriod" redirect="true"/>
+  <links id="pf17248503654743" target="pf17248503654745" source="pf17248503654581" outcome="cs.home" redirect="true"/>
+</pageflow:Pageflow>

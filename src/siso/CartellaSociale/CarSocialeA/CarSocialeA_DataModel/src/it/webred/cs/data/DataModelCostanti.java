@@ -7,6 +7,19 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 
+/**
+ * 
+ * <h1>DataModelCostanti.java</h1>
+ *
+ * <p>
+ * Classe che contiene tutte le constanti del progetto suddivise a loro volta
+ * </p>
+ *
+ * @since 1.26.12
+ * @version 1.0.2
+ * 
+ * @lastUpdate 2025-01-10 - DDV
+ */
 public class DataModelCostanti {
 
 	public static final String NOME_APPLICAZIONE = "CarSociale";
@@ -35,8 +48,6 @@ public class DataModelCostanti {
 			"<li>posside il permesso di leggere i diari ed è attualmente autenticato nella stessa oganizzazione in cui è stata inserita la nota.</li>"+
 			"</ul>";
 		
-	
-	
 	public static class Segnalibri implements Serializable {
 
 		private static final long serialVersionUID = 1L;
@@ -68,8 +79,7 @@ public class DataModelCostanti {
 		
 	}
 	
-	public static class TipoFormAttivitaProfessionali
-	{
+	public static class TipoFormAttivitaProfessionali {
 		public static final int RELAZIONE_DOCUMENTO = 1;
 		public static final int TESTUALE = 2;
 		public static final int TRIAGE = 3;
@@ -80,41 +90,64 @@ public class DataModelCostanti {
 		
 	}
 	
-	public static class GrVulnerabile{
+	/**
+	 * 
+	 * <h1>DataModelCostanti.GrVulnerabile.java</h1>
+	 *
+	 * <p>
+	 * </p>
+	 *
+	 * @since 1.26.12
+	 * @version 1.0.1
+	 * 
+	 * @lastUpdate 2025-01-10 - DDV
+	 */
+	public static class GrVulnerabile {
 		public static final String MIGRANTE = "05";
 		public static final String ALTRO = "07";
 		public static final String VITTIMA_VIOLENZA = "13";
 		public static final String NON_COMUNICA_VULNERABILITA = "00";
-		
-		public static final String[] stampaAltro = {"01","02","03","04","14","17","18","19","20"};
-		public static final String[] stampaVittimaViolenza = {"13","15","16"};
-		public static final String[] stampaMigrante = {"05","21"};
+
+		public static final String[] stampaAltro = {"01", "02", "03", "04", "14", "17", "18", "19", "20"};
+		public static final String[] stampaVittimaViolenza = {"13", "15", "16"};
+		public static final String[] stampaMigrante = {"05", "21"};
 	}
 	
-	public static class CampiFse
-	{
-		 public static final String AZIENDA_RAGIONE_SOCIALE="AZIENDA_RAGIONE_SOCIALE";
-		 public static final String AZIENDA_PI="AZIENDA_PI";                     
-		 public static final String AZIENDA_CF="AZIENDA_CF";            
-		 public static final String AZIENDA_VIA="AZIENDA_VIA";                        
-		 public static final String AZIENDA_COMUNE="AZIENDA_COMUNE";      
-		 public static final String AZIENDA_COD_ATECO="AZIENDA_COD_ATECO";      
-		 public static final String AZIENDA_FORMA_GIURIDICA="AZIENDA_FORMA_GIURIDICA";       
-		 public static final String AZIENDA_DIMENSIONE="AZIENDA_DIMENSIONE";  
+	/**
+	 * 
+	 * <h1>DataModelCostanti.CampiFse.java</h1>
+	 *
+	 * <p>
+	 * </p>
+	 *
+	 * @since 1.26.12
+	 * @version 1.0.0
+	 * 
+	 * @lastUpdate 2024-12-09 - DDV
+	 */
+	public static class CampiFse {
+		 public static final String AZIENDA_RAGIONE_SOCIALE = "AZIENDA_RAGIONE_SOCIALE";
+		 public static final String AZIENDA_PI = "AZIENDA_PI";
+		 public static final String AZIENDA_CF = "AZIENDA_CF";
+		 public static final String AZIENDA_VIA = "AZIENDA_VIA";
+		 public static final String AZIENDA_COMUNE = "AZIENDA_COMUNE";
+		 public static final String AZIENDA_COD_ATECO = "AZIENDA_COD_ATECO";
+		 public static final String AZIENDA_FORMA_GIURIDICA = "AZIENDA_FORMA_GIURIDICA";
+		 public static final String AZIENDA_DIMENSIONE = "AZIENDA_DIMENSIONE";
+
+		 public static final String LAVORO_TIPO = "LAVORO_TIPO";
+		 public static final String LAVORO_ORARIO = "LAVORO_ORARIO";
 		 
-		 public static final String LAVORO_TIPO="LAVORO_TIPO";  
-		 public static final String LAVORO_ORARIO="LAVORO_ORARIO";  
+		 public static final String ANNO_TITOLO_STUDIO = "ANNO_TITOLO_STUDIO";
 		 
-		 public static final String ANNO_TITOLO_STUDIO="ANNO_TITOLO_STUDIO";  
-		 
-		 public static final String INATTIVO_ALTRO_CORSO="INATTIVO_ALTRO_CORSO";  
-		 public static final String DURATA_RICERCA_LAVORO="DURATA_RICERCA_LAVORO";  
-		 
-		 public static final String PAG_IBAN="PAG_IBAN";   
-		 public static final String PAG_RES_DOM="PAG_RES_DOM";  
+		 public static final String INATTIVO_ALTRO_CORSO = "INATTIVO_ALTRO_CORSO";
+		 public static final String DURATA_RICERCA_LAVORO = "DURATA_RICERCA_LAVORO";
+
+		 public static final String PAG_IBAN = "PAG_IBAN";
+		 public static final String PAG_RES_DOM = "PAG_RES_DOM";
 		 
 		 public static final String DATA_SOTTOSCRIZIONE = "DATA_SOTTOSCRIZIONE";
-		 public static final String SOGGETTO_ATTUATORE  = "SOGGETTO_ATTUATORE";
+		 public static final String SOGGETTO_ATTUATORE = "SOGGETTO_ATTUATORE";
 	}
 	
 	public static class TipoStatoErogazione
@@ -1003,7 +1036,20 @@ public class DataModelCostanti {
 
 	}
 	
-	public static class AmParameterKey implements Serializable{
+	/**
+	 * 
+	 * <h1>DataModelCostanti.java</h1>
+	 *
+	 * <p>
+	 * </p>
+	 *
+	 * @since 1.26.12
+	 * @version 1.0.0
+	 * 
+	 * @lastUpdate 2025-01-22 - DDV
+	 */
+	public static class AmParameterKey implements Serializable {
+		
 		public static String WS_RICERCA_URL = "smartwelfare.ricercaSoggetto.ws.url";
 		public static String WS_RICERCA_URL_BRIDGE = "smartwelfare.ricercaSoggetto.ws.bridge.url";
 		public static String WS_RICERCA_URL_BRIDGE_TOKEN = "smartwelfare.ricercaSoggetto.ws.bridge.token";
@@ -1020,13 +1066,11 @@ public class DataModelCostanti {
 		public static String WS_ATLANTE_USR = "smartwelfare.atlantews.username";
 		public static String WS_ATLANTE_PWD = "smartwelfare.atlantews.password";
 		
-		
 		public static String WS_ISEE_URL = "smartwelfare.isee.ws.url";
 		public static String WS_ISEE_USERNAME = "smartwelfare.isee.ws.username";
 		public static String WS_ISEE_UFFICIO = "smartwelfare.isee.ws.codiceUfficio";
 		public static String WS_ISEE_ENTE = "smartwelfare.isee.ws.codiceEnte";
 		public static String WS_ISEE_ABILITA = "smartwelfare.isee.ws.abilita";
-		
 		
 		public static String REQUIRED_FONTE_FINANZIAMENTO = "smartwelfare.obbligatorio.fonteFinanziamento";
 
@@ -1051,9 +1095,11 @@ public class DataModelCostanti {
 		public static String GESTIONE_CAPOFILA_PIC = "smartwelfare.udc.gestionePicCapofila.abilita";
 		public static String DOC_INDIVIDUALI_PROTOCOLLO_VIS = "smartwelfare.docIndividuali.colonnaProtocollo.visibile";
 		
-		public static String LINK_APP_ESTERNA_URL =   "smartwelfare.appCartellaEsternaSoggetto.url";
+		public static String LINK_APP_ESTERNA_URL = "smartwelfare.appCartellaEsternaSoggetto.url";
 		public static String LINK_APP_ESTERNA_LABEL = "smartwelfare.appCartellaEsternaSoggetto.label";
 		public static String LINK_APP_ESTERNA_TOKEN = "smartwelfare.appCartellaEsternaSoggetto.token";
+
+		public static String CODICI_ESCLUSI_TAB_EROGAZIONI_INTERVENTI = "smartwelfare.codiciEsclusi.ricercaErogazioniInterventi";
 		
 	/*	public static String KEY_AUTHENTICATION = "smartwelfare.umbria.api.authentication";
 		public static String KEY_URL_TOKEN = "smartwelfare.umbria.api.token.url";
@@ -1201,4 +1247,5 @@ public class DataModelCostanti {
 			public void setCodice(String codice) {this.codice = codice;}
 		}
 	}
+
 }

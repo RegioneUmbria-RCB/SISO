@@ -9,7 +9,7 @@
 	  	xmlns:webred="http://java.sun.com/jsf/composite/webred"
 	  	xmlns:c="http://java.sun.com/jsp/jstl/core">
      
-	<h:body>
+<h:body>
 	
 		<composite:interface componentType="pnlFglIntervento">
 			<composite:attribute name="salvaActionUpdate" />
@@ -183,7 +183,7 @@
 					<td style="text-align: center; border: none;">
 		 		    	<p:commandButton id="cmdSalva" value="Salva" 
 		 		    		disabled="#{fglInterventoBean.readOnly and !fglInterventoBean.abilitaSalvataggio}"
-							actionListener="#{fglInterventoBean.salva}"  process="@form" 
+							actionListener="#{fglInterventoBean.salva}" process="@form" 
 							oncomplete="if (args &amp;&amp; !args.validationFailed &amp;&amp; args.saved){ PF('#{cc.attrs.widgetVar}').hide(); updateListaInterventi(); } else if(args.porFSE){ updateListaInterventiFSE(); }  else {}">
 						<!--  <f:param name="pnlToUpdateId" value="#{cc.attrs.salvaActionUpdate}" /> -->
 						</p:commandButton>
@@ -196,8 +196,8 @@
 							oncomplete="if (args &amp;&amp; !args.validationFailed &amp;&amp; args.saved){ PF('#{cc.attrs.widgetVar}').hide(); updateListaInterventi(); } else {}"> 
 						 </p:commandButton>
 						
-						<p:remoteCommand name="updateListaInterventi" process="@this"  update="#{cc.attrs.salvaActionUpdate} @parent:erogazioniInterventiTabView" />  
-						<p:remoteCommand name="updateListaInterventiFSE"  oncomplete="PF('#{cc.attrs.widgetVar}ConfermaFrmErogazioneFSE').show();" update="@(.FrmErogazioneFSE) " /> 
+						<p:remoteCommand name="updateListaInterventi" process="@this" update="#{cc.attrs.salvaActionUpdate} @parent:erogazioniInterventiTabView" />  
+						<p:remoteCommand name="updateListaInterventiFSE" oncomplete="PF('#{cc.attrs.widgetVar}ConfermaFrmErogazioneFSE').show();" update="@(.FrmErogazioneFSE) " /> 
 						
 						<p:spacer width="15px;" />
 						<p:commandButton value="Esci" oncomplete="#{cc.attrs.widgetVar}ConfermaEsci.show()" process="@this" update="#{ not empty cc.attrs.esciActionUpdate ? cc.attrs.esciActionUpdate : '@none'}" />
@@ -205,7 +205,7 @@
 					</tr>
 				</table>
 				
-					<!-- SISO 972 global="false" message="'#{fglInterventoBean.FSEMessage}'"  update="#{cc.attrs.salvaActionUpdate}" -->
+				<!-- SISO 972 global="false" message="'#{fglInterventoBean.FSEMessage}'"  update="#{cc.attrs.salvaActionUpdate}" -->
 				<p:confirmDialog id="#{cc.attrs.widgetVar}ConfermaFrmErogazioneFSE" 
 					widgetVar="#{cc.attrs.widgetVar}ConfermaFrmErogazioneFSE"									 
 					 showEffect="fade" appendTo="@(body)" hideEffect="explode" styleClass="FrmErogazioneFSE" >
@@ -248,6 +248,6 @@
 	   
 	</composite:implementation>
 		
-	</h:body>
-	
+</h:body>
+
 </html>

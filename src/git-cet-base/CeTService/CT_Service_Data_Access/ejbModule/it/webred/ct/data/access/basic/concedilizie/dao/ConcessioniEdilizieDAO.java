@@ -44,6 +44,8 @@ public interface ConcessioniEdilizieDAO {
 	public SitCConcessioni getConcessioneByIdExt(RicercaConcEdilizieDTO ro) throws ConcessioniEdilizieException;
 	
 	public List<Object[]> getPraticheEdiliByParams(ConcEdiSearchCriteria rce)  throws ConcessioniEdilizieException;
+	public List<Object[]> getPraticheEdiliByParamsCounter(ConcEdiSearchCriteria rce)  throws ConcessioniEdilizieException;
+	
 	
 	
 	

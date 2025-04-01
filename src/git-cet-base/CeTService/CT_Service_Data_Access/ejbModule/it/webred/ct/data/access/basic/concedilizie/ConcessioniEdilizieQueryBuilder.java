@@ -41,101 +41,59 @@ public class ConcessioniEdilizieQueryBuilder extends CTQueryBuilder{
 	
 	public String getSQL_PRATICHE_EDILI_BY_PARAMS(ConcEdiSearchCriteria cesc ) {
 		RicercaConcEdilizieDTO roce = cesc.getRicercaOggetto();
-		RicercaSoggettoConcEdilizieDTO rsce = cesc.getRicercaSoggetto();
-		/*
-			query oracle poi modificata per essere eseguita in modo nativo da hibernate (trasformando i + in left join):
-			
-			SELECT DISTINCT V_SIT_C_CONCESSIONI_ALL.* 
-			FROM V_SIT_C_CONCESSIONI_ALL, 
-			V_SIT_C_CONC_PERSONA_ALL, 
-			V_SIT_C_PERSONA_ALL, 
-			V_SIT_C_CONC_INDIRIZZI_ALL, 
-			V_SIT_C_CONC_CATASTO_ALL 
-			WHERE (V_SIT_C_CONCESSIONI_ALL.DT_FINE_VAL IS NULL OR V_SIT_C_CONCESSIONI_ALL.DT_FINE_VAL >= TO_DATE(SYSDATE, 'dd/MM/yyyy')) 
-			AND V_SIT_C_CONC_PERSONA_ALL.ID_EXT_C_CONCESSIONI (+) = V_SIT_C_CONCESSIONI_ALL.ID_EXT 
-			AND V_SIT_C_PERSONA_ALL.ID_EXT (+) = V_SIT_C_CONC_PERSONA_ALL.ID_EXT_C_PERSONA 
-			AND (V_SIT_C_PERSONA_ALL.DT_FINE_VAL IS NULL OR V_SIT_C_PERSONA_ALL.DT_FINE_VAL >= TO_DATE(SYSDATE, 'dd/MM/yyyy')) 
-			AND V_SIT_C_CONC_INDIRIZZI_ALL.ID_EXT_C_CONCESSIONI (+) = V_SIT_C_CONCESSIONI_ALL.ID_EXT 
-			AND V_SIT_C_CONC_CATASTO_ALL.ID_EXT_C_CONCESSIONI (+) = V_SIT_C_CONCESSIONI_ALL.ID_EXT
-			
-			-- data prot dal - al
-			and  V_SIT_C_CONCESSIONI_ALL.protocollo_data  >= TO_DATE('01/05/2022', 'dd/MM/yyyy') and V_SIT_C_CONCESSIONI_ALL.protocollo_data <= TO_DATE('30/10/2022', 'dd/MM/yyyy')  
-			 
-			--per provenienza
-			AND UPPER(V_SIT_C_CONCESSIONI_ALL.PROVENIENZA) = 'OO' --OO pe OnlyOne
-			--per anno-numero protocollo
-			AND PROTOCOLLO_ANNO = '2011'
-			AND PROTOCOLLO_NUMERO = '772005000'
-			--per anno-numero progressivo
-			AND PROGRESSIVO_ANNO = '2011'
-			AND PROGRESSIVO_NUMERO = '12968'
-			
-			
-			--per coordinate catastali
-			AND V_SIT_C_CONC_CATASTO_ALL.FOGLIO = '377'
-			
-			AND V_SIT_C_CONC_CATASTO_ALL.PARTICELLA = '19'
-			AND V_SIT_C_CONC_CATASTO_ALL.SUBALTERNO = '30'
-			
-			--per indirizzo
-			AND UPPER(V_SIT_C_CONC_INDIRIZZI_ALL.INDIRIZZO) = 'ARETUSA'
-			AND UPPER(V_SIT_C_CONC_INDIRIZZI_ALL.CIV_LIV1) = '30'
-			
-			--per dati soggetto
-			AND CODICE_FISCALE = 'CPSNDR83T25F205N'
-			AND DENOMINAZIONE = 'CAPASSO ANDREA'
-			
-			ORDER BY V_SIT_C_CONCESSIONI_ALL.DT_INIZIO_VAL;
+		//RicercaSoggettoConcEdilizieDTO rsce = cesc.getRicercaSoggetto();
 
-		 */
-		
-		
-		String sql = " SELECT DISTINCT "
-				+ " V_SIT_C_CONCESSIONI_ALL.PROTOCOLLO_DATA, V_SIT_C_CONCESSIONI_ALL.PROTOCOLLO_NUMERO, V_SIT_C_CONCESSIONI_ALL.PROTOCOLLO_ANNO, "
-				+ " V_SIT_C_CONCESSIONI_ALL.TIPO_INTERVENTO, V_SIT_C_CONCESSIONI_ALL.OGGETTO, V_SIT_C_CONCESSIONI_ALL.PROCEDIMENTO "
-				+ " FROM V_SIT_C_CONCESSIONI_ALL "
-				+ " left join V_SIT_C_CONC_PERSONA_ALL ON V_SIT_C_CONC_PERSONA_ALL.ID_EXT_C_CONCESSIONI = V_SIT_C_CONCESSIONI_ALL.ID_EXT "
-				+ " left join V_SIT_C_PERSONA_ALL ON V_SIT_C_PERSONA_ALL.ID_EXT = V_SIT_C_CONC_PERSONA_ALL.ID_EXT_C_PERSONA "
-				+ " left join V_SIT_C_CONC_INDIRIZZI_ALL on V_SIT_C_CONC_INDIRIZZI_ALL.ID_EXT_C_CONCESSIONI = V_SIT_C_CONCESSIONI_ALL.ID_EXT "
-				+ " left join V_SIT_C_CONC_CATASTO_ALL ON V_SIT_C_CONC_CATASTO_ALL.ID_EXT_C_CONCESSIONI = V_SIT_C_CONCESSIONI_ALL.ID_EXT "
-				+ " WHERE "
-				+ " (V_SIT_C_CONCESSIONI_ALL.DT_FINE_VAL IS NULL OR V_SIT_C_CONCESSIONI_ALL.DT_FINE_VAL >= TO_DATE(SYSDATE, 'dd/MM/yyyy')) "
-				+ " AND (V_SIT_C_PERSONA_ALL.DT_FINE_VAL IS NULL OR V_SIT_C_PERSONA_ALL.DT_FINE_VAL >= TO_DATE(SYSDATE, 'dd/MM/yyyy')) ";
+		String sql = " SELECT DISTINCT PROVENIENZA, "
+				+ " PROTOCOLLO_DATA, PROTOCOLLO_NUMERO, PROTOCOLLO_ANNO, "
+				+ " NUMERO_WORKFLOW, "
+				+ " CASE "
+					+ " WHEN LENGTH (MACROTIPO) > 0 "
+					+ " THEN "
+						+ " MACROTIPO "
+					+ " ELSE "
+						+ " PROCEDIMENTO "
+						+ " END "
+					+ " AS TIPO_PRATICA, "
+				+ " CONCAT(TIPO_INTERVENTO, TIPO_OPERA) AS TIPOLOGIA_INTERVENTO, "
+				+ " OGGETTO "
+				+ " FROM V_SIT_C_CONC_TOTALE_WS "
+				+ " WHERE 1=1 ";
 		
 		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
 		
-		//--per provenienza (--OO pe OnlyOne)
-		if ( roce != null && roce.getProvenienza() != null && !roce.getProvenienza().equalsIgnoreCase(""))
-			sql = sql + " AND UPPER(V_SIT_C_CONCESSIONI_ALL.PROVENIENZA) = '" + roce.getProvenienza() + "' ";
+		//--per provenienza (--OO per OnlyOne)
+		// al momento è stato rimosso come parametro di input ed inserito a fuoco nella VISTA provenienza = 'OO' or provenienza = 'SCIA_JPE'  
+		//if ( roce != null && roce.getProvenienza() != null && !roce.getProvenienza().equalsIgnoreCase(""))
+		//	sql = sql + " AND UPPER(V_SIT_C_CONCESSIONI_ALL.PROVENIENZA) = '" + roce.getProvenienza() + "' ";
 
 		//--per data protocollo dal - ad
 		if ( roce != null && roce.getDtRifDal() != null )
-			sql = sql + " AND V_SIT_C_CONCESSIONI_ALL.protocollo_data  >= TO_DATE('"+formatter.format(roce.getDtRifDal())+"', 'dd/MM/yyyy') ";
+			sql = sql + " AND protocollo_data  >= TO_DATE('"+formatter.format(roce.getDtRifDal())+"', 'dd/MM/yyyy') ";
 		
 		if ( roce != null && roce.getDtRifAl() != null )
-			sql = sql + " AND V_SIT_C_CONCESSIONI_ALL.protocollo_data  <= TO_DATE('"+formatter.format(roce.getDtRifAl())+"', 'dd/MM/yyyy') ";
+			sql = sql + " AND protocollo_data  <= TO_DATE('"+formatter.format(roce.getDtRifAl())+"', 'dd/MM/yyyy') ";
 		
 		//--per coordinate catastali
 		if ( roce != null && roce.getFoglio() != null && !roce.getFoglio().equalsIgnoreCase(""))
-			sql = sql + " AND V_SIT_C_CONC_CATASTO_ALL.FOGLIO = '" + StringUtils.cleanLeftPad(roce.getFoglio(),'0') + "' " ;
+			sql = sql + " AND FOGLIO = '" + StringUtils.cleanLeftPad(roce.getFoglio(),'0') + "' " ;
 		
 		if ( roce != null && roce.getParticella() != null && !roce.getParticella().equalsIgnoreCase(""))
-			sql = sql + " AND V_SIT_C_CONC_CATASTO_ALL.PARTICELLA = '" + StringUtils.cleanLeftPad(roce.getParticella(),'0') + "' " ;
+			sql = sql + " AND PARTICELLA = '" + StringUtils.cleanLeftPad(roce.getParticella(),'0') + "' " ;
 		
 		if ( roce != null && roce.getSub() != null && !roce.getSub().equalsIgnoreCase(""))
-			sql = sql + " AND V_SIT_C_CONC_CATASTO_ALL.SUBALTERNO = '" + StringUtils.cleanLeftPad(roce.getSub(),'0') + "' " ;
+			sql = sql + " AND SUBALTERNO = '" + StringUtils.cleanLeftPad(roce.getSub(),'0') + "' " ;
 
 		//--per indirizzo
 		if ( roce != null && roce.getIndirizzo() != null ) {
 			RicercaCivicoDTO rciv = roce.getIndirizzo();
-			if ( rciv != null && rciv.getDescrizioneVia() != null && !rciv.getDescrizioneVia().equalsIgnoreCase(""))
-				sql = sql + " AND UPPER(V_SIT_C_CONC_INDIRIZZI_ALL.INDIRIZZO) like '%" + rciv.getDescrizioneVia().toUpperCase() + "%' ";
+			if ( rciv != null && rciv.getIdVia() != null && !rciv.getIdVia().equalsIgnoreCase(""))
+				sql = sql + " AND COD_VIA = '" + rciv.getIdVia() + "' ";
 			
 			if ( rciv != null && rciv.getCivico() != null && !rciv.getCivico().equalsIgnoreCase(""))
-				sql = sql + " AND UPPER(V_SIT_C_CONC_INDIRIZZI_ALL.CIV_LIV1) = '" + rciv.getCivico().toUpperCase() + "' ";
+				sql = sql + " AND UPPER(CIVICO) = '" + rciv.getCivico().toUpperCase() + "' ";
 		}
 
-		sql = sql + " ORDER BY V_SIT_C_CONCESSIONI_ALL.PROTOCOLLO_ANNO, V_SIT_C_CONCESSIONI_ALL.protocollo_data, V_SIT_C_CONCESSIONI_ALL.PROTOCOLLO_NUMERO ";
+		sql = sql + " ORDER BY PROVENIENZA, PROTOCOLLO_ANNO, protocollo_data, PROTOCOLLO_NUMERO ";
 		
 		return sql;
 	}//-------------------------------------------------------------------------

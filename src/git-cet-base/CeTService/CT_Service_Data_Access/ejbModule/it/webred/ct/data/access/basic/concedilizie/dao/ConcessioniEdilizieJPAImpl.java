@@ -533,12 +533,40 @@ public class ConcessioniEdilizieJPAImpl extends CTServiceBaseDAO implements Conc
 		try {
 			String sql = (new ConcessioniEdilizieQueryBuilder()).getSQL_PRATICHE_EDILI_BY_PARAMS( ro );
 			Query q = manager_diogene.createNativeQuery( sql );
-			q.setMaxResults(ro.getRicercaOggetto().getLimit());
+			if ( ro.getRicercaOggetto().getLimit() >0)
+				q.setMaxResults(ro.getRicercaOggetto().getLimit());
 			/*
 			q.setParameter(1, idExtConc);
 			Date dtFinVal = new Date(); 
 			q.setParameter(2,dtFinVal);
 			*/
+			lista = q.getResultList();		
+			logger.debug("getPraticheEdiliByParams SQL: " + sql);
+			if ( ro.getRicercaOggetto() != null) {
+				logger.debug("getPraticheEdiliByParams PARAMS: " + " Data Dal: " + ro.getRicercaOggetto().getDtRifDal() );
+				logger.debug("getPraticheEdiliByParams PARAMS: " + " Fog: " + ro.getRicercaOggetto().getFoglio() + " Par: "  + ro.getRicercaOggetto().getParticella() + " Sub: "  + ro.getRicercaOggetto().getSub() + " ");
+				logger.debug("getPraticheEdiliByParams PARAMS: " + " Cod Via: " + ro.getRicercaOggetto().getIndirizzo().getIdVia() + " Civico: "  + ro.getRicercaOggetto().getIndirizzo().getCivico() );				
+			}
+			logger.debug("Result size ["+lista.size()+"]");
+
+		} catch (Throwable t) {
+			logger.error("", t);
+			throw new ConcessioniEdilizieException (t);
+		}
+		return lista;
+	}//-------------------------------------------------------------------------
+	
+	@Override
+	public List<Object[]> getPraticheEdiliByParamsCounter(ConcEdiSearchCriteria ro)  {
+		List<Object[]> lista = new ArrayList<Object[]>();
+		logger.debug("ConcessioniEdilizieJPAImpl.getPraticheEdiliByParamsCounter() " );
+		try {
+			String sql = (new ConcessioniEdilizieQueryBuilder()).getSQL_PRATICHE_EDILI_BY_PARAMS( ro );
+			String qry = "SELECT COUNT(*) AS CNT FROM (";
+			qry = qry + sql ;
+			qry = qry + ") ";
+			Query q = manager_diogene.createNativeQuery( qry );
+
 			lista = q.getResultList();		
 			logger.debug("Result size ["+lista.size()+"]");
 

@@ -45,5 +45,7 @@ public interface ConcessioniEdilizieService {
 	public List<ConcVisuraDTO> getVisureCiviciDelFabbricato(RicercaOggettoCatDTO ro);
 	public List<String> getVisureTipiAtto(RicercaConcEdilizieDTO rc);
 	public List<Object[]> getPraticheEdiliByParams(ConcEdiSearchCriteria rce);
-
+	public List<Object[]> getPraticheEdiliByParamsCounter(ConcEdiSearchCriteria rce);
+	
+	
 }
