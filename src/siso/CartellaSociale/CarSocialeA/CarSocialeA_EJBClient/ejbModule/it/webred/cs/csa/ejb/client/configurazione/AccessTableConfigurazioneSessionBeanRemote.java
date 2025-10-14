@@ -32,8 +32,8 @@ public interface AccessTableConfigurazioneSessionBeanRemote {
 	public CsTbStatoCivile getStatoCivileByDescrizione(BaseDTO dto);
 
 	public CsTbStatoCivile getStatoCivileByCodice(BaseDTO dto);
-	
-    /*Status*/
+
+	/*Status*/
 	public List<KeyValueDTO> getStatus(CeTBaseObject cet);
 
 	public CsTbStatus getStatusById(BaseDTO dto);
@@ -51,7 +51,7 @@ public interface AccessTableConfigurazioneSessionBeanRemote {
 	public List<CsTbTipoIndirizzo> getTipoIndirizzo(CeTBaseObject cet);
 
 	public CsTbTipoIndirizzo getTipoIndirizzoById(BaseDTO dto);
-	
+
 	public List<CsTbTipoContributo> getTipoContributo(CeTBaseObject cet);
 
 	public List<CsTbTipologiaFamiliare> getTipologieFamiliari(CeTBaseObject cet);
@@ -77,11 +77,10 @@ public interface AccessTableConfigurazioneSessionBeanRemote {
 
 	/*Professione*/
 	public List<CsTbProfessione> getProfessioni(CeTBaseObject cet);
-	
+
 	public CsTbProfessione getProfessioneById(BaseDTO d);
 
 	public List<CsTbTutela> getTutele(CeTBaseObject cet);
-
 
 	public CsTbIcd10 getIcd10ById(BaseDTO dto);
 
@@ -206,7 +205,7 @@ public interface AccessTableConfigurazioneSessionBeanRemote {
 	public List<CsTbGVulnerabile> getGruppiVulnerab(CeTBaseObject cet);
 
 	public List<KeyValueDTO> getGruppiVulnerabili(CeTBaseObject cet);
-	
+
 	public CsTbGVulnerabile getGrVulnerabileById(BaseDTO dto);
 
 	public CsTbDisponibilita getDisponibilitaById(BaseDTO dto);
@@ -246,9 +245,9 @@ public interface AccessTableConfigurazioneSessionBeanRemote {
 	public List<KeyValueDTO> getDiarioDoves(CeTBaseObject cet);
 
 	public List<KeyValueDTO> getDiarioConchis(CeTBaseObject cet);
-	
+
 	public CsCDiarioConchi findDiarioConchi(BaseDTO dto);
-	
+
 	public List<CsCDiarioConchi> findDiarioConchisByIds(BaseDTO dto);
 
 	public List<CsTbSinaDomanda> getListaDomandaSina(BaseDTO dto);
@@ -268,7 +267,7 @@ public interface AccessTableConfigurazioneSessionBeanRemote {
 	public List<CsTbMicroIntervento> readPDSMicro(BaseDTO dto);
 
 	public List<KeyValueDTO> getStruttureTribunale(CeTBaseObject bo);
-	
+
 	// SISO-1190
 	public List<CsTbTitoloStudio> getTbTitoloStudioAbilitato(BaseDTO dto);
 
@@ -282,7 +281,7 @@ public interface AccessTableConfigurazioneSessionBeanRemote {
 	public String findCodiceSinbaMotivoChiusura(BaseDTO b);
 
 	// #ROMACAPITALE
-	
+
 	public List<KeyValueDTO> findStruttura(CeTBaseObject cet);
 
 	public List<KeyValueDTO> findArea(BaseDTO dto);
@@ -295,6 +294,9 @@ public interface AccessTableConfigurazioneSessionBeanRemote {
 	public CsTbProgettoAltro getProgettoAltroById(BaseDTO dto); // SISO-1131
 
 	public CsTbProgettoAltro getProgettoAltroByDescrizione(String descrizione);// SISO-1131
+
+	public CsTbTipoSgtBeneficiario getGruppoBeneficiarioByRagioneSociale(String ragioneSociale);
+	public CsTbTipoSgtBeneficiario getGruppoBeneficiarioByCodiceFiscale(String ragioneSociale, String codiceFiscale);
 
 	public List<CsTbUnitaMisura> getCsTbUnitaMisuraByInterventoIstatCustom(BaseDTO dto) throws Exception;
 
@@ -315,15 +317,15 @@ public interface AccessTableConfigurazioneSessionBeanRemote {
 	public Boolean esisteAlmenoUnMotivoChiusura(BaseDTO dto);
 
 	public List<KeyValueDTO> findProgettiByBelfioreOrganizzazione(BaseDTO dto); // SISO-522 - modificato SISO-575
-	
+
 	public ArFfProgetto getProgettoById(BaseDTO dto);
 
 	public ArFfProgettoAttivita getProgettoAttivitaById(BaseDTO dto);
-	
+
 	public ConfigurazioneFseDTO loadCampiFse(BaseDTO dto);
 
 	public List<KeyValueDTO> getListaTipoMinore(CeTBaseObject cet) throws Exception;
-	
+
 	public CsTbTipoMinore getTipoMinoreById(BaseDTO dto);
 
 	public List<VStrutturaArea> findAllStruttura(CeTBaseObject cet);
@@ -341,63 +343,69 @@ public interface AccessTableConfigurazioneSessionBeanRemote {
 	public CsTbDurataRicLavoro findDurataRicLavoroById(BaseDTO dto);
 
 	public List<CsCComunita> findComunitaByDescTipo(BaseDTO dto) throws Exception;
-	
+
 	/*ITER*/
 	public CsCfgItStato findStatoById(IterDTO dto) throws Exception;
 
-	public List<CsCfgItTransizione> getTransizionesByStatoRuolo (IterDTO dto) throws Exception;
-	
+	public List<CsCfgItTransizione> getTransizionesByStatoRuolo(IterDTO dto) throws Exception;
+
 	public List<KeyValueDTO> getListaIterStati(CeTBaseObject cet);
-	
+
 	/*INTERVENTI*/
 	public List<KeyValueDTO> findAllTipiIntervento(CeTBaseObject dto);
-	
+
 	public List<KeyValueDTO> findTipiInterventoAbilitati(BaseDTO dto);
-	
+
 	public List<KeyValueDTO> findTipiInterventoRecenti(BaseDTO dto);
 
 	public List<KeyValueDTO> findTipiInterventoCustomRecenti(BaseDTO dto);
 
 	public List<CsCTipoIntervento> findTipiInterventoSettoreCatSoc(InterventoDTO dto);
-	
+
 	public List<VGerrarchiaServizi> findAllNodesTipoIntervento(CeTBaseObject cet);
-	
+
 	public List<VLineaFin> findAllOrigineFinanziamenti(BaseDTO dto);
-	
+
 	public List<CsCTipoInterventoCustom> findTipiIntCustom(CeTBaseObject dto);
 
 	public CsCTipoInterventoCustom findTipoInterventoCustomById(BaseDTO dto);
 
 	public CsCCategoriaSociale findCatSocialeByDescrizione(BaseDTO dto);
-	
+
 	public List<ArRelClassememoPresInps> findArRelClassememoPresInpbyTipoInterventoId(BaseDTO dto);
-	
-	public CsCfgAttrUnitaMisura findAttrUnitaMisura(BaseDTO dto); 
+
+	public CsCfgAttrUnitaMisura findAttrUnitaMisura(BaseDTO dto);
 
 	//SISO-1110 Inizio
-	public List<VServiziCustom> findAreaTInterventoById( BaseDTO dto);
+	public List<VServiziCustom> findAreaTInterventoById(BaseDTO dto);
+
 	public List<VServiziCustom> findAllServiziCustoByInterventoAndAreatId(BaseDTO dto);
+
 	public List<VServiziCustom> findDettaglioInterventobyAreaTId(BaseDTO dto);
+
 	public List<ArRelIntCustomIstat> findInterventoIstatByInterventoCustom(BaseDTO dto);//DA CANCELLARE
+
 	public List<VServiziCustom> findAreaTInterventoByIdeAreaTSoggetto(BaseDTO dto);
+
 	public List<ArTClasse> findInterventoIstatByCodice(BaseDTO dto);
-	
+
 	//SISO-1110 Fine
-		//SISO-1162
+	//SISO-1162
 	public List<KeyValueDTO> findTipiInterventoInps(BaseDTO dto);
-	
+
 	//SIO-469
 	public List<VArCTariffa> findTariffe(BaseDTO dto);
 
 	public List<VTipiInterventoUsati> findAllInterventiRecenti(BaseDTO dto);
-	
+
 	//SISO-1160 Inizio
 	public List<it.webred.cs.csa.ejb.dto.rest.InterventoDTO> findTipiIntCustomConfigurazione(BaseDTO dto);
-//Fine	
+
+	//Fine	
 	public InformativaDTO findInformativa(BaseDTO dto);
-	
+
 	public CsCTipoIntervento getTipoInterventoById(BaseDTO dto);
-	
+
 	public HashMap<Long, ErogStatoCfgDTO> findConfigIntEsegByTipoIntervento(BaseDTO bDto);
 
 	public List<CsCfgIntEsegStato> getListaIntEsegStatoByTipiStato(BaseDTO bDto);
@@ -406,5 +414,5 @@ public interface AccessTableConfigurazioneSessionBeanRemote {
 
 	public CsTbSinaRisposta findSinaRisposta(BaseDTO dto);
 
-	public List<ArTClasse> findArTClasseAll(CeTBaseObject dto);	
+	public List<ArTClasse> findArTClasseAll(CeTBaseObject dto);
 }

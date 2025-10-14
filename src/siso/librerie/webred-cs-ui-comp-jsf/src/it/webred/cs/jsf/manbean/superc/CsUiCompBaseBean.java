@@ -2178,4 +2178,33 @@ public class CsUiCompBaseBean {
 		String val = getGlobalParameter(DataModelCostanti.AmParameterKey.LINK_APP_ESTERNA_TOKEN);
 		return val;
 	}
+	
+	/**
+	 * 
+	 * <h1>getAmKeyValueExt</h1>
+	 *
+	 * <p>
+	 * Recupero chiavi in AM
+	 * </p>
+	 *
+	 * @param chiave
+	 * @return
+	 *
+	 * @since 1.26.13
+	 * @version 1.0.0
+	 * 
+	 * @author DDV
+	 * @lastUpdate 2025-07-24 - DDV
+	 */
+	public static AmKeyValueExt getAmKeyValueExt(String chiave) {
+	
+		ParameterSearchCriteria parameterSearchCriteria = new ParameterSearchCriteria();
+		parameterSearchCriteria.setKey(chiave);
+
+		AmKeyValueExt amKeyValueExt = paramService.getAmKeyValueExt(parameterSearchCriteria);
+	
+		return amKeyValueExt;
+	
+	}
+	
 }

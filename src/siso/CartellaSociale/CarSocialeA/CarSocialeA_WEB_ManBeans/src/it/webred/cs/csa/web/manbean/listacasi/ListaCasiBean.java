@@ -46,7 +46,7 @@ import org.primefaces.model.LazyDataModel;
 
 @ManagedBean
 @ViewScoped
-public class ListaCasiBean extends CsUiCompBaseBean implements IListaCasi{
+public class ListaCasiBean extends CsUiCompBaseBean implements IListaCasi {
 
 	private String widgetVar = "listaCasiVar";
 	private LazyListaCasiModel lazyListaCasiModel;
@@ -58,20 +58,20 @@ public class ListaCasiBean extends CsUiCompBaseBean implements IListaCasi{
 	private List<SelectItem> listaTribStrutture;
 	private List<SelectItem> listaComuniResidenza;
 	private List<SelectItem> listaNazioniResidenza;
-	private boolean renderTipoOperatore=false;
-	private boolean renderStatoOperatore=false;
-	private boolean renderedTableListaCasi=true; //SISO-812
-	private  List<DatiCasoBean> listaCasiAssegnati; 
-	private boolean renderedListaCasiAssegnati= false; //variabile che tiene traccia del fatto che sono nella pagina listaCasiAssegnati
+	private boolean renderTipoOperatore = false;
+	private boolean renderStatoOperatore = false;
+	private boolean renderedTableListaCasi = true; //SISO-812
+	private List<DatiCasoBean> listaCasiAssegnati;
+	private boolean renderedListaCasiAssegnati = false; //variabile che tiene traccia del fatto che sono nella pagina listaCasiAssegnati
 
 	@ManagedProperty( value="#{iterDialogMan}")
 	private IterDialogMan iterDialogMan;
 
 	public ListaCasiBean() {
-		lazyListaCasiModel = new LazyListaCasiModel();
+		this.lazyListaCasiModel = new LazyListaCasiModel();
 	
-    	if(getSession().getAttribute("fromListaCasi")!=null)
-		   this.setRenderedListaCasiAssegnati((Boolean)getSession().getAttribute("fromListaCasi"));    	
+		if (getSession().getAttribute("fromListaCasi") != null)
+			this.setRenderedListaCasiAssegnati((Boolean) getSession().getAttribute("fromListaCasi"));
 	}
 	
 	@Override
@@ -100,7 +100,7 @@ public class ListaCasiBean extends CsUiCompBaseBean implements IListaCasi{
 		this.selectedCaso = selectedCaso;
 	}
 
-	public  LazyDataModel<DatiCasoBean> getLazyListaCasiModel() {
+	public LazyDataModel<DatiCasoBean> getLazyListaCasiModel() {
 		return lazyListaCasiModel;
 	}
 
@@ -110,106 +110,105 @@ public class ListaCasiBean extends CsUiCompBaseBean implements IListaCasi{
 
 	@PostConstruct
 	public void onPostConstruct() throws NumberFormatException, NamingException {
-		doLoadListaStati();
-		doLoadListaOperatori();
-		doLoadListaTitoliStudio();
-		doLoadListaCondLavoro();
-		doLoadListaTribStrutture();
-		doLoadListaComuniResidenza();
-		doLoadListaNazioniResidenza();
+		this.doLoadListaStati();
+		this.doLoadListaOperatori();
+		this.doLoadListaTitoliStudio();
+		this.doLoadListaCondLavoro();
+		this.doLoadListaTribStrutture();
+		this.doLoadListaComuniResidenza();
+		this.doLoadListaNazioniResidenza();
 		String sIdCaso = getRequest().getParameter("IDCASO");
-		if( CommonUtils.isNotEmptyString(sIdCaso) )
-			iterDialogMan.openDialog(Long.parseLong(sIdCaso));
+		if (CommonUtils.isNotEmptyString(sIdCaso))
+			this.iterDialogMan.openDialog(Long.parseLong(sIdCaso));
 		//SISO-812
 		//doLoadListaCasiAssegnati();
 	}
 	
 	@Override
 	public ActionListener getCloseDialog() {
-	    return new ActionListener() {
-	        @Override
-	        public void processAction(ActionEvent event) throws AbortProcessingException {
-	        	//loadListaCasi();
-	        }
-	    };
+		return new ActionListener() {
+			@Override
+			public void processAction(ActionEvent event) throws AbortProcessingException {
+				//loadListaCasi();
+			}
+		};
 	}
 
 	@Override
 	public void rowDeselect() {
-		this.selectedCaso=null;
+		this.selectedCaso = null;
 	}
 
 	public void setListaStati(List<SelectItem> listaStati) {
 		this.listaStati = listaStati;
 	}
-	
 		
-	private void doLoadListaStati(){
-		listaStati = new ArrayList<SelectItem>();
-		try{
+	private void doLoadListaStati() {
+		this.listaStati = new ArrayList<SelectItem>();
+		try {
 			CeTBaseObject cet = new CeTBaseObject();
 			fillEnte(cet);
-			listaStati = convertiLista(confService.getListaIterStati(cet));
-		}catch(Exception e){
-			logger.error("Errore caricamento lista stati ITER",e);
+			this.listaStati = convertiLista(confService.getListaIterStati(cet));
+		} catch(Exception e) {
+			logger.error("Errore caricamento lista stati ITER", e);
 		}
 	}
 	
-	private void doLoadListaComuniResidenza(){
-		listaComuniResidenza = new ArrayList<SelectItem>();
-		try{
+	private void doLoadListaComuniResidenza() {
+		this.listaComuniResidenza = new ArrayList<SelectItem>();
+		try {
 			CeTBaseObject cet = new CeTBaseObject();
 			fillEnte(cet);
-			listaComuniResidenza = convertiLista(indirizzoService.getListaComuniResidenza(cet));
-		}catch(Exception e){
-			logger.error("Errore caricamento lista COMUNI RESIDENZA",e);
+			this.listaComuniResidenza = convertiLista(indirizzoService.getListaComuniResidenza(cet));
+		} catch(Exception e) {
+			logger.error("Errore caricamento lista COMUNI RESIDENZA", e);
 		}
 	}
 	
-	private void doLoadListaNazioniResidenza(){
-		listaNazioniResidenza = new ArrayList<SelectItem>();
-		try{
+	private void doLoadListaNazioniResidenza() {
+		this.listaNazioniResidenza = new ArrayList<SelectItem>();
+		try {
 			CeTBaseObject cet = new CeTBaseObject();
 			fillEnte(cet);
-			listaNazioniResidenza = convertiLista(indirizzoService.getListaNazioniResidenza(cet));
-		}catch(Exception e){
-			logger.error("Errore caricamento lista NAZIONI RESIDENZA",e);
+			this.listaNazioniResidenza = convertiLista(indirizzoService.getListaNazioniResidenza(cet));
+		} catch(Exception e) {
+			logger.error("Errore caricamento lista NAZIONI RESIDENZA", e);
 		}
 	}
 	
-	private void doLoadListaTitoliStudio(){
-		listaTitStudio = new ArrayList<SelectItem>();
-		try{
+	private void doLoadListaTitoliStudio() {
+		this.listaTitStudio = new ArrayList<SelectItem>();
+		try {
 			CeTBaseObject cet = new CeTBaseObject();
 			fillEnte(cet);
 			List<KeyValueDTO> lst = confService.getTitoliStudio(cet);
-			listaTitStudio = convertiLista(lst);
-		}catch(Exception e){
-			logger.error("Errore caricamento lista TITOLI STUDIO",e);
+			this.listaTitStudio = convertiLista(lst);
+		} catch(Exception e) {
+			logger.error("Errore caricamento lista TITOLI STUDIO", e);
 		}
 	}
 	
-	private void doLoadListaTribStrutture(){
-		listaTribStrutture = new ArrayList<SelectItem>();
-		try{
+	private void doLoadListaTribStrutture() {
+		this.listaTribStrutture = new ArrayList<SelectItem>();
+		try {
 			CeTBaseObject cet = new CeTBaseObject();
 			fillEnte(cet);
 			List<KeyValueDTO> lst = confService.getStruttureTribunale(cet);
 			for (KeyValueDTO obj : lst) 
-				listaTribStrutture.add(new SelectItem(obj.getCodice(), obj.getDescrizione()));
+				this.listaTribStrutture.add(new SelectItem(obj.getCodice(), obj.getDescrizione()));
 				
-		}catch(Exception e){
-			logger.error("Errore caricamento lista STRUTTURE TRIBUNALE",e);
+		} catch(Exception e) {
+			logger.error("Errore caricamento lista STRUTTURE TRIBUNALE", e);
 		}
 	}
 	
-	private void doLoadListaCondLavoro(){
-		listaCondLavoro = new ArrayList<SelectItem>();
-		try{
+	private void doLoadListaCondLavoro() {
+		this.listaCondLavoro = new ArrayList<SelectItem>();
+		try {
 			CeTBaseObject cet = new CeTBaseObject();
 			fillEnte(cet);
 			TreeMap<String, List<CsTbCondLavoro>> tree = confService.getMappaCondLavoro(cet);
-			for(String str : tree.keySet()){
+			for (String str : tree.keySet()) {
 				List<CsTbCondLavoro> lst = tree.get(str);
 				if (lst != null && !lst.isEmpty()) {
 					String labelGroup = lst.get(0).getCsTbIngMercato().getDescrizione();
@@ -217,45 +216,47 @@ public class ListaCasiBean extends CsUiCompBaseBean implements IListaCasi{
 					List<SelectItem> siList = new ArrayList<SelectItem>();
 					for (CsTbCondLavoro obj : lst) {
 						SelectItem si = new SelectItem(obj.getId(), obj.getDescrizione());
-						if(labelGroup==null || labelGroup.trim().isEmpty())
+						if (labelGroup == null || labelGroup.trim().isEmpty())
 							siList.add(si);
 						else
-							listaCondLavoro.add(si);
+							this.listaCondLavoro.add(si);
 					}
-					if(labelGroup==null || labelGroup.trim().isEmpty()){
+					if (labelGroup == null || labelGroup.trim().isEmpty()) {
 						gr.setSelectItems(siList.toArray(new SelectItem[siList.size()]));
-						listaCondLavoro.add(gr);
+						this.listaCondLavoro.add(gr);
 					}
-				}		
-			}		
-		}catch(Exception e){
-			logger.error("Errore caricamento lista CONDIZIONE LAVORO ",e);
+				}
+			}
+			
+		} catch(Exception e) {
+			logger.error("Errore caricamento lista CONDIZIONE LAVORO ", e);
 		}
 	}
 	
-	private void doLoadListaOperatori(){
-		listaOperatori = new ArrayList<SelectItem>();
+	private void doLoadListaOperatori() {
+		this.listaOperatori = new ArrayList<SelectItem>();
 		CsOOperatore operatore = getCurrentOpSettore().getCsOOperatore();
 		Long settoreId = getCurrentOpSettore().getCsOSettore().getId();
-		if(!CsUiCompBaseBean.checkPermesso(DataModelCostanti.PermessiCartella.ITEM,DataModelCostanti.PermessiCartella.VISUALIZZAZIONE_CASI_SETTORE)){
-			listaOperatori.add(new SelectItem(operatore.getId(),operatore.getDenominazione()));
-		}else{
-			try{
+		if (!CsUiCompBaseBean.checkPermesso(DataModelCostanti.PermessiCartella.ITEM,DataModelCostanti.PermessiCartella.VISUALIZZAZIONE_CASI_SETTORE)) {
+			this.listaOperatori.add(new SelectItem(operatore.getId(),operatore.getDenominazione()));
+		} else {
+			try {
 				if (settoreId != 0L) {
 					
 					OperatoreDTO opDto = new OperatoreDTO();
 					fillEnte(opDto);
 					opDto.setIdSettore(settoreId);
 					List<KeyValueDTO> result = confEnteService.findListaOperatoreBySettore(opDto);
-					for (KeyValueDTO it :  result) {
-					    SelectItem si = new SelectItem(it.getCodice(), it.getDescrizione());
-						listaOperatori.add(si);
+					for (KeyValueDTO it : result) {
+						SelectItem si = new SelectItem(it.getCodice(), it.getDescrizione());
+						this.listaOperatori.add(si);
 					}
 				}
-			}catch(Exception e){
-				logger.error("Errore caricamento lista operatori Settore",e);
+			} catch(Exception e) {
+				logger.error("Errore caricamento lista operatori Settore", e);
 			}
-	  }
+			
+		}
 	}
 	
 	@Override
@@ -264,17 +265,17 @@ public class ListaCasiBean extends CsUiCompBaseBean implements IListaCasi{
 	}
 	
 	@Override
-	public List<SelectItem> getListaOperatori(){
-		return listaOperatori;	
+	public List<SelectItem> getListaOperatori() {
+		return listaOperatori;
 	}
 	
 	@Override
-	public List<SelectItem> getListaTitStudio(){
-		return listaTitStudio;	
+	public List<SelectItem> getListaTitStudio() {
+		return listaTitStudio;
 	}
 	
 	@Override
-	public List<SelectItem> getListaCondLavoro(){
+	public List<SelectItem> getListaCondLavoro() {
 		return listaCondLavoro;	
 	}
 	
@@ -294,42 +295,42 @@ public class ListaCasiBean extends CsUiCompBaseBean implements IListaCasi{
 		this.listaNazioniResidenza = listaNazioniResidenza;
 	}
 
-	public String getSelTipoOperatore(){
-		return (String)getSession().getAttribute(FiltroCasi.TIPO_OPERATORE);
+	public String getSelTipoOperatore() {
+		return (String) getSession().getAttribute(FiltroCasi.TIPO_OPERATORE);
 	}
 	
-	public void setSelTipoOperatore(String tipo){
+	public void setSelTipoOperatore(String tipo) {
 		getSession().setAttribute(FiltroCasi.TIPO_OPERATORE, tipo);
 	}
 
 	public String getSelStato() {
-		return (String)getSession().getAttribute(FiltroCasi.STATO);
+		return (String) getSession().getAttribute(FiltroCasi.STATO);
 	}
 
 	public void setSelStato(String selStato) {
 		getSession().setAttribute(FiltroCasi.STATO, selStato);
-		Long valStato = !StringUtils.isBlank(selStato) ? Long.valueOf(selStato) : null;
-		if(valStato!=null && DataModelCostanti.IterStatoInfo.SEGNALATO_OP.equals(valStato))
-			this.renderStatoOperatore=true;
-		else{
-			this.renderStatoOperatore=false;
+		Long valStato = !StringUtils.isBlank(selStato) ? Long.valueOf (selStato) : null;
+		if (valStato != null && DataModelCostanti.IterStatoInfo.SEGNALATO_OP.equals(valStato))
+			this.renderStatoOperatore = true;
+		else {
+			this.renderStatoOperatore = false;
 			this.setSelStatoOperatore(null);
 		}
 	}
 	
-	public void onChangeTipoResidenza(){
-		if("COMUNE".equalsIgnoreCase(this.getSelTipoResidenza()))
+	public void onChangeTipoResidenza() {
+		if ("COMUNE".equalsIgnoreCase(this.getSelTipoResidenza()))
 			this.setSelComuneResidenza(null);
-		if("NAZIONE".equalsIgnoreCase(this.getSelTipoResidenza()))
+		if ("NAZIONE".equalsIgnoreCase(this.getSelTipoResidenza()))
 			this.setSelNazioneResidenza(null);
-		if("SDF".equalsIgnoreCase(this.getSelTipoResidenza())){
+		if ("SDF".equalsIgnoreCase(this.getSelTipoResidenza())) {
 			this.setSelComuneResidenza(null);
 			this.setSelNazioneResidenza(null);
 		}
 	}
 	
 	public String getSelComuneResidenza() {
-		return (String)getSession().getAttribute(FiltroCasi.RESIDENZA_COMUNE);
+		return (String) getSession().getAttribute(FiltroCasi.RESIDENZA_COMUNE);
 	}
 
 	public void setSelComuneResidenza(String selResidenza) {
@@ -337,7 +338,7 @@ public class ListaCasiBean extends CsUiCompBaseBean implements IListaCasi{
 	}
 	
 	public String getSelNazioneResidenza() {
-		return (String)getSession().getAttribute(FiltroCasi.RESIDENZA_NAZIONE);
+		return (String) getSession().getAttribute(FiltroCasi.RESIDENZA_NAZIONE);
 	}
 
 	public void setSelNazioneResidenza(String selResidenza) {
@@ -345,7 +346,7 @@ public class ListaCasiBean extends CsUiCompBaseBean implements IListaCasi{
 	}
 	
 	public String getSelTipoResidenza() {
-		return (String)getSession().getAttribute(FiltroCasi.RESIDENZA_TIPO);
+		return (String) getSession().getAttribute(FiltroCasi.RESIDENZA_TIPO);
 	}
 
 	public void setSelTipoResidenza(String selResidenza) {
@@ -353,7 +354,7 @@ public class ListaCasiBean extends CsUiCompBaseBean implements IListaCasi{
 	}
 	
 	public Long getSelTitStudio() {
-		return (Long)getSession().getAttribute(FiltroCasi.STUDIO);
+		return (Long) getSession().getAttribute(FiltroCasi.STUDIO);
 	}
 
 	public void setSelTitStudio(Long sel) {
@@ -361,7 +362,7 @@ public class ListaCasiBean extends CsUiCompBaseBean implements IListaCasi{
 	}
 	
 	public Long getSelCondLavoro() {
-		return (Long)getSession().getAttribute(FiltroCasi.LAVORO);
+		return (Long) getSession().getAttribute(FiltroCasi.LAVORO);
 	}
 
 	public void setSelCondLavoro(Long sel) {
@@ -369,7 +370,7 @@ public class ListaCasiBean extends CsUiCompBaseBean implements IListaCasi{
 	}
 	
 	public String getSelTutela() {
-		return (String)getSession().getAttribute(FiltroCasi.TUTELA);
+		return (String) getSession().getAttribute(FiltroCasi.TUTELA);
 	}
 
 	public void setSelTutela(String sel) {
@@ -377,36 +378,36 @@ public class ListaCasiBean extends CsUiCompBaseBean implements IListaCasi{
 	}
 
 	public String getSelOperatore() {
-		return (String)getSession().getAttribute(FiltroCasi.OPERATORE);
+		return (String) getSession().getAttribute(FiltroCasi.OPERATORE);
 	}
 
 	public void setSelOperatore(String selOperatore) {
 		getSession().setAttribute(FiltroCasi.OPERATORE, selOperatore);
-		if(selOperatore!=null && !selOperatore.isEmpty())
-			this.renderTipoOperatore=true;
-		else{
-			this.renderTipoOperatore=false;
+		if (selOperatore != null && !selOperatore.isEmpty())
+			this.renderTipoOperatore = true;
+		else {
+			this.renderTipoOperatore = false;
 			this.setSelTipoOperatore("TUTTI");
 		}
 	}
 	
 	public String getSelStatoOperatore() {
-		return (String)getSession().getAttribute(FiltroCasi.STATO_OPERATORE);
+		return (String) getSession().getAttribute(FiltroCasi.STATO_OPERATORE);
 	}
 
 	public void setSelStatoOperatore(String selOperatore) {
 		getSession().setAttribute(FiltroCasi.STATO_OPERATORE, selOperatore);
 	}
 	
-	public void setSelDatiTribunale(String[] dati){
+	public void setSelDatiTribunale(String[] dati) {
 		getSession().setAttribute(FiltroCasi.TRIBUNALE, dati);
 	}
-	public String[] getSelDatiTribunale(){
-		return (String[])getSession().getAttribute(FiltroCasi.TRIBUNALE);
+	public String[] getSelDatiTribunale() {
+		return (String[]) getSession().getAttribute(FiltroCasi.TRIBUNALE);
 	}
 	
 	@Override
-	public void clearFilters(){
+	public void clearFilters() {
 		this.setSelOperatore(null);
 		this.setSelStato(null);
 		this.setSelStatoOperatore(null);
@@ -424,14 +425,16 @@ public class ListaCasiBean extends CsUiCompBaseBean implements IListaCasi{
 	}
 	
 	@Override
-	public boolean isRenderStatoOperatore(){
+	public boolean isRenderStatoOperatore() {
 		return renderStatoOperatore;
 	}
-	
-	/* #SISO-641
+
+	/**
+	 * #SISO-641
 	 * 
 	 * Non potendo sfruttare il dataExporter di PrimeFaces 4 (poiché non è possibile personalizzare la funzione
-	 * di export delle singole colonne), si procede a generare un file Excel direttamente con Apache POI. */
+	 * di export delle singole colonne), si procede a generare un file Excel direttamente con Apache POI.
+	 */
 	private static final int EXCEL_COLUMN_INDEX_ID = 0;
 	private static final int EXCEL_COLUMN_INDEX_COGNOME_NOME = 1;
 	private static final int EXCEL_COLUMN_DATA_NASCITA= 2;
@@ -443,13 +446,12 @@ public class ListaCasiBean extends CsUiCompBaseBean implements IListaCasi{
 	private static final int EXCEL_COLUMN_INDEX_EROG= 8;
 	private static final int EXCEL_COLUMN_INDEX_DATA_APERTURA = 9;
 	private static final int EXCEL_COLUMN_INDEX_STATO = 10;
-
 	
 	private CellStyle exportCellStyle;
 	
 	private void createAndPopulateCell(Row row, int columnIndex, String value) {
 		Cell cell = row.createCell(columnIndex);
-		cell.setCellStyle(exportCellStyle);
+		cell.setCellStyle(this.exportCellStyle);
 		
 		cell.setCellValue(value);
 	}
@@ -459,12 +461,13 @@ public class ListaCasiBean extends CsUiCompBaseBean implements IListaCasi{
 		
 		// creo il file Excel
 		HSSFWorkbook workbook = new HSSFWorkbook();
-				
-		/* Imposto il CellStyle da utilizzare per questo documento.
-		* 
-		* wrapText = true permette l'inserimento di contenuti su più righe all'interno delle celle. */
-		exportCellStyle = workbook.createCellStyle();
-		exportCellStyle.setWrapText(true);
+		
+		/**
+		 * Imposto il CellStyle da utilizzare per questo documento.
+		 * wrapText = true permette l'inserimento di contenuti su più righe all'interno delle celle.
+		 */
+		this.exportCellStyle = workbook.createCellStyle();
+		this.exportCellStyle.setWrapText(true);
 				
 		// creo il (solo) foglio del documento
 		HSSFSheet sheet = workbook.createSheet("ListaCasi");
@@ -472,63 +475,73 @@ public class ListaCasiBean extends CsUiCompBaseBean implements IListaCasi{
 		// creo la riga di intestazione e popolo i campi a mano
 		HSSFRow headerRow = sheet.createRow(0);
 		
-		createAndPopulateCell(headerRow, EXCEL_COLUMN_INDEX_ID, "ID");
-		createAndPopulateCell(headerRow, EXCEL_COLUMN_INDEX_COGNOME_NOME, "Cognome - Nome");
-		createAndPopulateCell(headerRow, EXCEL_COLUMN_DATA_NASCITA, "Data nascita");
-		createAndPopulateCell(headerRow, EXCEL_COLUMN_INDEX_CODICE_FISCALE, "Codice fiscale");
-		createAndPopulateCell(headerRow, EXCEL_COLUMN_INDEX_RESIDENZA, "Residenza");
-		createAndPopulateCell(headerRow, EXCEL_COLUMN_INDEX_OPERATORI, "Operatori");
-		createAndPopulateCell(headerRow, EXCEL_COLUMN_INDEX_CAT_SOCIALE, "Cat. sociale");
-		createAndPopulateCell(headerRow, EXCEL_COLUMN_INDEX_INT, "Int.");
-		createAndPopulateCell(headerRow, EXCEL_COLUMN_INDEX_EROG, "Erog.");
-		createAndPopulateCell(headerRow, EXCEL_COLUMN_INDEX_DATA_APERTURA, "Data apertura");
-		createAndPopulateCell(headerRow, EXCEL_COLUMN_INDEX_STATO, "Stato");
-		
-		
+		this.createAndPopulateCell(headerRow, EXCEL_COLUMN_INDEX_ID, "ID");
+		this.createAndPopulateCell(headerRow, EXCEL_COLUMN_INDEX_COGNOME_NOME, "Cognome - Nome");
+		this.createAndPopulateCell(headerRow, EXCEL_COLUMN_DATA_NASCITA, "Data nascita");
+		this.createAndPopulateCell(headerRow, EXCEL_COLUMN_INDEX_CODICE_FISCALE, "Codice fiscale");
+		this.createAndPopulateCell(headerRow, EXCEL_COLUMN_INDEX_RESIDENZA, "Residenza");
+		this.createAndPopulateCell(headerRow, EXCEL_COLUMN_INDEX_OPERATORI, "Operatori");
+		this.createAndPopulateCell(headerRow, EXCEL_COLUMN_INDEX_CAT_SOCIALE, "Cat. sociale");
+		this.createAndPopulateCell(headerRow, EXCEL_COLUMN_INDEX_INT, "Int.");
+		this.createAndPopulateCell(headerRow, EXCEL_COLUMN_INDEX_EROG, "Erog.");
+		this.createAndPopulateCell(headerRow, EXCEL_COLUMN_INDEX_DATA_APERTURA, "Data apertura");
+		this.createAndPopulateCell(headerRow, EXCEL_COLUMN_INDEX_STATO, "Stato");
 		
 		//contatore righe tabella erogazioni interventi
 		int casoRows = 0;
 		//contatore righe excel
 		int excelRow = 0;
 		//totale righe da esportare
-		int rowCount = lazyListaCasiModel.getRowCount();
+		int rowCount = this.lazyListaCasiModel.getRowCount();
+
+		this.lazyListaCasiModel.downloadFromExcel = true;
 		
-		List<DatiCasoBean> listaCasi = lazyListaCasiModel.load(casoRows, lazyListaCasiModel.getPageSize(), lazyListaCasiModel.sortField, lazyListaCasiModel.sortOrder, lazyListaCasiModel.filters);
+		List<DatiCasoBean> listaCasi = this.lazyListaCasiModel.load
+				( casoRows
+				, this.lazyListaCasiModel.getPageSize()
+				, this.lazyListaCasiModel.sortField
+				, this.lazyListaCasiModel.sortOrder
+				, this.lazyListaCasiModel.filters
+				);
 		
-		while(casoRows < rowCount){
+		while (casoRows < rowCount) {
 			
-			
-			for(DatiCasoBean rowListaCasi : listaCasi){
+			for (DatiCasoBean rowListaCasi : listaCasi) {
 				excelRow++;
 				
 				// creo la i-esima riga, con l'altezza predefinita (in modo che si capisca se una cella ha più righe di contenuto)
 				HSSFRow row = sheet.createRow(excelRow);
-			    row.setHeightInPoints(30);
+				row.setHeightInPoints(30);
 				
 				// popolo le colonne (replicando di fatto la logica della view)
-				createAndPopulateCell(row, EXCEL_COLUMN_INDEX_ID,rowListaCasi.getIdentificativo().toString());
-				createAndPopulateCell(row, EXCEL_COLUMN_INDEX_COGNOME_NOME,rowListaCasi.getDenominazione());
-				createAndPopulateCell(row, EXCEL_COLUMN_DATA_NASCITA,dataNascitaCasoValueExtraction(rowListaCasi.getDataNascita()));
-				createAndPopulateCell(row, EXCEL_COLUMN_INDEX_CODICE_FISCALE,rowListaCasi.getCf());
-				createAndPopulateCell(row, EXCEL_COLUMN_INDEX_RESIDENZA, rowListaCasi.getResidenza());
-				createAndPopulateCell(row, EXCEL_COLUMN_INDEX_OPERATORI,DescrOperatoreValueExtraction(rowListaCasi));
-				createAndPopulateCell(row, EXCEL_COLUMN_INDEX_CAT_SOCIALE,rowListaCasi.getCategoriaPrevalente());
-				createAndPopulateCell(row, EXCEL_COLUMN_INDEX_INT,rowListaCasi.getnInterventi());
-				createAndPopulateCell(row, EXCEL_COLUMN_INDEX_EROG,ErogPresenzaValueExtraction(rowListaCasi.getListaErogazioni()));
-				createAndPopulateCell(row, EXCEL_COLUMN_INDEX_DATA_APERTURA,dataAperturaCasoValueExtraction(rowListaCasi.getDataApertura()));
-				createAndPopulateCell(row, EXCEL_COLUMN_INDEX_STATO,lastIterStepInfoValueExtraction(rowListaCasi));
+				this.createAndPopulateCell(row, EXCEL_COLUMN_INDEX_ID,rowListaCasi.getIdentificativo().toString());
+				this.createAndPopulateCell(row, EXCEL_COLUMN_INDEX_COGNOME_NOME,rowListaCasi.getDenominazione());
+				this.createAndPopulateCell(row, EXCEL_COLUMN_DATA_NASCITA,dataNascitaCasoValueExtraction(rowListaCasi.getDataNascita()));
+				this.createAndPopulateCell(row, EXCEL_COLUMN_INDEX_CODICE_FISCALE,rowListaCasi.getCf ());
+				this.createAndPopulateCell(row, EXCEL_COLUMN_INDEX_RESIDENZA, rowListaCasi.getResidenza());
+				this.createAndPopulateCell(row, EXCEL_COLUMN_INDEX_OPERATORI,DescrOperatoreValueExtraction(rowListaCasi));
+				this.createAndPopulateCell(row, EXCEL_COLUMN_INDEX_CAT_SOCIALE,rowListaCasi.getCategoriaPrevalente());
+				this.createAndPopulateCell(row, EXCEL_COLUMN_INDEX_INT,rowListaCasi.getnInterventi());
+				this.createAndPopulateCell(row, EXCEL_COLUMN_INDEX_EROG, ErogPresenzaValueExtraction(rowListaCasi.getListaErogazioni()));
+				this.createAndPopulateCell(row, EXCEL_COLUMN_INDEX_DATA_APERTURA,dataAperturaCasoValueExtraction(rowListaCasi.getDataApertura()));
+				this.createAndPopulateCell(row, EXCEL_COLUMN_INDEX_STATO,lastIterStepInfoValueExtraction(rowListaCasi));
 				
 			}
-			casoRows += lazyListaCasiModel.getPageSize();
-			listaCasi = lazyListaCasiModel.load(excelRow, lazyListaCasiModel.getPageSize(), lazyListaCasiModel.sortField, lazyListaCasiModel.sortOrder, lazyListaCasiModel.filters);
+			
+			casoRows += this.lazyListaCasiModel.getPageSize();
+			listaCasi = this.lazyListaCasiModel.load
+					( excelRow
+					, this.lazyListaCasiModel.getPageSize()
+					, this.lazyListaCasiModel.sortField
+					, this.lazyListaCasiModel.sortOrder
+					, this.lazyListaCasiModel.filters
+					);
 		}
-		
 		
 		// imposto la larghezza delle colonne
 		for (int i = 0; i <= 12; i++) {
 			sheet.setColumnWidth(i, 20 * 256);	// la larghezza è in 1/256 di carattere
-			}
-		
+		}
 
 		// scateno la response con il download dell'Excel creato
 		FacesContext fc = FacesContext.getCurrentInstance();
@@ -560,27 +573,27 @@ public class ListaCasiBean extends CsUiCompBaseBean implements IListaCasi{
 		return dataNascitaCaso == null ? "" : ddmmyyyy.format(dataNascitaCaso);
 	}
 	
-	private String ErogPresenzaValueExtraction(List<ErogazioneBaseDTO> listaErogazioni){
-		return listaErogazioni.size()>0?"Sì":"No";
+	private String ErogPresenzaValueExtraction(List<ErogazioneBaseDTO> listaErogazioni) {
+		return listaErogazioni.size() > 0 ? "Sì" : "No";
 	}
 	
-	private String DescrOperatoreValueExtraction(DatiCasoBean caso){
-		if(caso.getResponsabile()!= null)
-		return caso.getResponsabile().getDenominazione().isEmpty()?"":caso.getResponsabile().getDenominazione();
+	private String DescrOperatoreValueExtraction(DatiCasoBean caso) {
+		if (caso.getResponsabile() != null)
+		return caso.getResponsabile().getDenominazione().isEmpty() ? "" :caso.getResponsabile().getDenominazione();
 		else return "";
 	}
 	
-	private String lastIterStepInfoValueExtraction(DatiCasoBean caso){
+	private String lastIterStepInfoValueExtraction(DatiCasoBean caso) {
 		String ret="";
-		if(caso.getLastIterStepInfo()!=null){
-			if(!(caso.getLastIterStepInfo().getNomeStato().isEmpty())&&!(caso.getLastIterStepInfo().getDataCreazione().isEmpty())){
-				ret=caso.getLastIterStepInfo().getNomeStato()+"-"+caso.getLastIterStepInfo().getDataCreazione();
+		if (caso.getLastIterStepInfo() != null) {
+			if (!(caso.getLastIterStepInfo().getNomeStato().isEmpty()) && !(caso.getLastIterStepInfo().getDataCreazione().isEmpty())) {
+				ret=caso.getLastIterStepInfo().getNomeStato() + "-" + caso.getLastIterStepInfo().getDataCreazione();
 			}
 		}
 		return ret;
 	}
 	
-    //inizio SISO-812
+	//inizio SISO-812
 	public boolean isRenderedTableListaCasi() {
 		return renderedTableListaCasi;
 	}
@@ -612,6 +625,6 @@ public class ListaCasiBean extends CsUiCompBaseBean implements IListaCasi{
 	public void setListaTribStrutture(List<SelectItem> listaTribStrutture) {
 		this.listaTribStrutture = listaTribStrutture;
 	}
-	
-    //fine SISO-812
+	//fine SISO-812
+
 }

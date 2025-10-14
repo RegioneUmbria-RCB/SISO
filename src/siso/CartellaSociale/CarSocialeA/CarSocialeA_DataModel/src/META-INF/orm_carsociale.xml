@@ -3400,8 +3400,8 @@
 	</named-query>
 
 	<!-- inizio  SISO-1131 --> 
-	 <named-query name="CsTbProgettoAltro.findProgettoAltroByDescrizione">
-    <query>
+	<named-query name="CsTbProgettoAltro.findProgettoAltroByDescrizione">
+    	<query>
 			<![CDATA[
 				select p 
 				from CsTbProgettoAltro p
@@ -3410,8 +3410,46 @@
 				order by p.descrizione
 			]]>
 		</query>
-  </named-query>
-	<!-- fine  SISO-1131 --> 
+ 	</named-query>
+	<!-- fine SISO-1131 --> 
+
+	<named-query name="CsTbTipoSgtBeneficiario.findGruppoBeneficiarioPerRagioneSociale">
+		<query>
+			<![CDATA[
+				select p.ragioneSociale
+				from CsTbTipoSgtBeneficiario p
+				where p.abilitato = '1' 
+				and (upper(p.ragioneSociale)) like ('%'||UPPER(:ragioneSociale)||'%')
+				order by p.ragioneSociale
+			]]>
+		</query>
+	</named-query>
+
+	<named-query name="CsTbTipoSgtBeneficiario.findGruppoBeneficiarioPerCodiceFiscale">
+		<query>
+			<![CDATA[
+				select p.codiceFiscale
+				from CsTbTipoSgtBeneficiario p
+				where p.abilitato = '1' 
+				and (upper(p.codiceFiscale)) like ('%'||UPPER(:codiceFiscale)||'%')
+				and p.ragioneSociale = :ragioneSociale
+				order by p.codiceFiscale
+			]]>
+		</query>
+	</named-query>
+
+	<named-query name="CsTbTipoSgtBeneficiario.findGruppoBeneficiarioPerCodiceFiscaleEqual">
+		<query>
+			<![CDATA[
+				select p
+				from CsTbTipoSgtBeneficiario p
+				where p.abilitato = '1' 
+				and p.codiceFiscale = :codiceFiscale
+				and p.ragioneSociale = :ragioneSociale
+				order by p.codiceFiscale
+			]]>
+		</query>
+	</named-query>
 
   	<named-query name="CsCfTemp.findByCfTempAndCf">
 		<query>

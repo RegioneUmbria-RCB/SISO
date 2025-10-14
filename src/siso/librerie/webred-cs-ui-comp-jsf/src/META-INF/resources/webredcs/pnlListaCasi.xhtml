@@ -11,6 +11,7 @@
 <h:head>
 	<title>Componente lista casi</title>
 </h:head>
+
 <h:body>
 	<composite:interface componentType="pnlListaCasi">
 		<composite:attribute name="listaCasiManBean" type="it.webred.cs.jsf.interfaces.IListaCasi" />
@@ -27,119 +28,140 @@
 		<composite:attribute name="renderedTableListaCasi" default="true"/><!-- SISO-812 -->
 	</composite:interface>
 	<composite:implementation>
-		<p:panel id="pnlFiltro"  header="Lista Casi">
+		<p:panel id="pnlFiltro" header="Lista Casi">
+			<f:facet name="header">
+				<h:panelGroup layout="block" style="position: relative;min-height: 30px;">
+					<p:commandButton
+						rendered="#{!cc.attrs.listaCasiManBean.lazyListaCasiModel.loadTab}"
+						value="CARICA TUTTI"
+						title="Cliccando qui è possibile estrarre tutti i casi del Comune"
+						style="position:absolute;left:0;top:0;"
+						onclick="caricaTutti();"
+						update="pnlFiltro, dataTableCasiId"
+						ajax="true"
+						actionListener="#{cc.attrs.listaCasiManBean.clearFilters()}"
+					>
+					</p:commandButton>
+					<h:inputHidden id="loadAll" value="#{cc.attrs.listaCasiManBean.lazyListaCasiModel.loadAll}" />
+				</h:panelGroup>
+			</f:facet>
 			<h:panelGrid columns="6" width="100%">
 				<h:outputLabel value="Operatore" />
 				<h:panelGrid columns="2">
-					<p:selectOneMenu id="somOperatore" label="Operatore" 
+					<p:selectOneMenu id="somOperatore" label="Operatore" filter="true" filterMatchMode="contains" value="#{cc.attrs.listaCasiManBean.selOperatore}">
+						<f:selectItem noSelectionOption="true" itemLabel="- seleziona -" />
+						<f:selectItems value="#{cc.attrs.listaCasiManBean.listaOperatori}"/>
+						<p:ajax event="change" update="dataTableCasiId,somTipoOperatore"/>
+					</p:selectOneMenu>
+					<p:selectOneMenu id="somTipoOperatore" label="Tipo operatore" disabled="#{!cc.attrs.listaCasiManBean.renderTipoOperatore}" value="#{cc.attrs.listaCasiManBean.selTipoOperatore}">
+						<f:selectItem itemLabel="Tutti" itemValue="TUTTI" />
+						<f:selectItem itemLabel="Responsabile" itemValue="RESP" />
+						<f:selectItem itemLabel="Non responsabile" itemValue="NO_RESP" />
+						<p:ajax event="change" update="dataTableCasiId,dataTableCasiId"/>
+					</p:selectOneMenu>
+				</h:panelGrid>
+
+				<h:outputLabel value="Stato dell'iter" />
+				<h:panelGrid columns="2">
+					<p:selectOneMenu id="somIter" label="Stato dell'iter" value="#{cc.attrs.listaCasiManBean.selStato}">
+						<f:selectItem noSelectionOption="true" itemLabel="- seleziona -" itemValue="" />
+						<f:selectItems value="#{cc.attrs.listaCasiManBean.listaStati}" />
+						<p:ajax event="change" update="dataTableCasiId, somIterOperatore"/>
+					</p:selectOneMenu>
+					<p:selectOneMenu id="somIterOperatore" label="Operatore segnalazione" 
 							filter="true" filterMatchMode="contains" 
-							value="#{cc.attrs.listaCasiManBean.selOperatore}" >
-		                    <f:selectItem noSelectionOption="true" itemLabel="- seleziona -" />
-		                    <f:selectItems value="#{cc.attrs.listaCasiManBean.listaOperatori}"/>
-		                    <p:ajax event="change" update="dataTableCasiId,somTipoOperatore"/>
-			        </p:selectOneMenu>
-			        	<p:selectOneMenu id="somTipoOperatore" label="Tipo operatore" 
-			        		disabled="#{!cc.attrs.listaCasiManBean.renderTipoOperatore}"
-			        		value="#{cc.attrs.listaCasiManBean.selTipoOperatore}" >
-		                    <f:selectItem itemLabel="Tutti" itemValue="TUTTI"  />
-		                    <f:selectItem itemLabel="Responsabile" itemValue="RESP"  />
-		                    <f:selectItem itemLabel="Non responsabile" itemValue="NO_RESP"  />
-		                    <p:ajax event="change" update="dataTableCasiId,dataTableCasiId"/>
-			        </p:selectOneMenu>
-	        	</h:panelGrid>
-		        
-		        <h:outputLabel value="Stato dell'iter" />
-		        <h:panelGrid columns="2">
-					<p:selectOneMenu id="somIter" label="Stato dell'iter" value="#{cc.attrs.listaCasiManBean.selStato}" >
-		                    <f:selectItem noSelectionOption="true" itemLabel="- seleziona -" itemValue=""  />
-		                    <f:selectItems value="#{cc.attrs.listaCasiManBean.listaStati}"   />
-		                    <p:ajax event="change" update="dataTableCasiId, somIterOperatore"/>
-		            </p:selectOneMenu>
-		            <p:selectOneMenu id="somIterOperatore" label="Operatore segnalazione" 
-								filter="true" filterMatchMode="contains" 
-								disabled="#{!cc.attrs.listaCasiManBean.renderStatoOperatore}"
-								value="#{cc.attrs.listaCasiManBean.selStatoOperatore}" >
-			                    <f:selectItem noSelectionOption="true" itemLabel="- seleziona -" />
-			                    <f:selectItems value="#{cc.attrs.listaCasiManBean.listaOperatori}"/>
-			                    <p:ajax event="change" update="dataTableCasiId"/>
-				        </p:selectOneMenu>
-			    </h:panelGrid>
-	            
-	            <h:outputLabel value="Residenza" />
-	            <h:panelGrid columns="2">
-		            <p:selectOneMenu id="tipoRes" value="#{cc.attrs.listaCasiManBean.selTipoResidenza}">
-		                    <f:selectItem noSelectionOption="true" itemLabel="- seleziona -" itemValue=""  />
-		                    <f:selectItem itemLabel="Comune" itemValue="COMUNE"/>
-		                    <f:selectItem itemLabel="Nazione" itemValue="NAZIONE"/>
-		                    <f:selectItem itemLabel="Senza fissa dimora" itemValue="SFD"/>
-		                    <p:ajax event="change" process="@this" listener="#{cc.attrs.listaCasiManBean.onChangeTipoResidenza}" 
-		                    		update="pnlsomResidenza, dataTableCasiId"/>
-		            </p:selectOneMenu>
-		            <h:panelGroup id="pnlsomResidenza">
-			           <p:selectOneMenu id="nazRes" label="Nazione di Residenza" rendered="#{cc.attrs.listaCasiManBean.selTipoResidenza eq 'NAZIONE'}"
-			           			value="#{cc.attrs.listaCasiManBean.selNazioneResidenza}" filterMatchMode="contains" filter="true">
-			                    <f:selectItem noSelectionOption="true" itemLabel="- seleziona -" itemValue=""  />
-			                    <f:selectItems value="#{cc.attrs.listaCasiManBean.listaNazioniResidenza}"   />
-			                    <p:ajax event="change" process="@this" update="dataTableCasiId"/>
-			            </p:selectOneMenu>
+							disabled="#{!cc.attrs.listaCasiManBean.renderStatoOperatore}"
+							value="#{cc.attrs.listaCasiManBean.selStatoOperatore}">
+						<f:selectItem noSelectionOption="true" itemLabel="- seleziona -" />
+						<f:selectItems value="#{cc.attrs.listaCasiManBean.listaOperatori}"/>
+						<p:ajax event="change" update="dataTableCasiId"/>
+					</p:selectOneMenu>
+				</h:panelGrid>
+
+				<h:outputLabel value="Residenza" />
+				<h:panelGrid columns="2">
+					<p:selectOneMenu id="tipoRes" value="#{cc.attrs.listaCasiManBean.selTipoResidenza}">
+						<f:selectItem noSelectionOption="true" itemLabel="- seleziona -" itemValue="" />
+						<f:selectItem itemLabel="Comune" itemValue="COMUNE"/>
+						<f:selectItem itemLabel="Nazione" itemValue="NAZIONE"/>
+						<f:selectItem itemLabel="Senza fissa dimora" itemValue="SFD"/>
+						<p:ajax event="change" process="@this" listener="#{cc.attrs.listaCasiManBean.onChangeTipoResidenza}" update="pnlsomResidenza, dataTableCasiId"/>
+					</p:selectOneMenu>
+
+					<h:panelGroup id="pnlsomResidenza">
+						<p:selectOneMenu id="nazRes" label="Nazione di Residenza" rendered="#{cc.attrs.listaCasiManBean.selTipoResidenza eq 'NAZIONE'}"
+								value="#{cc.attrs.listaCasiManBean.selNazioneResidenza}" filterMatchMode="contains" filter="true">
+							<f:selectItem noSelectionOption="true" itemLabel="- seleziona -" itemValue="" />
+							<f:selectItems value="#{cc.attrs.listaCasiManBean.listaNazioniResidenza}" />
+							<p:ajax event="change" process="@this" update="dataTableCasiId"/>
+						</p:selectOneMenu>
+						
 						<p:selectOneMenu id="comRes" label="Comune di Residenza" 
 								rendered="#{cc.attrs.listaCasiManBean.selTipoResidenza eq 'COMUNE'}"
 								value="#{cc.attrs.listaCasiManBean.selComuneResidenza}" filterMatchMode="contains" filter="true">
-			                    <f:selectItem noSelectionOption="true" itemLabel="- seleziona -" itemValue=""  />
-			                    <f:selectItems value="#{cc.attrs.listaCasiManBean.listaComuniResidenza}"   />
-			                    <p:ajax event="change" process="@this" update="dataTableCasiId"/>
-			            </p:selectOneMenu>
-		            </h:panelGroup>
-	            </h:panelGrid>
-	            
-	            <h:outputLabel value="Tipo Tutela" />
+							<f:selectItem noSelectionOption="true" itemLabel="- seleziona -" itemValue="" />
+							<f:selectItems value="#{cc.attrs.listaCasiManBean.listaComuniResidenza}" />
+							<p:ajax event="change" process="@this" update="dataTableCasiId"/>
+						</p:selectOneMenu>
+					</h:panelGroup>
+				</h:panelGrid>
+				
+				<h:outputLabel value="Tipo Tutela" />
 				<p:selectOneMenu id="somTutela" label="Tipo Tutela" value="#{cc.attrs.listaCasiManBean.selTutela}" filterMatchMode="contains" filter="true">
-	                    <f:selectItem noSelectionOption="true" itemLabel="- seleziona -" itemValue=""  />
-	                    <f:selectItem itemLabel="Affidamento al serv. sociale" itemValue="AFFI" />
-	                    <f:selectItem itemLabel="Amm.Sostegno" itemValue="SOST" />
-	                    <f:selectItem itemLabel="Curatela" itemValue="CURA" />
-	                    <f:selectItem itemLabel="Tutela" itemValue="TUTE" />
-	                    <p:ajax event="change" update="dataTableCasiId"/>
-	            </p:selectOneMenu>
-	            
-	            <h:outputLabel value="Tit.Studio" />
+					<f:selectItem noSelectionOption="true" itemLabel="- seleziona -" itemValue="" />
+					<f:selectItem itemLabel="Affidamento al serv. sociale" itemValue="AFFI" />
+					<f:selectItem itemLabel="Amm.Sostegno" itemValue="SOST" />
+					<f:selectItem itemLabel="Curatela" itemValue="CURA" />
+					<f:selectItem itemLabel="Tutela" itemValue="TUTE" />
+					<p:ajax event="change" update="dataTableCasiId"/>
+				</p:selectOneMenu>
+				
+				<h:outputLabel value="Tit.Studio" />
 				<p:selectOneMenu id="somTitStudio" label="Tit.Studio" value="#{cc.attrs.listaCasiManBean.selTitStudio}" 
 						style="width:300px" filterMatchMode="contains" filter="true">
-	                    <f:selectItem noSelectionOption="true" itemLabel="- seleziona -" itemValue=""  />
-	                    <f:selectItems value="#{cc.attrs.listaCasiManBean.listaTitStudio}"   />
-	                    <p:ajax event="change" update="dataTableCasiId"/>
-	            </p:selectOneMenu>
-	            
-	            <h:outputLabel value="Cond.Lavorativa" />
+					<f:selectItem noSelectionOption="true" itemLabel="- seleziona -" itemValue="" />
+					<f:selectItems value="#{cc.attrs.listaCasiManBean.listaTitStudio}" />
+					<p:ajax event="change" update="dataTableCasiId"/>
+				</p:selectOneMenu>
+				
+				<h:outputLabel value="Cond.Lavorativa" />
 				<p:selectOneMenu id="somCondLavoro" label="Cond.Lavorativa" value="#{cc.attrs.listaCasiManBean.selCondLavoro}" 
 						filterMatchMode="contains" filter="true"
 						style="width:300px" panelStyleClass="selectOneMenuGrouped">
-	                    <f:selectItem noSelectionOption="true" itemLabel="- seleziona -" itemValue=""  />
-	                    <f:selectItems value="#{cc.attrs.listaCasiManBean.listaCondLavoro}"   />
-	                    <p:ajax event="change" update="dataTableCasiId"/>
-	            </p:selectOneMenu>
-	            
-	            <h:outputLabel value="Dati tribunale" />
-	             <p:selectManyCheckbox  value="#{cc.attrs.listaCasiManBean.selDatiTribunale}" layout="grid" columns="3" multiple="true" >  <!-- style="width:300px" -->
-	            	<f:selectItems value="#{cc.attrs.listaCasiManBean.listaTribStrutture}"/>
+					<f:selectItem noSelectionOption="true" itemLabel="- seleziona -" itemValue="" />
+					<f:selectItems value="#{cc.attrs.listaCasiManBean.listaCondLavoro}" />
+					<p:ajax event="change" update="dataTableCasiId"/>
+				</p:selectOneMenu>
+				
+				<h:outputLabel value="Dati tribunale" />
+				<p:selectManyCheckbox value="#{cc.attrs.listaCasiManBean.selDatiTribunale}" layout="grid" columns="3" multiple="true"> <!-- style="width:300px" -->
+					<f:selectItems value="#{cc.attrs.listaCasiManBean.listaTribStrutture}"/>
 					<p:ajax event="change" update="dataTableCasiId" />
-	           </p:selectManyCheckbox> 
+				</p:selectManyCheckbox>
+
 				<p:spacer width="20"/>
-		        <p:commandButton value="Pulisci filtro" actionListener="#{cc.attrs.listaCasiManBean.clearFilters()}" update="pnlFiltro,dataTableCasiId" />
+				<p:commandButton value="Pulisci filtro" actionListener="#{cc.attrs.listaCasiManBean.clearFilters()}" update="pnlFiltro, dataTableCasiId" />
 
 			</h:panelGrid>
 		</p:panel>
-		<p:dataTable id="dataTableCasiId"  styleClass="#{cc.attrs.styleClass}"
+
+		<p:dataTable id="dataTableCasiId" styleClass="#{cc.attrs.styleClass}"
 			var="caso" value="#{cc.attrs.listaCasiManBean.lazyListaCasiModel}" 
 			rowIndexVar="rowIndex" rowKey="#{caso.anagraficaId}" 
-			selection="#{cc.attrs.listaCasiManBean.selectedCaso}" selectionMode="single"
-			emptyMessage="Nessun elemento trovato" widgetVar="dataTableCasi"
-			paginator="true" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} "
-            currentPageReportTemplate="Risultati {startRecord} - {endRecord} di {totalRecords} "
-            rows="10" rowsPerPageTemplate="10,20,40" lazy="true" filterEvent="enter" 
-            rendered="#{cc.attrs.listaCasiManBean.renderedTableListaCasi}">
-            
-		   <p:column headerText="ID" width="10" style="text-align:center;font-size:0.8em;">
+			selection="#{cc.attrs.listaCasiManBean.selectedCaso}" selectionMode="single" widgetVar="dataTableCasi"
+			paginator="true" paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} "
+			currentPageReportTemplate="Risultati {startRecord} - {endRecord} di {totalRecords} "
+			rows="10" rowsPerPageTemplate="10,20,40" lazy="true" filterEvent="enter" 
+			rendered="#{cc.attrs.listaCasiManBean.renderedTableListaCasi}">
+
+			<f:facet name="emptyMessage">
+				<h:panelGroup layout="block">
+					<h:outputText escape="false" rendered="#{cc.attrs.listaCasiManBean.lazyListaCasiModel.empyMessageReturn == true}" value="Nessun elemento trovato" />
+					<h:outputText escape="false" rendered="#{cc.attrs.listaCasiManBean.lazyListaCasiModel.empyMessageReturn == false}" style="color:red; font-weight: bold;" value="Selezionare almeno un filtro di ricerca per mostrare i casi" />
+				</h:panelGroup>
+			</f:facet>
+
+			<p:column headerText="ID" width="10" style="text-align:center;font-size:0.8em;">
 				<h:outputText value="#{caso.identificativo}" />
 			</p:column>
 			
@@ -161,43 +183,43 @@
 				<h:outputText value="#{caso.residenza}" />
 			</p:column>
 			
-			<p:column headerText="Operatori" >
+			<p:column headerText="Operatori">
 				<h:outputText value="#{caso.responsabile.denominazione}" title="Operatore responsabile"/><p:spacer width="20px"/>
 				<p:graphicImage id="lblAltriOperatori" value="#{resource['webredcs/img/persona_singola1.png']}" width="20px" title="Altri Operatori" rendered="#{!empty caso.lstOperatori}"/>
-           		<p:tooltip for="lblAltriOperatori" styleClass="tooltip" style="width: auto;height: auto;" rendered="#{!empty caso.lstOperatori}">
-           			  <p:dataTable value="#{caso.lstOperatori}" var="ao" rstyle="font-size:0.6em;" emptyMessage="Nessun operatore assegnato al caso">
-          			    <f:facet name="header">Altri operatori</f:facet>
+				<p:tooltip for="lblAltriOperatori" styleClass="tooltip" style="width: auto;height: auto;" rendered="#{!empty caso.lstOperatori}">
+					<p:dataTable value="#{caso.lstOperatori}" var="ao" rstyle="font-size:0.6em;" emptyMessage="Nessun operatore assegnato al caso">
+						<f:facet name="header">Altri operatori</f:facet>
 						<p:column headerText="Tipo"><h:outputText value="#{ao.tipo}" /></p:column>
 						<p:column headerText="Denominazione" style="text-align:center;">
 							<h:outputText value="#{ao.denominazione}" />
 						</p:column>
 						<p:column headerText="Validità" style="text-align:center;">
-		           			<h:outputText value="#{ao.valString}"/>
+							<h:outputText value="#{ao.valString}"/>
 						</p:column>
 					</p:dataTable>
-           		</p:tooltip>
-           		<webredcs:pnlAltreUnitaOrganizzative lstAccessoFascicolo="#{caso.lstAccessoFascicolo}"/>
+				</p:tooltip>
+				<webredcs:pnlAltreUnitaOrganizzative lstAccessoFascicolo="#{caso.lstAccessoFascicolo}"/>
 			</p:column>
-						
+			
 			<p:column headerText="Cat. sociale" filterBy="catSociale">
-			    <h:outputText value="#{caso.categoriaPrevalente}"  style="font-style: italic;" rendered="#{caso.categoriaPrevalente!=null}"/>
-			    <h:outputText value=", #{caso.categorieSecondarie}"  rendered="#{caso.categorieSecondarie!=null}"/>
+				<h:outputText value="#{caso.categoriaPrevalente}" style="font-style: italic;" rendered="#{caso.categoriaPrevalente!=null}"/>
+				<h:outputText value=", #{caso.categorieSecondarie}" rendered="#{caso.categorieSecondarie!=null}"/>
 			</p:column>
 			
 			<p:column style="text-align:center;">
 				<f:facet name="header">
 					<h:outputText value="Int." title="Numero di interventi richiesti" />
-	        	</f:facet>
+				</f:facet>
 				<p:outputLabel id="lblNumInterventi" value="#{caso.nInterventi}"/>
-           		<p:tooltip for="lblNumInterventi" styleClass="tooltip" style="width: auto;height: auto;" rendered="#{!empty caso.listaInterventi}">
-           			<p:dataTable value="#{caso.listaInterventi}" var="int" style="font-size:0.6em;" >
-		           	    <f:facet name="header">Interventi richiesti</f:facet>
-		           	   <p:column headerText="Tipo">
-           					<h:outputLabel value="#{int.tipoIntervento}" /><br/>
-           					<h:outputLabel value="#{int.tipoInterventoCustom}" />
-           				</p:column>
-		           		<p:column headerText="Inizio" style="text-align:center;">
-		           			<h:outputText value="#{int.inizio} "/>
+				<p:tooltip for="lblNumInterventi" styleClass="tooltip" style="width: auto;height: auto;" rendered="#{!empty caso.listaInterventi}">
+					<p:dataTable value="#{caso.listaInterventi}" var="int" style="font-size:0.6em;">
+						<f:facet name="header">Interventi richiesti</f:facet>
+						<p:column headerText="Tipo">
+							<h:outputLabel value="#{int.tipoIntervento}" /><br/>
+							<h:outputLabel value="#{int.tipoInterventoCustom}" />
+						</p:column>
+						<p:column headerText="Inizio" style="text-align:center;">
+							<h:outputText value="#{int.inizio} "/>
 						</p:column>
 						<p:column headerText="Fine" style="text-align:center;">
 							<h:outputText value="#{int.fine} "/>
@@ -205,88 +227,180 @@
 						<p:column headerText="Erogato" style="text-align:center;">
 							<p:graphicImage rendered="#{int.erogato}" value="#{resource['webredcs/img/check.png']}"/>
 						</p:column>
-  						
-           			</p:dataTable>
-           		</p:tooltip>
-           		</p:column>
-           		<p:column style="text-align:center;">
-					<f:facet name="header">
-						<h:outputText value="Erog" title="Interventi erogati senza richiesta" />
-	        		</f:facet>
-	        	
-         		<h:panelGroup>
-           			<p:graphicImage id="lblErogati" rendered="#{caso.listaErogazioni.size()>0 }" value="#{resource['webredcs/img/check.png']}"/>
-           			<p:tooltip for="lblErogati" styleClass="tooltip" style="width: auto;height: auto;" rendered="#{caso.listaErogazioni.size()>0}" >
-	           			  <p:dataTable value="#{caso.listaErogazioni}" var="inte" rendered="#{not empty caso.listaErogazioni}" style="font-size:0.6em;">
-	          			    <f:facet name="header">Erogazioni senza richiesta</f:facet>
+					</p:dataTable>
+				</p:tooltip>
+			</p:column>
+
+			<p:column style="text-align:center;">
+				<f:facet name="header">
+					<h:outputText value="Erog" title="Interventi erogati senza richiesta" />
+				</f:facet>
+				<h:panelGroup>
+					<p:graphicImage id="lblErogati" rendered="#{caso.listaErogazioni.size()>0 }" value="#{resource['webredcs/img/check.png']}"/>
+					<p:tooltip for="lblErogati" styleClass="tooltip" style="width: auto;height: auto;" rendered="#{caso.listaErogazioni.size()>0}">
+						<p:dataTable value="#{caso.listaErogazioni}" var="inte" rendered="#{not empty caso.listaErogazioni}" style="font-size:0.6em;">
+							<f:facet name="header">Erogazioni senza richiesta</f:facet>
 							<p:column headerText="Tipo"><h:outputText value="#{inte.tipoIntervento}" /></p:column>
 							<p:column headerText="Org." style="text-align:center;"><h:outputText value="#{inte.organizzazione}" /></p:column>
 							<p:column headerText="num." style="text-align:center;"><h:outputText value="#{inte.numero}" /></p:column>
 							<p:column headerText="Ultima" style="text-align:center;">
-								<h:outputText value="#{inte.dataUltimaErogazione}" >
+								<h:outputText value="#{inte.dataUltimaErogazione}">
 									<f:convertDateTime pattern="dd/MM/yyyy" />
 								</h:outputText>
 							</p:column>
 						</p:dataTable>
-	           		</p:tooltip>
-           			<p:graphicImage id="lblRdC" rendered="#{caso.nucleoBeneficiarioRdC}"  
-	        				    title="Nucleo familiare beneficiario di Reddito di Cittadinanza (Patto per il sociale)" 
-	        				    value="#{resource['webredcs/img/rdc.png']}" width="20px"/>
-	        				    
+					</p:tooltip>
+					<p:graphicImage id="lblRdC" rendered="#{caso.nucleoBeneficiarioRdC}"
+							title="Nucleo familiare beneficiario di Reddito di Cittadinanza (Patto per il sociale)" 
+							value="#{resource['webredcs/img/rdc.png']}" width="20px"/>
+
 					<p:graphicImage id="lblDatiEsterni" rendered="#{caso.datiEsterniFound}"
-									title="Presenza di dati esterni: il soggetto ha beneficiato di Prestazioni Sociali"
-									value="#{resource['webredcs/img/earth256.png']}" width="20px" />		
-  				</h:panelGroup>
-  				
+							title="Presenza di dati esterni: il soggetto ha beneficiato di Prestazioni Sociali"
+							value="#{resource['webredcs/img/earth256.png']}" width="20px" />		
+				</h:panelGroup>
+				
 			</p:column>
 			<p:column style="text-align:center;">
 				<f:facet name="header">
 					<h:outputText value="Data apertura" filterBy="dataApertura" width="60"/>
-	        	</f:facet>
-				 <h:outputText value="#{caso.dataApertura}" rendered="#{caso.dataApertura!=null}">
-			    	<f:convertDateTime pattern="dd/MM/yyyy" />
-			    </h:outputText>
+				</f:facet>
+					<h:outputText value="#{caso.dataApertura}" rendered="#{caso.dataApertura!=null}">
+					<f:convertDateTime pattern="dd/MM/yyyy" />
+				</h:outputText>
 			</p:column>
 			<p:column width="310">
-			  
-				<webredcs:pnlIterInfoStato iIterInfoStato="#{caso.lastIterStepInfo}" widgetDialog="dlg" dialogToUpdate="#{cc.attrs.dialogIterToUpdate}"
-				          openDialogListener="#{cc.attrs.listaCasiManBean.iterDialogMan.openDialog(caso.casoId)}"
-				          showOpenDialogButton="#{cc.attrs.listaCasiManBean.renderedListaCasiAssegnati}" />
+
+			<webredcs:pnlIterInfoStato iIterInfoStato="#{caso.lastIterStepInfo}" widgetDialog="dlg" dialogToUpdate="#{cc.attrs.dialogIterToUpdate}"
+					openDialogListener="#{cc.attrs.listaCasiManBean.iterDialogMan.openDialog(caso.casoId)}"
+					showOpenDialogButton="#{cc.attrs.listaCasiManBean.renderedListaCasiAssegnati}" />
 			</p:column>
 			
 			<f:facet name="footer">
-           		<p:commandButton id="btnModifica" value="Cartella" icon="ui-icon-pencil" 
-           						 
-           						 action="#{cc.attrs.modificaSchedaListener}" title="Carica Cartella"/>
-           		<p:commandButton id="btnFascicolo" value="Fascicolo" icon="ui-icon-folder-open" title="Carica Fascicolo"
-           		action="#{cc.attrs.initializeFascicoloListener}" rendered="#{cc.attrs.renderVisualizzaFascicolo}"/>
-           	
-           		<p:commandButton id="btnDocIndividuali" value="Doc. Individuali" icon="ui-icon-document" title="Carica Documenti individuali" 
-           		action="#{cc.attrs.initializeDocIndividualiListener}" 
-           		rendered="#{cc.attrs.renderVisualizzaDocIndividuali and cc.attrs.listaCasiManBean.renderedListaCasiAssegnati}"/>
-           
-           		<p:commandButton id="btnCatSociale" value="Cat.Sociale" icon="ui-icon-person" title="Gestione Categoria Sociale" 
-           		rendered="#{cc.attrs.listaCasiManBean.renderedListaCasiAssegnati}"
-           		action="#{cc.attrs.initializeCatSocialeListener}" update=":#{cc.attrs.dialogCatSocialeToUpdate}"/>
-           
-           		<p:commandButton id="btnStampa" value="Stampa" icon="ui-icon-print" title="Creazione stampa cartella" 
-           		
-           		action="#{cc.attrs.initializeStampaListener}"/>
-           	
-           		<p:spacer width="50" height="20"/>
-           
-           		<p:commandButton id="btnDeseleziona" value="Deseleziona" process="@this" update="dataTableCasiId" 
-           						actionListener="#{cc.attrs.listaCasiManBean.rowDeselect}" icon="ui-icon-circle-minus"/>
-           		
-           		<!-- SISO-641 -->
-           		<!-- ajax dev'essere false per poter scatenare il download del file -->	
-				<p:commandButton value="Download Excel" 
-					 actionListener="#{cc.attrs.listaCasiManBean.excelExportListaCasi}" ajax="false">
-  				     
+				<p:commandButton id="btnModifica" value="Cartella" icon="ui-icon-pencil" action="#{cc.attrs.modificaSchedaListener}" title="Carica Cartella"/>
+				<p:commandButton id="btnFascicolo" value="Fascicolo" icon="ui-icon-folder-open" title="Carica Fascicolo" action="#{cc.attrs.initializeFascicoloListener}" rendered="#{cc.attrs.renderVisualizzaFascicolo}"/>
+
+				<p:commandButton id="btnDocIndividuali" value="Doc. Individuali" icon="ui-icon-document" title="Carica Documenti individuali"
+					action="#{cc.attrs.initializeDocIndividualiListener}"
+					rendered="#{cc.attrs.renderVisualizzaDocIndividuali and cc.attrs.listaCasiManBean.renderedListaCasiAssegnati}"/>
+
+				<p:commandButton id="btnCatSociale" value="Cat.Sociale" icon="ui-icon-person" title="Gestione Categoria Sociale"
+					rendered="#{cc.attrs.listaCasiManBean.renderedListaCasiAssegnati}"
+					action="#{cc.attrs.initializeCatSocialeListener}" update=":#{cc.attrs.dialogCatSocialeToUpdate}"/>
+
+				<p:commandButton id="btnStampa" value="Stampa" icon="ui-icon-print" title="Creazione stampa cartella" action="#{cc.attrs.initializeStampaListener}"/>
+
+				<p:spacer width="50" height="20"/>
+
+				<p:commandButton id="btnDeseleziona" value="Deseleziona" process="@this" update="dataTableCasiId" actionListener="#{cc.attrs.listaCasiManBean.rowDeselect}" icon="ui-icon-circle-minus"/>
+
+				<!-- SISO-641 -->
+				<!-- ajax dev'essere false per poter scatenare il download del file -->	
+				<p:commandButton value="Download Excel" actionListener="#{cc.attrs.listaCasiManBean.excelExportListaCasi}" ajax="false">
 				</p:commandButton>
-        	</f:facet>
+			</f:facet>
 
 		</p:dataTable>
+		
+		<script>
+	
+			//<![CDATA[
+	
+			var showLoadAllButton = "#{cc.attrs.listaCasiManBean.lazyListaCasiModel.loadTab}";
+	
+			document.addEventListener("DOMContentLoaded", function () {
+				var targetNode = document.getElementById('frmListaCasis:wbrdListaCasi:dataTableCasiId_data');
+				if (!targetNode) {
+					console.error("Tabella schede non trovata nel DOM!");
+					return;
+				}
+	
+				var observer = new MutationObserver(function() {
+					if (!document.querySelector("tr.ui-widget-content.ui-datatable-even.ui-datatable-selectable > td") &&
+						!document.querySelector("tr.ui-widget-content.ui-datatable-empty-message > td")) {
+						
+						var emptyRow = document.createElement("tr");
+						emptyRow.classList.add("ui-widget-content", "ui-datatable-empty-message");
+						
+						var emptyCell = document.createElement("td");
+						emptyCell.setAttribute("colspan", "15");
+						
+						emptyRow.appendChild(emptyCell);
+						targetNode.appendChild(emptyRow);
+					}
+	
+					applyStylesToEmptyMessage();
+				});
+	
+				observer.observe(targetNode, { childList: true, subtree: true });
+			});
+
+			function applyStylesToEmptyMessage() {
+				document.querySelectorAll("tr.ui-widget-content.ui-datatable-empty-message > td").forEach(function(td) {
+					if (showLoadAllButton) {
+						if (!td.textContent.includes("Selezionare almeno un filtro di ricerca per mostrare i casi") && 
+							!td.textContent.includes("Nessun elemento trovato")) {
+							td.textContent = "Selezionare almeno un filtro di ricerca per mostrare i casi";
+							td.style.fontWeight = "bold";
+							td.style.color = "red";
+						}
+					} else {
+						if (!td.textContent.includes("Nessun elemento trovato") && 
+							!td.textContent.includes("Nessun risultato")) {
+							td.textContent = "Nessun elemento trovato";
+							td.style.fontWeight = "normal";
+							td.style.color = "black";
+						}
+					}
+				});
+			}
+			
+			function clean() {
+				var tabella = document.querySelector('[id$="dataTableCasiId"]');
+				if (!tabella) return;
+	
+				tabella.querySelectorAll('.ui-column-filter').forEach(function(element) {
+					if (element.tagName.toLowerCase() === 'input') {
+						if (element.type === 'text') {
+							element.value = '';
+							element.dispatchEvent(new Event('input', { bubbles: true }));
+						} else if (element.type === 'checkbox') {
+							element.checked = false;
+							element.dispatchEvent(new Event('change', { bubbles: true }));
+						}
+					} else if (element.tagName.toLowerCase() === 'select') {
+						element.selectedIndex = 0;
+						element.dispatchEvent(new Event('change', { bubbles: true }));
+					}
+				});
+			}
+	
+			function caricaTutti() {
+				var loadAll = document.getElementById('frmListaCasis:wbrdListaCasi:loadAll');
+				loadAll.setAttribute("value", "true");
+	
+				var loadall = "#{cc.attrs.listaCasiManBean.lazyListaCasiModel.loadAll}";
+				loadall = true;
+	
+				clean();
+	
+				try {
+					var tableWidget = PF('dataTableCasi');
+					if (tableWidget) {
+						tableWidget.clearFilters();
+						setTimeout(function() {
+							tableWidget.loadLiveRows();
+						}, 100);
+					}
+				} catch (e) {
+					console.error("Errore durante il ricaricamento della tabella: ", e);
+				}
+	
+				return false;
+			}
+	
+			//]]>
+		
+		</script>
 		
 	</composite:implementation>
 </h:body>

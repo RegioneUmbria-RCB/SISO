@@ -70,6 +70,7 @@ import it.webred.cs.data.model.CsIVouchersad;
 import it.webred.cs.data.model.CsOOperatoreBASIC;
 import it.webred.cs.data.model.CsOSettore;
 import it.webred.cs.data.model.CsRelRelazioneTipoint;
+import it.webred.cs.data.model.CsTbTipoSgtBeneficiario;
 import it.webred.cs.data.model.CsTbProgettoAltro;
 import it.webred.cs.data.model.CsTbTipoDiario;
 import it.webred.ct.support.validation.ValidationStateless;
@@ -1187,25 +1188,146 @@ public class AccessTableInterventoSessionBean extends CarSocialeBaseSessionBean 
 	}
 	//inizio SISO-822  
     @Override
-     public CsIInterventoEsegMast getCsIInterventoEsegMastById(BaseDTO bDto) { 
+     public CsIInterventoEsegMast getCsIInterventoEsegMastById(BaseDTO bDto) {
 		return interventoErogazioneDao.getCsIInterventoEsegMastById((Long) bDto.getObj());
 	}
 	//fine SISO-822 
 	
 	//INIZIO SISO-1131
-		@Override
-		public List<CsTbProgettoAltro> findProgettiAltro() {				
-			return interventoDao.findProgettiAltro();
-		}
-		
-		@Override
-		public List<CsTbProgettoAltro> findProgettiAltroPerDesc(BaseDTO dto) {				
-			return interventoDao.findProgettiAltroPerDesc((String) dto.getObj());
-		}
-		
-		//FINE SISO-1131
+	@Override
+	public List<CsTbProgettoAltro> findProgettiAltro() {
+		return interventoDao.findProgettiAltro();
+	}
+	
+	@Override
+	public List<CsTbProgettoAltro> findProgettiAltroPerDesc(BaseDTO dto) {
+		return interventoDao.findProgettiAltroPerDesc((String) dto.getObj());
+	}
+	//FINE SISO-1131
 
+	/**
+	 * 
+	 * <h1>findGruppoBeneficiario</h1>
+	 *
+	 * <p>
+	 * </p>
+	 *
+	 * @return
+	 *
+	 * @since 1.26.13
+	 * @version 1.0.0
+	 * 
+	 * @author DDV
+	 * @lastUpdate 2025-08-01 - DDV
+	 */
+	@Override
+	public List<CsTbTipoSgtBeneficiario> findGruppoBeneficiario() {
+		return this.interventoDao.findGruppoBeneficiario();
+	}
 
+	/**
+	 * 
+	 * <h1>findGruppoBeneficiarioPerRagioneSociale</h1>
+	 *
+	 * <p>
+	 * </p>
+	 *
+	 * @param ragioneSociale
+	 * @return
+	 *
+	 * @since 1.26.13
+	 * @version 1.0.0
+	 * 
+	 * @author DDV
+	 * @lastUpdate 2025-08-01 - DDV
+	 */
+	@Override
+	public List<CsTbTipoSgtBeneficiario> findGruppoBeneficiarioPerRagioneSociale(String ragioneSociale) {
+		return this.interventoDao.findGruppoBeneficiarioPerRagioneSociale(ragioneSociale);
+	}
+	
+	/**
+	 * 
+	 * <h1>findGruppoBeneficiarioPerCodiceFiscale</h1>
+	 *
+	 * <p>
+	 * </p>
+	 *
+	 * @param ragioneSociale
+	 * @param codiceFiscale
+	 * @return
+	 *
+	 * @since 1.26.13
+	 * @version 1.0.0
+	 * 
+	 * @author DDV
+	 * @lastUpdate 2025-08-01 - DDV
+	 */
+	@Override
+	public List<CsTbTipoSgtBeneficiario> findGruppoBeneficiarioPerCodiceFiscale(String ragioneSociale, String codiceFiscale) {
+		return this.interventoDao.findGruppoBeneficiarioPerCodiceFiscale(ragioneSociale, codiceFiscale);
+	}
+	
+	/**
+	 * 
+	 * <h1>findGruppoBeneficiarioPerCodiceFiscaleEqual</h1>
+	 *
+	 * <p>
+	 * </p>
+	 *
+	 * @param ragioneSociale
+	 * @param codiceFiscale
+	 * @return
+	 *
+	 * @since 1.26.13
+	 * @version 1.0.0
+	 * 
+	 * @author DDV
+	 * @lastUpdate 2025-08-01 - DDV
+	 */
+	@Override
+	public List<CsTbTipoSgtBeneficiario> findGruppoBeneficiarioPerCodiceFiscaleEqual(String ragioneSociale, String codiceFiscale) {
+		return this.interventoDao.findGruppoBeneficiarioPerCodiceFiscaleEqual(ragioneSociale, codiceFiscale);
+	}
+	
+	/**
+	 * 
+	 * <h1>salvaGruppoBeneficiario</h1>
+	 *
+	 * <p>
+	 * </p>
+	 *
+	 * @param dto
+	 * @return
+	 *
+	 * @since 1.26.13
+	 * @version 1.0.0
+	 * 
+	 * @author DDV
+	 * @lastUpdate 2025-07-30 - DDV
+	 */
+	@Override
+ 	public CsTbTipoSgtBeneficiario salvaGruppoBeneficiario(BaseDTO dto) {
+    	CsTbTipoSgtBeneficiario csTbTipoSgtBeneficiario = (CsTbTipoSgtBeneficiario) dto.getObj();
+ 		
+ 		String user = dto.getUserId();
+ 		Date date = new Date();
+ 		
+ 		csTbTipoSgtBeneficiario.setUserIns(user);
+ 		csTbTipoSgtBeneficiario.setDtIns(date);
+ 		csTbTipoSgtBeneficiario.setAbilitato(true);
+ 		
+ 		List<CsTbTipoSgtBeneficiario> existGruppoBeneficiari = this.interventoDao.findGruppoBeneficiarioPerCodiceFiscaleEqual(csTbTipoSgtBeneficiario.getRagioneSociale(), csTbTipoSgtBeneficiario.getCodiceFiscale());
+ 		
+ 		if (existGruppoBeneficiari != null && existGruppoBeneficiari.size() >= 1) {
+ 			return existGruppoBeneficiari.get(0);
+ 		}
+ 		
+ 		csTbTipoSgtBeneficiario = this.interventoDao.salvaGruppoBeneficiario(csTbTipoSgtBeneficiario);
+ 		
+ 		return csTbTipoSgtBeneficiario;
+ 	}
+	
 	@Override
 	public void gestisciAlertErogazioni(BaseDTO in) throws CarSocialeServiceException {
 		try{
@@ -1479,10 +1601,8 @@ public class AccessTableInterventoSessionBean extends CarSocialeBaseSessionBean 
 		return  interventoErogazioneDao.searchListaInterventiByCf((String)bdto.getObj());
 	}
      
-
-     
-     //SISO-1110 Fine
-//SISO-1131
+    //SISO-1110 Fine
+    //SISO-1131
     @Override
  	public CsTbProgettoAltro salvaProgettoAltro(BaseDTO dto) {
     	CsTbProgettoAltro progettoAltro = (CsTbProgettoAltro) dto.getObj();
@@ -1499,7 +1619,7 @@ public class AccessTableInterventoSessionBean extends CarSocialeBaseSessionBean 
  		
  		return progettoAltro;
  	}
-     //FINE SISO-1131
+    //FINE SISO-1131
 
 	@Override
 	public List<ErogazioneDettaglioSintesiDTO> getSintesiErogazioniByInterventoId(BaseDTO dto){

@@ -1,22 +1,22 @@
 package it.webred.cs.csa.ejb.dao;
 
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import javax.inject.Named;
+import javax.persistence.Query;
+
+import org.apache.commons.lang3.StringUtils;
+
 import it.webred.cs.csa.ejb.CarSocialeBaseDAO;
 import it.webred.cs.csa.ejb.client.CarSocialeServiceException;
-import it.webred.cs.csa.ejb.dto.CodificaINPS;
-import it.webred.cs.csa.ejb.dto.InformativaDTO;
 import it.webred.cs.csa.ejb.dto.InterventoBaseDTO;
-import it.webred.cs.csa.ejb.dto.KeyValueDTO;
 import it.webred.cs.data.DataModelCostanti;
-import it.webred.cs.data.model.ArFfProgetto;
-import it.webred.cs.data.model.ArFfProgettoAttivita;
-import it.webred.cs.data.model.ArRelClassememoPresInps;
-import it.webred.cs.data.model.ArRelIntCustomIstat;
-import it.webred.cs.data.model.ArRelIntCustomPresInps;
-import it.webred.cs.data.model.ArTClasse;
-import it.webred.cs.data.model.CsCCategoriaSociale;
-import it.webred.cs.data.model.CsCTipoIntervento;
 import it.webred.cs.data.model.CsCTipoInterventoCustom;
-import it.webred.cs.data.model.CsCfgAttrUnitaMisura;
 import it.webred.cs.data.model.CsDDiario;
 import it.webred.cs.data.model.CsFlgIntervento;
 import it.webred.cs.data.model.CsIAdmAdh;
@@ -35,33 +35,14 @@ import it.webred.cs.data.model.CsISchedaLavoro;
 import it.webred.cs.data.model.CsISemiResiMin;
 import it.webred.cs.data.model.CsIVouchersad;
 import it.webred.cs.data.model.CsRelRelazioneTipoint;
-import it.webred.cs.data.model.CsRelSettCsocTipoInter;
-import it.webred.cs.data.model.CsRelSettCsocTipoInterPK;
+import it.webred.cs.data.model.CsTbTipoSgtBeneficiario;
 import it.webred.cs.data.model.CsTbProgettoAltro;
-import it.webred.cs.data.model.VArCTariffa;
-import it.webred.cs.data.model.VGerrarchiaServizi;
-import it.webred.cs.data.model.VLineaFin;
-import it.webred.cs.data.model.VServiziCustom;
-import it.webred.cs.data.model.VTipiInterventoUsati;
-import it.webred.ct.support.validation.annotation.AuditConsentiAccessoAnonimo;
-import it.webred.ct.support.validation.annotation.AuditSaltaValidazioneSessionID;
-
-import java.io.Serializable;
-import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import javax.inject.Named;
-import javax.persistence.Query;
-
-import org.apache.commons.lang3.StringUtils;
 
 @Named
 public class InterventoDAO extends CarSocialeBaseDAO implements Serializable {
 
 	private static final long serialVersionUID = 1L;
+	
 	protected SimpleDateFormat ddMMyyyy = new SimpleDateFormat("dd/MM/yyyy");
 
 	public void saveIntervento(CsIIntervento nuovoIntervento) throws Exception {
@@ -84,8 +65,6 @@ public class InterventoDAO extends CarSocialeBaseDAO implements Serializable {
 		CsIIntervento intervento = em.find(CsIIntervento.class, id);
 		return intervento;
 	}
-
-
 	
 	public CsFlgIntervento getFoglioInterventoById(Long id) {
 		CsFlgIntervento fgl = em.find(CsFlgIntervento.class, id);
@@ -103,15 +82,15 @@ public class InterventoDAO extends CarSocialeBaseDAO implements Serializable {
 	@SuppressWarnings("unchecked")
 	public List<CsIIntervento> getListaInterventiByIdCaso(Long id) {
 		List<CsIIntervento> lstI = new ArrayList<CsIIntervento>();
-		logger.info("getListaInterventiByIdCaso id["+id+"]");
+		logger.info("getListaInterventiByIdCaso id[ " + id + " ]");
 
 		Query q;
-		try{
+		try {
 			q = em.createNamedQuery("CsFlgIntervento.getListaInterventiByIdCaso");
 			q.setParameter("casoId", id);
 			lstI = q.getResultList();
-			logger.info("getListaInterventiByIdCaso id["+id+"]- result[" + lstI.size() + "]");
-		}catch(Throwable e){
+			logger.info("getListaInterventiByIdCaso id[ " + id + " ]- result[ " + lstI.size() + " ]");
+		} catch(Throwable e) {
 			logger.error(e);
 			throw new CarSocialeServiceException(e);
 		}
@@ -119,10 +98,12 @@ public class InterventoDAO extends CarSocialeBaseDAO implements Serializable {
 		return lstI;
 	}
 	
-	public List<InterventoBaseDTO> getListaInfoInterventiByIdCaso(Long id){
+	public List<InterventoBaseDTO> getListaInfoInterventiByIdCaso(Long id) {
 		List<InterventoBaseDTO> lstInt = new ArrayList<InterventoBaseDTO>();
 		Query q;
-		try{
+		
+		try {
+		
 			String sql ="select distinct i.id, TIPOINT.DESCRIZIONE tipoIntervento, tipoCust.descrizione tipoInterventoCustom, "
 					+ "i.inizio_dal, i.inizio_al, i.fine_dal, i.fine_al, s.tipo stato "
 					+ "from cs_d_diario d, cs_flg_intervento fgl, cs_i_intervento i  "
@@ -139,7 +120,7 @@ public class InterventoDAO extends CarSocialeBaseDAO implements Serializable {
 			
 			List<Object[]> lst = q.getResultList();
 			
-			for(Object[] res : lst){
+			for (Object[] res : lst) {
 				int index = 0;
 				BigDecimal idIntervento = (BigDecimal)res[index++];
 				String tipoIntervento = (String)res[index++];
@@ -156,14 +137,14 @@ public class InterventoDAO extends CarSocialeBaseDAO implements Serializable {
 				String dtInizioAl = inizioAl!=null ? ddMMyyyy.format(inizioAl) : "";
 				
 				String inizio = dtInizioDal;
-				if(!StringUtils.isBlank(dtInizioDal) && !StringUtils.isBlank(dtInizioAl))
+				if (!StringUtils.isBlank(dtInizioDal) && !StringUtils.isBlank(dtInizioAl))
 				   inizio = "Dal "+ dtInizioDal +" al "+ dtInizioAl;
 				
 				String dtFineDal = fineDal!=null ? ddMMyyyy.format(fineDal) : "";
 				String dtFineAl = fineAl!=null ? ddMMyyyy.format(fineAl) : "";
 				
 				String fine = dtFineDal;
-				if(!StringUtils.isBlank(dtFineDal) && !StringUtils.isBlank(dtFineAl))
+				if (!StringUtils.isBlank(dtFineDal) && !StringUtils.isBlank(dtFineAl))
 					fine = "Dal "+ dtFineDal +" al "+ dtFineAl;
 				 
 				InterventoBaseDTO intout = new InterventoBaseDTO();
@@ -176,8 +157,8 @@ public class InterventoDAO extends CarSocialeBaseDAO implements Serializable {
 				lstInt.add(intout);
 			}
 			
-		}catch(Throwable e){
-			logger.error(e.getMessage(),e);
+		} catch(Throwable e) {
+			logger.error(e.getMessage(), e);
 			throw new CarSocialeServiceException(e);
 		}
 		
@@ -224,10 +205,6 @@ public class InterventoDAO extends CarSocialeBaseDAO implements Serializable {
 		CsICentrod t = em.find(CsICentrod.class, id);
 		return t;
 	}
-
-
-	
-
 		
 	public CsCTipoInterventoCustom saveNewCsCTipoInterventoCustom(List<CsCTipoInterventoCustom> intCustom, CsCTipoInterventoCustom selNewIntervento) {
 		CsCTipoInterventoCustom selIntervento = null;
@@ -303,13 +280,13 @@ public class InterventoDAO extends CarSocialeBaseDAO implements Serializable {
 		return t;
 	}
 
-	public List<CsIRigaQuota> getRigheQuotaByQuotaId(Long idQuota){
+	public List<CsIRigaQuota> getRigheQuotaByQuotaId(Long idQuota) {
 		Query q = em.createNamedQuery("CsIRigaQuota.findIdsByQuota");
 		q.setParameter("idQuota", idQuota);
 		return q.getResultList();
 	}
 	
-	public void deleteRigheQuota(List<CsIRigaQuota> lstRigheQuota){
+	public void deleteRigheQuota(List<CsIRigaQuota> lstRigheQuota) {
 		Query q = em.createNamedQuery("CsIRigaQuota.deleteById");
 		q.setParameter("listaIds", lstRigheQuota);
 		q.executeUpdate();
@@ -339,36 +316,63 @@ public class InterventoDAO extends CarSocialeBaseDAO implements Serializable {
 		return em.merge(quota);
 	}
 
-
-
-	
-
-
 	public CsIInterventoPr updateCsIInterventoPr(CsIInterventoPr progetto) {
-		try{
+		try {
 			return em.merge(progetto);
-		}catch(Throwable e){
-			logger.error("salvaProgettoIntervento"+e.getMessage(),e);
+		} catch(Throwable e) {
+			logger.error("salvaProgettoIntervento " + e.getMessage(), e);
 			throw new CarSocialeServiceException(e);
 		}
 	}
 	
-		//INIZIO SISO-1131
-		public List<CsTbProgettoAltro> findProgettiAltro(){			
-			Query q = em.createNamedQuery("CsTbProgettoAltro.findAll"); 
-			return (List<CsTbProgettoAltro>) q.getResultList();  
-		}
-		
-		public List<CsTbProgettoAltro> findProgettiAltroPerDesc(String descrizione){			
-			Query q = em.createNamedQuery("CsTbProgettoAltro.findProgettoAltroByDescrizione"); 
-			q.setParameter( "descrizione", descrizione );
-			return (List<CsTbProgettoAltro>) q.getResultList();  
-		}
-		
-		
-	    public CsTbProgettoAltro updateCsTbProgettoAltro(CsTbProgettoAltro csTbProgettoAltro) {
+	//INIZIO SISO-1131
+	public List<CsTbProgettoAltro> findProgettiAltro() {
+		Query q = em.createNamedQuery("CsTbProgettoAltro.findAll");
+		return (List<CsTbProgettoAltro>) q.getResultList();
+	}
+	
+	public List<CsTbProgettoAltro> findProgettiAltroPerDesc(String descrizione) {
+		Query q = em.createNamedQuery("CsTbProgettoAltro.findProgettoAltroByDescrizione");
+		q.setParameter( "descrizione", descrizione );
+		return (List<CsTbProgettoAltro>) q.getResultList();
+	}
 
+	public CsTbProgettoAltro updateCsTbProgettoAltro(CsTbProgettoAltro csTbProgettoAltro) {
 		return em.merge(csTbProgettoAltro);
-	  }
-		//FINE SISO-1131
+	}
+	//FINE SISO-1131
+	
+	public List<CsTbTipoSgtBeneficiario> findGruppoBeneficiario() {
+		Query q = em.createNamedQuery("CsTbTipoSgtBeneficiario.findAll");
+		
+		return (List<CsTbTipoSgtBeneficiario>) q.getResultList();
+	}
+	
+	public List<CsTbTipoSgtBeneficiario> findGruppoBeneficiarioPerRagioneSociale(String ragioneSociale) {
+		Query q = em.createNamedQuery("CsTbTipoSgtBeneficiario.findGruppoBeneficiarioPerRagioneSociale");
+		q.setParameter("ragioneSociale", ragioneSociale);
+		
+		return (List<CsTbTipoSgtBeneficiario>) q.getResultList();
+	}
+	
+	public List<CsTbTipoSgtBeneficiario> findGruppoBeneficiarioPerCodiceFiscale(String ragioneSociale, String codiceFiscale) {
+		Query q = em.createNamedQuery("CsTbTipoSgtBeneficiario.findGruppoBeneficiarioPerCodiceFiscale");
+		q.setParameter("codiceFiscale", codiceFiscale);
+		q.setParameter("ragioneSociale", ragioneSociale);
+		
+		return (List<CsTbTipoSgtBeneficiario>) q.getResultList();
+	}
+	
+	public List<CsTbTipoSgtBeneficiario> findGruppoBeneficiarioPerCodiceFiscaleEqual(String ragioneSociale, String codiceFiscale) {
+		Query q = em.createNamedQuery("CsTbTipoSgtBeneficiario.findGruppoBeneficiarioPerCodiceFiscaleEqual");
+		q.setParameter("codiceFiscale", codiceFiscale);
+		q.setParameter("ragioneSociale", ragioneSociale);
+		
+		return (List<CsTbTipoSgtBeneficiario>) q.getResultList();
+	}
+	
+	public CsTbTipoSgtBeneficiario salvaGruppoBeneficiario(CsTbTipoSgtBeneficiario csTbTipoSgtBeneficiario) {
+		return em.merge(csTbTipoSgtBeneficiario);
+	}
+	
 }  

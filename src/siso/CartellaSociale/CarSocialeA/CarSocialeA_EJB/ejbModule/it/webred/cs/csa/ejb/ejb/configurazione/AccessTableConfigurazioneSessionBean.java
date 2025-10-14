@@ -51,6 +51,7 @@ import it.webred.cs.data.model.CsTbDurataRicLavoro;
 import it.webred.cs.data.model.CsTbEsenzioneRiduzione;
 import it.webred.cs.data.model.CsTbFormaGiuridica;
 import it.webred.cs.data.model.CsTbGVulnerabile;
+import it.webred.cs.data.model.CsTbTipoSgtBeneficiario;
 import it.webred.cs.data.model.CsTbIcd10;
 import it.webred.cs.data.model.CsTbIcd9;
 import it.webred.cs.data.model.CsTbIngMercato;
@@ -118,7 +119,6 @@ import it.webred.ct.support.validation.annotation.AuditSaltaValidazioneSessionID
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.List;
 import java.util.TreeMap;
 
@@ -132,11 +132,8 @@ import org.springframework.beans.factory.annotation.Autowired;
  * EJB per accedere a dati di configurazione dell'installazione: tabelle valori (TB) e similari
  * Non inserire all'interno metodi per accedere a dati sensibili in quanto non sottoposto ad AUDIT
  * */
-
-
 @Stateless
 public class AccessTableConfigurazioneSessionBean extends CarSocialeBaseSessionBean implements AccessTableConfigurazioneSessionBeanRemote {
-
 
 	private static final long serialVersionUID = 1L;
 	
@@ -993,6 +990,50 @@ public class AccessTableConfigurazioneSessionBean extends CarSocialeBaseSessionB
 	public CsTbProgettoAltro getProgettoAltroByDescrizione(String descrizione) {
     	return configurazioneDAO.getProgettoAltroByDescrizione(descrizione);
     }
+	
+	/**
+	 * 
+	 * <h1>getGruppoBeneficiarioByRagioneSociale</h1>
+	 *
+	 * <p>
+	 * </p>
+	 *
+	 * @param ragioneSociale
+	 * @return
+	 *
+	 * @since 1.26.13
+	 * @version 1.0.0
+	 * 
+	 * @author DDV
+	 * @lastUpdate 2025-07-29 - DDV
+	 */
+	@Override
+	public CsTbTipoSgtBeneficiario getGruppoBeneficiarioByRagioneSociale(String ragioneSociale) {
+    	return this.configurazioneDAO.getGruppoBeneficiarioByRagioneSociale(ragioneSociale);
+    }
+	
+	/**
+	 * 
+	 * <h1>getGruppoBeneficiarioByCodiceFiscale</h1>
+	 *
+	 * <p>
+	 * </p>
+	 *
+	 * @param ragioneSociale
+	 * @param codiceFiscale
+	 * @return
+	 *
+	 * @since 1.26.13
+	 * @version 1.0.0
+	 * 
+	 * @author DDV
+	 * @lastUpdate 2025-07-29 - DDV
+	 */
+	@Override
+	public CsTbTipoSgtBeneficiario getGruppoBeneficiarioByCodiceFiscale(String ragioneSociale, String codiceFiscale) {
+    	return this.configurazioneDAO.getGruppoBeneficiarioByCodiceFiscale(ragioneSociale, codiceFiscale);
+    }
+	
 	//SISO-1207
 	@Override
 	public List<CsTbUnitaMisura> getCsTbUnitaMisuraByInterventoIstatCustom(BaseDTO dto) {
@@ -1029,7 +1070,7 @@ public class AccessTableConfigurazioneSessionBean extends CarSocialeBaseSessionB
 		
 	}
 	
-	 protected  String createQueryUnitaMisura(Long idTipoInterventoIstat, Long idTipoInterventoCustom) {
+	protected String createQueryUnitaMisura(Long idTipoInterventoIstat, Long idTipoInterventoCustom) {
 	    	String sql = "select um "+
 					"from CsTbUnitaMisura um, CsCIntervUm interventi " +
 					"where  um.id = interventi.idUnitaMisura ";

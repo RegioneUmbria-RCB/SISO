@@ -7,8 +7,6 @@ import it.webred.cs.data.DataModelCostanti;
 import it.webred.cs.data.model.CsOOperatoreSettore;
 import it.webred.cs.jsf.manbean.superc.CsUiCompBaseBean;
 import it.webred.ct.config.model.AmKeyValueExt;
-import it.webred.ct.config.parameters.ParameterService;
-import it.webred.ct.config.parameters.dto.ParameterSearchCriteria;
 import it.webred.ejb.utility.ClientUtility;
 
 import java.util.Arrays;
@@ -29,9 +27,9 @@ import org.primefaces.model.SortOrder;
  * </p>
  *
  * @since 1.26.12
- * @version 1.0.2
+ * @version 1.0.3
  * 
- * @lastUpdate 2025-02-04 - DDV
+ * @lastUpdate 2025-07-24 - DDV
  */
 public class LazyListaErogazioniModel extends LazyDataModel<ErogInterventoRowBean> {
 
@@ -93,10 +91,10 @@ public class LazyListaErogazioniModel extends LazyDataModel<ErogInterventoRowBea
 	 * @return
 	 *
 	 * @since 1.26.12
-	 * @version 1.0.2
+	 * @version 1.0.3
 	 * 
 	 * @author DDV
-	 * @lastUpdate 2025-03-14 - DDV
+	 * @lastUpdate 2025-07-24 - DDV
 	 */
 	@Override
 	public List<ErogInterventoRowBean> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map filters) {
@@ -156,8 +154,6 @@ public class LazyListaErogazioniModel extends LazyDataModel<ErogInterventoRowBea
 			AccessTableInterventoSessionBeanRemote interventoService = (AccessTableInterventoSessionBeanRemote) ClientUtility.getEjbInterface("CarSocialeA",
 					"CarSocialeA_EJB", "AccessTableInterventoSessionBean");
 			
-			ParameterService parameterService = (ParameterService) ClientUtility.getEjbInterface("CT_Service", "CT_Config_Manager", "ParameterBaseService");
-			
 			/**
 			 * Recupero gli interventi eseguiti, privi di foglio amministrativo che abbiano una delle seguenti caratteristiche:
 			 * 1. settore dell'operatore che l'ha inserito = corrente
@@ -167,7 +163,7 @@ public class LazyListaErogazioniModel extends LazyDataModel<ErogInterventoRowBea
 			boolean loadDettaglioErogazione = true;
 			erogazioniSearchCriteria.setLoadDettaglioErogazione(loadDettaglioErogazione);
 
-			AmKeyValueExt amKeyValueExt = this.getAmKeyValueExt(parameterService);
+			AmKeyValueExt amKeyValueExt = CsUiCompBaseBean.getAmKeyValueExt(DataModelCostanti.AmParameterKey.CODICI_ESCLUSI_TAB_EROGAZIONI_INTERVENTI);
 			
 			// Check che esista il valore e non sia vuoto, altrimenti il default è false
 			if (amKeyValueExt != null && amKeyValueExt.getValueConf() != null && !amKeyValueExt.getValueConf().trim().isEmpty()) {
@@ -194,7 +190,7 @@ public class LazyListaErogazioniModel extends LazyDataModel<ErogInterventoRowBea
 			boolean hasFilterSelect = this.hasCriteriaSelect(erogazioniSearchCriteria);
 			
 			// Se esistono i filtri e / o ho cliccato carica tutti, proseguo con le logiche già esistenti
-			if (this.downloadFromExcel || (this.isLoadAll() || hasFilter || this.loadTab(this.firstLoad, loadAllTab))) {
+			if (this.downloadFromExcel || (this.loadTab(this.firstLoad, loadAllTab) || this.isLoadAll() || hasFilter)) {
 				
 				if (this.isLoadAll() && hasFilterSelect) {
 					erogazioniSearchCriteria = this.clearFilters(erogazioniSearchCriteria);
@@ -358,34 +354,6 @@ public class LazyListaErogazioniModel extends LazyDataModel<ErogInterventoRowBea
 				? opSettore.getCsOSettore().getCsOOrganizzazione().getCodRouting()
 				: opSettore.getCsOSettore().getCsOOrganizzazione().getCodCatastale();
 				
-	}
-
-	/**
-	 * 
-	 * <h1>getAmKeyValueExt</h1>
-	 *
-	 * <p>
-	 * Recupero variabile smartwelfare.codiciEsclusi.ricercaErogazioniInterventi in AM
-	 * </p>
-	 *
-	 * @param paramService
-	 * @return
-	 *
-	 * @since 1.26.12
-	 * @version 1.0.0
-	 * 
-	 * @author DDV
-	 * @lastUpdate 2025-01-22 - DDV
-	 */
-	private AmKeyValueExt getAmKeyValueExt(ParameterService paramService) {
-		
-		ParameterSearchCriteria parameterSearchCriteria = new ParameterSearchCriteria();
-		parameterSearchCriteria.setKey(DataModelCostanti.AmParameterKey.CODICI_ESCLUSI_TAB_EROGAZIONI_INTERVENTI);
-
-		AmKeyValueExt amKeyValueExt = paramService.getAmKeyValueExt(parameterSearchCriteria);
-	
-		return amKeyValueExt;
-	
 	}
 
 	private boolean hasCriteriaSelect(ErogazioniSearchCriteria searchCriteria) {

@@ -139,7 +139,7 @@ public class FglInterventoBean extends FascicoloCompSecondoLivello implements ID
 	//SISO 972
 	private String FSEMessage = "";
 	
-	private Boolean fromPai=false;
+	private Boolean fromPai = false;
 	
 	//Parametri Stampa POR
 	private StampaFseDTO stampaFseDTO;
@@ -294,9 +294,10 @@ public class FglInterventoBean extends FascicoloCompSecondoLivello implements ID
 
 		logger.info("Inizializzazione Dialog FglInterventoBean");
 	       
-		this.toSaveSecondoLivello=false;
+		this.toSaveSecondoLivello = false;
 		
 		try {
+			
 			resetDialogo(datiErogazioniTabRendered, interventoId, diarioId, tipoInterventoId, tipoInterventoCustomId, catSocId, readOnly, abilitaSalvataggio, headerDialogo);
 			
 			//#ROMACAPITALE
@@ -330,14 +331,14 @@ public class FglInterventoBean extends FascicoloCompSecondoLivello implements ID
 				List<SoggettoErogazioneBean> beneficiari = new ArrayList<SoggettoErogazioneBean>();
 				if (master != null) {
 					erogazioneInterventoBean.inizializzaDaErogazioneMaster(idTipoIntevento, idTipoIntrCustom, master, dentroFascicolo);
-				}else{
+				} else {
 					boolean conFoglioAmministrativo = interventoId != null && interventoId > 0;
 					if (conFoglioAmministrativo){
 						CsAAnaIndirizzo residenza = findIndirizzoResidenzaCaso(csASoggetto);
 						String via = residenza!=null ? residenza.getLabelIndirizzo() : null;
 						String json = getCasoComuneResidenza(residenza);
 						String statoEstero = residenza!=null ? residenza.getStatoCod() : null;
-						String jsonComuneNascita = this.getJsonNascitaComuneBean(csASoggetto);
+						String jsonComuneNascita = getJsonNascitaComuneBean(csASoggetto);
 						soggettoNuovaErogazione = new SoggettoErogazioneBean(csASoggetto, via, json, statoEstero, jsonComuneNascita, true);
 						erogazioneInterventoBean.inizializzaErogazione(idTipoIntevento, idTipoIntrCustom, this.interventoId, soggettoNuovaErogazione, beneficiari,dentroFascicolo);				
 					}else
@@ -1005,43 +1006,43 @@ public class FglInterventoBean extends FascicoloCompSecondoLivello implements ID
 			
 			 //SISO-556 la validazione della testata, delle erogazioni e in generale qualsiasi validazione, viene messa prima del salvataggio
 			//datiProgettoBean.setSoggettoErogazione(soggettoNuovaErogazione); //setto il soggetto erogazione di riferimento
-			if (validaSalvataggio()) {
+			if (this.validaSalvataggio()) {
 				//SISO-972
-				if(!isValidaFSE() && abilitaControlloFSEPor){
+				if(!this.isValidaFSE() && this.abilitaControlloFSEPor) {
 					RequestContext.getCurrentInstance().addCallbackParam("porFSE", true);
-					setFSEMessage("Il salvataggio aggiornerà i dati della scheda intervento fse " + (this.datiProgettoBean.getNumFSE() == 1 ? " dell'intervento presente " :   " dei "  + this.getDatiProgettoBean().getNumFSE() + " interventi presenti") + " nel sistema, relativi allo stesso soggetto, progetto e sottocorso/attività. \n Se si è sicuri si aver valorizzato interamente gli attributi della scheda intervento procedere al salvataggio.");
+					this.setFSEMessage("Il salvataggio aggiornerà i dati della scheda intervento fse " + (this.datiProgettoBean.getNumFSE() == 1 ? " dell'intervento presente " :   " dei "  + this.getDatiProgettoBean().getNumFSE() + " interventi presenti") + " nel sistema, relativi allo stesso soggetto, progetto e sottocorso/attività. \n Se si è sicuri si aver valorizzato interamente gli attributi della scheda intervento procedere al salvataggio.");
 					bSaved = false;
 					return;
 				}
 				//SISO-972 fine
 				
 				boolean savedQuota = this.datiTariffeInterventoBean.salva(isUnitaMisuraRequired());
-				CsIQuota quotaCorrente = datiTariffeInterventoBean.getCsIQuota();
+				CsIQuota quotaCorrente = this.datiTariffeInterventoBean.getCsIQuota();
 				if (quotaCorrente != null && (quotaCorrente.getId() == null || quotaCorrente.getId() == 0))
 					quotaCorrente = null;
 				bSaved &= savedQuota;
 				
 				SoggettoErogazioneBean soggettoErogazione = this.erogazioneInterventoBean!=null ? this.erogazioneInterventoBean.getSoggettoErogazione() : null;
 				boolean savedProgetto = this.datiProgettoBean.salva(soggettoErogazione);
-				CsIInterventoPr progettoCorrente = datiProgettoBean.getCsIInterventoPr();
+				CsIInterventoPr progettoCorrente = this.datiProgettoBean.getCsIInterventoPr();
 				if (progettoCorrente != null && (progettoCorrente.getId() == null || progettoCorrente.getId() == 0))
 					progettoCorrente = null;
 
 				bSaved &= savedProgetto;
 				
-				if (!readOnly)
-					bSaved &= salvaDatiIntervento(quotaCorrente, progettoCorrente);
+				if (!this.readOnly)
+					bSaved &= this.salvaDatiIntervento(quotaCorrente, progettoCorrente);
 
-				if (datiErogazioniTabRendered)
-					bSaved &= salvaDatiErogazione(quotaCorrente, progettoCorrente);
+				if (this.datiErogazioniTabRendered)
+					bSaved &= this.salvaDatiErogazione(quotaCorrente, progettoCorrente);
 				
 				//SISO 929
-				if (isSinaRendered()) {
-					List<String> msgErog = sinaMan.validaSinaErogazione(erogazioneInterventoBean.getCsIPs().getFlagInCarico(), erogazioneInterventoBean.getErogazioneHistory().getRows());
+				if (this.isSinaRendered()) {
+					List<String> msgErog = this.sinaMan.validaSinaErogazione(erogazioneInterventoBean.getCsIPs().getFlagInCarico(), erogazioneInterventoBean.getErogazioneHistory().getRows());
 					// SISO-783
 					// ** mod. SISO-886 **//
-					if (msgErog==null || msgErog.size() ==0)
-						bSaved &= sinaMan.salvaDaFglIntervento(this.erogazioneInterventoBean.getNuovoIntEsegMast().getId());
+					if (msgErog == null || msgErog.size() == 0)
+						bSaved &= this.sinaMan.salvaDaFglIntervento(this.erogazioneInterventoBean.getNuovoIntEsegMast().getId());
 				}
 			} else
 				bSaved = false;
@@ -1057,12 +1058,13 @@ public class FglInterventoBean extends FascicoloCompSecondoLivello implements ID
 						if (fbean.getInterventiBean() != null) {
 							fbean.getInterventiBean().refreshListaInterventi(null);
 						}
-						if (csIIntervento != null && fbean.getPaiBean() != null) {
+						
+						if (this.csIIntervento != null && fbean.getPaiBean() != null) {
 							if (fbean.isPaiTabSelected())
-								fbean.getPaiBean().refreshPicklistInterventi(csIIntervento);
+								fbean.getPaiBean().refreshPicklistInterventi(this.csIIntervento);
 							else
 								fbean.getPaiBean().refreshPicklistInterventi(null);
-						} else if (erogazioneInterventoBean != null && fbean.getPaiBean() != null) {
+						} else if (this.erogazioneInterventoBean != null && fbean.getPaiBean() != null) {
 							if (fbean.isPaiTabSelected())
 								fbean.getPaiBean().refreshPicklistErogazioni(this.erogazioneInterventoBean.getNuovoIntEsegMast().getId());
 							else if (fbean.getPaiBean().getProvenienzaConsuntivazione())
@@ -1071,8 +1073,8 @@ public class FglInterventoBean extends FascicoloCompSecondoLivello implements ID
 								fbean.getPaiBean().refreshPicklistErogazioni(null);
 						}
 					}
-				}catch (Exception e) {
-				
+					
+				} catch (Exception e) {
 					logger.error(e.getMessage(), e);
 				}
 
@@ -1113,40 +1115,40 @@ public class FglInterventoBean extends FascicoloCompSecondoLivello implements ID
 	// INZIO SISO-556
 	private boolean validaSalvataggio() {
 		SoggettoErogazioneBean soggettoErogazione = this.erogazioneInterventoBean!=null ? this.erogazioneInterventoBean.getSoggettoErogazione() : null;
-		if (!erogazioneInterventoBean.validaTestata()
-				|| !datiTariffeInterventoBean.valida()
-				|| !erogazioneInterventoBean.validaErogazioni(datiTariffeInterventoBean.getCsIQuota())
-				|| !datiProgettoBean.validaDatiProgetto(soggettoErogazione)
-				|| !validaSina()
+		if (!this.erogazioneInterventoBean.validaTestata()
+				|| !this.datiTariffeInterventoBean.valida()
+				|| !this.erogazioneInterventoBean.validaErogazioni(this.datiTariffeInterventoBean.getCsIQuota())
+				|| !this.datiProgettoBean.validaDatiProgetto(soggettoErogazione)
+				|| !this.validaSina()
 				){
 			
 			// || !erogazioneInterventoBean.validaDatiCsIPs()) // SISO-657
 			return false;
-		}
-		else {
+		} else {
 			return true;
 		}
+		
 	}
 	// FINE SISO-556
 
-	public void onChangeProgetto(){
-		SoggettoErogazioneBean soggetto = this.erogazioneInterventoBean!=null ? this.erogazioneInterventoBean.getSoggettoErogazione() : null;
-		String cf = soggetto!=null ? soggetto.getCf() : null;
-		datiProgettoBean.onChangeProgetto(cf);
+	public void onChangeProgetto() {
+		SoggettoErogazioneBean soggetto = this.erogazioneInterventoBean != null ? this.erogazioneInterventoBean.getSoggettoErogazione() : null;
+		String cf = soggetto != null ? soggetto.getCf() : null;
+		this.datiProgettoBean.onChangeProgetto(cf);
 	}
 	
 	//SISO -972
-	public void onChangeAttivita(){
-		SoggettoErogazioneBean soggetto = this.erogazioneInterventoBean!=null ? this.erogazioneInterventoBean.getSoggettoErogazione() : null;
-		String cf = soggetto!=null ? soggetto.getCf() : null;
-		datiProgettoBean.onChangeAttivita(cf);
+	public void onChangeAttivita() {
+		SoggettoErogazioneBean soggetto = this.erogazioneInterventoBean != null ? this.erogazioneInterventoBean.getSoggettoErogazione() : null;
+		String cf = soggetto != null ? soggetto.getCf() : null;
+		this.datiProgettoBean.onChangeAttivita(cf);
 	}
 	//FINE SISO-972
 
-	public void onChangeOrigineFinanziamento(AjaxBehaviorEvent event){ 
-		SoggettoErogazioneBean soggetto = this.erogazioneInterventoBean!=null ? this.erogazioneInterventoBean.getSoggettoErogazione() : null;
-		String cf = soggetto!=null ? soggetto.getCf() : null;
-		datiProgettoBean.onChangeOrigineFinanziamento(cf);
+	public void onChangeOrigineFinanziamento(AjaxBehaviorEvent event) { 
+		SoggettoErogazioneBean soggetto = this.erogazioneInterventoBean != null ? this.erogazioneInterventoBean.getSoggettoErogazione() : null;
+		String cf = soggetto != null ? soggetto.getCf() : null;
+		this.datiProgettoBean.onChangeOrigineFinanziamento(cf);
 	}
 
 	public void resetDatiAttivita() {
@@ -1291,7 +1293,7 @@ public class FglInterventoBean extends FascicoloCompSecondoLivello implements ID
 	public void setSoggettoCorrente(CsASoggettoLAZY soggettoCorrente) {
 		this.soggettoCorrente = soggettoCorrente;
 	}
-
+	
 	@Override
 	public List<SelectItem> getLstTipoQuotaPasti() {
 		if (lstTipoQuotaPasti == null) {

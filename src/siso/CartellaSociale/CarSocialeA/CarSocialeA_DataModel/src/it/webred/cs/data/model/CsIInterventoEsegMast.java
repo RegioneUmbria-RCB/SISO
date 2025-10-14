@@ -25,134 +25,138 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-
 @Entity
-@Table(name="CS_I_INTERVENTO_ESEG_MAST")
-@NamedQuery(name="CsIInterventoEsegMast.findAll", query="SELECT c FROM CsIInterventoEsegMast c")
+@Table(name = "CS_I_INTERVENTO_ESEG_MAST")
+@NamedQuery(name = "CsIInterventoEsegMast.findAll", query = "SELECT c FROM CsIInterventoEsegMast c")
 public class CsIInterventoEsegMast implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@SequenceGenerator(name="CS_I_INTERVENTO_ESEG_MAST_ID_GENERATOR", sequenceName="SQ_ID",allocationSize=1)
-	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="CS_I_INTERVENTO_ESEG_MAST_ID_GENERATOR")
+	@SequenceGenerator(name = "CS_I_INTERVENTO_ESEG_MAST_ID_GENERATOR", sequenceName = "SQ_ID", allocationSize = 1)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "CS_I_INTERVENTO_ESEG_MAST_ID_GENERATOR")
 	private long id;
-	
-	@Column(name="COMPART_ALTRE")
+
+	@Column(name = "COMPART_ALTRE")
 	private BigDecimal compartAltre;
 
-	@Column(name="COMPART_SSN")
+	@Column(name = "COMPART_SSN")
 	private BigDecimal compartSsn;
 
-	@Column(name="COMPART_UTENTI")
+	@Column(name = "COMPART_UTENTI")
 	private BigDecimal compartUtenti;
 
-	@Column(name="DESC_INTERVENTO_ESEG")
+	@Column(name = "DESC_INTERVENTO_ESEG")
 	private String descInterventoEseg;
 
 	@Temporal(TemporalType.DATE)
-	@Column(name="DT_INS")
+	@Column(name = "DT_INS")
 	private Date dtIns;
 
 	@Temporal(TemporalType.DATE)
-	@Column(name="DT_MOD")
+	@Column(name = "DT_MOD")
 	private Date dtMod;
 
-	@Column(name="NOTE_ALTRE_COMPART")
+	@Column(name = "NOTE_ALTRE_COMPART")
 	private String noteAltreCompart;
 
-	@Column(name="PERC_GESTITA_ENTE")
+	@Column(name = "PERC_GESTITA_ENTE")
 	private BigDecimal percGestitaEnte;
 
-	@Column(name="SPESA")
+	@Column(name = "SPESA")
 	private BigDecimal spesa;
-	
+
 	@ManyToOne
 	@JoinColumn(name = "TIPO_INTERVENTO_CUSTOM_ID")
 	private CsCTipoInterventoCustom csIInterventoCustom;
 
-	@Column(name="USER_INS")
+	@Column(name = "USER_INS")
 	private String userIns;
 
-	@Column(name="USR_MOD")
+	@Column(name = "USR_MOD")
 	private String usrMod;
 
-	@Column(name="VALORE_GESTITA_ENTE")
+	@Column(name = "VALORE_GESTITA_ENTE")
 	private BigDecimal valoreGestitaEnte;
-	
-	@Column(name="CATEGORIA_SOCIALE_ID")
+
+	@Column(name = "CATEGORIA_SOCIALE_ID")
 	private Long categoriaSocialeId;
-	
-	@Column(name="PROT_DOM_PREST")
+
+	@Column(name = "PROT_DOM_PREST")
 	private String protDomPrest;
-	
-	@Column(name="DATA_DOM_PREST")
+
+	@Column(name = "DATA_DOM_PREST")
 	private Date dataDomPrest;
-	
-	
+
 	//bi-directional many-to-one association to CsIInterventoEseg
-	@OneToMany(mappedBy="csIInterventoEsegMast", fetch = FetchType.EAGER,cascade = CascadeType.ALL, orphanRemoval=true)
+	@OneToMany(mappedBy = "csIInterventoEsegMast", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
 	private Set<CsIInterventoEseg> csIInterventoEsegs;
-	
+
 	//bi-directional many-to-one association to CsIInterventoEseg
-	@OneToMany(mappedBy="master", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval=true)
-	private Set<CsIInterventoEsegMastSogg> beneficiari;	
-	
+	@OneToMany(mappedBy = "master", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+	private Set<CsIInterventoEsegMastSogg> beneficiari;
+
 	//bi-directional many-to-one association to CsIP
-	@OneToOne(mappedBy="csIInterventoEsegMast", cascade = CascadeType.ALL, orphanRemoval=true)
+	@OneToOne(mappedBy = "csIInterventoEsegMast", cascade = CascadeType.ALL, orphanRemoval = true)
 	private CsIPs csIPs;
 
 	//bi-directional many-to-one association to CsCTipoIntervento
 	@ManyToOne
-	@JoinColumn(name="TIPO_INTERVENTO_ID")
+	@JoinColumn(name = "TIPO_INTERVENTO_ID")
 	private CsCTipoIntervento csCTipoIntervento;
 
-	@Column(name="INTERVENTO_ID")
+	@Column(name = "INTERVENTO_ID")
 	private Long interventoProgrammatoId; //FK DI CS_I_INTERVENTO: eliminata mappatura per alleggerire il caricamento
-	
-	@Column(name="FLAG_SPESA_CALC")
+
+	@Column(name = "FLAG_SPESA_CALC")
 	private Boolean flagSpesaCalc;
-	
-	@Column(name="TIPO_BENEFICIARIO")
+
+	@Column(name = "TIPO_BENEFICIARIO")
 	private String tipoBeneficiario;
-	
+
 	//bi-directional many-to-one association to CsOOperatoreSettore
 	@ManyToOne
-	@JoinColumn(name="OPERATORE_SETTORE_ID")
+	@JoinColumn(name = "OPERATORE_SETTORE_ID")
 	private CsOOperatoreSettore csOOperatoreSettore;
-	
+
 	@ManyToOne
-	@JoinColumn(name="SETTORE_EROGANTE_ID")
+	@JoinColumn(name = "SETTORE_EROGANTE_ID")
 	private CsOSettore settoreErogante;
 
 	//bi-directional many-to-one association to csIInterventoEseg vecchia
-//	@OneToMany(mappedBy = "csIInterventoEsegMast", fetch = FetchType.LAZY,cascade = CascadeType.ALL)
-//	private List<CsIInterventoEseg> csIInterventoEseg;
+	//	@OneToMany(mappedBy = "csIInterventoEsegMast", fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+	//	private List<CsIInterventoEseg> csIInterventoEseg;
 	//TODO ML: http://progetti.asc.webred.it/browse/SISO-456
-	
-	@OneToOne(fetch=FetchType.EAGER)
+
+	@OneToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "QUOTA_ID")
 	private CsIQuota csIQuota;
-	
-	@OneToOne(fetch=FetchType.EAGER)
-	@JoinColumn(name ="INT_PROGETTO_ID")
+
+	@OneToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "INT_PROGETTO_ID")
 	private CsIInterventoPr csIInterventoPr;
-	
+
 	@Column(name = "DIARIO_PAI_ID")
 	private BigDecimal diarioPaiId;
-	
+
 	//SISO-812
 	@Column(name = "SETT_SECONDO_LIVELLO")
 	private Long settoreSecondoLivello;
-	
-	@Column(name="TOT_BENEFICIARI")
+
+	@Column(name = "TOT_BENEFICIARI")
 	private Integer totBeneficiari;
-	
-	
-	public CsIInterventoEsegMast(){
-		beneficiari= new HashSet<CsIInterventoEsegMastSogg>();
-		csIInterventoEsegs= new HashSet<CsIInterventoEseg>();
+
+	@OneToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "ID_TIPO_SOGGETTO_BENEFICIARIO")
+	private CsTbTipoSgtBeneficiario idTipoSoggettoBeneficiario;
+
+	@Column(name = "TIPO_SOGGETTO_BENEFICIARIO")
+	private String tipoSoggettoBeneficiario;
+
+	public CsIInterventoEsegMast() {
+		beneficiari = new HashSet<CsIInterventoEsegMastSogg>();
+		csIInterventoEsegs = new HashSet<CsIInterventoEseg>();
 	}
-	
+
 	public long getId() {
 		return this.id;
 	}
@@ -166,12 +170,12 @@ public class CsIInterventoEsegMast implements Serializable {
 	}
 
 	public void setCompartAltre(BigDecimal compartAltre) {
-		if(compartAltre!=null){
-			if(compartAltre.compareTo(new BigDecimal((long)0))==0)
-				this.compartAltre=null;
-			else			
+		if (compartAltre != null) {
+			if (compartAltre.compareTo(new BigDecimal((long) 0)) == 0)
+				this.compartAltre = null;
+			else
 				this.compartAltre = compartAltre;
-		}else			
+		} else
 			this.compartAltre = compartAltre;
 	}
 
@@ -180,12 +184,12 @@ public class CsIInterventoEsegMast implements Serializable {
 	}
 
 	public void setCompartSsn(BigDecimal compartSsn) {
-		if(compartSsn!=null){
-			if(compartSsn.compareTo(new BigDecimal((long)0))==0)
-				this.compartSsn=null;
+		if (compartSsn != null) {
+			if (compartSsn.compareTo(new BigDecimal((long) 0)) == 0)
+				this.compartSsn = null;
 			else
 				this.compartSsn = compartSsn;
-		}else
+		} else
 			this.compartSsn = compartSsn;
 	}
 
@@ -194,12 +198,12 @@ public class CsIInterventoEsegMast implements Serializable {
 	}
 
 	public void setCompartUtenti(BigDecimal compartUtenti) {
-		if(compartUtenti!=null){
-			if(compartUtenti.compareTo(new BigDecimal((long)0))==0)
-				this.compartUtenti=null;
+		if (compartUtenti != null) {
+			if (compartUtenti.compareTo(new BigDecimal((long) 0)) == 0)
+				this.compartUtenti = null;
 			else
 				this.compartUtenti = compartUtenti;
-		}else
+		} else
 			this.compartUtenti = compartUtenti;
 	}
 
@@ -240,23 +244,23 @@ public class CsIInterventoEsegMast implements Serializable {
 	}
 
 	public void setPercGestitaEnte(BigDecimal percGestitaEnte) {
-		if(percGestitaEnte!=null){
-			if(percGestitaEnte.compareTo(new BigDecimal((long)0))==0)
-				this.percGestitaEnte=null;
+		if (percGestitaEnte != null) {
+			if (percGestitaEnte.compareTo(new BigDecimal((long) 0)) == 0)
+				this.percGestitaEnte = null;
 			else
 				this.percGestitaEnte = percGestitaEnte;
-		}else
+		} else
 			this.percGestitaEnte = percGestitaEnte;
 	}
 
 	public BigDecimal getSpesa() {
-     	return this.spesa; //SISO-806
+		return this.spesa; //SISO-806
 	}
 
 	public void setSpesa(BigDecimal spesa) {
-//		this.spesa = spesa; //SISO-810
+		//		this.spesa = spesa; //SISO-810
 		this.spesa = spesa.setScale(2, RoundingMode.HALF_EVEN); //SISO-806
-	}	
+	}
 
 	public String getUserIns() {
 		return this.userIns;
@@ -275,16 +279,16 @@ public class CsIInterventoEsegMast implements Serializable {
 	}
 
 	public BigDecimal getValoreGestitaEnte() {
-       return this.valoreGestitaEnte;		
+		return this.valoreGestitaEnte;
 	}
 
 	public void setValoreGestitaEnte(BigDecimal valoreGestitaEnte) {
-		if(valoreGestitaEnte!=null){
-			if(valoreGestitaEnte.compareTo(new BigDecimal((long)0))==0)
-				this.valoreGestitaEnte=null;
+		if (valoreGestitaEnte != null) {
+			if (valoreGestitaEnte.compareTo(new BigDecimal((long) 0)) == 0)
+				this.valoreGestitaEnte = null;
 			else
 				this.valoreGestitaEnte = valoreGestitaEnte.setScale(2, RoundingMode.CEILING); //SISO-806;
-		}else
+		} else
 			this.valoreGestitaEnte = valoreGestitaEnte;
 	}
 
@@ -293,17 +297,17 @@ public class CsIInterventoEsegMast implements Serializable {
 	}
 
 	public void setCsIInterventoEsegs(Set<CsIInterventoEseg> csIInterventoEsegs) {
-		if(getCsIInterventoEsegs()==null)
-			csIInterventoEsegs= new HashSet<CsIInterventoEseg>();
-		
+		if (getCsIInterventoEsegs() == null)
+			csIInterventoEsegs = new HashSet<CsIInterventoEseg>();
+
 		this.csIInterventoEsegs.clear();
-		if(csIInterventoEsegs!=null)
+		if (csIInterventoEsegs != null)
 			this.csIInterventoEsegs.addAll(csIInterventoEsegs);
 	}
 
-	public CsIInterventoEseg addCsIInterventoEseg(CsIInterventoEseg csIInterventoEseg) {				
-		if(getCsIInterventoEsegs()==null)
-			csIInterventoEsegs= new HashSet<CsIInterventoEseg>();
+	public CsIInterventoEseg addCsIInterventoEseg(CsIInterventoEseg csIInterventoEseg) {
+		if (getCsIInterventoEsegs() == null)
+			csIInterventoEsegs = new HashSet<CsIInterventoEseg>();
 		csIInterventoEsegs.add(csIInterventoEseg);
 		csIInterventoEseg.setCsIInterventoEsegMast(this);
 
@@ -332,7 +336,7 @@ public class CsIInterventoEsegMast implements Serializable {
 	public void setCsIInterventoCustom(CsCTipoInterventoCustom csIInterventoCustom) {
 		this.csIInterventoCustom = csIInterventoCustom;
 	}
-	
+
 	public Long getCategoriaSocialeId() {
 		return categoriaSocialeId;
 	}
@@ -368,16 +372,19 @@ public class CsIInterventoEsegMast implements Serializable {
 	public Set<CsIInterventoEsegMastSogg> getBeneficiari() {
 		return beneficiari;
 	}
-	
+
 	public void setBeneficiari(Set<CsIInterventoEsegMastSogg> set) {
 		//this.beneficiari = set; //This will override the set that Hibernate is tracking.
-		if(beneficiari==null) beneficiari= new HashSet<CsIInterventoEsegMastSogg>();
+		if (beneficiari == null)
+			beneficiari = new HashSet<CsIInterventoEsegMastSogg>();
 		this.beneficiari.clear();
-	    if (set != null) this.beneficiari.addAll(set);
+		if (set != null)
+			this.beneficiari.addAll(set);
 	}
 
-	public CsIInterventoEsegMastSogg addBeneficiario(CsIInterventoEsegMastSogg b) {				
-		if(beneficiari==null) beneficiari= new HashSet<CsIInterventoEsegMastSogg>();
+	public CsIInterventoEsegMastSogg addBeneficiario(CsIInterventoEsegMastSogg b) {
+		if (beneficiari == null)
+			beneficiari = new HashSet<CsIInterventoEsegMastSogg>();
 		beneficiari.add(b);
 		b.setMaster(this);
 		b.getId().setMasterId(this.getId());
@@ -391,6 +398,7 @@ public class CsIInterventoEsegMast implements Serializable {
 		b.getId().setMasterId(null);
 		return b;
 	}
+
 	//TODO ML: http://progetti.asc.webred.it/browse/SISO-456
 	public CsIQuota getCsIQuota() {
 		return csIQuota;
@@ -399,7 +407,7 @@ public class CsIInterventoEsegMast implements Serializable {
 	public void setCsIQuota(CsIQuota csIQuota) {
 		this.csIQuota = csIQuota;
 	}
-	
+
 	public String getProtDomPrest() {
 		return protDomPrest;
 	}
@@ -415,7 +423,7 @@ public class CsIInterventoEsegMast implements Serializable {
 	public void setCsIPs(CsIPs csIPs) {
 		this.csIPs = csIPs;
 	}
-	
+
 	public CsIInterventoPr getCsIInterventoPr() {
 		return csIInterventoPr;
 	}
@@ -423,7 +431,7 @@ public class CsIInterventoEsegMast implements Serializable {
 	public void setCsIInterventoPr(CsIInterventoPr csIInterventoPr) {
 		this.csIInterventoPr = csIInterventoPr;
 	}
-	
+
 	public CsOSettore getSettoreErogante() {
 		return settoreErogante;
 	}
@@ -431,16 +439,17 @@ public class CsIInterventoEsegMast implements Serializable {
 	public void setSettoreErogante(CsOSettore settoreErogante) {
 		this.settoreErogante = settoreErogante;
 	}
-	
-	public CsIInterventoEsegMastSogg getBeneficiarioRiferimento(){
-		if(this.getBeneficiari()!=null){
-			Iterator<CsIInterventoEsegMastSogg> it =  this.getBeneficiari().iterator();
-			while(it.hasNext()){
+
+	public CsIInterventoEsegMastSogg getBeneficiarioRiferimento() {
+		if (this.getBeneficiari() != null) {
+			Iterator<CsIInterventoEsegMastSogg> it = this.getBeneficiari().iterator();
+			while (it.hasNext()) {
 				CsIInterventoEsegMastSogg s = it.next();
-				if(s.getRiferimento().booleanValue())
+				if (s.getRiferimento().booleanValue())
 					return s;
 			}
-		}return null;
+		}
+		return null;
 	}
 
 	public BigDecimal getDiarioPaiId() {
@@ -450,7 +459,7 @@ public class CsIInterventoEsegMast implements Serializable {
 	public void setDiarioPaiId(BigDecimal diarioPaiId) {
 		this.diarioPaiId = diarioPaiId;
 	}
-	
+
 	public Long getSettoreSecondoLivello() {
 		return settoreSecondoLivello;
 	}
@@ -458,7 +467,7 @@ public class CsIInterventoEsegMast implements Serializable {
 	public void setSettoreSecondoLivello(Long settoreSecondoLivello) {
 		this.settoreSecondoLivello = settoreSecondoLivello;
 	}
-	
+
 	public Date getDataDomPrest() {
 		return dataDomPrest;
 	}
@@ -466,7 +475,7 @@ public class CsIInterventoEsegMast implements Serializable {
 	public void setDataDomPrest(Date dataDomPrest) {
 		this.dataDomPrest = dataDomPrest;
 	}
-	
+
 	public Integer getTotBeneficiari() {
 		return totBeneficiari;
 	}
@@ -483,26 +492,33 @@ public class CsIInterventoEsegMast implements Serializable {
 		this.interventoProgrammatoId = interventoProgrammatoId;
 	}
 
+	public CsTbTipoSgtBeneficiario getIdTipoSoggettoBeneficiario() {
+		return idTipoSoggettoBeneficiario;
+	}
+
+	public void setIdTipoSoggettoBeneficiario(CsTbTipoSgtBeneficiario idTipoSoggettoBeneficiario) {
+		this.idTipoSoggettoBeneficiario = idTipoSoggettoBeneficiario;
+	}
+
+	public String getTipoSoggettoBeneficiario() {
+		return tipoSoggettoBeneficiario;
+	}
+
+	public void setTipoSoggettoBeneficiario(String tipoSoggettoBeneficiario) {
+		this.tipoSoggettoBeneficiario = tipoSoggettoBeneficiario;
+	}
+
 	@Override
 	public String toString() {
-		return "CsIInterventoEsegMast [id=" + id 
-				+ ", compartAltre=" + compartAltre + ", compartSsn="
-				+ compartSsn + ", compartUtenti=" + compartUtenti
-				+ ", descInterventoEseg=" + descInterventoEseg + ", dtIns="
-				+ dtIns + ", dtMod=" + dtMod + ", noteAltreCompart="
-				+ noteAltreCompart + ", percGestitaEnte=" + percGestitaEnte
-				+ ", spesa=" + spesa + ", csIInterventoCustom="
-				+ csIInterventoCustom + ", userIns=" + userIns + ", usrMod="
-				+ usrMod + ", valoreGestitaEnte=" + valoreGestitaEnte
-				+ ", categoriaSocialeId=" + categoriaSocialeId  + ", protDomPrest=" + protDomPrest
-				+ ", csIInterventoEsegs=" + csIInterventoEsegs
-				+ ", beneficiari=" + beneficiari + ", csCTipoIntervento="
-				+ csCTipoIntervento + ", csIIntervento=" + interventoProgrammatoId 
-				+ ", flagSpesaCalc=" + flagSpesaCalc + ", flagCompartCalc="
-				+ ", tipoBeneficiario=" + tipoBeneficiario
-				+ ", csOOperatoreSettore=" + csOOperatoreSettore
-				+ ", csIQuota=" + csIQuota + ", csIPs=" + csIPs + "]";
-
+		return "CsIInterventoEsegMast [id=" + id + ", compartAltre=" + compartAltre + ", compartSsn=" + compartSsn + ", compartUtenti=" + compartUtenti + ", descInterventoEseg="
+				+ descInterventoEseg + ", dtIns=" + dtIns + ", dtMod=" + dtMod + ", noteAltreCompart=" + noteAltreCompart + ", percGestitaEnte=" + percGestitaEnte + ", spesa="
+				+ spesa + ", csIInterventoCustom=" + csIInterventoCustom + ", userIns=" + userIns + ", usrMod=" + usrMod + ", valoreGestitaEnte=" + valoreGestitaEnte
+				+ ", categoriaSocialeId=" + categoriaSocialeId + ", protDomPrest=" + protDomPrest + ", dataDomPrest=" + dataDomPrest + ", csIInterventoEsegs=" + csIInterventoEsegs
+				+ ", beneficiari=" + beneficiari + ", csIPs=" + csIPs + ", csCTipoIntervento=" + csCTipoIntervento + ", interventoProgrammatoId=" + interventoProgrammatoId
+				+ ", flagSpesaCalc=" + flagSpesaCalc + ", tipoBeneficiario=" + tipoBeneficiario + ", csOOperatoreSettore=" + csOOperatoreSettore + ", settoreErogante="
+				+ settoreErogante + ", csIQuota=" + csIQuota + ", csIInterventoPr=" + csIInterventoPr + ", diarioPaiId=" + diarioPaiId + ", settoreSecondoLivello="
+				+ settoreSecondoLivello + ", totBeneficiari=" + totBeneficiari + ", idTipoSoggettoBeneficiario=" + idTipoSoggettoBeneficiario + ", tipoSoggettoBeneficiario="
+				+ tipoSoggettoBeneficiario + "]";
 	}
 
 }

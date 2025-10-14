@@ -354,6 +354,9 @@
 		<class>it.webred.cs.data.model.CsExtraFseDatiLavoro</class>
 		<class>it.webred.cs.data.model.CsExtraFseSiru</class>
     	
+        <!-- SISO-2448 -->
+    	<class>it.webred.cs.data.model.CsTbTipoSgtBeneficiario</class>
+    	
     	<shared-cache-mode>ENABLE_SELECTIVE</shared-cache-mode>
 		<properties>
 			<!-- property name="hibernate.dialect" value="org.hibernate.dialect.Oracle9iDialect" / -->

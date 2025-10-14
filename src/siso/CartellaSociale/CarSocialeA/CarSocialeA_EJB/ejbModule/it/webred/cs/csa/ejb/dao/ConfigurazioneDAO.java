@@ -1785,6 +1785,7 @@ public class ConfigurazioneDAO extends CarSocialeBaseDAO implements Serializable
 		return pa;
 
 	}
+	
 	public CsTbProgettoAltro getProgettoAltroByDescrizione(String descrizione) {
 		
 		try {
@@ -1800,28 +1801,107 @@ public class ConfigurazioneDAO extends CarSocialeBaseDAO implements Serializable
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 		}
-	return null;
-	}	
+		return null;
+	}
+	
+	/**
+	 * 
+	 * <h1>getGruppoBeneficiarioByRagioneSociale</h1>
+	 *
+	 * <p>
+	 * </p>
+	 *
+	 * @param ragioneSociale
+	 * @return
+	 *
+	 * @since 1.26.13
+	 * @version 1.0.0
+	 * 
+	 * @author DDV
+	 * @lastUpdate 2025-07-29 - DDV
+	 */
+	public CsTbTipoSgtBeneficiario getGruppoBeneficiarioByRagioneSociale(String ragioneSociale) {
+		
+		try {
+
+			Query query = em.createNamedQuery("CsTbTipoSgtBeneficiario.findGruppoBeneficiarioPerRagioneSociale");
+			query.setParameter("ragioneSociale", ragioneSociale);
+			
+			List<Object> resultQuery = query.getResultList();
+			
+			if (resultQuery != null && resultQuery.size() > 0) {
+				return (CsTbTipoSgtBeneficiario) resultQuery.get(0);
+			}
+			
+		} catch (NoResultException e) {
+			logger.debug("CsTbTipoSgtBeneficiario con ragione_sociale [ "+ ragioneSociale + " ] non trovato");
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		}
+		
+		return null;
+	}
+	
+	/**
+	 * 
+	 * <h1>getGruppoBeneficiarioByCodiceFiscale</h1>
+	 *
+	 * <p>
+	 * </p>
+	 *
+	 * @param ragioneSociale
+	 * @param codiceFiscale
+	 * @return
+	 *
+	 * @since 1.26.13
+	 * @version 1.0.0
+	 * 
+	 * @author DDV
+	 * @lastUpdate 2025-07-29 - DDV
+	 */
+	public CsTbTipoSgtBeneficiario getGruppoBeneficiarioByCodiceFiscale(String ragioneSociale, String codiceFiscale) {
+		
+		try {
+
+			Query query = em.createNamedQuery("CsTbTipoSgtBeneficiario.findGruppoBeneficiarioPerCodiceFiscale");
+			query.setParameter("codiceFiscale", codiceFiscale);
+			query.setParameter("ragioneSociale", ragioneSociale);
+			
+			List<Object> resultQuery = query.getResultList();
+			
+			if (resultQuery != null && resultQuery.size() > 0) {
+				return (CsTbTipoSgtBeneficiario) resultQuery.get(0);
+			}
+			
+		} catch (NoResultException e) {
+			logger.debug("CsTbTipoSgtBeneficiario con ragione_sociale [ " + ragioneSociale + " ] e con codice_fiscale [ " + codiceFiscale + " ] non trovato");
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		}
+		
+		return null;
+	}
 	
 	//SISO-1207
 	@SuppressWarnings("unchecked")
 	public List<CsTbUnitaMisura> getUnitaMisuraByIdInterventi(String query) {
-		try{
+		try {
 			logger.debug("getUnitaMisuraByIdInterventi SQL["+query+"]");
 			Query q = em.createQuery(query);
 			List<CsTbUnitaMisura> retList = q.getResultList();
-			logger.debug("getUnitaMisuraByIdInterventi result["+retList.size()+"]");
+			logger.debug("getUnitaMisuraByIdInterventi result[ " + retList.size() + " ]");
 			return retList;
-		}catch(Exception e){
-			logger.error(e.getMessage(),e);
+		} catch(Exception e) {
+			logger.error(e.getMessage(), e);
 			return null;
 		}
 	}
 
 	public CsTbTipoIsee getTipoIsee(Long id) {
-		if(id!=null)
+		if (id != null)
 			return em.find(CsTbTipoIsee.class, id);
-		else return null;
+		else
+			return null;
 	}
 	
 	public void salva2Livello(String nome) {
@@ -1871,14 +1951,14 @@ public class ConfigurazioneDAO extends CarSocialeBaseDAO implements Serializable
 	public List<KeyValueDTO> getTbItems(String tabella){
 		List<KeyValueDTO> lstKv = new ArrayList<KeyValueDTO>();
 		String sql = "SELECT DISTINCT t.ID, t.DESCRIZIONE, t.ABILITATO "
-				   + "FROM "+tabella+" t "
+				   + "FROM " + tabella + " t "
 				   + "ORDER BY t.descrizione ";
 		Query q = em.createNativeQuery(sql);
-		List<Object[]> lst = (List<Object[]>)q.getResultList();
+		List<Object[]> lst = (List<Object[]>) q.getResultList();
 		if (lst != null) {
 			for (Object[] obj : lst) {
-				KeyValueDTO kv = new KeyValueDTO(obj[0], (String)obj[1]);
-				boolean abilitato = obj[2]!=null && obj[2].toString().equals("1") ? Boolean.TRUE : Boolean.FALSE;
+				KeyValueDTO kv = new KeyValueDTO(obj[0], (String) obj[1]);
+				boolean abilitato = obj[2] != null && obj[2].toString().equals("1") ? Boolean.TRUE : Boolean.FALSE;
 				kv.setAbilitato(abilitato);
 				lstKv.add(kv);
 			}
@@ -1893,7 +1973,7 @@ public class ConfigurazioneDAO extends CarSocialeBaseDAO implements Serializable
 			Query q = em.createNamedQuery("CsPaiFaseChiusura.findPaiFaseChiusuraByTipoPaiId");
 			q.setParameter("idTipoPai", idTipoPai);
 			List<Long> lstIs = q.getResultList();
-			return lstIs.size()>0;
+			return lstIs.size() > 0;
 
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
@@ -1902,35 +1982,35 @@ public class ConfigurazioneDAO extends CarSocialeBaseDAO implements Serializable
 	}
    
 	public ArFfProgetto getProgettoById(Long id) {
-			ArFfProgetto prog = em.find(ArFfProgetto.class, id);
-			return prog;
-		}
+		ArFfProgetto prog = em.find(ArFfProgetto.class, id);
+		return prog;
+	}
 	
 	public ArFfProgettoAttivita getProgettoAttivitaById(Long id) {
-			ArFfProgettoAttivita prog = em.find(ArFfProgettoAttivita.class, id);
-			return prog;
-		}
+		ArFfProgettoAttivita prog = em.find(ArFfProgettoAttivita.class, id);
+		return prog;
+	}
 	
 /*	public List<ArFfProgettoAttivita> getSottocorsi(){			
 		Query q = em.createNamedQuery("ArFfProgettoAttivita.findByAbilitato"); 
 		return (List<ArFfProgettoAttivita>) q.getResultList();  
 	}*/
 	
-	public List<KeyValueDTO> findProgettiByBelfioreOrganizzazione(String belfiore, String tipoProgetto, Long idSelected, boolean showCodiceMemo){			
+	public List<KeyValueDTO> findProgettiByBelfioreOrganizzazione(String belfiore, String tipoProgetto, Long idSelected, boolean showCodiceMemo) {			
 		List<KeyValueDTO> lst = new ArrayList<KeyValueDTO>();
-		String sql = "select distinct p.id, p.codice_memo,p.descrizione, p.abilitato abip, po.abilitato abipo  "+
-				"from ar_ff_progetto p "+
-				"left join ar_ff_progetto_org po on (p.id = po.progetto_id) "+
-				"left join ar_o_organizzazione o on (po.organizzazione_id = o.id) "+
-				"left join cs_cfg_int_pr_form frm on (FRM.FF_PROGETTO_DESCRIZIONE = p.descrizione) "+
+		String sql = "select distinct p.id, p.codice_memo,p.descrizione, p.abilitato abip, po.abilitato abipo " +
+				"from ar_ff_progetto p " +
+				"left join ar_ff_progetto_org po on (p.id = po.progetto_id) " +
+				"left join ar_o_organizzazione o on (po.organizzazione_id = o.id) " +
+				"left join cs_cfg_int_pr_form frm on (FRM.FF_PROGETTO_DESCRIZIONE = p.descrizione) " +
 				"where o.belfiore = :belfiore ";
-		if(!StringUtils.isBlank(tipoProgetto))
-			sql+= "and frm.abilitato = 1 and frm.RIF_FORM_INTERVENTO_PR_DETT = :tipoProgetto ";
-		sql+= "order by descrizione";
+		if (!StringUtils.isBlank(tipoProgetto))
+			sql += "and frm.abilitato = 1 and frm.RIF_FORM_INTERVENTO_PR_DETT = :tipoProgetto ";
+		sql += "order by descrizione";
 		
-		try{		
+		try {		
 			Query q = em.createNativeQuery(sql);
-			if(!StringUtils.isBlank(tipoProgetto))
+			if (!StringUtils.isBlank(tipoProgetto))
 				q.setParameter("tipoProgetto", tipoProgetto);
 			q.setParameter( "belfiore", belfiore );
 			List<Object[]> lstObj = (List<Object[]>) q.getResultList();
@@ -1948,7 +2028,7 @@ public class ConfigurazioneDAO extends CarSocialeBaseDAO implements Serializable
 				lst.add(kv);
 			}
 			
-		}catch(Exception e){
+		} catch(Exception e) {
 			logger.error(e.getMessage(), e);
 		}
 		return lst;
