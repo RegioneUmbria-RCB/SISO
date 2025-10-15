@@ -7,6 +7,8 @@ import it.webred.cs.data.DataModelCostanti;
 import it.webred.cs.data.model.CsOOperatoreSettore;
 import it.webred.cs.jsf.manbean.superc.CsUiCompBaseBean;
 import it.webred.ct.config.model.AmKeyValueExt;
+import it.webred.ct.config.parameters.ParameterService;
+import it.webred.ct.config.parameters.dto.ParameterSearchCriteria;
 import it.webred.ejb.utility.ClientUtility;
 
 import java.util.Arrays;

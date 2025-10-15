@@ -19,7 +19,7 @@
 		paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rows="10"
 		rowsPerPageTemplate="10,20,40" lazy="true" styleClass="ui-datatable-hor-scroll">
 		
-		<f:facet name="emptyMessage">
+		<f:facet name="emptyMessage" >
 			<h:panelGroup layout="block">
 				<h:outputText escape="false" rendered="#{dataBean.lazyListaErogazioniModel.empyMessageReturn == true}" value="Nessun intervento erogato o da erogare" />
 				<h:outputText escape="false" style="color:red; font-weight: bold;" rendered="#{dataBean.lazyListaErogazioniModel.empyMessageReturn == false}" value="Selezionare almeno un filtro di ricerca per mostrare gli interventi" />
@@ -31,7 +31,7 @@
 				<p:commandLink ajax="true" value="Lista Interventi erogati o da erogare" update="listaErogazioneInterventi">
 					<span title="refresh" class="ui-icon ui-icon-refresh" />
 				</p:commandLink>
-				<p:commandButton
+				<p:commandButton 
 					rendered="#{!dataBean.lazyListaErogazioniModel.loadTab}"
 					value="CARICA TUTTI"
 					title="Cliccando qui è possibile estrarre tutti gli interventi del Comune"
