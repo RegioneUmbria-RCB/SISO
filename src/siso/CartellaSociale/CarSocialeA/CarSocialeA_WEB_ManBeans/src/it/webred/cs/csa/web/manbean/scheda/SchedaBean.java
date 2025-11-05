@@ -1108,8 +1108,7 @@ public class SchedaBean extends CsUiCompBaseBean {
 				}
 			}
 		}
-		
-		
+				
 		if(validaCross){
 			 salvato = (this.renderTabAnagrafica ? anagraficaBean.salva() : true)
 					&& (this.renderTabParenti ? parentiBean.salva() : true)

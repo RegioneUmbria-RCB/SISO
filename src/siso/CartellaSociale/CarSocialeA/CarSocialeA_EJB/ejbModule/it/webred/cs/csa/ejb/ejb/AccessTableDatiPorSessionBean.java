@@ -65,14 +65,10 @@ public class AccessTableDatiPorSessionBean extends CarSocialeBaseSessionBean imp
 		return dao.saveDatiPor(lavoro);
 	}
 	
-
 	@Override
 	public void eliminaDatiPor(BaseDTO dto) {
 		dao.eliminaDatiPor((Long)dto.getObj());
 	}
-	
-
-	
 	
 	@Override
 	public SiruResultDTO validaSiru(BaseDTO dto) {

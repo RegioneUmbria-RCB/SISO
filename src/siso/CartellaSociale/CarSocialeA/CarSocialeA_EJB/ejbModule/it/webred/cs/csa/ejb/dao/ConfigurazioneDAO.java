@@ -2012,7 +2012,8 @@ public class ConfigurazioneDAO extends CarSocialeBaseDAO implements Serializable
 			Query q = em.createNativeQuery(sql);
 			if (!StringUtils.isBlank(tipoProgetto))
 				q.setParameter("tipoProgetto", tipoProgetto);
-			q.setParameter( "belfiore", belfiore );
+			q.setParameter("belfiore", belfiore);
+			
 			List<Object[]> lstObj = (List<Object[]>) q.getResultList();
 			for(Object[] o : lstObj) {
 				BigDecimal id = (BigDecimal)o[0];
@@ -2020,10 +2021,10 @@ public class ConfigurazioneDAO extends CarSocialeBaseDAO implements Serializable
 				String descrizione = (String)o[2];
 				Character pAbilitato = (Character)o[3];
 				BigDecimal poAbilitato = (BigDecimal)o[4];
-				String d = descrizione + (showCodiceMemo ? " ["+codiceMemo+"]" : "");
+				String d = descrizione + (showCodiceMemo ? " [ " + codiceMemo +  " ]" : "");
 				KeyValueDTO kv = new KeyValueDTO(id, d);
-				boolean confAbilitato = poAbilitato!=null && poAbilitato.intValue()==1 && pAbilitato!=null && pAbilitato=='1';
-				boolean abilitato = confAbilitato || (idSelected!=null && id.longValue()==idSelected.longValue());
+				boolean confAbilitato = poAbilitato != null && poAbilitato.intValue() == 1 && pAbilitato != null && pAbilitato == '1';
+				boolean abilitato = confAbilitato || (idSelected != null && id.longValue() == idSelected.longValue());
 				kv.setAbilitato(abilitato);
 				lst.add(kv);
 			}
@@ -2031,6 +2032,7 @@ public class ConfigurazioneDAO extends CarSocialeBaseDAO implements Serializable
 		} catch(Exception e) {
 			logger.error(e.getMessage(), e);
 		}
+		
 		return lst;
 	}
 	

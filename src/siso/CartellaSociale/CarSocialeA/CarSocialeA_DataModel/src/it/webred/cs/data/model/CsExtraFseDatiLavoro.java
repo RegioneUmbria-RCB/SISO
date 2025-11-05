@@ -6,105 +6,107 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 // <!-- SISO-1305 -->
-
 @Entity
-@Table(name="CS_EXTRA_FSE_DATI_LAVORO")
-@NamedQuery(name="CsExtraFseDatiLavoro.findAll", query="SELECT c FROM CsExtraFseDatiLavoro c")
+@Table(name = "CS_EXTRA_FSE_DATI_LAVORO")
+@NamedQuery(name = "CsExtraFseDatiLavoro.findAll", query = "SELECT c FROM CsExtraFseDatiLavoro c")
 public class CsExtraFseDatiLavoro implements Serializable {
-	
+
 	private static final long serialVersionUID = -6508827039482051925L;
 
 	@Id
-	@SequenceGenerator(name="CS_EXTRA_FSE_DATI_LAVORO_ID_GENERATOR", sequenceName="SQ_EXTRA_FSE",allocationSize=1)
-	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="CS_EXTRA_FSE_DATI_LAVORO_ID_GENERATOR")
+	@SequenceGenerator(name = "CS_EXTRA_FSE_DATI_LAVORO_ID_GENERATOR", sequenceName = "SQ_EXTRA_FSE", allocationSize = 1)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "CS_EXTRA_FSE_DATI_LAVORO_ID_GENERATOR")
 	private Long id;
 
-	@Column(name="ANNO_CONSEGUIMENTO_TITOLO_STU")
+	@Column(name = "ANNO_CONSEGUIMENTO_TITOLO_STU")
 	private BigDecimal annoConseguimentoTitoloStu;
-	
-	@Column(name="FLAG_ALTRO_CORSO")
+
+	@Column(name = "FLAG_ALTRO_CORSO")
 	private Boolean flagAltroCorso;
-	
-	@Column(name="DURATA_RIC_LAVORO_ID")
+
+	@Column(name = "DURATA_RIC_LAVORO_ID")
 	private String durataRicLavoroId;
-	
-	@Column(name="DESC_TIPO_LAVORO")
+
+	@Column(name = "DESC_TIPO_LAVORO")
 	private String descTipoLavoro;
-	
-	@Column(name="DESC_ORARIO_LAVORO")
+
+	@Column(name = "DESC_ORARIO_LAVORO")
 	private String descOrarioLavoro;
 
-	@Column(name="AZ_RAGIONE_SOCIALE")
+	@Column(name = "AZ_RAGIONE_SOCIALE")
 	private String azRagioneSociale;
-	
-	@Column(name="AZ_PI")
+
+	@Column(name = "AZ_PI")
 	private String azPi;
 
-	@Column(name="AZ_CF")
+	@Column(name = "AZ_CF")
 	private String azCf;
-	
-	@Column(name="AZ_VIA")
+
+	@Column(name = "AZ_VIA")
 	private String azVia;
-	
-	@Column(name="AZ_COMUNE_COD")
+
+	@Column(name = "AZ_COMUNE_COD")
 	private String azComuneCod;
 
-	@Column(name="AZ_COMUNE_DES")
+	@Column(name = "AZ_COMUNE_DES")
 	private String azComuneDes;
-	
-	@Column(name="AZ_PROV")
+
+	@Column(name = "AZ_PROV")
 	private String azProv;
 
-	@Column(name="AZ_COD_ATECO")
+	@Column(name = "AZ_COD_ATECO")
 	private String azCodAteco;
 
-	@Column(name="AZ_FORMA_GIURIDICA")
+	@Column(name = "AZ_FORMA_GIURIDICA")
 	private String azFormaGiuridica;
 
-	@Column(name="DESC_DIM_AZIENDA")
+	@Column(name = "DESC_DIM_AZIENDA")
 	private String descDimAzienda;
 
-	@Column(name="IBAN")
+	@Column(name = "IBAN")
 	private String iban;
 
-	@Column(name="FLAG_RES_DOM")
+	@Column(name = "FLAG_RES_DOM")
 	private Boolean flagResDom;
 
-	@Column(name="COMUNICA_VUL")
+	@Column(name = "COMUNICA_VUL")
 	private Boolean comunicaVul;
-	
-	@Column(name="USER_INS")
+
+	@Column(name = "USER_INS")
 	private String userIns;
-	
+
 	@Temporal(TemporalType.DATE)
-	@Column(name="DT_INS")
+	@Column(name = "DT_INS")
 	private Date dtIns;
 
-	@Column(name="USER_MOD")
+	@Column(name = "USER_MOD")
 	private String userMod;
-	
-	@Temporal(TemporalType.DATE)
-	@Column(name="DT_MOD")
-	private Date dtMod;
-	
-	@Temporal(TemporalType.DATE)
-	@Column(name="DT_SOTTOSCRIZIONE")
-	private Date dtSottoscrizione;
-	
-	 @Column(name="SOGGETTO_ATTUATORE")
-	 private String soggettoAttuatore;
 
+	@Temporal(TemporalType.DATE)
+	@Column(name = "DT_MOD")
+	private Date dtMod;
+
+	@Temporal(TemporalType.DATE)
+	@Column(name = "DT_SOTTOSCRIZIONE")
+	private Date dtSottoscrizione;
+
+	@Column(name = "SOGGETTO_ATTUATORE")
+	private String soggettoAttuatore;
+
+	@Column(name = "PROGETTO_VITA_VALORE")
+	private String progettoVitaValore;
+	
 	//Relazioni	
 	@ManyToOne(fetch = FetchType.EAGER, optional = true)
-	@JoinColumn(name="PROGETTO_ID")
+	@JoinColumn(name = "PROGETTO_ID")
 	private ArFfProgetto progetto;
-		
+
 	@ManyToOne(fetch = FetchType.EAGER, optional = true)
-	@JoinColumn(name="PROGETTO_ATTIVITA_ID")
+	@JoinColumn(name = "PROGETTO_ATTIVITA_ID")
 	private ArFfProgettoAttivita progettoAttivita;
-	
+
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, optional = true)
-	@JoinColumn(name="EXTRA_FSE_MAST_ID")
+	@JoinColumn(name = "EXTRA_FSE_MAST_ID")
 	private CsExtraFseMast master = new CsExtraFseMast();
 
 	public Boolean getComunicaVul() {
@@ -130,7 +132,6 @@ public class CsExtraFseDatiLavoro implements Serializable {
 	public void setProgettoAttivita(ArFfProgettoAttivita progettoAttivita) {
 		this.progettoAttivita = progettoAttivita;
 	}
-
 
 	public CsExtraFseMast getMaster() {
 		return master;
@@ -334,4 +335,13 @@ public class CsExtraFseDatiLavoro implements Serializable {
 	public void setSoggettoAttuatore(String soggettoAttuatore) {
 		this.soggettoAttuatore = soggettoAttuatore;
 	}
+	
+	public String getProgettoVitaValore() {
+		return progettoVitaValore;
+	}
+
+	public void setProgettoVitaValore(String progettoVitaValore) {
+		this.progettoVitaValore = progettoVitaValore;
+	}
+	
 }

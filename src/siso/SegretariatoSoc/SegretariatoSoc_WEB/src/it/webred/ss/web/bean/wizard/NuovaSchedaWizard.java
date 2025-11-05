@@ -84,6 +84,7 @@ import it.webred.cs.json.serviziorichiestocustom.IServizioRichiestoCustom;
 import it.webred.cs.json.stranieri.IStranieri;
 import it.webred.cs.json.stranieri.StranieriManBaseBean;
 import it.webred.cs.sociosan.ejb.client.ArgoBufferManagerSessionBeanRemote;
+import it.webred.ct.config.model.AmKeyValueExt;
 import it.webred.ct.config.model.AmTabComuni;
 import it.webred.ct.config.model.AmTabNazioni;
 import it.webred.ct.support.datarouter.CeTBaseObject;
@@ -144,7 +145,6 @@ public class NuovaSchedaWizard extends SegretariatoSocBaseBean {
 	
 	protected AccessTableSchedaSegrSessionBeanRemote schedaSegrService = 
 			(AccessTableSchedaSegrSessionBeanRemote) getEjb("CarSocialeA", "CarSocialeA_EJB", "AccessTableSchedaSegrSessionBean");
-
 	
 	private boolean renderModDatiAnaDlg;
 	
@@ -312,6 +312,8 @@ public class NuovaSchedaWizard extends SegretariatoSocBaseBean {
 
 	private SsUfficio destUfficio;
 
+	private String nomeFieldSetDatiPor;
+	
 	private String dateParser = "dd/MM/yyyy";
 
 	private static final String TAG_ORIG_DESC_ORGANIZZAZIONE = "ORIG_DESC_ORGANIZZAZIONE";
@@ -400,7 +402,6 @@ public class NuovaSchedaWizard extends SegretariatoSocBaseBean {
 		this.visualizzaPannelloDettaglio = visualizzaPannelloDettaglio;
 	}
 	//#ROMACAPITALE fine
-	
 	
 	public String getInterventoEconomicoTipo() {
 		return interventoEconomicoTipo;
@@ -1729,25 +1730,39 @@ public class NuovaSchedaWizard extends SegretariatoSocBaseBean {
 
 	}
 
-	private boolean validaDatiPor(){
+	/**
+	 * 
+	 * <h1>validaDatiPor</h1>
+	 *
+	 * <p>
+	 * </p>
+	 *
+	 * @return
+	 *
+	 * @since 1.26.12
+	 * @version 1.0.1
+	 * 
+	 * @lastUpdate 2025-10-27 - DDV
+	 */
+	private boolean validaDatiPor() {
 		boolean ok = true;
 		boolean okPor = true;
-		if(this.isVisualizzaModuloPorUdc() && this.iDatiPor.isRenderFSE()) {
+		if (this.isVisualizzaModuloPorUdc() && this.iDatiPor.isRenderFSE()) {
 			okPor =	this.iDatiPor.valida();
 			
-			if(!okPor){
+			if (!okPor) {
 				this.iDatiPor.showWarning();
 				return okPor;
 			}
 			
 			List<String> valRecapito = iDatiPor.validaRecapiti(this.segnalato.getTel(), this.segnalato.getCel(), this.segnalato.getEmail());
 			boolean okRecapiti = valRecapito.isEmpty();
-			if(!valRecapito.isEmpty()){
+			if (!valRecapito.isEmpty()) {
 				StringBuilder errorRec = new StringBuilder();
 				int i = 0;
-				for(String msg: valRecapito) {
+				for (String msg: valRecapito) {
 					errorRec.append(msg);
-					if(i<valRecapito.size()-1)
+					if (i < valRecapito.size() - 1)
 						errorRec.append(", ");
 					i++;
 				}
@@ -1757,7 +1772,7 @@ public class NuovaSchedaWizard extends SegretariatoSocBaseBean {
 			}
 			
 			ok = okPor && okRecapiti;
-				
+			
 			//Valdo SIRU
 			SiruInputDTO pds = new SiruInputDTO();
 			pds.setCittadinanza(this.segnalato.getAnagrafica().getCittadinanza());
@@ -1768,27 +1783,27 @@ public class NuovaSchedaWizard extends SegretariatoSocBaseBean {
 			pds.setFlagResDom(this.iDatiPor.getDescFlagResDom());
 			
 			pds.setCodIstatComuneResidenza(this.segnalato.getResidenza().getComuneNazioneMan().getComuneMan().getComune().getCodIstatComune());
-			if(this.segnalato.getDomicilio()!=null)
+			if (this.segnalato.getDomicilio() != null)
 				pds.setCodIstatComuneDomicilio(this.segnalato.getDomicilio().getComuneNazioneMan().getComuneMan().getComune().getCodIstatComune());
 
-			if(this.iDatiPor.isComunicaVul()) {
+			if (this.iDatiPor.isComunicaVul()) {
 				pds.setGrpVulnerabilita(this.famConviventiMan.getGruppoVulnerabile().getId());
-			}else{
-				if(this.isModuloPorMarche())
+			} else {
+				if (this.isModuloPorMarche())
 					pds.setGrpVulnerabilita(DataModelCostanti.GrVulnerabile.NON_COMUNICA_VULNERABILITA);
 			}
 			
-			if(this.segnalato.getAnagrafica().getComuneNazioneNascitaMan().isComune())
+			if (this.segnalato.getAnagrafica().getComuneNazioneNascitaMan().isComune())
 				pds.setComuneNascitaCod(this.segnalato.getAnagrafica().getComuneNazioneNascitaMan().getComuneMan().getComune().getCodIstatComune());
 			else
 				pds.setStatoNascitaCod(this.segnalato.getAnagrafica().getComuneNazioneNascitaMan().getNazioneNascitaMan().getNazione().getCodIstatNazione());
-		
+			
 			pds.setIdTitoloStudio(this.segnalato.getFormLavoroMan().getIdTitoloStudio().toString());
 			
 			BigDecimal clId = this.segnalato.getFormLavoroMan().getIdCondLavorativa();
 			it.webred.cs.csa.ejb.dto.BaseDTO d = new it.webred.cs.csa.ejb.dto.BaseDTO();
 	    	fillEnte(d);
-	    	if(clId!=null){
+	    	if (clId != null) {
 	    		d.setObj(clId.toString());
 	    		CsTbCondLavoro cl = getConfigurationCsBean().getCondLavoroById(d);
 	    		pds.setCsTbIngMercato(cl.getCsTbIngMercato());
@@ -1807,41 +1822,74 @@ public class NuovaSchedaWizard extends SegretariatoSocBaseBean {
 			pds.setAzComuneCod(this.iDatiPor.getCsCDatiLavoro().getAzComuneCod());
 
 			it.webred.cs.csa.ejb.dto.BaseDTO dto = new it.webred.cs.csa.ejb.dto.BaseDTO();
-			fillEnte(dto);				
+			fillEnte(dto);
 			dto.setObj(pds);
 			dto.setObj2(this.iDatiPor.getMappaCampiFse());
-			SiruResultDTO val = porService.validaSiru(dto);
-			if(val.getErrori()!=null&&val.getErrori().size()>0) {
+			SiruResultDTO val = this.porService.validaSiru(dto);
+			if (val.getErrori() != null && val.getErrori().size() > 0) {
 				for(String sert: val.getErrori()) {
 					addWarningMessage("Errore in validazione campi FSE ", sert);
 				}
-				ok=false;
+				ok = false;
 			} else {
 				this.iDatiPor.getCsCDatiLavoro().getMaster().setSiru(val.getSiruExtra());
+			}
+		}
+
+		if (this.isVisualizzaModuloPorUdc() && this.iDatiPor.isRenderPDV()) {
+			ok = StringUtils.isBlank(this.iDatiPor.getCsCDatiLavoro().getProgettoVitaValore()) ? false : true;
+			if (!ok) {
+				addWarningMessage("Progetto di Vita", "Non e' stato selezionato nessun valore per 'Istanza presentata presso altri punti di ricezione'");
 			}
 		}
 		
 		return ok;
 	}
 	
-	private void salvaDatiPor(){
-		if(this.isVisualizzaModuloPorUdc() && this.iDatiPor.isRenderFSE()) {
+	/**
+	 * 
+	 * <h1>salvaDatiPor</h1>
+	 *
+	 * <p>
+	 * </p>
+	 *
+	 *
+	 * @since 1.26.12
+	 * @version 1.0.1
+	 * 
+	 * @lastUpdate 2025-10-28 - DDV
+	 */
+	private void salvaDatiPor() {
+		
+		if (this.isVisualizzaModuloPorUdc() && (this.iDatiPor.isRenderFSE() || this.iDatiPor.isRenderPDV())) {
+			
 			//Salvo i dati por
 			try {
-				iDatiPor.getCsCDatiLavoro().getMaster().setSchedaId(scheda.getId());
-				iDatiPor.getCsCDatiLavoro().getMaster().setTipo(DataModelCostanti.TipoPOR.SCHEDA_ACCESSO);
-				iDatiPor.getCsCDatiLavoro().getMaster().setOrganizzazioneId(accesso.getPuntoContatto().getOrganizzazione().getId());
+				this.iDatiPor.getCsCDatiLavoro().getMaster().setSchedaId(this.scheda.getId());
+				this.iDatiPor.getCsCDatiLavoro().getMaster().setTipo(DataModelCostanti.TipoPOR.SCHEDA_ACCESSO);
+				this.iDatiPor.getCsCDatiLavoro().getMaster().setOrganizzazioneId(this.accesso.getPuntoContatto().getOrganizzazione().getId());
 				
 				OperatoreDTO opDto = new OperatoreDTO();
 				this.fillUserData(opDto);
-				opDto.setUsername(accesso.getOperatore());
-				CsOOperatoreBASIC opAccesso = configurationCsEnteBean.findOperatoreBASICByUsername(opDto);
-				iDatiPor.getCsCDatiLavoro().getMaster().setOperatoreId(opAccesso!=null ? opAccesso.getId() : null);
+				opDto.setUsername(this.accesso.getOperatore());
+				CsOOperatoreBASIC opAccesso = this.configurationCsEnteBean.findOperatoreBASICByUsername(opDto);
+				this.iDatiPor.getCsCDatiLavoro().getMaster().setOperatoreId(opAccesso != null ? opAccesso.getId() : null);
+				
+				if (StringUtils.isNotBlank(this.iDatiPor.getCsCDatiLavoro().getProgettoVitaValore())) {
+					this.iDatiPor.getCsCDatiLavoro().setProgettoVitaValore(this.iDatiPor.getCsCDatiLavoro().getProgettoVitaValore());
+				} else {
+					this.iDatiPor.getCsCDatiLavoro().setProgettoVitaValore(null);
+				}
+				
+				if (!this.iDatiPor.isRenderPDV()) {
+					this.iDatiPor.getCsCDatiLavoro().setProgettoVitaValore(null);
+				}
 				
 				it.webred.cs.csa.ejb.dto.BaseDTO dto = new it.webred.cs.csa.ejb.dto.BaseDTO();
 				fillUserData(dto);
 				dto.setObj(this.iDatiPor.getCsCDatiLavoro());
-				CsExtraFseDatiLavoro savetpor = porService.saveDatiPor(dto);
+				
+				CsExtraFseDatiLavoro savetpor = this.porService.saveDatiPor(dto);
 				this.iDatiPor.setCsCDatiLavoro(savetpor);
 				
 			} catch (Throwable e1) {
@@ -1850,7 +1898,63 @@ public class NuovaSchedaWizard extends SegretariatoSocBaseBean {
 				addError("salva.error", msg);
 				throw new CarSocialeServiceException(e1);
 			}
+			
+		} else {
+
+			if (this.iDatiPor != null && this.iDatiPor.getCsCDatiLavoro() != null) {
+				try {
+					this.iDatiPor.getCsCDatiLavoro().getMaster().setSchedaId(this.scheda.getId());
+					this.iDatiPor.getCsCDatiLavoro().getMaster().setTipo(DataModelCostanti.TipoPOR.SCHEDA_ACCESSO);
+					this.iDatiPor.getCsCDatiLavoro().getMaster().setOrganizzazioneId(this.accesso.getPuntoContatto().getOrganizzazione().getId());
+					
+					OperatoreDTO opDto = new OperatoreDTO();
+					this.fillUserData(opDto);
+					opDto.setUsername(this.accesso.getOperatore());
+					CsOOperatoreBASIC opAccesso = this.configurationCsEnteBean.findOperatoreBASICByUsername(opDto);
+					this.iDatiPor.getCsCDatiLavoro().getMaster().setOperatoreId(opAccesso != null ? opAccesso.getId() : null);
+					
+					if (this.iDatiPor.isRenderPDV() && !this.iDatiPor.isRenderFSE()) {
+						this.iDatiPor.getCsCDatiLavoro().setAzCodAteco(null);
+						this.iDatiPor.getCsCDatiLavoro().setDescDimAzienda(null);
+						this.iDatiPor.getCsCDatiLavoro().setAzFormaGiuridica(null);
+						this.iDatiPor.getCsCDatiLavoro().setDescOrarioLavoro(null);
+						this.iDatiPor.getCsCDatiLavoro().setDescTipoLavoro(null);
+						this.iDatiPor.getCsCDatiLavoro().setAzPi(null);
+						this.iDatiPor.getCsCDatiLavoro().setAzCf(null);
+						this.iDatiPor.getCsCDatiLavoro().setAzRagioneSociale(null);
+						this.iDatiPor.getCsCDatiLavoro().setAzVia(null);
+						this.iDatiPor.getCsCDatiLavoro().setDurataRicLavoroId(null);
+						this.iDatiPor.getCsCDatiLavoro().setAzComuneCod(null);
+						this.iDatiPor.getCsCDatiLavoro().setAnnoConseguimentoTitoloStu(null);
+						this.iDatiPor.getCsCDatiLavoro().setIban(null);
+						this.iDatiPor.getCsCDatiLavoro().setFlagResDom(null);
+						this.iDatiPor.getCsCDatiLavoro().setComunicaVul(null);
+						this.iDatiPor.getCsCDatiLavoro().setDtSottoscrizione(null);
+						this.iDatiPor.getCsCDatiLavoro().setSoggettoAttuatore(null);
+						this.iDatiPor.getCsCDatiLavoro().setProgettoAttivita(null);
+					}
+					
+					if (!this.iDatiPor.isRenderPDV()) {
+						this.iDatiPor.getCsCDatiLavoro().setProgettoVitaValore(null);
+					}
+					
+					it.webred.cs.csa.ejb.dto.BaseDTO dto = new it.webred.cs.csa.ejb.dto.BaseDTO();
+					fillUserData(dto);
+					dto.setObj(this.iDatiPor.getCsCDatiLavoro());
+					
+					CsExtraFseDatiLavoro savetpor = this.porService.saveDatiPor(dto);
+					this.iDatiPor.setCsCDatiLavoro(savetpor);
+					
+				} catch (Throwable e1) {
+					String msg = "Errore nel salvataggio dati POR ";
+					logger.error(msg, e1);
+					addError("salva.error", msg);
+					throw new CarSocialeServiceException(e1);
+				}
+			}
+			
 		}
+		
 	}
 
 	private boolean setSchedaCompleta(boolean completa) {
@@ -6502,24 +6606,31 @@ public class NuovaSchedaWizard extends SegretariatoSocBaseBean {
 			this.iDatiPor.changeGruppoVulnerabile(this.famConviventiMan.getGruppoVulnerabile());
 		}
 	}
+	
 	public boolean isCapofilaPic() {
 		return capofilaPic;
 	}
+	
 	public void setCapofilaPic(boolean capofilaPic) {
 		this.capofilaPic = capofilaPic;
 	}
+	
 	public CsOOrganizzazione getCapofila() {
 		return capofila;
 	}
+	
 	public void setCapofila(CsOOrganizzazione capofila) {
 		this.capofila = capofila;
 	}
+	
 	public boolean isDisabilitaCapofilaPic() {
 		return disabilitaCapofilaPic;
 	}
+	
 	public void setDisabilitaCapofilaPic(boolean disabilitaCapofilaPic) {
 		this.disabilitaCapofilaPic = disabilitaCapofilaPic;
 	}
+	
 	public String getCapofilaNome(){
 		 if(this.capofila!=null) 
 			 return this.capofila.getNome();
@@ -6533,6 +6644,19 @@ public class NuovaSchedaWizard extends SegretariatoSocBaseBean {
 	public boolean isRenderCapofilaPic(){
 		boolean isCurrentCapofila = this.getCurrentEnte().equalsIgnoreCase(this.capofila.getCodRouting());
 		return this.isGestioneCapofilaPic() && !isCurrentCapofila;
+	}
+	
+	public String getNomeFieldSetDatiPor() {
+		
+		AmKeyValueExt amKeyValueExt = CsUiCompBaseBean.getAmKeyValueExt(DataModelCostanti.AmParameterKey.NOME_TAB_DATI_POR);
+		
+		this.nomeFieldSetDatiPor = amKeyValueExt.getValueConf();
+		
+		return nomeFieldSetDatiPor;
+	}
+	
+	public void setNomeFieldSetDatiPor(String nomeFieldSetDatiPor) {
+		this.nomeFieldSetDatiPor = nomeFieldSetDatiPor;
 	}
 	
 }

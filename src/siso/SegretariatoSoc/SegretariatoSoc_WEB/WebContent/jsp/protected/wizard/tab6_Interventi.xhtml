@@ -7,132 +7,122 @@
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:webred="http://java.sun.com/jsf/composite/webred" xmlns:webredcs="http://java.sun.com/jsf/composite/webredcs">
 	
-	<p:panel header="Interventi previsti" toggleable="true" toggleSpeed="500">
-			<p:outputPanel style="float:right;background:#f9fbfd !important; width:300px;">
-				<h:outputText value="Cartella Sociale non presente per il soggetto" rendered="#{nuovaSchedaWizard.statoCartella==null}" style="font-weight:bold;color:red;" />
-				<h:outputText value="Cartella Sociale: " rendered="#{nuovaSchedaWizard.statoCartella!=null}" style="font-weight:bold;color:green;" />
-				<h:outputText value="#{nuovaSchedaWizard.statoCartella}" rendered="#{nuovaSchedaWizard.statoCartella!=null}" escape="false" />
-			</p:outputPanel>
+<p:panel header="Interventi previsti" toggleable="true" toggleSpeed="500">
+	<p:outputPanel style="float:right;background:#f9fbfd !important; width:300px;">
+		<h:outputText value="Cartella Sociale non presente per il soggetto" rendered="#{nuovaSchedaWizard.statoCartella==null}" style="font-weight:bold;color:red;" />
+		<h:outputText value="Cartella Sociale: " rendered="#{nuovaSchedaWizard.statoCartella!=null}" style="font-weight:bold;color:green;" />
+		<h:outputText value="#{nuovaSchedaWizard.statoCartella}" rendered="#{nuovaSchedaWizard.statoCartella!=null}" escape="false" />
+	</p:outputPanel>
 
-			<h:panelGrid columns="2" columnClasses="label, value" styleClass="grid" id="invio_panelGrid">
-				
-				<h:outputText value="Scheda inviata il: "/>
-				
-				<p:outputPanel id="scheda_inviata_info">
-					<h:outputText value="#{nuovaSchedaWizard.schedaInfoInvio.origDataInvio}">
-						<f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
-					</h:outputText>
-					<h:outputText rendered="#{(nuovaSchedaWizard.schedaInfoInvio.origDataInvio eq null )}" value="-"/>
-					
-					<p:commandButton action="#{nuovaSchedaWizard.annullaInvio()}" disabled="#{nuovaSchedaWizard.disabilitaAnnullaInvio}"
-					                 update="scheda_inviata_info,scheda_ricevuta_info,tipo_intervento,categoria_sociale" value="annulla invio"  style="margin-left:10px;" />
-					
-					<h:outputText value="- #{nuovaSchedaWizard.schedaInfoInvio.origTipoIntervento}" rendered="#{nuovaSchedaWizard.schedaInfoInvio.origTipoIntervento !=null}"/>
-					
-				
-				</p:outputPanel>
-				
-				
-				<h:outputText value="Scheda ricevuta il: "/>
-				
-				<p:outputPanel id="scheda_ricevuta_info">
-					<h:outputText rendered="#{!(nuovaSchedaWizard.schedaInfoInvio.ricezData eq null )}" value="#{nuovaSchedaWizard.schedaInfoInvio.ricezData}">
-						<f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
-					</h:outputText>
-					<h:outputText rendered="#{(nuovaSchedaWizard.schedaInfoInvio.ricezData eq null )}" value="-"/>
-				</p:outputPanel>
-				
-				<h:outputText value="Esito intervento *" for="tipo_intervento" />
-				<p:outputPanel>
-					<p:selectOneMenu label="Esito intervento" id="tipo_intervento" required="true"  filter="true" filterMatchMode="contains"
-					                 disabled="#{nuovaSchedaWizard.schedaPicInCS}" 
-					                 value="#{nuovaSchedaWizard.tipoScheda}" effect="fold" editable="false" panelStyleClass="selectOneMenuGrouped">
-						<f:selectItem itemLabel="- seleziona -" noSelectionOption="true" />
-						<f:selectItems value="#{nuovaSchedaWizard.tipiScheda}" />
-						<p:ajax update="categoria_sociale, chkEntePic" process="@this"
-						        event="change" listener="#{nuovaSchedaWizard.onChangeTipoScheda}"/>
-					</p:selectOneMenu>
-					<p:spacer width="10px"/>
-					<webredcs:tooltipInfo title="Esito intervento: che cosa si intende" selectItemList="#{nuovaSchedaWizard.tipiSchedaTips}"/>
-					<p:spacer width="20px"/>
-					<p:selectBooleanCheckbox id="chkEntePic" value="#{nuovaSchedaWizard.capofilaPic}" 
-									itemLabel="Invia ad ente capofila: #{nuovaSchedaWizard.capofilaNome}"
-									disabled="#{nuovaSchedaWizard.disabilitaCapofilaPic}"
-									rendered="#{nuovaSchedaWizard.renderCapofilaPic}" >
-					</p:selectBooleanCheckbox>
-				</p:outputPanel>
-				
-				
-				<h:outputText value="Categoria sociale" for="categoria_sociale" />
-				<p:selectOneMenu label="Categoria sociale" id="categoria_sociale" value="#{nuovaSchedaWizard.categoriaSociale}" 
-				    disabled="#{nuovaSchedaWizard.disabilitaCategoria}" effect="fold" editable="false">
-					<f:selectItem itemLabel="- seleziona -" itemValue="" />
-					<f:selectItems value="#{nuovaSchedaWizard.categorieSociali}" />
-				</p:selectOneMenu>
-										
-			</h:panelGrid>
+	<h:panelGrid columns="2" columnClasses="label, value" styleClass="grid" id="invio_panelGrid">
+		
+		<h:outputText value="Scheda inviata il: "/>
+		
+		<p:outputPanel id="scheda_inviata_info">
+			<h:outputText value="#{nuovaSchedaWizard.schedaInfoInvio.origDataInvio}">
+				<f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+			</h:outputText>
+			<h:outputText rendered="#{(nuovaSchedaWizard.schedaInfoInvio.origDataInvio eq null )}" value="-"/>
 			
-			<webredcs:pnlConsensoPrivacy iConsensoPrivacy="#{nuovaSchedaWizard.consensoMan}" filePrivacy="#{nuovaSchedaWizard.filePrivacyDatiDB}"
-										     canPrint="#{nuovaSchedaWizard.canPrint()}" />
-				
-			<p:spacer height="20px" />
+			<p:commandButton action="#{nuovaSchedaWizard.annullaInvio()}" disabled="#{nuovaSchedaWizard.disabilitaAnnullaInvio}"
+					update="scheda_inviata_info,scheda_ricevuta_info,tipo_intervento,categoria_sociale" value="annulla invio" style="margin-left:10px;" />
 			
-			<p:outputPanel id="pnlDatiPor" rendered="#{nuovaSchedaWizard.iDatiPor.renderProgetto}" >
-				<h:panelGrid columns="4" width="100%">
- 					<p:fieldset legend="Dati POR" toggleable="false"
-						style="display: inline-block; vertical-align: top; width:100%">
-						<webredcs:pnlDatiPor
-							iDatiPor="#{nuovaSchedaWizard.iDatiPor}"
-							soloLettura="#{!nuovaSchedaWizard.canEdit()}" 
-							stampabean="#{nuovaSchedaWizard}" />
-							
-					</p:fieldset>
+			<h:outputText value="- #{nuovaSchedaWizard.schedaInfoInvio.origTipoIntervento}" rendered="#{nuovaSchedaWizard.schedaInfoInvio.origTipoIntervento !=null}"/>
+		</p:outputPanel>
+		
+		<h:outputText value="Scheda ricevuta il: "/>
+		
+		<p:outputPanel id="scheda_ricevuta_info">
+			<h:outputText rendered="#{!(nuovaSchedaWizard.schedaInfoInvio.ricezData eq null )}" value="#{nuovaSchedaWizard.schedaInfoInvio.ricezData}">
+				<f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+			</h:outputText>
+			<h:outputText rendered="#{(nuovaSchedaWizard.schedaInfoInvio.ricezData eq null )}" value="-"/>
+		</p:outputPanel>
+		
+		<h:outputText value="Esito intervento *" for="tipo_intervento" />
+		<p:outputPanel>
+			<p:selectOneMenu label="Esito intervento" id="tipo_intervento" required="true" filter="true" filterMatchMode="contains"
+					disabled="#{nuovaSchedaWizard.schedaPicInCS}" 
+					value="#{nuovaSchedaWizard.tipoScheda}" effect="fold" editable="false" panelStyleClass="selectOneMenuGrouped">
+				<f:selectItem itemLabel="- seleziona -" noSelectionOption="true" />
+				<f:selectItems value="#{nuovaSchedaWizard.tipiScheda}" />
+				<p:ajax update="categoria_sociale, chkEntePic" process="@this" event="change" listener="#{nuovaSchedaWizard.onChangeTipoScheda}"/>
+			</p:selectOneMenu>
+			<p:spacer width="10px"/>
+			<webredcs:tooltipInfo title="Esito intervento: che cosa si intende" selectItemList="#{nuovaSchedaWizard.tipiSchedaTips}"/>
+			<p:spacer width="20px"/>
+			<p:selectBooleanCheckbox id="chkEntePic" value="#{nuovaSchedaWizard.capofilaPic}" 
+							itemLabel="Invia ad ente capofila: #{nuovaSchedaWizard.capofilaNome}"
+							disabled="#{nuovaSchedaWizard.disabilitaCapofilaPic}"
+							rendered="#{nuovaSchedaWizard.renderCapofilaPic}" >
+			</p:selectBooleanCheckbox>
+		</p:outputPanel>
+		
+		<h:outputText value="Categoria sociale" for="categoria_sociale" />
+		<p:selectOneMenu label="Categoria sociale" id="categoria_sociale" value="#{nuovaSchedaWizard.categoriaSociale}" 
+			disabled="#{nuovaSchedaWizard.disabilitaCategoria}" effect="fold" editable="false">
+			<f:selectItem itemLabel="- seleziona -" itemValue="" />
+			<f:selectItems value="#{nuovaSchedaWizard.categorieSociali}" />
+		</p:selectOneMenu>
+
+	</h:panelGrid>
+	
+	<webredcs:pnlConsensoPrivacy iConsensoPrivacy="#{nuovaSchedaWizard.consensoMan}" filePrivacy="#{nuovaSchedaWizard.filePrivacyDatiDB}" canPrint="#{nuovaSchedaWizard.canPrint()}" />
+
+	<p:spacer height="20px" />
+	
+	<p:outputPanel id="pnlDatiPor" rendered="#{nuovaSchedaWizard.iDatiPor.renderProgetto}" >
+		<h:panelGrid columns="4" width="100%">
+			<p:fieldset legend="#{nuovaSchedaWizard.nomeFieldSetDatiPor}" toggleable="false" style="display: inline-block; vertical-align: top; width:100%">
+				<webredcs:pnlDatiPor
+					iDatiPor="#{nuovaSchedaWizard.iDatiPor}"
+					soloLettura="#{!nuovaSchedaWizard.canEdit()}" 
+					stampabean="#{nuovaSchedaWizard}" />
+			</p:fieldset>
+		</h:panelGrid>
+	</p:outputPanel>
+	
+	<p:spacer height="20px" />
+
+	<p:panel header="Note di diario" toggleable="true" collapsed="true">
+		<p:outputPanel style="display: inline-block; vertical-align:top;">
+			<h:panelGrid columns="1" style="display: inline-block; vertical-align: top;">
+				<h:panelGrid columns="2">
+					<p:outputLabel value="Data"/>
+					<webred:pnlData dataValue="#{nuovaSchedaWizard.notaDiarioPubblica.data}" dataPattern="dd/MM/yyyy" dataPatternLabel="gg/mm/aaaa" dataReq="false" />
 				</h:panelGrid>
-			</p:outputPanel>
-			
- 			<p:spacer height="20px" />
-
-			<p:panel header="Note di diario" toggleable="true" collapsed="true">
-				<p:outputPanel style="display: inline-block; vertical-align:top;">
-					<h:panelGrid columns="1" style="display: inline-block; vertical-align: top;">
-						<h:panelGrid columns="2">
-							<p:outputLabel value="Data"/>
-							<webred:pnlData dataValue="#{nuovaSchedaWizard.notaDiarioPubblica.data}" 
-							            dataPattern="dd/MM/yyyy"  dataPatternLabel="gg/mm/aaaa" dataReq="false" />
-						</h:panelGrid>
-						<webred:pnlNota id="diario_pubblico_interventi" notaLabel="Visibile a tutti"  notaValue="#{nuovaSchedaWizard.notaDiarioPubblica.nota}" />
-					</h:panelGrid>
-					<h:panelGrid columns="1" style="display: inline-block; vertical-align: top;">
-						<h:panelGrid columns="2">
-						<p:outputLabel value="Data"/>
-						<webred:pnlData dataValue="#{nuovaSchedaWizard.notaDiarioPrivata.data}" 
-						            dataPattern="dd/MM/yyyy"  dataPatternLabel="gg/mm/aaaa" dataReq="false" />
-						</h:panelGrid>
-						<webred:pnlNota id="diario_privato_interventi" notaLabel="Privata" notaValue="#{nuovaSchedaWizard.notaDiarioPrivata.nota}" />
-					</h:panelGrid>
-				</p:outputPanel>
-			</p:panel>
-
-			<p:spacer height="5px" />
-			<p:separator />
-                    
-            <webred:pnlRequiredSalva rendered="#{nuovaSchedaWizard.segnalato.anagrafica.codiceFiscale ne 'ANONIMO' }" salvaAction="#{nuovaSchedaWizard.salvaSchedaCompletaUDC()}" />
-            <h:panelGrid  rendered="#{nuovaSchedaWizard.segnalato.anagrafica.codiceFiscale eq 'ANONIMO' }" columns="2" cellpadding="5" width="100%" columnClasses="leftAlign, rightAlign">
-				<h:outputText value="* Campi obbligatori" />
-				
-					<p:commandButton value="Registra" icon="ui-icon-disk" type="button" onclick="PF('confirmAnonimo').show()" />
-					<p:confirmDialog  widgetVar="confirmAnonimo" severity="info" width="80%" style="left:10%"
-							message="Attenzione! Utente registrato come anonimo. Per procedere al completamento della scheda 
-									 occorre essere certi che i campi testo proposti dal sistema non siano stati valorizzati con informazioni che possano permettere
-									 l'identificazione anche indiretta dell'utente. Premere Ok se si è certi">
-						<p:commandButton  value="OK" oncomplete="PF('confirmAnonimo').hide()" actionListener="#{nuovaSchedaWizard.salvaSchedaCompletaUDC()}" />
-						<p:commandButton value="NO" type="button" onclick="PF('confirmAnonimo').hide()" />
-					</p:confirmDialog>
+				<webred:pnlNota id="diario_pubblico_interventi" notaLabel="Visibile a tutti" notaValue="#{nuovaSchedaWizard.notaDiarioPubblica.nota}" />
 			</h:panelGrid>
-		</p:panel>
+			<h:panelGrid columns="1" style="display: inline-block; vertical-align: top;">
+				<h:panelGrid columns="2">
+					<p:outputLabel value="Data"/>
+					<webred:pnlData dataValue="#{nuovaSchedaWizard.notaDiarioPrivata.data}" dataPattern="dd/MM/yyyy" dataPatternLabel="gg/mm/aaaa" dataReq="false" />
+				</h:panelGrid>
+				<webred:pnlNota id="diario_privato_interventi" notaLabel="Privata" notaValue="#{nuovaSchedaWizard.notaDiarioPrivata.nota}" />
+			</h:panelGrid>
+		</p:outputPanel>
+	</p:panel>
 
-		<p:spacer height="5px" />
+	<p:spacer height="5px" />
+	<p:separator />
+	
+	<webred:pnlRequiredSalva rendered="#{nuovaSchedaWizard.segnalato.anagrafica.codiceFiscale ne 'ANONIMO' }" salvaAction="#{nuovaSchedaWizard.salvaSchedaCompletaUDC()}" />
+	<h:panelGrid rendered="#{nuovaSchedaWizard.segnalato.anagrafica.codiceFiscale eq 'ANONIMO' }" columns="2" cellpadding="5" width="100%" columnClasses="leftAlign, rightAlign">
+		<h:outputText value="* Campi obbligatori" />
+		
+		<p:commandButton value="Registra" icon="ui-icon-disk" type="button" onclick="PF('confirmAnonimo').show()" />
+		<p:confirmDialog widgetVar="confirmAnonimo" severity="info" width="80%" style="left:10%"
+				message="Attenzione! Utente registrato come anonimo. Per procedere al completamento della scheda 
+							occorre essere certi che i campi testo proposti dal sistema non siano stati valorizzati con informazioni che possano permettere
+							l'identificazione anche indiretta dell'utente. Premere Ok se si è certi">
+			<p:commandButton value="OK" oncomplete="PF('confirmAnonimo').hide()" actionListener="#{nuovaSchedaWizard.salvaSchedaCompletaUDC()}" />
+			<p:commandButton value="NO" type="button" onclick="PF('confirmAnonimo').hide()" />
+		</p:confirmDialog>
+	</h:panelGrid>
+</p:panel>
 
-		<ui:include src="/jsp/protected/wizard/pnlDiarioSociale.xhtml"/>
+<p:spacer height="5px" />
+
+<ui:include src="/jsp/protected/wizard/pnlDiarioSociale.xhtml"/>
 
 </ui:composition>

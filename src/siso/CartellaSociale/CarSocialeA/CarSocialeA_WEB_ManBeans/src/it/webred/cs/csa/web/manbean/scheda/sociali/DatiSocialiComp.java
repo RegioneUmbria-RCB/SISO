@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Set;
@@ -46,6 +45,19 @@ import it.webred.cs.json.stranieri.StranieriManBaseBean;
 import it.webred.ct.config.model.AmTabComuni;
 import it.webred.ss.data.model.SsSchedaSegnalato;
 
+/**
+ * 
+ * <h1>DatiSocialiComp.java</h1>
+ *
+ * <p>
+ * </p>
+ *
+ * @since 1.26.12
+ * @version 1.0.2
+ * 
+ * @author DDV
+ * @lastUpdate 2025-11-05 - DDV
+ */
 public class DatiSocialiComp extends SchedaValiditaCompUtils implements IDatiSociali{
 	
 	private String VER_MAX = "";
@@ -324,42 +336,63 @@ public class DatiSocialiComp extends SchedaValiditaCompUtils implements IDatiSoc
 		formLavoroMan.setIdSettoreImpiego(segnalato.getSettImpiegoId());
 		formLavoroMan.setIdCondLavorativa(segnalato.getCondLavoroId());
 	}
-		
-	public void valorizzaDatiPorDaUDC(CsExtraFseDatiLavoro sdl){
-		if(sdl!=null){
-			this.datiPorMan.getCsCDatiLavoro().setAnnoConseguimentoTitoloStu(sdl.getAnnoConseguimentoTitoloStu());
-			this.datiPorMan.getCsCDatiLavoro().setAzCf(sdl.getAzCf());
-			this.datiPorMan.getCsCDatiLavoro().setAzCodAteco(sdl.getAzCodAteco());
-			this.datiPorMan.getCsCDatiLavoro().setAzComuneCod(sdl.getAzComuneCod());
-			this.datiPorMan.getCsCDatiLavoro().setAzComuneDes(sdl.getAzComuneDes());
-			this.datiPorMan.getCsCDatiLavoro().setAzFormaGiuridica(sdl.getAzFormaGiuridica());
-			this.datiPorMan.getCsCDatiLavoro().setAzPi(sdl.getAzPi());
-			this.datiPorMan.getCsCDatiLavoro().setAzProv(sdl.getAzProv());
-			this.datiPorMan.getCsCDatiLavoro().setAzRagioneSociale(sdl.getAzRagioneSociale());
-			this.datiPorMan.getCsCDatiLavoro().setAzVia(sdl.getAzVia());
-			this.datiPorMan.getCsCDatiLavoro().setComunicaVul(sdl.getComunicaVul());
-			this.datiPorMan.getCsCDatiLavoro().setDescDimAzienda(sdl.getDescDimAzienda());
-			this.datiPorMan.getCsCDatiLavoro().setDescOrarioLavoro(sdl.getDescOrarioLavoro());
-			this.datiPorMan.getCsCDatiLavoro().setDescTipoLavoro(sdl.getDescTipoLavoro());
-			this.datiPorMan.getCsCDatiLavoro().setDurataRicLavoroId(sdl.getDurataRicLavoroId());
-			this.datiPorMan.getCsCDatiLavoro().setFlagAltroCorso(sdl.getFlagAltroCorso());
-			this.datiPorMan.getCsCDatiLavoro().setFlagResDom(sdl.getFlagResDom());
-			this.datiPorMan.getCsCDatiLavoro().setIban(sdl.getIban());
-			this.datiPorMan.getCsCDatiLavoro().setDtSottoscrizione(sdl.getDtSottoscrizione());
+	
+	/**
+	 * 
+	 * <h1>valorizzaDatiPorDaUDC</h1>
+	 *
+	 * <p>
+	 * </p>
+	 *
+	 * @param csExtraFseDatiLavoro
+	 *
+	 * @since 1.26.12
+	 * @version 1.0.1
+	 * 
+	 * @lastUpdate 2025-11-05 - DDV
+	 */
+	public void valorizzaDatiPorDaUDC(CsExtraFseDatiLavoro csExtraFseDatiLavoro) {
+		if (csExtraFseDatiLavoro != null) {
+			this.datiPorMan.getCsCDatiLavoro().setAnnoConseguimentoTitoloStu(csExtraFseDatiLavoro.getAnnoConseguimentoTitoloStu());
+			this.datiPorMan.getCsCDatiLavoro().setAzCf(csExtraFseDatiLavoro.getAzCf());
+			this.datiPorMan.getCsCDatiLavoro().setAzCodAteco(csExtraFseDatiLavoro.getAzCodAteco());
+			this.datiPorMan.getCsCDatiLavoro().setAzComuneCod(csExtraFseDatiLavoro.getAzComuneCod());
+			this.datiPorMan.getCsCDatiLavoro().setAzComuneDes(csExtraFseDatiLavoro.getAzComuneDes());
+			this.datiPorMan.getCsCDatiLavoro().setAzFormaGiuridica(csExtraFseDatiLavoro.getAzFormaGiuridica());
+			this.datiPorMan.getCsCDatiLavoro().setAzPi(csExtraFseDatiLavoro.getAzPi());
+			this.datiPorMan.getCsCDatiLavoro().setAzProv(csExtraFseDatiLavoro.getAzProv());
+			this.datiPorMan.getCsCDatiLavoro().setAzRagioneSociale(csExtraFseDatiLavoro.getAzRagioneSociale());
+			this.datiPorMan.getCsCDatiLavoro().setAzVia(csExtraFseDatiLavoro.getAzVia());
+			this.datiPorMan.getCsCDatiLavoro().setComunicaVul(csExtraFseDatiLavoro.getComunicaVul());
+			this.datiPorMan.getCsCDatiLavoro().setDescDimAzienda(csExtraFseDatiLavoro.getDescDimAzienda());
+			this.datiPorMan.getCsCDatiLavoro().setDescOrarioLavoro(csExtraFseDatiLavoro.getDescOrarioLavoro());
+			this.datiPorMan.getCsCDatiLavoro().setDescTipoLavoro(csExtraFseDatiLavoro.getDescTipoLavoro());
+			this.datiPorMan.getCsCDatiLavoro().setDurataRicLavoroId(csExtraFseDatiLavoro.getDurataRicLavoroId());
+			this.datiPorMan.getCsCDatiLavoro().setFlagAltroCorso(csExtraFseDatiLavoro.getFlagAltroCorso());
+			this.datiPorMan.getCsCDatiLavoro().setFlagResDom(csExtraFseDatiLavoro.getFlagResDom());
+			this.datiPorMan.getCsCDatiLavoro().setIban(csExtraFseDatiLavoro.getIban());
+			this.datiPorMan.getCsCDatiLavoro().setDtSottoscrizione(csExtraFseDatiLavoro.getDtSottoscrizione());
 		   
-			ArFfProgetto p = sdl.getProgetto();
-			if (p!=null) {
-				this.datiPorMan.setIdProgetto(sdl.getProgetto().getId());
+			ArFfProgetto arFfProgetto = csExtraFseDatiLavoro.getProgetto();
+			if (arFfProgetto != null) {
+				this.datiPorMan.setIdProgetto(arFfProgetto.getId());
+				
+				if (arFfProgetto.getDescrizione().contains("PDV")) {
+					this.datiPorMan.getCsCDatiLavoro().setProgettoVitaValore(csExtraFseDatiLavoro.getProgettoVitaValore());
+				}
+				
 				this.datiPorMan.onChangeProgetto();
 			}
 			
-			ArFfProgettoAttivita a = sdl.getProgettoAttivita();
-			if (a!=null) {
-				this.datiPorMan.getCsCDatiLavoro().setProgettoAttivita(a);
-				this.datiPorMan.setIdSottocorso(a.getId());
+			ArFfProgettoAttivita arFfProgettoAttivita = csExtraFseDatiLavoro.getProgettoAttivita();
+			if (arFfProgettoAttivita != null) {
+				this.datiPorMan.getCsCDatiLavoro().setProgettoAttivita(arFfProgettoAttivita);
+				this.datiPorMan.setIdSottocorso(arFfProgettoAttivita.getId());
 			}
+			
 			this.datiPorMan.loadCodiceForm();
 		}
+		
 		this.onChangeCondLavoro();
 		this.onChangeGruppoVulnerabile();
 	}
@@ -411,14 +444,14 @@ public class DatiSocialiComp extends SchedaValiditaCompUtils implements IDatiSoc
 	}
 	
 	@Override
-	public void onChangeCondLavoro(){
-		if(datiPorMan!=null)
+	public void onChangeCondLavoro() {
+		if (this.datiPorMan != null)
 			this.datiPorMan.changeCondizioneLavorativa(formLavoroMan.getIdCondLavorativa());
 	}
 	
 	@Override
-	public void onChangeGruppoVulnerabile(){
-		if(datiPorMan!=null)
+	public void onChangeGruppoVulnerabile() {
+		if (this.datiPorMan != null)
 			this.datiPorMan.changeGruppoVulnerabile(this.famConviventiMan.getGruppoVulnerabile());
 	}
 	
@@ -699,107 +732,134 @@ public class DatiSocialiComp extends SchedaValiditaCompUtils implements IDatiSoc
 		bean.esportaModelloPor(datiProgettoBean);
 	}
 	
+	/**
+	 * 
+	 * <h1>validaDatiPor</h1>
+	 *
+	 * <p>
+	 * </p>
+	 *
+	 * @return
+	 *
+	 * @since 1.26.12
+	 * @version 1.0.1
+	 * 
+	 * @author DDV
+	 * @lastUpdate 2025-10-27 - DDV
+	 */
 	public boolean validaDatiPor() {
 		boolean ok = true;
 		if (this.datiPorMan.isRenderFSE()) {
-			boolean okpor =  this.datiPorMan.valida();
+			boolean okpor = this.datiPorMan.valida();
 			
 			//Non inserisco il controllo di validazione sul Gruppo Vulnerabile perchè già controllato e obbligatorio nei dati sociali
-			if(!okpor) {
+			if (!okpor) {
 				this.datiPorMan.showWarning();
 				return okpor;
-			} 
+			}
 			
 			// SISO 1306 - valido POR SIRU
 			SchedaBean s = (SchedaBean) getBeanReference("schedaBean");
 			DatiAnaBean ana = s.getAnagraficaBean().getDatiAnaBean();
-
-			List<String> valRecapito = datiPorMan.validaRecapiti(ana.getTelefono(), ana.getCellulare(), ana.getEmail());
+			
+			List<String> valRecapito = this.datiPorMan.validaRecapiti(ana.getTelefono(), ana.getCellulare(), ana.getEmail());
 			boolean okRecapiti = valRecapito.isEmpty();
 			StringBuilder errorRec = new StringBuilder();
 			int i = 0;
-			for(String msg: valRecapito) {
+			for (String msg: valRecapito) {
 				errorRec.append(msg);
-				if(i<valRecapito.size()-1)
+				if (i < valRecapito.size() - 1)
 					errorRec.append(", ");
 				i++;
 			}
-			if(!okRecapiti)
+			
+			if (!okRecapiti) {
 				this.addWarning("Anagrafica - valori recapito non validi ai fini POR-FSE", errorRec.toString());
-
+			}
 
 			ok = okpor && okRecapiti;
 			
+			SiruInputDTO siruInputDTO = new SiruInputDTO();
+			siruInputDTO.setCittadinanza(ana.getCittadinanza());
+			siruInputDTO.setCodiceFiscale(ana.getCodiceFiscale());
+			siruInputDTO.setSesso(ana.getDatiSesso().getSesso());
+			siruInputDTO.setDataNascita(ana.getDataNascita());
 			
-			SiruInputDTO pds = new SiruInputDTO();
-			pds.setCittadinanza(ana.getCittadinanza());
-			pds.setCodiceFiscale(ana.getCodiceFiscale());
-			pds.setSesso(ana.getDatiSesso().getSesso());
-			pds.setDataNascita(ana.getDataNascita());
-			
-			pds.setFlagResDom(this.datiPorMan.getDescFlagResDom());
+			siruInputDTO.setFlagResDom(this.datiPorMan.getDescFlagResDom());
 			
 			CsAIndirizzo residenza = s.getAnagraficaBean().getResidenzaCsaMan().getIndirizzoResidenzaAttivo();
-			if(residenza!=null){
-				pds.setCodIstatComuneResidenza(residenza.getCsAAnaIndirizzo().getComCod());
-			}else{
+			if (residenza != null) {
+				siruInputDTO.setCodIstatComuneResidenza(residenza.getCsAAnaIndirizzo().getComCod());
+			} else {
 				logger.warn("Informazioni residenza non trovate ");
 			}
-
+			
 			CsAIndirizzo domicilio = s.getAnagraficaBean().getResidenzaCsaMan().getIndirizzoDomicilioAttivo();
-			if(domicilio!=null){
-				pds.setCodIstatComuneDomicilio(domicilio.getCsAAnaIndirizzo().getComCod());
-			}else{
+			if (domicilio != null) {
+				siruInputDTO.setCodIstatComuneDomicilio(domicilio.getCsAAnaIndirizzo().getComCod());
+			} else {
 				logger.warn("Informazioni domicilio non trovate ");
 			}
 			
-			if(datiPorMan.isComunicaVul()) {
-				pds.setGrpVulnerabilita(this.famConviventiMan.getGruppoVulnerabile().getId());
-			}else{
-				if(this.isModuloPorMarche())
-					pds.setGrpVulnerabilita(DataModelCostanti.GrVulnerabile.NON_COMUNICA_VULNERABILITA);
+			if (this.datiPorMan.isComunicaVul()) {
+				siruInputDTO.setGrpVulnerabilita(this.famConviventiMan.getGruppoVulnerabile().getId());
+			} else {
+				if (this.isModuloPorMarche())
+					siruInputDTO.setGrpVulnerabilita(DataModelCostanti.GrVulnerabile.NON_COMUNICA_VULNERABILITA);
 			}
 			
-			if(s.getAnagraficaBean().getComuneNazioneNascitaMan().isComune())
-				pds.setComuneNascitaCod(s.getAnagraficaBean().getComuneNazioneNascitaMan().getComuneMan().getComune().getCodIstatComune());
-			else
-				pds.setStatoNascitaCod(s.getAnagraficaBean().getComuneNazioneNascitaMan().getNazioneNascitaMan().getNazione().getCodIstatNazione());
+			if (s.getAnagraficaBean().getComuneNazioneNascitaMan().isComune()) {
+				siruInputDTO.setComuneNascitaCod(s.getAnagraficaBean().getComuneNazioneNascitaMan().getComuneMan().getComune().getCodIstatComune());
+			} else {
+				siruInputDTO.setStatoNascitaCod(s.getAnagraficaBean().getComuneNazioneNascitaMan().getNazioneNascitaMan().getNazione().getCodIstatNazione());
+			}
 			
-			pds.setIdTitoloStudio(this.formLavoroMan.getIdTitoloStudio().toString());
+			siruInputDTO.setIdTitoloStudio(this.formLavoroMan.getIdTitoloStudio().toString());
 			BigDecimal cl = this.formLavoroMan.getIdCondLavorativa();
-			if(cl!=null){
+			if (cl != null) {
 				BaseDTO dto1 = new BaseDTO();
 				fillEnte(dto1);
 				dto1.setObj(cl.toString());
 				CsTbCondLavoro conLav = confService.getCondLavoroById(dto1);
-				pds.setCsTbIngMercato(conLav.getCsTbIngMercato());
+				siruInputDTO.setCsTbIngMercato(conLav.getCsTbIngMercato());
 			}
 			
-			pds.setAzCodAteco(this.datiPorMan.getCsCDatiLavoro().getAzCodAteco());
-			pds.setDescDimAzienda(this.datiPorMan.getCsCDatiLavoro().getDescDimAzienda());
-			pds.setAzFormaGiuridica(this.datiPorMan.getCsCDatiLavoro().getAzFormaGiuridica());
-			pds.setDescOrarioLavoro(this.datiPorMan.getCsCDatiLavoro().getDescOrarioLavoro());
-			pds.setDescTipoLavoro(this.datiPorMan.getCsCDatiLavoro().getDescTipoLavoro());
-			pds.setAzPi(this.datiPorMan.getCsCDatiLavoro().getAzPi());
-			pds.setAzCf(this.datiPorMan.getCsCDatiLavoro().getAzCf());
-			pds.setAzRagioneSociale(this.datiPorMan.getCsCDatiLavoro().getAzRagioneSociale());
-			pds.setAzVia(this.datiPorMan.getCsCDatiLavoro().getAzVia());
-			pds.setDurataRicLavoroId(this.datiPorMan.getCsCDatiLavoro().getDurataRicLavoroId());
-			pds.setAzComuneCod(this.datiPorMan.getCsCDatiLavoro().getAzComuneCod());
-
+			siruInputDTO.setAzCodAteco(this.datiPorMan.getCsCDatiLavoro().getAzCodAteco());
+			siruInputDTO.setDescDimAzienda(this.datiPorMan.getCsCDatiLavoro().getDescDimAzienda());
+			siruInputDTO.setAzFormaGiuridica(this.datiPorMan.getCsCDatiLavoro().getAzFormaGiuridica());
+			siruInputDTO.setDescOrarioLavoro(this.datiPorMan.getCsCDatiLavoro().getDescOrarioLavoro());
+			siruInputDTO.setDescTipoLavoro(this.datiPorMan.getCsCDatiLavoro().getDescTipoLavoro());
+			siruInputDTO.setAzPi(this.datiPorMan.getCsCDatiLavoro().getAzPi());
+			siruInputDTO.setAzCf(this.datiPorMan.getCsCDatiLavoro().getAzCf());
+			siruInputDTO.setAzRagioneSociale(this.datiPorMan.getCsCDatiLavoro().getAzRagioneSociale());
+			siruInputDTO.setAzVia(this.datiPorMan.getCsCDatiLavoro().getAzVia());
+			siruInputDTO.setDurataRicLavoroId(this.datiPorMan.getCsCDatiLavoro().getDurataRicLavoroId());
+			siruInputDTO.setAzComuneCod(this.datiPorMan.getCsCDatiLavoro().getAzComuneCod());
+			
 			BaseDTO dto = new BaseDTO();
 			fillEnte(dto);
-			dto.setObj(pds);
+			dto.setObj(siruInputDTO);
 			dto.setObj2(this.datiPorMan.getMappaCampiFse());
 			SiruResultDTO val = datiPorService.validaSiru(dto);
-			if(val.getErrori()!=null&&val.getErrori().size()>0) {
-				for(String sert: val.getErrori()) {
+			if (val.getErrori() != null && val.getErrori().size() > 0) {
+				for (String sert: val.getErrori()) {
 					this.addWarning("Errore in validazione campi FSE ", sert);
 				}
-				ok=false;
-			} else
-				datiPorMan.getCsCDatiLavoro().getMaster().setSiru(val.getSiruExtra());
+				ok = false;
+			} else {
+				this.datiPorMan.getCsCDatiLavoro().getMaster().setSiru(val.getSiruExtra());
+			}
+			
+		} else if (this.datiPorMan.isRenderPDV()) {
+			boolean checkDatiPDV = this.datiPorMan.validaPDV();
+			
+			if (!checkDatiPDV) {
+				this.datiPorMan.showWarningPDV();
+				ok = checkDatiPDV;
+				return checkDatiPDV;
+			} 
 		}
+		
 		return ok;
 	}
 

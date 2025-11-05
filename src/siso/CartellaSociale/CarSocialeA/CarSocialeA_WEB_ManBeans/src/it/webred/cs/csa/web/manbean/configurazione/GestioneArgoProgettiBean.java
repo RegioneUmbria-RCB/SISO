@@ -1,20 +1,11 @@
 package it.webred.cs.csa.web.manbean.configurazione;
 
-import it.umbriadigitale.argo.ejb.client.cs.bean.ArConfigurazioneService;
-import it.umbriadigitale.argo.ejb.client.cs.dto.configurazione.ArAttivitaDTO;
-import it.umbriadigitale.argo.ejb.client.cs.dto.configurazione.ArOrganizzazioneDTO;
-import it.umbriadigitale.argo.ejb.client.cs.dto.configurazione.ArProgettoDTO;
-import it.webred.cs.csa.ejb.dto.BaseDTO;
-import it.webred.cs.jsf.manbean.superc.CsUiCompBaseBean;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ViewScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
@@ -24,11 +15,30 @@ import javax.faces.model.SelectItem;
 import org.primefaces.context.RequestContext;
 import org.primefaces.model.DualListModel;
 
+import it.umbriadigitale.argo.ejb.client.cs.bean.ArConfigurazioneService;
+import it.umbriadigitale.argo.ejb.client.cs.dto.configurazione.ArAttivitaDTO;
+import it.umbriadigitale.argo.ejb.client.cs.dto.configurazione.ArOrganizzazioneDTO;
+import it.umbriadigitale.argo.ejb.client.cs.dto.configurazione.ArProgettoDTO;
+import it.webred.cs.csa.ejb.dto.BaseDTO;
+import it.webred.cs.jsf.manbean.superc.CsUiCompBaseBean;
+
+/**
+ * 
+ * <h1>GestioneArgoProgettiBean.java</h1>
+ *
+ * <p>
+ * </p>
+ *
+ * @since 1.26.12
+ * @version 1.0.1
+ * 
+ * @lastUpdate 2025-10-23 - DDV
+ */
 @ManagedBean
 @ViewScoped
 public class GestioneArgoProgettiBean extends CsUiCompBaseBean {
 
-	private ArConfigurazioneService confArService = (ArConfigurazioneService) getArgoEjb( "ArConfigurazioneServiceBean");
+	private ArConfigurazioneService confArService = (ArConfigurazioneService) getArgoEjb("ArConfigurazioneServiceBean");
 	
 	private ProgettiTableDataModel progettiTableDataModel;
 	private List<ArProgettoDTO> lstProgetti;
@@ -42,11 +52,11 @@ public class GestioneArgoProgettiBean extends CsUiCompBaseBean {
 	private DualListModel<ArOrganizzazioneDTO> selectedOrganizzazioni;
 	private List<SelectItem> organizzazioni = new LinkedList<SelectItem>();
 	
-	public GestioneArgoProgettiBean(){
+	public GestioneArgoProgettiBean() {
 		caricaOrganizzazioni();
 		
-		progettiTableDataModel = new ProgettiTableDataModel();
-		progettiTableDataModel.setZsCorrente(getZonaSociale());
+		this.progettiTableDataModel = new ProgettiTableDataModel();
+		this.progettiTableDataModel.setZsCorrente(getZonaSociale());
 	}
 	
 /*	@PostConstruct
@@ -76,7 +86,7 @@ public class GestioneArgoProgettiBean extends CsUiCompBaseBean {
 
 		try {
 			String zsCorrente = getZonaSociale();
-			lstOrganizzazioniDTO = confArService.getListaOrganizzazioniDTO(zsCorrente);
+			this.lstOrganizzazioniDTO = confArService.getListaOrganizzazioniDTO(zsCorrente);
 			
 		} catch (Exception e) {
 			addErrorFromProperties("caricamento.error");
@@ -87,17 +97,32 @@ public class GestioneArgoProgettiBean extends CsUiCompBaseBean {
 	
 	public List<SelectItem> getOrganizzazioni() {
 
-		if (organizzazioni == null || organizzazioni.size() < 1) {
+		if (this.organizzazioni == null || this.organizzazioni.size() < 1) {
 			for (ArOrganizzazioneDTO u : this.lstOrganizzazioniDTO) {
 				if (u.getAbilitato())
-					organizzazioni.add(new SelectItem(u.getId(), u.getDescrizione()));
+					this.organizzazioni.add(new SelectItem(u.getId(), u.getDescrizione()));
 			}
 		}
-		return organizzazioni;
+		
+		return this.organizzazioni;
 	}
 	
-	public void initDialog(ArProgettoDTO selected) {
-		this.selectedProgetto = selected;
+	/**
+	 * 
+	 * <h1>initDialog</h1>
+	 *
+	 * <p>
+	 * </p>
+	 *
+	 * @param arProgettoDTOSelected
+	 *
+	 * @since 1.26.12
+	 * @version 1.0.1
+	 * 
+	 * @lastUpdate 2025-10-23 - DDV
+	 */
+	public void initDialog(ArProgettoDTO arProgettoDTOSelected) {
+		this.selectedProgetto = arProgettoDTOSelected;
 		setModalHeader("Modifica Progetto");		
 		this.initPickListOrganizzazioni();
 	}
@@ -118,7 +143,7 @@ public class GestioneArgoProgettiBean extends CsUiCompBaseBean {
 		this.selectedProgetto = selected;
 		this.selectedAttivita = new ArAttivitaDTO();
 		this.selectedAttivita.setAbilitato(true);
-		this.setSelectedAttivita(selectedAttivita);
+		this.setSelectedAttivita(this.selectedAttivita);
 		this.getSelectedAttivita().setProgettoId(this.selectedProgetto.getId());
 		this.getSelectedAttivita().setProgettoDesc(this.selectedProgetto.getDescrizione());
 	}
@@ -126,35 +151,37 @@ public class GestioneArgoProgettiBean extends CsUiCompBaseBean {
 	public void salva() throws Exception {
 		try {
 			
-			boolean existsPr = confArService.existsProgetto(selectedProgetto);
-			if(existsPr){
+			boolean existsPr = this.confArService.existsProgetto(this.selectedProgetto);
+			if (existsPr) {
 				this.addWarning("Attenzione", "Codice progetto già esistente");
 				return;
 			}
 			
 			boolean used = false;
 			List<Long> nuoveOrg = new ArrayList<Long>();
-			for(ArOrganizzazioneDTO ov : selectedOrganizzazioni.getTarget())
+			for (ArOrganizzazioneDTO ov : this.selectedOrganizzazioni.getTarget())
 				nuoveOrg.add(ov.getId());
 			
 			List<ArOrganizzazioneDTO> toRemove = new ArrayList<ArOrganizzazioneDTO>();
-			for(ArOrganizzazioneDTO o : this.selectedProgetto.getLstOrganizzazioni()){
-				if(!nuoveOrg.contains(o.getId())) toRemove.add(o);
+			for (ArOrganizzazioneDTO o : this.selectedProgetto.getLstOrganizzazioni()) {
+				if (!nuoveOrg.contains(o.getId()))
+					toRemove.add(o);
 			}
 			
-			for(ArOrganizzazioneDTO o : toRemove){
+			for (ArOrganizzazioneDTO o : toRemove) {
 				BaseDTO dto = new BaseDTO();
 				fillEnte(dto);
 				dto.setObj(o.getId());
-				dto.setObj2(selectedProgetto.getId());
+				dto.setObj2(this.selectedProgetto.getId());
 				boolean exists = confService.verificaUsoArProgettoAttivita(dto);
-				if(exists) 
-					this.addWarning("Attenzione", "Eliminazione non consentita: il progetto è stato usato presso l'organizzazione "+o.getDescrizione());
+				if (exists)
+					this.addWarning("Attenzione", "Eliminazione non consentita: il progetto è stato usato presso l'organizzazione " + o.getDescrizione());
 				
 				used = used|exists;
 			}
 			
-			if(used) return;
+			if (used)
+				return;
 			
 			this.selectedProgetto.setUserUltimaModifica(getCurrentUsername());
 			this.selectedProgetto.setDataUltimaModifica(new Date());
@@ -162,51 +189,56 @@ public class GestioneArgoProgettiBean extends CsUiCompBaseBean {
 			this.selectedProgetto.getLstOrganizzazioni().clear();
 			this.selectedProgetto.getLstOrganizzazioni().addAll(this.selectedOrganizzazioni.getTarget());
 			
-			confArService.salvaProgetto(this.selectedProgetto, toRemove);
+			this.confArService.salvaProgetto(this.selectedProgetto, toRemove);
 			//this.caricaProgetti();
 			this.selectedProgetto = null;
 			RequestContext.getCurrentInstance().addCallbackParam("saved", true);
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 		}
+		
 	}
 	
 	public void salvaAttivita() {
 		try {
-			boolean exists = confArService.existsAttivita(selectedAttivita);
-			if(!exists){
-				selectedAttivita.setUserUltimaModifica(getCurrentUsername());
-				selectedAttivita.setDataUltimaModifica(new Date());
-				confArService.salvaAttivita(selectedAttivita);
+			boolean exists = this.confArService.existsAttivita(this.selectedAttivita);
+			if (!exists) {
+				this.selectedAttivita.setUserUltimaModifica(getCurrentUsername());
+				this.selectedAttivita.setDataUltimaModifica(new Date());
+				this.confArService.salvaAttivita(this.selectedAttivita);
 				//caricaProgetti();
-				if(selectedAttivita.getId()==0)
-					this.addInfo("La nuova attività '"+selectedAttivita.getDescrizione()+"' è stata associata al progetto: "+selectedAttivita.getProgettoDesc(), "");
+				if (this.selectedAttivita.getId() == 0)
+					this.addInfo("La nuova attività '" + this.selectedAttivita.getDescrizione() + "' è stata associata al progetto: " + this.selectedAttivita.getProgettoDesc(), "");
 				else
-					this.addInfo("Attività '"+selectedAttivita.getDescrizione()+"' associata al progetto: '"+selectedAttivita.getProgettoDesc()+"' è stata aggiornata con successo", "");
+					this.addInfo("Attività '" + this.selectedAttivita.getDescrizione() + "' associata al progetto: '" + this.selectedAttivita.getProgettoDesc() + "' è stata aggiornata con successo", "");
+				
 				this.selectedAttivita = null;
+				
 				RequestContext.getCurrentInstance().addCallbackParam("saved", true);
-			}else
+			} else {
 				this.addWarning("Attenzione", "Codice attività già esistente per il progetto selezionato");
+			}
+			
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 			addError("Errore", "Si è verificato un errore nel salvataggio del sottocorso/attività");
 		}
 	}
 	
-	public void eliminaAttivita(ArAttivitaDTO selected){
+	public void eliminaAttivita(ArAttivitaDTO selected) {
 		try {
 			BaseDTO dto = new BaseDTO();
 			fillEnte(dto);
 			dto.setObj3(selected.getId());
 			boolean exists = confService.verificaUsoArProgettoAttivita(dto);
-			if(exists){
+			if (exists) {
 				this.addWarning("Attenzione", "L'attività selezionata è in uso: eliminazione non consentita");
 				return;
 			}
 			
-			confArService.eliminaAttivita(selected.getId());
+			this.confArService.eliminaAttivita(selected.getId());
 			//caricaProgetti();
-			this.addInfo("Eliminazione dell'attività '"+selected.getDescrizione()+"' completata con successo", "");
+			this.addInfo("Eliminazione dell'attività '" + selected.getDescrizione() + "' completata con successo", "");
 			RequestContext.getCurrentInstance().addCallbackParam("saved", true);
 			
 		} catch (Exception e) {
@@ -215,15 +247,15 @@ public class GestioneArgoProgettiBean extends CsUiCompBaseBean {
 		}
 	}
 	
-	public void eliminaProgetto(ArProgettoDTO progettoSel){
+	public void eliminaProgetto(ArProgettoDTO progettoSel) {
 		try {
 			
-			if(!progettoSel.getLstAttivita().isEmpty()){
+			if (!progettoSel.getLstAttivita().isEmpty()) {
 				this.addWarning("Attenzione", "Eliminazione non consentita: rimuovere prima le attività collegate.");
 				return;
 			}
 			
-			if(progettoSel.getAltreOrganizzazioni()){
+			if (progettoSel.getAltreOrganizzazioni()) {
 				this.addWarning("Attenzione", "Eliminazione non consentita: il progetto è configurato anche per organizzazioni esterne alla zona sociale.");
 				return;
 			}
@@ -232,51 +264,51 @@ public class GestioneArgoProgettiBean extends CsUiCompBaseBean {
 			fillEnte(dto);
 			dto.setObj2(progettoSel.getId());
 			boolean exists = confService.verificaUsoArProgettoAttivita(dto);
-			if(exists){
+			if (exists) {
 				this.addWarning("Attenzione", "Eliminazione non consentita: Il progetto selezionato è in uso");
 				return;
 			}
 			
-			confArService.eliminaProgetto(progettoSel.getId());
+			this.confArService.eliminaProgetto(progettoSel.getId());
 			//caricaProgetti();
 			this.addInfo("Eliminazione del progetto completata con successo", "");
-			
 				
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 			addError("Errore", "Si è verificato un errore nel'eliminazione del progetto");
 		}
+		
 	}
 	
-	public void eliminaProgetti(){
-		if(this.progettiSelezionati!=null && !this.progettiSelezionati.isEmpty()){
-			if(this.progettiSelezionati.size()==1)
-				this.eliminaProgetto(progettiSelezionati.get(0));
-			else{
+	public void eliminaProgetti() {
+		if (this.progettiSelezionati != null && !this.progettiSelezionati.isEmpty()) {
+			if (this.progettiSelezionati.size() == 1) {
+				this.eliminaProgetto(this.progettiSelezionati.get(0));
+			} else {
 				this.addWarning("Attenzione", "Eliminare un progetto alla volta");
 				return;
 			}
 		}
 	}
 	
-	public void abilitaProgetti(){
+	public void abilitaProgetti() {
 	
-		if(this.progettiSelezionati!=null && !this.progettiSelezionati.isEmpty()){
+		if (this.progettiSelezionati != null && !this.progettiSelezionati.isEmpty()) {
 			List<Long> lstIds = new ArrayList<Long>();
-			for(ArProgettoDTO p : progettiSelezionati)
+			for (ArProgettoDTO p : this.progettiSelezionati)
 				lstIds.add(p.getId());
-			confArService.abilitaProgetti(lstIds);
+			this.confArService.abilitaProgetti(lstIds);
 			//this.caricaProgetti();
 		}
 		this.progettiSelezionati.clear();
 	}
 	
-	public void disabilitaProgetti(){
-		if(this.progettiSelezionati!=null && !this.progettiSelezionati.isEmpty()){
+	public void disabilitaProgetti() {
+		if (this.progettiSelezionati != null && !this.progettiSelezionati.isEmpty()) {
 			List<Long> lstIds = new ArrayList<Long>();
-			for(ArProgettoDTO p : progettiSelezionati)
+			for (ArProgettoDTO p : this.progettiSelezionati)
 				lstIds.add(p.getId());
-			confArService.disabilitaProgetti(lstIds);
+			this.confArService.disabilitaProgetti(lstIds);
 			//this.caricaProgetti();
 		}
 		this.progettiSelezionati.clear();
@@ -314,33 +346,53 @@ public class GestioneArgoProgettiBean extends CsUiCompBaseBean {
 		this.progettiSelezionati = progettiSelezionati;
 	}
 	
-	private void initPickListOrganizzazioni(){
+	/**
+	 * 
+	 * <h1>initPickListOrganizzazioni</h1>
+	 *
+	 * <p>
+	 * </p>
+	 *
+	 *
+	 * @since 1.26.12
+	 * @version 1.0.1
+	 * 
+	 * @lastUpdate 2025-10-23 - DDV
+	 */
+	private void initPickListOrganizzazioni() {
 		List<ArOrganizzazioneDTO> orgSource = new ArrayList<ArOrganizzazioneDTO>();
-	    List<ArOrganizzazioneDTO> orgTarget = new ArrayList<ArOrganizzazioneDTO>();
-	     
-		if (selectedProgetto != null &&  selectedProgetto.getLstOrganizzazioni() != null && !selectedProgetto.getLstOrganizzazioni().isEmpty()){ 
-		     List<Long> idsSelected = new ArrayList<Long>();
-		     for(ArOrganizzazioneDTO o : selectedProgetto.getLstOrganizzazioni())
-		    	 idsSelected.add(o.getId());
-		     
-		     for(ArOrganizzazioneDTO si : lstOrganizzazioniDTO){
-		    	 if(!idsSelected.contains(si.getId()))
-		    		 orgSource.add(si);
-		    	 else
-		    		 orgTarget.add(si);
-		     }
-		     
-		}else
+		List<ArOrganizzazioneDTO> orgTarget = new ArrayList<ArOrganizzazioneDTO>();
+			
+		if (this.selectedProgetto != null && this.selectedProgetto.getLstOrganizzazioni() != null && !this.selectedProgetto.getLstOrganizzazioni().isEmpty()) {
+			List<Long> idsSelected = new ArrayList<Long>();
+			for (ArOrganizzazioneDTO o : this.selectedProgetto.getLstOrganizzazioni())
+				idsSelected.add(o.getId());
+			
+			for (ArOrganizzazioneDTO si : this.lstOrganizzazioniDTO) {
+				if (!idsSelected.contains(si.getId()))
+					orgSource.add(si);
+				else
+					orgTarget.add(si);
+			}
+			
+			// Setto il booleano del PDV attivo, in quanto non c'è da db il valore settato
+			if (this.selectedProgetto.getDescrizione().contains("PDV")) {
+				this.selectedProgetto.setPdv(true);
+			}
+				
+		} else {
 			orgSource.addAll(this.lstOrganizzazioniDTO);
-		selectedOrganizzazioni = new DualListModel<ArOrganizzazioneDTO>(orgSource, orgTarget);
+		}
+		
+		this.selectedOrganizzazioni = new DualListModel<ArOrganizzazioneDTO>(orgSource, orgTarget);
+		
 	}
 	
 	public List<ArOrganizzazioneDTO> getLstOrganizzazioniDTO() {
 		return lstOrganizzazioniDTO;
 	}
 
-	public void setLstOrganizzazioniDTO(
-			List<ArOrganizzazioneDTO> lstOrganizzazioniDTO) {
+	public void setLstOrganizzazioniDTO(List<ArOrganizzazioneDTO> lstOrganizzazioniDTO) {
 		this.lstOrganizzazioniDTO = lstOrganizzazioniDTO;
 	}
 
@@ -373,8 +425,8 @@ public class GestioneArgoProgettiBean extends CsUiCompBaseBean {
 				if (submittedValue != null && !submittedValue.trim().equals("")) {
 					try {
 						Long idOrganizzazione = Long.valueOf(submittedValue);
-						for(ArOrganizzazioneDTO o : lstOrganizzazioniDTO){
-							if(o.getId().longValue()==idOrganizzazione.longValue()){
+						for (ArOrganizzazioneDTO o : lstOrganizzazioniDTO) {
+							if (o.getId().longValue() == idOrganizzazione.longValue()) {
 								ret = o;
 								break;
 							}
@@ -405,4 +457,5 @@ public class GestioneArgoProgettiBean extends CsUiCompBaseBean {
 	public void setProgettiTableDataModel(ProgettiTableDataModel progettiTableDataModel) {
 		this.progettiTableDataModel = progettiTableDataModel;
 	}
+	
 }

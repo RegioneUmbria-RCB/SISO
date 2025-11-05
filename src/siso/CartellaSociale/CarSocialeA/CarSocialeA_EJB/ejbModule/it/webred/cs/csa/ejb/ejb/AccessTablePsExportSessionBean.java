@@ -102,9 +102,11 @@ public class AccessTablePsExportSessionBean extends CarSocialeBaseSessionBean im
 
 	@Override
 	public List<VErogExportHelp> findVErogExportHelp(BaseDTO dto) {
+		
 		List<VErogExportHelp> lstOut = new ArrayList<VErogExportHelp>();
 		List<BigDecimal> idsTot = (List<BigDecimal>) dto.getObj();
 		List<BigDecimal> ids = new ArrayList<BigDecimal>();
+		
 		int range = DataModelCostanti.MAX_PARAMS_QUERY_IN_CLAUSE;
 		int size = idsTot.size();
 		
@@ -115,22 +117,22 @@ public class AccessTablePsExportSessionBean extends CarSocialeBaseSessionBean im
 		int max = numChunck > 0 ? range : size;
 		
 		int i = 0;
-		while(i < numChunck){
+		while (i < numChunck) {
 			ids = idsTot.subList(min, max);
-			lstOut.addAll(exportCasellarioDao.findVErogExportHelp(ids));
+			lstOut.addAll(this.exportCasellarioDao.findVErogExportHelp(ids));
 			min += range;
 			max += range;
 			i++;
 		}
 		
-		if(residui > 0){
+		if (residui > 0) {
 			max = min + residui;
 			ids = idsTot.subList(min, max);
-			lstOut.addAll(exportCasellarioDao.findVErogExportHelp(ids));
+			lstOut.addAll(this.exportCasellarioDao.findVErogExportHelp(ids));
 		}
+		
 		return lstOut;
 	}
-	
 
 	//INIZIO SISO-524 
 	@Override

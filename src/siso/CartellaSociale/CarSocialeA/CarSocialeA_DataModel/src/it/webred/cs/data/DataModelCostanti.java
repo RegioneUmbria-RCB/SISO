@@ -16,9 +16,9 @@ import org.apache.commons.lang.StringUtils;
  * </p>
  *
  * @since 1.26.12
- * @version 1.0.2
+ * @version 1.0.3
  * 
- * @lastUpdate 2025-01-10 - DDV
+ * @lastUpdate 2025-10-22 - DDV
  */
 public class DataModelCostanti {
 
@@ -1044,9 +1044,9 @@ public class DataModelCostanti {
 	 * </p>
 	 *
 	 * @since 1.26.12
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 * 
-	 * @lastUpdate 2025-01-22 - DDV
+	 * @lastUpdate 2025-10-22 - DDV
 	 */
 	public static class AmParameterKey implements Serializable {
 		
@@ -1058,8 +1058,8 @@ public class DataModelCostanti {
 		public static String WS_RICERCA_PWD = "smartwelfare.ricercaSoggetto.ws.password";
 		
 		public static String WS_RICERCA_JKS_PATH="smartwelfare.ricercaSoggetto.jks.path"; //Anagrafe regionale SIRPS
-		public static String WS_RICERCA_JKS_PWD="smartwelfare.ricercaSoggetto.jks.pwd";   //Anagrafe regionale SIRPS
-		public static String WS_RICERCA_JKS_CUSTOM="smartwelfare.ricercaSoggetto.jks.custom.abilita";   //Anagrafe regionale SIRPS
+		public static String WS_RICERCA_JKS_PWD="smartwelfare.ricercaSoggetto.jks.pwd"; //Anagrafe regionale SIRPS
+		public static String WS_RICERCA_JKS_CUSTOM="smartwelfare.ricercaSoggetto.jks.custom.abilita"; //Anagrafe regionale SIRPS
 		
 		public static String WS_MEDICI_URL = "smartwelfare.mediciws.url";
 		
@@ -1100,6 +1100,8 @@ public class DataModelCostanti {
 		public static String LINK_APP_ESTERNA_TOKEN = "smartwelfare.appCartellaEsternaSoggetto.token";
 
 		public static String CODICI_ESCLUSI_TAB_EROGAZIONI_INTERVENTI = "smartwelfare.codiciEsclusi.ricercaErogazioniInterventi";
+		public static String NOME_TAB_DATI_POR = "smartwelfare.nome.tabDatiPor";
+		public static String ENABLE_ALL_PROGETTI_DATI_POR = "smartwelfare.enable.progetti.datipor";
 		
 	/*	public static String KEY_AUTHENTICATION = "smartwelfare.umbria.api.authentication";
 		public static String KEY_URL_TOKEN = "smartwelfare.umbria.api.token.url";

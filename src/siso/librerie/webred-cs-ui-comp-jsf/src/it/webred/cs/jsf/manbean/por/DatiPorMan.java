@@ -11,36 +11,41 @@ import java.math.BigDecimal;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.NoneScoped;
 
+import org.apache.commons.lang3.StringUtils;
+
 @ManagedBean
 @NoneScoped
 public class DatiPorMan extends DatiPorBaseMan {
 
 	private static final long serialVersionUID = 1L;
 
-	public DatiPorMan(){}
+	public DatiPorMan() {
+	}
 
 	public DatiPorMan(String codEnte, Long casoId, CsExtraFseDatiLavoro csCDatiLavoro, Long datiSocialiId, BigDecimal idCondLavoro, CsTbGVulnerabile gVulnerabile) {
-		logger.info("Costruttore DatiPorMan IDCD:"+ datiSocialiId);
+		logger.info("Costruttore DatiPorMan IDCD:" + datiSocialiId);
 		this.belfiore = codEnte;
-		if(datiSocialiId!=null) {
+		if (datiSocialiId != null) {
 			setIdXStampa(datiSocialiId);
 		}
-		
+
 		CsOOperatoreSettore opSettore = CsUiCompBaseBean.getCurrentOpSettore();
 
 		this.csCDatiLavoro = csCDatiLavoro != null ? csCDatiLavoro : new CsExtraFseDatiLavoro();
-		
+
 		changeGruppoVulnerabile(gVulnerabile);
-		
+
 		this.csCDatiLavoro.getMaster().setCasoId(casoId);
 		this.csCDatiLavoro.getMaster().setTipo(DataModelCostanti.TipoPOR.PRESA_IN_CARICO);
 
 		this.csCDatiLavoro.getMaster().setOperatoreId(opSettore.getCsOOperatore().getId());
 		this.csCDatiLavoro.getMaster().setOrganizzazioneId(opSettore.getCsOSettore().getCsOOrganizzazione().getId());
-		
+
 		this.initDatiProgetto(isVisualizzaModuloPorCs());
-		
-		if(idCondLavoro!=null) this.impostaCondizioneLavorativa(idCondLavoro);
+
+		if (idCondLavoro != null)
+			this.impostaCondizioneLavorativa(idCondLavoro);
+
 	}
 
 }

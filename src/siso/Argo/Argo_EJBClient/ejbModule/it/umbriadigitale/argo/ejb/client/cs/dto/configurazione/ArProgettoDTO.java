@@ -8,7 +8,7 @@ import java.util.List;
 public class ArProgettoDTO implements Serializable {
 
 	private static final long serialVersionUID = 3538579262771050082L;
-	
+
 	private Long id;
 	private String codiceMemo;
 	private String descrizione;
@@ -16,20 +16,19 @@ public class ArProgettoDTO implements Serializable {
 	private String userUltimaModifica;
 	private boolean abilitato;
 	private boolean fse;
+	private boolean pdv;
 
-	//TODO:aggiungere le altre proprietà del model da gestire
-	
+	// TODO: aggiungere le altre proprietà del model da gestire
+
 	private List<ArAttivitaDTO> lstAttivita;
 	private List<ArOrganizzazioneDTO> lstOrganizzazioni;
 	private Boolean altreOrganizzazioni;
 
-	
-	public ArProgettoDTO(){
+	public ArProgettoDTO() {
 		this.lstAttivita = new ArrayList<ArAttivitaDTO>();
 		this.lstOrganizzazioni = new ArrayList<ArOrganizzazioneDTO>();
-	
 	}
-	
+
 	public List<ArAttivitaDTO> getLstAttivita() {
 		return lstAttivita;
 	}
@@ -108,5 +107,14 @@ public class ArProgettoDTO implements Serializable {
 
 	public void setFse(boolean fse) {
 		this.fse = fse;
-	}	
+	}
+
+	public boolean isPdv() {
+		return pdv;
+	}
+
+	public void setPdv(boolean pdv) {
+		this.pdv = pdv;
+	}
+
 }

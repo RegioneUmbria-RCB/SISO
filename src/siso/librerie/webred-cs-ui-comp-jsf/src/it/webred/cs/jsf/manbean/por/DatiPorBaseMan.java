@@ -1,5 +1,20 @@
 package it.webred.cs.jsf.manbean.por;
 
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.regex.Matcher;
+
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
+import javax.faces.model.SelectItem;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.validator.EmailValidator;
+import org.primefaces.context.RequestContext;
+
 import it.umbriadigitale.argo.ejb.client.cs.bean.ArConfigurazioneService;
 import it.umbriadigitale.argo.ejb.client.cs.dto.configurazione.ArAttivitaDTO;
 import it.webred.cs.csa.ejb.client.AccessTableDatiPorSessionBeanRemote;
@@ -17,30 +32,27 @@ import it.webred.cs.data.model.ArFfProgettoAttivita;
 import it.webred.cs.data.model.CsExtraFseDatiLavoro;
 import it.webred.cs.data.model.CsTbCondLavoro;
 import it.webred.cs.data.model.CsTbDurataRicLavoro;
-import it.webred.cs.data.model.CsTbFormaGiuridica;
 import it.webred.cs.data.model.CsTbGVulnerabile;
 import it.webred.cs.jsf.interfaces.IDatiPor;
 import it.webred.cs.jsf.manbean.comuneNazione.ComuneGenericMan;
 import it.webred.cs.jsf.manbean.superc.CsUiCompBaseBean;
+import it.webred.ct.config.model.AmKeyValueExt;
 import it.webred.ct.config.model.AmTabComuni;
 import it.webred.ct.support.datarouter.CeTBaseObject;
 import it.webred.jsf.bean.ComuneBean;
 
-import java.io.Serializable;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.regex.Matcher;
-
-import javax.faces.application.FacesMessage;
-import javax.faces.context.FacesContext;
-import javax.faces.model.SelectItem;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.validator.EmailValidator;
-import org.primefaces.context.RequestContext;
-
+/**
+ * 
+ * <h1>DatiPorBaseMan.java</h1>
+ *
+ * <p>
+ * </p>
+ *
+ * @since 1.26.12
+ * @version 1.0.1
+ * 
+ * @lastUpdate 2025-10-22 - DDV
+ */
 public abstract class DatiPorBaseMan extends CsUiCompBaseBean implements IDatiPor, Serializable {
 
 	protected List<ArAttivitaDTO> sottoCorsi = new ArrayList<ArAttivitaDTO>();
@@ -92,8 +104,24 @@ public abstract class DatiPorBaseMan extends CsUiCompBaseBean implements IDatiPo
 	protected boolean stampaPor = false;
 	protected ConfigurazioneFseDTO mappaCampiFse;
 	protected boolean renderProgetto;
+
+	private String nomeFieldSetDatiPor;
 	
-	protected void initDatiProgetto(boolean visualizzaDatiPor){
+	/**
+	 * 
+	 * <h1>initDatiProgetto</h1>
+	 *
+	 * <p>
+	 * </p>
+	 *
+	 * @param visualizzaDatiPor
+	 *
+	 * @since 1.26.12
+	 * @version 1.0.1
+	 * 
+	 * @lastUpdate 2025-10-23 - DDV
+	 */
+	protected void initDatiProgetto(boolean visualizzaDatiPor) {
 		
 		this.renderProgetto = visualizzaDatiPor;
 		
@@ -105,9 +133,18 @@ public abstract class DatiPorBaseMan extends CsUiCompBaseBean implements IDatiPo
 			this.idProgetto = this.csCDatiLavoro.getProgetto().getId();
 			this.onChangeProgetto();
 		}
+		
 		if (this.csCDatiLavoro.getProgettoAttivita() != null) {
 			this.idSottocorso = this.csCDatiLavoro.getProgettoAttivita().getId();
 		}
+		
+//		// Check del progetto se diverso da null e check descrizione del progetto
+//		if (this.csCDatiLavoro.getProgetto() != null && StringUtils.isNotBlank(this.csCDatiLavoro.getProgetto().getDescrizione())) {
+//			// Check se progetto contiene PDV (progetto vita) e esiste un progetto vita
+//			if (this.csCDatiLavoro.getProgetto().getDescrizione().contains("PDV") && StringUtils.isNotBlank(this.csCDatiLavoro.getProgettoVitaValore())) {
+//				this.progettoVitaValore = this.csCDatiLavoro.getProgettoVitaValore();
+//			}
+//		}
 
 	}
 
@@ -144,20 +181,20 @@ public abstract class DatiPorBaseMan extends CsUiCompBaseBean implements IDatiPo
 		this.resetDatiOccupazione();
 	}
 	
-	public void resetDatiOccupazione(){
-			if(!this.isOccupato()){
-				resetDatiInMercato02();
-			}
-			
-			if(!this.isRicercaPrimaOccupazione() && !this.isDisoccupato())
-				this.csCDatiLavoro.setDurataRicLavoroId(null);
+	public void resetDatiOccupazione() {
+		if (!this.isOccupato()) {
+			resetDatiInMercato02();
+		}
+		
+		if (!this.isRicercaPrimaOccupazione() && !this.isDisoccupato())
+			this.csCDatiLavoro.setDurataRicLavoroId(null);
 
-			if(!this.isInattivo())
-				this.csCDatiLavoro.setFlagAltroCorso(null);
+		if (!this.isInattivo())
+			this.csCDatiLavoro.setFlagAltroCorso(null);
 	}
 	
-	private void resetDatiInMercato02(){
-		if(this.csCDatiLavoro!=null){
+	private void resetDatiInMercato02() {
+		if (this.csCDatiLavoro != null) {
 			this.csCDatiLavoro.setDescTipoLavoro(null);
 			this.csCDatiLavoro.setDescOrarioLavoro(null);
 			this.csCDatiLavoro.setAzRagioneSociale(null);
@@ -180,23 +217,43 @@ public abstract class DatiPorBaseMan extends CsUiCompBaseBean implements IDatiPo
 		impostaCondizioneLavorativa(id);
 		refreshPage();
 	}
-
+	
+	/**
+	 * 
+	 * <h1>getLstProgetti</h1>
+	 *
+	 * <p>
+	 * Metodo per recuperare la lista dei progetti per i dati por
+	 * </p>
+	 *
+	 *
+	 * @since 1.26.12
+	 * @version 1.0.1
+	 *
+	 * @lastUpdate 2025-10-22 - DDV
+	 */
 	@Override
 	public List<SelectItem> getLstProgetti() {
 
-		if (lstProgetti == null) {
-			lstProgetti = new ArrayList<SelectItem>();
+		if (this.lstProgetti == null) {
+			this.lstProgetti = new ArrayList<SelectItem>();
 			BaseDTO bdto = new BaseDTO();
 			fillEnte(bdto);
 			// dal ultimo iterstep del caso prendo organizzazione del titolare
 			List<KeyValueDTO> listaProgetti = new ArrayList<KeyValueDTO>();
 			if (!StringUtils.isBlank(this.belfiore)) {
 				bdto.setObj(this.belfiore);
-				bdto.setObj2(DataModelCostanti.TipoProgetto.FSE);
-				bdto.setObj3(idProgetto);
+				AmKeyValueExt amKeyValueExt = CsUiCompBaseBean.getAmKeyValueExt(DataModelCostanti.AmParameterKey.ENABLE_ALL_PROGETTI_DATI_POR);
+				Boolean enableAllProgettiDatiPor = Boolean.valueOf(amKeyValueExt.getValueConf());
+
+				if (!enableAllProgettiDatiPor) 
+					bdto.setObj2(DataModelCostanti.TipoProgetto.FSE);
+				
+				bdto.setObj3(this.idProgetto);
 				listaProgetti = confService.findProgettiByBelfioreOrganizzazione(bdto);
 			}
-			lstProgetti = convertiLista(listaProgetti);
+			
+			this.lstProgetti = convertiLista(listaProgetti);
 		}
 		return lstProgetti;
 	}
@@ -252,19 +309,20 @@ public abstract class DatiPorBaseMan extends CsUiCompBaseBean implements IDatiPo
 
 	@Override
 	public void onChangeProgetto() {
-		logger.info("Change Progetto ");
+		logger.info("Change Progetto");
 		loadSottoCorsi();
 		impostaProgetto();
 		loadCodiceForm();
 		loadMappaCampiFse();
 		
-		if(this.isModuloPorMarche() && this.mappaCampiFse.getSoggettoAttuatore().isAbilitato() && StringUtils.isBlank(this.csCDatiLavoro.getSoggettoAttuatore()))
-		  this.csCDatiLavoro.setSoggettoAttuatore(this.getZonaSociale());
+		if (this.isModuloPorMarche() && this.mappaCampiFse.getSoggettoAttuatore().isAbilitato() && StringUtils.isBlank(this.csCDatiLavoro.getSoggettoAttuatore())) {
+			this.csCDatiLavoro.setSoggettoAttuatore(this.getZonaSociale());
+		}
 	}
 
-	public void loadMappaCampiFse(){
+	public void loadMappaCampiFse() {
 		mappaCampiFse = null;
-		if (this.idProgetto!=null) {  
+		if (this.idProgetto != null) {  
 			BaseDTO bdto = new BaseDTO();
 			fillEnte(bdto);
 			bdto.setObj(idProgetto);
@@ -294,7 +352,7 @@ public abstract class DatiPorBaseMan extends CsUiCompBaseBean implements IDatiPo
 			BaseDTO bdto = new BaseDTO();
 			fillEnte(bdto);
 			bdto.setObj(this.idProgetto.longValue());
-			ArConfigurazioneService arConfService = (ArConfigurazioneService) getArgoEjb( "ArConfigurazioneServiceBean");
+			ArConfigurazioneService arConfService = (ArConfigurazioneService) getArgoEjb("ArConfigurazioneServiceBean");
 			sottoCorsi = arConfService.getListaAttivita(this.idProgetto.longValue());
 		}
 	}
@@ -323,6 +381,28 @@ public abstract class DatiPorBaseMan extends CsUiCompBaseBean implements IDatiPo
 		this.codiceForm = codiceForm;
 	}
 
+	/**
+	 * 
+	 * <h1>isRenderPDV</h1>
+	 *
+	 * <p>
+	 * </p>
+	 *
+	 * @return
+	 *
+	 * @since 1.26.14
+	 * @version 1.0.0
+	 * 
+	 * @author DDV
+	 * @lastUpdate 2025-10-22 - DDV
+	 */
+	public boolean isRenderPDV() {
+		if (this.progetto == null || this.progetto == "") {
+			return false;
+		}
+		return this.progetto.contains("PDV");
+	}
+	
 	public boolean isRenderFSE() {
 		return "FSE".equalsIgnoreCase(this.codiceForm);
 	}
@@ -353,8 +433,6 @@ public abstract class DatiPorBaseMan extends CsUiCompBaseBean implements IDatiPo
 			return new ComuneBean(comune);
 		return null;
 	}
-
-
 
 	public List<SelectItem> getLstAteco() {
 		if (lstAteco == null) {
@@ -591,70 +669,76 @@ public abstract class DatiPorBaseMan extends CsUiCompBaseBean implements IDatiPo
 		this.aggiornaEntity();
 		validationErrorMessages = new ArrayList<String>();
 		boolean ret = true;
-		if(isRenderProgetto() && (this.getIdProgetto() !=null && this.idProgetto >  0 )) {
-			if(isRenderFSE()) {
-				if(this.csCDatiLavoro.getProgetto() == null){
+		if (isRenderProgetto() && (this.getIdProgetto() != null && this.idProgetto > 0)) {
+			if (isRenderFSE()) {
+				
+				if (this.csCDatiLavoro.getProgetto() == null) {
 					String error = "Progetto";
 					validationErrorMessages.add(error);
 					ret = false;
 				}
-				if(this.csCDatiLavoro.getProgettoAttivita()==null){
+				
+				if (this.csCDatiLavoro.getProgettoAttivita() == null) {
 					String error = "Attività del progetto";
 					validationErrorMessages.add(error);
 					ret = false;
 				}
-				if(this.occupato) {
-					if(mappaCampiFse.getLavoroTipo().isValida() && StringUtils.isBlank(this.csCDatiLavoro.getDescTipoLavoro())) {
+				if (this.occupato) {
+					if (mappaCampiFse.getLavoroTipo().isValida() && StringUtils.isBlank(this.csCDatiLavoro.getDescTipoLavoro())) {
 						String error = mappaCampiFse.getLavoroTipo().getLabel();
 						validationErrorMessages.add(error);
 						ret = false;
 					}
-					if(mappaCampiFse.getLavoroOrario().isValida() && StringUtils.isBlank(this.csCDatiLavoro.getDescOrarioLavoro())) {
+					
+					if (mappaCampiFse.getLavoroOrario().isValida() && StringUtils.isBlank(this.csCDatiLavoro.getDescOrarioLavoro())) {
 						String error = mappaCampiFse.getLavoroOrario().getLabel();
 						validationErrorMessages.add(error);
 						ret = false;
 					}
-					if(mappaCampiFse.getAzRagioneSociale().isValida() && StringUtils.isBlank(this.csCDatiLavoro.getAzRagioneSociale())) {
+					
+					if (mappaCampiFse.getAzRagioneSociale().isValida() && StringUtils.isBlank(this.csCDatiLavoro.getAzRagioneSociale())) {
 						String error = mappaCampiFse.getAzRagioneSociale().getLabel();
 						validationErrorMessages.add(error);
 						ret = false;
 					}
-					if((mappaCampiFse.getAzPi().isValida() && StringUtils.isBlank(this.csCDatiLavoro.getAzPi())) && 
+					
+					if ((mappaCampiFse.getAzPi().isValida() && StringUtils.isBlank(this.csCDatiLavoro.getAzPi())) && 
 					   (mappaCampiFse.getAzCf().isValida() && StringUtils.isBlank(this.csCDatiLavoro.getAzCf()))) {
 						String error = mappaCampiFse.getAzPi().getLabel()+" o "+mappaCampiFse.getAzCf().getLabel();
 						validationErrorMessages.add(error);
 						ret = false;
 					}
 			
-					if(mappaCampiFse.getAzVia().isValida() && StringUtils.isBlank(this.csCDatiLavoro.getAzVia())) {
+					if (mappaCampiFse.getAzVia().isValida() && StringUtils.isBlank(this.csCDatiLavoro.getAzVia())) {
 						String error = mappaCampiFse.getAzVia().getLabel();
 						validationErrorMessages.add(error);
 						ret = false;
 					} 
 		
-					if(mappaCampiFse.getAzComune().isValida() && StringUtils.isBlank(this.csCDatiLavoro.getAzComuneDes())) {
+					if (mappaCampiFse.getAzComune().isValida() && StringUtils.isBlank(this.csCDatiLavoro.getAzComuneDes())) {
 						String error = mappaCampiFse.getAzComune().getLabel();
 						validationErrorMessages.add(error);
 						ret = false;
 					} 
 		
-					if(mappaCampiFse.getAzCodAteco().isValida() && StringUtils.isBlank(this.csCDatiLavoro.getAzCodAteco())) {
+					if (mappaCampiFse.getAzCodAteco().isValida() && StringUtils.isBlank(this.csCDatiLavoro.getAzCodAteco())) {
 						String error = mappaCampiFse.getAzCodAteco().getLabel();
 						validationErrorMessages.add(error);
 						ret = false;
 					} 
 		
-					if(mappaCampiFse.getAzFormaGiuridica().isValida() && StringUtils.isBlank(this.csCDatiLavoro.getAzFormaGiuridica())) {
+					if (mappaCampiFse.getAzFormaGiuridica().isValida() && StringUtils.isBlank(this.csCDatiLavoro.getAzFormaGiuridica())) {
 						String error = mappaCampiFse.getAzFormaGiuridica().getLabel();
 						validationErrorMessages.add(error);
 						ret = false;
 					} 
 		
-					if(mappaCampiFse.getAzDimensione().isValida() && StringUtils.isBlank(this.csCDatiLavoro.getDescDimAzienda())) {
+					if (mappaCampiFse.getAzDimensione().isValida() && StringUtils.isBlank(this.csCDatiLavoro.getDescDimAzienda())) {
 						String error = mappaCampiFse.getAzDimensione().getLabel();
 						validationErrorMessages.add(error);
 						ret = false;
-					} 
+					}
+					
 				} else if(this.disoccupato) {
 					if(mappaCampiFse.getDurataRicercaLavoro().isValida() && StringUtils.isBlank(csCDatiLavoro.getDurataRicLavoroId())) {
 						String error = mappaCampiFse.getDurataRicercaLavoro().getLabel();
@@ -662,10 +746,10 @@ public abstract class DatiPorBaseMan extends CsUiCompBaseBean implements IDatiPo
 						ret = false;
 					} 
 					
-				} else if(this.inattivo) {
+				} else if (this.inattivo) {
 					
-				} else if(this.ricercaPrimaOccupazione) {
-					if(mappaCampiFse.getDurataRicercaLavoro().isValida() && StringUtils.isBlank(csCDatiLavoro.getDurataRicLavoroId())) {
+				} else if (this.ricercaPrimaOccupazione) {
+					if (mappaCampiFse.getDurataRicercaLavoro().isValida() && StringUtils.isBlank(csCDatiLavoro.getDurataRicLavoroId())) {
 						String error = mappaCampiFse.getDurataRicercaLavoro().getLabel();
 						validationErrorMessages.add(error);
 						ret = false;
@@ -673,47 +757,47 @@ public abstract class DatiPorBaseMan extends CsUiCompBaseBean implements IDatiPo
 				}
 				
 				BigDecimal annoTitolo = this.csCDatiLavoro.getAnnoConseguimentoTitoloStu();
-				if(mappaCampiFse.getAnnoTitoloStudio().isValida() && (annoTitolo == null || annoTitolo.longValue()<1800)){
+				if (mappaCampiFse.getAnnoTitoloStudio().isValida() && (annoTitolo == null || annoTitolo.longValue() < 1800)){
 					String error = mappaCampiFse.getAnnoTitoloStudio().getLabel();
 					validationErrorMessages.add(error);
 					ret = false;
 				}
 				
-				if(mappaCampiFse.getPagIban().isValida() && StringUtils.isBlank(this.csCDatiLavoro.getIban())){
+				if (mappaCampiFse.getPagIban().isValida() && StringUtils.isBlank(this.csCDatiLavoro.getIban())) {
 					String error = mappaCampiFse.getPagIban().getLabel();
 					validationErrorMessages.add(error);
 					ret = false;
 				}
 				
-				if(mappaCampiFse.getPagResDom().isValida() && this.csCDatiLavoro.getFlagResDom()==null){
+				if (mappaCampiFse.getPagResDom().isValida() && this.csCDatiLavoro.getFlagResDom() == null) {
 					String error = mappaCampiFse.getPagResDom().getLabel();
 					validationErrorMessages.add(error);
 					ret = false;
 				}
 				
-				if(mappaCampiFse.getInattivoAltroCorso().isValida() && this.csCDatiLavoro.getFlagAltroCorso()==null){
+				if (mappaCampiFse.getInattivoAltroCorso().isValida() && this.csCDatiLavoro.getFlagAltroCorso() == null) {
 					String error = mappaCampiFse.getInattivoAltroCorso().getLabel();
 					validationErrorMessages.add(error);
 					ret = false;
 				}
 				
-				if(this.csCDatiLavoro.getComunicaVul() == null){
+				if (this.csCDatiLavoro.getComunicaVul() == null) {
 					validationErrorMessages.add("L'utente intende comunicare la condizione di vulnerabilità");
 					ret = false;
 				}
 				
-				if(this.csCDatiLavoro.getDtSottoscrizione() == null){
+				if (this.csCDatiLavoro.getDtSottoscrizione() == null) {
 					String error = "Data sottoscrizione";
 					validationErrorMessages.add(error);
 					ret = false;
 				}
 				
-				if(mappaCampiFse.getDataSottoscrizione().isValida() && this.csCDatiLavoro.getDtSottoscrizione() == null){
+				if (mappaCampiFse.getDataSottoscrizione().isValida() && this.csCDatiLavoro.getDtSottoscrizione() == null) {
 					validationErrorMessages.add(mappaCampiFse.getDataSottoscrizione().getLabel());
 					ret = false;
 				}
 				
-				if(mappaCampiFse.getSoggettoAttuatore().isValida() && StringUtils.isBlank(csCDatiLavoro.getSoggettoAttuatore())) {
+				if (mappaCampiFse.getSoggettoAttuatore().isValida() && StringUtils.isBlank(csCDatiLavoro.getSoggettoAttuatore())) {
 					validationErrorMessages.add(mappaCampiFse.getSoggettoAttuatore().getLabel());
 					ret = false;
 				}
@@ -725,7 +809,33 @@ public abstract class DatiPorBaseMan extends CsUiCompBaseBean implements IDatiPo
 			}
 			
 		}
+		
 		logger.info("Fine validazione dati POR con esito "+ret);
+		
+		return ret;
+	}
+	
+	public boolean validaPDV() {
+		logger.info("Valido i dati POR - PDV");
+		validationErrorMessages = new ArrayList<String>();
+		boolean ret = true;
+		if (isRenderProgetto() && (this.getIdProgetto() != null && this.idProgetto > 0)) {
+				
+			if (this.isRenderPDV()) {
+				ret = StringUtils.isBlank(this.getCsCDatiLavoro().getProgettoVitaValore()) ? false : true;
+				if (!ret) {
+					this.validationErrorMessages.add("Progetto di Vita: Non e' stato selezionato nessun valore per 'Istanza presentata presso altri punti di ricezione'");
+				}
+			} else {
+				String error = "Impostare un progetto PDV";
+				this.validationErrorMessages.add(error);
+				ret = false;
+			}
+			
+		}
+		
+		logger.info("Fine validazione dati POR - PDV - con esito " + ret);
+		
 		return ret;
 	}
 	
@@ -739,38 +849,80 @@ public abstract class DatiPorBaseMan extends CsUiCompBaseBean implements IDatiPo
 		}
 	}
 	
-	public void showWarning(){
+	/**
+	 * 
+	 * <h1>showWarning</h1>
+	 *
+	 * <p>
+	 * </p>
+	 *
+	 *
+	 * @since 1.26.12
+	 * @version 1.0.1
+	 * 
+	 * @author DDV
+	 * @lastUpdate 2025-10-27 - DDV
+	 */
+	public void showWarning() {
 		StringBuilder errorpor = new StringBuilder();
 		int i = 0;
-		for(String msg: validationErrorMessages) {
+		for (String msg : this.validationErrorMessages) {
 			errorpor.append(msg);
-			if(i<validationErrorMessages.size()-1)
+			if (i < this.validationErrorMessages.size() - 1)
 				errorpor.append(", ");
 			i++;
 		}
+		
 		this.addWarning("Valori FSE obbligatori", errorpor.toString());
 	}
 	
-	public void aggiornaEntity() {
-			impostaProgetto();
-			impostaSottoProgetto();
-			//loadCodiceForm();
-
-			if (this.comuneMan.comune != null && this.mappaCampiFse.getAzComune().isAbilitato()) {
-				this.csCDatiLavoro.setAzComuneCod(this.comuneMan.comune.getCodIstatComune());
-				this.csCDatiLavoro.setAzComuneDes(this.comuneMan.comune.getDenominazione());
-				this.csCDatiLavoro.setAzComuneCod(this.comuneMan.comune.getCodIstatComune());
-				this.csCDatiLavoro.setAzProv(this.comuneMan.comune.getSiglaProv());
-			} else {
-				this.csCDatiLavoro.setAzComuneCod(null);
-				this.csCDatiLavoro.setAzComuneDes(null);
-				this.csCDatiLavoro.setAzComuneCod(null);
-				this.csCDatiLavoro.setAzProv(null);
-			}
+	/**
+	 * 
+	 * <h1>showWarningPDV</h1>
+	 *
+	 * <p>
+	 * </p>
+	 *
+	 *
+	 * @since 1.26.14
+	 * @version 1.0.0
+	 * 
+	 * @author DDV
+	 * @lastUpdate 2025-10-27 - DDV
+	 */
+	public void showWarningPDV() {
+		StringBuilder errorpor = new StringBuilder();
+		int i = 0;
+		for (String msg : this.validationErrorMessages) {
+			errorpor.append(msg);
+			if (i < this.validationErrorMessages.size() - 1)
+				errorpor.append(", ");
+			i++;
+		}
+		
+		this.addWarning("Valori PDV obbligatori", errorpor.toString());
+	}
 	
-			if(!isCanShowComunicaVul()) {
-				this.csCDatiLavoro.setComunicaVul(Boolean.FALSE);
-			}
+	public void aggiornaEntity() {
+		impostaProgetto();
+		impostaSottoProgetto();
+		//loadCodiceForm();
+
+		if (this.comuneMan.comune != null && this.mappaCampiFse.getAzComune().isAbilitato()) {
+			this.csCDatiLavoro.setAzComuneCod(this.comuneMan.comune.getCodIstatComune());
+			this.csCDatiLavoro.setAzComuneDes(this.comuneMan.comune.getDenominazione());
+			this.csCDatiLavoro.setAzComuneCod(this.comuneMan.comune.getCodIstatComune());
+			this.csCDatiLavoro.setAzProv(this.comuneMan.comune.getSiglaProv());
+		} else {
+			this.csCDatiLavoro.setAzComuneCod(null);
+			this.csCDatiLavoro.setAzComuneDes(null);
+			this.csCDatiLavoro.setAzComuneCod(null);
+			this.csCDatiLavoro.setAzProv(null);
+		}
+
+		if(!isCanShowComunicaVul()) {
+			this.csCDatiLavoro.setComunicaVul(Boolean.FALSE);
+		}
 	}
 
 	public long getIdXStampa() {
@@ -894,4 +1046,18 @@ public abstract class DatiPorBaseMan extends CsUiCompBaseBean implements IDatiPo
 			render = this.mappaCampiFse.getDurataRicercaLavoro().isAbilitato();
 		return render;
 	}
+	
+	public String getNomeFieldSetDatiPor() {
+		
+		AmKeyValueExt amKeyValueExt = CsUiCompBaseBean.getAmKeyValueExt(DataModelCostanti.AmParameterKey.NOME_TAB_DATI_POR);
+		
+		this.nomeFieldSetDatiPor = amKeyValueExt.getValueConf();
+		
+		return nomeFieldSetDatiPor;
+	}
+	
+	public void setNomeFieldSetDatiPor(String nomeFieldSetDatiPor) {
+		this.nomeFieldSetDatiPor = nomeFieldSetDatiPor;
+	}
+	
 }
