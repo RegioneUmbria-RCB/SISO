@@ -6,11 +6,11 @@ softwareVersion: "1.0"
 releaseDate: "2017-04-15"
 platforms:
   - web
-
+organisation:
+  uri: "urn:x-italian-pa:r_umbria"
 categories:
   - data-visualization
   - office
-
 usedBy:
   - Regione Umbria
   - Comune Perugia
