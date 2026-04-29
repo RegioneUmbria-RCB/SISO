@@ -82,7 +82,7 @@ public class SsSchedaSessionBean implements SsSchedaSessionBeanRemote {
 	
 	@EJB(mappedName = "java:global/AmProfiler/AmProfilerEjb/LoginBean")
 	protected LoginBeanService loginService;
-	
+		
 	protected static Logger logger = Logger.getLogger("segretariatosoc.log");
 	
 	@Override
@@ -270,28 +270,29 @@ public class SsSchedaSessionBean implements SsSchedaSessionBeanRemote {
 	}
 
 	@Override
-	public SchedaUdcDTO loadSchedaUdcCompleta(BaseDTO dto){
-		SchedaUdcDTO out = new SchedaUdcDTO();
-		Long id = (Long)dto.getObj();
+	public SchedaUdcDTO loadSchedaUdcCompleta(BaseDTO dto) {
+		
+		SchedaUdcDTO schedaUdcDTO = new SchedaUdcDTO();
+		Long id = (Long) dto.getObj();
 		
 		Long organizzazioneId = dto.getOrganizzazione();
-    	Boolean canReadDiario = (Boolean)dto.getObj2();
+    	Boolean canReadDiario = (Boolean) dto.getObj2();
     	
-		SsScheda ssScheda = dao.readScheda(id);
-		out.setScheda(ssScheda);
+		SsScheda ssScheda = this.dao.readScheda(id);
+		schedaUdcDTO.setScheda(ssScheda);
 		if (ssScheda != null) {
-			SsSchedaSegnalato ssSchedaSegnalato = dao.readSegnalatoById(ssScheda.getSegnalato());
-			out.setSegnalato(ssSchedaSegnalato);
+			SsSchedaSegnalato ssSchedaSegnalato = this.dao.readSegnalatoById(ssScheda.getSegnalato());
+			schedaUdcDTO.setSegnalato(ssSchedaSegnalato);
 			
 			if (ssScheda.getMotivazione() != null) {
-				List<SsMotivazioniSchede> listaMotivazioni = dao.readMotivazioniScheda(ssScheda.getMotivazione());
+				List<SsMotivazioniSchede> listaMotivazioni = this.dao.readMotivazioniScheda(ssScheda.getMotivazione());
 				List<String> motivazioni = new ArrayList<String>();
-				for(SsMotivazioniSchede motivoScheda : listaMotivazioni) {
-					SsMotivazione m = motivoScheda.getMotivazione();
-					String s = m.getClassificazione().getDescrizione()+" - "+m.getMotivo();
-					motivazioni.add(s);
+				for (SsMotivazioniSchede motivoScheda : listaMotivazioni) {
+					SsMotivazione ssMotivazione = motivoScheda.getMotivazione();
+					String motivazione = ssMotivazione.getClassificazione().getDescrizione() + " - " + ssMotivazione.getMotivo();
+					motivazioni.add(motivazione);
 				}
-				out.setListaMotivazioni(motivazioni);
+				schedaUdcDTO.setListaMotivazioni(motivazioni);
 			}
 
 			if (ssSchedaSegnalato != null && ssSchedaSegnalato.getAnagrafica() != null) {
@@ -301,45 +302,51 @@ public class SsSchedaSessionBean implements SsSchedaSessionBeanRemote {
 				 * List<NotaDTO> listaDiari = readDiarioSociale(anagrafica, organizzazioneID);
 				 * out.setNoteDiario(listaDiari);
 				 */
-				List<SsInterventoEconomico> listaInterventiEcon = dao.readInterventiEconomici(anagrafica);
-				out.setListaInterventiEconomici(listaInterventiEcon);
+				List<SsInterventoEconomico> listaInterventiEcon = this.dao.readInterventiEconomici(anagrafica);
+				schedaUdcDTO.setListaInterventiEconomici(listaInterventiEcon);
 				
-				CsSsPrivacy privacy = dao.findSchedaPrivacy(anagrafica.getCf(), orgAccessoId);
-				out.setPrivacySottoscritta(privacy!=null);
+				CsSsPrivacy privacy = this.dao.findSchedaPrivacy(anagrafica.getCf(), orgAccessoId);
+				schedaUdcDTO.setPrivacySottoscritta(privacy != null);
 			
 		        DatiPrivacyPdfDTO datiPrivacy = loadDatiReportPrivacyPDF(ssScheda, ssSchedaSegnalato);
-		        out.setDatiPrivacyPDF(datiPrivacy);
+		        schedaUdcDTO.setDatiPrivacyPDF(datiPrivacy);
 			}
-		
+
 			//SISO-947 dati riferimenti
-				
 			List<SsSchedaRiferimento> listaRiferimenti = new ArrayList<SsSchedaRiferimento>();
 			listaRiferimenti.add(ssScheda.getRiferimento());
-			listaRiferimenti.add( ssScheda.getRiferimento2());
+			listaRiferimenti.add(ssScheda.getRiferimento2());
 		    listaRiferimenti.add(ssScheda.getRiferimento3());
-		    out.setListaRiferimenti(listaRiferimenti);
+		    schedaUdcDTO.setListaRiferimenti(listaRiferimenti);
 		    
-			if(ssScheda.getInterventi() != null) {
-				List<SsInterventiSchede> listaInterventi = dao.readInterventiScheda(ssScheda.getInterventi());
+			if (ssScheda.getInterventi() != null) {
+				List<SsInterventiSchede> listaInterventi = this.dao.readInterventiScheda(ssScheda.getInterventi());
 				List<String> interventi = new ArrayList<String>();
-				for(SsInterventiSchede d : listaInterventi)
-					interventi.add(d.getIntervento().getIntervento());
-				out.setListaInterventi(interventi);
+				for (SsInterventiSchede ssInterventiSchede : listaInterventi)
+					interventi.add(ssInterventiSchede.getIntervento().getIntervento());
+				schedaUdcDTO.setListaInterventi(interventi);
 			}
-			
 			//FINE SISO 961
 			
 			// dati diario sociale
-			
         	Long orgSchAccessoCorrente = ssScheda.getAccesso().getSsRelUffPcontOrg().getSsOOrganizzazione().getId();
         	String operSchAccessoCorrente = ssScheda.getAccesso().getOperatore();
-        	List<NotaDTO>  noteDiario = findListNoteDiario(ssSchedaSegnalato.getAnagrafica(), orgSchAccessoCorrente, operSchAccessoCorrente, organizzazioneId, dto.getUserId(), canReadDiario, dto.getEnteId());
-        	out.setNoteDiario(noteDiario);
-
+        	List<NotaDTO> noteDiario = findListNoteDiario
+        			( ssSchedaSegnalato.getAnagrafica()
+        			, orgSchAccessoCorrente
+        			, operSchAccessoCorrente
+        			, organizzazioneId
+        			, dto.getUserId()
+        			, canReadDiario
+        			, dto.getEnteId()
+        			);
+        	schedaUdcDTO.setNoteDiario(noteDiario);
+        	
 		}
-		return out;
+		
+		return schedaUdcDTO;
 	}
-	
+
 	private List<NotaDTO> findListNoteDiario(SsAnagrafica anagrafica, Long orgSchAccessoCorrente, String operSchAccessoCorrente, Long orgCorrenteId, String uNameCorrente, boolean canReadDiario, String codEnteCorrente){
 		// dati diario sociale
     	List<SsAnagrafica> anagrafiche = dao.readAnagraficheByCf(anagrafica.getCf());

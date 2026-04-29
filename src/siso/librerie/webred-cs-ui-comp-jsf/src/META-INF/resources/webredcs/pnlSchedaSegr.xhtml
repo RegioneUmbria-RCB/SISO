@@ -12,33 +12,30 @@
 		<composite:attribute name="iSchedaSegr" type="it.webred.cs.jsf.interfaces.ISchedaSegr" />
 	</composite:interface>
 	<composite:implementation>
-
 		<style type="text/css">
-.bold {
-	font-weight: bold;
-}
+			.bold {
+				font-weight: bold;
+			}
 
-.noBorderBackground {
-	border: none !important;
-	background: none !important;
-	
-	
-}
-.ui-tabs-left>.ui-tabs-nav{
-	    background: none !important;
-	}
-	.ui-tabs.ui-tabs-left>.ui-tabs-nav li{
-	    margin: 0 0 1px 0;
-	    border-right: initial;
-	}
-</style>
+			.noBorderBackground {
+				border: none !important;
+				background: none !important;
+			}
+
+			.ui-tabs-left>.ui-tabs-nav {
+				background: none !important;
+			}
+
+			.ui-tabs.ui-tabs-left>.ui-tabs-nav li {
+				margin: 0 0 1px 0;
+				border-right: initial;
+			}
+		</style>
 		
-		<webredcs:pnlConsensoPrivacy iConsensoPrivacy="#{cc.attrs.iSchedaSegr.consensoPrivacyMan}" 
-									 filePrivacy="#{cc.attrs.iSchedaSegr.filePrivacy}"/>
+		<webredcs:pnlConsensoPrivacy iConsensoPrivacy="#{cc.attrs.iSchedaSegr.consensoPrivacyMan}" filePrivacy="#{cc.attrs.iSchedaSegr.filePrivacy}" />
 		
 		<p:accordionPanel multiple="true" activeIndex="2">
 			<p:tab title="#{cc.attrs.iSchedaSegr.labelAccesso}">
-
 				<h:panelGrid columns="6" cellpadding="10" width="100%">
 					<h:outputText value="Ufficio" styleClass="bold" />
 					<h:outputText value="#{cc.attrs.iSchedaSegr.ssScheda.accesso.ssRelUffPcontOrg.ssUfficio.nome}" />
@@ -75,21 +72,18 @@
 					<h:panelGroup>
 						<h:outputText value="#{cc.attrs.iSchedaSegr.ssScheda.accesso.interlocutore}" />
 						<h:outputText
-							value=" (accompagnato da: #{cc.attrs.iSchedaSegr.ssScheda.accesso.accompagnatore!=null ? cc.attrs.iSchedaSegr.ssScheda.accesso.accompagnatore : 'non specificato'}"
+							value="(accompagnato da: #{cc.attrs.iSchedaSegr.ssScheda.accesso.accompagnatore!=null ? cc.attrs.iSchedaSegr.ssScheda.accesso.accompagnatore : 'non specificato'}"
 							rendered="#{cc.attrs.iSchedaSegr.ssScheda.accesso.utenteAccompagnato}" />
 						<h:outputText value=" (utente presente o informato)" rendered="#{cc.attrs.iSchedaSegr.ssScheda.accesso.utentePresenteInformato}" />
 					</h:panelGroup>
-
 				</h:panelGrid>
 			</p:tab>
+
 			<p:tab title="#{cc.attrs.iSchedaSegr.labelSegnalante}">
-				
-				<p:outputPanel rendered="#{cc.attrs.iSchedaSegr.hideSegnalante}" 
-					 toggleable="true" toggleSpeed="500" >
-						<p:outputLabel value="  L'interlocutore è l'utente stesso" />
+				<p:outputPanel rendered="#{cc.attrs.iSchedaSegr.hideSegnalante}" toggleable="true" toggleSpeed="500">
+					<p:outputLabel value="L'interlocutore è l'utente stesso" />
 				</p:outputPanel>
-		
-				
+
 				<h:panelGrid columns="4" cellpadding="10" width="100%" rendered="#{!cc.attrs.iSchedaSegr.hideSegnalante and cc.attrs.iSchedaSegr.ssScheda.segnalante!=null}">
 					<h:outputText value="Cognome e nome" styleClass="bold" />
 					<h:outputText value="#{cc.attrs.iSchedaSegr.ssScheda.segnalante.cognome} #{cc.attrs.iSchedaSegr.ssScheda.segnalante.nome}" />
@@ -135,9 +129,9 @@
 
 					<h:outputText value="Ruolo" styleClass="bold" />
 					<h:outputText value="#{cc.attrs.iSchedaSegr.ssScheda.segnalante.ruolo}" />
-
 				</h:panelGrid>
 			</p:tab>
+
 			<p:tab title="#{cc.attrs.iSchedaSegr.labelSegnalato}">
 				<h:panelGrid columns="6" cellpadding="10" width="100%">
 					<h:outputText value="Cognome e nome" styleClass="bold" />
@@ -189,7 +183,7 @@
 					<h:panelGroup rendered="#{cc.attrs.iSchedaSegr.ssSchedaSegnalato.domicilio!=null}">
 						<h:outputText value="Struttura di accoglienza: #{cc.attrs.iSchedaSegr.ssSchedaSegnalato.domicilio.strutturaAccoglienza} "
 							rendered="#{cc.attrs.iSchedaSegr.ssSchedaSegnalato.domicilio.strutturaAccoglienza!=null}" />
-						<h:outputText value="#{cc.attrs.iSchedaSegr.ssSchedaSegnalato.domicilio.via}  #{cc.attrs.iSchedaSegr.ssSchedaSegnalato.domicilio.numero}, " />
+						<h:outputText value="#{cc.attrs.iSchedaSegr.ssSchedaSegnalato.domicilio.via} #{cc.attrs.iSchedaSegr.ssSchedaSegnalato.domicilio.numero}, " />
 						<h:outputText
 							value="#{cc.attrs.iSchedaSegr.ssSchedaSegnalato.domicilio.comuneDes} (#{cc.attrs.iSchedaSegr.ssSchedaSegnalato.domicilio.provCod}) "
 							rendered="#{cc.attrs.iSchedaSegr.ssSchedaSegnalato.domicilio.comuneCod!=null}" />
@@ -198,7 +192,7 @@
 					</h:panelGroup>
 				</h:panelGrid>
 
-				<h:panelGrid  columns="6" cellpadding="10" width="100%">
+				<h:panelGrid columns="6" cellpadding="10" width="100%">
 					<h:outputText value="Telefono" styleClass="bold" />
 					<h:panelGroup>
 						<h:outputText value="#{cc.attrs.iSchedaSegr.ssSchedaSegnalato.telefono}" />
@@ -247,58 +241,57 @@
 					</p:fieldset>
 				</h:panelGrid>
 			</p:tab>
+
 			<p:tab title="#{cc.attrs.iSchedaSegr.labelRiferimento}" rendered="#{cc.attrs.iSchedaSegr.scheda.listaRiferimenti ne NULL}" style="background:none !important;">
-             <p:tabView id="tabRiferimenti"   orientation="left" dynamic="false"  cache="true"  >
-               <c:forEach items="#{cc.attrs.iSchedaSegr.scheda.listaRiferimenti}" var="rowRepeat" varStatus="rif" >
-               <p:tab title="#{cc.attrs.iSchedaSegr.titoloTabRiferimento(rowRepeat, rif.index + 1)}">
-                <p:panel id="pnlRiferimento#{rif.index + 1 }">
-				<h:panelGrid columns="4" cellpadding="10" width="100%">
-					<h:outputText value="Cognome e nome" styleClass="bold" />
-					<h:outputText value="#{rowRepeat.cognome} #{rowRepeat.nome}" />
+				<p:tabView id="tabRiferimenti" orientation="left" dynamic="false" cache="true">
+					<c:forEach items="#{cc.attrs.iSchedaSegr.scheda.listaRiferimenti}" var="rowRepeat" varStatus="rif">
+						<p:tab title="#{cc.attrs.iSchedaSegr.titoloTabRiferimento(rowRepeat, rif.index + 1)}">
+							<p:panel id="pnlRiferimento#{rif.index + 1}">
+								<h:panelGrid columns="4" cellpadding="10" width="100%">
+									<h:outputText value="Cognome e nome" styleClass="bold" />
+									<h:outputText value="#{rowRepeat.cognome} #{rowRepeat.nome}" />
 
-					<h:outputText value="Sesso" styleClass="bold" />
-					<h:outputText value="#{rowRepeat.sesso}"
-						rendered="#{rowRepeat.sesso ne 'F' and rowRepeat.sesso ne 'M'}" />
-					<p:graphicImage title="Donna" rendered="#{rowRepeat.sesso eq 'F'}" value="/images/female.png" height="20" />
-					<p:graphicImage title="Uomo" rendered="#{rowRepeat.sesso eq 'M'}" value="/images/male.png" height="20" />
+									<h:outputText value="Sesso" styleClass="bold" />
+									<h:outputText value="#{rowRepeat.sesso}" rendered="#{rowRepeat.sesso ne 'F' and rowRepeat.sesso ne 'M'}" />
+									<p:graphicImage title="Donna" rendered="#{rowRepeat.sesso eq 'F'}" value="/images/female.png" height="20" />
+									<p:graphicImage title="Uomo" rendered="#{rowRepeat.sesso eq 'M'}" value="/images/male.png" height="20" />
 
-					<h:outputText value="Data di nascita " styleClass="bold" />
-					<h:outputText value="#{rowRepeat.dataNascita}">
-						<f:convertDateTime pattern="dd/MM/yyyy" />
-					</h:outputText>
+									<h:outputText value="Data di nascita " styleClass="bold" />
+									<h:outputText value="#{rowRepeat.dataNascita}">
+										<f:convertDateTime pattern="dd/MM/yyyy" />
+									</h:outputText>
 
-					<h:outputText value="Luogo di nascita" styleClass="bold" />
-					<h:outputText value="#{rowRepeat.luogoDiNascita}" />
+									<h:outputText value="Luogo di nascita" styleClass="bold" />
+									<h:outputText value="#{rowRepeat.luogoDiNascita}" />
 
-					<h:outputText value="Stato civile" styleClass="bold" />
-					<h:outputText value="#{cc.attrs.iSchedaSegr.statoCivileRif(rowRepeat)}" /> 
+									<h:outputText value="Stato civile" styleClass="bold" />
+									<h:outputText value="#{cc.attrs.iSchedaSegr.statoCivileRif(rowRepeat)}" />
 
-					<h:outputText value="Relazione" styleClass="bold" />
- 					<h:outputText value="#{cc.attrs.iSchedaSegr.relazioneRif(rowRepeat)}" /> 
+									<h:outputText value="Relazione" styleClass="bold" />
+									<h:outputText value="#{cc.attrs.iSchedaSegr.relazioneRif(rowRepeat)}" />
 
-					<h:outputText value="Telefono" styleClass="bold" />
-					<h:panelGrid columns="1">
-						<h:outputText value="#{rowRepeat.telefono}"
-							rendered="#{rowRepeat.telefono}!=null}" />
-						<h:outputText value="#{rowRepeat.cel}" rendered="#{rowRepeat.cel!=null}" />
-					</h:panelGrid>
+									<h:outputText value="Telefono" styleClass="bold" />
+									<h:panelGrid columns="1">
+										<h:outputText value="#{rowRepeat.telefono}" rendered="#{rowRepeat.telefono}!=null}" />
+										<h:outputText value="#{rowRepeat.cel}" rendered="#{rowRepeat.cel!=null}" />
+									</h:panelGrid>
 
-					<h:outputText value="Email" styleClass="bold" />
-					<h:outputText value="#{rowRepeat.email}" />
+									<h:outputText value="Email" styleClass="bold" />
+									<h:outputText value="#{rowRepeat.email}" />
 
-					<h:outputText value="Recapito" styleClass="bold" />
-					<h:outputText value="#{rowRepeat.recapito}" />
+									<h:outputText value="Recapito" styleClass="bold" />
+									<h:outputText value="#{rowRepeat.recapito}" />
 
-					<h:outputText value="Eventuali problemi" styleClass="bold" />
-					<h:outputText value="#{rowRepeat.problemi_desc}" />
-				</h:panelGrid>
-			</p:panel>
-					</p:tab>
-			</c:forEach>
-			</p:tabView>
+									<h:outputText value="Eventuali problemi" styleClass="bold" />
+									<h:outputText value="#{rowRepeat.problemi_desc}" />
+								</h:panelGrid>
+							</p:panel>
+						</p:tab>
+					</c:forEach>
+				</p:tabView>
 			</p:tab>
-			<p:tab title="#{cc.attrs.iSchedaSegr.labelMotivazione}">
 
+			<p:tab title="#{cc.attrs.iSchedaSegr.labelMotivazione}">
 				<p:outputPanel rendered="#{!empty cc.attrs.iSchedaSegr.scheda.listaMotivazioni}">
 					<p:dataList value="#{cc.attrs.iSchedaSegr.scheda.listaMotivazioni}" var="motivo" emptyMessage="-" styleClass="datalist-noborder">
 						<h:outputText value="#{motivo}" />
@@ -318,56 +311,63 @@
 					</h:panelGrid>
 				</p:outputPanel>
 			</p:tab>
-			<p:tab title="#{cc.attrs.iSchedaSegr.labelInterventi}">
 
+			<p:tab title="#{cc.attrs.iSchedaSegr.labelInterventi}">
 				<p:outputPanel rendered="#{cc.attrs.iSchedaSegr.scheda.listaInterventi != null}">
 					<p:dataList value="#{cc.attrs.iSchedaSegr.scheda.listaInterventi}" var="intervento" emptyMessage="-" styleClass="datalist-noborder">
 						<h:outputText value="#{intervento}" />
 					</p:dataList>
 
-					<!--  SISO-X visualizzazione elenco interventi custom -->
+					<!-- SISO-X visualizzazione elenco interventi custom -->
+					<p:fieldset legend="Servizi custom richiesti" style="margin: 1em auto 2em;">
+						<p:dataList id="dataListServiziRichiesti" type="definition" value="#{cc.attrs.iSchedaSegr.lstServiziRichiesti}" var="servizio" emptyMessage="Nessun servizio custom richiesto">
 					
-				<p:fieldset legend="Servizi custom richiesti" style="margin: 1em auto 2em;">
-				  <p:dataList id="dataListServiziRichiesti" type="definition"
-               			value="#{cc.attrs.iSchedaSegr.lstServiziRichiesti}" var="servizio"
-               			emptyMessage="Nessun servizio custom richiesto"  >
-				
-							<p:panel header="#{servizio.tipoInterventoCustom}   #{servizio.settoreEroganteDescrizione}" 
-									 toggleable="true" collapsed="true" 
-									 rendered="#{cc.attrs.iSchedaSegr.servizioRendered(servizio, 'IServizioRichiestoCustom')}">
-									<webredcs:pnlServizioRichiestoCustom iServizioRichiestoCustom="#{servizio}" soloLettura="true" />
+							<p:panel header="#{servizio.tipoInterventoCustom}   #{servizio.settoreEroganteDescrizione}" toggleable="true" collapsed="true" 
+									rendered="#{cc.attrs.iSchedaSegr.servizioRendered(servizio, 'IServizioRichiestoCustom')}">
+								<webredcs:pnlServizioRichiestoCustom iServizioRichiestoCustom="#{servizio}" soloLettura="true" />
 							</p:panel>
 								
 							<p:panel header="Intermediazione Abitativa" toggleable="true" collapsed="true" 
-									 rendered="#{cc.attrs.iSchedaSegr.servizioRendered(servizio, 'IIntermediazioneAb')}">  
-								   <webredcs:pnlIntermediazioneAb  iIntermediazioneAb="#{servizio}" soloLettura="true"/>
+									rendered="#{cc.attrs.iSchedaSegr.servizioRendered(servizio, 'IIntermediazioneAb')}">
+								<webredcs:pnlIntermediazioneAb iIntermediazioneAb="#{servizio}" soloLettura="true" />
 							</p:panel>
 							<p:panel header="Inserimento Orientamento al Lavoro" toggleable="true" collapsed="true" 
-								     rendered="#{cc.attrs.iSchedaSegr.servizioRendered(servizio, 'IOrientamentoLavoro')}">
-								    <webredcs:pnlInserimentoLavoro  OrientamentoLavoroManBean="#{servizio}" soloLettura="true"/>
-							</p:panel> 
+									rendered="#{cc.attrs.iSchedaSegr.servizioRendered(servizio, 'IOrientamentoLavoro')}">
+								<webredcs:pnlInserimentoLavoro OrientamentoLavoroManBean="#{servizio}" soloLettura="true" />
+							</p:panel>
 							<p:panel header="Mediazione Culturale" toggleable="true" collapsed="true" 
-									 rendered="#{cc.attrs.iSchedaSegr.servizioRendered(servizio, 'IMediazioneCult')}">
-								    <webredcs:pnlMediazioneCult iMediazioneCult="#{servizio}" soloLettura="true" /> 
+									rendered="#{cc.attrs.iSchedaSegr.servizioRendered(servizio, 'IMediazioneCult')}">
+								<webredcs:pnlMediazioneCult iMediazioneCult="#{servizio}" soloLettura="true" />
 							</p:panel>
 							<p:panel header="Orientamento all'istruzione / formazione" toggleable="true" collapsed="true" 
-								     rendered="#{cc.attrs.iSchedaSegr.servizioRendered(servizio, 'IOrientamentoIstruzione')}">
-							       <webredcs:pnlOrientamentoIstruzione iOrientamentoIstruzione="#{servizio}" soloLettura="true" />
+									rendered="#{cc.attrs.iSchedaSegr.servizioRendered(servizio, 'IOrientamentoIstruzione')}">
+								<webredcs:pnlOrientamentoIstruzione iOrientamentoIstruzione="#{servizio}" soloLettura="true" />
 							</p:panel>
-								 
-					</p:dataList>
+									
+						</p:dataList>
 					</p:fieldset>
 				</p:outputPanel>
 			</p:tab>
-			<p:tab title="Altro " rendered="#{cc.attrs.iSchedaSegr.ssScheda.interventi.altro != null}">
+
+			<p:tab title="Progetto Richiesto">
+				<h:panelGrid id="panelprogid" columns="4" width="100%">				
+					<p:fieldset legend="Progetto" toggleable="false">
+						<webredcs:pnlDatiPor iDatiPor="#{cc.attrs.iSchedaSegr.iDatiPor}"
+								soloLettura="true"
+								showProgettoSottocorsoOnly="true"
+								stampabean="null" />
+					</p:fieldset>
+				</h:panelGrid>
+			</p:tab>
+
+			<p:tab title="Altro" rendered="#{cc.attrs.iSchedaSegr.ssScheda.interventi.altro != null}">
 				<h:panelGrid columns="2" cellpadding="10">
 					<h:outputText value="#{cc.attrs.iSchedaSegr.ssScheda.interventi.altro}" />
 				</h:panelGrid>
 
-				<p:outputPanel rendered="#{cc.attrs.iSchedaSegr.scheda.listaInterventiEconomici != null }">
+				<p:outputPanel rendered="#{cc.attrs.iSchedaSegr.scheda.listaInterventiEconomici != null}">
 					<p:dataTable emptyMessage="Nessun elemento trovato" var="econ" value="#{cc.attrs.iSchedaSegr.scheda.listaInterventiEconomici}">
-						<f:facet name="header"> Interventi economici </f:facet>
-
+						<f:facet name="header">Interventi economici</f:facet>
 						<p:column headerText="Data">
 							<h:outputText value="#{econ.data}">
 								<f:convertDateTime pattern="dd/MM/yyyy" />
@@ -387,35 +387,38 @@
 						<p:column headerText="Erogante">
 							<h:outputText value="#{econ.erogante}" />
 						</p:column>
-
 					</p:dataTable>
-
 				</p:outputPanel>
 			</p:tab>
+
 			<p:tab title="Diario Sociale" rendered="#{!empty cc.attrs.iSchedaSegr.scheda.noteDiario}">
 				<webredcs:tooltipInfo stringDescr="#{cc.attrs.iSchedaSegr.MSG_INFO_NOTA_PRIVATA}" />
 				<p:dataTable value="#{cc.attrs.iSchedaSegr.scheda.noteDiario}" var="nota" style="font-size:0.9em;">
 					<p:column headerText="Data inserimento" width="120">
 						<p:outputLabel value="#{nota.formattedData}" />
 					</p:column>
+
 					<p:column headerText="Ente">
 						<p:outputLabel value="#{nota.orgDenominazione}" />
 					</p:column>
+
 					<p:column headerText="Operatore">
 						<p:outputLabel value="#{nota.opDenominazione}" />
 					</p:column>
+
 					<p:column headerText="Tipo" width="20" style="text-align:center;">
 						<p:graphicImage value="#{resource['webredcs/img/closed_lock.png']}" height="25px" rendered="#{!nota.pubblica}" title="nota #{nota.labelTipologia}" />
 						<p:graphicImage value="#{resource['webredcs/img/open_lock.png']}" height="25px" rendered="#{nota.pubblica}" title="nota #{nota.labelTipologia}" />
 					</p:column>
+
 					<p:column headerText="Nota">
 						<h:outputText value="#{nota.nota}" style="display: block; width: 100%" rendered="#{nota.canRead}" />
-						<h:outputText value="#{nota.notaNonAutorizzata}" style="display: block; width: 100%; color:red"  rendered="#{!nota.canRead}"/>
+						<h:outputText value="#{nota.notaNonAutorizzata}" style="display: block; width: 100%; color:red" rendered="#{!nota.canRead}" />
 					</p:column>
-
 				</p:dataTable>
 			</p:tab>
 		</p:accordionPanel>
+
 	</composite:implementation>
 </h:body>
 

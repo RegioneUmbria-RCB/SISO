@@ -14,6 +14,7 @@
 		<composite:attribute name="iDatiPor" type="it.webred.cs.jsf.interfaces.IDatiPor" />
 		<composite:attribute name="soloLettura" default="false" />
 		<composite:attribute name="numColonne" default="4" />
+		<composite:attribute name="showProgettoSottocorsoOnly" default="false" />
 		<composite:attribute name="stampabean" />
 	</composite:interface>
     
@@ -45,7 +46,7 @@
 		</h:panelGrid>
 
 		<p:spacer height="20px" />
-        <p:panel id="panelpdv" styleClass="panelpdv" visible="#{cc.attrs.iDatiPor.renderPDV}" header="Progetto di Vita">
+        <p:panel id="panelpdv" styleClass="panelpdv" visible="#{cc.attrs.iDatiPor.renderPDV}" header="Progetto di Vita" rendered="#{!cc.attrs.showProgettoSottocorsoOnly}">
 			<p:spacer height="10px" />
 	        <h:panelGrid columns="2">
 	        	<p:column style="vertical-align: middle;">
@@ -61,7 +62,7 @@
         </p:panel>
 
 		<p:spacer height="20px" />
-		<p:panel id="panelpor" styleClass="panelpor" visible="#{cc.attrs.iDatiPor.renderFSE}" header="F.S.E. (Fondo Sociale Europeo)">
+		<p:panel id="panelpor" styleClass="panelpor" visible="#{cc.attrs.iDatiPor.renderFSE}" header="F.S.E. (Fondo Sociale Europeo)" rendered="#{!cc.attrs.showProgettoSottocorsoOnly}">
 		
 			<p:spacer height="10px" />
 			<p:selectBooleanCheckbox disabled="#{cc.attrs.soloLettura}" itemLabel="#{cc.attrs.iDatiPor.mappaCampiFse.inattivoAltroCorso.labelReq}"

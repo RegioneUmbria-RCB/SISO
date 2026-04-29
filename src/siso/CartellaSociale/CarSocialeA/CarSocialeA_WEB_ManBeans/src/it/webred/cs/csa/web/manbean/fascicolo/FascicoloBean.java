@@ -1,5 +1,18 @@
 package it.webred.cs.csa.web.manbean.fascicolo;
 
+import java.io.IOException;
+import java.util.Date;
+import java.util.List;
+
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
+import javax.faces.bean.SessionScoped;
+import javax.faces.context.FacesContext;
+import javax.naming.NamingException;
+
+import org.primefaces.context.RequestContext;
+import org.primefaces.event.TabChangeEvent;
+
 import it.webred.cs.csa.ejb.client.AccessTableCasoSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.AccessTableDiarioSessionBeanRemote;
 import it.webred.cs.csa.ejb.client.AccessTableExportValutazioniSinbaSessionBeanRemote;
@@ -37,19 +50,6 @@ import it.webred.cs.data.model.CsCCategoriaSociale;
 import it.webred.cs.data.model.CsOOperatoreSettore;
 import it.webred.cs.jsf.manbean.superc.CsUiCompBaseBean;
 import it.webred.utils.TaskPoolExecutor;
-
-import java.io.IOException;
-import java.util.Date;
-import java.util.List;
-
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.SessionScoped;
-import javax.faces.context.FacesContext;
-import javax.naming.NamingException;
-
-import org.primefaces.context.RequestContext;
-import org.primefaces.event.TabChangeEvent;
 
 @ManagedBean
 @SessionScoped
@@ -108,7 +108,6 @@ public class FascicoloBean extends CsUiCompBaseBean {
 	protected boolean isProvedimentiMinoriReadOnly;
 	protected boolean isValSinbaReadOnly;
 	
-	
 	private Boolean renderInfoResponsabileCaso=false; //SISO-812
 
 	protected PresaInCaricoBean presaInCaricoBean;
@@ -140,9 +139,6 @@ public class FascicoloBean extends CsUiCompBaseBean {
 	
 	List<UnitaOrganizzativaDTO> lstAccessoFascicolo;	
 	
-	
-	
-	
 	public SchedaDatiEsterniSoggettoBean getSchedaDatiEsterni() {
 		return schedaDatiEsterni;
 	}
@@ -160,8 +156,8 @@ public class FascicoloBean extends CsUiCompBaseBean {
 		if (soggetto != null) {
 			try {
 				boolean redirect = initializeFascicoloCartellaUtente(soggetto, false, null);
-				if (redirect){
-					FacesContext.getCurrentInstance().getExternalContext().redirect("fascicoloCartellaUtente.faces");  
+				if (redirect) {
+					FacesContext.getCurrentInstance().getExternalContext().redirect("fascicoloCartellaUtente.faces");
 					this.setRenderInfoResponsabileCaso(true);
 				}
 			} catch (IOException e) {
@@ -179,17 +175,17 @@ public class FascicoloBean extends CsUiCompBaseBean {
 		opSettore = getCurrentOpSettore();
 
 		if (soggettoObj != null) {
-	        try{
+			try {
 				
-				soggetto = (CsASoggettoLAZY) soggettoObj;
+				this.soggetto = (CsASoggettoLAZY) soggettoObj;
 				getSession().setAttribute("soggetto", soggettoObj);
 				
 				boolean datiSocialiAttivi = false;
 				boolean presaInCarico = false;
 
-				if (soggetto != null) {
+				if (this.soggetto != null) {
 					//SISO-1526
-					this.schedaDatiEsterni.initialize(soggetto.getCsAAnagrafica().getCf());
+					this.schedaDatiEsterni.initialize(this.soggetto.getCsAAnagrafica().getCf());
 					//SISO-812
 					logger.debug("INIT carico informazioni relative al responsabile del fascicolo");
 					
@@ -200,57 +196,61 @@ public class FascicoloBean extends CsUiCompBaseBean {
 					logger.debug("END carico informazioni relative al responsabile del fascicolo");
 					
 					PresaInCaricoDTO pic=iterService.getLastPICByCaso(bdto);
-				    if(pic!=null){
-				    	descrizioneSettoreResponsabile =  pic.getSettore()!=null ? pic.getSettore().getDescrizione() : null;
-				    	descrizioneOrganizzazioneResponsabile = pic.getOrganizzazione()!=null ? pic.getOrganizzazione().getDescrizione() : null;
-				    	presaInCarico = pic.getResponsabile()!=null && pic.getDataAmministrativa()!=null;
-				    }
+					if (pic!=null) {
+						descrizioneSettoreResponsabile = pic.getSettore()!=null ? pic.getSettore().getDescrizione() : null;
+						descrizioneOrganizzazioneResponsabile = pic.getOrganizzazione()!=null ? pic.getOrganizzazione().getDescrizione() : null;
+						presaInCarico = pic.getResponsabile()!=null && pic.getDataAmministrativa()!=null;
+					}
 					
-					  if(presaInCarico){
+					if (presaInCarico) {
 						 	
-						  //A questo punto verifico se attualmente è preso in carico o no
-						  if(isStatoAttuale(DataModelCostanti.IterStatoInfo.PRESO_IN_CARICO)){
-							  //Verifico l'esistenza di dati sociali attivi
-							    BaseDTO dto = new BaseDTO();
-								fillEnte(dto);
-								dto.setObj(soggetto.getAnagraficaId());
-								dto.setObj2(new CsADatiSociali());
-								List<?> listaCs = schedaService.findCsBySoggettoId(dto);
-				
-								int i = 0;
-								while (i < listaCs.size() && !datiSocialiAttivi) {
-									CsADatiSociali cs = (CsADatiSociali) listaCs.get(i);
-									if (cs.getDataFineApp().after(new Date()))
-										datiSocialiAttivi = true;
-									i++;
+						//A questo punto verifico se attualmente è preso in carico o no
+						if (isStatoAttuale(DataModelCostanti.IterStatoInfo.PRESO_IN_CARICO)) {
+							//Verifico l'esistenza di dati sociali attivi
+							BaseDTO dto = new BaseDTO();
+							fillEnte(dto);
+							dto.setObj(soggetto.getAnagraficaId());
+							dto.setObj2(new CsADatiSociali());
+							List<?> listaCs = schedaService.findCsBySoggettoId(dto);
+			
+							int i = 0;
+							while (i < listaCs.size() && !datiSocialiAttivi) {
+								CsADatiSociali cs = (CsADatiSociali) listaCs.get(i);
+								if (cs.getDataFineApp().after(new Date()))
+									datiSocialiAttivi = true;
+								i++;
+							}
+						
+							if (datiSocialiAttivi) {
+								redirect = true;
+							} else {
+								if (!ignoreWarning) {
+									addWarningFromProperties("fascicolo.datisociali.nonpresenti");
 								}
-				
-					       
-								if (datiSocialiAttivi) redirect = true;
-								else{
-									if (!ignoreWarning) addWarningFromProperties("fascicolo.datisociali.nonpresenti");
-								}
-							  
-						  }else{
-							 redirect=true;
-							 isModificaFascicolo = false; 	//Permetto il caricamento del fascicolo in sola visualizzazione (pulsanti disabilitati)
-							 this.addInfoFromProperties("fascicolo.visualizzazione.info");
-						  }
-						  
-						  }else{
-						  if (!ignoreWarning) addWarningFromProperties("fascicolo.PIC.nonpresente");
-					  }
+							}
+							
+						} else {
+							redirect = true;
+							isModificaFascicolo = false; //Permetto il caricamento del fascicolo in sola visualizzazione (pulsanti disabilitati)
+							this.addInfoFromProperties("fascicolo.visualizzazione.info");
+						}
+
+					} else {
+						if (!ignoreWarning) {
+							addWarningFromProperties("fascicolo.PIC.nonpresente");
+						}
+					}
 				}
 	
-			}catch(Exception e){
+			} catch(Exception e) {
 				addErrorFromProperties("fascicoloInit.error");
 				logger.error("Errore caricamento fascicolo [initializeFascicoloCartellaUtente]", e);
 			}
-        
+
 		} else addWarningFromProperties("seleziona.warning");
 		
-		if(redirect){
-			try{
+		if (redirect) {
+			try {
 				caricaFascicolo(filtroSchede);
 			} catch (Exception e) {
 				addErrorFromProperties("fascicoloInit.error");
@@ -267,31 +267,31 @@ public class FascicoloBean extends CsUiCompBaseBean {
 	}
 
 	private boolean isStatoAttuale(Long statoRichiesto) throws Exception{
-		  BaseDTO itr = new BaseDTO();
-		  fillEnte(itr);
-		  itr.setObj(soggetto.getCsACaso().getId());
-	      CsIterStepByCasoDTO stato = iterService.getLastIterStepByCasoDTO(itr);
-		  return statoRichiesto.equals(stato.getIdStatoIter());
+		BaseDTO itr = new BaseDTO();
+		fillEnte(itr);
+		itr.setObj(soggetto.getCsACaso().getId());
+		CsIterStepByCasoDTO stato = iterService.getLastIterStepByCasoDTO(itr);
+		return statoRichiesto.equals(stato.getIdStatoIter());
 	}
 
-	private boolean checkIsResponsabile(){
-	try{	
-		if(isResponsabile==null){
-			// controllo responsabile
-			isResponsabile = false;
-			AccessTableCasoSessionBeanRemote casoSessionBean = getCasoSessioBean();
-			BaseDTO dto = new BaseDTO();
-			fillEnte(dto);
-			dto.setObj(soggetto.getCsACaso().getId());
-			DatiOperatoreDTO coto = casoSessionBean.findResponsabileCaso(dto);
-			if(coto != null) logger.debug("checkIsResponsabile: coto["+coto.getUsername()+"], operatore corrente["+dto.getUserId()+"],  creatore["+soggetto.getCsACaso().getUserIns()+"]");
-			if (coto != null && coto.getUsername().equals(dto.getUserId())){
-				isResponsabile = true;
-			// se non esiste resp ma ho creato il caso
-			}if (coto == null && soggetto.getCsACaso().getUserIns().equals(dto.getUserId())){
-				isResponsabile = true;
+	private boolean checkIsResponsabile() {
+		try {
+			if (isResponsabile==null) {
+				// controllo responsabile
+				isResponsabile = false;
+				AccessTableCasoSessionBeanRemote casoSessionBean = getCasoSessioBean();
+				BaseDTO dto = new BaseDTO();
+				fillEnte(dto);
+				dto.setObj(soggetto.getCsACaso().getId());
+				DatiOperatoreDTO coto = casoSessionBean.findResponsabileCaso(dto);
+				if (coto != null) logger.debug("checkIsResponsabile: coto["+coto.getUsername()+"], operatore corrente["+dto.getUserId()+"], creatore["+soggetto.getCsACaso().getUserIns()+"]");
+				if (coto != null && coto.getUsername().equals(dto.getUserId())) {
+					isResponsabile = true;
+				// se non esiste resp ma ho creato il caso
+				}if (coto == null && soggetto.getCsACaso().getUserIns().equals(dto.getUserId())) {
+					isResponsabile = true;
+				}
 			}
-		}
 		} catch (Exception e) {
 			isResponsabile=false;
 			logger.error(e.getMessage(), e);
@@ -302,22 +302,22 @@ public class FascicoloBean extends CsUiCompBaseBean {
 	private void caricaFascicolo(List<String> filtroSchede) throws Throwable {
 
 		//SISO-812
-		  if(isProvenienzaCasiAssegnati()){
-			  BaseDTO cdto = new BaseDTO();
-			  fillEnte(cdto);    
-			  cdto.setObj(soggetto.getCsACaso().getId());
-			  cdto.setObj2(opSettore.getCsOSettore().getCsOOrganizzazione().getId());
-			  cdto.setObj3(opSettore.getCsOSettore().getId()); 
-			  this.setFlagGestisciInformazioni(casoService.getFlagNascondiInformazioniAttualeByCasoSettoreOrganizzazione(cdto)); 
-			}else{
-				this.setFlagGestisciInformazioni(false); 
-			}
+		if (isProvenienzaCasiAssegnati()) {
+			BaseDTO cdto = new BaseDTO();
+			fillEnte(cdto);
+			cdto.setObj(soggetto.getCsACaso().getId());
+			cdto.setObj2(opSettore.getCsOSettore().getCsOOrganizzazione().getId());
+			cdto.setObj3(opSettore.getCsOSettore().getId()); 
+			this.setFlagGestisciInformazioni(casoService.getFlagNascondiInformazioniAttualeByCasoSettoreOrganizzazione(cdto)); 
+		} else {
+			this.setFlagGestisciInformazioni(false); 
+		}
 		
 		resetTabBean();
 		resetTabPermission();
 	
 		logger.debug("INIZIO caricamento dati per inizializzazione tab fascicolo con ForkJoinPool");
-		TaskPoolExecutor  pool = new TaskPoolExecutor();
+		TaskPoolExecutor pool = new TaskPoolExecutor();
 	
 		InitCategorieSocialiSoggetto initCategorie = null;
 		try {
@@ -332,21 +332,19 @@ public class FascicoloBean extends CsUiCompBaseBean {
 			logger.error("Errore caricamento categorie sociali soggetto ad apertura del fascicolo");
 		}
 	
-	//			InitColloquio initColloquio = null;
-	//			try {
-	//				BaseDTO dtoFork = new BaseDTO();
-	//				fillEnte(dtoFork);
-	//				dtoFork.setObj(idCaso);
-	//				initColloquio = new InitColloquio(dtoFork);
-	//				pool.addTask(initColloquio);
-	//
-	//			} catch (Exception e) {
-	//				addErrorFromProperties("fascicoloInit.error");
-	//				logger.error("Errore caricamento dei colloqui ad apertura del fascicolo");
-	//			}
-		
-	
-		
+//			InitColloquio initColloquio = null;
+//			try {
+//				BaseDTO dtoFork = new BaseDTO();
+//				fillEnte(dtoFork);
+//				dtoFork.setObj(idCaso);
+//				initColloquio = new InitColloquio(dtoFork);
+//				pool.addTask(initColloquio);
+//
+//			} catch (Exception e) {
+//				addErrorFromProperties("fascicoloInit.error");
+//				logger.error("Errore caricamento dei colloqui ad apertura del fascicolo");
+//			}
+
 		InitInterventi initInterventi = null;
 		try {
 			Long idCaso = soggetto.getCsACaso().getId();
@@ -366,7 +364,7 @@ public class FascicoloBean extends CsUiCompBaseBean {
 		try {
 			BaseDTO dtoFork = new BaseDTO();
 			fillEnte(dtoFork);
-			if(soggetto != null) {
+			if (soggetto != null) {
 				dtoFork.setObj(soggetto.getAnagraficaId());
 				dtoFork.setObj2(soggetto.getCsAAnagrafica().getCf());
 				dtoFork.setObj3(soggetto.getCsAAnagrafica().getIdOrigWsTipo());
@@ -381,25 +379,25 @@ public class FascicoloBean extends CsUiCompBaseBean {
 		
 	
 		boolean abnormal = pool.execute();	
-		if(abnormal){
+		if (abnormal) {
 			logger.error("Errore esecuzione TaskPoolExecutor per caricamento fascicolo CF["+soggetto.getCsAAnagrafica().getCf()+"]");
-			if(initCategorie.isCompletedAbnormally()){
+			if (initCategorie.isCompletedAbnormally()) {
 				Throwable e = initCategorie.getException();
 				logger.error("Errore caricamento categorie sociali soggetto ad apertura del fascicolo:"+e.getMessage(), e);
 				throw e;
 			}
-			if(initAltriSoggetti.isCompletedAbnormally()){
+			if (initAltriSoggetti.isCompletedAbnormally()) {
 				Throwable e = initAltriSoggetti.getException();
 				logger.error("Errore caricamento altri soggetti ad apertura del fascicolo:"+e.getMessage(), e);
 				throw e;
 			}
-			if(initInterventi.isCompletedAbnormally()){
+			if (initInterventi.isCompletedAbnormally()) {
 				Throwable e = initInterventi.getException();
 				logger.error("Errore caricamento interventi ad apertura del fascicolo: "+e.getMessage(), e);
 				throw e;
 			}
 				
-		}else{
+		} else {
 			logger.debug("FINE caricamento dati per inizializzazione tab fascicolo con ForkJoinPool");
 			
 			logger.debug("INIZIO VALORIZZAZIONE TAB FASCICOLO");
@@ -425,13 +423,13 @@ public class FascicoloBean extends CsUiCompBaseBean {
 	
 			
 			//SISO-745 permesso visualizzazione e readonly
-			if (checkFiltroSchede(filtroSchede, DataModelCostanti.TabFascicolo.ITER)){
+			if (checkFiltroSchede(filtroSchede, DataModelCostanti.TabFascicolo.ITER)) {
 				initializePresaInCaricoTab(soggetto);
 			}
-			if (checkFiltroSchede(filtroSchede, DataModelCostanti.TabFascicolo.FOGLI_AMMINISTRATIVI)){
+			if (checkFiltroSchede(filtroSchede, DataModelCostanti.TabFascicolo.FOGLI_AMMINISTRATIVI)) {
 			    checkTabPermission(DataModelCostanti.TipoDiario.FOGLIO_AMM_ID, soggetto);
 			}
-			if (checkFiltroSchede(filtroSchede, DataModelCostanti.TabFascicolo.COLLOQUIO)){
+			if (checkFiltroSchede(filtroSchede, DataModelCostanti.TabFascicolo.COLLOQUIO)) {
 			    checkTabPermission(DataModelCostanti.TipoDiario.COLLOQUIO_ID, soggetto);
 			}
 			if (checkFiltroSchede(filtroSchede, DataModelCostanti.TabFascicolo.RELAZIONI)) {
@@ -450,25 +448,25 @@ public class FascicoloBean extends CsUiCompBaseBean {
 					checkTabPermission(DataModelCostanti.TipoDiario.PAI_ID, soggetto);
 				}
 			}
-			if (checkFiltroSchede(filtroSchede, DataModelCostanti.TabFascicolo.DOC_INDIVIDUALI)){
+			if (checkFiltroSchede(filtroSchede, DataModelCostanti.TabFascicolo.DOC_INDIVIDUALI)) {
 			    checkTabPermission(DataModelCostanti.TipoDiario.DOC_INDIVIDUALE_ID, soggetto);
 			}
-			if (checkFiltroSchede(filtroSchede, DataModelCostanti.TabFascicolo.SCHEDA_MULTIDIMENSIONALE)){
+			if (checkFiltroSchede(filtroSchede, DataModelCostanti.TabFascicolo.SCHEDA_MULTIDIMENSIONALE)) {
 			    checkTabPermission(DataModelCostanti.TipoDiario.VALUTAZIONE_MDS_ID, soggetto);
 			}
-			if (checkFiltroSchede(filtroSchede, DataModelCostanti.TabFascicolo.SCHEDA_SINBA)){
+			if (checkFiltroSchede(filtroSchede, DataModelCostanti.TabFascicolo.SCHEDA_SINBA)) {
 			    checkTabPermission(DataModelCostanti.TipoDiario.VALUTAZIONE_SINBA, soggetto);
 			}
-			if (checkFiltroSchede(filtroSchede, DataModelCostanti.TabFascicolo.DATI_ISEE)){
+			if (checkFiltroSchede(filtroSchede, DataModelCostanti.TabFascicolo.DATI_ISEE)) {
 			    checkTabPermission(DataModelCostanti.TipoDiario.ISEE_ID, soggetto);
 			}
-			if (checkFiltroSchede(filtroSchede, DataModelCostanti.TabFascicolo.PROVVEDIMENTI_MINORI)){
+			if (checkFiltroSchede(filtroSchede, DataModelCostanti.TabFascicolo.PROVVEDIMENTI_MINORI)) {
 			    checkTabPermission(DataModelCostanti.TipoDiario.PROVVEDIMENTI_TRIBUNALE, soggetto);
 			}
-			if (checkFiltroSchede(filtroSchede, DataModelCostanti.TabFascicolo.DATI_SCUOLA)){
+			if (checkFiltroSchede(filtroSchede, DataModelCostanti.TabFascicolo.DATI_SCUOLA)) {
 			    checkTabPermission(DataModelCostanti.TipoDiario.DATI_SCUOLA_ID, soggetto);
 			}
-			if (checkFiltroSchede(filtroSchede, DataModelCostanti.TabFascicolo.SCHEDE_SEGRETARIATO)){
+			if (checkFiltroSchede(filtroSchede, DataModelCostanti.TabFascicolo.SCHEDE_SEGRETARIATO)) {
 				this.isSchedeSegr = this.isVisTabUDC();
 				this.isSchedeSegrReadOnly=false;
 			}
@@ -520,7 +518,7 @@ public class FascicoloBean extends CsUiCompBaseBean {
 
 		if (tabName.equals(paiName + "Tab")) {
 			currTabName = paiName;
-			//if (paiBean == null || paiBean.getCsASoggetto().getAnagraficaId() != soggetto.getAnagraficaId() || paiBean.getSelectedPai().getDiarioId() == null){
+			//if (paiBean == null || paiBean.getCsASoggetto().getAnagraficaId() != soggetto.getAnagraficaId() || paiBean.getSelectedPai().getDiarioId() == null) {
 				initializePaiTab(soggetto);
 				initializeRelazioniTab(soggetto);
 			//}
@@ -540,7 +538,7 @@ public class FascicoloBean extends CsUiCompBaseBean {
 		
 		if (tabName.equals(schedaMultidimAnzName + "Tab")) {
 			currTabName = schedaMultidimAnzName;
-			if (listaValMultidimensionaliBean == null || this.listaValMultidimensionaliBean.getCsASoggetto().getAnagraficaId() != soggetto.getAnagraficaId()){
+			if (listaValMultidimensionaliBean == null || this.listaValMultidimensionaliBean.getCsASoggetto().getAnagraficaId() != soggetto.getAnagraficaId()) {
 				this.initializeValMultidimensionaleTab(soggetto);
 				this.initializeIseeTab(soggetto);
 			}
@@ -574,7 +572,7 @@ public class FascicoloBean extends CsUiCompBaseBean {
 
 	}
 	
-	public boolean isPaiTabSelected(){
+	public boolean isPaiTabSelected() {
 		return this.getPaiBean()!=null && this.currTabName.equalsIgnoreCase(this.paiName);
 	}
 
@@ -586,7 +584,7 @@ public class FascicoloBean extends CsUiCompBaseBean {
 	}
 
 	public void initializePresaInCaricoTab(CsASoggettoLAZY s) throws Exception {
-		if(this.isVisTabPIC()){
+		if (this.isVisTabPIC()) {
 			logger.info("*** INIT PresaInCarico per il caso - anagraficaId:" + s.getAnagraficaId());
 			presaInCaricoBean = new PresaInCaricoBean();
 			List<CsCCategoriaSociale> cslist = this.getCatSocIfSoggPrincipale(s);
@@ -599,7 +597,7 @@ public class FascicoloBean extends CsUiCompBaseBean {
 	}
 
 	private void initializeFogliAmmTab(CsASoggettoLAZY s, Object data) throws Exception {
-		if(this.isVisTabAttivitaProfessionali() || this.isVisTabInterventi() || this.isVisTabPAI()){
+		if (this.isVisTabAttivitaProfessionali() || this.isVisTabInterventi() || this.isVisTabPAI()) {
 			logger.info("Inizializza FogliAmm per il caso - anagraficaId:" + s.getAnagraficaId());
 			interventiBean = new InterventiBean();
 			List<CsCCategoriaSociale> cslist = this.getCatSocIfSoggPrincipale(s);
@@ -614,7 +612,7 @@ public class FascicoloBean extends CsUiCompBaseBean {
 	}
 	
 	private void initializeColloquioTab(CsASoggettoLAZY s, Object data) throws Exception {
-		if(this.isVisTabDiario()){
+		if (this.isVisTabDiario()) {
 			logger.info("INIT initializeColloquioTab - anagraficaId:" + s.getAnagraficaId());
 			colloquioBean = new ColloquioBean();
 			List<CsCCategoriaSociale> cslist = this.getCatSocIfSoggPrincipale(s);
@@ -630,7 +628,7 @@ public class FascicoloBean extends CsUiCompBaseBean {
 	}
 
 	public void initializeRelazioniTab(CsASoggettoLAZY s) throws Exception {
-		if(this.isVisTabAttivitaProfessionali() || this.isVisTabInterventi() || this.isVisTabPAI()){
+		if (this.isVisTabAttivitaProfessionali() || this.isVisTabInterventi() || this.isVisTabPAI()) {
 			logger.info("Inizializza Relazioni per il caso - anagraficaId:" + s.getAnagraficaId());
 			relazioniBean = new RelazioniBean();
 			List<CsCCategoriaSociale> cslist = this.getCatSocIfSoggPrincipale(s);
@@ -641,7 +639,7 @@ public class FascicoloBean extends CsUiCompBaseBean {
 	}
 
 	public void initializePaiTab(CsASoggettoLAZY s) throws Exception {
-		if(this.isVisTabAttivitaProfessionali() || this.isVisTabInterventi() || this.isVisTabPAI()){
+		if (this.isVisTabAttivitaProfessionali() || this.isVisTabInterventi() || this.isVisTabPAI()) {
 			logger.info("Inizializza PAI per il caso - anagraficaId:" + s.getAnagraficaId());
 			paiBean = new PaiBean();
 			List<CsCCategoriaSociale> cslist = this.getCatSocIfSoggPrincipale(s);
@@ -652,7 +650,7 @@ public class FascicoloBean extends CsUiCompBaseBean {
 	}
 
 	public void initializeDocIndividualiTab(CsASoggettoLAZY s) throws Exception {
-		if(this.isVisDocIndividuali()){
+		if (this.isVisDocIndividuali()) {
 			logger.info("Inizializza DocIndividuali per il caso - anagraficaId:" + s.getAnagraficaId());
 			docIndividualiBean = new DocIndividualiBean();
 			List<CsCCategoriaSociale> cslist = this.getCatSocIfSoggPrincipale(s);
@@ -663,7 +661,7 @@ public class FascicoloBean extends CsUiCompBaseBean {
 	}
 
 	public void initializeValMultidimensionaleTab(CsASoggettoLAZY s) throws Exception {
-		if(this.isVisTabMultidim()){
+		if (this.isVisTabMultidim()) {
 			logger.info("Inizializza SchedaMultidimensionaleTab per il caso - anagraficaId:" + s.getAnagraficaId());
 			listaValMultidimensionaliBean = new ListaValMultidimensionaliBean();
 			List<CsCCategoriaSociale> cslist = this.getCatSocIfSoggPrincipale(s);
@@ -674,7 +672,7 @@ public class FascicoloBean extends CsUiCompBaseBean {
 	}
 	
 	public void initializeValSinbaTab(CsASoggettoLAZY s) throws Exception {
-		if(this.isVisTabValSinba()){
+		if (this.isVisTabValSinba()) {
 			logger.info("Inizializza ValSinbaTab per il caso - anagraficaId:" + s.getAnagraficaId());
 			listaValSinbaBean = new ListaValSinbaBean();
 			List<CsCCategoriaSociale> cslist = this.getCatSocIfSoggPrincipale(s);
@@ -685,7 +683,7 @@ public class FascicoloBean extends CsUiCompBaseBean {
 	}
 
 	public void initializeIseeTab(CsASoggettoLAZY s) throws Exception {
-		if(this.isVisTabISEE() || this.isVisTabMultidim()){
+		if (this.isVisTabISEE() || this.isVisTabMultidim()) {
 			logger.info("Inizializza ISEE per il caso - anagraficaId:" + s.getAnagraficaId());
 			iseeBean = new IseeFascBean();
 			List<CsCCategoriaSociale> cslist = this.getCatSocIfSoggPrincipale(s);
@@ -696,7 +694,7 @@ public class FascicoloBean extends CsUiCompBaseBean {
 	}
 
 	public void initializeProvvMinoriTab(CsASoggettoLAZY s) {
-		if(this.isVisTabProvvedimentiMinori()){
+		if (this.isVisTabProvvedimentiMinori()) {
 			logger.info("Inizializza Provvedimenti tribunale per il caso - anagraficaId:" + s.getAnagraficaId());
 			listaProvvedimentiBean = new ListaProvvedimentiBean(s);
 			List<CsCCategoriaSociale> cslist = this.getCatSocIfSoggPrincipale(s);
@@ -707,7 +705,7 @@ public class FascicoloBean extends CsUiCompBaseBean {
 	}
 
 	public void initializeDatiScuolaTab(CsASoggettoLAZY s) throws Exception {
-		if(this.isVisTabScuola()){
+		if (this.isVisTabScuola()) {
 			logger.info("Inizializza DatiScuola per il caso - anagraficaId:" + s.getAnagraficaId());
 			datiScuolaBean = new DatiScuolaBean();
 			List<CsCCategoriaSociale> cslist = this.getCatSocIfSoggPrincipale(s);
@@ -718,7 +716,7 @@ public class FascicoloBean extends CsUiCompBaseBean {
 	}
 
 	public void initializeSchedeSegrTab(CsASoggettoLAZY s) throws Exception {
-		if(this.isVisTabUDC()){
+		if (this.isVisTabUDC()) {
 			logger.info("Inizializza SchedeSegr per il caso - anagraficaId:" + s.getAnagraficaId());
 			schedeSegrBean = new SchedeSegrBean();
 			List<CsCCategoriaSociale> cslist = this.getCatSocIfSoggPrincipale(s);
@@ -753,18 +751,18 @@ public class FascicoloBean extends CsUiCompBaseBean {
 		isDatiPresaCarico = false;
 	}
 	
-	public void resetTabBean(){
-		 presaInCaricoBean=null;
-		 interventiBean=null;
-		 colloquioBean=null;
-		 relazioniBean=null;
-		 paiBean=null;
-		 docIndividualiBean=null;
-		 listaValMultidimensionaliBean=null;
-		 datiScuolaBean=null;
-		 iseeBean=null;
-		 schedeSegrBean=null;
-		 listaProvvedimentiBean=null;
+	public void resetTabBean() {
+		presaInCaricoBean=null;
+		interventiBean=null;
+		colloquioBean=null;
+		relazioniBean=null;
+		paiBean=null;
+		docIndividualiBean=null;
+		listaValMultidimensionaliBean=null;
+		datiScuolaBean=null;
+		iseeBean=null;
+		schedeSegrBean=null;
+		listaProvvedimentiBean=null;
 	}
 
 	//SISO-745
@@ -797,9 +795,9 @@ public class FascicoloBean extends CsUiCompBaseBean {
 			case DataModelCostanti.TipoDiario.FOGLIO_AMM_ID:
 
 				isFogliAmmReadOnly = true;
-				if(this.isVisTabInterventi()){
+				if (this.isVisTabInterventi()) {
 					//List<DatiInterventoBean> listaInterventi = interventiBean.getListaInterventi();
-					//existsDatiStorici =  listaInterventi!= null && !listaInterventi.isEmpty();
+					//existsDatiStorici = listaInterventi!= null && !listaInterventi.isEmpty();
 					if (funzioneSettCatsocPresente || funzioneSempreAttiva) {
 						isFogliAmm = true;
 						if (canModifica)
@@ -812,7 +810,7 @@ public class FascicoloBean extends CsUiCompBaseBean {
 			case DataModelCostanti.TipoDiario.COLLOQUIO_ID:
 
 				isColloquioReadOnly = true;
-				if(this.isVisTabDiario()){
+				if (this.isVisTabDiario()) {
 					//existsDatiStorici = colloquioBean.getListaColloquios() != null && !colloquioBean.getListaColloquios().isEmpty();
 					if (funzioneSettCatsocPresente || funzioneSempreAttiva) {
 						isColloquio = true;
@@ -826,7 +824,7 @@ public class FascicoloBean extends CsUiCompBaseBean {
 			case DataModelCostanti.TipoDiario.RELAZIONE_ID:
 
 				isRelazReadOnly = false; //TODO: changed
-				if(this.isVisTabAttivitaProfessionali()){
+				if (this.isVisTabAttivitaProfessionali()) {
 					//existsDatiStorici = relazioniBean.getListaRelazioniDTO() != null && !relazioniBean.getListaRelazioniDTO().isEmpty();
 					if (funzioneSettCatsocPresente || funzioneSempreAttiva) {
 						isRelaz = true;
@@ -840,7 +838,7 @@ public class FascicoloBean extends CsUiCompBaseBean {
 			case DataModelCostanti.TipoDiario.PAI_ID:
 
 				isPaiReadOnly = true;
-					if(this.isVisTabPAI()){
+					if (this.isVisTabPAI()) {
 					if (funzioneSettCatsocPresente || funzioneSempreAttiva) {
 						isPai = true;
 						if (canModifica)
@@ -858,7 +856,7 @@ public class FascicoloBean extends CsUiCompBaseBean {
 			case DataModelCostanti.TipoDiario.DOC_INDIVIDUALE_ID:
 
 				isDocIndivReadOnly = true;
-				if(this.isVisDocIndividuali()){
+				if (this.isVisDocIndividuali()) {
 					/*existsDatiStorici = (docIndividualiBean.getListaDocIndividualiPubblica() != null && !docIndividualiBean.getListaDocIndividualiPubblica().isEmpty()) || 
 										(docIndividualiBean.getListaDocIndividualiPrivata() != null && !docIndividualiBean.getListaDocIndividualiPrivata().isEmpty());
 	                */
@@ -874,7 +872,7 @@ public class FascicoloBean extends CsUiCompBaseBean {
 			case DataModelCostanti.TipoDiario.VALUTAZIONE_MDS_ID:
 
 				isSchedaMultidimAnzReadOnly = true;
-				if(this.isVisTabMultidim()){
+				if (this.isVisTabMultidim()) {
 					//existsDatiStorici = listaValMultidimensionaliBean.existsDatiStorici();
 					if (funzioneSettCatsocPresente || funzioneSempreAttiva) {
 						isSchedaMultidimAnz = true;
@@ -888,7 +886,7 @@ public class FascicoloBean extends CsUiCompBaseBean {
 			case DataModelCostanti.TipoDiario.VALUTAZIONE_SINBA:
 
 				isValSinbaReadOnly = true;
-				if(this.isVisTabValSinba()){
+				if (this.isVisTabValSinba()) {
 					//existsDatiStorici = listaValMultidimensionaliBean.existsDatiStorici();
 					if (funzioneSettCatsocPresente || funzioneSempreAttiva) {
 						isValSinba = true;
@@ -902,7 +900,7 @@ public class FascicoloBean extends CsUiCompBaseBean {
 			case DataModelCostanti.TipoDiario.DATI_SCUOLA_ID:
 
 				isDatiScuolaReadOnly = true;
-				if(this.isVisTabScuola()){
+				if (this.isVisTabScuola()) {
 					//existsDatiStorici = (datiScuolaBean.getListaScuole() != null && !datiScuolaBean.getListaScuole().isEmpty());
 	
 					if (funzioneSettCatsocPresente || funzioneSempreAttiva) {
@@ -917,7 +915,7 @@ public class FascicoloBean extends CsUiCompBaseBean {
 			case DataModelCostanti.TipoDiario.ISEE_ID:
 
 				isIseeReadOnly = true;
-				if(this.isVisTabISEE()){
+				if (this.isVisTabISEE()) {
 					//existsDatiStorici = (iseeBean.getListaIsee() != null && !iseeBean.getListaIsee().isEmpty());
 					if (funzioneSettCatsocPresente || funzioneSempreAttiva) {
 						isIsee = true;
@@ -931,7 +929,7 @@ public class FascicoloBean extends CsUiCompBaseBean {
 			case DataModelCostanti.TipoDiario.PROVVEDIMENTI_TRIBUNALE:
 
 				isProvedimentiMinoriReadOnly = true;
-				if(this.isVisTabProvvedimentiMinori()){
+				if (this.isVisTabProvvedimentiMinori()) {
 					//existsDatiStorici = this.listaProvvedimentiBean.existsDatiStorici();
 					if (funzioneSettCatsocPresente || funzioneSempreAttiva) {
 						isProvvedimentiMinori = true;
@@ -949,7 +947,7 @@ public class FascicoloBean extends CsUiCompBaseBean {
 		}
 	}
 	
-	private boolean existsDatiStorici(int tipoDiario){
+	private boolean existsDatiStorici(int tipoDiario) {
 		BaseDTO dto = new BaseDTO();
 		fillEnte(dto);
 		dto.setObj(tipoDiario);
@@ -958,45 +956,45 @@ public class FascicoloBean extends CsUiCompBaseBean {
 		return num>0;
 	}
 	
-	private boolean canModifica(){
-		 Long idOpSett = getCurrentOpSettore().getId();
-		 Long idCaso = this.soggetto.getCsACaso().getId();
-		 
-		 if(canModifica == null){
-			 boolean permessoGlobale = checkPermesso(PermessiFascicolo.ITEM,PermessiFascicolo.GESTIONE_ELEM_FASCICOLO);
-			 
-			 BaseDTO dto = new BaseDTO();
-			 fillEnte(dto);
-			 dto.setObj(idCaso);
-			 dto.setObj2(idOpSett);
-			 Boolean permessoCaso = casoService.getFlagGestioneFascicolo(dto);
-			 
-			 /*TODO: Recuperare l'operartore corrente, per il caso*/
-			 
-			 /*
-			  * permessi=ok, flag_permetti=false --> NON E' CONCESSO INSERIRE / MODIFICARE DATI
-				permessi=ok, flag_permetti=true --> E' CONCESSO INSERIRE / MODIFICARE DATI
-				permessi=ko, flag_permetti=false--> NON E' CONCESSO INSERIRE / MODIFICARE DATI
-				permessi=ko, flag_permetti=true--> E' CONCESSO INSERIRE / MODIFICARE DATI
-			  * */
-			 boolean abilitato = false;
-			 if(checkIsResponsabile()) abilitato = true;
-			 else if(permessoCaso==null) abilitato = permessoGlobale;
-			 else abilitato = permessoCaso;
-			 
+	private boolean canModifica() {
+		Long idOpSett = getCurrentOpSettore().getId();
+		Long idCaso = this.soggetto.getCsACaso().getId();
+		
+		if (canModifica == null) {
+			boolean permessoGlobale = checkPermesso(PermessiFascicolo.ITEM,PermessiFascicolo.GESTIONE_ELEM_FASCICOLO);
+			
+			BaseDTO dto = new BaseDTO();
+			fillEnte(dto);
+			dto.setObj(idCaso);
+			dto.setObj2(idOpSett);
+			Boolean permessoCaso = casoService.getFlagGestioneFascicolo(dto);
+			
+			/*TODO: Recuperare l'operartore corrente, per il caso*/
+			
+			/*
+			* permessi=ok, flag_permetti=false --> NON E' CONCESSO INSERIRE / MODIFICARE DATI
+			permessi=ok, flag_permetti=true --> E' CONCESSO INSERIRE / MODIFICARE DATI
+			permessi=ko, flag_permetti=false--> NON E' CONCESSO INSERIRE / MODIFICARE DATI
+			permessi=ko, flag_permetti=true--> E' CONCESSO INSERIRE / MODIFICARE DATI
+			* */
+			boolean abilitato = false;
+			if (checkIsResponsabile()) abilitato = true;
+			else if (permessoCaso == null) abilitato = permessoGlobale;
+			else abilitato = permessoCaso;
+			
 			canModifica = isModificaFascicolo && abilitato;
 			logger.debug("Permessi Gestione Fascicolo casoId["+idCaso+"], opSettoreId["+idOpSett+"] --> permessi AM["+permessoGlobale+"], permessoCaso["+permessoCaso+"],isResponsabile["+checkIsResponsabile()+"] --> canModifica["+canModifica+"]");
-		 }
+		}
 		return canModifica;
 		
 	}
 	//Inizio SISO-1110
-	public boolean viewTreeIntervento(){
+	public boolean viewTreeIntervento() {
 		boolean render = true;
-		try{
+		try {
 			//TODO Leggere da DB se vanno caricati gli interventi custom o gli istat
 			
-		}catch(Exception e){
+		} catch(Exception e) {
 			addErrorFromProperties("caricamento.error");
 			logger.error(e.getMessage(),e);
 		}
@@ -1188,7 +1186,7 @@ public class FascicoloBean extends CsUiCompBaseBean {
 	public boolean isDownloadDocIndividuali() {
 		return checkPermesso(PermessiFascicolo.ITEM, PermessiFascicolo.TAB_DOC_INDIVIDUALI_DOWN);
 	}
-	public boolean isVisDocIndividuali(){
+	public boolean isVisDocIndividuali() {
 		return this.isUploadDocIndividuali() || this.isDownloadDocIndividuali();
 	}
 
@@ -1375,6 +1373,5 @@ public class FascicoloBean extends CsUiCompBaseBean {
 	}
 
 	/*********** End Generic ******************/
-
 
 }

@@ -1,7 +1,56 @@
 package it.webred.cs.jsf.manbean.superc;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.rmi.RemoteException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.ResourceBundle;
+
+import javax.el.ELContext;
+import javax.faces.application.Application;
+import javax.faces.application.FacesMessage;
+import javax.faces.component.UIComponent;
+import javax.faces.component.UIViewRoot;
+import javax.faces.component.visit.VisitCallback;
+import javax.faces.component.visit.VisitContext;
+import javax.faces.component.visit.VisitResult;
+import javax.faces.context.FacesContext;
+import javax.faces.model.SelectItem;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import org.apache.commons.lang3.StringUtils;
+import org.jboss.logging.Logger;
+import org.primefaces.context.RequestContext;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import it.roma.comune.servizi.client.CallWS;
-import it.roma.comune.servizi.dto.*;
+import it.roma.comune.servizi.dto.Componente;
+import it.roma.comune.servizi.dto.DatiAnagrafeRoma;
+import it.roma.comune.servizi.dto.DatiIndirizzo;
+import it.roma.comune.servizi.dto.Famiglia;
+import it.roma.comune.servizi.dto.Nascita;
+import it.roma.comune.servizi.dto.Persona;
+import it.roma.comune.servizi.dto.PersonaCompleta;
+import it.roma.comune.servizi.dto.RicercaResult;
 import it.webred.amprofiler.ejb.anagrafica.AnagraficaService;
 import it.webred.amprofiler.ejb.perm.LoginBeanService;
 import it.webred.amprofiler.ejb.user.UserService;
@@ -40,7 +89,6 @@ import it.webred.cs.data.DataModelCostanti.TabUDC;
 import it.webred.cs.data.DataModelCostanti.TipiCategoriaSociale;
 import it.webred.cs.data.DataModelCostanti.TipoDiario;
 import it.webred.cs.data.DataModelCostanti.TipoStatoErogazione;
-import it.webred.cs.data.model.ArFfProgetto;
 import it.webred.cs.data.model.CsAAnaIndirizzo;
 import it.webred.cs.data.model.CsAAnagrafica;
 import it.webred.cs.data.model.CsAComponente;
@@ -85,51 +133,10 @@ import it.webred.ct.config.parameters.dto.ParameterSearchCriteria;
 import it.webred.ct.support.datarouter.CeTBaseObject;
 import it.webred.ejb.utility.ClientUtility;
 import it.webred.jsf.bean.ComuneBean;
-import it.webred.siso.ws.ricerca.dto.*;
-import it.webred.ss.data.model.SsScheda;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.rmi.RemoteException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.ResourceBundle;
-
-import javax.el.ELContext;
-import javax.faces.application.Application;
-import javax.faces.application.FacesMessage;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIViewRoot;
-import javax.faces.component.visit.VisitCallback;
-import javax.faces.component.visit.VisitContext;
-import javax.faces.component.visit.VisitResult;
-import javax.faces.context.FacesContext;
-import javax.faces.model.SelectItem;
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
-import org.apache.commons.lang3.StringUtils;
-import org.jboss.logging.Logger;
-import org.primefaces.context.RequestContext;
-import org.primefaces.model.DefaultStreamedContent;
-import org.primefaces.model.StreamedContent;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import it.webred.siso.ws.ricerca.dto.FamiliareDettaglio;
+import it.webred.siso.ws.ricerca.dto.PersonaDettaglio;
+import it.webred.siso.ws.ricerca.dto.RicercaAnagraficaParams;
+import it.webred.siso.ws.ricerca.dto.RicercaAnagraficaResult;
 
 public class CsUiCompBaseBean {
 
@@ -1237,7 +1244,6 @@ public class CsUiCompBaseBean {
 		return man;
 	}
 	
-
 	protected IFamConviventi getSchedaJsonFamConviventi(Long schedaId) {
 		IFamConviventi man = null;
 		try {

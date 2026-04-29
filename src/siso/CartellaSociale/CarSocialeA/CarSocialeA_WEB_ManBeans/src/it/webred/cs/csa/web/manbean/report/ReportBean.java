@@ -91,10 +91,8 @@ public class ReportBean extends ReportBaseBean {
 	
 	private static final String ESPORTA_STORICO = "Includi dati storici";
 	
-	
 	private String modalWidgetVar = "wdgOpzioniStampaModal";
 	private String modalId = "idOpzioniStampa";
-	
 
 	@ManagedProperty(value="#{schedaBean}")
 	private SchedaBean schedaBean;
@@ -129,12 +127,11 @@ public class ReportBean extends ReportBaseBean {
 	
 	public void initializeStampaCartella(CsASoggettoLAZY cssoggetto) {
 
-		if(cssoggetto != null) {
-			vediAttivita = false;
-			vediPAI= false;
-			tipoReport = REPORT_CARTELLA;
+		if (cssoggetto != null) {
+			this.vediAttivita = false;
+			this.vediPAI = false;
+			this.tipoReport = REPORT_CARTELLA;
 			this.setSoggetto(cssoggetto);
-			
 			
 //			schedaBean.initialize(soggetto);
 //			schedaBean.disabilitaModifiche();
@@ -144,48 +141,52 @@ public class ReportBean extends ReportBaseBean {
 			filtroSchede.add(DataModelCostanti.TabFascicolo.COLLOQUIO);
 			filtroSchede.add(DataModelCostanti.TabFascicolo.RELAZIONI);
 			filtroSchede.add(DataModelCostanti.TabFascicolo.PAI);
-			fascicoloBean.initializeFascicoloCartellaUtente(soggetto, true, filtroSchede);
+			this.fascicoloBean.initializeFascicoloCartellaUtente(this.soggetto, true, filtroSchede);
 			
-			listaRelDTO = new ArrayList<RelazioneDTO>();
-			listaRelSel = new ArrayList<RelazioneDTO>();
-			lstSubreportObbl = new ArrayList<String>();
-			lstSubreportObbl.add(ANAGRAFICA);
+			this.listaRelDTO = new ArrayList<RelazioneDTO>();
+			this.listaRelSel = new ArrayList<RelazioneDTO>();
+			this.lstSubreportObbl = new ArrayList<String>();
+			this.lstSubreportObbl.add(ANAGRAFICA);
 			
-			lstSubreport = new ArrayList<String>();
+			this.lstSubreport = new ArrayList<String>();
 //			if(schedaBean.isRenderTabParenti())
-				lstSubreport.add(PARENTI);
+			this.lstSubreport.add(PARENTI);
 //			if(schedaBean.isRenderTabDatiSociali())
-				lstSubreport.add(DATISOCIALI);
+			this.lstSubreport.add(DATISOCIALI);
 //			if(schedaBean.isRenderTabInvalidita())
-				lstSubreport.add(INVALIDITA);
+			this.lstSubreport.add(INVALIDITA);
 //			if(schedaBean.isRenderTabDisabilita())
-				lstSubreport.add(DISABILITA);
+			this.lstSubreport.add(DISABILITA);
 //			if(schedaBean.isRenderTabTribunale())
-				lstSubreport.add(TRIBUNALE);
+			this.lstSubreport.add(TRIBUNALE);
 //			if(schedaBean.isRenderTabOperatori())
-				lstSubreport.add(OPERATORI);
+			this.lstSubreport.add(OPERATORI);
 //				if(schedaBean.isRenderTabNote())
-				lstSubreport.add(NOTE);			
+			this.lstSubreport.add(NOTE);			
 				
 			//DATI FASCICOLO - Controllare permessi prima della selezione: 
 			//non si possono visualizzare i dati di riepilogo se l'operatore non è autorizzato ad entrare nel fascicolo
-			if(fascicoloBean.isColloquio())
-				lstSubreport.add(DIARIO);
-			if(fascicoloBean.isRelaz())
-				lstSubreport.add(ATTIVITAPROF);
-			if(fascicoloBean.isPai())
-				lstSubreport.add(PAI);
+			if (this.fascicoloBean.isColloquio())
+				this.lstSubreport.add(DIARIO);
+			
+			if (this.fascicoloBean.isRelaz())
+				this.lstSubreport.add(ATTIVITAPROF);
+			
+			if (this.fascicoloBean.isPai())
+				this.lstSubreport.add(PAI);
 				
-			selectedSubreport = lstSubreport.toArray(new String[lstSubreport.size()]);
-			lstReportOpz = new ArrayList<String>();
-			lstReportOpz.add(ESPORTA_STORICO);		
+			this.selectedSubreport = this.lstSubreport.toArray(new String[this.lstSubreport.size()]);
+			this.lstReportOpz = new ArrayList<String>();
+			this.lstReportOpz.add(ESPORTA_STORICO);
 			
 			RequestContext.getCurrentInstance().execute("wiz.loadStep (wiz.cfg.steps [0], true)");//riapre la wizard della dialog al primo step
-			RequestContext.getCurrentInstance().execute(modalWidgetVar + ".show()");	
-			RequestContext.getCurrentInstance().update(modalId);
-		    
+			RequestContext.getCurrentInstance().execute(this.modalWidgetVar + ".show()");	
+			RequestContext.getCurrentInstance().update(this.modalId);
 			
-		} else addWarningFromProperties("seleziona.warning");
+		} else {
+			addWarningFromProperties("seleziona.warning");
+		}
+		
 	}
 	
 	public String flowStampa(FlowEvent event){

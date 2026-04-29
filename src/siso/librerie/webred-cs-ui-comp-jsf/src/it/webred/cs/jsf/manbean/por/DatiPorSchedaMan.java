@@ -13,29 +13,33 @@ import javax.faces.bean.NoneScoped;
 public class DatiPorSchedaMan extends DatiPorBaseMan {
 
 	private static final long serialVersionUID = 3932330281946426754L;
-	
-	public DatiPorSchedaMan(){
+
+	public DatiPorSchedaMan() {
 		super();
 	}
 
 	public DatiPorSchedaMan(CsExtraFseDatiLavoro datiLavoro, String belfiore, BigDecimal idCodLav) {
 		this.belfiore = belfiore;
 		this.init(datiLavoro);
-		if(idCodLav!=null)this.impostaCondizioneLavorativa(idCodLav);
+		if (idCodLav != null)
+			this.impostaCondizioneLavorativa(idCodLav);
 	}
+
 	public DatiPorSchedaMan(String belfiore, BigDecimal idCodLav) {
 		this.belfiore = belfiore;
 		this.init(null);
-		if(idCodLav!=null)this.impostaCondizioneLavorativa(idCodLav);
+		if (idCodLav != null)
+			this.impostaCondizioneLavorativa(idCodLav);
 	}
+
 	public void init(CsExtraFseDatiLavoro datiLavoro) {
 		this.csCDatiLavoro = datiLavoro != null ? datiLavoro : new CsExtraFseDatiLavoro();
 
-		if(csCDatiLavoro.getMaster()==null){
+		if (csCDatiLavoro.getMaster() == null) {
 			CsExtraFseMast master = new CsExtraFseMast();
 			csCDatiLavoro.setMaster(master);
 		}
-		
+
 		this.initDatiProgetto(isVisualizzaModuloPorUdc());
 	}
 

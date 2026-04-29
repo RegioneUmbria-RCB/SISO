@@ -1,6 +1,7 @@
 package it.webred.ss.web.bean.util;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -11,11 +12,14 @@ import javax.faces.context.FacesContext;
 
 import org.apache.commons.lang3.StringUtils;
 
+import it.webred.cs.csa.ejb.client.AccessTableDatiPorSessionBeanRemote;
 import it.webred.cs.data.DataModelCostanti;
 import it.webred.cs.data.DataModelCostanti.Scheda;
+import it.webred.cs.data.model.CsExtraFseDatiLavoro;
 import it.webred.cs.data.model.CsOSettore;
 import it.webred.cs.jsf.manbean.ConsensoPrivacyMan;
 import it.webred.cs.jsf.manbean.FormazioneLavoroMan;
+import it.webred.cs.jsf.manbean.por.DatiPorSchedaMan;
 import it.webred.cs.jsf.manbean.superc.CsUiCompBaseBean;
 import it.webred.cs.json.abitazione.IAbitazione;
 import it.webred.cs.json.familiariConviventi.IFamConviventi;
@@ -38,9 +42,23 @@ import it.webred.ss.web.bean.SegretariatoSocBaseBean;
 import it.webred.ss.web.bean.wizard.Accesso;
 import it.webred.ss.web.bean.wizard.ServiziRichiestiInterventiCustomBean;
 
+/**
+ * 
+ * <h1>ViewSchedaBean.java</h1>
+ *
+ * <p>
+ * </p>
+ *
+ * @since 1.26.12
+ * @version 1.0.1
+ * 
+ * @lastUpdate 2025-11-12 - DDV
+ */
 @ManagedBean
 @ViewScoped
 public class ViewSchedaBean extends SegretariatoSocBaseBean {
+
+	private AccessTableDatiPorSessionBeanRemote porService = (AccessTableDatiPorSessionBeanRemote) getEjb("CarSocialeA", "CarSocialeA_EJB", "AccessTableDatiPorSessionBean");
 	
 	//accesso orig
 	private Accesso accessoOrig;
@@ -55,6 +73,7 @@ public class ViewSchedaBean extends SegretariatoSocBaseBean {
 	private String motivo;
 
 	private PuntoContatto puntoContatto;
+
 	// segnalante
 	private boolean hideSegnalante;
 	private String cognomeNomeSegnalante;
@@ -87,17 +106,18 @@ public class ViewSchedaBean extends SegretariatoSocBaseBean {
 	private String medico;
 	private String tesseraSanitaria;
 	private boolean stp;
-	private boolean invalidita=false;
-	private String  percInvalidita;
+	private boolean invalidita = false;
+	private String percInvalidita;
 	
 	private FormazioneLavoroMan formLavoroSegnalato;
+
+	private DatiPorSchedaMan iDatiPor;
 	
 	private IStranieri stranieriMan;
 	private IAbitazione abitazioneMan;
 	private IFamConviventi famConviventiMan;
 	
-	private ServiziRichiestiInterventiCustomBean serviziRichiestiInterventiCustomBean;  //SISO-438 
-	
+	private ServiziRichiestiInterventiCustomBean serviziRichiestiInterventiCustomBean; //SISO-438 
 	
 	private ConsensoPrivacyMan consensoMan;
 
@@ -108,210 +128,250 @@ public class ViewSchedaBean extends SegretariatoSocBaseBean {
 	private List<String> selectedMotivazioni = new ArrayList<String>();
 	private String motivazioneAltro;
 	
-	
 	// interventi
 	private List<String> selectedInterventi = new ArrayList<String>();
 	private String interventiAltro;
+
 	// diario
 	private List<NotaDTO> diarioSociale = new ArrayList<NotaDTO>();
 	
 	private String indietroButtonLink;
 	
-	public ViewSchedaBean(){
+	/**
+	 * 
+	 * <h1>ViewSchedaBean</h1>
+	 *
+	 * <p>
+	 * </p>
+	 *
+	 * @since 1.26.12
+	 * @version 1.0.1
+	 * 
+	 * @lastUpdate 2025-11-12 - DDV
+	 */
+	public ViewSchedaBean() {
+		
 		this.mappaLabelUDC = CsUiCompBaseBean.getMappaLabelUDC();
 		
 		String selectedScheda = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("id");
 		
-		if(selectedScheda==null) return;
+		if (selectedScheda == null)
+			return;
 		
 		SsSchedaSessionBeanRemote schedaService;
 		
 		try {
 			
-			indietroButtonLink = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("previousPage");
+			this.indietroButtonLink = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("previousPage");
 			
 			schedaService = (SsSchedaSessionBeanRemote) ClientUtility.getEjbInterface("SegretariatoSoc", "SegretariatoSoc_EJB", "SsSchedaSessionBean");
 			
 			BaseDTO dto = new BaseDTO();
 			fillUserData(dto);
-			dto.setOrganizzazione(getPreselectedPContatto().getOrganizzazione().getId()); //ID ORGANIZZAZIONE CORRENTE
+			//ID ORGANIZZAZIONE CORRENTE
+			dto.setOrganizzazione(getPreselectedPContatto().getOrganizzazione().getId());
 			dto.setObj(new Long(selectedScheda));
 			dto.setObj2(canReadDiario());
-			SchedaUdcDTO sDTO = schedaService.loadSchedaUdcCompleta(dto);
+			SchedaUdcDTO schedaUdcDTO = schedaService.loadSchedaUdcCompleta(dto);
 			
-			SsScheda s = sDTO.getScheda();
-			
+			SsScheda ssScheda = schedaUdcDTO.getScheda();
 			
 			// dati accesso
-			SsSchedaAccesso a = s.getAccesso();
-			data = a.getData();
-			operatore = a.getOperatore();
-			puntoContatto = new PuntoContatto();
-			puntoContatto.initFromModel(a.getSsRelUffPcontOrg());
-			modalita = a.getModalita();
-			dto.setObj(s.getTipo());
-			SsTipoScheda tipoBean = confService.readTipoSchedaById(dto);
-			tipoScheda = tipoBean!=null ? tipoBean.getTipo() : null;
-			descrizione = a.getDescrizione();
-			String accompagnatore = a.getAccompagnatore()!=null ? a.getAccompagnatore() : "non specificato";
-			interlocutore = a.getInterlocutore();
-			interlocutore += (a.getUtenteAccompagnato()!=null && a.getUtenteAccompagnato()) ? " (accompagnato da: "+accompagnatore+" )" : "";
-			interlocutore += (a.getUtentePresenteInformato()!=null && a.getUtentePresenteInformato()) ? " (utente presente o informato)" :"";
-	
-			CsOSettoreLIGHT settore = a.getSettoreInviante();
-			String inviante = settore!=null ? format(settore.getNome()) : "";
+			SsSchedaAccesso ssSchedaAccesso = ssScheda.getAccesso();
+			this.data = ssSchedaAccesso.getData();
+			this.operatore = ssSchedaAccesso.getOperatore();
 			
-			motivo = a.getMotivo();
-			motivo += settore!=null ? " "+inviante : "";
-			motivo += a.getMotivoDesc()!=null ? ": "+a.getMotivoDesc() : "";
+			this.puntoContatto = new PuntoContatto();
+			this.puntoContatto.initFromModel(ssSchedaAccesso.getSsRelUffPcontOrg());
+			this.modalita = ssSchedaAccesso.getModalita();
+			
+			dto.setObj(ssScheda.getTipo());
+			SsTipoScheda tipoBean = this.confService.readTipoSchedaById(dto);
+			this.tipoScheda = tipoBean != null ? tipoBean.getTipo() : null;
+			this.descrizione = ssSchedaAccesso.getDescrizione();
+			
+			String accompagnatore = ssSchedaAccesso.getAccompagnatore() != null ? ssSchedaAccesso.getAccompagnatore() : "non specificato";
+			this.interlocutore = ssSchedaAccesso.getInterlocutore();
+			this.interlocutore += (ssSchedaAccesso.getUtenteAccompagnato() != null && ssSchedaAccesso.getUtenteAccompagnato()) ? " (accompagnato da: " + accompagnatore + " )" : "";
+			this.interlocutore += (ssSchedaAccesso.getUtentePresenteInformato() != null && ssSchedaAccesso.getUtentePresenteInformato()) ? " (utente presente o informato)" :"";
+	
+			CsOSettoreLIGHT settore = ssSchedaAccesso.getSettoreInviante();
+			String inviante = settore != null ? format(settore.getNome()) : "";
+			
+			this.motivo = ssSchedaAccesso.getMotivo();
+			this.motivo += settore != null ? " " + inviante : "";
+			this.motivo += ssSchedaAccesso.getMotivoDesc() != null ? ": " + ssSchedaAccesso.getMotivoDesc() : "";
 			
 			// dati segnalante
-			SsSchedaSegnalante segnalante = s.getSegnalante();
-			if(segnalante != null){
-				hideSegnalante = false;
+			SsSchedaSegnalante segnalante = ssScheda.getSegnalante();
+			if (segnalante != null) {
+				this.hideSegnalante = false;
 				it.webred.cs.csa.ejb.dto.BaseDTO dtoCS = new it.webred.cs.csa.ejb.dto.BaseDTO();
 				fillUserData(dtoCS );
-				
 
 				dtoCS.setObj(segnalante.getCsOSettoreId());
-				CsOSettore settEnte = configurationCsEnteBean.getSettoreById(dtoCS);
+				CsOSettore settEnte = this.configurationCsEnteBean.getSettoreById(dtoCS);
 				
-				if(segnalante.getCognome() != null || segnalante.getNome() != null)
-					cognomeNomeSegnalante = (format(segnalante.getCognome())  + " " + format(segnalante.getNome()) ).toUpperCase();
-				ente = settEnte!=null ? settEnte.getNome() : segnalante.getEnte_servizio();
+				if (segnalante.getCognome() != null || segnalante.getNome() != null)
+					this.cognomeNomeSegnalante = (format(segnalante.getCognome()) + " " + format(segnalante.getNome())).toUpperCase();
+				this.ente = settEnte != null ? settEnte.getNome() : segnalante.getEnte_servizio();
 				
-				
-				telCelSegnalante = segnalante.getTelefono() != null ? format(segnalante.getTelefono()) : ""; 
-				if(segnalante.getCel() != null){
-				    telCelSegnalante += !telCelSegnalante.isEmpty() ?  " / " : ""; 
-				    telCelSegnalante += format(segnalante.getCel());
+				this.telCelSegnalante = segnalante.getTelefono() != null ? format(segnalante.getTelefono()) : "";
+				if (segnalante.getCel() != null) {
+					this.telCelSegnalante += !this.telCelSegnalante.isEmpty() ? " / " : "";
+					this.telCelSegnalante += format(segnalante.getCel());
 				}
-				 
-				emailSegnalante = segnalante.getEmail()!=null ? segnalante.getEmail() : "";
-				if(segnalante.getVia()!=null || segnalante.getComune()!=null)
-					indirizzo = format(segnalante.getVia())+", "+format(segnalante.getStampaDesComuneResidenza());
 				
-				dataNascitaSegnalante = segnalante.getDataNascita();
-				sessoSegnalante = segnalante.getSesso();
+				this.emailSegnalante = segnalante.getEmail() != null ? segnalante.getEmail() : "";
+				if (segnalante.getVia() != null || segnalante.getComune() != null)
+					this.indirizzo = format(segnalante.getVia()) + ", " + format(segnalante.getStampaDesComuneResidenza());
+				
+				this.dataNascitaSegnalante = segnalante.getDataNascita();
+				this.sessoSegnalante = segnalante.getSesso();
 				//SISO-906 -Specifica del parente quando affidatario
-				relazione = segnalante.getTbRelazione()!=null ? format(segnalante.getTbRelazione().getDescrizione().concat(segnalante.getAffidatario()? " - Affidatario" : "")) : "";
-				statoCivileSegnalante = segnalante.getTbStatoCivile() != null ? segnalante.getTbStatoCivile().getDescrizione() : "";
+				this.relazione = segnalante.getTbRelazione() != null
+						? format(segnalante.getTbRelazione().getDescrizione().concat(segnalante.getAffidatario() ? " - Affidatario" : ""))
+						: "";
+				this.statoCivileSegnalante = segnalante.getTbStatoCivile() != null ? segnalante.getTbStatoCivile().getDescrizione() : "";
 				
-				comuneNascitaSegnalante = segnalante.getComuneNascitaDes() + " (" + segnalante.getProvNascitaCod() + ") " + 
+				this.comuneNascitaSegnalante = segnalante.getComuneNascitaDes() + " (" + segnalante.getProvNascitaCod() + ") " + 
 					segnalante.getStatoNascitaDes() != null ? segnalante.getStatoNascitaDes() : "";
-			}else
-				if(Scheda.Interlocutori.UTENTE.equalsIgnoreCase(a.getInterlocutore())) 
-					hideSegnalante=true;	
+			} else
+				if (Scheda.Interlocutori.UTENTE.equalsIgnoreCase(ssSchedaAccesso.getInterlocutore())) 
+					this.hideSegnalante = true;	
 			
 			// dati segnalato
-			dto.setObj(s.getSegnalato());			
+			dto.setObj(ssScheda.getSegnalato());			
 			SsSchedaSegnalato segnalato = schedaService.readSegnalatoById(dto);
 			SsAnagrafica anagrafica = segnalato.getAnagrafica();
 		
-			cognomeNomeSegnalato = (anagrafica.getCognome()  + " " +  anagrafica.getNome()).toUpperCase();
-			dataNascita = anagrafica.getData_nascita();
-			comuneNascita = anagrafica.getLuogoDiNascita();
-			sesso = anagrafica.getSesso();
-			cf = anagrafica.getCf();
-			statoCivile = anagrafica.getStato_civile();
-			cittadinanza = anagrafica.getCittadinanza();
-			cittadinanza2 = format(anagrafica.getCittadinanza2());
-			alias = anagrafica.getAlias();
+			this.cognomeNomeSegnalato = (anagrafica.getCognome() + " " + anagrafica.getNome()).toUpperCase();
+			this.dataNascita = anagrafica.getData_nascita();
+			this.comuneNascita = anagrafica.getLuogoDiNascita();
+			this.sesso = anagrafica.getSesso();
+			this.cf = anagrafica.getCf();
+			this.statoCivile = anagrafica.getStato_civile();
+			this.cittadinanza = anagrafica.getCittadinanza();
+			this.cittadinanza2 = format(anagrafica.getCittadinanza2());
+			this.alias = anagrafica.getAlias();
 			
-			if(anagrafica.getTbCittadinanzaAcq()!=null)
-				cittadinanza += " ("+ anagrafica.getTbCittadinanzaAcq().getDescrizione()+")";
+			if (anagrafica.getTbCittadinanzaAcq() != null)
+				this.cittadinanza += " (" + anagrafica.getTbCittadinanzaAcq().getDescrizione() + ")";
 			
-			residenza = segnalato.getSenzaFissaDimora()!=null && segnalato.getSenzaFissaDimora() ? DataModelCostanti.SENZA_FISSA_DIMORA+ " " : "";
-			residenza += segnalato.getResidenza()!=null ? segnalato.getResidenza().getStampaDesIndirizzo() : "";
+			this.residenza = segnalato.getSenzaFissaDimora() != null && segnalato.getSenzaFissaDimora() ? DataModelCostanti.SENZA_FISSA_DIMORA + " " : "";
+			this.residenza += segnalato.getResidenza() != null ? segnalato.getResidenza().getStampaDesIndirizzo() : "";
 			
-			domicilio = segnalato.getDomicilio()!=null ? segnalato.getDomicilio().getStampaDesIndirizzo() : "";
-			domicilio += segnalato.getNoteDomicilio()!=null ? " ("+segnalato.getNoteDomicilio()+")" : "";
+			this.domicilio = segnalato.getDomicilio() != null ? segnalato.getDomicilio().getStampaDesIndirizzo() : "";
+			this.domicilio += segnalato.getNoteDomicilio() != null ? " (" + segnalato.getNoteDomicilio() + ")" : "";
 			
-			telCel = segnalato.getTelefono() != null ? format(segnalato.getTelefono()) : ""; 
-			telCel += segnalato.getTitolareTelefono()!=null ?  " ("+format(segnalato.getTitolareTelefono())+")" : "";
-			if(segnalato.getCel() != null){
-				telCel += !telCel.isEmpty() ?  " / " : ""; 
-				telCel += format(segnalato.getCel());
-				telCel += segnalato.getTitolareCellulare()!=null ?  " ("+format(segnalato.getTitolareCellulare())+")" : "";
+			this.telCel = segnalato.getTelefono() != null ? format(segnalato.getTelefono()) : "";
+			this.telCel += segnalato.getTitolareTelefono() != null ? " (" + format(segnalato.getTitolareTelefono()) + ")" : "";
+			if (segnalato.getCel() != null) {
+				this.telCel += !this.telCel.isEmpty() ? " / " : "";
+				this.telCel += format(segnalato.getCel());
+				this.telCel += segnalato.getTitolareCellulare() != null ? " (" + format(segnalato.getTitolareCellulare()) + ")" : "";
 			}
 			
-			email = segnalato.getEmail();
-			email += segnalato.getTitolareEmail()!=null ?  " ("+format(segnalato.getTitolareEmail())+")" : "";
-			medico = segnalato.getMedico();
-			tesseraSanitaria = segnalato.getTessera_sanitaria();
-			stp = segnalato.getStp()!=null ? segnalato.getStp() : false;
-			invalidita = segnalato.getInvalidita()!=null;
-			percInvalidita = segnalato.getInvalidita()!=null ? segnalato.getInvalidita().toString() : "";
+			this.email = segnalato.getEmail();
+			this.email += segnalato.getTitolareEmail() != null ? " (" + format(segnalato.getTitolareEmail()) + ")" : "";
+			this.medico = segnalato.getMedico();
+			this.tesseraSanitaria = segnalato.getTessera_sanitaria();
+			this.stp = segnalato.getStp() != null ? segnalato.getStp() : false;
+			this.invalidita = segnalato.getInvalidita() != null;
+			this.percInvalidita = segnalato.getInvalidita() != null ? segnalato.getInvalidita().toString() : "";
 			
-			formLavoroSegnalato = new FormazioneLavoroMan();
-			formLavoroSegnalato.setIdCondLavorativa(segnalato.getCondLavoroId());
-			formLavoroSegnalato.setIdProfessione(segnalato.getProfessioneId());
-			formLavoroSegnalato.setIdTitoloStudio(segnalato.getTitoloStudioId());
-			formLavoroSegnalato.setIdSettoreImpiego(segnalato.getSettImpiegoId());
+			this.formLavoroSegnalato = new FormazioneLavoroMan();
+			this.formLavoroSegnalato.setIdCondLavorativa(segnalato.getCondLavoroId());
+			this.formLavoroSegnalato.setIdProfessione(segnalato.getProfessioneId());
+			this.formLavoroSegnalato.setIdTitoloStudio(segnalato.getTitoloStudioId());
+			this.formLavoroSegnalato.setIdSettoreImpiego(segnalato.getSettImpiegoId());
 			
-			/*TAB UTENTE*/
-			stranieriMan = getSchedaJsonStranieri(s.getId());
-			abitazioneMan = getSchedaJsonAbitazione(s.getId());
-			famConviventiMan = getSchedaJsonFamConviventi(s.getId());
+			/* TAB UTENTE */
+			this.stranieriMan = getSchedaJsonStranieri(ssScheda.getId());
+			this.abitazioneMan = getSchedaJsonAbitazione(ssScheda.getId());
+			this.famConviventiMan = getSchedaJsonFamConviventi(ssScheda.getId());
 			
-			/*TAB SERVIZI*/
-			serviziRichiestiInterventiCustomBean = new ServiziRichiestiInterventiCustomBean();  //SISO-438 
-			serviziRichiestiInterventiCustomBean.loadManJsonServiziRichiesti(s, segnalato);  
+			/* TAB SERVIZI */
+			//SISO-438 
+			this.serviziRichiestiInterventiCustomBean = new ServiziRichiestiInterventiCustomBean();
+			this.serviziRichiestiInterventiCustomBean.loadManJsonServiziRichiesti(ssScheda, segnalato);
 			
-			/*Valorizzazione Informazioni Sottoscrizione Privacy*/
-			boolean beneficiarioRdC=this.verificaPresenzaRdC(cf);
-			consensoMan = new ConsensoPrivacyMan(cf, a.getSsRelUffPcontOrg().getSsOOrganizzazione().getId(), anagrafica.isAnonimo(), beneficiarioRdC);
+			/* Valorizzazione Informazioni Sottoscrizione Privacy */
+			boolean beneficiarioRdC = this.verificaPresenzaRdC(this.cf);
+			this.consensoMan = new ConsensoPrivacyMan
+					( this.cf
+					, ssSchedaAccesso.getSsRelUffPcontOrg().getSsOOrganizzazione().getId()
+					, anagrafica.isAnonimo()
+					, beneficiarioRdC
+					);
 			
-			////SISO-947 dati riferimenti
-			SsSchedaRiferimento r = s.getRiferimento();
-			SsSchedaRiferimento r2 = s.getRiferimento2();
-			SsSchedaRiferimento r3 = s.getRiferimento3();
+			//SISO-947 dati riferimenti
+			SsSchedaRiferimento ssSchedaRiferimento = ssScheda.getRiferimento();
+			SsSchedaRiferimento ssSchedaRiferimento2 = ssScheda.getRiferimento2();
+			SsSchedaRiferimento ssSchedaRiferimento3 = ssScheda.getRiferimento3();
 			
-			listaRiferimenti = new ArrayList<SsSchedaRiferimento>();
+			this.listaRiferimenti = new ArrayList<SsSchedaRiferimento>();
 			
-			listaRiferimenti.add(r);
-			listaRiferimenti.add(r2);
-			listaRiferimenti.add(r3);
+			this.listaRiferimenti.add(ssSchedaRiferimento);
+			this.listaRiferimenti.add(ssSchedaRiferimento2);
+			this.listaRiferimenti.add(ssSchedaRiferimento3);
 			
 			// dati motivazione
-			selectedMotivazioni = sDTO.getListaMotivazioni();
-        	motivazioneAltro = s.getMotivazione().getAltro();
-        	
-        	// dati interventi
-        	selectedInterventi = sDTO.getListaInterventi();
-        	interventiAltro = s.getInterventi().getAltro();
-        	
-        	// dati diario sociale
-        	diarioSociale = sDTO.getNoteDiario();
+			this.selectedMotivazioni = schedaUdcDTO.getListaMotivazioni();
+			this.motivazioneAltro = ssScheda.getMotivazione().getAltro();
+			
+			// dati interventi
+			this.selectedInterventi = schedaUdcDTO.getListaInterventi();
+			this.interventiAltro = ssScheda.getInterventi().getAltro();
+			
+			// dati diario sociale
+			this.diarioSociale = schedaUdcDTO.getNoteDiario();
 		
-        	
-        	//Dati accesso orig (se scheda inviata)
-        	accessoOrig = null;
-        	SsSchedaAccessoInviante schedaOriginale= recuperaSsSchedaAccessoInvianteFromSsScheda(s);
-			if(schedaOriginale!=null && schedaOriginale.getId()!=null && schedaOriginale.getId()>-1)
-			{
+			// Dati accesso orig (se scheda inviata)
+			this.accessoOrig = null;
+			SsSchedaAccessoInviante schedaOriginale = recuperaSsSchedaAccessoInvianteFromSsScheda(ssScheda);
+			if (schedaOriginale != null && schedaOriginale.getId() != null && schedaOriginale.getId() > -1) {
 				// inizializza accessoOrig tramite la schedaInviante recuperata
-				accessoOrig = new Accesso();
-				accessoOrig.initFromModelAccessoInviante(schedaOriginale);
+				this.accessoOrig = new Accesso();
+				this.accessoOrig.initFromModelAccessoInviante(schedaOriginale);
 			}
-       
+			
+			// Tab Progetto Richiesto
+			if (ssScheda != null) {
+				Long schedaId = ssScheda.getId();
+				
+				it.webred.cs.csa.ejb.dto.BaseDTO baseDTOCs = new it.webred.cs.csa.ejb.dto.BaseDTO();
+				fillEnte(baseDTOCs);
+				baseDTOCs.setObj(schedaId);
+				
+				String enteId = baseDTOCs.getEnteId();
+				BigDecimal idCondizioneLavorativa = this.formLavoroSegnalato.getIdCondLavorativa();
+				
+				CsExtraFseDatiLavoro csExtraFseDatiLavoro = this.porService.findDatiPorUdcBySchedaId(baseDTOCs);
+				if (csExtraFseDatiLavoro != null) {
+					this.iDatiPor = new DatiPorSchedaMan(csExtraFseDatiLavoro, enteId, idCondizioneLavorativa);
+				} else {
+					this.iDatiPor = new DatiPorSchedaMan(enteId, idCondizioneLavorativa);
+				}
+			}
+			
 		} catch (Exception e) {
 			addError("lettura.error");
-			logger.error(e.getMessage(),e);
+			logger.error("Errore ViewSchedaBean: " + e.getMessage(), e);
 		}
 	}
 	
 	public void goBack() {
 		try {
-			if (indietroButtonLink == null || indietroButtonLink.isEmpty())
-				indietroButtonLink = "home.faces";
-			FacesContext.getCurrentInstance().getExternalContext().redirect(indietroButtonLink);
+			if (this.indietroButtonLink == null || this.indietroButtonLink.isEmpty())
+				this.indietroButtonLink = "home.faces";
+			FacesContext.getCurrentInstance().getExternalContext().redirect(this.indietroButtonLink);
 		} catch (IOException e) {
 			logger.error(e);
 		}
 	}
 
-   public String titoloTabRiferimento(SsSchedaRiferimento riferimento, Integer numRiferimento){
+	public String titoloTabRiferimento(SsSchedaRiferimento riferimento, Integer numRiferimento) {
 		String titolo = "Riferimento " + Integer.toString(numRiferimento);
 					
 		if (riferimento != null) {
@@ -696,8 +756,7 @@ public class ViewSchedaBean extends SegretariatoSocBaseBean {
 		return serviziRichiestiInterventiCustomBean;
 	}
 
-	public void setServiziRichiestiInterventiCustomBean(
-			ServiziRichiestiInterventiCustomBean serviziRichiestiInterventiCustomBean) {
+	public void setServiziRichiestiInterventiCustomBean(ServiziRichiestiInterventiCustomBean serviziRichiestiInterventiCustomBean) {
 		this.serviziRichiestiInterventiCustomBean = serviziRichiestiInterventiCustomBean;
 	}
 
@@ -708,6 +767,7 @@ public class ViewSchedaBean extends SegretariatoSocBaseBean {
 	public void setHideSegnalante(boolean hideSegnalante) {
 		this.hideSegnalante = hideSegnalante;
 	}
+	
 	//SISO-947
 	public List<SsSchedaRiferimento> getListaRiferimenti() {
 		return listaRiferimenti;
@@ -732,4 +792,13 @@ public class ViewSchedaBean extends SegretariatoSocBaseBean {
 	public void setConsensoMan(ConsensoPrivacyMan consensoMan) {
 		this.consensoMan = consensoMan;
 	}
+	
+	public DatiPorSchedaMan getiDatiPor() {
+		return iDatiPor;
+	}
+
+	public void setiDatiPor(DatiPorSchedaMan iDatiPor) {
+		this.iDatiPor = iDatiPor;
+	}
+	
 }

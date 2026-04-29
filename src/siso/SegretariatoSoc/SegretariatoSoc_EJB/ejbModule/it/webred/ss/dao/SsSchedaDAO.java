@@ -303,7 +303,6 @@ public void updateCompletamentoScheda(SsScheda  scheda)throws Exception{
 		return q.getResultList();
 	}
 	
-
 	@SuppressWarnings("unchecked")
 	public List<SsInterventiSchede> readInterventiScheda(SsSchedaInterventi scheda) {
 		Query q = em.createNamedQuery("SsScheda.readInterventiScheda")

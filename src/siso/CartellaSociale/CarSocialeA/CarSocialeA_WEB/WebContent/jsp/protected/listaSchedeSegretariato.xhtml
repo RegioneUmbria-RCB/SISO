@@ -11,13 +11,13 @@
 	<ui:define name="content">
 		<h:form id="frmListaSchedeSegr">
 			<p:outputPanel rendered="#{listaSchedeSegrBean.renderListaSchedeSegr}">
-			<webredcs:pnlListaSchedeSegr listaSchedeSegrBean="#{listaSchedeSegrBean}"
-				schedaSegrBean="#{schedaSegrBean}"
-				nuovaCartellaListener="#{schedaBean.nuovaDaSchedeUDC(scheda)}"
-				caricaCartellaListener="#{schedaBean.carica(scheda.soggettoId)}"/>
+				<webredcs:pnlListaSchedeSegr listaSchedeSegrBean="#{listaSchedeSegrBean}"
+					schedaSegrBean="#{schedaSegrBean}"
+					nuovaCartellaListener="#{schedaBean.nuovaDaSchedeUDC(scheda)}"
+					caricaCartellaListener="#{schedaBean.carica(scheda.soggettoId)}"/>
 			</p:outputPanel>
 		</h:form>
-			
 	</ui:define>
+	
 </ui:composition>
 </html>

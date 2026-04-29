@@ -2,23 +2,21 @@ package it.webred.cs.csa.ejb.dto;
 
 import it.webred.ct.support.datarouter.CeTBaseObject;
 
-
-public class BaseDTO extends CeTBaseObject  {
-	private static final long serialVersionUID = 1L;
+public class BaseDTO extends CeTBaseObject {
 	
+	private static final long serialVersionUID = 1L;
+
 	private Object obj;
 	private Object obj2;
 	private Object obj3;
 	private Object obj4;
 	private Object obj5;
 	private Object obj6;
-	
+
 	/*Parametri valorizzati automaticamente tramite fillEnte con i dati dell'operatoreSettore corrente - servono per AccessoFascicoloInterceptor*/
 	private Boolean nascondiInfoPerSettore;
 	private Long settoreId;
 
-	
-	
 	public Object getObj6() {
 		return obj6;
 	}
@@ -82,5 +80,5 @@ public class BaseDTO extends CeTBaseObject  {
 	public void setObj5(Object obj5) {
 		this.obj5 = obj5;
 	}
-	
+
 }
