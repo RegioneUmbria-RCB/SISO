@@ -4,23 +4,31 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
+ * 
+ * <h1>EsportazioneDTOView.java</h1>
  *
+ * <p>
  * SISO-538
  * bean che tiene i dati da visualizzare nella lista delle erogazioni da esportare
+ * </p>
  *
+ * @since 1.0.0
+ * @version 1.0.0
+ * 
+ * @lastUpdate 2025-11-10
  */
-public class EsportazioneDTOView extends EsportazioneDTO { 
-/*	public static int EROGAZIONE_DA_INVIARE = 0;
-	public static int EROGAZIONE_DA_NON_INVIARE = 1;*/
+public class EsportazioneDTOView extends EsportazioneDTO {
+	
+//	public static int EROGAZIONE_DA_INVIARE = 0;
+//	public static int EROGAZIONE_DA_NON_INVIARE = 1;
 	
 	private static final long serialVersionUID = 1L;
-	private static final String STYLE_DA_INVIARE = "";	// nessuno stile
+	// nessuno stile
+	private static final String STYLE_DA_INVIARE = "";
 	private static final String STYLE_DA_NON_INVIARE = "color: gray;";
 	private static final String STYLE_ESPORTATO = "color: gray; font-style: italic;";
 	
-	
 	private SimpleDateFormat shortDateFormat = new SimpleDateFormat("dd/MM/yyyy");
-	
 
 	private boolean daInviare = true;
 	
@@ -32,7 +40,6 @@ public class EsportazioneDTOView extends EsportazioneDTO {
 	private String idFlusso;
 	private Date dataEsportazione;
 	private boolean revocabile;
-	
 	
 	/* Metodi di utilità */
 	public String getStyle() {
@@ -49,24 +56,34 @@ public class EsportazioneDTOView extends EsportazioneDTO {
 		return STYLE_DA_INVIARE;
 	}
 	
-
-	
-
-	
 	public String dataEsportazioneFormatShort() {
 		return shortDateFormat.format(dataEsportazione);
 	}
 	
 	/**
-	 * Restituisce <code>true</code> se l'erogazione risulta esportata e non daInviare; <code>false</code> altrimenti
+	 * 
+	 * <h1>isInviata</h1>
+	 *
 	 * <p>
-	 * <i>Questa logica serve in fase di view: si vuole dare evidenza di ciò che è stato già inviato. Un'eventuale erogazione
-	 * che risulti da non inviare però non ancora esportata (ad esempio perché ancora aperta) deve restituire false!</i> 
+	 * Restituisce <code>true</code> se l'erogazione risulta esportata e non daInviare; <code>false</code> altrimenti
+	 * 	<p>
+	 * 		<i>
+	 * 			Questa logica serve in fase di view: si vuole dare evidenza di ciò che è stato già inviato. Un'eventuale erogazione
+	 * 			che risulti da non inviare però non ancora esportata (ad esempio perché ancora aperta) deve restituire false!
+	 * 		</i>
+	 * 	</p>
+	 * </p>
+	 *
+	 * @return
+	 *
+	 * @since 1.0.0
+	 * @version 1.0.0
+	 * 
+	 * @lastUpdate 2025-11-10
 	 */
 	public boolean isInviata() {
 		return !daInviare && esportata;
 	}
-	
 	
 	/* GETTER AND SETTER */
 	public boolean isDaInviare() {
@@ -125,63 +142,59 @@ public class EsportazioneDTOView extends EsportazioneDTO {
 		this.revocabile = revocabile;
 	}
 
-
 	@Override
 	public String toString() {
 		return "EsportazioneDTOView [getStyle()=" + getStyle()
-				+ ", isDaInviare()=" + isDaInviare()
-				+ ", getCausaleMancatoInvio()=" + getCausaleMancatoInvio()
-				+ ", getSeqExport()=" + getSeqExport() + ", isEsportata()="
-				+ isEsportata() + ", getIdFlusso()=" + getIdFlusso()
-				+ ", getDataEsportazione()=" + getDataEsportazione()
-				+ ", isRevocabile()=" + isRevocabile()
-				+ ", getBenefAnnoNascita()=" + getBenefAnnoNascita()
-				+ ", getBenefLuogoNascita()=" + getBenefLuogoNascita()
-				+ ", getBenefSesso()=" + getBenefSesso()
-				+ ", getBenefCittadinanza()=" + getBenefCittadinanza()
-				+ ", getBenefRegione()=" + getBenefRegione()
-				+ ", getBenefComune()=" + getBenefComune()
-				+ ", getBenefNazione()=" + getBenefNazione()
-				+ ", getNumProtDSU()=" + getNumProtDSU()
-				+ ", getAnnoProtDSU()=" + getAnnoProtDSU() + ", getDataDSU()="
-				+ getDataDSU() + ", getCodPrestazione()=" + getCodPrestazione()
-				+ ", getDenomPrestazione()=" + getDenomPrestazione()
-				+ ", getProtDomPrest()=" + getProtDomPrest()
-				+ ", getSoggettoCodiceFiscale()=" + getSoggettoCodiceFiscale()
-				+ ", getSoggettoCognome()=" + getSoggettoCognome()
-				+ ", getSoggettoNome()=" + getSoggettoNome()
-				+ ", getCompartAltre()=" + getCompartAltre()
-				+ ", getCompartSsn()=" + getCompartSsn()
-				+ ", getCompartUtenti()=" + getCompartUtenti()
-				+ ", getPercGestitaEnte()=" + getPercGestitaEnte()
-				+ ", getValoreGestitaEnte()=" + getValoreGestitaEnte()
-				+ ", getDataEsecuzione()=" + getDataEsecuzione()
-				+ ", getEnteOperatoreErogante()=" + getEnteOperatoreErogante()
-				+ ", getNomeOperatoreErog()=" + getNomeOperatoreErog()
-				+ ", getNote()=" + getNote() + ", getNoteAltreCompart()="
-				+ getNoteAltreCompart() + ", getCarattere()=" + getCarattere()
-				+ ", getNomeBeneficiario()=" + getNomeBeneficiario()
-				+ ", getPrestazioneProtocEnte()=" + getPrestazioneProtocEnte()
-				+ ", getInterventoId()=" + getInterventoId()
-				+ ", getInterventoEsegId()=" + getInterventoEsegId()
-				+ ", getInterventoEsegMastId()=" + getInterventoEsegMastId()
-				+ ", getDataEsecuzioneA()=" + getDataEsecuzioneA()
-				//+ ", getMinDataEsecuzione()=" + getMinDataEsecuzione()
-				+ ", getMaxDataEsecuzione()=" + getMaxDataEsecuzione()
-				+ ", getDataInizio()=" + getDataInizio() + ", getDataFine()="
-				+ getDataFine() + ", getPeriodoErogazione()="
-				+ getPeriodoErogazione() + ", getImportoMensile()="
-				+ getImportoMensile() + ", getSpesaTestata()="
-				+ getSpesaTestata() + ", getSpesaDettaglio()="
-				+ getSpesaDettaglio() + ", getSpesa()=" + getSpesa()
-				+ ", getPresenzaProvaMezzi()=" + getPresenzaProvaMezzi()
-				+ ", getPresaInCarico()=" + getPresaInCarico()
-				+ ", getCategoriaSocialeId()=" + getCategoriaSocialeId()
-				+ ", getCategoriaSocialeDescrizione()="
-				+ getCategoriaSocialeDescrizione() + "]";
+			+ ", isDaInviare()=" + isDaInviare()
+			+ ", getCausaleMancatoInvio()=" + getCausaleMancatoInvio()
+			+ ", getSeqExport()=" + getSeqExport() + ", isEsportata()="
+			+ isEsportata() + ", getIdFlusso()=" + getIdFlusso()
+			+ ", getDataEsportazione()=" + getDataEsportazione()
+			+ ", isRevocabile()=" + isRevocabile()
+			+ ", getBenefAnnoNascita()=" + getBenefAnnoNascita()
+			+ ", getBenefLuogoNascita()=" + getBenefLuogoNascita()
+			+ ", getBenefSesso()=" + getBenefSesso()
+			+ ", getBenefCittadinanza()=" + getBenefCittadinanza()
+			+ ", getBenefRegione()=" + getBenefRegione()
+			+ ", getBenefComune()=" + getBenefComune()
+			+ ", getBenefNazione()=" + getBenefNazione()
+			+ ", getNumProtDSU()=" + getNumProtDSU()
+			+ ", getAnnoProtDSU()=" + getAnnoProtDSU() + ", getDataDSU()="
+			+ getDataDSU() + ", getCodPrestazione()=" + getCodPrestazione()
+			+ ", getDenomPrestazione()=" + getDenomPrestazione()
+			+ ", getProtDomPrest()=" + getProtDomPrest()
+			+ ", getSoggettoCodiceFiscale()=" + getSoggettoCodiceFiscale()
+			+ ", getSoggettoCognome()=" + getSoggettoCognome()
+			+ ", getSoggettoNome()=" + getSoggettoNome()
+			+ ", getCompartAltre()=" + getCompartAltre()
+			+ ", getCompartSsn()=" + getCompartSsn()
+			+ ", getCompartUtenti()=" + getCompartUtenti()
+			+ ", getPercGestitaEnte()=" + getPercGestitaEnte()
+			+ ", getValoreGestitaEnte()=" + getValoreGestitaEnte()
+			+ ", getDataEsecuzione()=" + getDataEsecuzione()
+			+ ", getEnteOperatoreErogante()=" + getEnteOperatoreErogante()
+			+ ", getNomeOperatoreErog()=" + getNomeOperatoreErog()
+			+ ", getNote()=" + getNote() + ", getNoteAltreCompart()="
+			+ getNoteAltreCompart() + ", getCarattere()=" + getCarattere()
+			+ ", getNomeBeneficiario()=" + getNomeBeneficiario()
+			+ ", getPrestazioneProtocEnte()=" + getPrestazioneProtocEnte()
+			+ ", getInterventoId()=" + getInterventoId()
+			+ ", getInterventoEsegId()=" + getInterventoEsegId()
+			+ ", getInterventoEsegMastId()=" + getInterventoEsegMastId()
+			+ ", getDataEsecuzioneA()=" + getDataEsecuzioneA()
+			//+ ", getMinDataEsecuzione()=" + getMinDataEsecuzione()
+			+ ", getMaxDataEsecuzione()=" + getMaxDataEsecuzione()
+			+ ", getDataInizio()=" + getDataInizio() + ", getDataFine()="
+			+ getDataFine() + ", getPeriodoErogazione()="
+			+ getPeriodoErogazione() + ", getImportoMensile()="
+			+ getImportoMensile() + ", getSpesaTestata()="
+			+ getSpesaTestata() + ", getSpesaDettaglio()="
+			+ getSpesaDettaglio() + ", getSpesa()=" + getSpesa()
+			+ ", getPresenzaProvaMezzi()=" + getPresenzaProvaMezzi()
+			+ ", getPresaInCarico()=" + getPresaInCarico()
+			+ ", getCategoriaSocialeId()=" + getCategoriaSocialeId()
+			+ ", getCategoriaSocialeDescrizione()="
+			+ getCategoriaSocialeDescrizione() + "]";
 	}
-
-
-	
 	
 }

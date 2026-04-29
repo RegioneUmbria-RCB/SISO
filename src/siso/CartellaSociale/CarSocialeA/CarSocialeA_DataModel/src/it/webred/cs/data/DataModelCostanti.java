@@ -12,7 +12,7 @@ import org.apache.commons.lang.StringUtils;
  * <h1>DataModelCostanti.java</h1>
  *
  * <p>
- * Classe che contiene tutte le constanti del progetto suddivise a loro volta
+ * Classe che contiene tutte le costanti del progetto suddivise a loro volta
  * </p>
  *
  * @since 1.26.12

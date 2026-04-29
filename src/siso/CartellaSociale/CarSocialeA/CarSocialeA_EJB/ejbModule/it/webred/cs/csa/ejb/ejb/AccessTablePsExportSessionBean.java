@@ -27,7 +27,7 @@ import it.webred.ct.support.validation.ValidationStateless;
 
 @Stateless
 @Interceptors(ValidationStateless.class)
-public class AccessTablePsExportSessionBean extends CarSocialeBaseSessionBean implements AccessTablePsExportSessionBeanRemote{
+public class AccessTablePsExportSessionBean extends CarSocialeBaseSessionBean implements AccessTablePsExportSessionBeanRemote {
 
 	private static final long serialVersionUID = 1L;
 	
@@ -39,35 +39,32 @@ public class AccessTablePsExportSessionBean extends CarSocialeBaseSessionBean im
 	
 	@Override
 	public List<CsIPsExportMast> findFlussiInviatiInPeriodo(BaseDTO dto) {				
-		return exportCasellarioDao.findFlussiInviatiInPeriodo((Long) dto.getObj(), (String)dto.getObj2(), (String)dto.getObj3());
+		return this.exportCasellarioDao.findFlussiInviatiInPeriodo((Long) dto.getObj(), (String) dto.getObj2(), (String) dto.getObj3());
 	}
 
-//INIZIO modifica SISO-538
+	//INIZIO modifica SISO-538
 	@Override
 	public List<EsportazioneDTOView> findErogazDaInviareInPeriodo(ErogazioniSearchCriteria bDto) {
-		List<EsportazioneDTOView> result=exportCasellarioDao.findErogazDaInviareInPeriodo(bDto);
+		List<EsportazioneDTOView> result = this.exportCasellarioDao.findErogazDaInviareInPeriodo(bDto);
 		return result;
 	}
 	
 	@Override
 	public List<EsportazioneDTOView> findErogazGiaInviateInPeriodo(ErogazioniSearchCriteria bDto) {
-		List<EsportazioneDTOView> result=exportCasellarioDao.findErogazGiaInviateInPeriodo(bDto);
+		List<EsportazioneDTOView> result = this.exportCasellarioDao.findErogazGiaInviateInPeriodo(bDto);
 		return result;
 	}
 	
-
-	public List<EsportazioneDTOView> findErogazioniMasterChiusuraInPeriodo(ErogazioniSearchCriteria bDto){ 
-		List<EsportazioneDTOView> result=exportCasellarioDao.findErogazioniMasterChiusuraInPeriodo(bDto);
+	public List<EsportazioneDTOView> findErogazioniMasterChiusuraInPeriodo(ErogazioniSearchCriteria bDto) {
+		List<EsportazioneDTOView> result = this.exportCasellarioDao.findErogazioniMasterChiusuraInPeriodo(bDto);
 		return result;
 	}
-//FINE modifica SISO-538
+	//FINE modifica SISO-538
 
-
-	
 	//INIZIO MOD-RL
 	@Override
 	public CsIPsExportMast saveCsIPsExportMast(BaseDTO dto) throws CarSocialeServiceException {
-		return exportCasellarioDao.saveCsIPsExportMast((CsIPsExportMast) dto.getObj());
+		return this.exportCasellarioDao.saveCsIPsExportMast((CsIPsExportMast) dto.getObj());
 	}
 
 	@Override
@@ -75,27 +72,26 @@ public class AccessTablePsExportSessionBean extends CarSocialeBaseSessionBean im
 		String enteTitolare = (String) dto.getObj();
 		String flusso = DataModelCostanti.CsIPsExportMast.FLUSSO_PSA;
 		 
-		Calendar c = Calendar.getInstance();
-		Calendar dtInsStart = new GregorianCalendar(
-				c.get(Calendar.YEAR),
-				c.get(Calendar.MONTH), 
-				c.get(Calendar.DAY_OF_MONTH)
+		Calendar calendar = Calendar.getInstance();
+		Calendar dtInsStart = new GregorianCalendar
+				( calendar.get(Calendar.YEAR)
+				, calendar.get(Calendar.MONTH)
+				, calendar.get(Calendar.DAY_OF_MONTH)
 				);
 		
 		Calendar dtInsEnd = (Calendar) dtInsStart.clone();
 		dtInsEnd.add(Calendar.DAY_OF_MONTH, 1);
 
-		long count = exportCasellarioDao.getProgressivoCsIPsExportMast(enteTitolare, flusso, dtInsStart.getTime() ,  dtInsEnd.getTime() );
+		long count = this.exportCasellarioDao.getProgressivoCsIPsExportMast(enteTitolare, flusso, dtInsStart.getTime(), dtInsEnd.getTime() );
 	
 		return count + 1;
-	} 
+	}
 	//FINE MOD-RL
 	
-
 	//INIZIO SISO-538
 	@Override
 	public List<EsportazioneDTOView> findEsportazioniDTOviewPerIdMaster(ErogazioniSearchCriteria bDto) {
-		List<EsportazioneDTOView> result= exportCasellarioDao.findEsportazioniDTOviewPerIdMaster(bDto);
+		List<EsportazioneDTOView> result = this.exportCasellarioDao.findEsportazioniDTOviewPerIdMaster(bDto);
 		return result;
 	}
 	//FINE SISO-538
@@ -112,7 +108,7 @@ public class AccessTablePsExportSessionBean extends CarSocialeBaseSessionBean im
 		
 		int numChunck = size / range;
 		int residui = size % range;
-		   
+		
 		int min = 0;
 		int max = numChunck > 0 ? range : size;
 		
@@ -138,15 +134,15 @@ public class AccessTablePsExportSessionBean extends CarSocialeBaseSessionBean im
 	@Override
 	public Boolean verificaErogazioniEsportateByEsegIds(BaseDTO dto) {
 		List<Long> ids = (List<Long>) dto.getObj();
-		return exportCasellarioDao.verificaErogazioniEsportateByEsegIds(ids);
+		return this.exportCasellarioDao.verificaErogazioniEsportateByEsegIds(ids);
 	}
 	
 	@Override
 	public Boolean verificaErogazioneEsportataByEsegId(BaseDTO dto) {
-		Long id = (Long)dto.getObj();
+		Long id = (Long) dto.getObj();
 		List<Long> lst = new ArrayList<Long>();
 		lst.add(id);
-		return exportCasellarioDao.verificaErogazioniEsportateByEsegIds(lst);
+		return this.exportCasellarioDao.verificaErogazioniEsportateByEsegIds(lst);
 	}
 	
 	/*
@@ -157,26 +153,25 @@ public class AccessTablePsExportSessionBean extends CarSocialeBaseSessionBean im
 	 */
 	//FINE SISO-524
 
-	
 	// SISO-719
 	@Override
 	public void updateCsIPsExportRevocaEsportazione(BaseDTO dto) {
 		EsportazioneDTOView erogDaRevocare = (EsportazioneDTOView) dto.getObj();
 		
-		exportCasellarioDao.updateCsIPsExportRevocaEsportazioneByInterventoEsegId(erogDaRevocare.getInterventoEsegId());
+		this.exportCasellarioDao.updateCsIPsExportRevocaEsportazioneByInterventoEsegId(erogDaRevocare.getInterventoEsegId());
 	}
 	
 	//SISO-780
 	@Override
 	public void updateCsIPsExportRevocaEsportazioneByInterventoEsegMastId(BaseDTO dto) {
 		Long idErogMast = (Long) dto.getObj();
-		exportCasellarioDao.updateCsIPsExportRevocaEsportazioneByInterventoEsegMastId(idErogMast);
+		this.exportCasellarioDao.updateCsIPsExportRevocaEsportazioneByInterventoEsegMastId(idErogMast);
 	}
 	
 	//SISO-780
 	@Override
-	public List<EsportazioneDTOView> findErogazPeriodicheByMast(ErogazioniSearchCriteria bDto){ 
-		List<EsportazioneDTOView> result=exportCasellarioDao.findErogazPeriodicheByMast(bDto);
+	public List<EsportazioneDTOView> findErogazPeriodicheByMast(ErogazioniSearchCriteria bDto) {
+		List<EsportazioneDTOView> result = this.exportCasellarioDao.findErogazPeriodicheByMast(bDto);
 		return result;
 	}
 	

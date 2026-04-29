@@ -1,19 +1,5 @@
 package it.webred.cs.csa.web.manbean.export;
 
-import it.webred.cs.csa.ejb.client.AccessTablePsExportSessionBeanRemote;
-import it.webred.cs.csa.ejb.dto.ErogazioniSearchCriteria;
-import it.webred.cs.csa.ejb.dto.EsportazioneDTO;
-import it.webred.cs.csa.ejb.dto.EsportazioneDTOView;
-import it.webred.cs.csa.ejb.dto.EsportazioneSpesaDTO;
-import it.webred.cs.csa.ejb.dto.EsportazioneTestataDTO;
-import it.webred.cs.data.DataModelCostanti;
-import it.webred.cs.data.DataModelCostanti.CSIPs.FLAG_IN_CARICO;
-import it.webred.cs.data.model.ArTbPrestazioniInps;
-import it.webred.cs.data.model.CsDSinaEsegLIGHT;
-import it.webred.cs.data.model.CsDSinaLIGHT;
-import it.webred.cs.data.model.VErogExportHelp;
-import it.webred.cs.jsf.manbean.superc.CsUiCompBaseBean;
-
 import java.io.File;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -32,22 +18,47 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.jboss.logging.Logger;
 
+import it.webred.cs.csa.ejb.client.AccessTablePsExportSessionBeanRemote;
+import it.webred.cs.csa.ejb.dto.ErogazioniSearchCriteria;
+import it.webred.cs.csa.ejb.dto.EsportazioneDTO;
+import it.webred.cs.csa.ejb.dto.EsportazioneDTOView;
+import it.webred.cs.csa.ejb.dto.EsportazioneSpesaDTO;
+import it.webred.cs.csa.ejb.dto.EsportazioneTestataDTO;
+import it.webred.cs.data.DataModelCostanti;
+import it.webred.cs.data.DataModelCostanti.CSIPs.FLAG_IN_CARICO;
+import it.webred.cs.data.model.ArTbPrestazioniInps;
+import it.webred.cs.data.model.CsDSinaEsegLIGHT;
+import it.webred.cs.data.model.CsDSinaLIGHT;
+import it.webred.cs.data.model.VErogExportHelp;
+import it.webred.cs.jsf.manbean.superc.CsUiCompBaseBean;
+
+/**
+ * 
+ * <h1>EsportaCasellarioUtils.java</h1>
+ *
+ * <p>
+ * </p>
+ *
+ * @since 1.26.12
+ * @version 1.0.1
+ * 
+ * @lastUpdate 2025-11-07 - DDV
+ */
 public class EsportaCasellarioUtils {
 
 	public static Logger logger = Logger.getLogger("carsociale.log");
 
-
-//@formatter:off
+	//@formatter:off
 	public static File esportaCasellario(
-														String XML_PATH,
-														List<EsportazioneDTO> erogDaEsportareList,
-														String idFlusso,
-														String denomEnte,
-														String codEnte,
-														String cfOperatore,
-														String indirEnte,
-														SchemaVersion schemaVersion) throws Exception {
-//@formatter:on
+		String XML_PATH,
+		List<EsportazioneDTO> erogDaEsportareList,
+		String idFlusso,
+		String denomEnte,
+		String codEnte,
+		String cfOperatore,
+		String indirEnte,
+		SchemaVersion schemaVersion) throws Exception {
+		//@formatter:on
 
 		PsaXmlExporter xmlExporter = PsaExportFactory.getExporter(schemaVersion);
 		if (xmlExporter == null)
@@ -114,36 +125,36 @@ public class EsportaCasellarioUtils {
 //		return new File(XML_PATH);
 	}
 	
-//	private static HashMap<Object, Object> insertDatiBeneficiario(EsportazioneDTO erogDaEsportare){		
+//	private static HashMap<Object, Object> insertDatiBeneficiario(EsportazioneDTO erogDaEsportare) {		
 //		HashMap<Object, Object> mappaDatiSogg= new HashMap<Object, Object>();
-//		if(erogDaEsportare.getSoggettoCodiceFiscale()!=null)
+//		if (erogDaEsportare.getSoggettoCodiceFiscale() != null)
 //		mappaDatiSogg.put(Cost.BENEFICIARIO_CF,erogDaEsportare.getSoggettoCodiceFiscale());
-//		if(erogDaEsportare.getBenefRegione()!=null)
+//		if (erogDaEsportare.getBenefRegione() != null)
 //		mappaDatiSogg.put(Cost.RESIDENZA_REGIONE, erogDaEsportare.getBenefRegione());
-//		if(erogDaEsportare.getBenefComune()!=null)
+//		if (erogDaEsportare.getBenefComune() != null)
 //		mappaDatiSogg.put(Cost.RESIDENZA_COMUNE, erogDaEsportare.getBenefComune());
-//		if(erogDaEsportare.getBenefNazione()!=null)
+//		if (erogDaEsportare.getBenefNazione() != null)
 //		mappaDatiSogg.put(Cost.RESIDENZA_NAZIONE, erogDaEsportare.getBenefNazione());
-//		if(erogDaEsportare.getSoggettoNome()!=null)
+//		if (erogDaEsportare.getSoggettoNome() != null)
 //		mappaDatiSogg.put(Cost.ANAGRAFICA_NOME,erogDaEsportare.getSoggettoNome());
-//		if(erogDaEsportare.getSoggettoCognome()!=null)
+//		if (erogDaEsportare.getSoggettoCognome() != null)
 //		mappaDatiSogg.put(Cost.ANAGRAFICA_COGNOME, erogDaEsportare.getSoggettoCognome());
-//		if(erogDaEsportare.getBenefAnnoNascita()!=null)
+//		if (erogDaEsportare.getBenefAnnoNascita() != null)
 //		mappaDatiSogg.put(Cost.ANAGRAFICA_ANNONASCITA, Integer.toString(erogDaEsportare.getBenefAnnoNascita()));
-//		if(erogDaEsportare.getBenefLuogoNascita()!=null)
+//		if (erogDaEsportare.getBenefLuogoNascita() != null)
 //		mappaDatiSogg.put(Cost.ANAGRAFICA_LUOGONASCITA, erogDaEsportare.getBenefLuogoNascita());
-//		if(erogDaEsportare.getBenefSesso()!=null)
+//		if (erogDaEsportare.getBenefSesso() != null)
 //		mappaDatiSogg.put(Cost.ANAGRAFICA_SESSO,Integer.toString(erogDaEsportare.getBenefSesso()));
-//		if(erogDaEsportare.getBenefCittadinanza()!=null)
+//		if (erogDaEsportare.getBenefCittadinanza() != null)
 //		mappaDatiSogg.put(Cost.ANAGRAFICA_CITTAD_ISO, Integer.toString(erogDaEsportare.getBenefCittadinanza()));
-////		if(erogDaEsportare.getBenefSecCittadinanza()!=null)
+////		if (erogDaEsportare.getBenefSecCittadinanza() != null)
 ////		mappaDatiSogg.put(Cost.ANAGRAFICA_SEC_CITTAD_ISO, Integer.toString(erogDaEsportare.getBenefSecCittadinanza()));		
 //		
 //		return mappaDatiSogg;
 //	}
 	
 
-//	private static HashMap<Object, Object> insertDatiPrestazione(EsportazioneDTO erogDaEsportare){
+//	private static HashMap<Object, Object> insertDatiPrestazione(EsportazioneDTO erogDaEsportare) {
 //		HashMap<Object, Object> mappaDatiPrest= new HashMap<Object, Object>();
 //		
 //        /* prestazione periodica */
@@ -158,42 +169,42 @@ public class EsportaCasellarioUtils {
 //		}			
 //		
 //		/* prestazione occasionale */ 
-//		if(erogDaEsportare.getNumProtDSU()!=null)
+//		if (erogDaEsportare.getNumProtDSU() != null)
 //		mappaDatiPrest.put(Cost.PRESTAZIONE_NUMPROT_DSU, erogDaEsportare.getNumProtDSU());
-//		if(erogDaEsportare.getAnnoProtDSU()!=null)
+//		if (erogDaEsportare.getAnnoProtDSU() != null)
 //		mappaDatiPrest.put(Cost.PRESTAZIONE_ANNO_PROT, Integer.toString(erogDaEsportare.getAnnoProtDSU()));
-//		if(erogDaEsportare.getDataDSU()!=null){			
+//		if (erogDaEsportare.getDataDSU() != null) {			
 //			mappaDatiPrest.put(Cost.PRESTAZIONE_DATA_DSU, datef.format(erogDaEsportare.getDataDSU()));
 //		}
-//		if(erogDaEsportare.getCodPrestazione()!=null)
+//		if (erogDaEsportare.getCodPrestazione() != null)
 //		mappaDatiPrest.put(Cost.PRESTAZIONE_CODICE, erogDaEsportare.getCodPrestazione());
-//		if(erogDaEsportare.getDenomPrestazione()!=null)
+//		if (erogDaEsportare.getDenomPrestazione() != null)
 //		mappaDatiPrest.put(Cost.PRESTAZIONE_DENOMINAZIONE, erogDaEsportare.getDenomPrestazione());
 //			
-//		if(erogDaEsportare.getDataEsecuzione()!=null){		
+//		if (erogDaEsportare.getDataEsecuzione() != null) {		
 //			mappaDatiPrest.put(Cost.PRESTAZIONE_DATA_EROG, datef.format(erogDaEsportare.getDataEsecuzione()));
 //		}
-//		if(erogDaEsportare.getSpesa()!=null)
+//		if (erogDaEsportare.getSpesa() != null)
 //		mappaDatiPrest.put(Cost.PRESTAZIONE_IMPORTO, df.format(erogDaEsportare.getSpesa()));				
 //		
 //		
 //		
 //		
 //		/* dati comuni */	
-//		if(erogDaEsportare.getCarattere()!=null)
+//		if (erogDaEsportare.getCarattere() != null)
 //		mappaDatiPrest.put(Cost.PRESTAZIONE_CARATTERE, erogDaEsportare.getCarattere());
-//		if(erogDaEsportare.getPercGestitaEnte()!=null){
+//		if (erogDaEsportare.getPercGestitaEnte() != null) {
 //			mappaDatiPrest.put(Cost.PRESTAZIONE_QUOTA_ENTE, df.format(erogDaEsportare.getPercGestitaEnte()));
 //		}
-//		if(erogDaEsportare.getCompartUtenti()!=null)
+//		if (erogDaEsportare.getCompartUtenti() != null)
 //		mappaDatiPrest.put(Cost.PRESTAZIONE_QUOTA_UTENTE, df.format(erogDaEsportare.getCompartUtenti()));
-//		if(erogDaEsportare.getCompartSsn()!=null)
+//		if (erogDaEsportare.getCompartSsn() != null)
 //		mappaDatiPrest.put(Cost.PRESTAZIONE_QUOTA_SSN, df.format(erogDaEsportare.getCompartSsn()));
 //						
-////		if(erogDaEsportare.getSogliaISEE()!=null)
+////		if (erogDaEsportare.getSogliaISEE() != null)
 ////		mappaDatiPrest.put(Cost.PRESTAZIONE_SOGLIA_ISEE, decf.format(erogDaEsportare.getSogliaISEE()));	
 //
-//		if(erogDaEsportare.getPrestazioneProtocEnte()!=null)
+//		if (erogDaEsportare.getPrestazioneProtocEnte() != null)
 //		mappaDatiPrest.put(Cost.PRESTAZIONE_PROTOC_ENTE, erogDaEsportare.getPrestazioneProtocEnte());
 //		
 //		mappaDatiPrest.put(Cost.PRESTAZIONE_QUOTA_RICHIESTA, "");	
@@ -203,19 +214,18 @@ public class EsportaCasellarioUtils {
 //		return mappaDatiPrest;
 //	}
 
-	
-//inizio SISO-538 Questioni propedeutiche alla export xml Inps
+	//inizio SISO-538 Questioni propedeutiche alla export xml Inps
 	public static List<EsportazioneDTO> filtraVErogExport(List<EsportazioneDTOView> expView, List<VErogExportHelp> help, AccessTablePsExportSessionBeanRemote psExportSessionBean) {
 		
-		logger.debug("filtraVErogExport -  NUM. ESPORTAZIONI INGRESSO[" + expView.size() + "]");
+		logger.debug("filtraVErogExport - NUM. ESPORTAZIONI INGRESSO[ " + expView.size() + " ]");
 		List<EsportazioneDTO> result = new ArrayList<EsportazioneDTO>();
 
 		/* SISO-719 commentate perché risultavano inutilizzate */
-//		Map<Long, EsportazioneDTOView> esportazioneDTOview = createEsportazioneDTOview(expView); //  idCsInterventoEsegMast
-//		Map<BigDecimal, VErogExportHelp> vErogExportHelpMap = createVErogExportHelpMap(help);
-		
-		/* SISO-719
-		 * 
+		//Map<Long, EsportazioneDTOView> esportazioneDTOview = createEsportazioneDTOview(expView); // idCsInterventoEsegMast
+		//Map<BigDecimal, VErogExportHelp> vErogExportHelpMap = createVErogExportHelpMap(help);
+
+		/**
+		 * SISO-719
 		 * seqExport rappresenta l'indice di raggruppamento. In un elemento PrestazioniSociali possono confluire più righe
 		 * di CS_I_INTERVENTO_ESEG. L'operazione di raggruppamento viene effettuata in questo metodo, e si può agire sui
 		 * DTOView per salvare l'informazione.
@@ -229,10 +239,11 @@ public class EsportaCasellarioUtils {
 				// se l'esportazione è di tipo EXPORT_MASTER (si esportano tutte le righe)
 				if (vErogExportHelp.getTipoExport().equals(DataModelCostanti.VErogExportHelp.TIPO_EXPORT_MASTER)) {
 					
-					/*Recupero il il max del termine intervallo 
-					 * (Nella versione precedente per PIU' EROGAZIONI PERIODICHE CHE PRESENTANO IMPORTO SPESA solo in testata l'elaborazione veniva bypassata) 
+					/**
+					 * Recupero il il max del termine intervallo
+					 * (Nella versione precedente per PIU' EROGAZIONI PERIODICHE CHE PRESENTANO IMPORTO SPESA solo in testata l'elaborazione veniva bypassata)
 					 */
-					Date maxDataErogHelp = vErogExportHelp.getMaxDataErogazioneA()!=null ? vErogExportHelp.getMaxDataErogazioneA() : vErogExportHelp.getMaxDataErogazione();
+					Date maxDataErogHelp = vErogExportHelp.getMaxDataErogazioneA() != null ? vErogExportHelp.getMaxDataErogazioneA() : vErogExportHelp.getMaxDataErogazione();
 					
 					//se la prestazione è occasionale
 					if (vErogExportHelp.getFlagCaratterePrestazione().equals(DataModelCostanti.VErogExportHelp.FLAG_CARATTERE_PRESTAZIONE_OCCASIONALE)) {
@@ -251,20 +262,19 @@ public class EsportaCasellarioUtils {
 							// SISO-719 assegno l'indice di raggruppamento al DTOView
 							esportazioneDTOView.setSeqExport(seqExport);
 						}
+						
 					}
 					// se la prestazione è periodica
 					else if (vErogExportHelp.getFlagCaratterePrestazione().equals(DataModelCostanti.VErogExportHelp.FLAG_CARATTERE_PRESTAZIONE_PERIODICA)) {
 						EsportazioneDTOView esportazioneDTOView = getLastEsportazioneDTOview(expView, vErogExportHelp.getId());
 
-					
 						// controllo inutile, se tipo TIPO_EXPORT_MASTER, è sempre chiusa!!
 						// vErogExportHelp.getFlagErogazioneChiusa().equals(DataModelCostanti.VErogExportHelp.FLAG_EROGAZIONE_CHIUSA)
 						// il max data dell'ultima riga di erogazione coincide con il max data del vErogExportHelp
-												
 						if (esportazioneDTOView.getMaxDataEsecuzione().equals(maxDataErogHelp)) {
 							// recupero tutte le righe di erogazione per quel master id
-							List<EsportazioneDTOView> listaEsportazioneDTOviewPerIdMaster = 
-								psExportSessionBean.findEsportazioniDTOviewPerIdMaster(createErogazioniSearchCriteria(vErogExportHelp.getId().longValue()));
+							List<EsportazioneDTOView> listaEsportazioneDTOviewPerIdMaster =
+									psExportSessionBean.findEsportazioniDTOviewPerIdMaster(createErogazioniSearchCriteria(vErogExportHelp.getId().longValue()));
 							aggiornaListaEsportazioneDTOview(expView, listaEsportazioneDTOviewPerIdMaster);
 
 							// creo il bean per l'xml
@@ -276,13 +286,16 @@ public class EsportaCasellarioUtils {
 								assegnaSeqExportToListaEsportazioneDTOView(expView, viewDTO.getInterventoEsegId(),seqExport);
 								// viewDTO.setSeqExport(seqExport);
 							}
+							
 						} else {
 							// flaggo tutti i bean listaEsportazioneDTOview con questo master id come non esportabili
 							aggiornaListaEsportazioneDTOviewNonEsportabili(expView, vErogExportHelp.getId(), "La data dell'ultima erogazione non cade nel periodo selezionato");
 						}
+						
 					} else {
-						throw new Exception("Flag carattere prestazione ["+ vErogExportHelp.getFlagCaratterePrestazione()+ "] non riconosciuto ID ESEG MAST = "+ vErogExportHelp.getId());
+						throw new Exception("Flag carattere prestazione [ " + vErogExportHelp.getFlagCaratterePrestazione() + " ] non riconosciuto ID ESEG MAST = " + vErogExportHelp.getId());
 					}
+					
 				}
 
 				// sono di tipo MASTER ma non sono ancora chiuse
@@ -305,27 +318,28 @@ public class EsportaCasellarioUtils {
 							assegnaSeqExportToListaEsportazioneDTOView(expView, viewDTO.getInterventoEsegId(), seqExport);
 //							viewDTO.setSeqExport(seqExport);
 						}
-					}else{// se la prestazione è occasionale o non è valorizzata
-						throw new Exception("Flag carattere prestazione ["+ vErogExportHelp.getFlagCaratterePrestazione()+ "] non riconosciuto ID ESEG MAST = "+ vErogExportHelp.getId());
+					} else {// se la prestazione è occasionale o non è valorizzata
+						throw new Exception("Flag carattere prestazione [ " + vErogExportHelp.getFlagCaratterePrestazione() + " ] non riconosciuto ID ESEG MAST = " + vErogExportHelp.getId());
 					}
-				}else{
-					throw new Exception("Tipo export ["+ vErogExportHelp.getTipoExport()+ "] non riconosciuto ID ESEG MAST = "+ vErogExportHelp.getId());
+					
+				} else {
+					throw new Exception("Tipo export [ " + vErogExportHelp.getTipoExport() + " ] non riconosciuto ID ESEG MAST = " + vErogExportHelp.getId());
 				}
 				//SISO-1162
-				if (vErogExportHelp.getCodPrestazione()== null){
+				if (vErogExportHelp.getCodPrestazione() == null) {
 					aggiornaListaEsportazioneDTOviewNonEsportabili(expView, vErogExportHelp.getId(), "Codice Prestazione non valorizzato");
 				}
 				//FINE //SISO-1162
-			}catch (Exception e) {
+			} catch (Exception e) {
 				aggiornaListaEsportazioneDTOviewNonEsportabili(expView, vErogExportHelp.getId(), e.getMessage());
-				logger.error("filtraVErogExport"+e.getMessage(), e);
+				logger.error("filtraVErogExport: " + e.getMessage(), e);
 			}
 
 			seqExport++; // incremento l'indice di raggruppamento
 		}
 		
-		/* SISO-721
-		 * 
+		/**
+		 * SISO-721
 		 * Le erogazioni che risultano con presa in carico a "Non so" non vanno esportate. Per comodità, si scansiona la lista
 		 * result in questo punto, andando a verificare il valore del DTO.
 		 * 
@@ -336,13 +350,13 @@ public class EsportaCasellarioUtils {
 		 */
 		scanForPresaInCaricoNonSo(expView, result);
 		
-		/* SISO-2333
+		/**
+		 * SISO-2333
 		 * Le erogazioni nell'intervallo A2.16 - A2.29 non prese in carico vanno escluse dall'esportazione
 		 */
-		
 		scanForPrestazioniNonInCarico(expView, result);
 
-		logger.debug("filtraVErogExport -  NUM. ESPORTAZIONI USCITA[" + result.size() + "]");
+		logger.debug("filtraVErogExport - NUM. ESPORTAZIONI USCITA[ " + result.size() + " ]");
 		
 		return result;
 	}
@@ -353,8 +367,11 @@ public class EsportaCasellarioUtils {
 		for (EsportazioneDTO esportazione : result) {
 			if (FLAG_IN_CARICO.NON_SO.getCodice() == esportazione.getPresaInCarico().intValue()) {
 				// aggiorno la lista per la view
-				aggiornaListaEsportazioneDTOviewNonEsportabili(expView, esportazione.getInterventoEsegMastId(),
-					"E' necessario specificare se il soggetto beneficiario è in carico, correggere l'erogazione e riprovare");
+				aggiornaListaEsportazioneDTOviewNonEsportabili
+					( expView
+					, esportazione.getInterventoEsegMastId()
+					, "E' necessario specificare se il soggetto beneficiario è in carico, correggere l'erogazione e riprovare"
+					);
 				
 				// aggiungo l'erogazione a quelle da rimuovere
 				preseInCaricoNonSo.add(esportazione);
@@ -371,8 +388,11 @@ public class EsportaCasellarioUtils {
 		for (EsportazioneDTO esportazione : result) {
 			if (FLAG_IN_CARICO.NO.getCodice() == esportazione.getPresaInCarico().intValue() && esportazione.getPicPrestazione()) {
 				// aggiorno la lista per la view
-				aggiornaListaEsportazioneDTOviewNonEsportabili(expView, esportazione.getInterventoEsegMastId(),
-					"Prestazione "+esportazione.getCodPrestazione()+" non esportabile in quanto non presa in carico");
+				aggiornaListaEsportazioneDTOviewNonEsportabili
+					( expView
+					, esportazione.getInterventoEsegMastId()
+					, "Prestazione " + esportazione.getCodPrestazione() + " non esportabile in quanto non presa in carico"
+					);
 				
 				// aggiungo l'erogazione a quelle da rimuovere
 				preseInCaricoNo.add(esportazione);
@@ -383,8 +403,9 @@ public class EsportaCasellarioUtils {
 		result.removeAll(preseInCaricoNo);
 	}
 
-	/*
-	 * SISO-719 Metodo "quick and dirty" per salvare l'indice di raggruppamento
+	/**
+	 * SISO-719
+	 * Metodo "quick and dirty" per salvare l'indice di raggruppamento
 	 * - sarebbe da implementare in maniera più elegante, ma richiede un
 	 * refactoring più profondo della logica.
 	 * 
@@ -406,8 +427,9 @@ public class EsportaCasellarioUtils {
 	}
 
 	private static void aggiornaListaEsportazioneDTOviewNonEsportabili(List<EsportazioneDTOView> listaEsportazioneDTOview, BigDecimal id, String causaleMancatoInvio) {
-		/* SISO-719
-		 * 
+
+		/**
+		 * SISO-719
 		 * Correzione: esportazioneDTOView.getInterventoEsegMastId() restituisce
 		 * un Long; se questo viene confrontato con un BigDecimal, il risultato
 		 * sarà sempre false, anche quando il valore numerico effettivo è lo
@@ -463,7 +485,7 @@ public class EsportaCasellarioUtils {
 		//SISO-806
 		Long idUnitaMisura = listaEsportazioneDTOviewPerIdMaster.get(0).getUnitaMisura();
 		String oreMinutiServizioMensile = "";
-		if(idUnitaMisura == DataModelCostanti.CsTbUnitaMisura.ID_ORE || idUnitaMisura==DataModelCostanti.CsTbUnitaMisura.ID_ORE_MINUTI){
+		if (idUnitaMisura == DataModelCostanti.CsTbUnitaMisura.ID_ORE || idUnitaMisura == DataModelCostanti.CsTbUnitaMisura.ID_ORE_MINUTI) {
 			BigDecimal valQuotaPeriodica = listaEsportazioneDTOviewPerIdMaster.get(0).getValQuota();
 			BigDecimal oreMinutiMensili = valQuotaPeriodica.divide(new BigDecimal(periodoErogazioneTotale), 2, RoundingMode.HALF_UP);
 
@@ -473,9 +495,9 @@ public class EsportaCasellarioUtils {
 			BigDecimal convMinutiValQuota = (minutiValQuota.multiply(new BigDecimal(60))).setScale(0, BigDecimal.ROUND_HALF_UP);
 			int minuti = convMinutiValQuota.intValue();
 			
-			oreMinutiServizioMensile = String.valueOf(ore) + " : " +  String.valueOf(minuti)  ;
+			oreMinutiServizioMensile = String.valueOf(ore) + " : " + String.valueOf(minuti);
 		}
-		//FINE SISO-806 
+		//FINE SISO-806
 		
 		BigDecimal percGestitaEnte = getBdNotNull(vErogExportHelp.getValoreGestitaEnteCalc());
 		BigDecimal compartUtenti = getBdNotNull(vErogExportHelp.getCompartUtenti());
@@ -484,7 +506,7 @@ public class EsportaCasellarioUtils {
 		List<EsportazioneDTO> lstOut = new ArrayList<EsportazioneDTO>();
 		List<Integer> sortedYears=new ArrayList<Integer>(mappaPeriodi.keySet());
 		Collections.sort(sortedYears);
-		for(int anno : sortedYears){
+		for (int anno : sortedYears) {
 			
 			EsportazioneDTO esportazioneDTO = fillDatiComuniExport(primaEsportazione);
 			
@@ -516,23 +538,22 @@ public class EsportaCasellarioUtils {
 	}
 
 	private static List<EsportazioneDTO> creaBeanExportRighePeriodicaSplitted(List<EsportazioneDTOView> listaEsportazioneDTOviewPerIdMaster, VErogExportHelp vErogExportHelp) throws Exception {
-	    
+
 		EsportazioneDTOView primaEsportazione = listaEsportazioneDTOviewPerIdMaster.get(0);
 		List<EsportazioneDTO> lstOut = new ArrayList<EsportazioneDTO>();
 		
 		logger.debug("creaBeanExportRighePeriodicaSplitted numero protocollo = "+ primaEsportazione.getPrestazioneProtocEnte());
 		
-		for(EsportazioneDTOView e : listaEsportazioneDTOviewPerIdMaster) {
+		for (EsportazioneDTOView e : listaEsportazioneDTOviewPerIdMaster) {
 			
 			Date dataInizio = e.getDataEsecuzione();
-			Date dataFine = e.getDataEsecuzioneA()!=null ? e.getDataEsecuzioneA() : e.getDataEsecuzione();
+			Date dataFine = e.getDataEsecuzioneA() != null ? e.getDataEsecuzioneA() : e.getDataEsecuzione();
 			HashMap<Integer,Date[]> mappaPeriodi = ripartisciAnnuali(dataInizio,dataFine);
 			HashMap<Integer,List<EsportazioneSpesaDTO>> mappaSpese = ripartisciSpeseAnnuali(e);
-			
-			
+
 			List<Integer> sortedYears=new ArrayList<Integer>(mappaPeriodi.keySet());
 			Collections.sort(sortedYears);
-			for(int anno : sortedYears){
+			for (int anno : sortedYears) {
 				EsportazioneDTO esportazioneDTO = fillDatiComuniExport(e);
 				Date[] intervallo = mappaPeriodi.get(anno);
 				Date dtInizioInt = intervallo[0];
@@ -553,15 +574,16 @@ public class EsportaCasellarioUtils {
 				BigDecimal compartUtenti = new BigDecimal(0);
 				BigDecimal compartSsn = new BigDecimal(0);
 				
-				if(lstSpeseAnno!=null){
-					for (EsportazioneSpesaDTO s : lstSpeseAnno){
+				if (lstSpeseAnno != null) {
+					for (EsportazioneSpesaDTO s : lstSpeseAnno) {
 						spesaTotale = spesaTotale.add(getBdNotNull(s.getSpesa()));
 						percGestitaEnte = percGestitaEnte.add(getBdNotNull(s.getPercGestitaEnte()));
 						compartUtenti = compartUtenti.add(getBdNotNull(s.getCompartUtenti()));
 						compartSsn = compartSsn.add(getBdNotNull(s.getCompartSsn()));
 					}
-				}else
+				} else {
 					logger.warn("creaBeanExportRighePeriodica: protocollo["+primaEsportazione.getPrestazioneProtocEnte()+"] nessuna spesa trovata per l'anno ["+anno+"]");
+				}
 				
 				BigDecimal importoMensile = spesaTotale.divide(new BigDecimal(intervalloErogazione), 2, RoundingMode.HALF_UP);
 					
@@ -575,10 +597,9 @@ public class EsportaCasellarioUtils {
 				Long idUnitaMisura = e.getUnitaMisura();
 				BigDecimal valQuotaPeriodica = new BigDecimal(0);
 				
-				if(idUnitaMisura == DataModelCostanti.CsTbUnitaMisura.ID_ORE || idUnitaMisura==DataModelCostanti.CsTbUnitaMisura.ID_ORE_MINUTI){
+				if (idUnitaMisura == DataModelCostanti.CsTbUnitaMisura.ID_ORE || idUnitaMisura == DataModelCostanti.CsTbUnitaMisura.ID_ORE_MINUTI) {
 					
-					for(EsportazioneDTOView ev : listaEsportazioneDTOviewPerIdMaster){
-						
+					for (EsportazioneDTOView ev : listaEsportazioneDTOviewPerIdMaster) {
 						valQuotaPeriodica = valQuotaPeriodica.add(e.getValQuota());
 					}
 				
@@ -590,7 +611,7 @@ public class EsportaCasellarioUtils {
 					BigDecimal convMinutiValQuota = (minutiValQuota.multiply(new BigDecimal(60))).setScale(0, BigDecimal.ROUND_HALF_UP);
 					int minuti = convMinutiValQuota.intValue();
 					
-					esportazioneDTO.setOreServizioMensile(StringUtils.leftPad(String.valueOf(ore), 2, "0")  + ":" + StringUtils.leftPad(String.valueOf(minuti),  2, "0")  );
+					esportazioneDTO.setOreServizioMensile(StringUtils.leftPad(String.valueOf(ore), 2, "0") + ":" + StringUtils.leftPad(String.valueOf(minuti), 2, "0"));
 					//FINE SISO-806
 				}
 				
@@ -602,7 +623,7 @@ public class EsportaCasellarioUtils {
 	}
 
 	private static List<EsportazioneDTO> creaBeanExportRighePeriodica(List<EsportazioneDTOView> listaEsportazioneDTOviewPerIdMaster, VErogExportHelp vErogExportHelp) throws Exception {
-		    
+
 		EsportazioneDTOView primaEsportazione = listaEsportazioneDTOviewPerIdMaster.get(0);
 		
 		logger.debug("creaBeanExportRighePeriodica numero protocollo = "+ primaEsportazione.getPrestazioneProtocEnte());
@@ -620,7 +641,7 @@ public class EsportaCasellarioUtils {
 		
 		List<Integer> sortedYears=new ArrayList<Integer>(mappaPeriodi.keySet());
 		Collections.sort(sortedYears);
-		for(int anno : sortedYears){
+		for (int anno : sortedYears) {
 			EsportazioneDTO esportazioneDTO = fillDatiComuniExport(primaEsportazione);
 			Date[] intervallo = mappaPeriodi.get(anno);
 			Date dtInizioInt = intervallo[0];
@@ -641,15 +662,16 @@ public class EsportaCasellarioUtils {
 			BigDecimal compartUtenti = new BigDecimal(0);
 			BigDecimal compartSsn = new BigDecimal(0);
 			
-			if(lstSpeseAnno!=null){
-				for (EsportazioneSpesaDTO e : lstSpeseAnno){
+			if (lstSpeseAnno != null) {
+				for (EsportazioneSpesaDTO e : lstSpeseAnno) {
 					spesaTotale = spesaTotale.add(getBdNotNull(e.getSpesa()));
 					percGestitaEnte = percGestitaEnte.add(getBdNotNull(e.getPercGestitaEnte()));
 					compartUtenti = compartUtenti.add(getBdNotNull(e.getCompartUtenti()));
 					compartSsn = compartSsn.add(getBdNotNull(e.getCompartSsn()));
 				}
-			}else
+			} else {
 				logger.warn("creaBeanExportRighePeriodica: protocollo["+primaEsportazione.getPrestazioneProtocEnte()+"] nessuna spesa trovata per l'anno ["+anno+"]");
+			}
 			
 			BigDecimal importoMensile = spesaTotale.divide(new BigDecimal(intervalloErogazione), 2, RoundingMode.HALF_UP);
 				
@@ -663,10 +685,9 @@ public class EsportaCasellarioUtils {
 			Long idUnitaMisura = listaEsportazioneDTOviewPerIdMaster.get(0).getUnitaMisura();
 			BigDecimal valQuotaPeriodica = new BigDecimal(0);
 			
-			if(idUnitaMisura == DataModelCostanti.CsTbUnitaMisura.ID_ORE || idUnitaMisura==DataModelCostanti.CsTbUnitaMisura.ID_ORE_MINUTI){
+			if (idUnitaMisura == DataModelCostanti.CsTbUnitaMisura.ID_ORE || idUnitaMisura == DataModelCostanti.CsTbUnitaMisura.ID_ORE_MINUTI) {
 				
-				for(EsportazioneDTOView e : listaEsportazioneDTOviewPerIdMaster){
-					
+				for (EsportazioneDTOView e : listaEsportazioneDTOviewPerIdMaster) {
 					valQuotaPeriodica = valQuotaPeriodica.add(e.getValQuota());
 				}
 			
@@ -678,7 +699,7 @@ public class EsportaCasellarioUtils {
 				BigDecimal convMinutiValQuota = (minutiValQuota.multiply(new BigDecimal(60))).setScale(0, BigDecimal.ROUND_HALF_UP);
 				int minuti = convMinutiValQuota.intValue();
 				
-				esportazioneDTO.setOreServizioMensile(StringUtils.leftPad(String.valueOf(ore), 2, "0")  + ":" + StringUtils.leftPad(String.valueOf(minuti),  2, "0")  );
+				esportazioneDTO.setOreServizioMensile(StringUtils.leftPad(String.valueOf(ore), 2, "0") + ":" + StringUtils.leftPad(String.valueOf(minuti), 2, "0"));
 				//FINE SISO-806
 			}
 			
@@ -688,7 +709,7 @@ public class EsportaCasellarioUtils {
 		return lstOut;
 	}
 	
-	private static EsportazioneDTO fillDatiComuniExport(EsportazioneDTOView primaEsportazione){
+	private static EsportazioneDTO fillDatiComuniExport(EsportazioneDTOView primaEsportazione) {
 		
 		EsportazioneDTO esportazioneDTO = new EsportazioneDTO();
 		// <Carattere>1</Carattere>
@@ -753,7 +774,7 @@ public class EsportaCasellarioUtils {
 		Date result = null;
 		for (EsportazioneDTOView esportazioneDTOView : listaEsportazioneDTOviewPerIdMaster) {
 			Date maxDataEsecuzione = esportazioneDTOView.getMaxDataEsecuzione();
-					//esportazioneDTOView.getDataEsecuzioneA() == null ? esportazioneDTOView.getDataEsecuzione() : esportazioneDTOView.getDataEsecuzioneA();
+			//esportazioneDTOView.getDataEsecuzioneA() == null ? esportazioneDTOView.getDataEsecuzione() : esportazioneDTOView.getDataEsecuzioneA();
 			if (result == null || result.before(maxDataEsecuzione)) {
 				result = maxDataEsecuzione;
 			}
@@ -772,39 +793,39 @@ public class EsportaCasellarioUtils {
 		return result;
 	}
 	
-	private static HashMap<Integer, Date[]> ripartisciAnnuali(Date dataInizio, Date dataFine){
+	private static HashMap<Integer, Date[]> ripartisciAnnuali(Date dataInizio, Date dataFine) {
 		HashMap<Integer, Date[]> mappaAnnoPeriodo = new HashMap<Integer, Date[]>();
 		
 		try{
-		Calendar dataInizioCalendar = new GregorianCalendar();
-		dataInizioCalendar.setTime(dataInizio);
-		Calendar dataFineCalendar = new GregorianCalendar();
-		dataFineCalendar.setTime(dataFine);
-		
-		int annoInizio = dataInizioCalendar.get(Calendar.YEAR);
-	    int annoFine = dataFineCalendar.get(Calendar.YEAR);
-		String ini = "01/01/";
-		String fin = "31/12/";
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-		
-		if(annoInizio==annoFine){
-			Date[] intIni = {dataInizio, dataFine};
-			mappaAnnoPeriodo.put(annoInizio,intIni);
-		}else{	
+			Calendar dataInizioCalendar = new GregorianCalendar();
+			dataInizioCalendar.setTime(dataInizio);
+			Calendar dataFineCalendar = new GregorianCalendar();
+			dataFineCalendar.setTime(dataFine);
 			
-			Date[] intIni = {dataInizio, sdf.parse(fin+annoInizio)};
-			Date[] intFin = {sdf.parse(ini+annoFine), dataFine};
+			int annoInizio = dataInizioCalendar.get(Calendar.YEAR);
+			int annoFine = dataFineCalendar.get(Calendar.YEAR);
+			String ini = "01/01/";
+			String fin = "31/12/";
+			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 			
-			mappaAnnoPeriodo.put(annoInizio,intIni);
-			
-			for(int i = annoInizio+1; i< annoFine; i++){
-				Date[] inter = {sdf.parse(ini+i), sdf.parse(fin+i)};
-				mappaAnnoPeriodo.put(i,inter);
+			if (annoInizio == annoFine) {
+				Date[] intIni = {dataInizio, dataFine};
+				mappaAnnoPeriodo.put(annoInizio,intIni);
+			} else {	
+				
+				Date[] intIni = {dataInizio, sdf.parse(fin+annoInizio)};
+				Date[] intFin = {sdf.parse(ini+annoFine), dataFine};
+				
+				mappaAnnoPeriodo.put(annoInizio,intIni);
+				
+				for (int i = annoInizio+1; i< annoFine; i++) {
+					Date[] inter = {sdf.parse(ini+i), sdf.parse(fin+i)};
+					mappaAnnoPeriodo.put(i,inter);
+				}
+				
+				mappaAnnoPeriodo.put(annoFine, intFin);
 			}
-			
-			mappaAnnoPeriodo.put(annoFine, intFin);
-		}
-		}catch(Exception e){
+		} catch(Exception e) {
 			logger.error(e);
 			Date[] intIni = {dataInizio, dataFine};
 			mappaAnnoPeriodo.put(9999, intIni);
@@ -815,7 +836,7 @@ public class EsportaCasellarioUtils {
 	private static HashMap<Integer, List<EsportazioneSpesaDTO>> ripartisciSpeseAnnuali(List<EsportazioneDTOView> listaEsportazioneDTOviewPerIdMaster) throws Exception{
 		HashMap<Integer, List<EsportazioneSpesaDTO>> mappaAnnoSpese = new HashMap<Integer, List<EsportazioneSpesaDTO>>();
 	
-		for(EsportazioneDTOView e : listaEsportazioneDTOviewPerIdMaster){
+		for (EsportazioneDTOView e : listaEsportazioneDTOviewPerIdMaster) {
 			HashMap<Integer, Date[]> mappaAP = ripartisciAnnuali(e.getDataEsecuzione(), e.getMaxDataEsecuzione());
 			int periodoErogazione = differenzaMesi(e.getDataEsecuzione(), e.getMaxDataEsecuzione());
 			
@@ -839,16 +860,16 @@ public class EsportaCasellarioUtils {
 			spesa = getBdNotNull(e.getSpesa());
 			
 			Iterator<Integer> it = mappaAP.keySet().iterator();
-			while(it.hasNext()){
+			while (it.hasNext()) {
 				
-				EsportazioneSpesaDTO  esportazioneDTO = new EsportazioneSpesaDTO();
+				EsportazioneSpesaDTO esportazioneDTO = new EsportazioneSpesaDTO();
 				
 				int anno = ((Integer)it.next()).intValue();
-			    Date[] intervallo = mappaAP.get(anno);
-			    
-			    Date dtInizioInt = intervallo[0];
-			    Date dtFineInt = intervallo[1];
-			    
+				Date[] intervallo = mappaAP.get(anno);
+				
+				Date dtInizioInt = intervallo[0];
+				Date dtFineInt = intervallo[1];
+				
 				int intervalloErogazione = differenzaMesi(dtInizioInt, dtFineInt);
 					
 				esportazioneDTO.setSpesaDettaglio((spesa.multiply(new BigDecimal(intervalloErogazione))).divide(new BigDecimal(periodoErogazione), 2, RoundingMode.HALF_UP));
@@ -857,7 +878,7 @@ public class EsportaCasellarioUtils {
 				esportazioneDTO.setCompartSsn((compartSsn.multiply(new BigDecimal(intervalloErogazione))).divide(new BigDecimal(periodoErogazione), 2, RoundingMode.HALF_UP));
 		
 				List<EsportazioneSpesaDTO> lstSpeseAnno = mappaAnnoSpese.get(anno);
-				if(lstSpeseAnno==null) lstSpeseAnno = new ArrayList<EsportazioneSpesaDTO>();
+				if (lstSpeseAnno == null) lstSpeseAnno = new ArrayList<EsportazioneSpesaDTO>();
 				
 				lstSpeseAnno.add(esportazioneDTO);
 				
@@ -895,16 +916,16 @@ public class EsportaCasellarioUtils {
 		spesa = getBdNotNull(e.getSpesa());
 		
 		Iterator<Integer> it = mappaAP.keySet().iterator();
-		while(it.hasNext()){
+		while (it.hasNext()) {
 			
-			EsportazioneSpesaDTO  esportazioneDTO = new EsportazioneSpesaDTO();
+			EsportazioneSpesaDTO esportazioneDTO = new EsportazioneSpesaDTO();
 			
 			int anno = ((Integer)it.next()).intValue();
-		    Date[] intervallo = mappaAP.get(anno);
-		    
-		    Date dtInizioInt = intervallo[0];
-		    Date dtFineInt = intervallo[1];
-		    
+			Date[] intervallo = mappaAP.get(anno);
+			
+			Date dtInizioInt = intervallo[0];
+			Date dtFineInt = intervallo[1];
+			
 			int intervalloErogazione = differenzaMesi(dtInizioInt, dtFineInt);
 				
 			esportazioneDTO.setSpesaDettaglio((spesa.multiply(new BigDecimal(intervalloErogazione))).divide(new BigDecimal(periodoErogazione), 2, RoundingMode.HALF_UP));
@@ -913,7 +934,8 @@ public class EsportaCasellarioUtils {
 			esportazioneDTO.setCompartSsn((compartSsn.multiply(new BigDecimal(intervalloErogazione))).divide(new BigDecimal(periodoErogazione), 2, RoundingMode.HALF_UP));
 	
 			List<EsportazioneSpesaDTO> lstSpeseAnno = mappaAnnoSpese.get(anno);
-			if(lstSpeseAnno==null) lstSpeseAnno = new ArrayList<EsportazioneSpesaDTO>();
+			if (lstSpeseAnno == null)
+				lstSpeseAnno = new ArrayList<EsportazioneSpesaDTO>();
 			
 			lstSpeseAnno.add(esportazioneDTO);
 			
@@ -934,7 +956,7 @@ public class EsportaCasellarioUtils {
 		int diffAnni = dataFineCalendar.get(Calendar.YEAR) - dataInizioCalendar.get(Calendar.YEAR);
 		diffMesi = diffAnni * 12 + dataFineCalendar.get(Calendar.MONTH) - dataInizioCalendar.get(Calendar.MONTH);
 		
-		if(diffMesi<0)
+		if (diffMesi < 0)
 			throw new Exception("Impossibile calcolare l'intervallo di erogazione");
 		
 		return diffMesi + 1;
@@ -963,16 +985,13 @@ public class EsportaCasellarioUtils {
 		return esportazioneDTO;
 	}
 
-//	private static void fillForeignKey(EsportazioneDTO esportazioneDTO, EsportazioneDTOView esportazioneDTOView) {
-//	 esportazioneDTO.setInterventoEsegId (esportazioneDTOView.getInterventoEsegId() );
-//	 esportazioneDTO.setInterventoEsegMastId (esportazioneDTOView.getInterventoEsegMastId() );
-//	 esportazioneDTO.setInterventoId (esportazioneDTOView.getInterventoId() );
-//	
-//}
+	// private static void fillForeignKey(EsportazioneDTO esportazioneDTO, EsportazioneDTOView esportazioneDTOView) {
+	// 	esportazioneDTO.setInterventoEsegId (esportazioneDTOView.getInterventoEsegId() );
+	// 	esportazioneDTO.setInterventoEsegMastId (esportazioneDTOView.getInterventoEsegMastId() );
+	// 	esportazioneDTO.setInterventoId (esportazioneDTOView.getInterventoId() );	
+	// }
 
-
-
-	private static void aggiornaListaEsportazioneDTOview(List<EsportazioneDTOView>  listaEsportazioneDTOview, List<EsportazioneDTOView> daAggiungereList) {
+	private static void aggiornaListaEsportazioneDTOview(List<EsportazioneDTOView> listaEsportazioneDTOview, List<EsportazioneDTOView> daAggiungereList) {
 		for (EsportazioneDTOView daAggiungere : daAggiungereList) {
 			if (!isPresente(listaEsportazioneDTOview, daAggiungere)) {
 				listaEsportazioneDTOview.add(daAggiungere);
@@ -1015,9 +1034,7 @@ public class EsportaCasellarioUtils {
 		return result;
 	}
 
-	public static String avvisoErogazioniNonEsportate(
-			List<EsportazioneDTOView> listaErogazioniMasterChiusuraInPeriodo,
-			List<EsportazioneDTOView> listaEsportazioneDTOview) {
+	public static String avvisoErogazioniNonEsportate(List<EsportazioneDTOView> listaErogazioniMasterChiusuraInPeriodo, List<EsportazioneDTOView> listaEsportazioneDTOview) {
 		
 		String result = "";
 		
@@ -1038,28 +1055,28 @@ public class EsportaCasellarioUtils {
 		for (EsportazioneDTOView erog : listaErogazioniMasterChiusuraInPeriodo) {
 			if (masterIdsNonPresenti.contains(erog.getInterventoEsegMastId())) {
 
-				if (minDataEsecuzione==null || minDataEsecuzione.after(erog.getDataEsecuzione())) {
+				if (minDataEsecuzione == null || minDataEsecuzione.after(erog.getDataEsecuzione())) {
 					minDataEsecuzione = erog.getDataEsecuzione();
 				}
 				
-				Date maxTemp = erog.getDataEsecuzioneA()!=null?erog.getDataEsecuzioneA():erog.getDataEsecuzione();
+				Date maxTemp = erog.getDataEsecuzioneA() != null ? erog.getDataEsecuzioneA() : erog.getDataEsecuzione();
 
-				if (maxDataEsecuzione==null || maxDataEsecuzione.before(maxTemp)) {
+				if (maxDataEsecuzione == null || maxDataEsecuzione.before(maxTemp)) {
 					maxDataEsecuzione = maxTemp;
 				}
 			}
 		}
 		
-		if (masterIdsNonPresenti.size()>0) {
+		if (masterIdsNonPresenti.size() > 0) {
 			/*result = "Attenzione, ci sono erogazioni non esportate per il periodo che va da " + 
-					 sdf.format(minDataEsecuzione) + " a " +  sdf.format(maxDataEsecuzione) ; */
+			sdf.format(minDataEsecuzione) + " a " + sdf.format(maxDataEsecuzione) ; */
 		}
 
 		return result;
 
 	}
 
-	private static Set<Long> getMasterIds( List<EsportazioneDTOView> listaErogazioniMasterChiusuraInPeriodo) {
+	private static Set<Long> getMasterIds(List<EsportazioneDTOView> listaErogazioniMasterChiusuraInPeriodo) {
 		Set<Long> masterIds = new HashSet<Long>();
 
 		for (EsportazioneDTOView esportazioneDTOView : listaErogazioniMasterChiusuraInPeriodo) {
@@ -1074,7 +1091,7 @@ public class EsportaCasellarioUtils {
 		result.addAll(masterIds);
 
 		for (EsportazioneDTOView esportazioneDTOView : listaEsportazioneDTOview) {
-			if ( result.contains( esportazioneDTOView.getInterventoEsegMastId() ) ) {
+			if (result.contains(esportazioneDTOView.getInterventoEsegMastId())) {
 				logger.debug("Remove " + esportazioneDTOView.getInterventoEsegMastId());
 				result.remove(esportazioneDTOView.getInterventoEsegMastId());
 			}
@@ -1098,9 +1115,11 @@ public class EsportaCasellarioUtils {
 			List<EsportazioneDTO> daEsportareDTOList) {
 		
 		List<EsportazioneTestataDTO> testate = new ArrayList<EsportazioneTestataDTO>();	// oggetto di ritorno
-				
-		/* Per ciascuna erogazione in daEsportareList, cerco la testata di appartenenza. Se la trovo, aggiungo
-		 * l'erogazione alla lista dei dettagli per quella testata, altrimenti la uso per creare una nuova testata. */
+		
+		/**
+		 * Per ciascuna erogazione in daEsportareList, cerco la testata di appartenenza. Se la trovo, aggiungo
+		 * l'erogazione alla lista dei dettagli per quella testata, altrimenti la uso per creare una nuova testata.
+		 */
 		for (EsportazioneDTOView erogazioneDaEsportare : daEsportareList) {
 
 			for (EsportazioneDTO erogazione : daEsportareDTOList) {
@@ -1115,7 +1134,7 @@ public class EsportaCasellarioUtils {
 			aggiornaTestate(testate, erogazioneDaEsportare);
 		}
 
-		/*
+		/**
 		 * Per ciascuna erogazione in giaInviateList: -flaggo opportunamente le
 		 * proprietà dell'oggetto DTOView, contrassegnando l'erogazione come
 		 * esportata, non daInviare e impostando come messaggio di mancato invio
@@ -1141,12 +1160,12 @@ public class EsportaCasellarioUtils {
 	}
 
 	//SISO-784 estrazione mast id da lista
-	public static List<Long> extractMastIds(List<? extends EsportazioneDTO> lista){
+	public static List<Long> extractMastIds(List<? extends EsportazioneDTO> lista) {
 		List<Long> listaIds = new ArrayList<Long>();
-		for(Object dto : lista){
+		for (Object dto : lista) {
 			EsportazioneDTO edto = (EsportazioneDTO)dto;
-			Long idMast = edto.getInterventoEsegMastId()!=null ? edto.getInterventoEsegMastId().longValue() : null;
-			if(idMast!=null && !listaIds.contains(idMast.longValue())){
+			Long idMast = edto.getInterventoEsegMastId() != null ? edto.getInterventoEsegMastId().longValue() : null;
+			if (idMast != null && !listaIds.contains(idMast.longValue())) {
 				listaIds.add(edto.getInterventoEsegMastId());
 			}
 		}
@@ -1154,35 +1173,36 @@ public class EsportaCasellarioUtils {
 	}
 
 	//SISO-784 assegnazione Sina collegati
-	public static void caricaDatiSina(EsportazioneDTO exp, CsDSinaLIGHT sina){
+	public static void caricaDatiSina(EsportazioneDTO exp, CsDSinaLIGHT sina) {
 
-			exp.setIsSinaCollegato(true);
-			// ** mod. SISO-886 **//
-			exp.setIsSinaFlagValutaDopo(sina.getFlagValutaDopo());
+		exp.setIsSinaCollegato(true);
+		// ** mod. SISO-886 **//
+		exp.setIsSinaFlagValutaDopo(sina.getFlagValutaDopo());
 
-			exp.setMobilita(EsportaCasellarioUtils.getValutazione(sina.getCsDSinaEseg(), DataModelCostanti.TipoSinaDomanda.MOBILITA));
-			exp.setAttivitaVitaQuotidiana(EsportaCasellarioUtils.getValutazione(sina.getCsDSinaEseg(), DataModelCostanti.TipoSinaDomanda.ATTIVITA_VITA_QUOTIDIANA));
-			exp.setDisturbiAreaCognitiva(EsportaCasellarioUtils.getValutazione(sina.getCsDSinaEseg(), DataModelCostanti.TipoSinaDomanda.DISTURBI_AREA_COGNITIVA));
-			exp.setDisturbiComportamentali(EsportaCasellarioUtils.getValutazione(sina.getCsDSinaEseg(), DataModelCostanti.TipoSinaDomanda.DISTURBI_COMPORTAMENTALI));
-			exp.setNecessitaCureSanitarie(EsportaCasellarioUtils.getValutazione(sina.getCsDSinaEseg(), DataModelCostanti.TipoSinaDomanda.NECESSITA_CURE_SANITARIE));
-			exp.setAreaReddituale(EsportaCasellarioUtils.getValutazione(sina.getCsDSinaEseg(), DataModelCostanti.TipoSinaDomanda.AREA_REDDITUALE));
-			exp.setAreaSupporto(EsportaCasellarioUtils.getValutazione(sina.getCsDSinaEseg(), DataModelCostanti.TipoSinaDomanda.AREA_SUPPORTO));
-			exp.setFonteDerivazioneValutazione(EsportaCasellarioUtils.getValutazione(sina.getCsDSinaEseg(), DataModelCostanti.TipoSinaDomanda.FONTE_DERIVAZIONE_VALUTAZIONE));
-			exp.setStrumentoValutazione(EsportaCasellarioUtils.getValutazione(sina.getCsDSinaEseg(), DataModelCostanti.TipoSinaDomanda.STRUMENTO_VALUTAZIONE));
-			//exp.setInvCiv(EsportaCasellarioUtils.getValutazione(sina.getCsDSinaEseg(), DataModelCostanti.TipoSinaDomanda.INVALIDITA_CIVILE));
-			exp.setFonteDerivazioneInvalidita(EsportaCasellarioUtils.getValutazione(sina.getCsDSinaEseg(), DataModelCostanti.TipoSinaDomanda.FONTE_DERIVAZIONE_INVALIDITA));
-			
-			exp.getInvCiv().clear();
-			for(CsDSinaEsegLIGHT eseg : sina.getCsDSinaEseg()){
-				if(eseg.getCsTbSinaDomanda().getId() == Long.parseLong("10")){
-					exp.getInvCiv().add(eseg.getCsTbSinaRisposta().getValore().toString());
-				}
+		exp.setMobilita(EsportaCasellarioUtils.getValutazione(sina.getCsDSinaEseg(), DataModelCostanti.TipoSinaDomanda.MOBILITA));
+		exp.setAttivitaVitaQuotidiana(EsportaCasellarioUtils.getValutazione(sina.getCsDSinaEseg(), DataModelCostanti.TipoSinaDomanda.ATTIVITA_VITA_QUOTIDIANA));
+		exp.setDisturbiAreaCognitiva(EsportaCasellarioUtils.getValutazione(sina.getCsDSinaEseg(), DataModelCostanti.TipoSinaDomanda.DISTURBI_AREA_COGNITIVA));
+		exp.setDisturbiComportamentali(EsportaCasellarioUtils.getValutazione(sina.getCsDSinaEseg(), DataModelCostanti.TipoSinaDomanda.DISTURBI_COMPORTAMENTALI));
+		exp.setNecessitaCureSanitarie(EsportaCasellarioUtils.getValutazione(sina.getCsDSinaEseg(), DataModelCostanti.TipoSinaDomanda.NECESSITA_CURE_SANITARIE));
+		exp.setAreaReddituale(EsportaCasellarioUtils.getValutazione(sina.getCsDSinaEseg(), DataModelCostanti.TipoSinaDomanda.AREA_REDDITUALE));
+		exp.setAreaSupporto(EsportaCasellarioUtils.getValutazione(sina.getCsDSinaEseg(), DataModelCostanti.TipoSinaDomanda.AREA_SUPPORTO));
+		exp.setFonteDerivazioneValutazione(EsportaCasellarioUtils.getValutazione(sina.getCsDSinaEseg(), DataModelCostanti.TipoSinaDomanda.FONTE_DERIVAZIONE_VALUTAZIONE));
+		exp.setStrumentoValutazione(EsportaCasellarioUtils.getValutazione(sina.getCsDSinaEseg(), DataModelCostanti.TipoSinaDomanda.STRUMENTO_VALUTAZIONE));
+		//exp.setInvCiv(EsportaCasellarioUtils.getValutazione(sina.getCsDSinaEseg(), DataModelCostanti.TipoSinaDomanda.INVALIDITA_CIVILE));
+		exp.setFonteDerivazioneInvalidita(EsportaCasellarioUtils.getValutazione(sina.getCsDSinaEseg(), DataModelCostanti.TipoSinaDomanda.FONTE_DERIVAZIONE_INVALIDITA));
+		
+		exp.getInvCiv().clear();
+		for (CsDSinaEsegLIGHT eseg : sina.getCsDSinaEseg()) {
+			if (eseg.getCsTbSinaDomanda().getId() == Long.parseLong("10")) {
+				exp.getInvCiv().add(eseg.getCsTbSinaRisposta().getValore().toString());
 			}
-			
-			exp.getCodiciPrestazione().clear();
-			for (ArTbPrestazioniInps inps : sina.getArTbPrestazioniInps()) {
-				exp.getCodiciPrestazione().add(inps.getCodice());
 		}
+		
+		exp.getCodiciPrestazione().clear();
+		for (ArTbPrestazioniInps inps : sina.getArTbPrestazioniInps()) {
+			exp.getCodiciPrestazione().add(inps.getCodice());
+		}
+			
 	}
 
 	// quick and dirty
@@ -1207,16 +1227,16 @@ public class EsportaCasellarioUtils {
 		}
 	}
 	
-	public void controllaErogPeriodiche(List<EsportazioneDTO> daEsportare, List<EsportazioneDTOView> giaInviate){
+	public void controllaErogPeriodiche(List<EsportazioneDTO> daEsportare, List<EsportazioneDTOView> giaInviate) {
 		
-		for(EsportazioneDTO de : daEsportare){
+		for (EsportazioneDTO de : daEsportare) {
 			
 		}
 
 	}
 
 	// quick and dirty
-	private static Long getValutazione(List<CsDSinaEsegLIGHT> sinaEsegList, Long domanda){
+	private static Long getValutazione(List<CsDSinaEsegLIGHT> sinaEsegList, Long domanda) {
 		Long valutazione = null;
 		for (CsDSinaEsegLIGHT eseg : sinaEsegList) {
 			if (eseg.getCsTbSinaDomanda().getId() == domanda.longValue()) {
@@ -1226,6 +1246,5 @@ public class EsportaCasellarioUtils {
 
 		return valutazione;
 	}
-
 
 }
